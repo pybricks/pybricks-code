@@ -5,11 +5,11 @@ import './App.css';
 import 'ace-builds/src-noconflict/mode-python';
 import 'ace-builds/src-noconflict/theme-github';
 
-function onChange(newValue: string) {
+function onChange(newValue: string): void {
     console.log('change', newValue);
 }
 
-function App() {
+function App(): JSX.Element {
     return (
         <div className="App">
             <header className="App-header">
