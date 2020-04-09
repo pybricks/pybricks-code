@@ -1,6 +1,8 @@
 import React from 'react';
 import AceEditor from 'react-ace';
 import './App.css';
+import { Connection } from './Connection';
+import { Terminal } from './Terminal';
 
 import 'ace-builds/src-noconflict/mode-python';
 import 'ace-builds/src-noconflict/theme-github';
@@ -10,27 +12,27 @@ function onChange(newValue: string): void {
 }
 
 function App(): JSX.Element {
+    const connection = React.createRef<Connection>();
+    const terminal = React.createRef<Terminal>();
     return (
         <div className="App">
             <header className="App-header">
-                <p>
-                    Edit <code>src/App.tsx</code> and save to reload.
-                </p>
-                <a
-                    className="App-link"
-                    href="https://reactjs.org"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    Learn React
-                </a>
+                <Connection
+                    onData={(e): void => terminal.current?.write(e)}
+                    ref={connection}
+                />
             </header>
+            <Terminal
+                onData={(d): void => connection.current?.write(d)}
+                ref={terminal}
+            />
             <AceEditor
                 mode="python"
                 theme="github"
                 onChange={onChange}
                 name="editor"
                 editorProps={{ $blockScrolling: true }}
+                width="100%"
             />
         </div>
     );
