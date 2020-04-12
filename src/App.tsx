@@ -3,17 +3,15 @@ import AceEditor from 'react-ace';
 import './App.css';
 import { Connection } from './Connection';
 import { Terminal } from './Terminal';
+import { Run } from './Run';
 
 import 'ace-builds/src-noconflict/mode-python';
 import 'ace-builds/src-noconflict/theme-github';
 
-function onChange(newValue: string): void {
-    console.log('change', newValue);
-}
-
 function App(): JSX.Element {
     const connection = React.createRef<Connection>();
     const terminal = React.createRef<Terminal>();
+    const editor = React.createRef<AceEditor>();
     return (
         <div className="App">
             <header className="App-header">
@@ -21,18 +19,21 @@ function App(): JSX.Element {
                     onData={(e): void => terminal.current?.write(e)}
                     ref={connection}
                 />
+                <Run connection={connection} editor={editor} />
             </header>
             <Terminal
-                onData={(d): void => connection.current?.write(d)}
+                onData={(d): void => {
+                    connection.current?.write(d);
+                }}
                 ref={terminal}
             />
             <AceEditor
                 mode="python"
                 theme="github"
-                onChange={onChange}
                 name="editor"
                 editorProps={{ $blockScrolling: true }}
                 width="100%"
+                ref={editor}
             />
         </div>
     );

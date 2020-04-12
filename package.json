@@ -19,6 +19,7 @@
         "xterm": "^4.4.0"
     },
     "scripts": {
+        "prepare": "mkdir -p public/static/js && cp node_modules/@pybricks/mpy-cross/build-wasm/mpy-cross.wasm public/static/js/",
         "start": "react-scripts start",
         "build": "react-scripts build",
         "test": "react-scripts test",
