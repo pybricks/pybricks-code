@@ -4,6 +4,7 @@ import './App.css';
 import { Connection } from './Connection';
 import { Terminal } from './Terminal';
 import { Run } from './Run';
+import { Flash } from './Flash';
 
 import 'ace-builds/src-noconflict/mode-python';
 import 'ace-builds/src-noconflict/theme-github';
@@ -20,6 +21,7 @@ function App(): JSX.Element {
                     ref={connection}
                 />
                 <Run connection={connection} editor={editor} />
+                <Flash />
             </header>
             <Terminal
                 onData={(d): void => {

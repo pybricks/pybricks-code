@@ -14,6 +14,7 @@
         "react": "^16.13.1",
         "react-ace": "^8.1.0",
         "react-dom": "^16.13.1",
+        "react-dropzone": "^10.2.2",
         "react-scripts": "3.4.1",
         "typescript": "~3.7.2",
         "xterm": "^4.4.0"
