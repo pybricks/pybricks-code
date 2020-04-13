@@ -4,6 +4,8 @@ import './App.css';
 import { Connection } from './Connection';
 import { Terminal } from './Terminal';
 import { Run } from './Run';
+import { Stop } from './Stop';
+import { Repl } from './Repl';
 import { Flash } from './Flash';
 
 import 'ace-builds/src-noconflict/mode-python';
@@ -21,6 +23,8 @@ function App(): JSX.Element {
                     ref={connection}
                 />
                 <Run connection={connection} editor={editor} />
+                <Stop connection={connection} />
+                <Repl connection={connection} />
                 <Flash />
             </header>
             <Terminal
