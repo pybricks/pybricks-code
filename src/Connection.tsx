@@ -72,6 +72,7 @@ class Connection extends React.Component<ConnectionProperties, ConnectionState> 
             }
             this.device = await navigator.bluetooth.requestDevice({
                 filters: [{ services: [pybricksServiceUUID] }],
+                optionalServices: [bleNusServiceUUID],
             });
             if (this.device.gatt === undefined) {
                 throw Error('Device does not support GATT');
