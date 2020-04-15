@@ -1,12 +1,8 @@
 import React from 'react';
 import AceEditor from 'react-ace';
 import './App.css';
-import { Connection } from './Connection';
+import { Connection } from './old/Connection';
 import { Terminal } from './Terminal';
-import { Run } from './Run';
-import { Stop } from './Stop';
-import { Repl } from './Repl';
-import { Flash } from './Flash';
 
 import 'ace-builds/src-noconflict/mode-python';
 import 'ace-builds/src-noconflict/theme-github';
@@ -17,16 +13,6 @@ function App(): JSX.Element {
     const editor = React.createRef<AceEditor>();
     return (
         <div className="App">
-            <header className="App-header">
-                <Connection
-                    onData={(e): void => terminal.current?.write(e)}
-                    ref={connection}
-                />
-                <Run connection={connection} editor={editor} />
-                <Stop connection={connection} />
-                <Repl connection={connection} />
-                <Flash />
-            </header>
             <Terminal
                 onData={(d): void => {
                     connection.current?.write(d);
