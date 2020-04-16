@@ -2,6 +2,7 @@ import React from 'react';
 import Editor from './Editor';
 import Toolbar from './Toolbar';
 import Terminal from './Terminal';
+import StatusBar from './Statusbar';
 import Container from 'react-bootstrap/Container';
 
 function App(): JSX.Element {
@@ -10,6 +11,7 @@ function App(): JSX.Element {
             <Toolbar />
             <Editor />
             <Terminal />
+            <StatusBar />
         </Container>
     );
 }
