@@ -1,40 +1,50 @@
 import React from 'react';
-import { Terminal } from 'xterm';
+import { Terminal as XTerm } from 'xterm';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
-const encoder = new TextEncoder();
+import 'xterm/css/xterm.css';
 
-type TerminalProps = {
-    onData: (data: Uint8Array) => void;
-};
-
-export default class TerminalComponent extends React.Component<TerminalProps> {
-    private term: Terminal;
+class Terminal extends React.Component {
+    private xterm: XTerm;
     private terminalRef: React.RefObject<HTMLDivElement>;
 
-    constructor(props: TerminalProps) {
+    constructor(props: {}) {
         super(props);
-        this.term = new Terminal();
+        this.xterm = new XTerm({
+            cursorBlink: true,
+            cursorStyle: 'underline',
+            fontSize: 18,
+            rows: 8,
+            theme: {
+                background: 'white',
+                foreground: 'black',
+                cursor: 'black',
+                // transparency is needed to work around https://github.com/xtermjs/xterm.js/issues/2808
+                selection: 'rgba(181,213,255,0.5)', // this should match AceEditor theme
+            },
+        });
+        this.xterm.onData((data) => this.xterm.write(data));
         this.terminalRef = React.createRef();
-        this.term.onData((data) => this.props.onData(encoder.encode(data)));
-    }
-
-    public write(data: Uint8Array): void {
-        this.term.write(data);
     }
 
     componentDidMount(): void {
         if (!this.terminalRef.current) {
+            console.error('Missing terminal reference');
             return;
         }
-        this.term.open(this.terminalRef.current);
+        this.xterm.open(this.terminalRef.current);
     }
 
     render(): JSX.Element {
         return (
-            <div>
-                <div id="terminal" ref={this.terminalRef}></div>
-            </div>
+            <Row className="px-2 py-4 bg-secondary">
+                <Col>
+                    <div id="terminal" ref={this.terminalRef}></div>
+                </Col>
+            </Row>
         );
     }
 }
-export { TerminalComponent as Terminal };
+
+export default Terminal;

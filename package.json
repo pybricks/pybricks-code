@@ -21,7 +21,7 @@
         "react-dropzone": "^10.2.2",
         "react-scripts": "3.4.1",
         "typescript": "~3.7.2",
-        "xterm": "^4.4.0"
+        "xterm": "^4.5.0"
     },
     "scripts": {
         "prepare": "mkdir -p public/static/js && cp node_modules/@pybricks/mpy-cross/build-wasm/mpy-cross.wasm public/static/js/",
