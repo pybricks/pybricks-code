@@ -2,9 +2,12 @@ import { Action } from 'redux';
 import { ThunkAction } from 'redux-thunk';
 
 const pybricksServiceUUID = 'c5f50001-8280-46da-89f4-6d8051e4aeef';
+
+// nRF UART service (Nus)
 const bleNusServiceUUID = '6e400001-b5a3-f393-e0a9-e50e24dcca9e';
 const bleNusCharRXUUID = '6e400002-b5a3-f393-e0a9-e50e24dcca9e';
 const bleNusCharTXUUID = '6e400003-b5a3-f393-e0a9-e50e24dcca9e';
+const bleNusMaxSize = 20;
 
 let device: BluetoothDevice | undefined;
 let rxChar: BluetoothRemoteGATTCharacteristic | undefined;
@@ -30,7 +33,7 @@ export enum BLEConnectActionType {
 
 type BLEConnectAction = Action<BLEConnectActionType>;
 
-enum BLEDataActionType {
+export enum BLEDataActionType {
     /**
      * Send data.
      */
@@ -41,13 +44,13 @@ enum BLEDataActionType {
     ReceivedData = 'ble.data.receive',
 }
 
-interface BLEDataAction extends Action<BLEDataActionType> {
+export interface BLEDataAction extends Action<BLEDataActionType> {
     value: DataView;
 }
 
 type AnyBLEAction = BLEConnectAction | BLEDataAction;
 
-type BLEThunkAction = ThunkAction<Promise<void>, {}, {}, AnyBLEAction>;
+export type BLEThunkAction = ThunkAction<Promise<void>, {}, {}, AnyBLEAction>;
 
 function beginConnect(): BLEConnectAction {
     return { type: BLEConnectActionType.BeginConnect };
@@ -115,5 +118,14 @@ export function disconnect(): BLEThunkAction {
     return async function (dispatch): Promise<void> {
         dispatch(beginDisconnect());
         device?.gatt?.disconnect();
+    };
+}
+
+export function write(value: ArrayBuffer): BLEThunkAction {
+    return async function (): Promise<void> {
+        // TODO: do we need to dispatch any Action<>s here?
+        for (let i = 0; i < value.byteLength; i += bleNusMaxSize) {
+            await rxChar?.writeValue(value.slice(i, i + bleNusMaxSize));
+        }
     };
 }

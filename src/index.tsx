@@ -1,7 +1,9 @@
 import thunkMiddleware from 'redux-thunk';
 import { createLogger } from 'redux-logger';
+import { createEpicMiddleware } from 'redux-observable';
 import { createStore, applyMiddleware } from 'redux';
 import rootReducer from './reducers';
+import rootEpic from './epics';
 import React from 'react';
 import { Provider } from 'react-redux';
 import ReactDOM from 'react-dom';
@@ -9,12 +11,15 @@ import './index.scss';
 import App from './components/App';
 import * as serviceWorker from './serviceWorker';
 
+const epicMiddleware = createEpicMiddleware();
 const loggerMiddleware = createLogger();
 
 const store = createStore(
     rootReducer,
-    applyMiddleware(thunkMiddleware, loggerMiddleware),
+    applyMiddleware(thunkMiddleware, epicMiddleware, loggerMiddleware),
 );
+
+epicMiddleware.run(rootEpic);
 
 ReactDOM.render(
     <React.StrictMode>

@@ -2,14 +2,26 @@ import React from 'react';
 import { Terminal as XTerm } from 'xterm';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
+import { receiveData } from '../actions/terminal';
+import { terminalOutput } from '../epics/terminal';
+import { Subscription } from 'rxjs';
 
 import 'xterm/css/xterm.css';
 
-class Terminal extends React.Component {
+interface DispatchProps {
+    onData: (data: string) => void;
+}
+
+type TerminalProps = DispatchProps;
+
+class Terminal extends React.Component<TerminalProps> {
     private xterm: XTerm;
     private terminalRef: React.RefObject<HTMLDivElement>;
+    private subscription?: Subscription;
 
-    constructor(props: {}) {
+    constructor(props: TerminalProps) {
         super(props);
         this.xterm = new XTerm({
             cursorBlink: true,
@@ -24,7 +36,7 @@ class Terminal extends React.Component {
                 selection: 'rgba(181,213,255,0.5)', // this should match AceEditor theme
             },
         });
-        this.xterm.onData((data) => this.xterm.write(data));
+        this.xterm.onData((d) => this.props.onData(d));
         this.terminalRef = React.createRef();
     }
 
@@ -34,6 +46,12 @@ class Terminal extends React.Component {
             return;
         }
         this.xterm.open(this.terminalRef.current);
+        this.subscription = terminalOutput.subscribe((v) => this.xterm.write(v));
+    }
+
+    componentWillUnmount(): void {
+        this.subscription?.unsubscribe();
+        this.xterm.dispose();
     }
 
     render(): JSX.Element {
@@ -47,4 +65,10 @@ class Terminal extends React.Component {
     }
 }
 
-export default Terminal;
+const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
+    onData: (d): void => {
+        dispatch(receiveData(d));
+    },
+});
+
+export default connect(null, mapDispatchToProps)(Terminal);
