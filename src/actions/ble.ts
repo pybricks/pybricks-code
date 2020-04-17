@@ -87,7 +87,14 @@ export function connect(): BLEThunkAction {
             });
         } catch (err) {
             // this can happen if the use cancels the dialog
-            console.log(err);
+            if (
+                err instanceof DOMException &&
+                err.code === DOMException.NOT_FOUND_ERR
+            ) {
+                console.debug('User cancelled connect');
+            } else {
+                console.error(err);
+            }
             dispatch(endDisconnect());
             return;
         }
