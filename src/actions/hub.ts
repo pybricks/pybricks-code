@@ -78,6 +78,13 @@ export function downloadAndRun(data: ArrayBuffer): HubThunkAction {
     };
 }
 
+// SPACE, SPACE, SPACE, SPACE
+const startReplCommand = new Uint8Array([0x20, 0x20, 0x20, 0x20]);
+
+export function startRepl(): HubThunkAction {
+    return write(startReplCommand);
+}
+
 // CTRL+C, CTRL+C, CTRL+D
 const stopCommand = new Uint8Array([0x03, 0x03, 0x04]);
 

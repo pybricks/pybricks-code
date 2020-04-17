@@ -8,6 +8,7 @@ import ActionButton from './ActionButton';
 import BluetoothButton from './BluetoothButton';
 import RunButton from './RunButton';
 import StopButton from './StopButton';
+import ReplButton from './ReplButton';
 
 interface ToolbarState {
     bleState: BLEConnectionState;
@@ -39,12 +40,7 @@ class Toolbar extends React.Component<{}, ToolbarState> {
                             <StopButton id="stop" />
                         </ButtonGroup>
                         <ButtonGroup className="mr-2" size="lg">
-                            <ActionButton
-                                id="repl"
-                                tooltip="Start REPL in terminal"
-                                icon="repl.svg"
-                                onAction={this.onAction}
-                            />
+                            <ReplButton id="repl" />
                             <ActionButton
                                 id="flash"
                                 tooltip="Flash hub firmware"
