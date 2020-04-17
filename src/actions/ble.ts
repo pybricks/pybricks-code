@@ -80,12 +80,20 @@ export function connect(): BLEThunkAction {
             return;
         }
         dispatch(beginConnect());
-        device = await navigator.bluetooth.requestDevice({
-            filters: [{ services: [pybricksServiceUUID] }],
-            optionalServices: [bleNusServiceUUID],
-        });
+        try {
+            device = await navigator.bluetooth.requestDevice({
+                filters: [{ services: [pybricksServiceUUID] }],
+                optionalServices: [bleNusServiceUUID],
+            });
+        } catch (err) {
+            // this can happen if the use cancels the dialog
+            console.log(err);
+            dispatch(endDisconnect());
+            return;
+        }
         if (device.gatt === undefined) {
             console.error('Device does not support GATT');
+            dispatch(endDisconnect());
             return;
         }
         device.addEventListener('gattserverdisconnected', () => {
