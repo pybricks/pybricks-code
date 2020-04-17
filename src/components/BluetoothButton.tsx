@@ -1,10 +1,10 @@
-import ActionButton from './ActionButton';
 import { connect } from 'react-redux';
+import { ThunkDispatch } from 'redux-thunk';
+import { AnyAction } from 'redux';
 import { connect as bleConnect, disconnect as bleDisconnect } from '../actions/ble';
 import { RootState } from '../reducers';
 import { BLEConnectionState } from '../reducers/ble';
-import { ThunkDispatch } from 'redux-thunk';
-import { AnyAction } from 'redux';
+import ActionButton from './ActionButton';
 
 type Dispatch = ThunkDispatch<{}, {}, AnyAction>;
 

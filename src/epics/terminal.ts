@@ -1,7 +1,7 @@
 import { combineEpics, Epic, ofType } from 'redux-observable';
-import { write, BLEThunkAction } from '../actions/ble';
 import { Subject } from 'rxjs';
 import { map, tap, ignoreElements } from 'rxjs/operators';
+import { write, BLEThunkAction } from '../actions/ble';
 import { TerminalDataAction, TerminalDataActionType } from '../actions/terminal';
 
 const encoder = new TextEncoder();

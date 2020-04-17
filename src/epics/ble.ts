@@ -1,6 +1,6 @@
 import { combineEpics, Epic, ofType } from 'redux-observable';
-import { BLEDataActionType, BLEDataAction } from '../actions/ble';
 import { map } from 'rxjs/operators';
+import { BLEDataActionType, BLEDataAction } from '../actions/ble';
 import { TerminalDataAction, sendData } from '../actions/terminal';
 
 const decoder = new TextDecoder();

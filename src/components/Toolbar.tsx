@@ -3,8 +3,8 @@ import Col from 'react-bootstrap/Col';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
 import React from 'react';
-import ActionButton from './ActionButton';
 import { BLEConnectionState } from '../reducers/ble';
+import ActionButton from './ActionButton';
 import BluetoothButton from './BluetoothButton';
 
 interface ToolbarState {

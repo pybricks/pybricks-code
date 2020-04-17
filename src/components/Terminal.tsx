@@ -4,9 +4,9 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
+import { Subscription } from 'rxjs';
 import { receiveData } from '../actions/terminal';
 import { terminalOutput } from '../epics/terminal';
-import { Subscription } from 'rxjs';
 
 import 'xterm/css/xterm.css';
 
