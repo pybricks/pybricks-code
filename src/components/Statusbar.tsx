@@ -2,7 +2,7 @@ import React from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import ProgressBar from 'react-bootstrap/ProgressBar';
-import { BLEConnectionState } from '../services/BLEConnection';
+import { BLEConnectionState } from '../reducers/ble';
 
 interface StatusBarState {
     bleState: BLEConnectionState;
