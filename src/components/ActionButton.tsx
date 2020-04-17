@@ -4,7 +4,7 @@ import Tooltip from 'react-bootstrap/Tooltip';
 import Image from 'react-bootstrap/Image';
 import React from 'react';
 
-interface ActionButtonProps {
+export interface ActionButtonProps<T = undefined> {
     /** A unique id for each instance. */
     readonly id: string;
     /** Tooltip text that appears when hovering over the button. */
@@ -14,12 +14,12 @@ interface ActionButtonProps {
     /** When true or undefined, the button is enabled. */
     readonly enabled?: boolean;
     /** Optional action hint passed to the onAction() callback. */
-    readonly action?: string;
+    readonly context?: T;
     /** Callback that is called when the button is activated (clicked). */
-    readonly onAction: (action?: string) => void;
+    readonly onAction: (context?: T) => void;
 }
 
-class ActionButton extends React.Component<ActionButtonProps> {
+class ActionButton<T = undefined> extends React.Component<ActionButtonProps<T>> {
     render(): JSX.Element {
         return (
             <OverlayTrigger
@@ -32,7 +32,7 @@ class ActionButton extends React.Component<ActionButtonProps> {
             >
                 <Button
                     variant="primary"
-                    onClick={(): void => this.props.onAction(this.props.action)}
+                    onClick={(): void => this.props.onAction(this.props.context)}
                     disabled={this.props.enabled === false}
                     style={
                         this.props.enabled === false

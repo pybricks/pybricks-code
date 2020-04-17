@@ -23,13 +23,6 @@ export enum BLEConnectionState {
     Disconnecting = 'ble.connection.disconnecting',
 }
 
-/**
- * BLE state for redux store.
- */
-export interface BLEState {
-    readonly connection: BLEConnectionState;
-}
-
 const connection: Reducer<BLEConnectionState> = (
     state = BLEConnectionState.Disconnected,
     action,
@@ -47,5 +40,9 @@ const connection: Reducer<BLEConnectionState> = (
             return state;
     }
 };
+
+export interface BLEState {
+    readonly connection: BLEConnectionState;
+}
 
 export default combineReducers({ connection });

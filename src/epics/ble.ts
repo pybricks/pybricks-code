@@ -1,17 +1,52 @@
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { map } from 'rxjs/operators';
-import { BLEDataActionType, BLEDataAction } from '../actions/ble';
-import { TerminalDataAction, sendData } from '../actions/terminal';
+import { AnyAction } from 'redux';
+import { BLEDataActionType, BLEDataAction, BLEConnectActionType } from '../actions/ble';
+import { sendData } from '../actions/terminal';
+import { updateStatus, HubRuntimeStatusType, checksum } from '../actions/hub';
+import { RootState } from '../reducers';
+import { HubRuntimeState } from '../reducers/hub';
 
 const decoder = new TextDecoder();
 
-const rxUartData: Epic = (action$) =>
+const connect: Epic = (action$) =>
     action$.pipe(
-        ofType(BLEDataActionType.ReceivedData),
-        map(
-            (a: BLEDataAction): TerminalDataAction =>
-                sendData(decoder.decode(a.value.buffer)),
-        ),
+        ofType(BLEConnectActionType.EndConnect),
+        map(() => updateStatus(HubRuntimeStatusType.Idle)),
     );
 
-export default combineEpics(rxUartData);
+const disconnect: Epic = (action$) =>
+    action$.pipe(
+        ofType(BLEConnectActionType.EndDisconnect),
+        map(() => updateStatus(HubRuntimeStatusType.Disconnected)),
+    );
+
+const rxUartData: Epic<AnyAction, AnyAction, RootState> = (action$, state$) =>
+    action$.pipe(
+        ofType<AnyAction, BLEDataAction>(BLEDataActionType.ReceivedData),
+        map((a) => {
+            if (
+                state$.value.hub.runtime === HubRuntimeState.Loading &&
+                a.value.buffer.byteLength === 1
+            ) {
+                const view = new DataView(a.value.buffer);
+                return checksum(view.getUint8(0));
+            } else {
+                const value = decoder.decode(a.value.buffer);
+                // FIXME: sometimes we get ERROR and IDLE in same message except
+                // last E is cut off
+                if (value.match(/>>>> IDLE/)) {
+                    return updateStatus(HubRuntimeStatusType.Idle);
+                }
+                if (value.match(/>>>> ERROR/)) {
+                    return updateStatus(HubRuntimeStatusType.Error);
+                }
+                if (value.match(/>>>> RUNNING/)) {
+                    return updateStatus(HubRuntimeStatusType.Running);
+                }
+                return sendData(value);
+            }
+        }),
+    );
+
+export default combineEpics(connect, disconnect, rxUartData);
