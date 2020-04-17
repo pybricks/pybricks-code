@@ -7,6 +7,7 @@ import { BLEConnectionState } from '../reducers/ble';
 import ActionButton from './ActionButton';
 import BluetoothButton from './BluetoothButton';
 import RunButton from './RunButton';
+import StopButton from './StopButton';
 
 interface ToolbarState {
     bleState: BLEConnectionState;
@@ -35,12 +36,7 @@ class Toolbar extends React.Component<{}, ToolbarState> {
                         <ButtonGroup className="mr-2" size="lg">
                             <BluetoothButton id="bluetooth" />
                             <RunButton id="run" />
-                            <ActionButton
-                                id="stop"
-                                tooltip="Stop everything"
-                                icon="stop.svg"
-                                onAction={this.onAction}
-                            />
+                            <StopButton id="stop" />
                         </ButtonGroup>
                         <ButtonGroup className="mr-2" size="lg">
                             <ActionButton

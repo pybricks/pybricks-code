@@ -77,3 +77,10 @@ export function downloadAndRun(data: ArrayBuffer): HubThunkAction {
         dispatch(updateStatus(HubRuntimeStatusType.Loaded));
     };
 }
+
+// CTRL+C, CTRL+C, CTRL+D
+const stopCommand = new Uint8Array([0x03, 0x03, 0x04]);
+
+export function stop(): HubThunkAction {
+    return write(stopCommand);
+}
