@@ -1,13 +1,13 @@
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
+import React from 'react';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
-import React from 'react';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
 import BluetoothButton from './BluetoothButton';
+import FlashButton from './FlashButton';
+import ReplButton from './ReplButton';
 import RunButton from './RunButton';
 import StopButton from './StopButton';
-import ReplButton from './ReplButton';
-import FlashButton from './FlashButton';
 
 class Toolbar extends React.Component {
     render(): JSX.Element {

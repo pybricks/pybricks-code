@@ -1,9 +1,9 @@
 import React from 'react';
-import Dropzone from 'react-dropzone';
 import Button from 'react-bootstrap/Button';
+import Image from 'react-bootstrap/Image';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
-import Image from 'react-bootstrap/Image';
+import Dropzone from 'react-dropzone';
 
 export interface OpenFileButtonProps {
     /** A unique id for each instance. */

@@ -1,8 +1,8 @@
 import { Reducer, combineReducers } from 'redux';
 import {
+    BootloaderConnectionActionType,
     BootloaderRequestActionType,
     BootloaderResponseActionType,
-    BootloaderConnectionActionType,
 } from '../actions/bootloader';
 
 /**

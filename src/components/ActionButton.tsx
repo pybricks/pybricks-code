@@ -1,8 +1,8 @@
+import React from 'react';
 import Button from 'react-bootstrap/Button';
+import Image from 'react-bootstrap/Image';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
-import Image from 'react-bootstrap/Image';
-import React from 'react';
 
 export interface ActionButtonProps<T = undefined> {
     /** A unique id for each instance. */

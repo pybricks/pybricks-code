@@ -1,9 +1,9 @@
 import { connect } from 'react-redux';
-import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
+import { stop } from '../actions/hub';
 import { RootState } from '../reducers';
 import { HubRuntimeState } from '../reducers/hub';
-import { stop } from '../actions/hub';
 import ActionButton, { ActionButtonProps } from './ActionButton';
 
 type Dispatch = ThunkDispatch<{}, {}, AnyAction>;

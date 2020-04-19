@@ -1,16 +1,16 @@
-import thunkMiddleware from 'redux-thunk';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+import { applyMiddleware, createStore } from 'redux';
 import { createLogger } from 'redux-logger';
 import { createEpicMiddleware } from 'redux-observable';
-import { createStore, applyMiddleware } from 'redux';
-import React from 'react';
-import { Provider } from 'react-redux';
-import ReactDOM from 'react-dom';
 import createSagaMiddleware from 'redux-saga';
-import rootSaga from './sagas';
-import rootEpic from './epics';
-import rootReducer from './reducers';
+import thunkMiddleware from 'redux-thunk';
 import './index.scss';
 import App from './components/App';
+import rootEpic from './epics';
+import rootReducer from './reducers';
+import rootSaga from './sagas';
 import * as serviceWorker from './serviceWorker';
 import serviceMiddleware from './services';
 

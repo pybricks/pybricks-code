@@ -1,7 +1,7 @@
-import { combineEpics, Epic, ofType } from 'redux-observable';
 import { AnyAction } from 'redux';
-import { take, tap, ignoreElements } from 'rxjs/operators';
+import { Epic, combineEpics, ofType } from 'redux-observable';
 import { Subject } from 'rxjs';
+import { ignoreElements, take, tap } from 'rxjs/operators';
 import { HubActionType, HubChecksumAction } from '../actions/hub';
 
 const checksumSubject = new Subject<number>();

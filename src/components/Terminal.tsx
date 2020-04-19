@@ -1,10 +1,10 @@
 import React from 'react';
-import { Terminal as XTerm } from 'xterm';
-import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { Subscription } from 'rxjs';
+import { Terminal as XTerm } from 'xterm';
 import { receiveData } from '../actions/terminal';
 import { terminalOutput } from '../epics/terminal';
 

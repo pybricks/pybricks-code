@@ -1,5 +1,5 @@
 import { Action } from 'redux';
-import { HubType, Result, ProtectionLevel, Command } from '../protocols/bootloader';
+import { Command, HubType, ProtectionLevel, Result } from '../protocols/bootloader';
 
 /**
  * Bootloader BLE connection actions.

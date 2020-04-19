@@ -1,5 +1,5 @@
-import { combineReducers, Reducer } from 'redux';
 import { Ace } from 'ace-builds';
+import { Reducer, combineReducers } from 'redux';
 import { CurrentEditorAction, EditorActionType } from '../actions/editor';
 
 type CurrentEditSession = Ace.EditSession | null;

@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
-import bootloader, { BootloaderState } from './bootloader';
 import ble, { BLEState } from './ble';
+import bootloader, { BootloaderState } from './bootloader';
 import editor, { EditorState } from './editor';
 import hub, { HubState } from './hub';
 

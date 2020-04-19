@@ -1,8 +1,8 @@
 import React, { ReactElement } from 'react';
-import { ReactReduxContext } from 'react-redux';
 import AceEditor from 'react-ace';
-import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
+import { ReactReduxContext } from 'react-redux';
 import { setEditSession } from '../actions/editor';
 
 import 'ace-builds/src-noconflict/mode-python';

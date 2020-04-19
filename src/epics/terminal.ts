@@ -1,7 +1,7 @@
-import { combineEpics, Epic, ofType } from 'redux-observable';
-import { Subject } from 'rxjs';
-import { map, tap, ignoreElements } from 'rxjs/operators';
 import { AnyAction } from 'redux';
+import { Epic, combineEpics, ofType } from 'redux-observable';
+import { Subject } from 'rxjs';
+import { ignoreElements, map, tap } from 'rxjs/operators';
 import { write } from '../actions/ble';
 import { TerminalDataAction, TerminalDataActionType } from '../actions/terminal';
 

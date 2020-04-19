@@ -1,7 +1,7 @@
 import { Reducer, combineReducers } from 'redux';
 import {
-    HubRuntimeStatusAction,
     HubActionType,
+    HubRuntimeStatusAction,
     HubRuntimeStatusType,
 } from '../actions/hub';
 

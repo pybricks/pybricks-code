@@ -1,11 +1,11 @@
-import { connect, batch } from 'react-redux';
-import { ThunkDispatch } from 'redux-thunk';
-import { AnyAction } from 'redux';
 import { Ace } from 'ace-builds';
+import { batch, connect } from 'react-redux';
+import { AnyAction } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
+import { downloadAndRun } from '../actions/hub';
+import { compile } from '../actions/mpy';
 import { RootState } from '../reducers';
 import { HubRuntimeState } from '../reducers/hub';
-import { compile } from '../actions/mpy';
-import { downloadAndRun } from '../actions/hub';
 import ActionButton, { ActionButtonProps } from './ActionButton';
 
 type Dispatch = ThunkDispatch<{}, {}, AnyAction>;

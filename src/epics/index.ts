@@ -1,4 +1,4 @@
-import { combineEpics, Epic } from 'redux-observable';
+import { Epic, combineEpics } from 'redux-observable';
 import { catchError } from 'rxjs/operators';
 import ble from './ble';
 import hub from './hub';

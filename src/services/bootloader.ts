@@ -1,15 +1,15 @@
 import { Action, Dispatch } from 'redux';
-import { ServiceUUID, CharacteristicUUID } from '../protocols/bootloader';
 import {
     BootloaderConnectionActionType,
+    BootloaderConnectionSendAction,
     didCancel,
+    didConnect,
+    didDisconnect,
     didError,
     didReceive,
-    didDisconnect,
-    didConnect,
-    BootloaderConnectionSendAction,
     didSend,
 } from '../actions/bootloader';
+import { CharacteristicUUID, ServiceUUID } from '../protocols/bootloader';
 import { combineServices } from '.';
 
 let device: BluetoothDevice | undefined;

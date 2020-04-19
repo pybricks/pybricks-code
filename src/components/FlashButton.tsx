@@ -1,8 +1,8 @@
 import { connect } from 'react-redux';
-import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
-import { RootState } from '../reducers';
+import { ThunkDispatch } from 'redux-thunk';
 import { flashFirmware } from '../actions/bootloader';
+import { RootState } from '../reducers';
 import { BootloaderConnectionState } from '../reducers/bootloader';
 import OpenFileButton, { OpenFileButtonProps } from './OpenFileButton';
 

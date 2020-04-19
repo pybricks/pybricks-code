@@ -1,9 +1,9 @@
-import { combineEpics, Epic, ofType } from 'redux-observable';
-import { map } from 'rxjs/operators';
 import { AnyAction } from 'redux';
-import { BLEDataActionType, BLEDataAction, BLEConnectActionType } from '../actions/ble';
+import { Epic, combineEpics, ofType } from 'redux-observable';
+import { map } from 'rxjs/operators';
+import { BLEConnectActionType, BLEDataAction, BLEDataActionType } from '../actions/ble';
+import { HubRuntimeStatusType, checksum, updateStatus } from '../actions/hub';
 import { sendData } from '../actions/terminal';
-import { updateStatus, HubRuntimeStatusType, checksum } from '../actions/hub';
 import { RootState } from '../reducers';
 import { HubRuntimeState } from '../reducers/hub';
 
