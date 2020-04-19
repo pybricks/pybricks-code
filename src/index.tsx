@@ -5,20 +5,31 @@ import { createStore, applyMiddleware } from 'redux';
 import React from 'react';
 import { Provider } from 'react-redux';
 import ReactDOM from 'react-dom';
+import createSagaMiddleware from 'redux-saga';
+import rootSaga from './sagas';
 import rootEpic from './epics';
 import rootReducer from './reducers';
 import './index.scss';
 import App from './components/App';
 import * as serviceWorker from './serviceWorker';
+import serviceMiddleware from './services';
 
+const sagaMiddleware = createSagaMiddleware();
 const epicMiddleware = createEpicMiddleware();
 const loggerMiddleware = createLogger();
 
 const store = createStore(
     rootReducer,
-    applyMiddleware(thunkMiddleware, epicMiddleware, loggerMiddleware),
+    applyMiddleware(
+        thunkMiddleware,
+        sagaMiddleware,
+        epicMiddleware,
+        serviceMiddleware,
+        loggerMiddleware,
+    ),
 );
 
+sagaMiddleware.run(rootSaga);
 epicMiddleware.run(rootEpic);
 
 ReactDOM.render(

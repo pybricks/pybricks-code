@@ -4,6 +4,7 @@ import { AnyAction } from 'redux';
 import { connect as bleConnect, disconnect as bleDisconnect } from '../actions/ble';
 import { RootState } from '../reducers';
 import { BLEConnectionState } from '../reducers/ble';
+import { BootloaderConnectionState } from '../reducers/bootloader';
 import ActionButton, { ActionButtonProps } from './ActionButton';
 
 type Dispatch = ThunkDispatch<{}, {}, AnyAction>;
@@ -13,7 +14,10 @@ type StateProps = Pick<ButtonProps, 'tooltip' | 'icon' | 'context' | 'enabled'>;
 type DispatchProps = Pick<ButtonProps, 'onAction'>;
 
 const mapStateToProps = (state: RootState): StateProps => {
-    if (state.ble.connection === BLEConnectionState.Disconnected) {
+    if (
+        state.ble.connection === BLEConnectionState.Disconnected &&
+        state.bootloader.connection === BootloaderConnectionState.Disconnected
+    ) {
         return {
             tooltip: 'Connect using Bluetooth',
             icon: 'btdisconnected.svg',
