@@ -69,7 +69,6 @@ function endDisconnect(): BLEConnectAction {
 
 export function connect(): BLEThunkAction {
     return async function (dispatch): Promise<void> {
-        dispatch(notification.add('error', 'A device is already connected.'));
         if (device !== undefined) {
             dispatch(notification.add('error', 'A device is already connected.'));
             return;
