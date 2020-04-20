@@ -2,6 +2,18 @@
 // $body-bg: #000;
 
 // Import Bootstrap and its default variables
-@import "~bootswatch/dist/lumen/variables";
-@import "~bootstrap/scss/bootstrap";
-@import "~bootswatch/dist/lumen/bootswatch";
+@import '~bootswatch/dist/lumen/variables';
+@import '~bootstrap/scss/bootstrap';
+@import '~bootswatch/dist/lumen/bootswatch';
+
+// TODO: this can be removed if bootswatch package is updated with this fix
+.toast {
+    .close {
+        color: $black;
+
+        &:not(:disabled):not(.disabled):hover,
+        &:not(:disabled):not(.disabled):focus {
+            color: $black;
+        }
+    }
+}

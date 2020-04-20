@@ -16,8 +16,10 @@ export interface OpenFileButtonProps {
     readonly icon: string;
     /** When true or undefined, the button is enabled. */
     readonly enabled?: boolean;
-    /** Callback that is called when the button is activated (clicked). */
+    /** Callback that is called when a file has been selected and opened for reading. */
     readonly onFile: (data: ArrayBuffer) => void;
+    /** Callback that is called when a file has been rejected (e.g. bad file extension). */
+    readonly onReject: (file: File) => void;
 }
 
 /**
@@ -54,8 +56,7 @@ class OpenFileButton extends React.Component<OpenFileButtonProps> {
     private onDropRejected(rejectedFiles: File[]): void {
         // should only be one file since multiple={false}
         rejectedFiles.forEach((f) => {
-            // TODO: proper bootstrap toast
-            alert(`bad file ${f.name}`);
+            this.props.onReject(f);
         });
     }
 

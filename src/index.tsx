@@ -8,6 +8,7 @@ import createSagaMiddleware from 'redux-saga';
 import thunkMiddleware from 'redux-thunk';
 import './index.scss';
 import App from './components/App';
+import NotificationStack from './components/NotificationStack';
 import rootEpic from './epics';
 import rootReducer from './reducers';
 import rootSaga from './sagas';
@@ -35,6 +36,7 @@ epicMiddleware.run(rootEpic);
 ReactDOM.render(
     <React.StrictMode>
         <Provider store={store}>
+            <NotificationStack />
             <App />
         </Provider>
     </React.StrictMode>,

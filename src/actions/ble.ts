@@ -1,5 +1,6 @@
 import { Action } from 'redux';
 import { ThunkAction } from 'redux-thunk';
+import * as notification from './notification';
 
 const pybricksServiceUUID = 'c5f50001-8280-46da-89f4-6d8051e4aeef';
 
@@ -48,9 +49,7 @@ export interface BLEDataAction extends Action<BLEDataActionType> {
     value: DataView;
 }
 
-type AnyBLEAction = BLEConnectAction | BLEDataAction;
-
-export type BLEThunkAction = ThunkAction<Promise<void>, {}, {}, AnyBLEAction>;
+export type BLEThunkAction = ThunkAction<Promise<void>, {}, {}, Action>;
 
 function beginConnect(): BLEConnectAction {
     return { type: BLEConnectActionType.BeginConnect };
@@ -70,13 +69,18 @@ function endDisconnect(): BLEConnectAction {
 
 export function connect(): BLEThunkAction {
     return async function (dispatch): Promise<void> {
+        dispatch(notification.add('error', 'A device is already connected.'));
         if (device !== undefined) {
-            console.error('Already have a connected device');
+            dispatch(notification.add('error', 'A device is already connected.'));
             return;
         }
         if (navigator.bluetooth === undefined) {
-            // TODO: dispatch error toast action
-            console.error('Browser does not support WebBluetooth or it is not enabled');
+            dispatch(
+                notification.add(
+                    'error',
+                    'Browser does not support WebBluetooth or it is not enabled',
+                ),
+            );
             return;
         }
         dispatch(beginConnect());
@@ -86,20 +90,26 @@ export function connect(): BLEThunkAction {
                 optionalServices: [bleNusServiceUUID],
             });
         } catch (err) {
-            // this can happen if the use cancels the dialog
             if (
                 err instanceof DOMException &&
                 err.code === DOMException.NOT_FOUND_ERR
             ) {
+                // this can happen if the use cancels the dialog
                 console.debug('User cancelled connect');
             } else {
                 console.error(err);
+                dispatch(
+                    notification.add(
+                        'error',
+                        'Unexpected error, check developer console for details.',
+                    ),
+                );
             }
             dispatch(endDisconnect());
             return;
         }
         if (device.gatt === undefined) {
-            console.error('Device does not support GATT');
+            dispatch(notification.add('error', 'Device does not support GATT'));
             dispatch(endDisconnect());
             return;
         }
@@ -121,7 +131,8 @@ export function connect(): BLEThunkAction {
             });
             await txChar.startNotifications();
         } catch (err) {
-            console.error('getting nRF UART service failed');
+            console.error(err);
+            dispatch(notification.add('error', 'Getting nRF UART service failed'));
             device.gatt.disconnect();
             return;
         }
