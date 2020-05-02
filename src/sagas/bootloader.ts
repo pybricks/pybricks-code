@@ -1,8 +1,10 @@
+import JSZip from 'jszip';
 import { Action } from 'redux';
 import { Channel, buffers } from 'redux-saga';
 import {
     Effect,
     actionChannel,
+    call,
     delay,
     fork,
     put,
@@ -42,9 +44,11 @@ import {
     send,
     stateResponse,
 } from '../actions/bootloader';
+import { MpyCompiledAction, compile } from '../actions/mpy';
 import {
     Command,
     ErrorBytecode,
+    HubType,
     MaxProgramFlashSize,
     createDisconnectRequest,
     createEraseFlashRequest,
@@ -62,6 +66,7 @@ import {
     parseInitLoaderResponse,
     parseProgramFlashResponse,
 } from '../protocols/bootloader';
+import { fmod, sumComplement32 } from '../utils/math';
 
 /**
  * Converts a request action into bytecodes and creates a new action to send
@@ -166,11 +171,76 @@ function wait(type: BootloaderResponseActionType, timeout = 500): Effect {
     return race([take(type), take(BootloaderResponseActionType.Error), delay(timeout)]);
 }
 
+interface FirmwareMetadata {
+    'metadata-version': string;
+    'firmware-version': string;
+    'device-id': HubType;
+    'checksum-type': 'sum' | 'crc32';
+    'mpy-abi-version': number;
+    'mpy-cross-options': Array<string>;
+    'user-mpy-offset': number;
+    'max-firmware-size': number;
+}
+
+function* firmwareIterator(data: DataView, maxSize: number): Generator<number> {
+    // read each 32-bit word of the firmware
+    for (let i = 0; i < data.byteLength; i += 4) {
+        yield data.getUint32(i, true);
+    }
+    // remaining free space in flash will be 0xff after erase
+    for (let i = data.byteLength; i < maxSize; i += 4) {
+        yield ~0;
+    }
+}
+
 /**
  * Flashes firmware to a Powered Up device.
  * @param action The action that triggered this saga.
  */
 function* flashFirmware(action: BootloaderFlashFirmwareAction): Generator {
+    const zip = (yield call(() => JSZip().loadAsync(action.data))) as JSZip;
+    const firmwareBase = (yield call(() =>
+        zip.file('firmware-base.bin').async('uint8array'),
+    )) as Uint8Array;
+    const metadata = JSON.parse(
+        (yield call(() => zip.file('firmware.metadata.json').async('text'))) as string,
+    ) as FirmwareMetadata;
+    const main = (yield call(() => zip.file('main.py').async('text'))) as string;
+
+    if (metadata['mpy-abi-version'] !== 4) {
+        throw Error(
+            `Firmware requires mpy-cross ABI version ${metadata['mpy-abi-version']} we have v4`,
+        );
+    }
+
+    // TODO: pass metadata["mpy-cross-options"] to compiler
+    const mpy = (yield put(compile(main))) as MpyCompiledAction;
+
+    // compute offset for checksum - must be aligned to 4-byte boundary
+    const checksumOffset =
+        metadata['user-mpy-offset'] + 4 + mpy.data.length + fmod(-mpy.data.length, 4);
+
+    const firmware = new Uint8Array(checksumOffset + 4);
+    const firmwareView = new DataView(firmware.buffer);
+
+    if (firmware.length > metadata['max-firmware-size']) {
+        throw Error('firmware + main.mpy is too large');
+    }
+
+    firmware.set(firmwareBase);
+    firmwareView.setUint32(metadata['user-mpy-offset'], mpy.data.length, true);
+    firmware.set(mpy.data, metadata['user-mpy-offset'] + 4);
+
+    if (metadata['checksum-type'] !== 'sum') {
+        throw Error(`Unknown checksum type "${metadata['checksum-type']}"`);
+    }
+
+    firmwareView.setUint32(
+        checksumOffset,
+        sumComplement32(firmwareIterator(firmwareView, metadata['max-firmware-size'])),
+        true,
+    );
+
     yield put(connect());
     const didConnect = (yield take([
         BootloaderConnectionActionType.DidConnect,
@@ -198,7 +268,11 @@ function* flashFirmware(action: BootloaderFlashFirmwareAction): Generator {
         throw Error(`failed to get info: ${info}`);
     }
 
-    // TODO: verify hubType === info.response.hubType
+    if (info[0].hubType !== metadata['device-id']) {
+        throw Error(
+            `Connected to ${info[0].hubType} but firmware is for ${metadata['device-id']}`,
+        );
+    }
 
     yield put(eraseRequest());
     const erase = (yield wait(
@@ -210,7 +284,7 @@ function* flashFirmware(action: BootloaderFlashFirmwareAction): Generator {
         throw Error(`Failed to erase: ${erase}`);
     }
 
-    yield put(initRequest(action.data.byteLength));
+    yield put(initRequest(firmware.length));
     const init = (yield wait(BootloaderResponseActionType.Init)) as WaitResponse<
         BootloaderInitResponseAction
     >;
@@ -221,13 +295,9 @@ function* flashFirmware(action: BootloaderFlashFirmwareAction): Generator {
 
     let count = 0;
 
-    for (
-        let offset = 0;
-        offset < action.data.byteLength;
-        offset += MaxProgramFlashSize
-    ) {
-        const payload = action.data.slice(offset, offset + MaxProgramFlashSize);
-        yield put(programRequest(info[0].startAddress + offset, payload));
+    for (let offset = 0; offset < firmware.length; offset += MaxProgramFlashSize) {
+        const payload = firmware.slice(offset, offset + MaxProgramFlashSize);
+        yield put(programRequest(info[0].startAddress + offset, payload.buffer));
 
         // TODO: dispatch progress action
 
@@ -253,7 +323,7 @@ function* flashFirmware(action: BootloaderFlashFirmwareAction): Generator {
     if (!flash[0]) {
         throw Error(`failed to get final response: ${flash}`);
     }
-    if (flash[0].count !== action.data.byteLength) {
+    if (flash[0].count !== firmware.length) {
         // TODO: proper error handling
         throw Error("Didn't flash all bytes");
     }

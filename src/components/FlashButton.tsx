@@ -33,7 +33,7 @@ const mergeProps = (
     dispatchProps: DispatchProps,
     ownProps: OwnProps,
 ): OpenFileButtonProps => ({
-    fileExtension: '.bin',
+    fileExtension: '.zip',
     tooltip: 'Flash hub firmware',
     icon: 'firmware.svg',
     ...ownProps,

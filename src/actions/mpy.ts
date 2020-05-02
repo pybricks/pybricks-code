@@ -4,11 +4,11 @@ import { Action } from 'redux';
 // this starts the mpy-cross wasm runtime and leaves it running in the background
 const mpy = MpyCross({ arguments: ['-mno-unicode'] });
 
-enum MpyActionType {
+export enum MpyActionType {
     Compiled = 'mpy.action.compile',
 }
 
-interface MpyCompiledAction extends Action<MpyActionType.Compiled> {
+export interface MpyCompiledAction extends Action<MpyActionType.Compiled> {
     /**
      * The compiled .mpy data.
      */
