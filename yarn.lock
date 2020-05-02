@@ -1876,6 +1876,13 @@
   resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.3.3.tgz#8731722aeb7330e8fd9eb5d424be6b98dea7d6da"
   integrity sha512-yEvVC8RfhRPkD9TUn7cFcLcgoJePgZRAOR7T21rcRY5I8tpuhzeWfGa7We7tB14fe9R7wENdqUABcMdwD4SQLw==
 
+"@pybricks/mpy-cross-4@^1.0.0":
+  version "1.0.0"
+  resolved "https://npm.pkg.github.com/download/@pybricks/mpy-cross-4/1.0.0/7dc4fcc358e58373a5f4421cbfeeac9bdbec4ff4ab221396244a64a5b7b33418#726386b8bdc4399b78e4ca617d68f6da13a05e3f"
+  integrity sha512-hox0O3wlER13aLJ/agqOMgRYUKhfxTpr3sL6JnGy39Rtm1r06gK05ggZ3W6PSFct/PqVr9NGZiyaxnFtLArGlA==
+  dependencies:
+    "@types/emscripten" "^1.39.3"
+
 "@redux-saga/core@^1.1.3":
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/@redux-saga/core/-/core-1.1.3.tgz#3085097b57a4ea8db5528d58673f20ce0950f6a4"
@@ -2120,6 +2127,11 @@
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@types/color-name/-/color-name-1.1.1.tgz#1c1261bbeaa10a8055bbc5d8ab84b7b2afc846a0"
   integrity sha512-rr+OQyAjxze7GgWrSaJwydHStIhHq2lvY3BOC2Mj7KnzI7XK0Uw1TOOdI9lDoajEbSWLiYgoo4f1R51erQfhPQ==
+
+"@types/emscripten@^1.39.3":
+  version "1.39.3"
+  resolved "https://registry.yarnpkg.com/@types/emscripten/-/emscripten-1.39.3.tgz#cac2f24b4739c344c42f928a4c1af1aab245364e"
+  integrity sha512-F+LPHVwVWp6bkhRq7sMdW0JsQMXd5ZuPbjwU/X6HaAtvIjRmYL2z4BCIopnBRcrzZLorVFf8gxY/GR7szLuPEw==
 
 "@types/eslint-visitor-keys@^1.0.0":
   version "1.0.0"

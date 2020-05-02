@@ -1,4 +1,4 @@
-import MpyCross from '@pybricks/mpy-cross';
+import MpyCross from '@pybricks/mpy-cross-4';
 import { Action } from 'redux';
 
 // this starts the mpy-cross wasm runtime and leaves it running in the background
