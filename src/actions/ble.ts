@@ -1,5 +1,9 @@
 import { Action } from 'redux';
 import { ThunkAction } from 'redux-thunk';
+import {
+    PolyfillBluetoothRemoteGATTCharacteristic,
+    polyfillBluetoothRemoteGATTCharacteristic,
+} from '../utils/web-bluetooth';
 import * as notification from './notification';
 
 const pybricksServiceUUID = 'c5f50001-8280-46da-89f4-6d8051e4aeef';
@@ -11,7 +15,7 @@ const bleNusCharTXUUID = '6e400003-b5a3-f393-e0a9-e50e24dcca9e';
 const bleNusMaxSize = 20;
 
 let device: BluetoothDevice | undefined;
-let rxChar: BluetoothRemoteGATTCharacteristic | undefined;
+let rxChar: PolyfillBluetoothRemoteGATTCharacteristic | undefined;
 
 export enum BLEConnectActionType {
     /**
@@ -120,7 +124,9 @@ export function connect(): BLEThunkAction {
         const server = await device.gatt.connect();
         try {
             const service = await server.getPrimaryService(bleNusServiceUUID);
-            rxChar = await service.getCharacteristic(bleNusCharRXUUID);
+            rxChar = polyfillBluetoothRemoteGATTCharacteristic(
+                await service.getCharacteristic(bleNusCharRXUUID),
+            );
             const txChar = await service.getCharacteristic(bleNusCharTXUUID);
             txChar.addEventListener('characteristicvaluechanged', () => {
                 if (!txChar.value) {
@@ -150,7 +156,7 @@ export function write(value: ArrayBuffer): BLEThunkAction {
     return async function (): Promise<void> {
         // TODO: do we need to dispatch any Action<>s here?
         for (let i = 0; i < value.byteLength; i += bleNusMaxSize) {
-            await rxChar?.writeValue(value.slice(i, i + bleNusMaxSize));
+            await rxChar?.writeValueWithoutResponse(value.slice(i, i + bleNusMaxSize));
         }
     };
 }

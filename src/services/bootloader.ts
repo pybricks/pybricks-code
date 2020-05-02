@@ -10,10 +10,14 @@ import {
     didSend,
 } from '../actions/bootloader';
 import { CharacteristicUUID, ServiceUUID } from '../protocols/bootloader';
+import {
+    PolyfillBluetoothRemoteGATTCharacteristic,
+    polyfillBluetoothRemoteGATTCharacteristic,
+} from '../utils/web-bluetooth';
 import { combineServices } from '.';
 
 let device: BluetoothDevice | undefined;
-let char: BluetoothRemoteGATTCharacteristic | undefined;
+let char: PolyfillBluetoothRemoteGATTCharacteristic | undefined;
 
 async function connect(action: Action, dispatch: Dispatch): Promise<void> {
     if (action.type !== BootloaderConnectionActionType.Connect) {
@@ -55,7 +59,9 @@ async function connect(action: Action, dispatch: Dispatch): Promise<void> {
         const server = await device.gatt.connect();
         try {
             const service = await server.getPrimaryService(ServiceUUID);
-            char = await service.getCharacteristic(CharacteristicUUID);
+            char = polyfillBluetoothRemoteGATTCharacteristic(
+                await service.getCharacteristic(CharacteristicUUID),
+            );
             char.addEventListener('characteristicvaluechanged', () => {
                 if (!char || !char.value) {
                     return;
@@ -82,16 +88,11 @@ async function send(action: Action, dispatch: Dispatch): Promise<void> {
             throw Error('Not connected');
         }
         const sendAction = action as BootloaderConnectionSendAction;
-        // Fall back to legacy WebBluetooth writeValue if new methods are not
-        // available.
-        const writeValue = sendAction.withResponse
-            ? // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-              // @ts-ignore
-              char.writeValueWithResponse || char.writeValue
-            : // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-              // @ts-ignore
-              char.writeValueWithoutResponse || char.writeValue;
-        await writeValue(sendAction.data);
+        if (sendAction.withResponse) {
+            await char.writeValueWithResponse(sendAction.data);
+        } else {
+            await char.writeValueWithoutResponse(sendAction.data);
+        }
         dispatch(didSend());
     } catch (err) {
         dispatch(didSend(err));
