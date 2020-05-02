@@ -75,10 +75,14 @@ export function didError(err: Error): BootloaderConnectionDidErrorAction {
 export interface BootloaderConnectionSendAction
     extends Action<BootloaderConnectionActionType.Send> {
     readonly data: ArrayBuffer;
+    readonly withResponse: boolean;
 }
 
-export function send(data: ArrayBuffer): BootloaderConnectionSendAction {
-    return { type: BootloaderConnectionActionType.Send, data };
+export function send(
+    data: ArrayBuffer,
+    withResponse = false,
+): BootloaderConnectionSendAction {
+    return { type: BootloaderConnectionActionType.Send, data, withResponse };
 }
 
 export interface BootloaderConnectionDidSendAction

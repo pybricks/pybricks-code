@@ -81,7 +81,17 @@ async function send(action: Action, dispatch: Dispatch): Promise<void> {
         if (!char) {
             throw Error('Not connected');
         }
-        await char.writeValue((action as BootloaderConnectionSendAction).data);
+        const sendAction = action as BootloaderConnectionSendAction;
+        // Fall back to legacy WebBluetooth writeValue if new methods are not
+        // available.
+        const writeValue = sendAction.withResponse
+            ? // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+              // @ts-ignore
+              char.writeValueWithResponse || char.writeValue
+            : // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+              // @ts-ignore
+              char.writeValueWithoutResponse || char.writeValue;
+        await writeValue(sendAction.data);
         dispatch(didSend());
     } catch (err) {
         dispatch(didSend(err));
