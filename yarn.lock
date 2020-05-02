@@ -1254,10 +1254,10 @@
   resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.4.0.tgz#0e1bdf8d021e7ea58affade33d9d607e11365915"
   integrity sha512-NMrDy6EWh9TPdSRiHmHH2ye1v5U0gBD7pRYwSwJvomx7Bm4GG04vu63dYiVzebLOx2obPpJugew06xVP0Nk7hA==
 
-"@pybricks/mpy-cross-4@^1.0.0":
-  version "1.0.0"
-  resolved "https://npm.pkg.github.com/download/@pybricks/mpy-cross-4/1.0.0/7dc4fcc358e58373a5f4421cbfeeac9bdbec4ff4ab221396244a64a5b7b33418#726386b8bdc4399b78e4ca617d68f6da13a05e3f"
-  integrity sha512-hox0O3wlER13aLJ/agqOMgRYUKhfxTpr3sL6JnGy39Rtm1r06gK05ggZ3W6PSFct/PqVr9NGZiyaxnFtLArGlA==
+"@pybricks/mpy-cross-4@^1.0.2":
+  version "1.0.2"
+  resolved "https://npm.pkg.github.com/download/@pybricks/mpy-cross-4/1.0.2/0d1c1c7789469794795680f14930bc66922dbe55caf59b3e58df8cb8c70365df#441d5ff59498d2d5c78adc74d0a70a6575e8c426"
+  integrity sha512-iy6nVtIDRqU2SJ/aGKizfjPIk9PZQSSkOTTI7L7+HNPeF4zY/uhQSOI+ZFFaYSNoxFOrMIu9qn1Jsh3w08HO+A==
   dependencies:
     "@types/emscripten" "^1.39.3"
 
