@@ -8,6 +8,7 @@ import {
     delay,
     fork,
     put,
+    putResolve,
     race,
     take,
     takeEvery,
@@ -177,7 +178,7 @@ interface FirmwareMetadata {
     'device-id': HubType;
     'checksum-type': 'sum' | 'crc32';
     'mpy-abi-version': number;
-    'mpy-cross-options': Array<string>;
+    'mpy-cross-options': string[];
     'user-mpy-offset': number;
     'max-firmware-size': number;
 }
@@ -213,8 +214,13 @@ function* flashFirmware(action: BootloaderFlashFirmwareAction): Generator {
         );
     }
 
-    // TODO: pass metadata["mpy-cross-options"] to compiler
-    const mpy = (yield put(compile(main))) as MpyCompiledAction;
+    const mpy = (yield putResolve(
+        (compile(main, metadata['mpy-cross-options']) as unknown) as Action,
+    )) as MpyCompiledAction;
+
+    if (!mpy.data) {
+        throw Error(mpy.err);
+    }
 
     // compute offset for checksum - must be aligned to 4-byte boundary
     const checksumOffset =

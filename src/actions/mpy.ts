@@ -1,8 +1,6 @@
-import MpyCross from '@pybricks/mpy-cross-4';
+import { compile as mpyCrossCompile } from '@pybricks/mpy-cross-4';
 import { Action } from 'redux';
-
-// this starts the mpy-cross wasm runtime and leaves it running in the background
-const mpy = MpyCross({ arguments: ['-mno-unicode'] });
+import { ThunkAction } from 'redux-thunk';
 
 export enum MpyActionType {
     Compiled = 'mpy.action.compile',
@@ -12,11 +10,18 @@ export interface MpyCompiledAction extends Action<MpyActionType.Compiled> {
     /**
      * The compiled .mpy data.
      */
-    data: Uint8Array;
+    data?: Uint8Array;
+    /**
+     * Error output.
+     */
+    err?: string;
 }
 
-export function compile(script: string): MpyCompiledAction {
-    // TODO: figure out how to capture stderr and emit error action on failure
-    const data = mpy.compile(script);
-    return { type: MpyActionType.Compiled, data };
+type MpyCompileAction = ThunkAction<Promise<MpyCompiledAction>, {}, {}, Action>;
+
+export function compile(script: string, options?: string[]): MpyCompileAction {
+    return async function (): Promise<MpyCompiledAction> {
+        const result = await mpyCrossCompile('main.py', script, options);
+        return { type: MpyActionType.Compiled, data: result.mpy, err: result.err };
+    };
 }

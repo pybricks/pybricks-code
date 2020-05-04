@@ -1,9 +1,10 @@
 import { Ace } from 'ace-builds';
-import { batch, connect } from 'react-redux';
+import { connect } from 'react-redux';
 import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { downloadAndRun } from '../actions/hub';
 import { compile } from '../actions/mpy';
+import * as notification from '../actions/notification';
 import { RootState } from '../reducers';
 import { HubRuntimeState } from '../reducers/hub';
 import ActionButton, { ActionButtonProps } from './ActionButton';
@@ -27,11 +28,19 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
             console.error('No current editor');
             return;
         }
-        batch(() => {
-            const script = c.getValue();
-            const mpy = dispatch(compile(script));
-            dispatch(downloadAndRun(mpy.data));
-        });
+        const script = c.getValue();
+        // TODO: need to get options from hub because they depend on firmware compile options
+        dispatch(compile(script, ['-mno-unicode']))
+            .then((mpy) => {
+                if (mpy.data) {
+                    dispatch(downloadAndRun(mpy.data));
+                } else {
+                    dispatch(
+                        notification.add('error', mpy.err || 'Unknown compiler error.'),
+                    );
+                }
+            })
+            .catch((err) => console.error(err));
     },
 });
 
