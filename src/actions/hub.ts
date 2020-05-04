@@ -59,7 +59,7 @@ export function downloadAndRun(data: ArrayBuffer): HubThunkAction {
         // first send payload size as big-endian 32-bit integer
         const sizeBuf = new Uint8Array(4);
         const sizeView = new DataView(sizeBuf.buffer);
-        sizeView.setUint32(0, data.byteLength);
+        sizeView.setUint32(0, data.byteLength, true);
         await dispatch(write(sizeBuf));
 
         // Then send payload in 100 byte chunks waiting for checksum after
