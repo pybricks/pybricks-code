@@ -1,0 +1,31 @@
+name: Build and publish dev version
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install
+      env:
+        TOKEN: ${{ secrets.privateToken }}
+      run: |
+        echo "//npm.pkg.github.com/:_authToken=$TOKEN" >> .npmrc
+        yarn install
+    - name: Build
+      if: ${{ success() }}
+      run: yarn build
+    - name: Publish
+      if: ${{ success() }}
+      shell: bash
+      env:
+        LFTP_USER: ${{ secrets.lftpUser }}
+        LFTP_PASSWORD: ${{ secrets.lftpPassword }}
+        LFTP_SITE: ${{ secrets.lftpSite }}
+      run: |
+        sudo apt-get update && sudo apt-get install --yes lftp
+        lftp -e "set ssl:check-hostname false; open --user $LFTP_USER --env-password $LFTP_SITE && mirror --reverse --delete --exclude=.htaccess build code; exit"
