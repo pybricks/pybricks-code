@@ -1,7 +1,5 @@
 import React from 'react';
-import Col from 'react-bootstrap/Col';
 import ProgressBar from 'react-bootstrap/ProgressBar';
-import Row from 'react-bootstrap/Row';
 import { BLEConnectionState } from '../reducers/ble';
 
 interface StatusBarState {
@@ -25,11 +23,9 @@ class StatusBar extends React.Component<{}, StatusBarState> {
 
     render(): JSX.Element {
         return (
-            <Row className="bg-info p-2">
-                <Col className="col-2">
-                    <ProgressBar></ProgressBar>
-                </Col>
-            </Row>
+            <div className="bg-info p-2">
+                <ProgressBar className="w-25"></ProgressBar>
+            </div>
         );
     }
 }

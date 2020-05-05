@@ -31,7 +31,7 @@ class ActionButton<T = undefined> extends React.Component<ActionButtonProps<T>> 
                 }
             >
                 <Button
-                    variant="primary"
+                    variant="light"
                     onClick={(): void => this.props.onAction(this.props.context)}
                     disabled={this.props.enabled === false}
                     style={

@@ -79,7 +79,7 @@ class OpenFileButton extends React.Component<OpenFileButtonProps> {
                     >
                         <Button
                             {...getRootProps()}
-                            variant="primary"
+                            variant="light"
                             disabled={this.props.enabled === false}
                             style={
                                 this.props.enabled === false

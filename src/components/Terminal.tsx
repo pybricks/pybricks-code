@@ -1,10 +1,10 @@
 import React from 'react';
-import Col from 'react-bootstrap/Col';
-import Row from 'react-bootstrap/Row';
 import { connect } from 'react-redux';
+import ResizeObserver from 'react-resize-observer';
 import { Dispatch } from 'redux';
 import { Subscription } from 'rxjs';
 import { Terminal as XTerm } from 'xterm';
+import { FitAddon } from 'xterm-addon-fit';
 import { receiveData } from '../actions/terminal';
 import { terminalOutput } from '../epics/terminal';
 
@@ -18,6 +18,7 @@ type TerminalProps = DispatchProps;
 
 class Terminal extends React.Component<TerminalProps> {
     private xterm: XTerm;
+    private fitAddon: FitAddon;
     private terminalRef: React.RefObject<HTMLDivElement>;
     private subscription?: Subscription;
 
@@ -27,7 +28,6 @@ class Terminal extends React.Component<TerminalProps> {
             cursorBlink: true,
             cursorStyle: 'underline',
             fontSize: 18,
-            rows: 8,
             theme: {
                 background: 'white',
                 foreground: 'black',
@@ -36,6 +36,8 @@ class Terminal extends React.Component<TerminalProps> {
                 selection: 'rgba(181,213,255,0.5)', // this should match AceEditor theme
             },
         });
+        this.fitAddon = new FitAddon();
+        this.xterm.loadAddon(this.fitAddon);
         this.xterm.onData((d) => this.props.onData(d));
         this.terminalRef = React.createRef();
     }
@@ -46,6 +48,7 @@ class Terminal extends React.Component<TerminalProps> {
             return;
         }
         this.xterm.open(this.terminalRef.current);
+        this.fitAddon.fit();
         this.subscription = terminalOutput.subscribe((v) => this.xterm.write(v));
     }
 
@@ -56,11 +59,13 @@ class Terminal extends React.Component<TerminalProps> {
 
     render(): JSX.Element {
         return (
-            <Row className="px-2 py-4 bg-secondary">
-                <Col>
-                    <div id="terminal" ref={this.terminalRef}></div>
-                </Col>
-            </Row>
+            <div
+                id="terminal"
+                ref={this.terminalRef}
+                style={{ height: 'inherit', width: 'inherit' }}
+            >
+                <ResizeObserver onResize={(): void => this.fitAddon.fit()} />
+            </div>
         );
     }
 }
