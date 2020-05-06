@@ -19,7 +19,7 @@
         "ace-builds": "^1.4.9",
         "bootstrap": "^4.4.1",
         "jszip": "^3.4.0",
-        "node-sass": "^4.13.1",
+        "node-sass": "^4.14.1",
         "react": "^16.13.1",
         "react-ace": "^8.1.0",
         "react-bootstrap": "^1.0.0",
