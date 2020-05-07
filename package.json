@@ -28,7 +28,7 @@
         "react-redux": "^7.2.0",
         "react-resize-observer": "^1.1.1",
         "react-scripts": "3.4.1",
-        "react-transition-group": "^4.3.0",
+        "react-transition-group": "^4.4.1",
         "redux": "^4.0.5",
         "redux-logger": "^3.0.6",
         "redux-observable": "^1.2.0",
