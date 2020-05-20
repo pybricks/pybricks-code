@@ -42,7 +42,7 @@
         "prepare": "mkdir -p public/static/js && cp node_modules/@pybricks/mpy-cross-4/build-wasm/mpy-cross.wasm public/static/js/",
         "start": "react-scripts start",
         "build": "react-scripts build",
-        "test": "react-scripts test",
+        "test": "react-scripts test --env=./test-env.js",
         "eject": "react-scripts eject",
         "lint": "tsc --noEmit && eslint '*/**/*.{js,ts,tsx}' --quiet --fix"
     },

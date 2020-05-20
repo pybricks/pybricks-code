@@ -27,4 +27,7 @@ module.exports = {
     settings: {
         react: { version: 'detect' },
     },
+    ignorePatterns: [
+        "test-env.js"
+    ],
 };
