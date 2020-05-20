@@ -3,7 +3,7 @@ import Button from 'react-bootstrap/Button';
 import Image from 'react-bootstrap/Image';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
-import Dropzone from 'react-dropzone';
+import Dropzone, { FileRejection } from 'react-dropzone';
 
 export interface OpenFileButtonProps {
     /** A unique id for each instance. */
@@ -53,10 +53,10 @@ class OpenFileButton extends React.Component<OpenFileButtonProps> {
         });
     }
 
-    private onDropRejected(rejectedFiles: File[]): void {
+    private onDropRejected(fileRejections: FileRejection[]): void {
         // should only be one file since multiple={false}
-        rejectedFiles.forEach((f) => {
-            this.props.onReject(f);
+        fileRejections.forEach((r) => {
+            this.props.onReject(r.file);
         });
     }
 
