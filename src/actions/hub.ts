@@ -57,12 +57,13 @@ export function downloadAndRun(data: ArrayBuffer): HubThunkAction {
         // TODO: might need to flush checksum queue here
 
         // first send payload size as big-endian 32-bit integer
-        const size_checksum = getChecksum();
+        const checksum = getChecksum();
         const sizeBuf = new Uint8Array(4);
         const sizeView = new DataView(sizeBuf.buffer);
         sizeView.setUint32(0, data.byteLength, true);
         await dispatch(write(sizeBuf));
-        console.log(await size_checksum);
+        // TODO: verify checksum
+        console.log(await checksum);
 
         // Then send payload in 100 byte chunks waiting for checksum after
         // each chunk
