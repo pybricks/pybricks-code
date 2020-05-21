@@ -2,7 +2,7 @@ import React from 'react';
 import { Col, Row } from 'react-bootstrap';
 import Container from 'react-bootstrap/Container';
 import Editor from './Editor';
-import StatusBar from './Statusbar';
+import StatusBar from './StatusBar';
 import Terminal from './Terminal';
 import Toolbar from './Toolbar';
 

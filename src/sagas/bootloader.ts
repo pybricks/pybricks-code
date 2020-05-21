@@ -41,6 +41,7 @@ import {
     initResponse,
     programRequest,
     programResponse,
+    progress,
     rebootRequest,
     send,
     stateResponse,
@@ -305,11 +306,11 @@ function* flashFirmware(action: BootloaderFlashFirmwareAction): Generator {
         const payload = firmware.slice(offset, offset + MaxProgramFlashSize);
         yield put(programRequest(info[0].startAddress + offset, payload.buffer));
 
-        // TODO: dispatch progress action
+        yield put(progress(offset, firmware.length));
 
-        // request checksum every so often to prevent buffer overrun on the hub
+        // request checksum every 8K to prevent buffer overrun on the hub
         // because of sending too much data at once
-        if (++count % 10 === 0) {
+        if (++count % 585 === 0) {
             yield put(checksumRequest());
             const checksum = (yield wait(
                 BootloaderResponseActionType.Checksum,
@@ -333,6 +334,8 @@ function* flashFirmware(action: BootloaderFlashFirmwareAction): Generator {
         // TODO: proper error handling
         throw Error("Didn't flash all bytes");
     }
+
+    yield put(progress(firmware.length, firmware.length));
 
     // this will cause the remote device to disconnect and reboot
     yield put(rebootRequest());
