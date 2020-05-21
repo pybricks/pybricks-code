@@ -9,6 +9,7 @@ import {
     didReceive,
     didSend,
 } from '../actions/bootloader';
+import * as notification from '../actions/notification';
 import { CharacteristicUUID, ServiceUUID } from '../protocols/bootloader';
 import {
     PolyfillBluetoothRemoteGATTCharacteristic,
@@ -29,8 +30,16 @@ async function connect(action: Action, dispatch: Dispatch): Promise<void> {
             throw Error('already connected');
         }
         if (navigator.bluetooth === undefined) {
-            throw Error('No web bluetooth');
+            dispatch(
+                notification.add(
+                    'error',
+                    'This web browser does not support Web Bluetooth or it is not enabled.',
+                    'https://github.com/WebBluetoothCG/web-bluetooth/blob/master/implementation-status.md',
+                ),
+            );
+            return;
         }
+        // TODO: check navigator.bluetooth.getAvailability()
         try {
             device = await navigator.bluetooth.requestDevice({
                 filters: [{ services: [ServiceUUID] }],
@@ -69,11 +78,27 @@ async function connect(action: Action, dispatch: Dispatch): Promise<void> {
                 dispatch(didReceive(char.value));
             });
             await char.startNotifications();
+
+            // char.writeValueWithoutResponse() was introduced in Chrome 85
+            // Older versions of Chrome for Android will write without response
+            // by default, so don't warn on Android.
+            if (
+                !char.writeValueWithoutResponse &&
+                !/Android/i.test(navigator.userAgent)
+            ) {
+                dispatch(
+                    notification.add(
+                        'warning',
+                        'This web browser does not support Web Bluetooth Write Characteristic Without Response. Flashing firmware will take a long time.',
+                        'https://github.com/WebBluetoothCG/web-bluetooth/blob/master/implementation-status.md',
+                    ),
+                );
+            }
         } catch (err) {
             device.gatt.disconnect();
             throw err;
         }
-        dispatch(didConnect());
+        dispatch(didConnect(char.writeValueWithoutResponse !== undefined));
     } catch (err) {
         dispatch(didError(err));
     }
@@ -89,9 +114,9 @@ async function send(action: Action, dispatch: Dispatch): Promise<void> {
         }
         const sendAction = action as BootloaderConnectionSendAction;
         if (sendAction.withResponse) {
-            await char.writeValueWithResponse(sendAction.data);
+            await char.xWriteValueWithResponse(sendAction.data);
         } else {
-            await char.writeValueWithoutResponse(sendAction.data);
+            await char.xWriteValueWithoutResponse(sendAction.data);
         }
         dispatch(didSend());
     } catch (err) {

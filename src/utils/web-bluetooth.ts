@@ -4,8 +4,18 @@
  */
 export interface PolyfillBluetoothRemoteGATTCharacteristic
     extends BluetoothRemoteGATTCharacteristic {
-    writeValueWithResponse(value: BufferSource): Promise<void>;
-    writeValueWithoutResponse(value: BufferSource): Promise<void>;
+    writeValueWithResponse?(value: BufferSource): Promise<void>;
+    writeValueWithoutResponse?(value: BufferSource): Promise<void>;
+    /**
+     * Calls writeValueWithResponse() if available otherwise falls back to writeValue()
+     * @param value data to send
+     */
+    xWriteValueWithResponse(value: BufferSource): Promise<void>;
+    /**
+     * Calls writeValueWithoutResponse() if available otherwise falls back to writeValue()
+     * @param value data to send
+     */
+    xWriteValueWithoutResponse(value: BufferSource): Promise<void>;
 }
 
 /**
@@ -17,11 +27,9 @@ export function polyfillBluetoothRemoteGATTCharacteristic(
     char: BluetoothRemoteGATTCharacteristic,
 ): PolyfillBluetoothRemoteGATTCharacteristic {
     const polyfill = (char as unknown) as PolyfillBluetoothRemoteGATTCharacteristic;
-    if (!polyfill.writeValueWithResponse) {
-        polyfill.writeValueWithResponse = char.writeValue;
-    }
-    if (!polyfill.writeValueWithoutResponse) {
-        polyfill.writeValueWithoutResponse = char.writeValue;
-    }
+    polyfill.xWriteValueWithResponse =
+        polyfill.writeValueWithResponse || char.writeValue;
+    polyfill.xWriteValueWithoutResponse =
+        polyfill.writeValueWithoutResponse || char.writeValue;
     return polyfill;
 }

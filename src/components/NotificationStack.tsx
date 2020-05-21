@@ -32,6 +32,7 @@ class NotificationStack extends React.Component<NotificationStackProps> {
                                     id={n.id}
                                     style={n.style}
                                     message={n.message}
+                                    helpUrl={n.helpUrl}
                                 />
                             </Collapse>
                         ))}

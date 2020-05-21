@@ -26,6 +26,10 @@ export interface NotificationAddAction extends Action<NotificationActionType.Add
      * The message to be displayed to the user.
      */
     readonly message: string;
+    /**
+     * URL for help or more information.
+     */
+    readonly helpUrl?: string;
 }
 
 export interface NotificationRemoveAction
@@ -40,10 +44,24 @@ export type NotificationAction = NotificationAddAction | NotificationRemoveActio
 
 let nextId = 0;
 
-export function add(level: NotificationLevel, message: string): NotificationAddAction {
-    return { type: NotificationActionType.Add, id: nextId++, level, message };
+/**
+ * Action to add a notification to the list.
+ * @param level The severity level
+ * @param message The message to display to the user
+ * @param helpUrl An optional URL for more info
+ */
+export function add(
+    level: NotificationLevel,
+    message: string,
+    helpUrl?: string,
+): NotificationAddAction {
+    return { type: NotificationActionType.Add, id: nextId++, level, message, helpUrl };
 }
 
+/**
+ * Action to removes a notification from the list.
+ * @param id The id of the notification to remove
+ */
 export function remove(id: number): NotificationRemoveAction {
     return { type: NotificationActionType.Remove, id };
 }
