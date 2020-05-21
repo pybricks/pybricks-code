@@ -15,6 +15,7 @@ interface OwnProps {
     id: number;
     style: string;
     message: string;
+    helpUrl?: string;
 }
 
 type NotificationProps = DispatchProps & OwnProps;
@@ -45,7 +46,20 @@ class Notification extends React.Component<NotificationProps> {
                         {title}
                     </strong>
                 </Toast.Header>
-                <Toast.Body>{this.props.message}</Toast.Body>
+                <Toast.Body>
+                    <p>{this.props.message}</p>
+                    <p>
+                        {this.props.helpUrl && (
+                            <a
+                                href={this.props.helpUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                More info
+                            </a>
+                        )}
+                    </p>
+                </Toast.Body>
             </Toast>
         );
     }

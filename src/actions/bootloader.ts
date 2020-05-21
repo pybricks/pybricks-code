@@ -47,12 +47,15 @@ export function connect(): BootloaderConnectionConnectAction {
     return { type: BootloaderConnectionActionType.Connect };
 }
 
-export type BootloaderConnectionDidConnectAction = Action<
-    BootloaderConnectionActionType.DidConnect
->;
+export interface BootloaderConnectionDidConnectAction
+    extends Action<BootloaderConnectionActionType.DidConnect> {
+    canWriteWithoutResponse: boolean;
+}
 
-export function didConnect(): BootloaderConnectionDidConnectAction {
-    return { type: BootloaderConnectionActionType.DidConnect };
+export function didConnect(
+    canWriteWithoutResponse: boolean,
+): BootloaderConnectionDidConnectAction {
+    return { type: BootloaderConnectionActionType.DidConnect, canWriteWithoutResponse };
 }
 
 export type BootloaderConnectionDidCancelAction = Action<

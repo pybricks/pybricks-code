@@ -306,7 +306,11 @@ function* flashFirmware(action: BootloaderFlashFirmwareAction): Generator {
         const payload = firmware.slice(offset, offset + MaxProgramFlashSize);
         yield put(programRequest(info[0].startAddress + offset, payload.buffer));
 
+        // TODO: wait for request to actually be sent before reporting progress
         yield put(progress(offset, firmware.length));
+
+        // TODO: we can skip getting the checksum when canWriteWithoutResponse === false
+        // when the todo above is done.
 
         // request checksum every 8K to prevent buffer overrun on the hub
         // because of sending too much data at once
@@ -314,7 +318,7 @@ function* flashFirmware(action: BootloaderFlashFirmwareAction): Generator {
             yield put(checksumRequest());
             const checksum = (yield wait(
                 BootloaderResponseActionType.Checksum,
-                5000,
+                didConnect.canWriteWithoutResponse ? 5000 : 60000,
             )) as WaitResponse<BootloaderChecksumResponseAction>;
             if (!checksum[0]) {
                 // TODO: proper error handling

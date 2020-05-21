@@ -6,6 +6,7 @@ export type NotificationList = Array<{
     readonly id: number;
     readonly style: string;
     readonly message: string;
+    readonly helpUrl?: string;
 }>;
 
 const levelMap = {
@@ -23,6 +24,7 @@ const list: Reducer<NotificationList, NotificationAction> = (state = [], action)
                     id: action.id,
                     style: levelMap[action.level],
                     message: action.message,
+                    helpUrl: action.helpUrl,
                 },
             ];
         case NotificationActionType.Remove:

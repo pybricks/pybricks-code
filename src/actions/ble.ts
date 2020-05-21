@@ -81,11 +81,13 @@ export function connect(): BLEThunkAction {
             dispatch(
                 notification.add(
                     'error',
-                    'Browser does not support WebBluetooth or it is not enabled',
+                    'This web browser does not support Web Bluetooth or it is not enabled.',
+                    'https://github.com/WebBluetoothCG/web-bluetooth/blob/master/implementation-status.md',
                 ),
             );
             return;
         }
+        // TODO: check navigator.bluetooth.getAvailability()
         dispatch(beginConnect());
         try {
             device = await navigator.bluetooth.requestDevice({
@@ -112,7 +114,7 @@ export function connect(): BLEThunkAction {
             return;
         }
         if (device.gatt === undefined) {
-            dispatch(notification.add('error', 'Device does not support GATT'));
+            dispatch(notification.add('error', 'Device does not support GATT.'));
             dispatch(endDisconnect());
             return;
         }
@@ -137,7 +139,7 @@ export function connect(): BLEThunkAction {
             await txChar.startNotifications();
         } catch (err) {
             console.error(err);
-            dispatch(notification.add('error', 'Getting nRF UART service failed'));
+            dispatch(notification.add('error', 'Getting nRF UART service failed.'));
             device.gatt.disconnect();
             return;
         }
@@ -156,7 +158,7 @@ export function write(value: ArrayBuffer): BLEThunkAction {
     return async function (): Promise<void> {
         // TODO: do we need to dispatch any Action<>s here?
         for (let i = 0; i < value.byteLength; i += bleNusMaxSize) {
-            await rxChar?.writeValueWithoutResponse(value.slice(i, i + bleNusMaxSize));
+            await rxChar?.xWriteValueWithoutResponse(value.slice(i, i + bleNusMaxSize));
         }
     };
 }
