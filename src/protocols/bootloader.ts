@@ -94,9 +94,7 @@ export function createProgramFlashRequest(
     payload: ArrayBuffer,
 ): Uint8Array {
     const size = payload.byteLength;
-    if (size > MaxProgramFlashSize) {
-        throw Error('payload is bigger than MaxProgramFlashSize');
-    }
+    assert(size <= MaxProgramFlashSize, 'payload is bigger than MaxProgramFlashSize');
     const msg = new Uint8Array(size + 6);
     const view = new DataView(msg.buffer);
     view.setUint8(0, Command.ProgramFlash);
