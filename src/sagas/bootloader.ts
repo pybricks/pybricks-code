@@ -35,6 +35,7 @@ import {
     connect,
     eraseRequest,
     eraseResponse,
+    errorResponse,
     infoRequest,
     infoResponse,
     initRequest,
@@ -62,6 +63,7 @@ import {
     createStartAppRequest,
     getMessageType,
     parseEraseFlashResponse,
+    parseErrorResponse,
     parseGetChecksumResponse,
     parseGetFlashStateResponse,
     parseGetInfoResponse,
@@ -147,10 +149,12 @@ function* decodeResponse(action: BootloaderConnectionDidReceiveAction): Generato
             yield put(stateResponse(parseGetFlashStateResponse(action.data)));
             break;
         case ErrorBytecode:
-            yield put(stateResponse(parseGetFlashStateResponse(action.data)));
+            yield put(errorResponse(parseErrorResponse(action.data)));
             break;
+        /* istanbul ignore next: should not be possible to reach */
         default:
             console.error(`Unknown bootloader response action ${action}`);
+            break;
     }
 }
 
