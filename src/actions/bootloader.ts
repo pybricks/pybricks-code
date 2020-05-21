@@ -299,6 +299,10 @@ export enum BootloaderActionType {
      * Flash new firmware to the device.
      */
     FlashFirmware = 'bootloader.action.flash',
+    /**
+     * Firmware flash progress.
+     */
+    FlashProgress = 'bootloader.action.flash.progress',
 }
 
 export interface BootloaderFlashFirmwareAction
@@ -309,3 +313,26 @@ export interface BootloaderFlashFirmwareAction
 export function flashFirmware(data: ArrayBuffer): BootloaderFlashFirmwareAction {
     return { type: BootloaderActionType.FlashFirmware, data };
 }
+
+export interface BootloaderFlashProgressAction
+    extends Action<BootloaderActionType.FlashProgress> {
+    /**
+     * The number of bytes that have been flashed so far.
+     */
+    complete: number;
+    /**
+     * The total number of bytes to be flashed.
+     */
+    total: number;
+}
+
+export function progress(
+    complete: number,
+    total: number,
+): BootloaderFlashProgressAction {
+    return { type: BootloaderActionType.FlashProgress, complete, total };
+}
+
+export type BootloaderAction =
+    | BootloaderFlashFirmwareAction
+    | BootloaderFlashProgressAction;

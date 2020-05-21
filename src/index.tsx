@@ -17,7 +17,8 @@ import serviceMiddleware from './services';
 
 const sagaMiddleware = createSagaMiddleware();
 const epicMiddleware = createEpicMiddleware();
-const loggerMiddleware = createLogger();
+// TODO: add runtime option or filter - logger affects firmware flash performance
+const loggerMiddleware = createLogger({ predicate: () => false });
 
 const store = createStore(
     rootReducer,
