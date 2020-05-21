@@ -114,9 +114,10 @@ function* encodeRequest(): Generator {
             case BootloaderRequestActionType.Disconnect:
                 yield put(send(createDisconnectRequest()));
                 break;
+            /* istanbul ignore next: should not be possible to reach */
             default:
                 console.error(`Unknown bootloader request action ${action}`);
-                break;
+                continue;
         }
 
         yield take(BootloaderConnectionActionType.DidSend);
