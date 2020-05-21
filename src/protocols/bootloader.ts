@@ -1,5 +1,7 @@
 // Ref: https://lego.github.io/lego-ble-wireless-protocol-docs/index.html#lego-hub-boot-loader-service
 
+import { assert } from '../utils';
+
 /**
  * LEGO Powered Up Bootloader Service UUID.
  */
@@ -186,12 +188,10 @@ export function getMessageType(msg: DataView): Command | ErrorMessage {
  * @param msg The raw message data.
  */
 export function parseErrorResponse(msg: DataView): Command {
+    assert(msg.getUint8(0) === 5, 'unexpected length');
     // Error responses are ordered differently compared to command responses.
-    if (msg.getUint8(2) === ErrorBytecode) {
+    if (msg.getUint8(2) !== ErrorBytecode) {
         throw Error('expecting error');
-    }
-    if (msg.getUint8(0) !== 5) {
-        throw Error('unexpected length');
     }
     if (msg.getUint8(4) !== ErrorCode.UnknownCommand) {
         // "command not recognized" is only possible error code
@@ -207,9 +207,7 @@ export function parseErrorResponse(msg: DataView): Command {
  * @returns The result of the erase operation.
  */
 export function parseEraseFlashResponse(msg: DataView): Result {
-    if (msg.getUint8(0) !== Command.EraseFlash) {
-        throw Error('expecting erase flash command');
-    }
+    assert(msg.getUint8(0) === Command.EraseFlash, 'expecting erase flash command');
     const result = msg.getUint8(1);
     return result;
 }
@@ -220,9 +218,7 @@ export function parseEraseFlashResponse(msg: DataView): Result {
  * @returns The final checksum and the number of bytes written.
  */
 export function parseProgramFlashResponse(msg: DataView): [number, number] {
-    if (msg.getUint8(0) !== Command.ProgramFlash) {
-        throw Error('expecting program flash command');
-    }
+    assert(msg.getUint8(0) === Command.ProgramFlash, 'expecting program flash command');
     const checksum = msg.getUint8(1);
     const count = msg.getUint32(2, true);
     return [checksum, count];
@@ -234,9 +230,7 @@ export function parseProgramFlashResponse(msg: DataView): [number, number] {
  * @returns The result of the initialization.
  */
 export function parseInitLoaderResponse(msg: DataView): Result {
-    if (msg.getUint8(0) !== Command.InitLoader) {
-        throw Error('expecting init loader command');
-    }
+    assert(msg.getUint8(0) === Command.InitLoader, 'expecting init loader command');
     const result = msg.getUint8(1);
     return result;
 }
@@ -248,9 +242,7 @@ export function parseInitLoaderResponse(msg: DataView): Result {
  * of where firmware can be flashed, and the hub type identifier.
  */
 export function parseGetInfoResponse(msg: DataView): [number, number, number, HubType] {
-    if (msg.getUint8(0) !== Command.GetInfo) {
-        throw Error('expecting get info command');
-    }
+    assert(msg.getUint8(0) === Command.GetInfo, 'expecting get info command');
     const version = msg.getUint32(1, true);
     const startAddress = msg.getUint32(5, true);
     const endAddress = msg.getUint32(9, true);
@@ -264,9 +256,7 @@ export function parseGetInfoResponse(msg: DataView): [number, number, number, Hu
  * @returns The checksum of the data that has been flashed so far.
  */
 export function parseGetChecksumResponse(msg: DataView): number {
-    if (msg.getUint8(0) !== Command.GetChecksum) {
-        throw Error('expecting get checksum command');
-    }
+    assert(msg.getUint8(0) === Command.GetChecksum, 'expecting get checksum command');
     const checksum = msg.getUint8(1);
     return checksum;
 }
@@ -277,9 +267,10 @@ export function parseGetChecksumResponse(msg: DataView): number {
  * @returns The protection level
  */
 export function parseGetFlashStateResponse(msg: DataView): ProtectionLevel {
-    if (msg.getUint8(0) !== Command.GetFlashState) {
-        throw Error('expecting get flash state command');
-    }
+    assert(
+        msg.getUint8(0) === Command.GetFlashState,
+        'expecting get flash state command',
+    );
     const level = msg.getUint8(1);
     return level;
 }
