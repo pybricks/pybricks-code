@@ -20,6 +20,8 @@ import {
     BootloaderStateRequestAction,
     BootloaderStateResponseAction,
     didReceive,
+    didSend,
+    eraseRequest,
 } from '../actions/bootloader';
 import { Command, HubType, ProtectionLevel, Result } from '../protocols/bootloader';
 import bootloader from './bootloader';
@@ -144,6 +146,42 @@ describe('message encoder', () => {
             data: message,
             withResponse: false,
         });
+    });
+
+    test('requests are serialized', async () => {
+        const channel = stdChannel();
+        const dispatched = new Array<Action>();
+        const task = runSaga(
+            {
+                channel,
+                dispatch: (action: Action) => dispatched.push(action),
+            },
+            bootloader,
+        );
+
+        // we send 4 requests
+        channel.put(eraseRequest());
+        channel.put(eraseRequest());
+        channel.put(eraseRequest());
+        channel.put(eraseRequest());
+
+        // but only one didSend action meaning only the first one completed
+        channel.put(didSend());
+
+        task.cancel();
+        await task.toPromise();
+
+        // so only 2 messages were actually sent and 2 are still waiting for
+        // the second one to complete
+        expect(dispatched.length).toEqual(2);
+        const message = new Uint8Array([Command.EraseFlash]);
+        for (const d of dispatched) {
+            expect(d).toEqual({
+                type: BootloaderConnectionActionType.Send,
+                data: message,
+                withResponse: false,
+            });
+        }
     });
 });
 
