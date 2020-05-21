@@ -1658,10 +1658,10 @@
   resolved "https://registry.yarnpkg.com/@types/warning/-/warning-3.0.0.tgz#0d2501268ad8f9962b740d387c4654f5f8e23e52"
   integrity sha1-DSUBJorY+ZYrdA04fEZU9fjiPlI=
 
-"@types/web-bluetooth@^0.0.5":
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/@types/web-bluetooth/-/web-bluetooth-0.0.5.tgz#f952d1481572798dd20a381135bef3d8b1ef305a"
-  integrity sha512-gaSAxNePCVJUR1a+4jKMaukjEzE4XuJd9fzSx/mAy6BrVoJXnACmfaBkaXU/K0frxJVfHvMDJx96hbNt4NXd9Q==
+"@types/web-bluetooth@^0.0.6":
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/@types/web-bluetooth/-/web-bluetooth-0.0.6.tgz#71b56427353d3495ac7ba9a4d7a13c8f312f9c1e"
+  integrity sha512-S/Dhk1sMzYZMNNXvG1CHKz1X+HbabMf2l+FkdRStcvvuQVVlMvq0nPd/fQ3skniRKj0LqBPy19in3JN/XsB6Qg==
 
 "@types/yargs-parser@*":
   version "15.0.0"
