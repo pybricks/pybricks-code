@@ -1,5 +1,6 @@
 import { Action } from 'redux';
 import { Command, HubType, ProtectionLevel, Result } from '../protocols/bootloader';
+import { createCountFunc } from '../utils/iter';
 
 /**
  * Bootloader BLE connection actions.
@@ -128,68 +129,151 @@ export enum BootloaderRequestActionType {
     Disconnect = 'bootloader.action.request.disconnect',
 }
 
-export type BootloaderEraseRequestAction = Action<BootloaderRequestActionType.Erase>;
+const nextRequestId = createCountFunc();
 
-export function eraseRequest(): BootloaderEraseRequestAction {
-    return { type: BootloaderRequestActionType.Erase };
+interface BaseBootloaderRequestAction<T extends BootloaderRequestActionType>
+    extends Action<T> {
+    /**
+     * Unique identifier for this action.
+     */
+    id: number;
 }
 
+/**
+ * Action that requests to erase the flash memory.
+ */
+export type BootloaderEraseRequestAction = BaseBootloaderRequestAction<
+    BootloaderRequestActionType.Erase
+>;
+
+/**
+ * Creates a request to erase the flash memory.
+ */
+export function eraseRequest(): BootloaderEraseRequestAction {
+    return { type: BootloaderRequestActionType.Erase, id: nextRequestId() };
+}
+
+/**
+ * Action that requests to program the flash memory.
+ */
 export interface BootloaderProgramRequestAction
-    extends Action<BootloaderRequestActionType.Program> {
+    extends BaseBootloaderRequestAction<BootloaderRequestActionType.Program> {
     address: number;
     payload: ArrayBuffer;
 }
 
+/**
+ * Creates a request to program the flash memory.
+ * @param address The starting address in the flash memory.
+ * @param payload The bytes to write (max 14 bytes!)
+ */
 export function programRequest(
     address: number,
     payload: ArrayBuffer,
 ): BootloaderProgramRequestAction {
-    return { type: BootloaderRequestActionType.Program, address, payload };
+    return {
+        type: BootloaderRequestActionType.Program,
+        id: nextRequestId(),
+        address,
+        payload,
+    };
 }
 
-export type BootloaderRebootRequestAction = Action<BootloaderRequestActionType.Reboot>;
+/**
+ * Action that requests to reboot the hub.
+ */
+export type BootloaderRebootRequestAction = BaseBootloaderRequestAction<
+    BootloaderRequestActionType.Reboot
+>;
 
+/**
+ * Creates a request to reboot the hub.
+ */
 export function rebootRequest(): BootloaderRebootRequestAction {
-    return { type: BootloaderRequestActionType.Reboot };
+    return { type: BootloaderRequestActionType.Reboot, id: nextRequestId() };
 }
 
+/**
+ * Action that requests to initialize the firmware flashing process.
+ */
 export interface BootloaderInitRequestAction
-    extends Action<BootloaderRequestActionType.Init> {
+    extends BaseBootloaderRequestAction<BootloaderRequestActionType.Init> {
     firmwareSize: number;
 }
 
+/**
+ * Creates a request to initialize the firmware flashing process.
+ * @param firmwareSize The size of the firmware to written to flash memory.
+ */
 export function initRequest(firmwareSize: number): BootloaderInitRequestAction {
-    return { type: BootloaderRequestActionType.Init, firmwareSize };
+    return {
+        type: BootloaderRequestActionType.Init,
+        id: nextRequestId(),
+        firmwareSize,
+    };
 }
 
-export type BootloaderInfoRequestAction = Action<BootloaderRequestActionType.Info>;
+/**
+ * Action that requests information about the hub.
+ */
+export type BootloaderInfoRequestAction = BaseBootloaderRequestAction<
+    BootloaderRequestActionType.Info
+>;
 
+/**
+ * Creates a request to get information about the hub.
+ */
 export function infoRequest(): BootloaderInfoRequestAction {
-    return { type: BootloaderRequestActionType.Info };
+    return { type: BootloaderRequestActionType.Info, id: nextRequestId() };
 }
 
-export type BootloaderChecksumRequestAction = Action<
+/**
+ * Action to get the checksum of the bytes that have been written to flash
+ * so far.
+ */
+export type BootloaderChecksumRequestAction = BaseBootloaderRequestAction<
     BootloaderRequestActionType.Checksum
 >;
 
+/**
+ * Creates a request to get the checksum of the bytes that have been written
+ * to flash so far.
+ */
 export function checksumRequest(): BootloaderChecksumRequestAction {
-    return { type: BootloaderRequestActionType.Checksum };
+    return { type: BootloaderRequestActionType.Checksum, id: nextRequestId() };
 }
 
-export type BootloaderStateRequestAction = Action<BootloaderRequestActionType.State>;
+/**
+ * Action that requests the bootloader flash memory protection state.
+ */
+export type BootloaderStateRequestAction = BaseBootloaderRequestAction<
+    BootloaderRequestActionType.State
+>;
 
+/**
+ * Creates a request to get the bootloader flash memory protection state.
+ */
 export function stateRequest(): BootloaderStateRequestAction {
-    return { type: BootloaderRequestActionType.State };
+    return { type: BootloaderRequestActionType.State, id: nextRequestId() };
 }
 
-export type BootloaderDisconnectRequestAction = Action<
+/**
+ * Action that requests to disconnect the hub.
+ */
+export type BootloaderDisconnectRequestAction = BaseBootloaderRequestAction<
     BootloaderRequestActionType.Disconnect
 >;
 
+/**
+ * Creates a request to disconnect the hub.
+ */
 export function disconnectRequest(): BootloaderDisconnectRequestAction {
-    return { type: BootloaderRequestActionType.Disconnect };
+    return { type: BootloaderRequestActionType.Disconnect, id: nextRequestId() };
 }
 
+/**
+ * Common type for all bootloader requests.
+ */
 export type BootloaderRequestAction =
     | BootloaderEraseRequestAction
     | BootloaderProgramRequestAction
@@ -199,6 +283,39 @@ export type BootloaderRequestAction =
     | BootloaderChecksumRequestAction
     | BootloaderStateRequestAction
     | BootloaderDisconnectRequestAction;
+
+/**
+ * Action type for bootloader did request action.
+ */
+export type BootloaderDidRequestType = 'bootloader.action.did.request';
+
+/**
+ * Action type for bootloader did request action.
+ */
+export const BootloaderDidRequestType = 'bootloader.action.did.request';
+
+/**
+ * Action that indicates a request was sent or failed to send.
+ */
+export interface BootloaderDidRequestAction extends Action<BootloaderDidRequestType> {
+    /**
+     * The unique identifier of the action.
+     */
+    id: number;
+    /**
+     * The error on failure or undefined on success.
+     */
+    err?: Error;
+}
+
+/**
+ * Creates an action that indicates a request was sent or failed to send.
+ * @param id The unique identifier of the action.
+ * @param err The error message on failure or undefined on success.
+ */
+export function didRequest(id: number, err?: Error): BootloaderDidRequestAction {
+    return { type: BootloaderDidRequestType, id, err };
+}
 
 /**
  * Bootloader response actions for receiving responses from the connection.
