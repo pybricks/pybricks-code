@@ -22,11 +22,14 @@ import {
     BootloaderConnectionDidErrorAction,
     BootloaderConnectionDidReceiveAction,
     BootloaderConnectionDidSendAction,
+    BootloaderDidRequestAction,
+    BootloaderDidRequestType,
     BootloaderEraseResponseAction,
     BootloaderErrorResponseAction,
     BootloaderFlashFirmwareAction,
     BootloaderInfoResponseAction,
     BootloaderInitResponseAction,
+    BootloaderProgramRequestAction,
     BootloaderProgramResponseAction,
     BootloaderRequestAction,
     BootloaderRequestActionType,
@@ -314,25 +317,32 @@ function* flashFirmware(action: BootloaderFlashFirmwareAction): Generator {
 
     for (let offset = 0; offset < firmware.length; offset += MaxProgramFlashSize) {
         const payload = firmware.slice(offset, offset + MaxProgramFlashSize);
-        yield put(programRequest(info[0].startAddress + offset, payload.buffer));
+        const req = (yield put(
+            programRequest(info[0].startAddress + offset, payload.buffer),
+        )) as BootloaderProgramRequestAction;
 
-        // TODO: wait for request to actually be sent before reporting progress
+        // TODO: check for error
+        yield take(
+            (a: Action) =>
+                a.type === BootloaderDidRequestType &&
+                (a as BootloaderDidRequestAction).id === req.id,
+        );
+
         yield put(progress(offset, firmware.length));
 
-        // TODO: we can skip getting the checksum when canWriteWithoutResponse === false
-        // when the todo above is done.
-
-        // request checksum every 8K to prevent buffer overrun on the hub
-        // because of sending too much data at once
-        if (++count % 585 === 0) {
-            yield put(checksumRequest());
-            const checksum = (yield wait(
-                BootloaderResponseActionType.Checksum,
-                didConnect.canWriteWithoutResponse ? 5000 : 60000,
-            )) as WaitResponse<BootloaderChecksumResponseAction>;
-            if (!checksum[0]) {
-                // TODO: proper error handling
-                throw Error(`Failed to get checksum: ${checksum}`);
+        if (didConnect.canWriteWithoutResponse) {
+            // request checksum every 8K to prevent buffer overrun on the hub
+            // because of sending too much data at once
+            if (++count % 585 === 0) {
+                yield put(checksumRequest());
+                const checksum = (yield wait(
+                    BootloaderResponseActionType.Checksum,
+                    5000,
+                )) as WaitResponse<BootloaderChecksumResponseAction>;
+                if (!checksum[0]) {
+                    // TODO: proper error handling
+                    throw Error(`Failed to get checksum: ${checksum}`);
+                }
             }
         }
     }
