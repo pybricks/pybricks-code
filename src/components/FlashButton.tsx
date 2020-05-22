@@ -1,13 +1,10 @@
 import { connect } from 'react-redux';
-import { AnyAction } from 'redux';
-import { ThunkDispatch } from 'redux-thunk';
+import { Dispatch } from 'redux';
 import { flashFirmware } from '../actions/bootloader';
 import * as notification from '../actions/notification';
 import { RootState } from '../reducers';
 import { BootloaderConnectionState } from '../reducers/bootloader';
 import OpenFileButton, { OpenFileButtonProps } from './OpenFileButton';
-
-type Dispatch = ThunkDispatch<{}, {}, AnyAction>;
 
 type StateProps = Pick<OpenFileButtonProps, 'enabled'>;
 type DispatchProps = Pick<OpenFileButtonProps, 'onFile' | 'onReject'>;

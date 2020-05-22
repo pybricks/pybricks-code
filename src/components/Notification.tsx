@@ -1,11 +1,8 @@
 import React from 'react';
 import Toast from 'react-bootstrap/Toast';
 import { connect } from 'react-redux';
-import { Action } from 'redux';
-import { ThunkDispatch } from 'redux-thunk';
+import { Dispatch } from 'redux';
 import * as notification from '../actions/notification';
-
-type Dispatch = ThunkDispatch<{}, {}, Action>;
 
 interface DispatchProps {
     onClose: () => void;
