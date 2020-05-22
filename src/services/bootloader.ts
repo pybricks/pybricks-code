@@ -95,6 +95,17 @@ async function connect(action: Action, dispatch: Dispatch): Promise<void> {
                 );
             }
         } catch (err) {
+            if (
+                err instanceof DOMException &&
+                err.code === DOMException.NOT_FOUND_ERR
+            ) {
+                dispatch(
+                    notification.add(
+                        'error',
+                        'Connected to hub but failed to get LEGO bootloader service. Try removing the "LEGO Bootloader" device in your OS Bluetooth settings, then try again.',
+                    ),
+                );
+            }
             device.gatt.disconnect();
             throw err;
         }
