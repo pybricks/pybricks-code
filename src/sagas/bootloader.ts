@@ -21,6 +21,7 @@ import {
     BootloaderConnectionDidConnectAction,
     BootloaderConnectionDidErrorAction,
     BootloaderConnectionDidReceiveAction,
+    BootloaderConnectionDidSendAction,
     BootloaderEraseResponseAction,
     BootloaderErrorResponseAction,
     BootloaderFlashFirmwareAction,
@@ -33,6 +34,7 @@ import {
     checksumRequest,
     checksumResponse,
     connect,
+    didRequest,
     eraseRequest,
     eraseResponse,
     errorResponse,
@@ -120,7 +122,10 @@ function* encodeRequest(): Generator {
                 continue;
         }
 
-        yield take(BootloaderConnectionActionType.DidSend);
+        const sent = (yield take(
+            BootloaderConnectionActionType.DidSend,
+        )) as BootloaderConnectionDidSendAction;
+        yield put(didRequest(action.id, sent.err));
     }
 }
 

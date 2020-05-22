@@ -1,4 +1,5 @@
 import { Action } from 'redux';
+import { createCountFunc } from '../utils/iter';
 
 export enum NotificationActionType {
     /**
@@ -42,7 +43,7 @@ export interface NotificationRemoveAction
 
 export type NotificationAction = NotificationAddAction | NotificationRemoveAction;
 
-let nextId = 0;
+const nextId = createCountFunc();
 
 /**
  * Action to add a notification to the list.
@@ -55,7 +56,7 @@ export function add(
     message: string,
     helpUrl?: string,
 ): NotificationAddAction {
-    return { type: NotificationActionType.Add, id: nextId++, level, message, helpUrl };
+    return { type: NotificationActionType.Add, id: nextId(), level, message, helpUrl };
 }
 
 /**

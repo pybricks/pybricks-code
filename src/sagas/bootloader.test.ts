@@ -4,6 +4,7 @@ import {
     BootloaderChecksumRequestAction,
     BootloaderChecksumResponseAction,
     BootloaderConnectionActionType,
+    BootloaderDidRequestType,
     BootloaderDisconnectRequestAction,
     BootloaderEraseRequestAction,
     BootloaderEraseResponseAction,
@@ -24,6 +25,7 @@ import {
     eraseRequest,
 } from '../actions/bootloader';
 import { Command, HubType, ProtectionLevel, Result } from '../protocols/bootloader';
+import { createCountFunc } from '../utils/iter';
 import bootloader from './bootloader';
 
 describe('message encoder', () => {
@@ -165,21 +167,35 @@ describe('message encoder', () => {
         channel.put(eraseRequest());
         channel.put(eraseRequest());
 
-        // but only one didSend action meaning only the first one completed
+        // but only two didSend action meaning only the first two completed
+        channel.put(didSend());
         channel.put(didSend());
 
         task.cancel();
         await task.toPromise();
 
-        // so only 2 messages were actually sent and 2 are still waiting for
-        // the second one to complete
-        expect(dispatched.length).toEqual(2);
+        // So only 3 requests were actually sent and two didRequests were
+        // dispatched (making 5 total dispatches). The last request is still
+        // buffered and has not been dispatched.
+        expect(dispatched.length).toEqual(5);
+
+        // every other action is the "send" action
         const message = new Uint8Array([Command.EraseFlash]);
-        for (const d of dispatched) {
-            expect(d).toEqual({
+        for (let i = 0; i < dispatched.length; i += 2) {
+            expect(dispatched[i]).toEqual({
                 type: BootloaderConnectionActionType.Send,
                 data: message,
                 withResponse: false,
+            });
+        }
+
+        // and the interleaving actions are "did request" actions
+        const nextId = createCountFunc();
+        for (let i = 1; i < dispatched.length; i += 2) {
+            expect(dispatched[i]).toEqual({
+                type: BootloaderDidRequestType,
+                id: nextId(),
+                err: undefined,
             });
         }
     });
