@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2020 The Pybricks Authors
+
 import JSZip from 'jszip';
 import { Action } from 'redux';
 import { Channel, buffers } from 'redux-saga';

@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2020 The Pybricks Authors
+
 import { Reducer, combineReducers } from 'redux';
 import { BLEConnectActionType } from '../actions/ble';
 

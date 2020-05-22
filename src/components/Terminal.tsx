@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2020 The Pybricks Authors
+
 import React from 'react';
 import { connect } from 'react-redux';
 import ResizeObserver from 'react-resize-observer';

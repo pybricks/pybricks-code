@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2020 The Pybricks Authors
+
 import { Action } from 'redux';
 import { ThunkAction } from 'redux-thunk';
 import { getChecksum } from '../epics/hub';

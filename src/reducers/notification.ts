@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2020 The Pybricks Authors
+
 import { Reducer } from 'react';
 import { combineReducers } from 'redux';
 import { NotificationAction, NotificationActionType } from '../actions/notification';

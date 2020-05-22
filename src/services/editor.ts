@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2020 The Pybricks Authors
+
 import * as FileSaver from 'file-saver';
 import { Action, Dispatch } from 'redux';
 import { EditorActionType, EditorOpenAction } from '../actions/editor';

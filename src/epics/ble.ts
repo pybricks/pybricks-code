@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2020 The Pybricks Authors
+
 import { AnyAction } from 'redux';
 import { Epic, combineEpics, ofType } from 'redux-observable';
 import { map } from 'rxjs/operators';
