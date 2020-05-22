@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2020 The Pybricks Authors
+
 /**
  * Current definition of BluetoothRemoteGATTCharacteristic doesn't include
  * new Web Bluetooth APIs.

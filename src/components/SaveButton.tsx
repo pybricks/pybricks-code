@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2020 The Pybricks Authors
+
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import * as editor from '../actions/editor';

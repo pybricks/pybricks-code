@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2020 The Pybricks Authors
+
 import React from 'react';
 import ProgressBar from 'react-bootstrap/ProgressBar';
 import { connect } from 'react-redux';

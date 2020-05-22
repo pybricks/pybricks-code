@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2020 The Pybricks Authors
+
 import { Action, Dispatch, Middleware } from 'redux';
 import { RootState } from '../reducers';
 import bootloader from './bootloader';

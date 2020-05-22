@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2020 The Pybricks Authors
+
 import { Ace } from 'ace-builds';
 import { Reducer, combineReducers } from 'redux';
 import { CurrentEditorAction, EditorActionType } from '../actions/editor';
