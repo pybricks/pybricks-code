@@ -17,7 +17,7 @@
         "@types/redux-logger": "^3.0.7",
         "@types/web-bluetooth": "^0.0.6",
         "ace-builds": "^1.4.9",
-        "bootstrap": "^4.4.1",
+        "bootstrap": "^4.5.0",
         "jszip": "^3.4.0",
         "node-sass": "^4.14.1",
         "react": "^16.13.1",
