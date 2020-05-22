@@ -146,7 +146,8 @@ describe('message encoder', () => {
         expect(dispatched[0]).toEqual({
             type: BootloaderConnectionActionType.Send,
             data: message,
-            withResponse: false,
+            // Program is write without response, all others are write with response
+            withResponse: request.type !== BootloaderRequestActionType.Program,
         });
     });
 
@@ -185,7 +186,7 @@ describe('message encoder', () => {
             expect(dispatched[i]).toEqual({
                 type: BootloaderConnectionActionType.Send,
                 data: message,
-                withResponse: false,
+                withResponse: true,
             });
         }
 

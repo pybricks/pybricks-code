@@ -84,7 +84,7 @@ export interface BootloaderConnectionSendAction
 
 export function send(
     data: ArrayBuffer,
-    withResponse = false,
+    withResponse = true,
 ): BootloaderConnectionSendAction {
     return { type: BootloaderConnectionActionType.Send, data, withResponse };
 }

@@ -86,6 +86,10 @@ async function connect(action: Action, dispatch: Dispatch): Promise<void> {
                 !char.writeValueWithoutResponse &&
                 !/Android/i.test(navigator.userAgent)
             ) {
+                // TODO: this needs to be an error if connected to city hub
+                // however it is not currently possible to get mfg-specific
+                // advertising data, so we don't know what type of hub it is
+                // until after we connect
                 dispatch(
                     notification.add(
                         'warning',
