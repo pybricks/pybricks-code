@@ -4,28 +4,26 @@
 import { Action } from 'redux';
 import { runSaga, stdChannel } from 'redux-saga';
 import {
-    BootloaderChecksumRequestAction,
-    BootloaderChecksumResponseAction,
-    BootloaderConnectionActionType,
-    BootloaderDidRequestType,
-    BootloaderDisconnectRequestAction,
-    BootloaderEraseRequestAction,
-    BootloaderEraseResponseAction,
-    BootloaderErrorResponseAction,
-    BootloaderInfoRequestAction,
-    BootloaderInfoResponseAction,
-    BootloaderInitRequestAction,
-    BootloaderInitResponseAction,
-    BootloaderProgramRequestAction,
-    BootloaderProgramResponseAction,
-    BootloaderRebootRequestAction,
     BootloaderRequestActionType,
-    BootloaderResponseActionType,
-    BootloaderStateRequestAction,
-    BootloaderStateResponseAction,
+    checksumRequest,
+    checksumResponse,
     didReceive,
+    didRequest,
     didSend,
+    disconnectRequest,
     eraseRequest,
+    eraseResponse,
+    errorResponse,
+    infoRequest,
+    infoResponse,
+    initRequest,
+    initResponse,
+    programRequest,
+    programResponse,
+    rebootRequest,
+    send,
+    stateRequest,
+    stateResponse,
 } from '../actions/bootloader';
 import { Command, HubType, ProtectionLevel, Result } from '../protocols/bootloader';
 import { createCountFunc } from '../utils/iter';
@@ -35,21 +33,17 @@ describe('message encoder', () => {
     test.each([
         [
             'erase',
-            {
-                type: BootloaderRequestActionType.Erase,
-            } as BootloaderEraseRequestAction,
+            eraseRequest(),
             [
                 0x11, // erase command
             ],
         ],
         [
             'program',
-            {
-                type: BootloaderRequestActionType.Program,
-                address: 0x08005000,
-                payload: new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])
-                    .buffer,
-            } as BootloaderProgramRequestAction,
+            programRequest(
+                0x08005000,
+                new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]).buffer,
+            ),
             [
                 0x22, // program command
                 0x12, // message size (payload size + 4)
@@ -75,19 +69,14 @@ describe('message encoder', () => {
         ],
         [
             'reboot',
-            {
-                type: BootloaderRequestActionType.Reboot,
-            } as BootloaderRebootRequestAction,
+            rebootRequest(),
             [
                 0x33, // reboot command
             ],
         ],
         [
             'init',
-            {
-                type: BootloaderRequestActionType.Init,
-                firmwareSize: 100000,
-            } as BootloaderInitRequestAction,
+            initRequest(100000),
             [
                 0x44, // init command
                 0xa0, // size LSB
@@ -98,36 +87,28 @@ describe('message encoder', () => {
         ],
         [
             'info',
-            {
-                type: BootloaderRequestActionType.Info,
-            } as BootloaderInfoRequestAction,
+            infoRequest(),
             [
                 0x55, // info command
             ],
         ],
         [
             'checksum',
-            {
-                type: BootloaderRequestActionType.Checksum,
-            } as BootloaderChecksumRequestAction,
+            checksumRequest(),
             [
                 0x66, // checksum command
             ],
         ],
         [
             'state',
-            {
-                type: BootloaderRequestActionType.State,
-            } as BootloaderStateRequestAction,
+            stateRequest(),
             [
                 0x77, // state command
             ],
         ],
         [
             'disconnect',
-            {
-                type: BootloaderRequestActionType.Disconnect,
-            } as BootloaderDisconnectRequestAction,
+            disconnectRequest(),
             [
                 0x88, // disconnect command
             ],
@@ -146,12 +127,12 @@ describe('message encoder', () => {
         task.cancel();
         await task.toPromise();
         const message = new Uint8Array(expected);
-        expect(dispatched[0]).toEqual({
-            type: BootloaderConnectionActionType.Send,
-            data: message,
-            // Program is write without response, all others are write with response
-            withResponse: request.type !== BootloaderRequestActionType.Program,
-        });
+        expect(dispatched[0]).toEqual(
+            send(
+                message,
+                /* withResponse */ request.type !== BootloaderRequestActionType.Program,
+            ),
+        );
     });
 
     test('requests are serialized', async () => {
@@ -166,10 +147,10 @@ describe('message encoder', () => {
         );
 
         // we send 4 requests
-        channel.put(eraseRequest());
-        channel.put(eraseRequest());
-        channel.put(eraseRequest());
-        channel.put(eraseRequest());
+        channel.put({ ...eraseRequest(), id: 0 });
+        channel.put({ ...eraseRequest(), id: 1 });
+        channel.put({ ...eraseRequest(), id: 2 });
+        channel.put({ ...eraseRequest(), id: 3 });
 
         // but only two didSend action meaning only the first two completed
         channel.put(didSend());
@@ -186,21 +167,13 @@ describe('message encoder', () => {
         // every other action is the "send" action
         const message = new Uint8Array([Command.EraseFlash]);
         for (let i = 0; i < dispatched.length; i += 2) {
-            expect(dispatched[i]).toEqual({
-                type: BootloaderConnectionActionType.Send,
-                data: message,
-                withResponse: true,
-            });
+            expect(dispatched[i]).toEqual(send(message, /* withResponse */ true));
         }
 
         // and the interleaving actions are "did request" actions
         const nextId = createCountFunc();
         for (let i = 1; i < dispatched.length; i += 2) {
-            expect(dispatched[i]).toEqual({
-                type: BootloaderDidRequestType,
-                id: nextId(),
-                err: undefined,
-            });
+            expect(dispatched[i]).toEqual(didRequest(nextId()));
         }
     });
 });
@@ -213,13 +186,10 @@ describe('message decoder', () => {
                 0x11, // erase command
                 0xff, // success
             ],
-            {
-                type: BootloaderResponseActionType.Erase,
-                result: Result.Error,
-            } as BootloaderEraseResponseAction,
+            eraseResponse(Result.Error),
         ],
         [
-            'flash',
+            'program',
             [
                 0x22, // flash command
                 0xaa, // checksum
@@ -228,11 +198,7 @@ describe('message decoder', () => {
                 0x01, // .
                 0x00, // byte count MSB
             ],
-            {
-                type: BootloaderResponseActionType.Program,
-                checksum: 0xaa,
-                count: 100000,
-            } as BootloaderProgramResponseAction,
+            programResponse(0xaa, 100000),
         ],
         [
             'init',
@@ -240,10 +206,7 @@ describe('message decoder', () => {
                 0x44, // init command
                 0xff, // success
             ],
-            {
-                type: BootloaderResponseActionType.Init,
-                result: Result.Error,
-            } as BootloaderInitResponseAction,
+            initResponse(Result.Error),
         ],
         [
             'info',
@@ -263,13 +226,7 @@ describe('message decoder', () => {
                 0x08, // end address MSB
                 0x40, // hub type ID
             ],
-            {
-                type: BootloaderResponseActionType.Info,
-                version: 0x12345678,
-                startAddress: 0x08005000,
-                endAddress: 0x0801f7ff,
-                hubType: HubType.MoveHub,
-            } as BootloaderInfoResponseAction,
+            infoResponse(0x12345678, 0x08005000, 0x0801f7ff, HubType.MoveHub),
         ],
         [
             'checksum',
@@ -277,10 +234,7 @@ describe('message decoder', () => {
                 0x66, // checksum command
                 0xaa, // checksum
             ],
-            {
-                type: BootloaderResponseActionType.Checksum,
-                checksum: 0xaa,
-            } as BootloaderChecksumResponseAction,
+            checksumResponse(0xaa),
         ],
         [
             'state',
@@ -288,10 +242,7 @@ describe('message decoder', () => {
                 0x77, // flash state command
                 0x02, // protection level
             ],
-            {
-                type: BootloaderResponseActionType.State,
-                level: ProtectionLevel.Level2,
-            } as BootloaderStateResponseAction,
+            stateResponse(ProtectionLevel.Level2),
         ],
         [
             'error',
@@ -302,10 +253,7 @@ describe('message decoder', () => {
                 0x77, // get flash state command
                 0x05, // command not recognized
             ],
-            {
-                type: BootloaderResponseActionType.Error,
-                command: Command.GetFlashState,
-            } as BootloaderErrorResponseAction,
+            errorResponse(Command.GetFlashState),
         ],
     ])('decode %s response', async (_n, message, expected) => {
         const response = new Uint8Array(message);
