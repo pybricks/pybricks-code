@@ -152,33 +152,36 @@ function* encodeRequest(): Generator {
  * @param action The received response action.
  */
 function* decodeResponse(action: BootloaderConnectionDidReceiveAction): Generator {
-    const responseType = getMessageType(action.data);
-    switch (responseType) {
-        case Command.EraseFlash:
-            yield put(eraseResponse(parseEraseFlashResponse(action.data)));
-            break;
-        case Command.ProgramFlash:
-            yield put(programResponse(...parseProgramFlashResponse(action.data)));
-            break;
-        case Command.InitLoader:
-            yield put(initResponse(parseInitLoaderResponse(action.data)));
-            break;
-        case Command.GetInfo:
-            yield put(infoResponse(...parseGetInfoResponse(action.data)));
-            break;
-        case Command.GetChecksum:
-            yield put(checksumResponse(parseGetChecksumResponse(action.data)));
-            break;
-        case Command.GetFlashState:
-            yield put(stateResponse(parseGetFlashStateResponse(action.data)));
-            break;
-        case ErrorBytecode:
-            yield put(errorResponse(parseErrorResponse(action.data)));
-            break;
-        /* istanbul ignore next: should not be possible to reach */
-        default:
-            console.error(`Unknown bootloader response action ${action}`);
-            break;
+    try {
+        const responseType = getMessageType(action.data);
+        switch (responseType) {
+            case Command.EraseFlash:
+                yield put(eraseResponse(parseEraseFlashResponse(action.data)));
+                break;
+            case Command.ProgramFlash:
+                yield put(programResponse(...parseProgramFlashResponse(action.data)));
+                break;
+            case Command.InitLoader:
+                yield put(initResponse(parseInitLoaderResponse(action.data)));
+                break;
+            case Command.GetInfo:
+                yield put(infoResponse(...parseGetInfoResponse(action.data)));
+                break;
+            case Command.GetChecksum:
+                yield put(checksumResponse(parseGetChecksumResponse(action.data)));
+                break;
+            case Command.GetFlashState:
+                yield put(stateResponse(parseGetFlashStateResponse(action.data)));
+                break;
+            case ErrorBytecode:
+                yield put(errorResponse(parseErrorResponse(action.data)));
+                break;
+            default:
+                throw new Error(`Unknown bootloader response action ${action}`);
+        }
+    } catch (err) {
+        // TODO: dispatch an error action
+        console.error(`Error decoding message: ${err}`);
     }
 }
 
