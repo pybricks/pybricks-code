@@ -31,13 +31,13 @@ const connection: Reducer<BLEConnectionState> = (
     action,
 ) => {
     switch (action.type) {
-        case BLEConnectActionType.BeginConnect:
+        case BLEConnectActionType.WillConnect:
             return BLEConnectionState.Connecting;
-        case BLEConnectActionType.EndConnect:
+        case BLEConnectActionType.DidConnect:
             return BLEConnectionState.Connected;
-        case BLEConnectActionType.BeginDisconnect:
+        case BLEConnectActionType.WillDisconnect:
             return BLEConnectionState.Disconnecting;
-        case BLEConnectActionType.EndDisconnect:
+        case BLEConnectActionType.DidDisconnect:
             return BLEConnectionState.Disconnected;
         default:
             return state;

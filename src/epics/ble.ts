@@ -14,13 +14,13 @@ const decoder = new TextDecoder();
 
 const connect: Epic = (action$) =>
     action$.pipe(
-        ofType(BLEConnectActionType.EndConnect),
+        ofType(BLEConnectActionType.DidConnect),
         map(() => updateStatus(HubRuntimeStatusType.Idle)),
     );
 
 const disconnect: Epic = (action$) =>
     action$.pipe(
-        ofType(BLEConnectActionType.EndDisconnect),
+        ofType(BLEConnectActionType.DidDisconnect),
         map(() => updateStatus(HubRuntimeStatusType.Disconnected)),
     );
 
