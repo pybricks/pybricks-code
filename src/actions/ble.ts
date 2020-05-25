@@ -20,26 +20,60 @@ const bleNusMaxSize = 20;
 let device: BluetoothDevice | undefined;
 let rxChar: PolyfillBluetoothRemoteGATTCharacteristic | undefined;
 
+/**
+ * Bluetooth low energy connection action types.
+ */
 export enum BLEConnectActionType {
     /**
-     * Begin async connect.
+     * Connecting to a device has been requested.
      */
-    BeginConnect = 'ble.connect.begin',
+    WillConnect = 'ble.action.will.connect',
     /**
-     * End async connect (success).
+     * The connection completed successfully.
      */
-    EndConnect = 'ble.connect.end',
+    DidConnect = 'ble.action.did.connect',
     /**
-     * Begin async disconnect.
+     * Disconnecting from a device has been requested.
      */
-    BeginDisconnect = 'ble.disconnect.begin',
+    WillDisconnect = 'ble.action.will.disconnect',
     /**
      * End async disconnect (can be sent without sending BeginDisconnect first).
      */
-    EndDisconnect = 'ble.disconnect.end',
+    DidDisconnect = 'ble.action.did.disconnect',
 }
 
+/**
+ * Common type for all BLE connection actions.
+ */
 type BLEConnectAction = Action<BLEConnectActionType>;
+
+/**
+ * Creates an action that indicates connecting has been requested.
+ */
+function willConnect(): BLEConnectAction {
+    return { type: BLEConnectActionType.WillConnect };
+}
+
+/**
+ * Creates an action that indicates a device was connected.
+ */
+function didConnect(): BLEConnectAction {
+    return { type: BLEConnectActionType.DidConnect };
+}
+
+/**
+ * Creates an action that indicates disconnecting was requested.
+ */
+function willDisconnect(): BLEConnectAction {
+    return { type: BLEConnectActionType.WillDisconnect };
+}
+
+/**
+ * Creates an action that indicates a device was disconnected.
+ */
+function didDisconnect(): BLEConnectAction {
+    return { type: BLEConnectActionType.DidDisconnect };
+}
 
 export enum BLEDataActionType {
     /**
@@ -58,22 +92,6 @@ export interface BLEDataAction extends Action<BLEDataActionType> {
 
 export type BLEThunkAction = ThunkAction<Promise<void>, {}, {}, Action>;
 
-function beginConnect(): BLEConnectAction {
-    return { type: BLEConnectActionType.BeginConnect };
-}
-
-function endConnect(): BLEConnectAction {
-    return { type: BLEConnectActionType.EndConnect };
-}
-
-function beginDisconnect(): BLEConnectAction {
-    return { type: BLEConnectActionType.BeginDisconnect };
-}
-
-function endDisconnect(): BLEConnectAction {
-    return { type: BLEConnectActionType.EndDisconnect };
-}
-
 export function connect(): BLEThunkAction {
     return async function (dispatch): Promise<void> {
         if (device !== undefined) {
@@ -91,7 +109,7 @@ export function connect(): BLEThunkAction {
             return;
         }
         // TODO: check navigator.bluetooth.getAvailability()
-        dispatch(beginConnect());
+        dispatch(willConnect());
         try {
             device = await navigator.bluetooth.requestDevice({
                 filters: [{ services: [pybricksServiceUUID] }],
@@ -113,18 +131,18 @@ export function connect(): BLEThunkAction {
                     ),
                 );
             }
-            dispatch(endDisconnect());
+            dispatch(didDisconnect());
             return;
         }
         if (device.gatt === undefined) {
             dispatch(notification.add('error', 'Device does not support GATT.'));
-            dispatch(endDisconnect());
+            dispatch(didDisconnect());
             return;
         }
         device.addEventListener('gattserverdisconnected', () => {
             device = undefined;
             rxChar = undefined;
-            dispatch(endDisconnect());
+            dispatch(didDisconnect());
         });
         const server = await device.gatt.connect();
         try {
@@ -146,13 +164,13 @@ export function connect(): BLEThunkAction {
             device.gatt.disconnect();
             return;
         }
-        dispatch(endConnect());
+        dispatch(didConnect());
     };
 }
 
 export function disconnect(): BLEThunkAction {
     return async function (dispatch): Promise<void> {
-        dispatch(beginDisconnect());
+        dispatch(willDisconnect());
         device?.gatt?.disconnect();
     };
 }
