@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020 The Pybricks Authors
 
-import { compile as mpyCrossCompile } from '@pybricks/mpy-cross-4';
+import { compile as mpyCrossCompile } from '@pybricks/mpy-cross-v4';
 import { Action } from 'redux';
 import { ThunkAction } from 'redux-thunk';
 

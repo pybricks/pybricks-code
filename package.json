@@ -3,7 +3,7 @@
     "version": "0.1.0",
     "private": true,
     "dependencies": {
-        "@pybricks/mpy-cross-4": "^2.0.0",
+        "@pybricks/mpy-cross-v4": "^1.0.0",
         "@testing-library/jest-dom": "^5.8.0",
         "@testing-library/react": "^10.0.4",
         "@testing-library/user-event": "^10.3.4",
@@ -40,7 +40,7 @@
         "xterm-addon-fit": "^0.3.0"
     },
     "scripts": {
-        "prepare": "mkdir -p public/static/js && cp node_modules/@pybricks/mpy-cross-4/build-wasm/mpy-cross.wasm public/static/js/",
+        "prepare": "mkdir -p public/static/js && cp node_modules/@pybricks/mpy-cross-v4/build/mpy-cross.wasm public/static/js/",
         "start": "react-scripts start",
         "build": "react-scripts build",
         "test": "react-scripts test --env=./test-env.js",
