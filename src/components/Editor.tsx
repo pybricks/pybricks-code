@@ -33,6 +33,18 @@ class Editor extends React.Component {
                             store.dispatch(setEditSession(e?.session));
                         }}
                         onChange={(v): void => localStorage.setItem('program', v)}
+                        commands={[
+                            {
+                                name: 'save',
+                                bindKey: { win: 'Ctrl-S', mac: 'Cmd-S' },
+                                exec: (): void => {
+                                    // We already automatically save the file
+                                    // to local storage after every change, so
+                                    // CTRL+S is ignored
+                                    console.debug('CTRL+S ignored');
+                                },
+                            },
+                        ]}
                     />
                 )}
             </ReactReduxContext.Consumer>
