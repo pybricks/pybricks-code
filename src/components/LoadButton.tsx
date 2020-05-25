@@ -3,10 +3,9 @@
 
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { flashFirmware } from '../actions/bootloader';
+import * as editor from '../actions/editor';
 import * as notification from '../actions/notification';
 import { RootState } from '../reducers';
-import { BootloaderConnectionState } from '../reducers/bootloader';
 import OpenFileButton, { OpenFileButtonProps } from './OpenFileButton';
 
 type StateProps = Pick<OpenFileButtonProps, 'enabled'>;
@@ -14,16 +13,16 @@ type DispatchProps = Pick<OpenFileButtonProps, 'onFile' | 'onReject'>;
 type OwnProps = Pick<OpenFileButtonProps, 'id'>;
 
 const mapStateToProps = (state: RootState): StateProps => ({
-    enabled: state.bootloader.connection === BootloaderConnectionState.Disconnected,
+    enabled: state.editor.current !== null,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
     onFile: (data): void => {
-        dispatch(flashFirmware(data));
+        dispatch(editor.open(data));
     },
     onReject: (file): void => {
         dispatch(
-            notification.add('error', `'${file.name}' is not a valid firmware file.`),
+            notification.add('error', `'${file.name}' is not a valid python file.`),
         );
     },
 });
@@ -33,9 +32,9 @@ const mergeProps = (
     dispatchProps: DispatchProps,
     ownProps: OwnProps,
 ): OpenFileButtonProps => ({
-    fileExtension: '.zip',
-    tooltip: 'Flash hub firmware',
-    icon: 'firmware.svg',
+    fileExtension: '.py',
+    tooltip: 'Load file',
+    icon: 'open.svg',
     ...ownProps,
     ...stateProps,
     ...dispatchProps,

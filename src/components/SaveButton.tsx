@@ -2,26 +2,22 @@
 // Copyright (c) 2020 The Pybricks Authors
 
 import { connect } from 'react-redux';
-import { AnyAction } from 'redux';
-import { ThunkDispatch } from 'redux-thunk';
-import { stop } from '../actions/hub';
+import { Dispatch } from 'redux';
+import * as editor from '../actions/editor';
 import { RootState } from '../reducers';
-import { HubRuntimeState } from '../reducers/hub';
 import ActionButton, { ActionButtonProps } from './ActionButton';
-
-type Dispatch = ThunkDispatch<{}, {}, AnyAction>;
 
 type StateProps = Pick<ActionButtonProps, 'enabled' | 'context'>;
 type DispatchProps = Pick<ActionButtonProps, 'onAction'>;
 type OwnProps = Pick<ActionButtonProps, 'id'>;
 
 const mapStateToProps = (state: RootState): StateProps => ({
-    enabled: state.hub.runtime === HubRuntimeState.Running,
+    enabled: state.editor.current !== null,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
     onAction: (): void => {
-        dispatch(stop());
+        dispatch(editor.save());
     },
 });
 
@@ -30,8 +26,8 @@ const mergeProps = (
     dispatchProps: DispatchProps,
     ownProps: OwnProps,
 ): ActionButtonProps => ({
-    tooltip: 'Stop everything',
-    icon: 'stop.svg',
+    tooltip: 'Save file',
+    icon: 'download.svg',
     ...ownProps,
     ...stateProps,
     ...dispatchProps,

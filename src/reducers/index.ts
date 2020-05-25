@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2020 The Pybricks Authors
+
 import { combineReducers } from 'redux';
 import ble, { BLEState } from './ble';
 import bootloader, { BootloaderState } from './bootloader';

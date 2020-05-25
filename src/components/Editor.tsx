@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2020 The Pybricks Authors
+
 import React, { ReactElement } from 'react';
 import AceEditor from 'react-ace';
 import { ReactReduxContext } from 'react-redux';

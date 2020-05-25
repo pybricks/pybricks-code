@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2020 The Pybricks Authors
+
 import JSZip from 'jszip';
 import { Action } from 'redux';
 import { Channel, buffers } from 'redux-saga';
@@ -38,6 +41,7 @@ import {
     checksumResponse,
     connect,
     didRequest,
+    disconnectRequest,
     eraseRequest,
     eraseResponse,
     errorResponse,
@@ -53,6 +57,7 @@ import {
     stateResponse,
 } from '../actions/bootloader';
 import { MpyCompiledAction, compile } from '../actions/mpy';
+import * as notification from '../actions/notification';
 import {
     Command,
     ErrorBytecode,
@@ -92,13 +97,23 @@ function* encodeRequest(): Generator {
     while (true) {
         const action = (yield take(chan)) as BootloaderRequestAction;
 
+        // NB: Commands other than program on city hub will cause BlueZ to
+        // disconnect because they will send a response even if we write without
+        // response, so we always write with response on those commands. The
+        // program command needs to be write without response for performance
+        // reasons (and also the city hub will disconnect if write with response
+        // is used on this command).
+
         switch (action.type) {
             case BootloaderRequestActionType.Erase:
                 yield put(send(createEraseFlashRequest()));
                 break;
             case BootloaderRequestActionType.Program:
                 yield put(
-                    send(createProgramFlashRequest(action.address, action.payload)),
+                    send(
+                        createProgramFlashRequest(action.address, action.payload),
+                        /* withResponse */ false,
+                    ),
                 );
                 break;
             case BootloaderRequestActionType.Reboot:
@@ -137,33 +152,36 @@ function* encodeRequest(): Generator {
  * @param action The received response action.
  */
 function* decodeResponse(action: BootloaderConnectionDidReceiveAction): Generator {
-    const responseType = getMessageType(action.data);
-    switch (responseType) {
-        case Command.EraseFlash:
-            yield put(eraseResponse(parseEraseFlashResponse(action.data)));
-            break;
-        case Command.ProgramFlash:
-            yield put(programResponse(...parseProgramFlashResponse(action.data)));
-            break;
-        case Command.InitLoader:
-            yield put(initResponse(parseInitLoaderResponse(action.data)));
-            break;
-        case Command.GetInfo:
-            yield put(infoResponse(...parseGetInfoResponse(action.data)));
-            break;
-        case Command.GetChecksum:
-            yield put(checksumResponse(parseGetChecksumResponse(action.data)));
-            break;
-        case Command.GetFlashState:
-            yield put(stateResponse(parseGetFlashStateResponse(action.data)));
-            break;
-        case ErrorBytecode:
-            yield put(errorResponse(parseErrorResponse(action.data)));
-            break;
-        /* istanbul ignore next: should not be possible to reach */
-        default:
-            console.error(`Unknown bootloader response action ${action}`);
-            break;
+    try {
+        const responseType = getMessageType(action.data);
+        switch (responseType) {
+            case Command.EraseFlash:
+                yield put(eraseResponse(parseEraseFlashResponse(action.data)));
+                break;
+            case Command.ProgramFlash:
+                yield put(programResponse(...parseProgramFlashResponse(action.data)));
+                break;
+            case Command.InitLoader:
+                yield put(initResponse(parseInitLoaderResponse(action.data)));
+                break;
+            case Command.GetInfo:
+                yield put(infoResponse(...parseGetInfoResponse(action.data)));
+                break;
+            case Command.GetChecksum:
+                yield put(checksumResponse(parseGetChecksumResponse(action.data)));
+                break;
+            case Command.GetFlashState:
+                yield put(stateResponse(parseGetFlashStateResponse(action.data)));
+                break;
+            case ErrorBytecode:
+                yield put(errorResponse(parseErrorResponse(action.data)));
+                break;
+            default:
+                throw new Error(`Unknown bootloader response action ${action}`);
+        }
+    } catch (err) {
+        // TODO: dispatch an error action
+        console.error(`Error decoding message: ${err}`);
     }
 }
 
@@ -292,6 +310,18 @@ function* flashFirmware(action: BootloaderFlashFirmwareAction): Generator {
         throw Error(
             `Connected to ${info[0].hubType} but firmware is for ${metadata['device-id']}`,
         );
+    }
+
+    // City hub bootloader is buggy. See note in encodeRequest().
+    if (info[0].hubType === HubType.CityHub && !didConnect.canWriteWithoutResponse) {
+        yield put(
+            notification.add(
+                'error',
+                'City Hub is not compatible with this web browser.',
+            ),
+        );
+        yield put(disconnectRequest());
+        return;
     }
 
     yield put(eraseRequest());

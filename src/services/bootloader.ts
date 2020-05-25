@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2020 The Pybricks Authors
+
 import { Action, Dispatch } from 'redux';
 import {
     BootloaderConnectionActionType,
@@ -86,6 +89,10 @@ async function connect(action: Action, dispatch: Dispatch): Promise<void> {
                 !char.writeValueWithoutResponse &&
                 !/Android/i.test(navigator.userAgent)
             ) {
+                // TODO: this needs to be an error if connected to city hub
+                // however it is not currently possible to get mfg-specific
+                // advertising data, so we don't know what type of hub it is
+                // until after we connect
                 dispatch(
                     notification.add(
                         'warning',
@@ -95,6 +102,17 @@ async function connect(action: Action, dispatch: Dispatch): Promise<void> {
                 );
             }
         } catch (err) {
+            if (
+                err instanceof DOMException &&
+                err.code === DOMException.NOT_FOUND_ERR
+            ) {
+                dispatch(
+                    notification.add(
+                        'error',
+                        'Connected to hub but failed to get LEGO bootloader service. Try removing the "LEGO Bootloader" device in your OS Bluetooth settings, then try again.',
+                    ),
+                );
+            }
             device.gatt.disconnect();
             throw err;
         }

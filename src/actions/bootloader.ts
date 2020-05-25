@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2020 The Pybricks Authors
+
 import { Action } from 'redux';
 import { Command, HubType, ProtectionLevel, Result } from '../protocols/bootloader';
 import { createCountFunc } from '../utils/iter';
@@ -84,7 +87,7 @@ export interface BootloaderConnectionSendAction
 
 export function send(
     data: ArrayBuffer,
-    withResponse = false,
+    withResponse = true,
 ): BootloaderConnectionSendAction {
     return { type: BootloaderConnectionActionType.Send, data, withResponse };
 }
