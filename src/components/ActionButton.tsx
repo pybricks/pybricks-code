@@ -43,10 +43,7 @@ class ActionButton<T = undefined> extends React.Component<ActionButtonProps<T>> 
                             : undefined
                     }
                 >
-                    <Image
-                        src={`/static/images/${this.props.icon}`}
-                        alt={this.props.id}
-                    />
+                    <Image src={this.props.icon} alt={this.props.id} />
                 </Button>
             </OverlayTrigger>
         );

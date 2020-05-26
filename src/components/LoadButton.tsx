@@ -7,6 +7,7 @@ import * as editor from '../actions/editor';
 import * as notification from '../actions/notification';
 import { RootState } from '../reducers';
 import OpenFileButton, { OpenFileButtonProps } from './OpenFileButton';
+import openIcon from './images/open.svg';
 
 type StateProps = Pick<OpenFileButtonProps, 'enabled'>;
 type DispatchProps = Pick<OpenFileButtonProps, 'onFile' | 'onReject'>;
@@ -34,7 +35,7 @@ const mergeProps = (
 ): OpenFileButtonProps => ({
     fileExtension: '.py',
     tooltip: 'Load file',
-    icon: 'open.svg',
+    icon: openIcon,
     ...ownProps,
     ...stateProps,
     ...dispatchProps,

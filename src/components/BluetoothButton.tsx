@@ -9,6 +9,8 @@ import { RootState } from '../reducers';
 import { BLEConnectionState } from '../reducers/ble';
 import { BootloaderConnectionState } from '../reducers/bootloader';
 import ActionButton, { ActionButtonProps } from './ActionButton';
+import btConnectedIcon from './images/bt-connected.svg';
+import btDisconnectedIcon from './images/bt-disconnected.svg';
 
 type Dispatch = ThunkDispatch<{}, {}, AnyAction>;
 
@@ -23,14 +25,14 @@ const mapStateToProps = (state: RootState): StateProps => {
     ) {
         return {
             tooltip: 'Connect using Bluetooth',
-            icon: 'btdisconnected.svg',
+            icon: btDisconnectedIcon,
             context: 'connect',
             enabled: true,
         };
     } else {
         return {
             tooltip: 'Disconnect Bluetooth',
-            icon: 'btconnected.svg',
+            icon: btConnectedIcon,
             context: 'disconnect',
             enabled: state.ble.connection === BLEConnectionState.Connected,
         };

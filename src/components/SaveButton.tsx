@@ -6,6 +6,7 @@ import { Dispatch } from 'redux';
 import * as editor from '../actions/editor';
 import { RootState } from '../reducers';
 import ActionButton, { ActionButtonProps } from './ActionButton';
+import downloadIcon from './images/download.svg';
 
 type StateProps = Pick<ActionButtonProps, 'enabled' | 'context'>;
 type DispatchProps = Pick<ActionButtonProps, 'onAction'>;
@@ -27,7 +28,7 @@ const mergeProps = (
     ownProps: OwnProps,
 ): ActionButtonProps => ({
     tooltip: 'Save file',
-    icon: 'download.svg',
+    icon: downloadIcon,
     ...ownProps,
     ...stateProps,
     ...dispatchProps,

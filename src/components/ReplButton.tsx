@@ -8,6 +8,7 @@ import { startRepl } from '../actions/hub';
 import { RootState } from '../reducers';
 import { HubRuntimeState } from '../reducers/hub';
 import ActionButton, { ActionButtonProps } from './ActionButton';
+import replIcon from './images/repl.svg';
 
 type Dispatch = ThunkDispatch<{}, {}, AnyAction>;
 
@@ -33,7 +34,7 @@ const mergeProps = (
     ownProps: OwnProps,
 ): ActionButtonProps => ({
     tooltip: 'Start REPL in terminal',
-    icon: 'repl.svg',
+    icon: replIcon,
     ...ownProps,
     ...stateProps,
     ...dispatchProps,
