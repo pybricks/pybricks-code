@@ -6,6 +6,7 @@ import { Action, Dispatch } from '../actions';
 import { RootState } from '../reducers';
 import bootloader from './bootloader';
 import editor from './editor';
+import errorLog from './error-log';
 
 type Service = (action: Action, dispatch: Dispatch, state: RootState) => Promise<void>;
 
@@ -27,7 +28,7 @@ export function combineServices(...services: Service[]): Service {
     };
 }
 
-const rootService = combineServices(bootloader, editor);
+const rootService = combineServices(bootloader, editor, errorLog);
 
 const serviceMiddleware: Middleware = (store) => (next) => (action): unknown => {
     runService(rootService, action, store.dispatch, store.getState());
