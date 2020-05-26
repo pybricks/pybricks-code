@@ -60,3 +60,8 @@ export interface EditorOpenAction extends Action<EditorActionType.Open> {
 export function open(data: ArrayBuffer): EditorOpenAction {
     return { type: EditorActionType.Open, data };
 }
+
+/**
+ * Common type for all editor actions.
+ */
+export type EditorAction = CurrentEditorAction | EditorOpenAction | EditorSaveAction;

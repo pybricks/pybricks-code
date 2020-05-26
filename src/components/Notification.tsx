@@ -4,7 +4,7 @@
 import React from 'react';
 import Toast from 'react-bootstrap/Toast';
 import { connect } from 'react-redux';
-import { Dispatch } from 'redux';
+import { Dispatch } from '../actions';
 import * as notification from '../actions/notification';
 
 interface DispatchProps {

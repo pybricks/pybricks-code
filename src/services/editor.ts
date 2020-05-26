@@ -2,7 +2,7 @@
 // Copyright (c) 2020 The Pybricks Authors
 
 import * as FileSaver from 'file-saver';
-import { Action, Dispatch } from 'redux';
+import { Action, Dispatch } from '../actions';
 import { EditorActionType, EditorOpenAction } from '../actions/editor';
 import { RootState } from '../reducers';
 import { combineServices } from '.';

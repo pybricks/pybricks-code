@@ -2,6 +2,7 @@
 // Copyright (c) 2020 The Pybricks Authors
 
 import { Reducer, combineReducers } from 'redux';
+import { Action } from '../actions';
 import {
     BootloaderConnectionActionType,
     BootloaderRequestActionType,
@@ -30,7 +31,7 @@ export enum BootloaderConnectionState {
     Disconnecting = 'bootloader.connection.disconnecting',
 }
 
-const connection: Reducer<BootloaderConnectionState> = (
+const connection: Reducer<BootloaderConnectionState, Action> = (
     state = BootloaderConnectionState.Disconnected,
     action,
 ) => {
@@ -124,7 +125,7 @@ export enum FirmwareFlashState {
     Error = 'bootloader.flash.error',
 }
 
-const flash: Reducer<FirmwareFlashState> = (
+const flash: Reducer<FirmwareFlashState, Action> = (
     state = FirmwareFlashState.EndDisconnect,
     action,
 ) => {

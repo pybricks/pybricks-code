@@ -2,7 +2,7 @@
 // Copyright (c) 2020 The Pybricks Authors
 
 import { connect } from 'react-redux';
-import { Dispatch } from 'redux';
+import { Dispatch } from '../actions';
 import * as editor from '../actions/editor';
 import * as notification from '../actions/notification';
 import { RootState } from '../reducers';
