@@ -119,6 +119,20 @@ export function didDisconnect(): BootloaderConnectionDidDisconnectAction {
 }
 
 /**
+ * Common type for all bootloader connection actions.
+ */
+export type BootloaderConnectionAction =
+    | BootloaderConnectionConnectAction
+    | BootloaderConnectionDidConnectAction
+    | BootloaderConnectionDidCancelAction
+    | BootloaderConnectionDidErrorAction
+    | BootloaderConnectionSendAction
+    | BootloaderConnectionDidSendAction
+    | BootloaderConnectionDidSendAction
+    | BootloaderConnectionDidReceiveAction
+    | BootloaderConnectionDidDisconnectAction;
+
+/**
  * Bootloader request actions for sending commands over the connection.
  */
 export enum BootloaderRequestActionType {
@@ -415,6 +429,18 @@ export function errorResponse(command: Command): BootloaderErrorResponseAction {
 }
 
 /**
+ * Common type for all bootloader response actions.
+ */
+export type BootloaderResponseAction =
+    | BootloaderEraseResponseAction
+    | BootloaderProgramResponseAction
+    | BootloaderInitResponseAction
+    | BootloaderInfoResponseAction
+    | BootloaderChecksumResponseAction
+    | BootloaderStateResponseAction
+    | BootloaderErrorResponseAction;
+
+/**
  * High-level bootloader actions.
  */
 export enum BootloaderActionType {
@@ -464,6 +490,9 @@ export function progress(
     return { type: BootloaderActionType.FlashProgress, complete, total };
 }
 
+/**
+ * Common type for all high-level bootloader actions.
+ */
 export type BootloaderAction =
     | BootloaderFlashFirmwareAction
     | BootloaderFlashProgressAction;

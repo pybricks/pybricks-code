@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020 The Pybricks Authors
 
-import { Action } from 'redux';
 import { runSaga, stdChannel } from 'redux-saga';
+import { Action } from '../actions';
 import {
     BootloaderRequestActionType,
     checksumRequest,

@@ -4,7 +4,6 @@
 import cPlusHubZip from '@pybricks/firmware/build/cplushub.zip';
 import moveHubZip from '@pybricks/firmware/build/movehub.zip';
 import JSZip from 'jszip';
-import { Action } from 'redux';
 import { Channel, buffers } from 'redux-saga';
 import {
     Effect,
@@ -18,6 +17,7 @@ import {
     take,
     takeEvery,
 } from 'redux-saga/effects';
+import { Action } from '../actions';
 import {
     BootloaderActionType,
     BootloaderChecksumResponseAction,
@@ -38,6 +38,7 @@ import {
     BootloaderProgramResponseAction,
     BootloaderRequestAction,
     BootloaderRequestActionType,
+    BootloaderResponseAction,
     BootloaderResponseActionType,
     checksumRequest,
     checksumResponse,
@@ -95,13 +96,15 @@ const firmwareZipMap = new Map<HubType, string>([
 /**
  * Converts a request action into bytecodes and creates a new action to send
  * the bytecodes to to the device.
- * @param action The request action that was observed.
  */
 function* encodeRequest(): Generator {
     // Using a while loop to serialize sending data to avoid "busy" errors.
 
     const chan = (yield actionChannel(
-        (a: Action) => Object.values(BootloaderRequestActionType).includes(a.type),
+        (a: Action) =>
+            Object.values(BootloaderRequestActionType).includes(
+                a.type as BootloaderRequestActionType,
+            ),
         buffers.expanding(),
     )) as Channel<BootloaderRequestAction>;
     while (true) {
@@ -200,7 +203,7 @@ function* decodeResponse(action: BootloaderConnectionDidReceiveAction): Generato
 /**
  * Helper type for return value of wait() function.
  */
-type WaitResponse<T extends Action<BootloaderResponseActionType>> = [
+type WaitResponse<T extends BootloaderResponseAction> = [
     T,
     BootloaderErrorResponseAction,
     boolean,

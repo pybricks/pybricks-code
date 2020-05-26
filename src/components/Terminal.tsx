@@ -4,10 +4,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import ResizeObserver from 'react-resize-observer';
-import { Dispatch } from 'redux';
 import { Subscription } from 'rxjs';
 import { Terminal as XTerm } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
+import { Dispatch } from '../actions';
 import { receiveData } from '../actions/terminal';
 import { terminalOutput } from '../epics/terminal';
 

@@ -3,14 +3,12 @@
 
 import { Ace } from 'ace-builds';
 import { Reducer, combineReducers } from 'redux';
-import { CurrentEditorAction, EditorActionType } from '../actions/editor';
+import { Action } from '../actions';
+import { EditorActionType } from '../actions/editor';
 
 type CurrentEditSession = Ace.EditSession | null;
 
-const current: Reducer<CurrentEditSession, CurrentEditorAction> = (
-    state = null,
-    action,
-) => {
+const current: Reducer<CurrentEditSession, Action> = (state = null, action) => {
     switch (action.type) {
         case EditorActionType.Current:
             return action.editSession || null;

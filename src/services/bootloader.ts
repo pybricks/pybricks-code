@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020 The Pybricks Authors
 
-import { Action, Dispatch } from 'redux';
+import { Action, Dispatch } from '../actions';
+
 import {
     BootloaderConnectionActionType,
-    BootloaderConnectionSendAction,
     didCancel,
     didConnect,
     didDisconnect,
@@ -130,11 +130,10 @@ async function send(action: Action, dispatch: Dispatch): Promise<void> {
         if (!char) {
             throw Error('Not connected');
         }
-        const sendAction = action as BootloaderConnectionSendAction;
-        if (sendAction.withResponse) {
-            await char.xWriteValueWithResponse(sendAction.data);
+        if (action.withResponse) {
+            await char.xWriteValueWithResponse(action.data);
         } else {
-            await char.xWriteValueWithoutResponse(sendAction.data);
+            await char.xWriteValueWithoutResponse(action.data);
         }
         dispatch(didSend());
     } catch (err) {
