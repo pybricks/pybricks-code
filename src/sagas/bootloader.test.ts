@@ -7,6 +7,7 @@ import {
     BootloaderRequestActionType,
     checksumRequest,
     checksumResponse,
+    didError,
     didReceive,
     didRequest,
     didSend,
@@ -25,7 +26,13 @@ import {
     stateRequest,
     stateResponse,
 } from '../actions/bootloader';
-import { Command, HubType, ProtectionLevel, Result } from '../protocols/bootloader';
+import {
+    Command,
+    HubType,
+    ProtectionLevel,
+    ProtocolError,
+    Result,
+} from '../protocols/bootloader';
 import { createCountFunc } from '../utils/iter';
 import bootloader from './bootloader';
 
@@ -256,6 +263,72 @@ describe('message decoder', () => {
             errorResponse(Command.GetFlashState),
         ],
     ])('decode %s response', async (_n, message, expected) => {
+        const response = new Uint8Array(message);
+        const channel = stdChannel();
+        const dispatched = new Array<Action>();
+        const task = runSaga(
+            {
+                channel,
+                dispatch: (action: Action) => dispatched.push(action),
+            },
+            bootloader,
+        );
+        channel.put(didReceive(new DataView(response.buffer)));
+        task.cancel();
+        await task.toPromise();
+        expect(dispatched[0]).toEqual(expected);
+    });
+
+    test.each([
+        [
+            'bad error bytecode',
+            [
+                0x05, // length
+                0x00, // unused (hub id)
+                0x04, // **invalid message type**
+                0x77, // get flash state command
+                0x05, // command not recognized
+            ],
+            didError(
+                new ProtocolError(
+                    'expecting error bytecode 0x05 but got 0x04',
+                    new DataView(new Uint8Array().buffer),
+                ),
+            ),
+        ],
+        [
+            'unknown error code',
+            [
+                0x05, // length
+                0x00, // unused (hub id)
+                0x05, // flash loader error message
+                0x77, // get flash state command
+                0x04, // **invalid error code**
+            ],
+            didError(
+                new ProtocolError(
+                    'unknown error code: 0x04',
+                    new DataView(new Uint8Array().buffer),
+                ),
+            ),
+        ],
+        [
+            'unknown response',
+            [
+                0x00, // **bad command**
+                0x01, // **junk**
+                0x02, // **junk**
+                0x03, // **junk**
+                0x04, // **junk**
+            ],
+            didError(
+                new ProtocolError(
+                    'unknown bootloader response type: 0x00',
+                    new DataView(new Uint8Array().buffer),
+                ),
+            ),
+        ],
+    ])('protocol error', async (_n, message, expected) => {
         const response = new Uint8Array(message);
         const channel = stdChannel();
         const dispatched = new Array<Action>();

@@ -78,6 +78,20 @@ export enum ProtectionLevel {
 }
 
 /**
+ * Protocol error. Thrown e.g. when there is a malformed message.
+ */
+export class ProtocolError extends Error {
+    /**
+     * Creates a new ProtocolError.
+     * @param message The error message
+     * @param data The bytecodes that caused the error
+     */
+    constructor(message: string, public data: DataView) {
+        super(message);
+    }
+}
+
+/**
  * Creates a new message to erase the flash memory.
  */
 export function createEraseFlashRequest(): Uint8Array {
@@ -192,11 +206,20 @@ export function parseErrorResponse(msg: DataView): Command {
     assert(msg.getUint8(0) === 5, 'unexpected length');
     // Error responses are ordered differently compared to command responses.
     if (msg.getUint8(2) !== ErrorBytecode) {
-        throw Error('expecting error');
+        throw new ProtocolError(
+            `expecting error bytecode 0x05 but got 0x${msg
+                .getUint8(2)
+                .toString(16)
+                .padStart(2, '0')}`,
+            msg,
+        );
     }
     if (msg.getUint8(4) !== ErrorCode.UnknownCommand) {
         // "command not recognized" is only possible error code
-        throw Error('unexpected error code');
+        throw new ProtocolError(
+            `unknown error code: 0x${msg.getUint8(4).toString(16).padStart(2, '0')}`,
+            msg,
+        );
     }
     const command = msg.getUint8(3);
     return command;
