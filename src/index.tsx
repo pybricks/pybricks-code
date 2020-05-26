@@ -10,6 +10,7 @@ import { createEpicMiddleware } from 'redux-observable';
 import createSagaMiddleware from 'redux-saga';
 import thunkMiddleware from 'redux-thunk';
 import './index.scss';
+import * as notification from './actions/notification';
 import App from './components/App';
 import NotificationStack from './components/NotificationStack';
 import rootEpic from './epics';
@@ -50,4 +51,17 @@ ReactDOM.render(
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.register();
+serviceWorker.register({
+    onUpdate: () => {
+        store.dispatch(
+            notification.add(
+                'info',
+                'New content is available and will be used when all ' +
+                    'tabs for this page are closed. See https://bit.ly/CRA-PWA.',
+            ),
+        );
+    },
+    onSuccess: () => {
+        store.dispatch(notification.add('info', 'Content is cached for offline use.'));
+    },
+});
