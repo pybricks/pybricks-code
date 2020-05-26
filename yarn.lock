@@ -1254,6 +1254,11 @@
   resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.4.0.tgz#0e1bdf8d021e7ea58affade33d9d607e11365915"
   integrity sha512-NMrDy6EWh9TPdSRiHmHH2ye1v5U0gBD7pRYwSwJvomx7Bm4GG04vu63dYiVzebLOx2obPpJugew06xVP0Nk7hA==
 
+"@pybricks/firmware@^1.0.0":
+  version "1.0.0"
+  resolved "https://npm.pkg.github.com/download/@pybricks/firmware/1.0.0/dfc52164caa622a8c5e0c59d110319441b7966f25e4d2764d592ce7b56672465#3f763dff5751d8e4b8ff94f73678ee30ac52233b"
+  integrity sha512-eMGuzLRKVMvnZc093/7aW5/fGtRfz39aSLy+Drhc6j4tJqySBdRhNk709mH7ZYMj4RJ2D6mWNbuzi3LVGsVkAA==
+
 "@pybricks/mpy-cross-v4@^1.0.0":
   version "1.0.0"
   resolved "https://npm.pkg.github.com/download/@pybricks/mpy-cross-v4/1.0.0/1961a986e77b302cb05c3e6dc03feefe06292488a05d23ea32d27e2f625e782a#82633377519ba904dbd3e0f700a4b38f8212a80f"

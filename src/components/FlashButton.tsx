@@ -10,7 +10,7 @@ import { BootloaderConnectionState } from '../reducers/bootloader';
 import OpenFileButton, { OpenFileButtonProps } from './OpenFileButton';
 
 type StateProps = Pick<OpenFileButtonProps, 'enabled'>;
-type DispatchProps = Pick<OpenFileButtonProps, 'onFile' | 'onReject'>;
+type DispatchProps = Pick<OpenFileButtonProps, 'onFile' | 'onReject' | 'onClick'>;
 type OwnProps = Pick<OpenFileButtonProps, 'id'>;
 
 const mapStateToProps = (state: RootState): StateProps => ({
@@ -25,6 +25,9 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
         dispatch(
             notification.add('error', `'${file.name}' is not a valid firmware file.`),
         );
+    },
+    onClick: (): void => {
+        dispatch(flashFirmware());
     },
 });
 

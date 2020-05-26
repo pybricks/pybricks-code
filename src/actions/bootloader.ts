@@ -428,12 +428,20 @@ export enum BootloaderActionType {
     FlashProgress = 'bootloader.action.flash.progress',
 }
 
+/**
+ * Action that flashes firmware to a hub.
+ */
 export interface BootloaderFlashFirmwareAction
     extends Action<BootloaderActionType.FlashFirmware> {
-    data: ArrayBuffer;
+    /** The firmware zip file data or undefined to get firmware later. */
+    data?: ArrayBuffer;
 }
 
-export function flashFirmware(data: ArrayBuffer): BootloaderFlashFirmwareAction {
+/**
+ * Creates a new action to flash firmware to a hub.
+ * @param data The firmware zip file data or undefined to get firmware later.
+ */
+export function flashFirmware(data?: ArrayBuffer): BootloaderFlashFirmwareAction {
     return { type: BootloaderActionType.FlashFirmware, data };
 }
 

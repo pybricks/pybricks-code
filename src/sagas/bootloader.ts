@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020 The Pybricks Authors
 
+import cPlusHubZip from '@pybricks/firmware/build/cplushub.zip';
+import moveHubZip from '@pybricks/firmware/build/movehub.zip';
 import JSZip from 'jszip';
 import { Action } from 'redux';
 import { Channel, buffers } from 'redux-saga';
@@ -81,6 +83,11 @@ import {
     parseProgramFlashResponse,
 } from '../protocols/bootloader';
 import { fmod, sumComplement32 } from '../utils/math';
+
+const firmwareZipMap = new Map<HubType, string>([
+    [HubType.CPlusHub, cPlusHubZip],
+    [HubType.MoveHub, moveHubZip],
+]);
 
 /**
  * Converts a request action into bytecodes and creates a new action to send
@@ -227,11 +234,13 @@ function* firmwareIterator(data: DataView, maxSize: number): Generator<number> {
 }
 
 /**
- * Flashes firmware to a Powered Up device.
- * @param action The action that triggered this saga.
+ * Loads Pybricks firmware from a .zip file
+ * @param data The zip file raw data
  */
-function* flashFirmware(action: BootloaderFlashFirmwareAction): Generator {
-    const zip = (yield call(() => JSZip().loadAsync(action.data))) as JSZip;
+function* loadFirmware(
+    data: ArrayBuffer,
+): Generator<unknown, { firmware: Uint8Array; deviceId: HubType }> {
+    const zip = (yield call(() => JSZip.loadAsync(data))) as JSZip;
     const firmwareBase = (yield call(() =>
         zip.file('firmware-base.bin').async('uint8array'),
     )) as Uint8Array;
@@ -279,6 +288,21 @@ function* flashFirmware(action: BootloaderFlashFirmwareAction): Generator {
         true,
     );
 
+    return { firmware, deviceId: metadata['device-id'] };
+}
+
+/**
+ * Flashes firmware to a Powered Up device.
+ * @param action The action that triggered this saga.
+ */
+function* flashFirmware(action: BootloaderFlashFirmwareAction): Generator {
+    let firmware: Uint8Array | undefined = undefined;
+    let deviceId: HubType | undefined = undefined;
+
+    if (action.data !== undefined) {
+        ({ firmware, deviceId } = yield* loadFirmware(action.data));
+    }
+
     yield put(connect());
     const didConnect = (yield take([
         BootloaderConnectionActionType.DidConnect,
@@ -306,10 +330,38 @@ function* flashFirmware(action: BootloaderFlashFirmwareAction): Generator {
         throw Error(`failed to get info: ${info}`);
     }
 
-    if (info[0].hubType !== metadata['device-id']) {
-        throw Error(
-            `Connected to ${info[0].hubType} but firmware is for ${metadata['device-id']}`,
-        );
+    if (deviceId !== undefined && info[0].hubType !== deviceId) {
+        throw Error(`Connected to ${info[0].hubType} but firmware is for ${deviceId}`);
+    }
+
+    if (firmware === undefined) {
+        const firmwarePath = firmwareZipMap.get(info[0].hubType);
+        if (firmwarePath === undefined) {
+            yield put(
+                notification.add(
+                    'error',
+                    "Sorry, we don't have firmware for this hub yet.",
+                ),
+            );
+            yield put(disconnectRequest());
+            return;
+        }
+
+        const response = (yield call(() => fetch(firmwarePath))) as Response;
+        if (!response.ok) {
+            yield put(notification.add('error', 'Failed to fetch firmware.'));
+            yield put(disconnectRequest());
+            return;
+        }
+
+        const data = (yield call(() => response.arrayBuffer())) as ArrayBuffer;
+        ({ firmware, deviceId } = yield* loadFirmware(data));
+
+        if (deviceId !== undefined && info[0].hubType !== deviceId) {
+            throw Error(
+                `Connected to ${info[0].hubType} but firmware is for ${deviceId}`,
+            );
+        }
     }
 
     // City hub bootloader is buggy. See note in encodeRequest().
