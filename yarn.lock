@@ -9121,10 +9121,10 @@ raw-body@2.4.0:
     iconv-lite "0.4.24"
     unpipe "1.0.0"
 
-react-ace@^8.1.0:
-  version "8.1.0"
-  resolved "https://registry.yarnpkg.com/react-ace/-/react-ace-8.1.0.tgz#6680accb7306a1850e6ef4370a00f0007eadc8b4"
-  integrity sha512-n3rm9gRNZjLGlXJQ587RASOQCPn6WlcV2gjRYwvG3gyVpBf4pY6lh/uI9tDkx2zYdEKJUfnGbTmzEGL5yyDWuw==
+react-ace@^9.0.0:
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/react-ace/-/react-ace-9.0.0.tgz#9529e2343b520de288753cbfcfdca3bf71a204d8"
+  integrity sha512-wcVlnffzKif2ejHCvTpawYS5jglTCsIUmLENo4hiwPU0vViKl/xuKp9afjKEQHzjLua9NfzbH8gA79GzGpmSnA==
   dependencies:
     ace-builds "^1.4.6"
     diff-match-patch "^1.0.4"
