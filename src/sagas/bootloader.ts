@@ -84,6 +84,7 @@ import {
     parseInitLoaderResponse,
     parseProgramFlashResponse,
 } from '../protocols/bootloader';
+import { hex } from '../utils';
 import { fmod, sumComplement32 } from '../utils/math';
 
 const firmwareZipMap = new Map<HubType, string>([
@@ -187,9 +188,7 @@ function* decodeResponse(action: BootloaderConnectionDidReceiveAction): Generato
                 break;
             default:
                 throw new ProtocolError(
-                    `unknown bootloader response type: 0x${responseType
-                        .toString(16)
-                        .padStart(2, '0')}`,
+                    `unknown bootloader response type: ${hex(responseType, 2)}`,
                     action.data,
                 );
         }

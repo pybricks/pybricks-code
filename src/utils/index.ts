@@ -13,3 +13,12 @@ export function assert(condition: boolean, message: string): void {
         throw Error(message);
     }
 }
+
+/**
+ * Formats a number as hex (0x00...)
+ * @param n The number to format
+ * @param pad The total number of digits padded with leading 0s
+ */
+export function hex(n: number, pad: number): string {
+    return `0x${n.toString(16).padStart(pad, '0')}`;
+}
