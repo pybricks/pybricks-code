@@ -8,6 +8,7 @@ import { stop } from '../actions/hub';
 import { RootState } from '../reducers';
 import { HubRuntimeState } from '../reducers/hub';
 import ActionButton, { ActionButtonProps } from './ActionButton';
+import stopIcon from './images/stop.svg';
 
 type Dispatch = ThunkDispatch<{}, {}, AnyAction>;
 
@@ -31,7 +32,7 @@ const mergeProps = (
     ownProps: OwnProps,
 ): ActionButtonProps => ({
     tooltip: 'Stop everything',
-    icon: 'stop.svg',
+    icon: stopIcon,
     ...ownProps,
     ...stateProps,
     ...dispatchProps,

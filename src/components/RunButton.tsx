@@ -11,6 +11,7 @@ import * as notification from '../actions/notification';
 import { RootState } from '../reducers';
 import { HubRuntimeState } from '../reducers/hub';
 import ActionButton, { ActionButtonProps } from './ActionButton';
+import runIcon from './images/run.svg';
 
 type Dispatch = ThunkDispatch<{}, {}, AnyAction>;
 
@@ -53,7 +54,7 @@ const mergeProps = (
     ownProps: OwnProps,
 ): ButtonProps => ({
     tooltip: 'Download and run this program',
-    icon: 'run.svg',
+    icon: runIcon,
     ...ownProps,
     ...stateProps,
     ...dispatchProps,

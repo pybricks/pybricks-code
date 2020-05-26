@@ -101,10 +101,7 @@ class OpenFileButton extends React.Component<OpenFileButtonProps> {
                                 : {})}
                         >
                             <input {...getInputProps()} />
-                            <Image
-                                src={`/static/images/${this.props.icon}`}
-                                alt={this.props.id}
-                            />
+                            <Image src={this.props.icon} alt={this.props.id} />
                         </Button>
                     </OverlayTrigger>
                 )}

@@ -8,6 +8,7 @@ import * as notification from '../actions/notification';
 import { RootState } from '../reducers';
 import { BootloaderConnectionState } from '../reducers/bootloader';
 import OpenFileButton, { OpenFileButtonProps } from './OpenFileButton';
+import firmwareIcon from './images/firmware.svg';
 
 type StateProps = Pick<OpenFileButtonProps, 'enabled'>;
 type DispatchProps = Pick<OpenFileButtonProps, 'onFile' | 'onReject' | 'onClick'>;
@@ -38,7 +39,7 @@ const mergeProps = (
 ): OpenFileButtonProps => ({
     fileExtension: '.zip',
     tooltip: 'Flash hub firmware',
-    icon: 'firmware.svg',
+    icon: firmwareIcon,
     ...ownProps,
     ...stateProps,
     ...dispatchProps,
