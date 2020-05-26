@@ -23,6 +23,8 @@ export interface OpenFileButtonProps {
     readonly onFile: (data: ArrayBuffer) => void;
     /** Callback that is called when a file has been rejected (e.g. bad file extension). */
     readonly onReject: (file: File) => void;
+    /** If defined, will call custom function instead of opening file browser. */
+    readonly onClick?: () => void;
 }
 
 /**
@@ -70,6 +72,8 @@ class OpenFileButton extends React.Component<OpenFileButtonProps> {
                 onDropRejected={this.onDropRejected}
                 accept={this.props.fileExtension}
                 multiple={false}
+                noClick={this.props.onClick !== undefined}
+                noKeyboard={this.props.onClick !== undefined}
             >
                 {({ getRootProps, getInputProps }): JSX.Element => (
                     <OverlayTrigger
@@ -89,6 +93,12 @@ class OpenFileButton extends React.Component<OpenFileButtonProps> {
                                     ? { pointerEvents: 'none' }
                                     : undefined
                             }
+                            // onClick={this.props.onClick}
+                            // breaks Dropzone when this.props.onClick is undefined
+                            // so we have to do it the long way
+                            {...(this.props.onClick
+                                ? { onClick: this.props.onClick }
+                                : {})}
                         >
                             <input {...getInputProps()} />
                             <Image
