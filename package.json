@@ -38,7 +38,7 @@
         "redux-thunk": "^2.3.0",
         "typescript": "~3.9.3",
         "xterm": "^4.6.0",
-        "xterm-addon-fit": "^0.3.0"
+        "xterm-addon-fit": "^0.4.0"
     },
     "scripts": {
         "prepare": "mkdir -p public/static/js && cp node_modules/@pybricks/mpy-cross-v4/build/mpy-cross.wasm public/static/js/",
