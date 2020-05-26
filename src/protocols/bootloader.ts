@@ -3,7 +3,7 @@
 
 // Ref: https://lego.github.io/lego-ble-wireless-protocol-docs/index.html#lego-hub-boot-loader-service
 
-import { assert } from '../utils';
+import { assert, hex } from '../utils';
 
 /**
  * LEGO Powered Up Bootloader Service UUID.
@@ -207,19 +207,13 @@ export function parseErrorResponse(msg: DataView): Command {
     // Error responses are ordered differently compared to command responses.
     if (msg.getUint8(2) !== ErrorBytecode) {
         throw new ProtocolError(
-            `expecting error bytecode 0x05 but got 0x${msg
-                .getUint8(2)
-                .toString(16)
-                .padStart(2, '0')}`,
+            `expecting error bytecode 0x05 but got ${hex(msg.getUint8(2), 2)}`,
             msg,
         );
     }
     if (msg.getUint8(4) !== ErrorCode.UnknownCommand) {
         // "command not recognized" is only possible error code
-        throw new ProtocolError(
-            `unknown error code: 0x${msg.getUint8(4).toString(16).padStart(2, '0')}`,
-            msg,
-        );
+        throw new ProtocolError(`unknown error code: ${hex(msg.getUint8(4), 2)}`, msg);
     }
     const command = msg.getUint8(3);
     return command;
