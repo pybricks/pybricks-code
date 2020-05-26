@@ -42,6 +42,7 @@ import {
     checksumRequest,
     checksumResponse,
     connect,
+    didError,
     didRequest,
     disconnectRequest,
     eraseRequest,
@@ -65,6 +66,7 @@ import {
     ErrorBytecode,
     HubType,
     MaxProgramFlashSize,
+    ProtocolError,
     createDisconnectRequest,
     createEraseFlashRequest,
     createGetChecksumRequest,
@@ -184,11 +186,15 @@ function* decodeResponse(action: BootloaderConnectionDidReceiveAction): Generato
                 yield put(errorResponse(parseErrorResponse(action.data)));
                 break;
             default:
-                throw new Error(`Unknown bootloader response action ${action}`);
+                throw new ProtocolError(
+                    `unknown bootloader response type: 0x${responseType
+                        .toString(16)
+                        .padStart(2, '0')}`,
+                    action.data,
+                );
         }
     } catch (err) {
-        // TODO: dispatch an error action
-        console.error(`Error decoding message: ${err}`);
+        yield put(didError(err));
     }
 }
 
