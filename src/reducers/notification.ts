@@ -12,6 +12,15 @@ import { NotificationActionType } from '../actions/notification';
 import { ServiceWorkerActionType } from '../actions/service-worker';
 import { createCountFunc } from '../utils/iter';
 
+export enum MessageId {
+    BleCannotWriteWithoutResponse = 'ble.cannotWriteWithoutResponse',
+    BleConnectFailed = 'ble.connectFailed',
+    BleGattServiceNotFound = 'ble.gattServiceNotFound',
+    BleNoWebBluetooth = 'ble.noWebBluetooth',
+    ServiceWorkerSuccess = 'serviceWorker.success',
+    ServiceWorkerUpdate = 'serviceWorker.update',
+}
+
 /**
  * Severity level of notification.
  */
@@ -34,7 +43,7 @@ export interface Notification {
     readonly id: number;
     readonly level: Level;
     readonly message?: string;
-    readonly messageId?: string;
+    readonly messageId?: MessageId;
     readonly helpUrl?: string;
 }
 
@@ -45,7 +54,7 @@ const nextId = createCountFunc();
 function append(
     state: NotificationList,
     level: Level,
-    messageId: string,
+    messageId: MessageId,
     helpUrl?: string,
 ): NotificationList {
     return [...state, { id: nextId(), level, messageId, helpUrl }];
@@ -58,7 +67,7 @@ const list: Reducer<NotificationList, Action> = (state = [], action) => {
                 return append(
                     state,
                     Level.Warning,
-                    'bootloader.connection.didConnect.cannotWriteWithoutResponse',
+                    MessageId.BleCannotWriteWithoutResponse,
                     'https://github.com/WebBluetoothCG/web-bluetooth/blob/master/implementation-status.md',
                 );
             }
@@ -66,24 +75,16 @@ const list: Reducer<NotificationList, Action> = (state = [], action) => {
         case BootloaderConnectionActionType.DidFailToConnect:
             switch (action.reason) {
                 case BootloaderConnectionFailureReason.GattServiceNotFound:
-                    return append(
-                        state,
-                        Level.Error,
-                        'bootloader.connection.didFailToConnect.gattServiceNotFound',
-                    );
+                    return append(state, Level.Error, MessageId.BleGattServiceNotFound);
                 case BootloaderConnectionFailureReason.NoWebBluetooth:
                     return append(
                         state,
                         Level.Error,
-                        'bootloader.connection.didFailToConnect.noWebBluetooth',
+                        MessageId.BleNoWebBluetooth,
                         'https://github.com/WebBluetoothCG/web-bluetooth/blob/master/implementation-status.md',
                     );
                 case BootloaderConnectionFailureReason.Unknown:
-                    return append(
-                        state,
-                        Level.Error,
-                        'bootloader.connection.didFailToConnect.unknown',
-                    );
+                    return append(state, Level.Error, MessageId.BleConnectFailed);
             }
             return state;
         case NotificationActionType.Add:
@@ -102,11 +103,11 @@ const list: Reducer<NotificationList, Action> = (state = [], action) => {
             return append(
                 state,
                 Level.Info,
-                'serviceWorker.update',
+                MessageId.ServiceWorkerUpdate,
                 'https://bit.ly/CRA-PWA',
             );
         case ServiceWorkerActionType.Success:
-            return append(state, Level.Info, 'serviceWorker.success');
+            return append(state, Level.Info, MessageId.ServiceWorkerSuccess);
         default:
             return state;
     }
