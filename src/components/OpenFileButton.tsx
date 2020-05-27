@@ -1,12 +1,15 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020 The Pybricks Authors
 
+import { WithI18nProps, withI18n } from '@shopify/react-i18n';
 import React from 'react';
 import Button from 'react-bootstrap/Button';
 import Image from 'react-bootstrap/Image';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 import Dropzone, { FileRejection } from 'react-dropzone';
+import { TooltipId } from './button';
+import en from './button.en.json';
 
 export interface OpenFileButtonProps {
     /** A unique id for each instance. */
@@ -14,7 +17,7 @@ export interface OpenFileButtonProps {
     /** The accepted file extension */
     readonly fileExtension: string;
     /** Tooltip text that appears when hovering over the button. */
-    readonly tooltip: string;
+    readonly tooltip: TooltipId;
     /** Icon shown on the button. */
     readonly icon: string;
     /** When true or undefined, the button is enabled. */
@@ -27,11 +30,13 @@ export interface OpenFileButtonProps {
     readonly onClick?: () => void;
 }
 
+type Props = OpenFileButtonProps & WithI18nProps;
+
 /**
  * Button that opens a file chooser dialog or accepts files dropped on it.
  */
-class OpenFileButton extends React.Component<OpenFileButtonProps> {
-    constructor(props: OpenFileButtonProps) {
+class OpenFileButton extends React.Component<Props> {
+    constructor(props: Props) {
         super(props);
         this.onDropAccepted = this.onDropAccepted.bind(this);
         this.onDropRejected = this.onDropRejected.bind(this);
@@ -80,7 +85,7 @@ class OpenFileButton extends React.Component<OpenFileButtonProps> {
                         placement="bottom"
                         overlay={
                             <Tooltip id={`${this.props.id}-tooltip`}>
-                                {this.props.tooltip}.
+                                {this.props.i18n.translate(this.props.tooltip)}.
                             </Tooltip>
                         }
                     >
@@ -110,4 +115,6 @@ class OpenFileButton extends React.Component<OpenFileButtonProps> {
     }
 }
 
-export default OpenFileButton;
+export default withI18n({ id: 'openFileButton', fallback: en, translations: { en } })(
+    OpenFileButton,
+);

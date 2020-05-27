@@ -6,6 +6,7 @@ import { Dispatch } from '../actions';
 import * as editor from '../actions/editor';
 import { RootState } from '../reducers';
 import ActionButton, { ActionButtonProps } from './ActionButton';
+import { TooltipId } from './button';
 import downloadIcon from './images/download.svg';
 
 type StateProps = Pick<ActionButtonProps, 'enabled'>;
@@ -27,7 +28,7 @@ const mergeProps = (
     dispatchProps: DispatchProps,
     ownProps: OwnProps,
 ): ActionButtonProps => ({
-    tooltip: 'Download file',
+    tooltip: TooltipId.SaveAs,
     icon: downloadIcon,
     ...ownProps,
     ...stateProps,

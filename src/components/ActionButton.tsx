@@ -1,17 +1,20 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020 The Pybricks Authors
 
+import { WithI18nProps, withI18n } from '@shopify/react-i18n';
 import React from 'react';
 import Button from 'react-bootstrap/Button';
 import Image from 'react-bootstrap/Image';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
+import { TooltipId } from './button';
+import en from './button.en.json';
 
 export interface ActionButtonProps {
     /** A unique id for each instance. */
     readonly id: string;
     /** Tooltip text that appears when hovering over the button. */
-    readonly tooltip: string;
+    readonly tooltip: TooltipId;
     /** Icon shown on the button. */
     readonly icon: string;
     /** When true or undefined, the button is enabled. */
@@ -20,14 +23,16 @@ export interface ActionButtonProps {
     readonly onAction: () => void;
 }
 
-class ActionButton extends React.Component<ActionButtonProps> {
+type Props = ActionButtonProps & WithI18nProps;
+
+class ActionButton extends React.Component<Props> {
     render(): JSX.Element {
         return (
             <OverlayTrigger
                 placement="bottom"
                 overlay={
                     <Tooltip id={`${this.props.id}-tooltip`}>
-                        {this.props.tooltip}.
+                        {this.props.i18n.translate(this.props.tooltip)}.
                     </Tooltip>
                 }
             >
@@ -48,4 +53,6 @@ class ActionButton extends React.Component<ActionButtonProps> {
     }
 }
 
-export default ActionButton;
+export default withI18n({ id: 'actionButton', fallback: en, translations: { en } })(
+    ActionButton,
+);

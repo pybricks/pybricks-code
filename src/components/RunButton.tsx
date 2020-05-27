@@ -7,6 +7,7 @@ import { downloadAndRun } from '../actions/hub';
 import { RootState } from '../reducers';
 import { HubRuntimeState } from '../reducers/hub';
 import ActionButton, { ActionButtonProps } from './ActionButton';
+import { TooltipId } from './button';
 import runIcon from './images/run.svg';
 
 type StateProps = Pick<ActionButtonProps, 'enabled'>;
@@ -27,6 +28,7 @@ const mergeProps = (
     dispatchProps: DispatchProps,
     ownProps: OwnProps,
 ): ActionButtonProps => ({
+    tooltip: TooltipId.Run,
     icon: runIcon,
     ...ownProps,
     ...stateProps,
