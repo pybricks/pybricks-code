@@ -8,6 +8,7 @@ import {
 } from './bootloader';
 import { EditorAction } from './editor';
 import { NotificationAction } from './notification';
+import { ServiceWorkerAction } from './service-worker';
 import { TerminalDataAction } from './terminal';
 
 /**
@@ -21,6 +22,7 @@ export type Action =
     | BootloaderAction
     | EditorAction
     | NotificationAction
+    | ServiceWorkerAction
     | TerminalDataAction;
 
 /**

@@ -59,7 +59,7 @@ export function add(
     message: string,
     helpUrl?: string,
 ): NotificationAddAction {
-    return { type: NotificationActionType.Add, id: nextId(), level, message, helpUrl };
+    return { type: NotificationActionType.Add, id: -nextId(), level, message, helpUrl };
 }
 
 /**

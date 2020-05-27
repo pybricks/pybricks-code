@@ -5,14 +5,13 @@ import { Action, Dispatch } from '../actions';
 
 import {
     BootloaderConnectionActionType,
-    didCancel,
+    BootloaderConnectionFailureReason as Reason,
     didConnect,
     didDisconnect,
-    didError,
+    didFailToConnect,
     didReceive,
     didSend,
 } from '../actions/bootloader';
-import * as notification from '../actions/notification';
 import { CharacteristicUUID, ServiceUUID } from '../protocols/bootloader';
 import {
     PolyfillBluetoothRemoteGATTCharacteristic,
@@ -33,13 +32,7 @@ async function connect(action: Action, dispatch: Dispatch): Promise<void> {
             throw Error('already connected');
         }
         if (navigator.bluetooth === undefined) {
-            dispatch(
-                notification.add(
-                    'error',
-                    'This web browser does not support Web Bluetooth or it is not enabled.',
-                    'https://github.com/WebBluetoothCG/web-bluetooth/blob/master/implementation-status.md',
-                ),
-            );
+            dispatch(didFailToConnect(Reason.NoWebBluetooth));
             return;
         }
         // TODO: check navigator.bluetooth.getAvailability()
@@ -55,7 +48,7 @@ async function connect(action: Action, dispatch: Dispatch): Promise<void> {
             ) {
                 // this error is received if the user clicks the cancel button in
                 // the bluetooth scan dialog
-                dispatch(didCancel());
+                dispatch(didFailToConnect(Reason.Canceled));
                 return;
             }
             throw err;
@@ -81,44 +74,29 @@ async function connect(action: Action, dispatch: Dispatch): Promise<void> {
                 dispatch(didReceive(char.value));
             });
             await char.startNotifications();
-
-            // char.writeValueWithoutResponse() was introduced in Chrome 85
-            // Older versions of Chrome for Android will write without response
-            // by default, so don't warn on Android.
-            if (
-                !char.writeValueWithoutResponse &&
-                !/Android/i.test(navigator.userAgent)
-            ) {
-                // TODO: this needs to be an error if connected to city hub
-                // however it is not currently possible to get mfg-specific
-                // advertising data, so we don't know what type of hub it is
-                // until after we connect
-                dispatch(
-                    notification.add(
-                        'warning',
-                        'This web browser does not support Web Bluetooth Write Characteristic Without Response. Flashing firmware will take a long time.',
-                        'https://github.com/WebBluetoothCG/web-bluetooth/blob/master/implementation-status.md',
-                    ),
-                );
-            }
         } catch (err) {
+            device.gatt.disconnect();
             if (
                 err instanceof DOMException &&
                 err.code === DOMException.NOT_FOUND_ERR
             ) {
-                dispatch(
-                    notification.add(
-                        'error',
-                        'Connected to hub but failed to get LEGO bootloader service. Try removing the "LEGO Bootloader" device in your OS Bluetooth settings, then try again.',
-                    ),
-                );
+                // Possibly/probably caused by Chrome BlueZ back-end bug
+                // https://chromium-review.googlesource.com/c/chromium/src/+/2214098
+                dispatch(didFailToConnect(Reason.GattServiceNotFound));
+                return;
             }
-            device.gatt.disconnect();
             throw err;
         }
-        dispatch(didConnect(char.writeValueWithoutResponse !== undefined));
+
+        // char.writeValueWithoutResponse() was introduced in Chrome 85.
+        // Older versions of Chrome for Android will write without response
+        // by default when using the deprecated writeValue().
+        const canWriteWithoutResponse =
+            char.writeValueWithoutResponse !== undefined ||
+            /Android/i.test(navigator.userAgent);
+        dispatch(didConnect(canWriteWithoutResponse));
     } catch (err) {
-        dispatch(didError(err));
+        dispatch(didFailToConnect(Reason.Unknown, err));
     }
 }
 

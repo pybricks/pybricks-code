@@ -1,0 +1,18 @@
+{
+    "bootloader": {
+        "connection": {
+            "didConnect": {
+                "cannotWriteWithoutResponse": "This web browser does not support Web Bluetooth Write Characteristic Without Response. Flashing firmware will take a long time."
+            },
+            "didFailToConnect": {
+                "gattServiceNotFound": "Connected to hub but failed to get LEGO bootloader service. Try removing the \"LEGO Bootloader\" device in your OS Bluetooth settings, then try again.",
+                "noWebBluetooth": "This web browser does not support Web Bluetooth or it is not enabled.",
+                "unknown": "Unexpected error while trying to connect. Check console log and report the error."
+            }
+        }
+    },
+    "serviceWorker": {
+        "success": "Content is cached for offline use.",
+        "update": "New content is available and will be used when all tabs for this page are closed.'"
+    }
+}

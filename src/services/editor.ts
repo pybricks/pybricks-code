@@ -9,11 +9,7 @@ import { combineServices } from '.';
 
 const decoder = new TextDecoder();
 
-async function open(
-    action: Action,
-    _dispatch: Dispatch,
-    state: RootState,
-): Promise<void> {
+function open(action: Action, _dispatch: Dispatch, state: RootState): void {
     if (action.type !== EditorActionType.Open) {
         return;
     }
@@ -26,11 +22,7 @@ async function open(
     state.editor.current.getDocument().setValue(text);
 }
 
-async function save(
-    action: Action,
-    _dispatch: Dispatch,
-    state: RootState,
-): Promise<void> {
+function save(action: Action, _dispatch: Dispatch, state: RootState): void {
     if (action.type !== EditorActionType.Save) {
         return;
     }
