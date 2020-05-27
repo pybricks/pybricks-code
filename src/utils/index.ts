@@ -8,7 +8,6 @@
  * @param message Informational message for debugging
  */
 export function assert(condition: boolean, message: string): void {
-    /* istanbul ignore next */
     if (!condition) {
         throw Error(message);
     }
