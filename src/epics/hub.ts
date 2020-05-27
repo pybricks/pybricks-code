@@ -5,13 +5,13 @@ import { AnyAction } from 'redux';
 import { Epic, combineEpics, ofType } from 'redux-observable';
 import { Subject } from 'rxjs';
 import { ignoreElements, take, tap } from 'rxjs/operators';
-import { HubActionType, HubChecksumAction } from '../actions/hub';
+import { HubChecksumMessageAction, HubMessageActionType } from '../actions/hub';
 
 const checksumSubject = new Subject<number>();
 
 const checksum: Epic = (action$) =>
     action$.pipe(
-        ofType<AnyAction, HubChecksumAction>(HubActionType.Checksum),
+        ofType<AnyAction, HubChecksumMessageAction>(HubMessageActionType.Checksum),
         tap((a) => checksumSubject.next(a.checksum)),
         ignoreElements(),
     );

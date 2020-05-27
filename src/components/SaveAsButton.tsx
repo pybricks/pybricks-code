@@ -8,7 +8,7 @@ import { RootState } from '../reducers';
 import ActionButton, { ActionButtonProps } from './ActionButton';
 import downloadIcon from './images/download.svg';
 
-type StateProps = Pick<ActionButtonProps, 'enabled' | 'context'>;
+type StateProps = Pick<ActionButtonProps, 'enabled'>;
 type DispatchProps = Pick<ActionButtonProps, 'onAction'>;
 type OwnProps = Pick<ActionButtonProps, 'id'>;
 
