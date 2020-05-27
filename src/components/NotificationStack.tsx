@@ -6,7 +6,7 @@ import { Collapse } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { TransitionGroup } from 'react-transition-group';
 import { RootState } from '../reducers';
-import { NotificationList } from '../reducers/notification';
+import { Level, NotificationList } from '../reducers/notification';
 import Notification from './Notification';
 
 interface StateProps {
@@ -14,6 +14,17 @@ interface StateProps {
 }
 
 type NotificationStackProps = StateProps;
+
+function mapLevelToStyle(level: Level): string {
+    switch (level) {
+        case Level.Error:
+            return 'danger';
+        case Level.Warning:
+            return 'warning';
+        case Level.Info:
+            return 'info';
+    }
+}
 
 class NotificationStack extends React.Component<NotificationStackProps> {
     render(): JSX.Element {
@@ -33,8 +44,9 @@ class NotificationStack extends React.Component<NotificationStackProps> {
                             <Collapse key={n.id} in={true}>
                                 <Notification
                                     id={n.id}
-                                    style={n.style}
+                                    style={mapLevelToStyle(n.level)}
                                     message={n.message}
+                                    messageId={n.messageId}
                                     helpUrl={n.helpUrl}
                                 />
                             </Collapse>

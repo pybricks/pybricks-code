@@ -44,15 +44,8 @@ const connection: Reducer<BootloaderConnectionState, Action> = (
         case BootloaderRequestActionType.Disconnect:
             return BootloaderConnectionState.Disconnecting;
         case BootloaderConnectionActionType.DidDisconnect:
-        case BootloaderConnectionActionType.DidCancel:
+        case BootloaderConnectionActionType.DidFailToConnect:
             return BootloaderConnectionState.Disconnected;
-        case BootloaderConnectionActionType.DidError:
-            // Error while connecting means we didn't connect.
-            if (state === BootloaderConnectionState.Connecting) {
-                return BootloaderConnectionState.Disconnected;
-            } else {
-                return state;
-            }
         default:
             return state;
     }

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020 The Pybricks Authors
 
+import { I18nContext, I18nManager } from '@shopify/react-i18n';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
@@ -10,7 +11,7 @@ import { createEpicMiddleware } from 'redux-observable';
 import createSagaMiddleware from 'redux-saga';
 import thunkMiddleware from 'redux-thunk';
 import './index.scss';
-import * as notification from './actions/notification';
+import { success, update } from './actions/service-worker';
 import App from './components/App';
 import NotificationStack from './components/NotificationStack';
 import rootEpic from './epics';
@@ -23,6 +24,11 @@ const sagaMiddleware = createSagaMiddleware();
 const epicMiddleware = createEpicMiddleware();
 // TODO: add runtime option or filter - logger affects firmware flash performance
 const loggerMiddleware = createLogger({ predicate: () => false });
+
+const i18n = new I18nManager({
+    locale: 'en',
+    onError: (err): void => console.error(err),
+});
 
 const store = createStore(
     rootReducer,
@@ -41,8 +47,10 @@ epicMiddleware.run(rootEpic);
 ReactDOM.render(
     <React.StrictMode>
         <Provider store={store}>
-            <NotificationStack />
-            <App />
+            <I18nContext.Provider value={i18n}>
+                <NotificationStack />
+                <App />
+            </I18nContext.Provider>
         </Provider>
     </React.StrictMode>,
     document.getElementById('root'),
@@ -52,16 +60,6 @@ ReactDOM.render(
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
 serviceWorker.register({
-    onUpdate: () => {
-        store.dispatch(
-            notification.add(
-                'info',
-                'New content is available and will be used when all ' +
-                    'tabs for this page are closed. See https://bit.ly/CRA-PWA.',
-            ),
-        );
-    },
-    onSuccess: () => {
-        store.dispatch(notification.add('info', 'Content is cached for offline use.'));
-    },
+    onUpdate: (r) => store.dispatch(update(r)),
+    onSuccess: (r) => store.dispatch(success(r)),
 });

@@ -8,7 +8,11 @@ import bootloader from './bootloader';
 import editor from './editor';
 import errorLog from './error-log';
 
-type Service = (action: Action, dispatch: Dispatch, state: RootState) => Promise<void>;
+type Service = (
+    action: Action,
+    dispatch: Dispatch,
+    state: RootState,
+) => void | Promise<void>;
 
 function runService(
     service: Service,
@@ -16,15 +20,20 @@ function runService(
     dispatch: Dispatch,
     state: RootState,
 ): void {
-    service(action, dispatch, state).catch((err) =>
-        console.log(`Unhandled exception in service: ${err}`),
-    );
+    // Services are deferred so that the current action completes before
+    // dispatching another action by calling dispatch() in the service.
+    setTimeout(async () => {
+        try {
+            await service(action, dispatch, state);
+        } catch (err) {
+            console.log(`Unhandled exception in service: ${err}`);
+        }
+    }, 0);
 }
 
 export function combineServices(...services: Service[]): Service {
-    return (a, d, s): Promise<void> => {
+    return (a, d, s): void => {
         services.forEach((x) => runService(x, a, d, s));
-        return Promise.resolve();
     };
 }
 

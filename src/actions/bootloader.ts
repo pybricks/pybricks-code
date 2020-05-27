@@ -18,9 +18,9 @@ export enum BootloaderConnectionActionType {
      */
     DidConnect = 'bootloader.action.connection.did.connect',
     /**
-     * The connection was cancelled.
+     * The connection was not successful.
      */
-    DidCancel = 'bootloader.action.connection.did.cancel',
+    DidFailToConnect = 'bootloader.action.connection.did.connect.fail',
     /**
      * There was a connection error.
      */
@@ -62,12 +62,31 @@ export function didConnect(
     return { type: BootloaderConnectionActionType.DidConnect, canWriteWithoutResponse };
 }
 
-export type BootloaderConnectionDidCancelAction = Action<
-    BootloaderConnectionActionType.DidCancel
->;
+/**
+ * Possible reasons a device could fail to connect.
+ */
+export enum BootloaderConnectionFailureReason {
+    /** The reason is not known */
+    Unknown = 'unknown',
+    /** The connection was canceled */
+    Canceled = 'canceled',
+    /** Web Bluetooth is not available */
+    NoWebBluetooth = 'no-web-bluetooth',
+    /** Connected but failed to find the bootloader GATT service */
+    GattServiceNotFound = 'gatt-service-not-found',
+}
 
-export function didCancel(): BootloaderConnectionDidCancelAction {
-    return { type: BootloaderConnectionActionType.DidCancel };
+export interface BootloaderConnectionDidFailToConnectAction
+    extends Action<BootloaderConnectionActionType.DidFailToConnect> {
+    reason: BootloaderConnectionFailureReason;
+    err?: Error;
+}
+
+export function didFailToConnect(
+    reason: BootloaderConnectionFailureReason,
+    err?: Error,
+): BootloaderConnectionDidFailToConnectAction {
+    return { type: BootloaderConnectionActionType.DidFailToConnect, reason, err };
 }
 
 export interface BootloaderConnectionDidErrorAction
@@ -124,7 +143,7 @@ export function didDisconnect(): BootloaderConnectionDidDisconnectAction {
 export type BootloaderConnectionAction =
     | BootloaderConnectionConnectAction
     | BootloaderConnectionDidConnectAction
-    | BootloaderConnectionDidCancelAction
+    | BootloaderConnectionDidFailToConnectAction
     | BootloaderConnectionDidErrorAction
     | BootloaderConnectionSendAction
     | BootloaderConnectionDidSendAction

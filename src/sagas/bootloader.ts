@@ -22,9 +22,8 @@ import {
     BootloaderActionType,
     BootloaderChecksumResponseAction,
     BootloaderConnectionActionType,
-    BootloaderConnectionDidCancelAction,
     BootloaderConnectionDidConnectAction,
-    BootloaderConnectionDidErrorAction,
+    BootloaderConnectionDidFailToConnectAction,
     BootloaderConnectionDidReceiveAction,
     BootloaderConnectionDidSendAction,
     BootloaderDidRequestAction,
@@ -312,22 +311,15 @@ function* flashFirmware(action: BootloaderFlashFirmwareAction): Generator {
     }
 
     yield put(connect());
-    const didConnect = (yield take([
+    const connectResult = (yield take([
         BootloaderConnectionActionType.DidConnect,
-        BootloaderConnectionActionType.DidCancel,
-        BootloaderConnectionActionType.DidError,
+        BootloaderConnectionActionType.DidFailToConnect,
     ])) as
         | BootloaderConnectionDidConnectAction
-        | BootloaderConnectionDidCancelAction
-        | BootloaderConnectionDidErrorAction;
+        | BootloaderConnectionDidFailToConnectAction;
 
-    if (didConnect.type === BootloaderConnectionActionType.DidCancel) {
+    if (connectResult.type === BootloaderConnectionActionType.DidFailToConnect) {
         return;
-    }
-
-    if (didConnect.type === BootloaderConnectionActionType.DidError) {
-        // TODO: proper error handling
-        throw didConnect.err;
     }
 
     yield put(infoRequest());
@@ -373,7 +365,7 @@ function* flashFirmware(action: BootloaderFlashFirmwareAction): Generator {
     }
 
     // City hub bootloader is buggy. See note in encodeRequest().
-    if (info[0].hubType === HubType.CityHub && !didConnect.canWriteWithoutResponse) {
+    if (info[0].hubType === HubType.CityHub && !connectResult.canWriteWithoutResponse) {
         yield put(
             notification.add(
                 'error',
@@ -420,7 +412,7 @@ function* flashFirmware(action: BootloaderFlashFirmwareAction): Generator {
 
         yield put(progress(offset, firmware.length));
 
-        if (didConnect.canWriteWithoutResponse) {
+        if (connectResult.canWriteWithoutResponse) {
             // request checksum every 8K to prevent buffer overrun on the hub
             // because of sending too much data at once
             if (++count % 585 === 0) {
