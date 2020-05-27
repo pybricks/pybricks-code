@@ -34,7 +34,7 @@ const mergeProps = (
     ownProps: OwnProps,
 ): OpenFileButtonProps => ({
     fileExtension: '.py',
-    tooltip: 'Load file',
+    tooltip: 'Open file',
     icon: openIcon,
     ...ownProps,
     ...stateProps,

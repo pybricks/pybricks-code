@@ -18,7 +18,7 @@ const mapStateToProps = (state: RootState): StateProps => ({
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
     onAction: (): void => {
-        dispatch(editor.save());
+        dispatch(editor.saveAs());
     },
 });
 
@@ -27,7 +27,7 @@ const mergeProps = (
     dispatchProps: DispatchProps,
     ownProps: OwnProps,
 ): ActionButtonProps => ({
-    tooltip: 'Save file',
+    tooltip: 'Download file',
     icon: downloadIcon,
     ...ownProps,
     ...stateProps,

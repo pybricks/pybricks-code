@@ -6,10 +6,10 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
 import BluetoothButton from './BluetoothButton';
 import FlashButton from './FlashButton';
-import LoadButton from './LoadButton';
+import OpenButton from './OpenButton';
 import ReplButton from './ReplButton';
 import RunButton from './RunButton';
-import SaveButton from './SaveButton';
+import SaveAsButton from './SaveAsButton';
 import StopButton from './StopButton';
 
 class Toolbar extends React.Component {
@@ -17,8 +17,8 @@ class Toolbar extends React.Component {
         return (
             <ButtonToolbar className="m-2">
                 <ButtonGroup className="mr-2" size="lg">
-                    <LoadButton id="load" />
-                    <SaveButton id="save" />
+                    <OpenButton id="open" />
+                    <SaveAsButton id="saveAs" />
                 </ButtonGroup>
                 <ButtonGroup className="mr-2" size="lg">
                     <BluetoothButton id="bluetooth" />

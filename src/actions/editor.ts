@@ -12,7 +12,7 @@ export enum EditorActionType {
     /**
      * Save the current file to disk.
      */
-    Save = 'editor.action.save',
+    SaveAs = 'editor.action.saveAs',
     /**
      * Open a file.
      */
@@ -36,13 +36,13 @@ export function setEditSession(
 /**
  * Action that saves the current file.
  */
-export type EditorSaveAction = Action<EditorActionType.Save>;
+export type EditorSaveAsAction = Action<EditorActionType.SaveAs>;
 
 /**
  * Creates an action to save the current file
  */
-export function save(): EditorSaveAction {
-    return { type: EditorActionType.Save };
+export function saveAs(): EditorSaveAsAction {
+    return { type: EditorActionType.SaveAs };
 }
 
 /**
@@ -64,4 +64,4 @@ export function open(data: ArrayBuffer): EditorOpenAction {
 /**
  * Common type for all editor actions.
  */
-export type EditorAction = CurrentEditorAction | EditorOpenAction | EditorSaveAction;
+export type EditorAction = CurrentEditorAction | EditorOpenAction | EditorSaveAsAction;
