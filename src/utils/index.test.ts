@@ -1,7 +1,15 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020 The Pybricks Authors
 
-import { hex } from '.';
+import { assert, hex } from '.';
+
+test('assert', () => {
+    const assertTrue = jest.fn(() => assert(true, 'should not throw'));
+    assertTrue();
+    expect(assertTrue).toHaveReturned();
+
+    expect(() => assert(false, 'should throw')).toThrow();
+});
 
 test('hex', () => {
     expect(hex(0, 2)).toBe('0x00');
