@@ -22,8 +22,8 @@ function open(action: Action, _dispatch: Dispatch, state: RootState): void {
     state.editor.current.getDocument().setValue(text);
 }
 
-function save(action: Action, _dispatch: Dispatch, state: RootState): void {
-    if (action.type !== EditorActionType.Save) {
+function saveAs(action: Action, _dispatch: Dispatch, state: RootState): void {
+    if (action.type !== EditorActionType.SaveAs) {
         return;
     }
     // istanbul ignore next: currently, it is a bug if there is no current editor
@@ -36,4 +36,4 @@ function save(action: Action, _dispatch: Dispatch, state: RootState): void {
     FileSaver.saveAs(blob, 'main.py');
 }
 
-export default combineServices(open, save);
+export default combineServices(open, saveAs);
