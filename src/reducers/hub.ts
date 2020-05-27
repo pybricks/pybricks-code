@@ -3,8 +3,8 @@
 
 import { Reducer, combineReducers } from 'redux';
 import {
-    HubActionType,
-    HubRuntimeStatusAction,
+    HubMessageActionType,
+    HubRuntimeStatusMessageAction,
     HubRuntimeStatusType,
 } from '../actions/hub';
 
@@ -38,12 +38,12 @@ export enum HubRuntimeState {
     Error = 'hub.runtime.error',
 }
 
-const runtime: Reducer<HubRuntimeState, HubRuntimeStatusAction> = (
+const runtime: Reducer<HubRuntimeState, HubRuntimeStatusMessageAction> = (
     state = HubRuntimeState.Disconnected,
     action,
 ) => {
     switch (action.type) {
-        case HubActionType.RuntimeStatus:
+        case HubMessageActionType.RuntimeStatus:
             switch (action.newStatus) {
                 case HubRuntimeStatusType.Disconnected:
                     return HubRuntimeState.Disconnected;

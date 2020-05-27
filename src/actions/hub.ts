@@ -2,11 +2,6 @@
 // Copyright (c) 2020 The Pybricks Authors
 
 import { Action } from 'redux';
-import { ThunkAction } from 'redux-thunk';
-import { getChecksum } from '../epics/hub';
-import { write } from './ble';
-
-export type HubThunkAction = ThunkAction<Promise<void>, {}, {}, HubRuntimeStatusAction>;
 
 export enum HubRuntimeStatusType {
     Disconnected = 'disconnected',
@@ -17,83 +12,76 @@ export enum HubRuntimeStatusType {
     Error = 'error',
 }
 
-export enum HubActionType {
+export enum HubMessageActionType {
     /**
-     * MicroPython runtime status changed.
+     * The hub has send a message indicating the MicroPython runtime status changed.
      */
-    RuntimeStatus = 'hub.runtime.status',
+    RuntimeStatus = 'hub.message.action.runtime.status',
     /**
      * The hub has sent a checksum.
      */
-    Checksum = 'hub.runtime.checksum',
+    Checksum = 'hub.message.action.runtime.checksum',
 }
 
-export interface HubRuntimeStatusAction extends Action<HubActionType.RuntimeStatus> {
+export interface HubRuntimeStatusMessageAction
+    extends Action<HubMessageActionType.RuntimeStatus> {
     readonly newStatus: HubRuntimeStatusType;
 }
 
-export interface HubChecksumAction extends Action<HubActionType.Checksum> {
-    readonly checksum: number;
-}
-
-export function updateStatus(newStatus: HubRuntimeStatusType): HubRuntimeStatusAction {
+export function updateStatus(
+    newStatus: HubRuntimeStatusType,
+): HubRuntimeStatusMessageAction {
     return {
-        type: HubActionType.RuntimeStatus,
+        type: HubMessageActionType.RuntimeStatus,
         newStatus,
     };
 }
 
-export function checksum(checksum: number): HubChecksumAction {
+export interface HubChecksumMessageAction
+    extends Action<HubMessageActionType.Checksum> {
+    readonly checksum: number;
+}
+
+export function checksum(checksum: number): HubChecksumMessageAction {
     return {
-        type: HubActionType.Checksum,
+        type: HubMessageActionType.Checksum,
         checksum,
     };
 }
 
-const downloadChunkSize = 100;
+/**
+ * Common type for low-level hub message actions.
+ */
+export type HubMessageAction = HubRuntimeStatusMessageAction | HubChecksumMessageAction;
 
-export function downloadAndRun(data: ArrayBuffer): HubThunkAction {
-    return async function (dispatch): Promise<void> {
-        // let everyone know the runtime is busy loading the program
-        dispatch(updateStatus(HubRuntimeStatusType.Loading));
-
-        // TODO: might need to flush checksum queue here
-
-        // first send payload size as big-endian 32-bit integer
-        const checksum = getChecksum();
-        const sizeBuf = new Uint8Array(4);
-        const sizeView = new DataView(sizeBuf.buffer);
-        sizeView.setUint32(0, data.byteLength, true);
-        await dispatch(write(sizeBuf));
-        // TODO: verify checksum
-        console.log(await checksum);
-
-        // Then send payload in 100 byte chunks waiting for checksum after
-        // each chunk
-        for (let i = 0; i < data.byteLength; i += downloadChunkSize) {
-            // need to subscribe to checksum before writing to prevent race condition
-            const checksum = getChecksum();
-            await dispatch(write(data.slice(i, i + downloadChunkSize)));
-            // TODO: verify checksum
-            console.log(await checksum);
-            // TODO: dispatch progress
-        }
-
-        // let everyone know the runtime is done loading the program
-        dispatch(updateStatus(HubRuntimeStatusType.Loaded));
-    };
+/**
+ * High-level hub actions.
+ */
+export enum HubActionType {
+    DownloadAndRun = 'hub.action.downloadAndRun',
+    Stop = 'hub.action.stop',
+    Repl = 'hub.action.repl',
 }
 
-// SPACE, SPACE, SPACE, SPACE
-const startReplCommand = new Uint8Array([0x20, 0x20, 0x20, 0x20]);
+export type HubDownloadAndRunAction = Action<HubActionType.DownloadAndRun>;
 
-export function startRepl(): HubThunkAction {
-    return write(startReplCommand);
+export function downloadAndRun(): HubDownloadAndRunAction {
+    return { type: HubActionType.DownloadAndRun };
 }
 
-// CTRL+C, CTRL+C, CTRL+D
-const stopCommand = new Uint8Array([0x03, 0x03, 0x04]);
+export type HubStopAction = Action<HubActionType.Stop>;
 
-export function stop(): HubThunkAction {
-    return write(stopCommand);
+export function stop(): HubStopAction {
+    return { type: HubActionType.Stop };
 }
+
+export type HubReplAction = Action<HubActionType.Repl>;
+
+export function repl(): HubReplAction {
+    return { type: HubActionType.Repl };
+}
+
+/**
+ * Common type for all high-level hub actions.
+ */
+export type HubAction = HubDownloadAndRunAction | HubStopAction | HubReplAction;

@@ -2,17 +2,14 @@
 // Copyright (c) 2020 The Pybricks Authors
 
 import { connect } from 'react-redux';
-import { AnyAction } from 'redux';
-import { ThunkDispatch } from 'redux-thunk';
+import { Action, Dispatch } from '../actions';
 import { stop } from '../actions/hub';
 import { RootState } from '../reducers';
 import { HubRuntimeState } from '../reducers/hub';
 import ActionButton, { ActionButtonProps } from './ActionButton';
 import stopIcon from './images/stop.svg';
 
-type Dispatch = ThunkDispatch<{}, {}, AnyAction>;
-
-type StateProps = Pick<ActionButtonProps, 'enabled' | 'context'>;
+type StateProps = Pick<ActionButtonProps, 'enabled'>;
 type DispatchProps = Pick<ActionButtonProps, 'onAction'>;
 type OwnProps = Pick<ActionButtonProps, 'id'>;
 
@@ -21,9 +18,7 @@ const mapStateToProps = (state: RootState): StateProps => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
-    onAction: (): void => {
-        dispatch(stop());
-    },
+    onAction: (): Action => dispatch(stop()),
 });
 
 const mergeProps = (

@@ -26,7 +26,7 @@ const disconnect: Epic = (action$) =>
 
 const rxUartData: Epic<AnyAction, AnyAction, RootState> = (action$, state$) =>
     action$.pipe(
-        ofType<AnyAction, BLEDataAction>(BLEDataActionType.ReceivedData),
+        ofType<AnyAction, BLEDataAction>(BLEDataActionType.Notify),
         map((a) => {
             if (
                 state$.value.hub.runtime === HubRuntimeState.Loading &&
