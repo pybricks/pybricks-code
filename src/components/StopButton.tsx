@@ -7,6 +7,7 @@ import { stop } from '../actions/hub';
 import { RootState } from '../reducers';
 import { HubRuntimeState } from '../reducers/hub';
 import ActionButton, { ActionButtonProps } from './ActionButton';
+import { TooltipId } from './button';
 import stopIcon from './images/stop.svg';
 
 type StateProps = Pick<ActionButtonProps, 'enabled'>;
@@ -26,7 +27,7 @@ const mergeProps = (
     dispatchProps: DispatchProps,
     ownProps: OwnProps,
 ): ActionButtonProps => ({
-    tooltip: 'Stop everything',
+    tooltip: TooltipId.Stop,
     icon: stopIcon,
     ...ownProps,
     ...stateProps,

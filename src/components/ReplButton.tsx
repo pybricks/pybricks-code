@@ -7,6 +7,7 @@ import { repl } from '../actions/hub';
 import { RootState } from '../reducers';
 import { HubRuntimeState } from '../reducers/hub';
 import ActionButton, { ActionButtonProps } from './ActionButton';
+import { TooltipId } from './button';
 import replIcon from './images/repl.svg';
 
 type StateProps = Pick<ActionButtonProps, 'enabled'>;
@@ -28,7 +29,7 @@ const mergeProps = (
     dispatchProps: DispatchProps,
     ownProps: OwnProps,
 ): ActionButtonProps => ({
-    tooltip: 'Start REPL in terminal',
+    tooltip: TooltipId.Repl,
     icon: replIcon,
     ...ownProps,
     ...stateProps,
