@@ -1,30 +1,47 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020 The Pybricks Authors
 
-import { compile as mpyCrossCompile } from '@pybricks/mpy-cross-v4';
 import { Action } from 'redux';
-import { ThunkAction } from 'redux-thunk';
 
 export enum MpyActionType {
-    Compiled = 'mpy.action.compile',
+    Compile = 'mpy.action.compile',
+    DidCompile = 'mpy.action.didCompile',
+    DidFailToCompile = 'mpy.action.didFailToCompile',
 }
 
-export interface MpyCompiledAction extends Action<MpyActionType.Compiled> {
-    /**
-     * The compiled .mpy data.
-     */
-    data?: Uint8Array;
-    /**
-     * Error output.
-     */
-    err?: string;
+/** Action that requests that a script is compiled. */
+export interface MpyCompileAction extends Action<MpyActionType.Compile> {
+    /** The script to compile. */
+    readonly script: string;
+    /** The compiler command line options */
+    options?: string[];
 }
-
-type MpyCompileAction = ThunkAction<Promise<MpyCompiledAction>, {}, {}, Action>;
 
 export function compile(script: string, options?: string[]): MpyCompileAction {
-    return async function (): Promise<MpyCompiledAction> {
-        const result = await mpyCrossCompile('main.py', script, options);
-        return { type: MpyActionType.Compiled, data: result.mpy, err: result.err };
-    };
+    return { type: MpyActionType.Compile, script, options };
 }
+
+export interface MpyDidCompileAction extends Action<MpyActionType.DidCompile> {
+    /** The compiled .mpy file. */
+    readonly data: Uint8Array;
+}
+
+export function didCompile(data: Uint8Array): MpyDidCompileAction {
+    return { type: MpyActionType.DidCompile, data };
+}
+
+export interface MpyDidFailToCompileAction
+    extends Action<MpyActionType.DidFailToCompile> {
+    /** Error output. */
+    readonly err: string;
+}
+
+export function didFailToCompile(err: string): MpyDidFailToCompileAction {
+    return { type: MpyActionType.DidFailToCompile, err };
+}
+
+/** Common type for all mpy actions. */
+export type MpyAction =
+    | MpyCompileAction
+    | MpyDidCompileAction
+    | MpyDidFailToCompileAction;

@@ -1307,10 +1307,10 @@
   resolved "https://npm.pkg.github.com/download/@pybricks/firmware/1.0.0/dfc52164caa622a8c5e0c59d110319441b7966f25e4d2764d592ce7b56672465#3f763dff5751d8e4b8ff94f73678ee30ac52233b"
   integrity sha512-eMGuzLRKVMvnZc093/7aW5/fGtRfz39aSLy+Drhc6j4tJqySBdRhNk709mH7ZYMj4RJ2D6mWNbuzi3LVGsVkAA==
 
-"@pybricks/mpy-cross-v4@^1.0.0":
-  version "1.0.0"
-  resolved "https://npm.pkg.github.com/download/@pybricks/mpy-cross-v4/1.0.0/1961a986e77b302cb05c3e6dc03feefe06292488a05d23ea32d27e2f625e782a#82633377519ba904dbd3e0f700a4b38f8212a80f"
-  integrity sha512-2fWyh+ja+N6jje1o1WUOiCyciWERuXGZkLmYKdanluqtQuJcteCE6mzndgs5rxH4DuknKKmxjHuYwwzdDO0yDw==
+"@pybricks/mpy-cross-v4@^1.1.1":
+  version "1.1.1"
+  resolved "https://npm.pkg.github.com/download/@pybricks/mpy-cross-v4/1.1.1/2000026e184543fbc83c5dca7dcc0af7b0703feb38a33f253803860544168a88#54b9a17c8d665e44c2e844ce4b257f038987a742"
+  integrity sha512-41fsUlyBv8vttoWaTBP8GjnBxkGPCuXi6mBIo8rPVUTIQmkmn8O5fGPPtYJjA3qKu6zboAFmI2kB+PBmbxoBkw==
 
 "@redux-saga/core@^1.1.3":
   version "1.1.3"
@@ -9712,11 +9712,6 @@ redux-saga@^1.1.3:
   integrity sha512-RkSn/z0mwaSa5/xH/hQLo8gNf4tlvT18qXDNvedihLcfzh+jMchDgaariQoehCpgRltEm4zHKJyINEz6aqswTw==
   dependencies:
     "@redux-saga/core" "^1.1.3"
-
-redux-thunk@^2.3.0:
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/redux-thunk/-/redux-thunk-2.3.0.tgz#51c2c19a185ed5187aaa9a2d08b666d0d6467622"
-  integrity sha512-km6dclyFnmcvxhAcrQV2AkZmPQjzPDjgVlQtR0EQjxZPyJ0BnMf3in1ryuR8A2qU0HldVRfxYXbFSKlI3N7Slw==
 
 redux@^3.6.0:
   version "3.7.2"

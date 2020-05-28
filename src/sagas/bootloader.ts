@@ -12,7 +12,6 @@ import {
     delay,
     fork,
     put,
-    putResolve,
     race,
     take,
     takeEvery,
@@ -59,7 +58,12 @@ import {
     send,
     stateResponse,
 } from '../actions/bootloader';
-import { MpyCompiledAction, compile } from '../actions/mpy';
+import {
+    MpyActionType,
+    MpyDidCompileAction,
+    MpyDidFailToCompileAction,
+    compile,
+} from '../actions/mpy';
 import * as notification from '../actions/notification';
 import {
     Command,
@@ -262,12 +266,14 @@ function* loadFirmware(
         );
     }
 
-    const mpy = (yield putResolve(
-        (compile(main, metadata['mpy-cross-options']) as unknown) as Action,
-    )) as MpyCompiledAction;
+    yield put(compile(main, metadata['mpy-cross-options']));
+    const [mpy, mpyFail] = (yield race([
+        take(MpyActionType.DidCompile),
+        take(MpyActionType.DidFailToCompile),
+    ])) as [MpyDidCompileAction, MpyDidFailToCompileAction];
 
-    if (!mpy.data) {
-        throw Error(mpy.err);
+    if (mpyFail) {
+        throw Error(mpyFail.err);
     }
 
     // compute offset for checksum - must be aligned to 4-byte boundary

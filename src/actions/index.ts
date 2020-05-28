@@ -9,6 +9,7 @@ import {
 } from './bootloader';
 import { EditorAction } from './editor';
 import { HubAction, HubMessageAction } from './hub';
+import { MpyAction } from './mpy';
 import { NotificationAction } from './notification';
 import { ServiceWorkerAction } from './service-worker';
 import { TerminalDataAction } from './terminal';
@@ -28,6 +29,7 @@ export type Action =
     | EditorAction
     | HubMessageAction
     | HubAction
+    | MpyAction
     | NotificationAction
     | ServiceWorkerAction
     | TerminalDataAction;
