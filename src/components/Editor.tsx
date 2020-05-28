@@ -21,6 +21,7 @@ class Editor extends React.Component {
                         theme="xcode"
                         fontSize="16pt"
                         width="100"
+                        height="100%"
                         focus={true}
                         placeholder="Write your program here..."
                         defaultValue={localStorage.getItem('program') || undefined}
