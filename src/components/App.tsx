@@ -11,23 +11,20 @@ import Toolbar from './Toolbar';
 
 function App(): JSX.Element {
     return (
-        <div
-            className="position-fixed"
-            style={{ width: '100%', height: 'calc(100% - 0px)' }}
-        >
-            <Container>
+        <div>
+            <Container fluid className="vh-100 d-flex flex-column">
                 <Row>
                     <Col>
                         <Toolbar />
                     </Col>
                 </Row>
-                <Row>
-                    <Col className="py-2">
+                <Row className="h-100">
+                    <Col>
                         <Editor />
                     </Col>
                 </Row>
                 <Row>
-                    <Col style={{ height: '25vh' }} className="py-2">
+                    <Col className="Terminal py-2">
                         <Terminal />
                     </Col>
                 </Row>
