@@ -4,7 +4,7 @@
     "private": true,
     "dependencies": {
         "@pybricks/firmware": "^1.0.0",
-        "@pybricks/mpy-cross-v4": "^1.0.0",
+        "@pybricks/mpy-cross-v4": "^1.1.1",
         "@shopify/react-i18n": "^3.0.2",
         "@testing-library/jest-dom": "^5.8.0",
         "@testing-library/react": "^10.0.4",
@@ -36,7 +36,6 @@
         "redux-logger": "^3.0.6",
         "redux-observable": "^1.2.0",
         "redux-saga": "^1.1.3",
-        "redux-thunk": "^2.3.0",
         "typescript": "~3.9.3",
         "xterm": "^4.6.0",
         "xterm-addon-fit": "^0.4.0"

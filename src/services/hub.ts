@@ -1,21 +1,34 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020 The Pybricks Authors
 
-import { AnyAction } from 'redux';
-import { ThunkDispatch } from 'redux-thunk';
-import { Action } from '../actions';
+import { EventEmitter } from 'events';
+import { Action, Dispatch } from '../actions';
 import { write } from '../actions/ble';
 import { HubActionType, HubRuntimeStatusType, updateStatus } from '../actions/hub';
-import { compile } from '../actions/mpy';
+import {
+    MpyActionType,
+    MpyDidCompileAction,
+    MpyDidFailToCompileAction,
+    compile,
+} from '../actions/mpy';
 import { getChecksum } from '../epics/hub';
 import { RootState } from '../reducers';
 import { combineServices } from '.';
 
 // TODO: this file needs to be converted to a saga
 
-type Dispatch = ThunkDispatch<{}, {}, AnyAction>;
-
 const downloadChunkSize = 100;
+
+const compiler = new EventEmitter();
+
+function didCompile(action: Action): void {
+    if (action.type === MpyActionType.DidCompile) {
+        compiler.emit('didCompile', action);
+    }
+    if (action.type === MpyActionType.DidFailToCompile) {
+        compiler.emit('didFailToCompile', action);
+    }
+}
 
 async function downloadAndRun(
     action: Action,
@@ -32,11 +45,14 @@ async function downloadAndRun(
         console.log('no current editor');
         return;
     }
-    const mpy = await dispatch(compile(script, ['-mno-unicode']));
-    if (mpy.data === undefined) {
-        console.log(`failed to compile: ${mpy.err}`);
-        return;
-    }
+
+    dispatch(compile(script, ['-mno-unicode']));
+    const mpy = await new Promise<MpyDidCompileAction>((resolve, reject): void => {
+        compiler.on('didCompile', (a: MpyDidCompileAction): void => resolve(a));
+        compiler.on('didFailToCompile', (a: MpyDidFailToCompileAction) =>
+            reject(new Error(a.err)),
+        );
+    });
 
     // let everyone know the runtime is busy loading the program
     dispatch(updateStatus(HubRuntimeStatusType.Loading));
@@ -87,4 +103,4 @@ function stop(action: Action, dispatch: Dispatch): void {
     dispatch(write(stopCommand));
 }
 
-export default combineServices(downloadAndRun, startRepl, stop);
+export default combineServices(didCompile, downloadAndRun, startRepl, stop);

@@ -9,7 +9,6 @@ import { applyMiddleware, createStore } from 'redux';
 import { createLogger } from 'redux-logger';
 import { createEpicMiddleware } from 'redux-observable';
 import createSagaMiddleware from 'redux-saga';
-import thunkMiddleware from 'redux-thunk';
 import './index.scss';
 import { success, update } from './actions/service-worker';
 import App from './components/App';
@@ -33,7 +32,6 @@ const i18n = new I18nManager({
 const store = createStore(
     rootReducer,
     applyMiddleware(
-        thunkMiddleware,
         sagaMiddleware,
         epicMiddleware,
         serviceMiddleware,
