@@ -89,39 +89,33 @@
     <linearGradient
        inkscape:collect="always"
        xlink:href="#light-circle-fill"
-       id="linearGradient1344"
-       gradientUnits="userSpaceOnUse"
-       x1="140.9976"
-       y1="96.999817"
-       x2="157.83644"
-       y2="96.999817" />
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#icon-contents"
-       id="linearGradient1346"
-       gradientUnits="userSpaceOnUse"
-       x1="144.08528"
-       y1="96.594086"
-       x2="148.44734"
-       y2="96.594086" />
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#icon-contents"
-       id="linearGradient1348"
-       gradientUnits="userSpaceOnUse"
-       x1="147.6288"
-       y1="96.594086"
-       x2="151.99086"
-       y2="96.594086" />
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#icon-contents"
-       id="linearGradient1350"
-       gradientUnits="userSpaceOnUse"
+       id="linearGradient5189"
        x1="151.17233"
        y1="96.594086"
        x2="155.53439"
-       y2="96.594086" />
+       y2="96.594086"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(2.4800054,0,0,2.5237898,-359.04545,39.652624)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#light-circle-fill"
+       id="linearGradient5191"
+       x1="147.6288"
+       y1="96.594086"
+       x2="151.99086"
+       y2="96.594086"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(2.4800054,0,0,2.5237898,-358.13592,39.652624)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#light-circle-fill"
+       id="linearGradient5193"
+       x1="144.08528"
+       y1="96.594086"
+       x2="148.44734"
+       y2="96.594086"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(2.4800054,0,0,2.5237898,-357.22644,39.652624)" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -130,9 +124,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2.8284271"
-     inkscape:cx="38.204193"
-     inkscape:cy="76.141743"
+     inkscape:zoom="16"
+     inkscape:cx="26.727876"
+     inkscape:cy="22.121513"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -145,7 +139,8 @@
      inkscape:measure-start="0,0"
      inkscape:measure-end="0,0"
      inkscape:snap-global="false"
-     showguides="true" />
+     showguides="true"
+     inkscape:pagecheckerboard="true" />
   <metadata
      id="metadata5">
     <rdf:RDF>
@@ -154,7 +149,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -163,45 +158,32 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(0,-270.54165)">
-    <g
-       transform="matrix(1.5712682,0,0,1.5712682,-221.54505,131.35809)"
-       id="g1264">
-      <circle
-         r="7.8902531"
-         cy="96.999817"
-         cx="149.41702"
-         id="circle1256"
-         style="fill:url(#linearGradient1344);fill-opacity:1;stroke:url(#light-circle-edge);stroke-width:1.05833328;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         inkscape:export-filename="button.png"
-         inkscape:export-xdpi="96"
-         inkscape:export-ydpi="96" />
-      <path
-         style="fill:none;stroke:url(#linearGradient1346);stroke-width:1.05833328;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         d="m 144.42152,93.984765 3.19459,2.62875 -3.12878,2.590938"
-         id="path1258"
-         inkscape:connector-curvature="0"
-         sodipodi:nodetypes="ccc"
-         inkscape:export-filename="button.png"
-         inkscape:export-xdpi="96"
-         inkscape:export-ydpi="96" />
-      <path
-         sodipodi:nodetypes="ccc"
-         inkscape:connector-curvature="0"
-         id="path1260"
-         d="m 147.96504,93.984765 3.19459,2.62875 -3.12878,2.590938"
-         style="fill:none;stroke:url(#linearGradient1348);stroke-width:1.05833328;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         inkscape:export-filename="button.png"
-         inkscape:export-xdpi="96"
-         inkscape:export-ydpi="96" />
-      <path
-         style="fill:none;stroke:url(#linearGradient1350);stroke-width:1.05833328;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         d="m 151.50857,93.984765 3.1946,2.62875 -3.12879,2.590938"
-         id="path1262"
-         inkscape:connector-curvature="0"
-         sodipodi:nodetypes="ccc"
-         inkscape:export-filename="button.png"
-         inkscape:export-xdpi="96"
-         inkscape:export-ydpi="96" />
-    </g>
+    <path
+       style="fill:none;stroke:url(#linearGradient5193);stroke-width:2.11666656;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 0.93974812,276.85042 7.92259998,6.63441 -7.7594,6.53898"
+       id="path1115"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccc"
+       inkscape:export-filename="/home/laurens/Dropbox/tmp/base.svg.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <path
+       sodipodi:nodetypes="ccc"
+       inkscape:connector-curvature="0"
+       id="path1135"
+       d="m 8.8182101,276.85042 7.9225999,6.63441 -7.7593799,6.53898"
+       style="fill:none;stroke:url(#linearGradient5191);stroke-width:2.11666656;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:export-filename="/home/laurens/Dropbox/tmp/base.svg.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <path
+       style="fill:none;stroke:url(#linearGradient5189);stroke-width:2.11666656;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 16.696658,276.85042 7.92262,6.63441 -7.7594,6.53898"
+       id="path1137"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccc"
+       inkscape:export-filename="/home/laurens/Dropbox/tmp/base.svg.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
   </g>
 </svg>

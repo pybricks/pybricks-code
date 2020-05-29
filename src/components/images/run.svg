@@ -8,7 +8,6 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
-   xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="50"
@@ -26,7 +25,7 @@
     <linearGradient
        id="light-circle-fill"
        osb:paint="solid"
-       gradientTransform="translate(-111.65281,-194.6407)">
+       gradientTransform="matrix(0.52916667,0,0,0.52916667,-54.066878,170.25889)">
       <stop
          style="stop-color:#ffffff;stop-opacity:1;"
          offset="0"
@@ -86,15 +85,6 @@
          offset="0"
          id="stop1172" />
     </linearGradient>
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#light-circle-fill"
-       id="linearGradient1338"
-       gradientUnits="userSpaceOnUse"
-       x1="94.217361"
-       y1="96.999817"
-       x2="111.0562"
-       y2="96.999817" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -103,9 +93,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.70710678"
-     inkscape:cx="305.50725"
-     inkscape:cy="70.481977"
+     inkscape:zoom="5.6568542"
+     inkscape:cx="32.44435"
+     inkscape:cy="20.159859"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -118,7 +108,8 @@
      inkscape:measure-start="0,0"
      inkscape:measure-end="0,0"
      inkscape:snap-global="false"
-     showguides="true" />
+     showguides="true"
+     inkscape:pagecheckerboard="true" />
   <metadata
      id="metadata5">
     <rdf:RDF>
@@ -127,7 +118,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -136,38 +127,24 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(0,-270.54165)">
-    <g
-       transform="matrix(1.5712682,0,0,1.5712682,-148.04074,131.35809)"
-       id="g1244">
-      <circle
-         style="fill:url(#linearGradient1338);fill-opacity:1;stroke:url(#light-circle-edge);stroke-width:1.05833328;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         id="circle1240"
-         cx="102.63678"
-         cy="96.999817"
-         r="7.8902531"
-         inkscape:export-filename="button.png"
-         inkscape:export-xdpi="96"
-         inkscape:export-ydpi="96" />
-      <path
-         sodipodi:type="star"
-         style="fill:url(#icon-contents);fill-opacity:1;stroke:none;stroke-width:1.05833328;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         id="path1242"
-         sodipodi:sides="3"
-         sodipodi:cx="102.38778"
-         sodipodi:cy="97.030327"
-         sodipodi:r1="4.4484854"
-         sodipodi:r2="2.2242427"
-         sodipodi:arg1="0"
-         sodipodi:arg2="1.0471976"
-         inkscape:flatsided="false"
-         inkscape:rounded="0"
-         inkscape:randomized="0"
-         d="m 106.83626,97.030327 -3.33636,1.926251 -3.33636,1.926252 v -3.852503 -3.852501 l 3.33636,1.92625 z"
-         inkscape:transform-center-x="-1.1121175"
-         inkscape:transform-center-y="2.0595913e-06"
-         inkscape:export-filename="button.png"
-         inkscape:export-xdpi="96"
-         inkscape:export-ydpi="96" />
-    </g>
+    <path
+       sodipodi:type="star"
+       style="fill:url(#light-circle-fill);fill-opacity:1;stroke:none;stroke-width:2.11666656;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path1017"
+       sodipodi:sides="3"
+       sodipodi:cx="10.839368"
+       sodipodi:cy="283.3425"
+       sodipodi:r1="11.6466"
+       sodipodi:r2="5.8232999"
+       sodipodi:arg1="0"
+       sodipodi:arg2="1.0471976"
+       inkscape:flatsided="false"
+       inkscape:rounded="0"
+       inkscape:randomized="0"
+       d="m 22.485968,283.3425 -8.73495,5.04312 -8.73495,5.04313 0,-10.08625 0,-10.08625 8.73495,5.04312 z"
+       inkscape:transform-center-x="-1.4558184"
+       inkscape:export-filename="/home/laurens/Dropbox/tmp/base.svg.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
   </g>
 </svg>

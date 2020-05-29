@@ -26,7 +26,7 @@
     <linearGradient
        id="light-circle-fill"
        osb:paint="solid"
-       gradientTransform="translate(-111.65281,-194.6407)">
+       gradientTransform="matrix(0.04149181,0,0,0.04149181,1.7417234,549.61437)">
       <stop
          style="stop-color:#ffffff;stop-opacity:1;"
          offset="0"
@@ -89,21 +89,13 @@
     <linearGradient
        inkscape:collect="always"
        xlink:href="#light-circle-fill"
-       id="linearGradient1356"
-       gradientUnits="userSpaceOnUse"
-       x1="162.38928"
-       y1="96.999817"
-       x2="179.22812"
-       y2="96.999817" />
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#icon-contents"
-       id="linearGradient1358"
-       gradientUnits="userSpaceOnUse"
+       id="linearGradient5187"
        x1="170.49026"
        y1="91.974777"
        x2="171.5486"
-       y2="91.974777" />
+       y2="91.974777"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(2.2770973,0,0,2.2770973,-375.89057,64.428671)" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -112,9 +104,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2"
-     inkscape:cx="135.94058"
-     inkscape:cy="56.411566"
+     inkscape:zoom="11.313708"
+     inkscape:cx="33.439167"
+     inkscape:cy="33.623378"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -127,7 +119,8 @@
      inkscape:measure-start="0,0"
      inkscape:measure-end="0,0"
      inkscape:snap-global="false"
-     showguides="true" />
+     showguides="true"
+     inkscape:pagecheckerboard="true" />
   <metadata
      id="metadata5">
     <rdf:RDF>
@@ -136,7 +129,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -145,106 +138,94 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(0,-270.54165)">
-    <g
-       transform="matrix(1.5712682,0,0,1.5712682,-255.15711,131.35809)"
-       id="g1298">
-      <circle
-         style="fill:url(#linearGradient1356);fill-opacity:1;stroke:url(#light-circle-edge);stroke-width:1.05833328;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         id="circle1282"
-         cx="170.8087"
-         cy="96.999817"
-         r="7.8902531"
-         inkscape:export-filename="button.png"
-         inkscape:export-xdpi="96"
-         inkscape:export-ydpi="96" />
-      <path
-         transform="rotate(90,107.85414,163.6108)"
-         sodipodi:type="star"
-         style="fill:url(#icon-contents);fill-opacity:1;stroke:none;stroke-width:1.05833328;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         id="path1284"
-         sodipodi:sides="3"
-         sodipodi:cx="37.758598"
-         sodipodi:cy="100.44551"
-         sodipodi:r1="1.9985147"
-         sodipodi:r2="0.99925733"
-         sodipodi:arg1="0"
-         sodipodi:arg2="1.0471976"
-         inkscape:flatsided="false"
-         inkscape:rounded="0"
-         inkscape:randomized="0"
-         d="m 39.757113,100.44551 -1.498886,0.86538 -1.498886,0.86539 v -1.73077 -1.730764 l 1.498886,0.865383 z"
-         inkscape:transform-center-y="0.49961781"
-         inkscape:export-filename="button.png"
-         inkscape:export-xdpi="96"
-         inkscape:export-ydpi="96" />
-      <path
-         inkscape:connector-curvature="0"
-         id="path1286"
-         d="m 171.01943,91.124331 v 1.700893"
-         style="fill:#4e4e4e;fill-opacity:1;stroke:url(#linearGradient1358);stroke-width:1.05833328;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         inkscape:export-filename="button.png"
-         inkscape:export-xdpi="96"
-         inkscape:export-ydpi="96" />
-      <rect
-         style="fill:url(#icon-contents);fill-opacity:1;stroke:none;stroke-width:0.29967827;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         id="rect1288"
-         width="10.547126"
-         height="4.6488767"
-         x="165.63434"
-         y="96.501266"
-         rx="0"
-         ry="0"
-         inkscape:export-filename="button.png"
-         inkscape:export-xdpi="96"
-         inkscape:export-ydpi="96" />
-      <rect
-         ry="0"
-         rx="0"
-         y="96.067299"
-         x="166.58144"
-         height="4.6488767"
-         width="1.2171332"
-         id="rect1290"
-         style="fill:url(#icon-contents);fill-opacity:1;stroke:none;stroke-width:0.10180221;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         inkscape:export-filename="button.png"
-         inkscape:export-xdpi="96"
-         inkscape:export-ydpi="96" />
-      <rect
-         style="fill:url(#icon-contents);fill-opacity:1;stroke:none;stroke-width:0.10180221;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         id="rect1292"
-         width="1.2171332"
-         height="4.6488767"
-         x="169.06004"
-         y="96.067299"
-         rx="0"
-         ry="0"
-         inkscape:export-filename="button.png"
-         inkscape:export-xdpi="96"
-         inkscape:export-ydpi="96" />
-      <rect
-         ry="0"
-         rx="0"
-         y="96.067299"
-         x="171.5386"
-         height="4.6488767"
-         width="1.2171332"
-         id="rect1294"
-         style="fill:url(#icon-contents);fill-opacity:1;stroke:none;stroke-width:0.10180221;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         inkscape:export-filename="button.png"
-         inkscape:export-xdpi="96"
-         inkscape:export-ydpi="96" />
-      <rect
-         style="fill:url(#icon-contents);fill-opacity:1;stroke:none;stroke-width:0.10180221;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         id="rect1296"
-         width="1.2171332"
-         height="4.6488767"
-         x="174.01723"
-         y="96.067299"
-         rx="0"
-         ry="0"
-         inkscape:export-filename="button.png"
-         inkscape:export-xdpi="96"
-         inkscape:export-ydpi="96" />
-    </g>
+    <path
+       transform="matrix(0,2.2770972,-2.2770972,0,242.26153,191.39198)"
+       sodipodi:type="star"
+       style="fill:url(#light-circle-fill);fill-opacity:1;stroke:none;stroke-width:0.92954594;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path924"
+       sodipodi:sides="3"
+       sodipodi:cx="37.758598"
+       sodipodi:cy="100.44551"
+       sodipodi:r1="1.9985147"
+       sodipodi:r2="0.99925733"
+       sodipodi:arg1="0"
+       sodipodi:arg2="1.0471976"
+       inkscape:flatsided="false"
+       inkscape:rounded="0"
+       inkscape:randomized="0"
+       d="m 39.757113,100.44551 -1.498886,0.86538 -1.498886,0.86539 v -1.73077 -1.730764 l 1.498886,0.865383 z"
+       inkscape:transform-center-y="0.56883747"
+       inkscape:export-filename="/home/laurens/Dropbox/tmp/base.svg.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96"
+       inkscape:transform-center-x="-5.2936222e-06" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path926"
+       d="m 13.537299,271.92763 v 3.8731"
+       style="fill:#4e4e4e;fill-opacity:1;stroke:url(#linearGradient5187);stroke-width:2.11666656;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:export-filename="/home/laurens/Dropbox/tmp/base.svg.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <rect
+       style="fill:url(#light-circle-fill);fill-opacity:1;stroke:none;stroke-width:0.59935653;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect940"
+       width="24.01683"
+       height="10.585944"
+       x="1.2748805"
+       y="284.17142"
+       rx="0"
+       ry="0"
+       inkscape:export-filename="/home/laurens/Dropbox/tmp/base.svg.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <rect
+       ry="0"
+       rx="0"
+       y="283.18323"
+       x="3.4314961"
+       height="10.585944"
+       width="2.7715306"
+       id="rect942"
+       style="fill:url(#light-circle-fill);fill-opacity:1;stroke:none;stroke-width:0.20360442;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:export-filename="/home/laurens/Dropbox/tmp/base.svg.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <rect
+       style="fill:url(#light-circle-fill);fill-opacity:1;stroke:none;stroke-width:0.20360442;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect944"
+       width="2.7715306"
+       height="10.585944"
+       x="9.0755405"
+       y="283.18323"
+       rx="0"
+       ry="0"
+       inkscape:export-filename="/home/laurens/Dropbox/tmp/base.svg.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <rect
+       ry="0"
+       rx="0"
+       y="283.18323"
+       x="14.719461"
+       height="10.585944"
+       width="2.7715306"
+       id="rect947"
+       style="fill:url(#light-circle-fill);fill-opacity:1;stroke:none;stroke-width:0.20360442;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:export-filename="/home/laurens/Dropbox/tmp/base.svg.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <rect
+       style="fill:url(#light-circle-fill);fill-opacity:1;stroke:none;stroke-width:0.20360442;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect949"
+       width="2.7715306"
+       height="10.585944"
+       x="20.363565"
+       y="283.18323"
+       rx="0"
+       ry="0"
+       inkscape:export-filename="/home/laurens/Dropbox/tmp/base.svg.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
   </g>
 </svg>
