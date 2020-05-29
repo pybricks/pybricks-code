@@ -7,7 +7,7 @@ import {
     BootloaderConnectionActionType,
     BootloaderRequestActionType,
     BootloaderResponseActionType,
-} from '../actions/bootloader';
+} from '../actions/lwp3-bootloader';
 
 /**
  * Describes the state of the bootloader connection.

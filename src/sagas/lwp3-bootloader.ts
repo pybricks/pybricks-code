@@ -57,7 +57,7 @@ import {
     rebootRequest,
     send,
     stateResponse,
-} from '../actions/bootloader';
+} from '../actions/lwp3-bootloader';
 import {
     MpyActionType,
     MpyDidCompileAction,
@@ -87,7 +87,7 @@ import {
     parseGetInfoResponse,
     parseInitLoaderResponse,
     parseProgramFlashResponse,
-} from '../protocols/bootloader';
+} from '../protocols/lwp3-bootloader';
 import { hex } from '../utils';
 import { fmod, sumComplement32 } from '../utils/math';
 

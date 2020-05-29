@@ -25,16 +25,16 @@ import {
     send,
     stateRequest,
     stateResponse,
-} from '../actions/bootloader';
+} from '../actions/lwp3-bootloader';
 import {
     Command,
     HubType,
     ProtectionLevel,
     ProtocolError,
     Result,
-} from '../protocols/bootloader';
+} from '../protocols/lwp3-bootloader';
 import { createCountFunc } from '../utils/iter';
-import bootloader from './bootloader';
+import bootloader from './lwp3-bootloader';
 
 describe('message encoder', () => {
     test.each([

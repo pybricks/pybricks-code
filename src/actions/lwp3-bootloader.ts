@@ -2,7 +2,12 @@
 // Copyright (c) 2020 The Pybricks Authors
 
 import { Action } from 'redux';
-import { Command, HubType, ProtectionLevel, Result } from '../protocols/bootloader';
+import {
+    Command,
+    HubType,
+    ProtectionLevel,
+    Result,
+} from '../protocols/lwp3-bootloader';
 import { createCountFunc } from '../utils/iter';
 
 /**

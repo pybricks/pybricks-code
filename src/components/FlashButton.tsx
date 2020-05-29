@@ -3,7 +3,7 @@
 
 import { connect } from 'react-redux';
 import { Dispatch } from '../actions';
-import { flashFirmware } from '../actions/bootloader';
+import { flashFirmware } from '../actions/lwp3-bootloader';
 import * as notification from '../actions/notification';
 import { RootState } from '../reducers';
 import { BootloaderConnectionState } from '../reducers/bootloader';
