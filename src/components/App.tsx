@@ -14,10 +14,10 @@ function App(): JSX.Element {
         <div>
             <Container fluid className="vh-100 d-flex flex-column">
                 <Row>
-                    <Col xs={12} md={8}>
+                    <Col xs={12} md={8} className="outer-container-col">
                         <Container
                             fluid
-                            className="vh-100 d-flex flex-column"
+                            className="vh-100 d-flex flex-column inner-container-col"
                         >
                             <Row>
                                 <Col>
