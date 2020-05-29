@@ -17,7 +17,7 @@
    version="1.1"
    id="svg8"
    inkscape:version="0.92.3 (2405546, 2018-03-11)"
-   sodipodi:docname="btdisconnected.svg"
+   sodipodi:docname="bt-disconnected.svg"
    inkscape:export-filename="button.png"
    inkscape:export-xdpi="96"
    inkscape:export-ydpi="96">
@@ -26,7 +26,7 @@
     <linearGradient
        id="light-circle-fill"
        osb:paint="solid"
-       gradientTransform="translate(-111.65281,-194.6407)">
+       gradientTransform="matrix(1.6201655,0,0,1.6201655,-208.26055,-377.58061)">
       <stop
          style="stop-color:#ffffff;stop-opacity:1;"
          offset="0"
@@ -89,21 +89,13 @@
     <linearGradient
        inkscape:collect="always"
        xlink:href="#light-circle-fill"
-       id="linearGradient1340"
-       gradientUnits="userSpaceOnUse"
-       x1="73.169891"
-       y1="96.999817"
-       x2="90.008728"
-       y2="96.999817" />
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#icon-contents"
-       id="linearGradient1342"
-       gradientUnits="userSpaceOnUse"
+       id="linearGradient5199"
        x1="76.890312"
        y1="96.730286"
        x2="84.212921"
-       y2="96.730286" />
+       y2="96.730286"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.2728572,0,0,1.2728572,-22.909817,-26.355555)" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -112,11 +104,11 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2"
-     inkscape:cx="210.21368"
-     inkscape:cy="68.742825"
+     inkscape:zoom="16"
+     inkscape:cx="30.590127"
+     inkscape:cy="29.036914"
      inkscape:document-units="px"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="g1254"
      showgrid="false"
      inkscape:window-width="1853"
      inkscape:window-height="1145"
@@ -127,7 +119,8 @@
      inkscape:measure-start="0,0"
      inkscape:measure-end="0,0"
      inkscape:snap-global="false"
-     showguides="true" />
+     showguides="true"
+     inkscape:pagecheckerboard="true" />
   <metadata
      id="metadata5">
     <rdf:RDF>
@@ -136,7 +129,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -148,21 +141,12 @@
     <g
        transform="matrix(1.5712682,0,0,1.5712682,-114.96952,131.35809)"
        id="g1254">
-      <circle
-         style="fill:url(#linearGradient1340);fill-opacity:1;stroke:url(#light-circle-edge);stroke-width:1.05833328;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         id="circle1246"
-         cx="81.58931"
-         cy="96.999817"
-         r="7.8902531"
-         inkscape:export-filename="button.png"
-         inkscape:export-xdpi="96"
-         inkscape:export-ydpi="96" />
       <path
-         style="fill:none;stroke:url(#linearGradient1342);stroke-width:1.05833328;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         d="m 77.284975,99.202757 6.097087,-5.044712 -2.973374,-2.472243 v 10.039308 l 2.990077,-2.655988 -6.172255,-5.078121"
-         id="path1248"
+         style="fill:none;stroke:url(#linearGradient5199);stroke-width:1.34710717;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         d="m 75.46292,99.915389 7.760721,-6.421198 -3.784681,-3.146812 v 12.778601 l 3.805941,-3.380689 -7.856399,-6.463723"
+         id="path1061"
          inkscape:connector-curvature="0"
-         inkscape:export-filename="button.png"
+         inkscape:export-filename="/home/laurens/Dropbox/tmp/base.svg.png"
          inkscape:export-xdpi="96"
          inkscape:export-ydpi="96" />
     </g>
