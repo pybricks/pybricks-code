@@ -1,14 +1,14 @@
 import { Dispatch as ReduxDispatch } from 'redux';
 import { BLEAction, BLEConnectAction, BLEDataAction } from './ble';
+import { EditorAction } from './editor';
+import { HubAction, HubMessageAction } from './hub';
 import {
     BootloaderAction,
     BootloaderConnectionAction,
     BootloaderDidRequestAction,
     BootloaderRequestAction,
     BootloaderResponseAction,
-} from './bootloader';
-import { EditorAction } from './editor';
-import { HubAction, HubMessageAction } from './hub';
+} from './lwp3-bootloader';
 import { MpyAction } from './mpy';
 import { NotificationAction } from './notification';
 import { ServiceWorkerAction } from './service-worker';

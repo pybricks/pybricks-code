@@ -3,7 +3,7 @@
 
 import { Reducer } from 'react';
 import { combineReducers } from 'redux';
-import { BootloaderAction, BootloaderActionType } from '../actions/bootloader';
+import { BootloaderAction, BootloaderActionType } from '../actions/lwp3-bootloader';
 
 const progress: Reducer<number, BootloaderAction> = (state = -1, action) => {
     switch (action.type) {

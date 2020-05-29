@@ -5,10 +5,10 @@ import { Middleware } from 'redux';
 import { Action, Dispatch } from '../actions';
 import { RootState } from '../reducers';
 import ble from './ble';
-import bootloader from './bootloader';
 import editor from './editor';
 import errorLog from './error-log';
 import hub from './hub';
+import bootloader from './lwp3-bootloader';
 
 type Service = (
     action: Action,

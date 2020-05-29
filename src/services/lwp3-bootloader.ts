@@ -11,8 +11,8 @@ import {
     didFailToConnect,
     didReceive,
     didSend,
-} from '../actions/bootloader';
-import { CharacteristicUUID, ServiceUUID } from '../protocols/bootloader';
+} from '../actions/lwp3-bootloader';
+import { CharacteristicUUID, ServiceUUID } from '../protocols/lwp3-bootloader';
 import {
     PolyfillBluetoothRemoteGATTCharacteristic,
     polyfillBluetoothRemoteGATTCharacteristic,

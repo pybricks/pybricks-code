@@ -7,7 +7,7 @@ import { Action } from '../actions';
 import {
     BootloaderConnectionActionType,
     BootloaderConnectionFailureReason,
-} from '../actions/bootloader';
+} from '../actions/lwp3-bootloader';
 import { NotificationActionType } from '../actions/notification';
 import { ServiceWorkerActionType } from '../actions/service-worker';
 import { createCountFunc } from '../utils/iter';

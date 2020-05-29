@@ -5,7 +5,7 @@ import { Action } from '../actions';
 import {
     BootloaderConnectionActionType,
     BootloaderConnectionFailureReason,
-} from '../actions/bootloader';
+} from '../actions/lwp3-bootloader';
 import { combineServices } from '.';
 
 /**
