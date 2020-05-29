@@ -14,23 +14,35 @@ function App(): JSX.Element {
         <div>
             <Container fluid className="vh-100 d-flex flex-column">
                 <Row>
-                    <Col>
-                        <Toolbar />
+                    <Col xs={12} md={8}>
+                        <Container
+                            fluid
+                            className="vh-100 d-flex flex-column"
+                        >
+                            <Row>
+                                <Col>
+                                    <Toolbar />
+                                </Col>
+                            </Row>
+                            <Row className="h-100">
+                                <Col>
+                                    <Editor />
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col className="Terminal py-2">
+                                    <Terminal />
+                                </Col>
+                            </Row>
+                            <Row className="mt-2">
+                                <Col>
+                                    <StatusBar />
+                                </Col>
+                            </Row>
+                        </Container>
                     </Col>
-                </Row>
-                <Row className="h-100">
-                    <Col>
-                        <Editor />
-                    </Col>
-                </Row>
-                <Row>
-                    <Col className="Terminal py-2">
-                        <Terminal />
-                    </Col>
-                </Row>
-                <Row className="mt-2">
-                    <Col>
-                        <StatusBar />
+                    <Col xs={1} md={4} className="embed-responsive">
+                        <iframe src="https://docs.pybricks.com" title="docs"></iframe>
                     </Col>
                 </Row>
             </Container>
