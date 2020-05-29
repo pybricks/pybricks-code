@@ -30,7 +30,7 @@ function App(): JSX.Element {
                                 </Col>
                             </Row>
                             <Row>
-                                <Col className="Terminal py-2">
+                                <Col className="terminal py-2">
                                     <Terminal />
                                 </Col>
                             </Row>
