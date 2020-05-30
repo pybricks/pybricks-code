@@ -12,34 +12,29 @@ import Toolbar from './Toolbar';
 function App(): JSX.Element {
     return (
         <div>
-            <Container fluid className="vh-100 d-flex flex-column">
-                <Row>
-                    <Col xs={12} md={8} className="outer-container-col">
-                        <Container
-                            fluid
-                            className="vh-100 d-flex flex-column inner-container-col"
-                        >
-                            <Row>
-                                <Col>
-                                    <Toolbar />
-                                </Col>
-                            </Row>
-                            <Row className="h-100">
-                                <Col>
-                                    <Editor />
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col className="terminal py-2">
-                                    <Terminal />
-                                </Col>
-                            </Row>
-                            <Row className="mt-2">
-                                <Col>
-                                    <StatusBar />
-                                </Col>
-                            </Row>
-                        </Container>
+            <Container fluid>
+                <Row className="vh-100">
+                    <Col className="d-flex flex-column container-col">
+                        <Row>
+                            <Col>
+                                <Toolbar />
+                            </Col>
+                        </Row>
+                        <Row className="row flex-grow-1">
+                            <Col>
+                                <Editor />
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col className="terminal py-2">
+                                <Terminal />
+                            </Col>
+                        </Row>
+                        <Row className="mt-2">
+                            <Col>
+                                <StatusBar />
+                            </Col>
+                        </Row>
                     </Col>
                     <Col xs={1} md={4} className="embed-responsive">
                         <iframe src="https://docs.pybricks.com" title="docs"></iframe>
