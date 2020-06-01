@@ -14,7 +14,7 @@ function App(): JSX.Element {
         <div>
             <Container fluid>
                 <Row className="vh-100">
-                    <Col className="d-flex flex-column container-col">
+                    <Col md={12} lg={8} className="d-flex flex-column container-col">
                         <Row>
                             <Col>
                                 <Toolbar />
@@ -36,7 +36,7 @@ function App(): JSX.Element {
                             </Col>
                         </Row>
                     </Col>
-                    <Col xs={1} md={4} className="embed-responsive">
+                    <Col lg={4} className="embed-responsive d-lg-block d-md-none">
                         <iframe src="https://docs.pybricks.com" title="docs"></iframe>
                     </Col>
                 </Row>
