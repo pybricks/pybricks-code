@@ -260,9 +260,9 @@ function* loadFirmware(
     ) as FirmwareMetadata;
     const main = (yield call(() => zip.file('main.py').async('text'))) as string;
 
-    if (metadata['mpy-abi-version'] !== 4) {
+    if (metadata['mpy-abi-version'] !== 5) {
         throw Error(
-            `Firmware requires mpy-cross ABI version ${metadata['mpy-abi-version']} we have v4`,
+            `Firmware requires mpy-cross ABI version ${metadata['mpy-abi-version']} we have v5`,
         );
     }
 
