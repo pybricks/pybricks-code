@@ -1441,10 +1441,10 @@
   resolved "https://registry.yarnpkg.com/@shopify/react-hooks/-/react-hooks-1.10.0.tgz#39671f889872a345f7e60a635a3d9fcb2a487825"
   integrity sha512-kgw/lUOhvd5hqOWVGT3Z41Yl9k9knr0s8n+m8YdQTIklww7QzDNV341XKslaRy0qHAf2GUw7JH5g8BQFm1ZQSA==
 
-"@shopify/react-i18n@^3.0.2":
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/@shopify/react-i18n/-/react-i18n-3.0.3.tgz#bfe5f40a24b0fd03afd12e0d2fba06676afbb6f8"
-  integrity sha512-ZpfHYUicUYO7pSTCwI4wRGBg+hA5a+69jPPrQOdTcO60Py0/uB2p68YUQKS3x+tY6r3+C/60UBe28XzlvM/USQ==
+"@shopify/react-i18n@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@shopify/react-i18n/-/react-i18n-4.0.0.tgz#2a1c7cff2b2afd7ef6b0913e04f9a96056ab3404"
+  integrity sha512-FDGRCT814t8IandtrpGwrXtE8K9CbvAySX7WE5aJfdheT6i5zSNAeEu3/h1BV5MIT3vv6bLB1sv6z9IXOfCPxQ==
   dependencies:
     "@shopify/dates" "^0.3.6"
     "@shopify/decorators" "^1.1.11"
