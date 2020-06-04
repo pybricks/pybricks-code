@@ -8,6 +8,7 @@ import {
     BootloaderConnectionActionType,
     BootloaderConnectionFailureReason,
 } from '../actions/lwp3-bootloader';
+import { MpyActionType } from '../actions/mpy';
 import { NotificationActionType } from '../actions/notification';
 import { ServiceWorkerActionType } from '../actions/service-worker';
 import { createCountFunc } from '../utils/iter';
@@ -87,6 +88,11 @@ const list: Reducer<NotificationList, Action> = (state = [], action) => {
                     return append(state, Level.Error, MessageId.BleConnectFailed);
             }
             return state;
+        case MpyActionType.DidFailToCompile:
+            return [
+                ...state,
+                { id: nextId(), level: Level.Error, message: action.err },
+            ];
         case NotificationActionType.Add:
             return [
                 ...state,
