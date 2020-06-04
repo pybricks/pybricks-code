@@ -1335,10 +1335,10 @@
   resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.4.0.tgz#0e1bdf8d021e7ea58affade33d9d607e11365915"
   integrity sha512-NMrDy6EWh9TPdSRiHmHH2ye1v5U0gBD7pRYwSwJvomx7Bm4GG04vu63dYiVzebLOx2obPpJugew06xVP0Nk7hA==
 
-"@pybricks/firmware@^1.0.0":
-  version "1.0.0"
-  resolved "https://npm.pkg.github.com/download/@pybricks/firmware/1.0.0/dfc52164caa622a8c5e0c59d110319441b7966f25e4d2764d592ce7b56672465#3f763dff5751d8e4b8ff94f73678ee30ac52233b"
-  integrity sha512-eMGuzLRKVMvnZc093/7aW5/fGtRfz39aSLy+Drhc6j4tJqySBdRhNk709mH7ZYMj4RJ2D6mWNbuzi3LVGsVkAA==
+"@pybricks/firmware@2.0.0":
+  version "2.0.0"
+  resolved "https://npm.pkg.github.com/download/@pybricks/firmware/2.0.0/9ce17f084d6beb8f820d9fbd55d5b7f4238eeba9d935c12bbc1c2bc0d09a1fff#63ef2b783f3ffa52e0dc253a16bee9a939fea791"
+  integrity sha512-4wkl9fsFj5+TE4igVdCwFLRGVRHBh/ImyZtyEDVt1iBkpzdVaYMtwKrJKfK4kwcY06eYhs6IfczrOKumkr4N9A==
 
 "@pybricks/mpy-cross-v5@^1.0.0":
   version "1.0.0"

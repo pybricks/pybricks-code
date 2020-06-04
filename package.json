@@ -3,7 +3,7 @@
     "version": "0.1.0",
     "private": true,
     "dependencies": {
-        "@pybricks/firmware": "^1.0.0",
+        "@pybricks/firmware": "2.0.0",
         "@pybricks/mpy-cross-v5": "^1.0.0",
         "@shopify/react-i18n": "^3.0.2",
         "@testing-library/jest-dom": "^5.8.0",
