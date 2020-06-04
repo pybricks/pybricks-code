@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020 The Pybricks Authors
 
-import { CompileResult, compile as mpyCrossCompile } from '@pybricks/mpy-cross-v4';
+import { CompileResult, compile as mpyCrossCompile } from '@pybricks/mpy-cross-v5';
 import { call, put, takeEvery } from 'redux-saga/effects';
 import {
     MpyActionType,

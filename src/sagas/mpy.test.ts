@@ -36,7 +36,7 @@ test('compiler works', async () => {
     expect(dispatched[0].type).toBe(MpyActionType.DidCompile);
     const { data } = dispatched[0] as MpyDidCompileAction;
     expect(data[0]).toBe('M'.charCodeAt(0));
-    expect(data[1]).toBe(4); // ABI version
+    expect(data[1]).toBe(5); // ABI version
     expect(data[2]).toBe(MpyFeatureFlags.MICROPY_PY_BUILTINS_STR_UNICODE);
     expect(data[3]).toBe(31); // small int bits
 });
