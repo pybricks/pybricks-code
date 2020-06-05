@@ -37,7 +37,11 @@ function App(): JSX.Element {
                         </Row>
                     </Col>
                     <Col lg={4} className="embed-responsive d-lg-block d-md-none">
-                        <iframe src="https://docs.pybricks.com" title="docs"></iframe>
+                        <iframe
+                            src="https://docs.pybricks.com"
+                            allowFullScreen={true}
+                            title="docs"
+                        ></iframe>
                     </Col>
                 </Row>
             </Container>
