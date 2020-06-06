@@ -1,36 +1,96 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020 The Pybricks Authors
 
-// Override default variables before the import
-$body-bg: #e8e8e8;
+@import '@blueprintjs/core/lib/scss/variables.scss';
 
-// Import Bootstrap and its default variables
-@import '~bootstrap/scss/bootstrap';
+// override variables here
+// See https://blueprintjs.com/docs/#core/variables
 
-.terminal {
-    height: 15vh;
+$pt-navbar-height: 72px;
+
+$pybricks-blue: #0088ce;
+$pt-intent-primary: $pybricks-blue;
+$pt-outline-color: rgba($pybricks-blue, 0.6);
+
+$navbar-backgound-color: $pt-app-background-color;
+$dark-navbar-background-color: $pt-dark-app-background-color;
+
+@import '~normalize.css';
+@import '@blueprintjs/core/src/blueprint.scss';
+
+$status-bar-height: 3vh;
+
+:root {
+    --mobile-pad: 0px;
 }
 
-.container-col {
-    padding: 0px;
-    padding-right: 8px;
+body {
+    // no scrolling of the page
+    overflow: hidden;
+    // See https://blueprintjs.com/docs/#core/components/navbar
+    padding-top: $pt-navbar-height;
+}
+
+.docs-iframe {
+    height: 100%;
+    width: 100%;
+}
+
+.docs-iframe-overlay {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+}
+
+.editor-container {
+    height: 100%;
+}
+
+.terminal-padding {
+    padding-left: 10px;
+    height: 100%;
+}
+
+.terminal-container {
+    height: 100%;
+}
+
+.app-main {
+    // height makes everything fit without scrolling
+    height: calc(100vh - #{$pt-navbar-height} - #{$status-bar-height} - var(--mobile-pad)) !important;
 }
 
 .status-bar {
-    background-color: #0088ce;
+    position: fixed;
+    top: calc(100vh - #{$status-bar-height} - var(--mobile-pad));
+    background-color: $pybricks-blue;
+    height: $status-bar-height;
+    width: 100vw;
+    display: flex;
+    align-items: center;
 }
 
-.btn-light, .btn-light:focus  {
-    background-color: #0088ce;
-    border-width: 0px;
+.status-bar-item {
+    width: 25%;
+    margin-left: 10px;
 }
 
-.btn-light:disabled {
-    background-color: #65acd0;
-    border-width: 0px;
+.bp3-progress-bar.status-bar-item {
+    // override progress bar default gray1 backgound
+    background-color: $pt-app-background-color;
 }
 
-.btn-light:hover, .btn-light:active {
-    background-color: #005885 !important;
-    border-width: 0px;
+.bp3-navbar-divider {
+    // don't draw vertical line since we are just using button groups
+    border-left: unset;
+}
+
+.ace_gutter {
+    // make ace editor match app backgound color
+    background-color: $pt-app-background-color !important;
+}
+
+.layout-splitter {
+    // make layout splitter match app color scheme
+    background-color: $pt-divider-black !important;
 }

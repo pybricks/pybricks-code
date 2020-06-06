@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020 The Pybricks Authors
 
+import { ProgressBar } from '@blueprintjs/core';
 import React from 'react';
-import ProgressBar from 'react-bootstrap/ProgressBar';
 import { connect } from 'react-redux';
 import { RootState } from '../reducers';
 
@@ -13,8 +13,12 @@ type StatusProps = StateProps;
 class StatusBar extends React.Component<StatusProps> {
     render(): JSX.Element {
         return (
-            <div className="status-bar p-2">
-                <ProgressBar className="w-25" now={this.props.progress} />
+            <div className="status-bar">
+                <ProgressBar
+                    className="status-bar-item"
+                    value={this.props.progress}
+                    animate={false}
+                />
             </div>
         );
     }
