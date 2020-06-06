@@ -1,50 +1,84 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020 The Pybricks Authors
 
-import React from 'react';
-import { Col, Row } from 'react-bootstrap';
-import Container from 'react-bootstrap/Container';
+import React, { EffectCallback, useEffect, useState } from 'react';
+import SplitterLayout from 'react-splitter-layout';
 import Editor from './Editor';
 import StatusBar from './StatusBar';
 import Terminal from './Terminal';
 import Toolbar from './Toolbar';
 
+import 'react-splitter-layout/lib/index.css';
+
+function useShowDocs(): boolean {
+    function getShowDocs(): boolean {
+        return window.innerWidth >= 1024;
+    }
+
+    const [showDocs, setShowDocs] = useState(getShowDocs);
+
+    useEffect((): ReturnType<EffectCallback> => {
+        function handleResize(): void {
+            setShowDocs(getShowDocs());
+        }
+
+        window.addEventListener('resize', handleResize);
+
+        return (): void => window.removeEventListener('resize', handleResize);
+    }, []); // Empty array ensures that effect is only run on mount and unmount
+
+    return showDocs;
+}
+
 function App(): JSX.Element {
+    const showDocs = useShowDocs();
+    const [dragging, setDragging] = useState(false);
+
     return (
-        <div>
-            <Container fluid>
-                <Row className="vh-100">
-                    <Col md={12} lg={8} className="d-flex flex-column container-col">
-                        <Row>
-                            <Col>
-                                <Toolbar />
-                            </Col>
-                        </Row>
-                        <Row className="row flex-grow-1">
-                            <Col>
-                                <Editor />
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col className="terminal py-2">
-                                <Terminal />
-                            </Col>
-                        </Row>
-                        <Row className="mt-2">
-                            <Col>
-                                <StatusBar />
-                            </Col>
-                        </Row>
-                    </Col>
-                    <Col lg={4} className="embed-responsive d-lg-block d-md-none">
+        <div className="app">
+            <Toolbar />
+            <SplitterLayout
+                customClassName="app-main"
+                onDragStart={(): void => setDragging(true)}
+                onDragEnd={(): void => setDragging(false)}
+                percentage={true}
+                secondaryInitialSize={Number(
+                    localStorage.getItem('app-main-split') || 30,
+                )}
+                onSecondaryPaneSizeChange={(value): void =>
+                    localStorage.setItem('app-main-split', String(value))
+                }
+            >
+                <SplitterLayout
+                    vertical={true}
+                    percentage={true}
+                    secondaryInitialSize={Number(
+                        localStorage.getItem('app-docs-split') || 30,
+                    )}
+                    onSecondaryPaneSizeChange={(value): void =>
+                        localStorage.setItem('app-docs-split', String(value))
+                    }
+                >
+                    <Editor />
+                    <div className="terminal-padding">
+                        <Terminal />
+                    </div>
+                </SplitterLayout>
+                {showDocs && (
+                    <div className="docs-iframe">
+                        {dragging && <div className="docs-iframe-overlay" />}
                         <iframe
                             src="https://docs.pybricks.com"
                             allowFullScreen={true}
                             title="docs"
-                        ></iframe>
-                    </Col>
-                </Row>
-            </Container>
+                            width="100%"
+                            height="100%"
+                            frameBorder="none"
+                        />
+                    </div>
+                )}
+            </SplitterLayout>
+            <StatusBar />
         </div>
     );
 }

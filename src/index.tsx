@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020 The Pybricks Authors
 
+import { ResizeSensor } from '@blueprintjs/core';
 import { I18nContext, I18nManager } from '@shopify/react-i18n';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -46,6 +47,21 @@ ReactDOM.render(
     <React.StrictMode>
         <Provider store={store}>
             <I18nContext.Provider value={i18n}>
+                {/* This is a hack for correctly sizing to view height on mobile when not running in fullscreen mode. */}
+                {/* https://css-tricks.com/the-trick-to-viewport-units-on-mobile/ */}
+                <ResizeSensor
+                    onResize={(e): void => {
+                        document.documentElement.style.setProperty(
+                            '--mobile-pad',
+                            `${e[0].contentRect.height - window.innerHeight}px`,
+                        );
+                    }}
+                >
+                    <div
+                        id="vh"
+                        style={{ height: '100vh', width: '0px', position: 'absolute' }}
+                    />
+                </ResizeSensor>
                 <NotificationStack />
                 <App />
             </I18nContext.Provider>

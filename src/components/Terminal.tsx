@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020 The Pybricks Authors
 
+import { ResizeSensor } from '@blueprintjs/core';
 import React from 'react';
 import { connect } from 'react-redux';
-import ResizeObserver from 'react-resize-observer';
 import { Subscription } from 'rxjs';
 import { Terminal as XTerm } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
@@ -62,13 +62,9 @@ class Terminal extends React.Component<TerminalProps> {
 
     render(): JSX.Element {
         return (
-            <div
-                id="terminal"
-                ref={this.terminalRef}
-                style={{ height: 'inherit', width: 'inherit' }}
-            >
-                <ResizeObserver onResize={(): void => this.fitAddon.fit()} />
-            </div>
+            <ResizeSensor onResize={(): void => this.fitAddon.fit()}>
+                <div className="terminal-container" ref={this.terminalRef} />
+            </ResizeSensor>
         );
     }
 }
