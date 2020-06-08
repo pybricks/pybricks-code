@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2020 The Pybricks Authors
+
 import { runSaga, stdChannel } from 'redux-saga';
 import { Action } from '../actions';
 import {

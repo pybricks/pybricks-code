@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2020 The Pybricks Authors
+
 import { Dispatch as ReduxDispatch } from 'redux';
 import { BLEAction, BLEConnectAction, BLEDataAction } from './ble';
 import { EditorAction } from './editor';
