@@ -57,10 +57,7 @@ ReactDOM.render(
                         );
                     }}
                 >
-                    <div
-                        id="vh"
-                        style={{ height: '100vh', width: '0px', position: 'absolute' }}
-                    />
+                    <div id="vh" className="h-100 w-100 p-absolute" />
                 </ResizeSensor>
                 <NotificationStack />
                 <App />

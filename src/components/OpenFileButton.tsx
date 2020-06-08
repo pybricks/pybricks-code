@@ -86,6 +86,7 @@ class OpenFileButton extends React.Component<Props> {
                             {...getRootProps()}
                             intent={Intent.PRIMARY}
                             disabled={this.props.enabled === false}
+                            className="no-box-shadow"
                             style={
                                 this.props.enabled === false
                                     ? { pointerEvents: 'none' }

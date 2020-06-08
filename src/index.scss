@@ -32,34 +32,30 @@ body {
     padding-top: $pt-navbar-height;
 }
 
-.docs-iframe {
-    height: 100%;
-    width: 100%;
-}
+// Utility classes
 
-.docs-iframe-overlay {
-    position: absolute;
-    height: 100%;
-    width: 100%;
-}
-
-.editor-container {
-    height: 100%;
-}
-
-.terminal-padding {
-    padding-left: 10px;
-    height: 100%;
-}
-
-.terminal-container {
-    height: 100%;
-}
-
-.app-main {
+.h-body {
     // height makes everything fit without scrolling
     height: calc(100vh - #{$pt-navbar-height} - #{$status-bar-height} - var(--mobile-pad)) !important;
 }
+
+.h-100 {
+    height: 100%;
+}
+
+.w-100 {
+    width: 100%;
+}
+
+.p-absolute {
+    position: absolute;
+}
+
+.no-box-shadow {
+    box-shadow: unset !important;
+}
+
+// Status bar. TODO: move this to separate file
 
 .status-bar {
     position: fixed;
@@ -76,20 +72,12 @@ body {
     margin-left: 10px;
 }
 
-.bp3-button {
-    // no borders on buttons
-    box-shadow: unset !important;
-}
-
 .bp3-progress-bar.status-bar-item {
     // override progress bar default gray1 backgound
     background-color: $pt-app-background-color;
 }
 
-.bp3-navbar {
-    // no borders on navbar
-    box-shadow: unset;
-}
+// Hacks
 
 .bp3-navbar-divider {
     // don't draw vertical line since we are just using button groups
@@ -104,4 +92,8 @@ body {
 .layout-splitter {
     // make layout splitter match app color scheme
     background-color: $pt-app-background-color !important;
+}
+
+.terminal-padding {
+    padding-left: 10px;
 }

@@ -14,7 +14,7 @@ import StopButton from './StopButton';
 class Toolbar extends React.Component {
     render(): JSX.Element {
         return (
-            <Navbar fixedToTop={true}>
+            <Navbar fixedToTop={true} className="no-box-shadow">
                 <Navbar.Group>
                     <ButtonGroup>
                         <OpenButton id="open" />
