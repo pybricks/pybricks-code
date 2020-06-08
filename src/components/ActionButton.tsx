@@ -33,6 +33,7 @@ class ActionButton extends React.Component<Props> {
                     intent={Intent.PRIMARY}
                     onClick={(): void => this.props.onAction()}
                     disabled={this.props.enabled === false}
+                    className="no-box-shadow"
                     style={
                         this.props.enabled === false
                             ? { pointerEvents: 'none' }

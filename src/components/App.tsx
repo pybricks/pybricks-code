@@ -38,35 +38,35 @@ function App(): JSX.Element {
         <div className="app">
             <Toolbar />
             <SplitterLayout
-                customClassName="app-main"
+                customClassName="h-body"
                 onDragStart={(): void => setDragging(true)}
                 onDragEnd={(): void => setDragging(false)}
                 percentage={true}
                 secondaryInitialSize={Number(
-                    localStorage.getItem('app-main-split') || 30,
+                    localStorage.getItem('app-docs-split') || 30,
                 )}
                 onSecondaryPaneSizeChange={(value): void =>
-                    localStorage.setItem('app-main-split', String(value))
+                    localStorage.setItem('app-docs-split', String(value))
                 }
             >
                 <SplitterLayout
                     vertical={true}
                     percentage={true}
                     secondaryInitialSize={Number(
-                        localStorage.getItem('app-docs-split') || 30,
+                        localStorage.getItem('app-terminal-split') || 30,
                     )}
                     onSecondaryPaneSizeChange={(value): void =>
-                        localStorage.setItem('app-docs-split', String(value))
+                        localStorage.setItem('app-terminal-split', String(value))
                     }
                 >
                     <Editor />
-                    <div className="terminal-padding">
+                    <div className="terminal-padding h-100">
                         <Terminal />
                     </div>
                 </SplitterLayout>
                 {showDocs && (
-                    <div className="docs-iframe">
-                        {dragging && <div className="docs-iframe-overlay" />}
+                    <div className="h-100 w-100">
+                        {dragging && <div className="h-100 w-100 p-absolute" />}
                         <iframe
                             src="https://docs.pybricks.com"
                             allowFullScreen={true}

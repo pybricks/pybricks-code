@@ -31,7 +31,7 @@ class Editor extends React.Component<EditorProps> {
             <ResizeSensor
                 onResize={(): void => this.editorRef.current?.editor?.resize()}
             >
-                <div className="editor-container">
+                <div className="h-100">
                     <AceEditor
                         ref={this.editorRef}
                         mode="python"

@@ -63,7 +63,7 @@ class Terminal extends React.Component<TerminalProps> {
     render(): JSX.Element {
         return (
             <ResizeSensor onResize={(): void => this.fitAddon.fit()}>
-                <div className="terminal-container" ref={this.terminalRef} />
+                <div ref={this.terminalRef} className="h-100" />
             </ResizeSensor>
         );
     }
