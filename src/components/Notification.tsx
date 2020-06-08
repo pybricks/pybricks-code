@@ -98,6 +98,6 @@ export default connect(
     withI18n({
         id: 'notification',
         fallback: en,
-        translations: () => ({ en }),
+        translations: { en },
     })(Notification),
 );

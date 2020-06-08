@@ -2,12 +2,14 @@
 // Copyright (c) 2020 The Pybricks Authors
 
 import { ResizeSensor } from '@blueprintjs/core';
+import { WithI18nProps, withI18n } from '@shopify/react-i18n';
 import { Ace } from 'ace-builds';
 import React from 'react';
 import AceEditor from 'react-ace';
 import { connect } from 'react-redux';
 import { Action, Dispatch } from '../actions';
 import { setEditSession } from '../actions/editor';
+import en from './editor.en.json';
 
 import 'ace-builds/src-noconflict/mode-python';
 import 'ace-builds/src-noconflict/theme-xcode';
@@ -16,7 +18,7 @@ import 'ace-builds/src-min-noconflict/ext-language_tools';
 
 type DispatchProps = { onSessionChanged: (session?: Ace.EditSession) => void };
 
-type EditorProps = DispatchProps;
+type EditorProps = DispatchProps & WithI18nProps;
 
 class Editor extends React.Component<EditorProps> {
     private editorRef: React.RefObject<AceEditor>;
@@ -40,7 +42,7 @@ class Editor extends React.Component<EditorProps> {
                         width="100%"
                         height="100%"
                         focus={true}
-                        placeholder="Write your program here..."
+                        placeholder={this.props.i18n.translate('editor.placeholder')}
                         defaultValue={localStorage.getItem('program') || undefined}
                         editorProps={{ $blockScrolling: true }}
                         setOptions={{
@@ -74,4 +76,7 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
     onSessionChanged: (s): Action => dispatch(setEditSession(s)),
 });
 
-export default connect(undefined, mapDispatchToProps)(Editor);
+export default connect(
+    undefined,
+    mapDispatchToProps,
+)(withI18n({ id: 'editor', fallback: en, translations: { en } })(Editor));
