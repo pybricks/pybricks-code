@@ -9,10 +9,11 @@
 $pt-navbar-height: 72px;
 
 $pybricks-blue: #0088ce;
+$pt-app-background-color: #e8e8e8;
 $pt-intent-primary: $pybricks-blue;
 $pt-outline-color: rgba($pybricks-blue, 0.6);
 
-$navbar-backgound-color: $pt-app-background-color;
+$navbar-background-color: $pt-app-background-color;
 $dark-navbar-background-color: $pt-dark-app-background-color;
 
 @import '~normalize.css';
@@ -75,9 +76,19 @@ body {
     margin-left: 10px;
 }
 
+.bp3-button {
+    // no borders on buttons
+    box-shadow: unset !important;
+}
+
 .bp3-progress-bar.status-bar-item {
     // override progress bar default gray1 backgound
     background-color: $pt-app-background-color;
+}
+
+.bp3-navbar {
+    // no borders on navbar
+    box-shadow: unset;
 }
 
 .bp3-navbar-divider {
@@ -92,5 +103,5 @@ body {
 
 .layout-splitter {
     // make layout splitter match app color scheme
-    background-color: $pt-divider-black !important;
+    background-color: $pt-app-background-color !important;
 }
