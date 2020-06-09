@@ -13,7 +13,7 @@ type StatusProps = StateProps;
 class StatusBar extends React.Component<StatusProps> {
     render(): JSX.Element {
         return (
-            <div className="status-bar">
+            <div className="status-bar" onContextMenu={(e): void => e.preventDefault()}>
                 <ProgressBar
                     className="status-bar-item"
                     value={this.props.progress}

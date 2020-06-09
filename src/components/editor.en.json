@@ -1,5 +1,9 @@
 {
     "editor": {
-        "placeholder": "Write your program here..."
+        "placeholder": "Write your program here...",
+        "copy": "Copy",
+        "paste": "Paste",
+        "undo": "Undo",
+        "redo": "Redo"
     }
 }

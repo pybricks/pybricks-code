@@ -1,27 +1,33 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020 The Pybricks Authors
 
-import { ResizeSensor } from '@blueprintjs/core';
+import { Menu, MenuDivider, MenuItem, ResizeSensor } from '@blueprintjs/core';
+// importing this way due to https://github.com/palantir/blueprint/issues/3891
+import { ContextMenuTarget } from '@blueprintjs/core/lib/esnext/components/context-menu/contextMenuTarget';
 import { WithI18nProps, withI18n } from '@shopify/react-i18n';
-import { Ace } from 'ace-builds';
+import { Ace, config } from 'ace-builds';
 import React from 'react';
 import AceEditor from 'react-ace';
 import { connect } from 'react-redux';
 import { Action, Dispatch } from '../actions';
 import { setEditSession } from '../actions/editor';
+import { EditorStringId } from './editor';
 import en from './editor.en.json';
 
 import 'ace-builds/src-noconflict/mode-python';
 import 'ace-builds/src-noconflict/theme-xcode';
-import 'ace-builds/src-min-noconflict/ext-searchbox';
-import 'ace-builds/src-min-noconflict/ext-language_tools';
+import 'ace-builds/src-noconflict/ext-searchbox';
+import 'ace-builds/src-noconflict/ext-keybinding_menu';
+import 'ace-builds/src-noconflict/ext-language_tools';
 
 type DispatchProps = { onSessionChanged: (session?: Ace.EditSession) => void };
 
 type EditorProps = DispatchProps & WithI18nProps;
 
+@ContextMenuTarget
 class Editor extends React.Component<EditorProps> {
     private editorRef: React.RefObject<AceEditor>;
+    private keyBindings?: Array<{ key: string; command: string }>;
 
     constructor(props: EditorProps) {
         super(props);
@@ -29,11 +35,11 @@ class Editor extends React.Component<EditorProps> {
     }
 
     render(): JSX.Element {
+        const { i18n, onSessionChanged } = this.props;
+        const editor = this.editorRef.current?.editor;
         return (
-            <ResizeSensor
-                onResize={(): void => this.editorRef.current?.editor?.resize()}
-            >
-                <div className="h-100">
+            <div className="h-100">
+                <ResizeSensor onResize={(): void => editor?.resize()}>
                     <AceEditor
                         ref={this.editorRef}
                         mode="python"
@@ -42,17 +48,30 @@ class Editor extends React.Component<EditorProps> {
                         width="100%"
                         height="100%"
                         focus={true}
-                        placeholder={this.props.i18n.translate('editor.placeholder')}
+                        placeholder={i18n.translate(EditorStringId.Placeholder)}
                         defaultValue={localStorage.getItem('program') || undefined}
                         editorProps={{ $blockScrolling: true }}
                         setOptions={{
                             enableBasicAutocompletion: true,
                             enableLiveAutocompletion: true,
                         }}
-                        onFocus={(_, e): void => {
-                            this.props.onSessionChanged(e?.session);
+                        onLoad={(e): void => {
+                            config.loadModule(
+                                'ace/ext/menu_tools/get_editor_keyboard_shortcuts',
+                                (m) => {
+                                    this.keyBindings = m.getEditorKeybordShortcuts(e);
+                                },
+                            );
+                            config.loadModule('ace/ext/keybinding_menu', (m) =>
+                                m.init(e),
+                            );
                         }}
-                        onChange={(v): void => localStorage.setItem('program', v)}
+                        onFocus={(_, e): void => {
+                            onSessionChanged(e?.session);
+                        }}
+                        onChange={(v): void => {
+                            localStorage.setItem('program', v);
+                        }}
                         commands={[
                             {
                                 name: 'save',
@@ -66,8 +85,56 @@ class Editor extends React.Component<EditorProps> {
                             },
                         ]}
                     />
-                </div>
-            </ResizeSensor>
+                </ResizeSensor>
+            </div>
+        );
+    }
+
+    renderContextMenu(): JSX.Element {
+        const { i18n } = this.props;
+        const editor = this.editorRef.current?.editor;
+        return (
+            <Menu>
+                <MenuItem
+                    onClick={(): void => {
+                        const selected = editor?.getSelectedText();
+                        if (selected) {
+                            navigator.clipboard.writeText(selected);
+                        }
+                    }}
+                    text={i18n.translate(EditorStringId.Copy)}
+                    icon="duplicate"
+                    label={/mac/i.test(navigator.platform) ? 'Cmd-C' : 'Ctrl-C'}
+                    disabled={editor?.getSelection().isEmpty()}
+                />
+                <MenuItem
+                    onClick={async (): Promise<void> => {
+                        editor?.execCommand(
+                            'paste',
+                            await navigator.clipboard.readText(),
+                        );
+                    }}
+                    text={i18n.translate(EditorStringId.Paste)}
+                    icon="clipboard"
+                    label={/mac/i.test(navigator.platform) ? 'Cmd-V' : 'Ctrl-V'}
+                />
+                <MenuDivider />
+                <MenuItem
+                    onClick={(): void => editor?.undo()}
+                    text={i18n.translate(EditorStringId.Undo)}
+                    icon="undo"
+                    label={this.keyBindings?.find((x) => x.command === 'undo')?.key}
+                    disabled={!editor?.session.getUndoManager().canUndo()}
+                />
+                <MenuItem
+                    onClick={(): void => editor?.redo()}
+                    text={i18n.translate(EditorStringId.Redo)}
+                    icon="redo"
+                    label={this.keyBindings?.find((x) => x.command === 'redo')?.key}
+                    active
+                    disabled={!editor?.session.getUndoManager().canRedo()}
+                />
+            </Menu>
         );
     }
 }
