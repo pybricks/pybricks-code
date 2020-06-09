@@ -4,6 +4,7 @@
 import { Reducer } from 'react';
 import { combineReducers } from 'redux';
 import { Action } from '../actions';
+import { EditorActionType, reloadProgram } from '../actions/editor';
 import {
     BootloaderConnectionActionType,
     BootloaderConnectionFailureReason,
@@ -18,8 +19,10 @@ export enum MessageId {
     BleConnectFailed = 'ble.connectFailed',
     BleGattServiceNotFound = 'ble.gattServiceNotFound',
     BleNoWebBluetooth = 'ble.noWebBluetooth',
+    ProgramChanged = 'editor.programChanged',
     ServiceWorkerSuccess = 'serviceWorker.success',
     ServiceWorkerUpdate = 'serviceWorker.update',
+    YesReloadProgram = 'editor.yesReloadProgram',
 }
 
 /**
@@ -40,12 +43,18 @@ export enum Level {
     Info = 'info',
 }
 
+export interface MessageAction {
+    titleId: MessageId;
+    action: Action;
+}
+
 export interface Notification {
     readonly id: number;
     readonly level: Level;
     readonly message?: string;
     readonly messageId?: MessageId;
     readonly helpUrl?: string;
+    readonly action?: MessageAction;
 }
 
 export type NotificationList = Array<Notification>;
@@ -57,8 +66,9 @@ function append(
     level: Level,
     messageId: MessageId,
     helpUrl?: string,
+    action?: MessageAction,
 ): NotificationList {
-    return [...state, { id: nextId(), level, messageId, helpUrl }];
+    return [...state, { id: nextId(), level, messageId, helpUrl, action }];
 }
 
 const list: Reducer<NotificationList, Action> = (state = [], action) => {
@@ -88,6 +98,15 @@ const list: Reducer<NotificationList, Action> = (state = [], action) => {
                     return append(state, Level.Error, MessageId.BleConnectFailed);
             }
             return state;
+        case EditorActionType.StorageChanged:
+            if (state.find((x) => x.messageId === MessageId.ProgramChanged)) {
+                // don't show message again if it is already shown
+                return state;
+            }
+            return append(state, Level.Info, MessageId.ProgramChanged, undefined, {
+                titleId: MessageId.YesReloadProgram,
+                action: reloadProgram(),
+            });
         case MpyActionType.DidFailToCompile:
             return [
                 ...state,

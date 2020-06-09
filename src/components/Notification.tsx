@@ -5,12 +5,13 @@ import { IconName, Intent, Toast } from '@blueprintjs/core';
 import { WithI18nProps, withI18n } from '@shopify/react-i18n';
 import React from 'react';
 import { connect } from 'react-redux';
-import { Dispatch } from '../actions';
+import { Action, Dispatch } from '../actions';
 import { NotificationLevel, remove } from '../actions/notification';
-import { Level } from '../reducers/notification';
+import { Level, MessageAction } from '../reducers/notification';
 import en from './notification.en.json';
 
 interface DispatchProps {
+    onAction: (action: Action) => void;
     onClose: () => void;
 }
 
@@ -20,6 +21,7 @@ interface OwnProps {
     message?: string;
     messageId?: string;
     helpUrl?: string;
+    action?: MessageAction;
 }
 
 type NotificationProps = DispatchProps & OwnProps & WithI18nProps;
@@ -52,25 +54,33 @@ function mapIcon(level: NotificationLevel): IconName | undefined {
 
 class Notification extends React.Component<NotificationProps> {
     render(): JSX.Element {
+        const {
+            action,
+            helpUrl,
+            i18n,
+            level,
+            message,
+            messageId,
+            onAction,
+            onClose,
+        } = this.props;
         return (
             <Toast
-                onDismiss={(): void => {
-                    this.props.onClose();
-                }}
+                onDismiss={(): void => onClose()}
                 timeout={0}
-                intent={mapIntent(this.props.level)}
-                icon={mapIcon(this.props.level)}
+                intent={mapIntent(level)}
+                icon={mapIcon(level)}
                 message={
                     <div>
                         <p>
-                            {this.props.messageId
-                                ? this.props.i18n.translate(this.props.messageId)
-                                : this.props.message || 'missing message!'}
+                            {messageId
+                                ? i18n.translate(messageId)
+                                : message || 'missing message!'}
                         </p>
-                        {this.props.helpUrl && (
+                        {helpUrl && (
                             <p>
                                 <a
-                                    href={this.props.helpUrl}
+                                    href={helpUrl}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                 >
@@ -80,15 +90,20 @@ class Notification extends React.Component<NotificationProps> {
                         )}
                     </div>
                 }
+                action={
+                    action && {
+                        text: i18n.translate(action.titleId),
+                        onClick: (): void => onAction(action.action),
+                    }
+                }
             />
         );
     }
 }
 
 const mapDispatchToProps = (dispatch: Dispatch, ownProps: OwnProps): DispatchProps => ({
-    onClose: (): void => {
-        dispatch(remove(ownProps.id));
-    },
+    onAction: (a): Action => dispatch(a),
+    onClose: (): Action => dispatch(remove(ownProps.id)),
 });
 
 export default connect(

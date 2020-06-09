@@ -26,6 +26,7 @@ class NotificationStack extends React.Component<NotificationStackProps> {
                         message={n.message}
                         messageId={n.messageId}
                         helpUrl={n.helpUrl}
+                        action={n.action}
                     />
                 ))}
             </Toaster>

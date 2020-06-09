@@ -10,7 +10,7 @@ import React from 'react';
 import AceEditor from 'react-ace';
 import { connect } from 'react-redux';
 import { Action, Dispatch } from '../actions';
-import { setEditSession } from '../actions/editor';
+import { setEditSession, storageChanged } from '../actions/editor';
 import { EditorStringId } from './editor';
 import en from './editor.en.json';
 
@@ -20,7 +20,10 @@ import 'ace-builds/src-noconflict/ext-searchbox';
 import 'ace-builds/src-noconflict/ext-keybinding_menu';
 import 'ace-builds/src-noconflict/ext-language_tools';
 
-type DispatchProps = { onSessionChanged: (session?: Ace.EditSession) => void };
+type DispatchProps = {
+    onSessionChanged: (session?: Ace.EditSession) => void;
+    onProgramStorageChanged: (newValue: string) => void;
+};
 
 type EditorProps = DispatchProps & WithI18nProps;
 
@@ -32,6 +35,24 @@ class Editor extends React.Component<EditorProps> {
     constructor(props: EditorProps) {
         super(props);
         this.editorRef = React.createRef();
+    }
+
+    onStorage = (e: StorageEvent): void => {
+        if (
+            e.key === 'program' &&
+            e.newValue &&
+            e.newValue !== this.editorRef.current?.editor.getValue()
+        ) {
+            this.props.onProgramStorageChanged(e.newValue);
+        }
+    };
+
+    componentDidMount(): void {
+        window.addEventListener('storage', this.onStorage);
+    }
+
+    componentWillUnmount(): void {
+        window.removeEventListener('storage', this.onStorage);
     }
 
     render(): JSX.Element {
@@ -49,7 +70,7 @@ class Editor extends React.Component<EditorProps> {
                         height="100%"
                         focus={true}
                         placeholder={i18n.translate(EditorStringId.Placeholder)}
-                        defaultValue={sessionStorage.getItem('program') || undefined}
+                        defaultValue={localStorage.getItem('program') || undefined}
                         editorProps={{ $blockScrolling: true }}
                         setOptions={{
                             enableBasicAutocompletion: true,
@@ -70,7 +91,7 @@ class Editor extends React.Component<EditorProps> {
                             onSessionChanged(e?.session);
                         }}
                         onChange={(v): void => {
-                            sessionStorage.setItem('program', v);
+                            localStorage.setItem('program', v);
                         }}
                         commands={[
                             {
@@ -141,6 +162,7 @@ class Editor extends React.Component<EditorProps> {
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
     onSessionChanged: (s): Action => dispatch(setEditSession(s)),
+    onProgramStorageChanged: (v): Action => dispatch(storageChanged(v)),
 });
 
 export default connect(
