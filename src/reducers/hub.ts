@@ -2,11 +2,9 @@
 // Copyright (c) 2020 The Pybricks Authors
 
 import { Reducer, combineReducers } from 'redux';
-import {
-    HubMessageActionType,
-    HubRuntimeStatusMessageAction,
-    HubRuntimeStatusType,
-} from '../actions/hub';
+import { Action } from '../actions';
+import { BLEConnectActionType } from '../actions/ble';
+import { HubMessageActionType, HubRuntimeStatusType } from '../actions/hub';
 
 /**
  * Describes the state of the MicroPython runtime on the hub.
@@ -16,6 +14,10 @@ export enum HubRuntimeState {
      * The hub is not connected.
      */
     Disconnected = 'hub.runtime.disconnected',
+    /**
+     * The hub is connected but the state is not known yet.
+     */
+    Unknown = 'hub.runtime.unknown',
     /**
      * The runtime is idle waiting for command after soft reboot.
      */
@@ -38,15 +40,17 @@ export enum HubRuntimeState {
     Error = 'hub.runtime.error',
 }
 
-const runtime: Reducer<HubRuntimeState, HubRuntimeStatusMessageAction> = (
+const runtime: Reducer<HubRuntimeState, Action> = (
     state = HubRuntimeState.Disconnected,
     action,
 ) => {
     switch (action.type) {
+        case BLEConnectActionType.DidDisconnect:
+            return HubRuntimeState.Disconnected;
+        case BLEConnectActionType.DidConnect:
+            return HubRuntimeState.Unknown;
         case HubMessageActionType.RuntimeStatus:
             switch (action.newStatus) {
-                case HubRuntimeStatusType.Disconnected:
-                    return HubRuntimeState.Disconnected;
                 case HubRuntimeStatusType.Idle:
                     return HubRuntimeState.Idle;
                 case HubRuntimeStatusType.Loading:
