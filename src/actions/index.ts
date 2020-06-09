@@ -4,9 +4,9 @@
 import { Dispatch as ReduxDispatch } from 'redux';
 import { BLEAction, BLEConnectAction, BLEDataAction } from './ble';
 import { EditorAction } from './editor';
+import { FlashFirmwareAction } from './flash-firmware';
 import { HubAction, HubMessageAction } from './hub';
 import {
-    BootloaderAction,
     BootloaderConnectionAction,
     BootloaderDidRequestAction,
     BootloaderRequestAction,
@@ -21,17 +21,17 @@ import { TerminalDataAction } from './terminal';
  * Common type for all actions.
  */
 export type Action =
+    | BLEAction
     | BLEConnectAction
     | BLEDataAction
-    | BLEAction
     | BootloaderConnectionAction
-    | BootloaderRequestAction
     | BootloaderDidRequestAction
+    | BootloaderRequestAction
     | BootloaderResponseAction
-    | BootloaderAction
     | EditorAction
-    | HubMessageAction
+    | FlashFirmwareAction
     | HubAction
+    | HubMessageAction
     | MpyAction
     | NotificationAction
     | ServiceWorkerAction

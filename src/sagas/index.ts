@@ -3,10 +3,11 @@
 
 import { all } from 'redux-saga/effects';
 import editor from './editor';
+import flashFirmware from './flash-firmare';
 import bootloader from './lwp3-bootloader';
 import mpy from './mpy';
 
 /* istanbul ignore next */
 export default function* (): Generator {
-    yield all([bootloader(), editor(), mpy()]);
+    yield all([bootloader(), editor(), flashFirmware(), mpy()]);
 }
