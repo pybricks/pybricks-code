@@ -4,7 +4,6 @@
 import { Action } from 'redux';
 
 export enum HubRuntimeStatusType {
-    Disconnected = 'disconnected',
     Idle = 'idle',
     Loading = 'loading',
     Loaded = 'loaded',

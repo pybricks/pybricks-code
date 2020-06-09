@@ -12,6 +12,7 @@ import {
     disconnect as disconnectAction,
     notify,
 } from '../actions/ble';
+import { stop } from '../actions/hub';
 import * as notification from '../actions/notification';
 import { RootState } from '../reducers';
 import { BLEConnectionState } from '../reducers/ble';
@@ -104,6 +105,8 @@ async function connect(action: Action, dispatch: Dispatch): Promise<void> {
         return;
     }
     dispatch(didConnect());
+    // Try to force a soft reset so the hub is in a known state
+    dispatch(stop());
 }
 
 function disconnect(action: Action): void {
