@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020 The Pybricks Authors
 
-import { assert, hex } from '.';
+import { assert, hex, lookup } from '.';
 
 test('assert', () => {
     const assertTrue = jest.fn(() => assert(true, 'should not throw'));
@@ -15,4 +15,10 @@ test('hex', () => {
     expect(hex(0, 2)).toBe('0x00');
     expect(hex(1, 4)).toBe('0x0001');
     expect(hex(2, 8)).toBe('0x00000002');
+});
+
+test('lookup', () => {
+    const obj = { a: { b: { c: 'd' } } };
+    expect(lookup(obj, 'a.b.c')).toBe('d');
+    expect(lookup(obj, 'a.x.y')).toBeUndefined();
 });

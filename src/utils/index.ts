@@ -21,3 +21,18 @@ export function assert(condition: boolean, message: string): void {
 export function hex(n: number, pad: number): string {
     return `0x${n.toString(16).padStart(pad, '0')}`;
 }
+
+/**
+ * Looks up a nested property in an object.
+ * @param obj The object
+ * @param id The property path
+ */
+export function lookup(obj: object, id: string): string | undefined {
+    const value = id
+        .split('.')
+        .reduce((pv, cv) => pv && (pv as Record<string, object>)[cv], obj);
+    if (typeof value === 'string') {
+        return value;
+    }
+    return undefined;
+}
