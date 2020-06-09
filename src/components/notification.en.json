@@ -5,6 +5,10 @@
         "noWebBluetooth": "This web browser does not support Web Bluetooth or it is not enabled.",
         "connectFailed": "Unexpected error while trying to connect. Check console log and report the error."
     },
+    "editor": {
+        "programChanged": "The program was changed in another window. Do you want to delete this program and replace it with the new program?",
+        "yesReloadProgram": "Yes"
+    },
     "serviceWorker": {
         "success": "Content is cached for offline use.",
         "update": "New content is available and will be used when all tabs for this page are closed.'"
