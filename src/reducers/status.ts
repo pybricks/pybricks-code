@@ -3,11 +3,12 @@
 
 import { Reducer } from 'react';
 import { combineReducers } from 'redux';
-import { BootloaderAction, BootloaderActionType } from '../actions/lwp3-bootloader';
+import { Action } from '../actions';
+import { FlashFirmwareActionType } from '../actions/flash-firmware';
 
-const progress: Reducer<number, BootloaderAction> = (state = -1, action) => {
+const progress: Reducer<number, Action> = (state = -1, action) => {
     switch (action.type) {
-        case BootloaderActionType.FlashProgress:
+        case FlashFirmwareActionType.Progress:
             return action.complete / action.total;
         default:
             return state;
