@@ -49,7 +49,7 @@ class Editor extends React.Component<EditorProps> {
                         height="100%"
                         focus={true}
                         placeholder={i18n.translate(EditorStringId.Placeholder)}
-                        defaultValue={localStorage.getItem('program') || undefined}
+                        defaultValue={sessionStorage.getItem('program') || undefined}
                         editorProps={{ $blockScrolling: true }}
                         setOptions={{
                             enableBasicAutocompletion: true,
@@ -70,7 +70,7 @@ class Editor extends React.Component<EditorProps> {
                             onSessionChanged(e?.session);
                         }}
                         onChange={(v): void => {
-                            localStorage.setItem('program', v);
+                            sessionStorage.setItem('program', v);
                         }}
                         commands={[
                             {
