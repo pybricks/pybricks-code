@@ -3,7 +3,13 @@
 
 import { EventEmitter } from 'events';
 import { Action, Dispatch } from '../actions';
-import { write } from '../actions/ble';
+import {
+    BLEDataAction,
+    BLEDataActionType,
+    BLEDataDidFailToWriteAction,
+    BLEDataDidWriteAction,
+    write,
+} from '../actions/ble';
 import { HubActionType, HubRuntimeStatusType, updateStatus } from '../actions/hub';
 import {
     MpyActionType,
@@ -30,6 +36,17 @@ function didCompile(action: Action): void {
     }
 }
 
+const writer = new EventEmitter();
+
+function didWrite(action: Action): void {
+    if (action.type === BLEDataActionType.DidWrite) {
+        writer.emit('didWrite', action);
+    }
+    if (action.type === BLEDataActionType.DidFailToWrite) {
+        writer.emit('didFailToWrite', action);
+    }
+}
+
 async function downloadAndRun(
     action: Action,
     dispatch: Dispatch,
@@ -53,6 +70,7 @@ async function downloadAndRun(
             reject(new Error(a.err)),
         );
     });
+    compiler.removeAllListeners();
 
     // let everyone know the runtime is busy loading the program
     dispatch(updateStatus(HubRuntimeStatusType.Loading));
@@ -64,7 +82,13 @@ async function downloadAndRun(
     const sizeBuf = new Uint8Array(4);
     const sizeView = new DataView(sizeBuf.buffer);
     sizeView.setUint32(0, mpy.data.byteLength, true);
-    await dispatch(write(sizeBuf));
+    dispatch(write(sizeBuf));
+    await new Promise<BLEDataAction>((resolve, reject): void => {
+        writer.on('didWrite', (a: BLEDataDidWriteAction): void => resolve(a));
+        writer.on('didFailToWrite', (a: BLEDataDidFailToWriteAction) => reject(a.err));
+    });
+    writer.removeAllListeners();
+
     // TODO: verify checksum
     console.log(await checksum);
 
@@ -73,7 +97,20 @@ async function downloadAndRun(
     for (let i = 0; i < mpy.data.byteLength; i += downloadChunkSize) {
         // need to subscribe to checksum before writing to prevent race condition
         const checksum = getChecksum();
-        await dispatch(write(mpy.data.slice(i, i + downloadChunkSize)));
+        const chunk = mpy.data.slice(i, i + downloadChunkSize);
+
+        // we can actually only write 20 bytes at a time
+        for (let j = 0; j < chunk.length; j += 20) {
+            dispatch(write(chunk.slice(j, j + 20)));
+            await new Promise<BLEDataAction>((resolve, reject): void => {
+                writer.on('didWrite', (a: BLEDataDidWriteAction): void => resolve(a));
+                writer.on('didFailToWrite', (a: BLEDataDidFailToWriteAction) =>
+                    reject(a.err),
+                );
+            });
+            writer.removeAllListeners();
+        }
+
         // TODO: verify checksum
         console.log(await checksum);
         // TODO: dispatch progress
@@ -103,4 +140,4 @@ function stop(action: Action, dispatch: Dispatch): void {
     dispatch(write(stopCommand));
 }
 
-export default combineServices(didCompile, downloadAndRun, startRepl, stop);
+export default combineServices(didCompile, didWrite, downloadAndRun, startRepl, stop);

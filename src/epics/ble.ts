@@ -4,7 +4,7 @@
 import { AnyAction } from 'redux';
 import { Epic, combineEpics, ofType } from 'redux-observable';
 import { map } from 'rxjs/operators';
-import { BLEDataAction, BLEDataActionType } from '../actions/ble';
+import { BLEDataActionType, BLEDataNotifyAction } from '../actions/ble';
 import { HubRuntimeStatusType, checksum, updateStatus } from '../actions/hub';
 import { sendData } from '../actions/terminal';
 import { RootState } from '../reducers';
@@ -14,7 +14,7 @@ const decoder = new TextDecoder();
 
 const rxUartData: Epic<AnyAction, AnyAction, RootState> = (action$, state$) =>
     action$.pipe(
-        ofType<AnyAction, BLEDataAction>(BLEDataActionType.Notify),
+        ofType<AnyAction, BLEDataNotifyAction>(BLEDataActionType.Notify),
         map((a) => {
             if (
                 state$.value.hub.runtime === HubRuntimeState.Loading &&
