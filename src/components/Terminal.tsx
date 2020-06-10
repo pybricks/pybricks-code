@@ -4,26 +4,30 @@
 import { ResizeSensor } from '@blueprintjs/core';
 import React from 'react';
 import { connect } from 'react-redux';
-import { Subscription } from 'rxjs';
+import { Observable, Unsubscribe } from 'redux';
 import { Terminal as XTerm } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
 import { Dispatch } from '../actions';
 import { receiveData } from '../actions/terminal';
-import { terminalOutput } from '../epics/terminal';
+import { RootState } from '../reducers';
 
 import 'xterm/css/xterm.css';
+
+interface StateProps {
+    dataSource: Observable<string> | null;
+}
 
 interface DispatchProps {
     onData: (data: string) => void;
 }
 
-type TerminalProps = DispatchProps;
+type TerminalProps = StateProps & DispatchProps;
 
 class Terminal extends React.Component<TerminalProps> {
     private xterm: XTerm;
     private fitAddon: FitAddon;
     private terminalRef: React.RefObject<HTMLDivElement>;
-    private subscription?: Subscription;
+    private subscription?: { unsubscribe: Unsubscribe };
 
     constructor(props: TerminalProps) {
         super(props);
@@ -52,7 +56,9 @@ class Terminal extends React.Component<TerminalProps> {
         }
         this.xterm.open(this.terminalRef.current);
         this.fitAddon.fit();
-        this.subscription = terminalOutput.subscribe((v) => this.xterm.write(v));
+        this.subscription = this.props.dataSource?.subscribe({
+            next: (d) => this.xterm.write(d),
+        });
     }
 
     componentWillUnmount(): void {
@@ -73,10 +79,14 @@ class Terminal extends React.Component<TerminalProps> {
     }
 }
 
+const mapStateToProps = (state: RootState): StateProps => ({
+    dataSource: state.terminal.dataSource,
+});
+
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
     onData: (d): void => {
         dispatch(receiveData(d));
     },
 });
 
-export default connect(null, mapDispatchToProps)(Terminal);
+export default connect(mapStateToProps, mapDispatchToProps)(Terminal);

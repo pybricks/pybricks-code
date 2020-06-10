@@ -8,6 +8,7 @@ import editor, { EditorState } from './editor';
 import hub, { HubState } from './hub';
 import notification, { NotificationState } from './notification';
 import status, { StatusState } from './status';
+import terminal, { TerminalState } from './terminal';
 
 /**
  * Root state for redux store.
@@ -19,6 +20,15 @@ export interface RootState {
     readonly hub: HubState;
     readonly notification: NotificationState;
     readonly status: StatusState;
+    readonly terminal: TerminalState;
 }
 
-export default combineReducers({ bootloader, ble, editor, hub, notification, status });
+export default combineReducers({
+    bootloader,
+    ble,
+    editor,
+    hub,
+    notification,
+    status,
+    terminal,
+});
