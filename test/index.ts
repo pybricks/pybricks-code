@@ -3,21 +3,25 @@
 
 import { END, MulticastChannel, Saga, Task, runSaga, stdChannel } from 'redux-saga';
 import { Action } from '../src/actions';
+import { RootState } from '../src/reducers';
 
 export class AsyncSaga {
+    private channel: MulticastChannel<Action>;
     private dispatches: (Action | END)[];
     private takers: { put: (action: Action | END) => void }[];
-    private channel: MulticastChannel<Action>;
+    private state: Partial<RootState>;
     private task: Task;
 
     public constructor(saga: Saga) {
+        this.channel = stdChannel();
         this.dispatches = [];
         this.takers = [];
-        this.channel = stdChannel();
+        this.state = {};
         this.task = runSaga(
             {
                 channel: this.channel,
                 dispatch: this.dispatch.bind(this),
+                getState: () => this.state,
                 onError: (e) => fail(e),
             },
             saga,
@@ -54,6 +58,10 @@ export class AsyncSaga {
             return Promise.reject();
         }
         return Promise.resolve(next);
+    }
+
+    public setState(state: Partial<RootState>): void {
+        this.state = state;
     }
 
     public async end(): Promise<void> {
