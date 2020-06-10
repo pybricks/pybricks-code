@@ -6,8 +6,9 @@ import editor from './editor';
 import flashFirmware from './flash-firmare';
 import bootloader from './lwp3-bootloader';
 import mpy from './mpy';
+import terminal from './terminal';
 
 /* istanbul ignore next */
 export default function* (): Generator {
-    yield all([bootloader(), editor(), flashFirmware(), mpy()]);
+    yield all([bootloader(), editor(), flashFirmware(), mpy(), terminal()]);
 }

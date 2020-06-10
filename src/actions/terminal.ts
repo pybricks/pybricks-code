@@ -1,27 +1,53 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020 The Pybricks Authors
 
-import { Action } from 'redux';
+import { Action, Observable } from 'redux';
 
-export enum TerminalDataActionType {
+export enum TerminalActionType {
+    /**
+     * Set the current data source.
+     */
+    SetDataSource = 'terminal.action.setDataSource',
     /**
      * Send data.
      */
-    SendData = 'terminal.data.send',
+    SendData = 'terminal.action.sendData',
     /**
      * Data was received.
      */
-    ReceivedData = 'terminal.data.receive',
+    ReceivedData = 'terminal.action.receiveData',
 }
 
-export interface TerminalDataAction extends Action<TerminalDataActionType> {
+export interface TerminalSetDataSourceAction
+    extends Action<TerminalActionType.SetDataSource> {
+    dataSource: Observable<string>;
+}
+
+export function setDataSource(
+    dataSource: Observable<string>,
+): TerminalSetDataSourceAction {
+    return { type: TerminalActionType.SetDataSource, dataSource };
+}
+
+export interface TerminalDataSendDataAction
+    extends Action<TerminalActionType.SendData> {
     value: string;
 }
 
-export function sendData(data: string): TerminalDataAction {
-    return { type: TerminalDataActionType.SendData, value: data };
+export function sendData(data: string): TerminalDataSendDataAction {
+    return { type: TerminalActionType.SendData, value: data };
 }
 
-export function receiveData(data: string): TerminalDataAction {
-    return { type: TerminalDataActionType.ReceivedData, value: data };
+export interface TerminalDataReceiveDataAction
+    extends Action<TerminalActionType.ReceivedData> {
+    value: string;
 }
+
+export function receiveData(data: string): TerminalDataReceiveDataAction {
+    return { type: TerminalActionType.ReceivedData, value: data };
+}
+
+export type TerminalDataAction =
+    | TerminalSetDataSourceAction
+    | TerminalDataSendDataAction
+    | TerminalDataReceiveDataAction;
