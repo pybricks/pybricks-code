@@ -13,6 +13,18 @@
             "linux": {
                 "runtimeExecutable": "/usr/bin/chromium-browser"
             }
+        },
+        {
+            "name": "Debug Tests",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/react-scripts",
+            "env": { "CI": "true" },
+            "args": ["test", "--runInBand", "--no-cache", "--env=./test-env.js"],
+            "cwd": "${workspaceRoot}",
+            "protocol": "inspector",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen"
         }
     ]
 }

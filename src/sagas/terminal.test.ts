@@ -3,7 +3,12 @@
 
 import { END, MulticastChannel, Saga, Task, runSaga, stdChannel } from 'redux-saga';
 import { Action } from '../actions';
-import { BLEDataActionType, BLEDataWriteAction } from '../actions/ble';
+import {
+    BLEDataActionType,
+    BLEDataWriteAction,
+    didFailToWrite,
+    didWrite,
+} from '../actions/ble';
 import {
     TerminalActionType,
     TerminalSetDataSourceAction,
@@ -23,9 +28,17 @@ class AsyncSaga {
         this.takers = [];
         this.channel = stdChannel();
         this.task = runSaga(
-            { channel: this.channel, dispatch: this.dispatch.bind(this) },
+            {
+                channel: this.channel,
+                dispatch: this.dispatch.bind(this),
+                onError: (e) => fail(e),
+            },
             saga,
         );
+    }
+
+    public numPending(): number {
+        return this.dispatches.length;
     }
 
     public put(action: Action): void {
@@ -60,11 +73,11 @@ class AsyncSaga {
         this.task.cancel();
         await this.task.toPromise();
         if (this.dispatches.some((x) => x.type !== END.type)) {
-            fail(`unhandled dispatches remain: ${this.dispatches}`);
+            fail(`unhandled dispatches remain: ${JSON.stringify(this.dispatches)}`);
         }
     }
 
-    private dispatch(action: Action | END): void {
+    private dispatch(action: Action | END): Action | END {
         const taker = this.takers.shift();
         if (taker === undefined) {
             // if there are no takers waiting, the queue the action
@@ -73,6 +86,7 @@ class AsyncSaga {
             // otherwise complete the promise
             taker.put(action);
         }
+        return action;
     }
 }
 
@@ -98,20 +112,111 @@ test('Terminal data source responds to send data actions', async () => {
     await saga.end();
 });
 
-test('Terminal data source responds to receive data actions', async () => {
-    const saga = new AsyncSaga(terminal);
+describe('Terminal data source responds to receive data actions', () => {
+    // ASCII/UTF-8 encoding of 'test1234'
+    const expected = new Uint8Array([0x74, 0x65, 0x73, 0x74, 0x31, 0x32, 0x33, 0x34]);
 
-    // set data source is always first action so we have to take it
-    const dataSourceAction = await saga.take();
-    expect(dataSourceAction.type).toBe(TerminalActionType.SetDataSource);
+    test('basic function works', async () => {
+        const saga = new AsyncSaga(terminal);
 
-    saga.put(receiveData('test1234'));
+        // set data source is always first action so we have to take it
+        const dataSourceAction = await saga.take();
+        expect(dataSourceAction.type).toBe(TerminalActionType.SetDataSource);
 
-    const action = await saga.take();
-    expect(action.type).toBe(BLEDataActionType.Write);
-    expect((action as BLEDataWriteAction).value).toEqual(
-        new Uint8Array([0x74, 0x65, 0x73, 0x74, 0x31, 0x32, 0x33, 0x34]),
-    );
+        saga.put(receiveData('test1234'));
 
-    await saga.end();
+        const action = await saga.take();
+        expect(action.type).toBe(BLEDataActionType.Write);
+        expect((action as BLEDataWriteAction).value).toEqual(expected);
+
+        await saga.end();
+    });
+
+    test('messages are queued until previous has completed', async () => {
+        const saga = new AsyncSaga(terminal);
+
+        // set data source is always first action so we have to take it
+        const dataSourceAction = await saga.take();
+        expect(dataSourceAction.type).toBe(TerminalActionType.SetDataSource);
+
+        saga.put(receiveData('test1234'));
+        saga.put(receiveData('test1234'));
+
+        // second message is queued until didWrite or didFailToWrite
+        expect(saga.numPending()).toBe(1);
+
+        const action = await saga.take();
+        expect(action.type).toBe(BLEDataActionType.Write);
+        expect((action as BLEDataWriteAction).value).toEqual(expected);
+
+        // second message is queued until didWrite or didFailToWrite
+        expect(saga.numPending()).toBe(0);
+
+        saga.put(didWrite((action as BLEDataWriteAction).id));
+
+        const action2 = await saga.take();
+        expect(action2.type).toBe(BLEDataActionType.Write);
+        expect((action2 as BLEDataWriteAction).value).toEqual(expected);
+
+        saga.put(didWrite((action2 as BLEDataWriteAction).id));
+
+        await saga.end();
+    });
+
+    test('messages are queued until previous has failed', async () => {
+        const saga = new AsyncSaga(terminal);
+
+        // set data source is always first action so we have to take it
+        const dataSourceAction = await saga.take();
+        expect(dataSourceAction.type).toBe(TerminalActionType.SetDataSource);
+
+        saga.put(receiveData('test1234'));
+        saga.put(receiveData('test1234'));
+
+        // second message is queued until didWrite or didFailToWrite
+        expect(saga.numPending()).toBe(1);
+
+        const action = await saga.take();
+        expect(action.type).toBe(BLEDataActionType.Write);
+        expect((action as BLEDataWriteAction).value).toEqual(expected);
+
+        // second message is queued until didWrite or didFailToWrite
+        expect(saga.numPending()).toBe(0);
+
+        saga.put(
+            didFailToWrite((action as BLEDataWriteAction).id, new Error('test error')),
+        );
+
+        const action2 = await saga.take();
+        expect(action2.type).toBe(BLEDataActionType.Write);
+        expect((action2 as BLEDataWriteAction).value).toEqual(expected);
+
+        saga.put(didWrite((action2 as BLEDataWriteAction).id));
+
+        await saga.end();
+    });
+
+    test('long messages are split', async () => {
+        const saga = new AsyncSaga(terminal);
+
+        // set data source is always first action so we have to take it
+        const dataSourceAction = await saga.take();
+        expect(dataSourceAction.type).toBe(TerminalActionType.SetDataSource);
+
+        saga.put(receiveData('012345678901234567890123456789'));
+
+        const action = await saga.take();
+        expect(action.type).toBe(BLEDataActionType.Write);
+        expect((action as BLEDataWriteAction).value.length).toEqual(20);
+
+        saga.put(didWrite((action as BLEDataWriteAction).id));
+
+        const action2 = await saga.take();
+        expect(action2.type).toBe(BLEDataActionType.Write);
+        expect((action2 as BLEDataWriteAction).value.length).toEqual(10);
+
+        saga.put(didWrite((action2 as BLEDataWriteAction).id));
+
+        await saga.end();
+    });
 });

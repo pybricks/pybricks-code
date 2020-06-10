@@ -2,6 +2,7 @@
 // Copyright (c) 2020 The Pybricks Authors
 
 import { Action } from '../actions';
+import { BLEDataActionType } from '../actions/ble';
 import {
     BootloaderConnectionActionType,
     BootloaderConnectionFailureReason,
@@ -14,6 +15,9 @@ import { combineServices } from '.';
  */
 function consoleLog(action: Action): void {
     switch (action.type) {
+        case BLEDataActionType.DidFailToWrite:
+            console.error(action.err);
+            break;
         case BootloaderConnectionActionType.DidFailToConnect:
             if (action.reason === BootloaderConnectionFailureReason.Unknown) {
                 console.error(action.err);

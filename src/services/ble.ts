@@ -9,6 +9,8 @@ import {
     connect as connectAction,
     didConnect,
     didDisconnect,
+    didFailToWrite,
+    didWrite,
     disconnect as disconnectAction,
     notify,
 } from '../actions/ble';
@@ -28,7 +30,6 @@ const pybricksServiceUUID = 'c5f50001-8280-46da-89f4-6d8051e4aeef';
 const bleNusServiceUUID = '6e400001-b5a3-f393-e0a9-e50e24dcca9e';
 const bleNusCharRXUUID = '6e400002-b5a3-f393-e0a9-e50e24dcca9e';
 const bleNusCharTXUUID = '6e400003-b5a3-f393-e0a9-e50e24dcca9e';
-const bleNusMaxSize = 20;
 
 let device: BluetoothDevice | undefined;
 let rxChar: PolyfillBluetoothRemoteGATTCharacteristic | undefined;
@@ -116,13 +117,15 @@ function disconnect(action: Action): void {
     device?.gatt?.disconnect();
 }
 
-async function write(action: Action): Promise<void> {
+async function write(action: Action, dispatch: Dispatch): Promise<void> {
     if (action.type !== BLEDataActionType.Write) {
         return;
     }
-    const value = action.value.buffer;
-    for (let i = 0; i < value.byteLength; i += bleNusMaxSize) {
-        await rxChar?.xWriteValueWithoutResponse(value.slice(i, i + bleNusMaxSize));
+    try {
+        await rxChar?.xWriteValueWithoutResponse(action.value.buffer);
+        dispatch(didWrite(action.id));
+    } catch (err) {
+        dispatch(didFailToWrite(action.id, err));
     }
 }
 
