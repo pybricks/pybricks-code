@@ -21,6 +21,8 @@ module.exports = {
         'no-multi-spaces': 'error',
         'no-trailing-spaces': 'error',
         'no-multiple-empty-lines': 'error',
+        '@typescript-eslint/no-unused-vars': ["error", { argsIgnorePattern: "^_" }],
+        'no-unused-vars': ["error", { argsIgnorePattern: "^_" }],
         'sort-imports': ['error', { ignoreDeclarationSort: true }],
         'import/order': ['error', { alphabetize: { order: 'asc' } }],
     },
