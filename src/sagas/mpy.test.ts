@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020 The Pybricks Authors
 
-import { runSaga, stdChannel } from 'redux-saga';
-import { Action } from '../actions';
+import { AsyncSaga } from '../../test';
 import {
     MpyActionType,
     MpyDidCompileAction,
@@ -17,27 +16,13 @@ enum MpyFeatureFlags {
 }
 
 test('compiler works', async () => {
-    const channel = stdChannel();
-    const dispatched = new Array<Action>();
-    const task = runSaga(
-        {
-            channel,
-            dispatch: (action: Action) => dispatched.push(action),
-        },
-        mpy,
-    );
-    channel.put(compile('print("hello!")'));
+    const saga = new AsyncSaga(mpy);
 
-    // TODO: not sure what the best way to handle this is. We could just wait
-    // for one dispatch, but then we could miss a bug where there is more than
-    // one dispatch. And if we make the time too short, we could get intermittent
-    // failures.
-    setTimeout(() => task.cancel(), 1000);
-    await task.toPromise();
+    saga.put(compile('print("hello!")'));
 
-    expect(dispatched.length).toBe(1);
-    expect(dispatched[0].type).toBe(MpyActionType.DidCompile);
-    const { data } = dispatched[0] as MpyDidCompileAction;
+    const action = await saga.take();
+    expect(action.type).toBe(MpyActionType.DidCompile);
+    const { data } = action as MpyDidCompileAction;
     expect(data[0]).toBe('M'.charCodeAt(0));
     expect(data[1]).toBe(5); // ABI version
     expect(data[2]).toBe(MpyFeatureFlags.MICROPY_PY_BUILTINS_STR_UNICODE);
@@ -45,26 +30,14 @@ test('compiler works', async () => {
 });
 
 test('compiler error works', async () => {
-    const channel = stdChannel();
-    const dispatched = new Array<Action>();
-    const task = runSaga(
-        {
-            channel,
-            dispatch: (action: Action) => dispatched.push(action),
-        },
-        mpy,
-    );
-    channel.put(compile('syntax error!'));
+    const saga = new AsyncSaga(mpy);
 
-    // TODO: not sure what the best way to handle this is. We could just wait
-    // for one dispatch, but then we could miss a bug where there is more than
-    // one dispatch. And if we make the time too short, we could get intermittent
-    // failures.
-    setTimeout(() => task.cancel(), 1000);
-    await task.toPromise();
+    saga.put(compile('syntax error!'));
 
-    expect(dispatched.length).toBe(1);
-    expect(dispatched[0].type).toBe(MpyActionType.DidFailToCompile);
-    const { err } = dispatched[0] as MpyDidFailToCompileAction;
+    const action = await saga.take();
+    expect(action.type).toBe(MpyActionType.DidFailToCompile);
+    const { err } = action as MpyDidFailToCompileAction;
     expect(err).toContain('SyntaxError');
+
+    await saga.end();
 });

@@ -86,11 +86,7 @@ This will automatically fix most lint errors for you.
 
 ### `yarn test`
 
-Launches the test runner in the interactive watch mode.
-
-See the section about [running tests][tests] for more information.
-
-[tests]: https://facebook.github.io/create-react-app/docs/running-tests
+See [README](test/README.md) in the `test/` directory.
 
 
 ### `yarn build`

@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020 The Pybricks Authors
 
-import { runSaga, stdChannel } from 'redux-saga';
-import { Action } from '../actions';
+import { AsyncSaga } from '../../test';
 import {
     BootloaderRequestActionType,
     checksumRequest,
@@ -121,67 +120,55 @@ describe('message encoder', () => {
             ],
         ],
     ])('encode %s request', async (_n, request, expected) => {
-        const channel = stdChannel();
-        const dispatched = new Array<Action>();
-        const task = runSaga(
-            {
-                channel,
-                dispatch: (action: Action) => dispatched.push(action),
-            },
-            bootloader,
-        );
-        channel.put(request);
-        task.cancel();
-        await task.toPromise();
+        const saga = new AsyncSaga(bootloader);
+        saga.put(request);
         const message = new Uint8Array(expected);
-        expect(dispatched[0]).toEqual(
+        const action = await saga.take();
+        expect(action).toEqual(
             send(
                 message,
                 /* withResponse */ request.type !== BootloaderRequestActionType.Program,
             ),
         );
+        await saga.end();
     });
 
     test('requests are serialized', async () => {
-        const channel = stdChannel();
-        const dispatched = new Array<Action>();
-        const task = runSaga(
-            {
-                channel,
-                dispatch: (action: Action) => dispatched.push(action),
-            },
-            bootloader,
-        );
+        const saga = new AsyncSaga(bootloader);
 
         // we send 4 requests
-        channel.put({ ...eraseRequest(), id: 0 });
-        channel.put({ ...eraseRequest(), id: 1 });
-        channel.put({ ...eraseRequest(), id: 2 });
-        channel.put({ ...eraseRequest(), id: 3 });
+        saga.put({ ...eraseRequest(), id: 0 });
+        saga.put({ ...eraseRequest(), id: 1 });
+        saga.put({ ...eraseRequest(), id: 2 });
+        saga.put({ ...eraseRequest(), id: 3 });
 
         // but only two didSend action meaning only the first two completed
-        channel.put(didSend());
-        channel.put(didSend());
-
-        task.cancel();
-        await task.toPromise();
+        saga.put(didSend());
+        saga.put(didSend());
 
         // So only 3 requests were actually sent and two didRequests were
         // dispatched (making 5 total dispatches). The last request is still
         // buffered and has not been dispatched.
-        expect(dispatched.length).toEqual(5);
+        const numPending = saga.numPending();
+        expect(numPending).toEqual(5);
+
+        const message = new Uint8Array([Command.EraseFlash]);
+        const nextId = createCountFunc();
 
         // every other action is the "send" action
-        const message = new Uint8Array([Command.EraseFlash]);
-        for (let i = 0; i < dispatched.length; i += 2) {
-            expect(dispatched[i]).toEqual(send(message, /* withResponse */ true));
-        }
-
         // and the interleaving actions are "did request" actions
-        const nextId = createCountFunc();
-        for (let i = 1; i < dispatched.length; i += 2) {
-            expect(dispatched[i]).toEqual(didRequest(nextId()));
-        }
+        const action0 = await saga.take();
+        expect(action0).toEqual(send(message, /* withResponse */ true));
+        const action1 = await saga.take();
+        expect(action1).toEqual(didRequest(nextId()));
+        const action2 = await saga.take();
+        expect(action2).toEqual(send(message, /* withResponse */ true));
+        const action3 = await saga.take();
+        expect(action3).toEqual(didRequest(nextId()));
+        const action4 = await saga.take();
+        expect(action4).toEqual(send(message, /* withResponse */ true));
+
+        await saga.end();
     });
 });
 
@@ -263,20 +250,15 @@ describe('message decoder', () => {
             errorResponse(Command.GetFlashState),
         ],
     ])('decode %s response', async (_n, message, expected) => {
+        const saga = new AsyncSaga(bootloader);
         const response = new Uint8Array(message);
-        const channel = stdChannel();
-        const dispatched = new Array<Action>();
-        const task = runSaga(
-            {
-                channel,
-                dispatch: (action: Action) => dispatched.push(action),
-            },
-            bootloader,
-        );
-        channel.put(didReceive(new DataView(response.buffer)));
-        task.cancel();
-        await task.toPromise();
-        expect(dispatched[0]).toEqual(expected);
+
+        saga.put(didReceive(new DataView(response.buffer)));
+
+        const action = await saga.take();
+        expect(action).toEqual(expected);
+
+        await saga.end();
     });
 
     test.each([
@@ -329,19 +311,14 @@ describe('message decoder', () => {
             ),
         ],
     ])('protocol error', async (_n, message, expected) => {
+        const saga = new AsyncSaga(bootloader);
         const response = new Uint8Array(message);
-        const channel = stdChannel();
-        const dispatched = new Array<Action>();
-        const task = runSaga(
-            {
-                channel,
-                dispatch: (action: Action) => dispatched.push(action),
-            },
-            bootloader,
-        );
-        channel.put(didReceive(new DataView(response.buffer)));
-        task.cancel();
-        await task.toPromise();
-        expect(dispatched[0]).toEqual(expected);
+
+        saga.put(didReceive(new DataView(response.buffer)));
+
+        const action = await saga.take();
+        expect(action).toEqual(expected);
+
+        await saga.end();
     });
 });
