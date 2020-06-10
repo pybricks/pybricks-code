@@ -28,6 +28,6 @@ module.exports = {
         react: { version: 'detect' },
     },
     ignorePatterns: [
-        "test-env.js"
+        "test/env.js"
     ],
 };

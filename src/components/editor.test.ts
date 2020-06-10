@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020 The Pybricks Authors
 
-import { lookup } from '../utils';
+import { lookup } from '../../test';
 import { EditorStringId } from './editor';
 import en from './editor.en.json';
 
