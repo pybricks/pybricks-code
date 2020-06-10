@@ -90,6 +90,10 @@ class AsyncSaga {
     }
 }
 
+function delay(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 test('Terminal data source responds to send data actions', async () => {
     const saga = new AsyncSaga(terminal);
 
@@ -140,6 +144,7 @@ describe('Terminal data source responds to receive data actions', () => {
         expect(dataSourceAction.type).toBe(TerminalActionType.SetDataSource);
 
         saga.put(receiveData('test1234'));
+        await delay(50); // without delay, messages are combined
         saga.put(receiveData('test1234'));
 
         // second message is queued until didWrite or didFailToWrite
@@ -171,6 +176,7 @@ describe('Terminal data source responds to receive data actions', () => {
         expect(dataSourceAction.type).toBe(TerminalActionType.SetDataSource);
 
         saga.put(receiveData('test1234'));
+        await delay(50); // without delay, messages are combined
         saga.put(receiveData('test1234'));
 
         // second message is queued until didWrite or didFailToWrite
@@ -192,6 +198,25 @@ describe('Terminal data source responds to receive data actions', () => {
         expect((action2 as BLEDataWriteAction).value).toEqual(expected);
 
         saga.put(didWrite((action2 as BLEDataWriteAction).id));
+
+        await saga.end();
+    });
+
+    test('small messages are combined', async () => {
+        const saga = new AsyncSaga(terminal);
+
+        // set data source is always first action so we have to take it
+        const dataSourceAction = await saga.take();
+        expect(dataSourceAction.type).toBe(TerminalActionType.SetDataSource);
+
+        saga.put(receiveData('test1234'));
+        saga.put(receiveData('test1234'));
+
+        const action = await saga.take();
+        expect(action.type).toBe(BLEDataActionType.Write);
+        expect((action as BLEDataWriteAction).value).toEqual(
+            new Uint8Array([...expected, ...expected]),
+        );
 
         await saga.end();
     });
