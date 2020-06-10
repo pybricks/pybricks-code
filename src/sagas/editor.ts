@@ -29,8 +29,7 @@ function* open(action: EditorOpenAction): Generator {
     editor.setValue(text);
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function* saveAs(action: EditorSaveAsAction): Generator {
+function* saveAs(_action: EditorSaveAsAction): Generator {
     const editor = (yield select(
         (s: RootState) => s.editor.current,
     )) as Ace.EditSession | null;
@@ -46,7 +45,6 @@ function* saveAs(action: EditorSaveAsAction): Generator {
     FileSaver.saveAs(blob, 'main.py');
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function* reloadProgram(_action: EditorReloadProgramAction): Generator {
     const editor = (yield select(
         (s: RootState) => s.editor.current,
