@@ -56,10 +56,11 @@ export function connect(): BootloaderConnectionConnectAction {
     return { type: BootloaderConnectionActionType.Connect };
 }
 
-export interface BootloaderConnectionDidConnectAction
-    extends Action<BootloaderConnectionActionType.DidConnect> {
+export type BootloaderConnectionDidConnectAction = Action<
+    BootloaderConnectionActionType.DidConnect
+> & {
     canWriteWithoutResponse: boolean;
-}
+};
 
 export function didConnect(
     canWriteWithoutResponse: boolean,
@@ -81,11 +82,12 @@ export enum BootloaderConnectionFailureReason {
     GattServiceNotFound = 'gatt-service-not-found',
 }
 
-export interface BootloaderConnectionDidFailToConnectAction
-    extends Action<BootloaderConnectionActionType.DidFailToConnect> {
+export type BootloaderConnectionDidFailToConnectAction = Action<
+    BootloaderConnectionActionType.DidFailToConnect
+> & {
     reason: BootloaderConnectionFailureReason;
     err?: Error;
-}
+};
 
 export function didFailToConnect(
     reason: BootloaderConnectionFailureReason,
@@ -94,20 +96,22 @@ export function didFailToConnect(
     return { type: BootloaderConnectionActionType.DidFailToConnect, reason, err };
 }
 
-export interface BootloaderConnectionDidErrorAction
-    extends Action<BootloaderConnectionActionType.DidError> {
+export type BootloaderConnectionDidErrorAction = Action<
+    BootloaderConnectionActionType.DidError
+> & {
     err: Error;
-}
+};
 
 export function didError(err: Error): BootloaderConnectionDidErrorAction {
     return { type: BootloaderConnectionActionType.DidError, err };
 }
 
-export interface BootloaderConnectionSendAction
-    extends Action<BootloaderConnectionActionType.Send> {
+export type BootloaderConnectionSendAction = Action<
+    BootloaderConnectionActionType.Send
+> & {
     readonly data: ArrayBuffer;
     readonly withResponse: boolean;
-}
+};
 
 export function send(
     data: ArrayBuffer,
@@ -116,19 +120,21 @@ export function send(
     return { type: BootloaderConnectionActionType.Send, data, withResponse };
 }
 
-export interface BootloaderConnectionDidSendAction
-    extends Action<BootloaderConnectionActionType.DidSend> {
+export type BootloaderConnectionDidSendAction = Action<
+    BootloaderConnectionActionType.DidSend
+> & {
     err?: Error;
-}
+};
 
 export function didSend(err?: Error): BootloaderConnectionDidSendAction {
     return { type: BootloaderConnectionActionType.DidSend, err };
 }
 
-export interface BootloaderConnectionDidReceiveAction
-    extends Action<BootloaderConnectionActionType.DidReceive> {
+export type BootloaderConnectionDidReceiveAction = Action<
+    BootloaderConnectionActionType.DidReceive
+> & {
     data: DataView;
-}
+};
 
 export function didReceive(data: DataView): BootloaderConnectionDidReceiveAction {
     return { type: BootloaderConnectionActionType.DidReceive, data };
@@ -172,13 +178,12 @@ export enum BootloaderRequestActionType {
 
 const nextRequestId = createCountFunc();
 
-interface BaseBootloaderRequestAction<T extends BootloaderRequestActionType>
-    extends Action<T> {
+type BaseBootloaderRequestAction<T extends BootloaderRequestActionType> = Action<T> & {
     /**
      * Unique identifier for this action.
      */
     id: number;
-}
+};
 
 /**
  * Action that requests to erase the flash memory.
@@ -197,11 +202,12 @@ export function eraseRequest(): BootloaderEraseRequestAction {
 /**
  * Action that requests to program the flash memory.
  */
-export interface BootloaderProgramRequestAction
-    extends BaseBootloaderRequestAction<BootloaderRequestActionType.Program> {
+export type BootloaderProgramRequestAction = BaseBootloaderRequestAction<
+    BootloaderRequestActionType.Program
+> & {
     address: number;
     payload: ArrayBuffer;
-}
+};
 
 /**
  * Creates a request to program the flash memory.
@@ -237,10 +243,11 @@ export function rebootRequest(): BootloaderRebootRequestAction {
 /**
  * Action that requests to initialize the firmware flashing process.
  */
-export interface BootloaderInitRequestAction
-    extends BaseBootloaderRequestAction<BootloaderRequestActionType.Init> {
+export type BootloaderInitRequestAction = BaseBootloaderRequestAction<
+    BootloaderRequestActionType.Init
+> & {
     firmwareSize: number;
-}
+};
 
 /**
  * Creates a request to initialize the firmware flashing process.
@@ -338,7 +345,7 @@ export const BootloaderDidRequestType = 'bootloader.action.did.request';
 /**
  * Action that indicates a request was sent or failed to send.
  */
-export interface BootloaderDidRequestAction extends Action<BootloaderDidRequestType> {
+export type BootloaderDidRequestAction = Action<BootloaderDidRequestType> & {
     /**
      * The unique identifier of the action.
      */
@@ -347,7 +354,7 @@ export interface BootloaderDidRequestAction extends Action<BootloaderDidRequestT
      * The error on failure or undefined on success.
      */
     err?: Error;
-}
+};
 
 /**
  * Creates an action that indicates a request was sent or failed to send.
@@ -371,20 +378,22 @@ export enum BootloaderResponseActionType {
     Error = 'bootloader.action.response.error',
 }
 
-export interface BootloaderEraseResponseAction
-    extends Action<BootloaderResponseActionType.Erase> {
+export type BootloaderEraseResponseAction = Action<
+    BootloaderResponseActionType.Erase
+> & {
     result: Result;
-}
+};
 
 export function eraseResponse(result: Result): BootloaderEraseResponseAction {
     return { type: BootloaderResponseActionType.Erase, result };
 }
 
-export interface BootloaderProgramResponseAction
-    extends Action<BootloaderResponseActionType.Program> {
+export type BootloaderProgramResponseAction = Action<
+    BootloaderResponseActionType.Program
+> & {
     checksum: number;
     count: number;
-}
+};
 
 export function programResponse(
     checksum: number,
@@ -393,22 +402,20 @@ export function programResponse(
     return { type: BootloaderResponseActionType.Program, checksum, count };
 }
 
-export interface BootloaderInitResponseAction
-    extends Action<BootloaderResponseActionType.Init> {
+export type BootloaderInitResponseAction = Action<BootloaderResponseActionType.Init> & {
     result: Result;
-}
+};
 
 export function initResponse(result: Result): BootloaderInitResponseAction {
     return { type: BootloaderResponseActionType.Init, result };
 }
 
-export interface BootloaderInfoResponseAction
-    extends Action<BootloaderResponseActionType.Info> {
+export type BootloaderInfoResponseAction = Action<BootloaderResponseActionType.Info> & {
     version: number;
     startAddress: number;
     endAddress: number;
     hubType: HubType;
-}
+};
 
 export function infoResponse(
     version: number,
@@ -425,28 +432,31 @@ export function infoResponse(
     };
 }
 
-export interface BootloaderChecksumResponseAction
-    extends Action<BootloaderResponseActionType.Checksum> {
+export type BootloaderChecksumResponseAction = Action<
+    BootloaderResponseActionType.Checksum
+> & {
     checksum: number;
-}
+};
 
 export function checksumResponse(checksum: number): BootloaderChecksumResponseAction {
     return { type: BootloaderResponseActionType.Checksum, checksum };
 }
 
-export interface BootloaderStateResponseAction
-    extends Action<BootloaderResponseActionType.State> {
+export type BootloaderStateResponseAction = Action<
+    BootloaderResponseActionType.State
+> & {
     level: ProtectionLevel;
-}
+};
 
 export function stateResponse(level: ProtectionLevel): BootloaderStateResponseAction {
     return { type: BootloaderResponseActionType.State, level };
 }
 
-export interface BootloaderErrorResponseAction
-    extends Action<BootloaderResponseActionType.Error> {
+export type BootloaderErrorResponseAction = Action<
+    BootloaderResponseActionType.Error
+> & {
     command: Command;
-}
+};
 
 export function errorResponse(command: Command): BootloaderErrorResponseAction {
     return { type: BootloaderResponseActionType.Error, command };

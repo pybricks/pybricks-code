@@ -22,10 +22,11 @@ export enum HubMessageActionType {
     Checksum = 'hub.message.action.runtime.checksum',
 }
 
-export interface HubRuntimeStatusMessageAction
-    extends Action<HubMessageActionType.RuntimeStatus> {
+export type HubRuntimeStatusMessageAction = Action<
+    HubMessageActionType.RuntimeStatus
+> & {
     readonly newStatus: HubRuntimeStatusType;
-}
+};
 
 export function updateStatus(
     newStatus: HubRuntimeStatusType,
@@ -36,10 +37,9 @@ export function updateStatus(
     };
 }
 
-export interface HubChecksumMessageAction
-    extends Action<HubMessageActionType.Checksum> {
+export type HubChecksumMessageAction = Action<HubMessageActionType.Checksum> & {
     readonly checksum: number;
-}
+};
 
 export function checksum(checksum: number): HubChecksumMessageAction {
     return {

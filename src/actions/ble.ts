@@ -108,9 +108,9 @@ export function didFailToWrite(id: number, err: Error): BLEDataDidFailToWriteAct
     return { type: BLEDataActionType.DidFailToWrite, id, err };
 }
 
-export interface BLEDataNotifyAction extends Action<BLEDataActionType.Notify> {
+export type BLEDataNotifyAction = Action<BLEDataActionType.Notify> & {
     value: DataView;
-}
+};
 
 export function notify(value: DataView): BLEDataNotifyAction {
     return { type: BLEDataActionType.Notify, value };

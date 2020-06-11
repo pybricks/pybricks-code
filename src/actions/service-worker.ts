@@ -8,11 +8,11 @@ export enum ServiceWorkerActionType {
     Success = 'serviceWorker.success',
 }
 
-export interface ServiceWorkerAction<
+export type ServiceWorkerAction<
     T extends ServiceWorkerActionType = ServiceWorkerActionType
-> extends Action<T> {
+> = Action<T> & {
     registration: ServiceWorkerRegistration;
-}
+};
 
 export function update(
     registration: ServiceWorkerRegistration,

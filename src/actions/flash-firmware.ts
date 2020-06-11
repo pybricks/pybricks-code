@@ -20,11 +20,10 @@ export enum FlashFirmwareActionType {
 /**
  * Action that flashes firmware to a hub.
  */
-export interface FlashFirmwareFlashAction
-    extends Action<FlashFirmwareActionType.FlashFirmware> {
+export type FlashFirmwareFlashAction = Action<FlashFirmwareActionType.FlashFirmware> & {
     /** The firmware zip file data or undefined to get firmware later. */
     data?: ArrayBuffer;
-}
+};
 
 /**
  * Creates a new action to flash firmware to a hub.
@@ -34,8 +33,7 @@ export function flashFirmware(data?: ArrayBuffer): FlashFirmwareFlashAction {
     return { type: FlashFirmwareActionType.FlashFirmware, data };
 }
 
-export interface FlashFirmwareProgressAction
-    extends Action<FlashFirmwareActionType.Progress> {
+export type FlashFirmwareProgressAction = Action<FlashFirmwareActionType.Progress> & {
     /**
      * The number of bytes that have been flashed so far.
      */
@@ -44,7 +42,7 @@ export interface FlashFirmwareProgressAction
      * The total number of bytes to be flashed.
      */
     total: number;
-}
+};
 
 export function progress(complete: number, total: number): FlashFirmwareProgressAction {
     return { type: FlashFirmwareActionType.Progress, complete, total };
