@@ -8,20 +8,17 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { applyMiddleware, createStore } from 'redux';
 import { createLogger } from 'redux-logger';
-import { createEpicMiddleware } from 'redux-observable';
 import createSagaMiddleware from 'redux-saga';
 import './index.scss';
 // import { success, update } from './actions/service-worker';
 import App from './components/App';
 import NotificationStack from './components/NotificationStack';
-import rootEpic from './epics';
 import rootReducer from './reducers';
 import rootSaga from './sagas';
 import * as serviceWorker from './serviceWorker';
 import serviceMiddleware from './services';
 
 const sagaMiddleware = createSagaMiddleware();
-const epicMiddleware = createEpicMiddleware();
 // TODO: add runtime option or filter - logger affects firmware flash performance
 const loggerMiddleware = createLogger({ predicate: () => false });
 
@@ -32,16 +29,10 @@ const i18n = new I18nManager({
 
 const store = createStore(
     rootReducer,
-    applyMiddleware(
-        sagaMiddleware,
-        epicMiddleware,
-        serviceMiddleware,
-        loggerMiddleware,
-    ),
+    applyMiddleware(sagaMiddleware, serviceMiddleware, loggerMiddleware),
 );
 
 sagaMiddleware.run(rootSaga);
-epicMiddleware.run(rootEpic);
 
 ReactDOM.render(
     <React.StrictMode>
