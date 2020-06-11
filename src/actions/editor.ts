@@ -27,9 +27,9 @@ export enum EditorActionType {
     ReloadProgram = 'editor.action.reloadProgram',
 }
 
-export interface CurrentEditorAction extends Action<EditorActionType.Current> {
+export type CurrentEditorAction = Action<EditorActionType.Current> & {
     editSession: Ace.EditSession | undefined;
-}
+};
 
 /**
  * Sets the current (active) edit session.
@@ -56,10 +56,10 @@ export function saveAs(): EditorSaveAsAction {
 /**
  * Action that opens a file.
  */
-export interface EditorOpenAction extends Action<EditorActionType.Open> {
+export type EditorOpenAction = Action<EditorActionType.Open> & {
     /** The data to save */
     data: ArrayBuffer;
-}
+};
 
 /**
  * Creates an action to save a file
@@ -70,10 +70,9 @@ export function open(data: ArrayBuffer): EditorOpenAction {
 }
 
 /**Action that indicates the local storage has changed. */
-export interface EditorStorageChangedAction
-    extends Action<EditorActionType.StorageChanged> {
+export type EditorStorageChangedAction = Action<EditorActionType.StorageChanged> & {
     newValue: string;
-}
+};
 
 /**
  * Creates an action that indicates the local storage has changed.

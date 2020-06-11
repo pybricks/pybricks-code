@@ -18,10 +18,9 @@ export enum TerminalActionType {
     ReceivedData = 'terminal.action.receiveData',
 }
 
-export interface TerminalSetDataSourceAction
-    extends Action<TerminalActionType.SetDataSource> {
+export type TerminalSetDataSourceAction = Action<TerminalActionType.SetDataSource> & {
     dataSource: Observable<string>;
-}
+};
 
 export function setDataSource(
     dataSource: Observable<string>,
@@ -29,19 +28,17 @@ export function setDataSource(
     return { type: TerminalActionType.SetDataSource, dataSource };
 }
 
-export interface TerminalDataSendDataAction
-    extends Action<TerminalActionType.SendData> {
+export type TerminalDataSendDataAction = Action<TerminalActionType.SendData> & {
     value: string;
-}
+};
 
 export function sendData(data: string): TerminalDataSendDataAction {
     return { type: TerminalActionType.SendData, value: data };
 }
 
-export interface TerminalDataReceiveDataAction
-    extends Action<TerminalActionType.ReceivedData> {
+export type TerminalDataReceiveDataAction = Action<TerminalActionType.ReceivedData> & {
     value: string;
-}
+};
 
 export function receiveData(data: string): TerminalDataReceiveDataAction {
     return { type: TerminalActionType.ReceivedData, value: data };

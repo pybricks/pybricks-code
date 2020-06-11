@@ -17,7 +17,7 @@ export enum NotificationActionType {
 
 export type NotificationLevel = 'error' | 'warning' | 'info';
 
-export interface NotificationAddAction extends Action<NotificationActionType.Add> {
+export type NotificationAddAction = Action<NotificationActionType.Add> & {
     /**
      * Unique ID for this notification instance.
      */
@@ -34,15 +34,14 @@ export interface NotificationAddAction extends Action<NotificationActionType.Add
      * URL for help or more information.
      */
     readonly helpUrl?: string;
-}
+};
 
-export interface NotificationRemoveAction
-    extends Action<NotificationActionType.Remove> {
+export type NotificationRemoveAction = Action<NotificationActionType.Remove> & {
     /**
      * ID of an existing notification.
      */
     readonly id: number;
-}
+};
 
 export type NotificationAction = NotificationAddAction | NotificationRemoveAction;
 
