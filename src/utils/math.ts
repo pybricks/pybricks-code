@@ -28,3 +28,16 @@ export function sumComplement32(data: Iterable<number>): number {
     // checksum is two's complement of total
     return ~total + 1;
 }
+
+/**
+ * Calculates the 8-bit "xor" checksum
+ * @data an iterable of 8-bit integers
+ * @returns all of the values xored together along with 0xff
+ */
+export function xor8(data: Iterable<number>): number {
+    let checksum = 0xff;
+    for (const n of data) {
+        checksum ^= n & 0xff;
+    }
+    return checksum;
+}
