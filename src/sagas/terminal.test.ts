@@ -4,12 +4,12 @@
 import { AsyncSaga, delay } from '../../test';
 
 import {
-    BLEDataActionType,
-    BLEDataWriteAction,
+    BleUartActionType,
+    BleUartWriteAction,
     didFailToWrite,
     didWrite,
     notify,
-} from '../actions/ble';
+} from '../actions/ble-uart';
 import {
     HubChecksumMessageAction,
     HubMessageActionType,
@@ -351,8 +351,8 @@ describe('Terminal data source responds to receive data actions', () => {
         saga.put(receiveData('test1234'));
 
         const action = await saga.take();
-        expect(action.type).toBe(BLEDataActionType.Write);
-        expect((action as BLEDataWriteAction).value).toEqual(expected);
+        expect(action.type).toBe(BleUartActionType.Write);
+        expect((action as BleUartWriteAction).value).toEqual(expected);
 
         await saga.end();
     });
@@ -372,19 +372,19 @@ describe('Terminal data source responds to receive data actions', () => {
         expect(saga.numPending()).toBe(1);
 
         const action = await saga.take();
-        expect(action.type).toBe(BLEDataActionType.Write);
-        expect((action as BLEDataWriteAction).value).toEqual(expected);
+        expect(action.type).toBe(BleUartActionType.Write);
+        expect((action as BleUartWriteAction).value).toEqual(expected);
 
         // second message is queued until didWrite or didFailToWrite
         expect(saga.numPending()).toBe(0);
 
-        saga.put(didWrite((action as BLEDataWriteAction).id));
+        saga.put(didWrite((action as BleUartWriteAction).id));
 
         const action2 = await saga.take();
-        expect(action2.type).toBe(BLEDataActionType.Write);
-        expect((action2 as BLEDataWriteAction).value).toEqual(expected);
+        expect(action2.type).toBe(BleUartActionType.Write);
+        expect((action2 as BleUartWriteAction).value).toEqual(expected);
 
-        saga.put(didWrite((action2 as BLEDataWriteAction).id));
+        saga.put(didWrite((action2 as BleUartWriteAction).id));
 
         await saga.end();
     });
@@ -404,21 +404,21 @@ describe('Terminal data source responds to receive data actions', () => {
         expect(saga.numPending()).toBe(1);
 
         const action = await saga.take();
-        expect(action.type).toBe(BLEDataActionType.Write);
-        expect((action as BLEDataWriteAction).value).toEqual(expected);
+        expect(action.type).toBe(BleUartActionType.Write);
+        expect((action as BleUartWriteAction).value).toEqual(expected);
 
         // second message is queued until didWrite or didFailToWrite
         expect(saga.numPending()).toBe(0);
 
         saga.put(
-            didFailToWrite((action as BLEDataWriteAction).id, new Error('test error')),
+            didFailToWrite((action as BleUartWriteAction).id, new Error('test error')),
         );
 
         const action2 = await saga.take();
-        expect(action2.type).toBe(BLEDataActionType.Write);
-        expect((action2 as BLEDataWriteAction).value).toEqual(expected);
+        expect(action2.type).toBe(BleUartActionType.Write);
+        expect((action2 as BleUartWriteAction).value).toEqual(expected);
 
-        saga.put(didWrite((action2 as BLEDataWriteAction).id));
+        saga.put(didWrite((action2 as BleUartWriteAction).id));
 
         await saga.end();
     });
@@ -434,8 +434,8 @@ describe('Terminal data source responds to receive data actions', () => {
         saga.put(receiveData('test1234'));
 
         const action = await saga.take();
-        expect(action.type).toBe(BLEDataActionType.Write);
-        expect((action as BLEDataWriteAction).value).toEqual(
+        expect(action.type).toBe(BleUartActionType.Write);
+        expect((action as BleUartWriteAction).value).toEqual(
             new Uint8Array([...expected, ...expected]),
         );
 
@@ -452,16 +452,16 @@ describe('Terminal data source responds to receive data actions', () => {
         saga.put(receiveData('012345678901234567890123456789'));
 
         const action = await saga.take();
-        expect(action.type).toBe(BLEDataActionType.Write);
-        expect((action as BLEDataWriteAction).value.length).toEqual(20);
+        expect(action.type).toBe(BleUartActionType.Write);
+        expect((action as BleUartWriteAction).value.length).toEqual(20);
 
-        saga.put(didWrite((action as BLEDataWriteAction).id));
+        saga.put(didWrite((action as BleUartWriteAction).id));
 
         const action2 = await saga.take();
-        expect(action2.type).toBe(BLEDataActionType.Write);
-        expect((action2 as BLEDataWriteAction).value.length).toEqual(10);
+        expect(action2.type).toBe(BleUartActionType.Write);
+        expect((action2 as BleUartWriteAction).value.length).toEqual(10);
 
-        saga.put(didWrite((action2 as BLEDataWriteAction).id));
+        saga.put(didWrite((action2 as BleUartWriteAction).id));
 
         await saga.end();
     });

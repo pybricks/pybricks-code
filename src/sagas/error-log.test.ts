@@ -2,7 +2,7 @@
 // Copyright (c) 2020 The Pybricks Authors
 
 import { AsyncSaga } from '../../test';
-import { didFailToWrite } from '../actions/ble';
+import { didFailToWrite } from '../actions/ble-uart';
 import {
     BootloaderConnectionFailureReason,
     didError,

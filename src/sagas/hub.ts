@@ -15,12 +15,12 @@ import {
 } from 'redux-saga/effects';
 import { Action } from '../actions';
 import {
-    BLEDataActionType,
-    BLEDataDidFailToWriteAction,
-    BLEDataDidWriteAction,
-    BLEDataWriteAction,
+    BleUartActionType,
+    BleUartDidFailToWriteAction,
+    BleUartDidWriteAction,
+    BleUartWriteAction,
     write,
-} from '../actions/ble';
+} from '../actions/ble-uart';
 import {
     HubActionType,
     HubChecksumMessageAction,
@@ -44,8 +44,8 @@ const downloadChunkSize = 100;
 
 function waitForWrite(id: number): RaceEffect<TakeEffect> {
     return race([
-        take((a: Action) => a.type === BLEDataActionType.DidWrite && a.id === id),
-        take((a: Action) => a.type === BLEDataActionType.DidFailToWrite && a.id === id),
+        take((a: Action) => a.type === BleUartActionType.DidWrite && a.id === id),
+        take((a: Action) => a.type === BleUartActionType.DidFailToWrite && a.id === id),
     ]);
 }
 
@@ -82,10 +82,10 @@ function* downloadAndRun(_action: HubDownloadAndRunAction): Generator {
     const sizeBuf = new Uint8Array(4);
     const sizeView = new DataView(sizeBuf.buffer);
     sizeView.setUint32(0, mpy.data.byteLength, true);
-    const writeAction = (yield put(write(sizeBuf))) as BLEDataWriteAction;
+    const writeAction = (yield put(write(sizeBuf))) as BleUartWriteAction;
     const [, didFailToWrite] = (yield waitForWrite(writeAction.id)) as [
-        BLEDataDidWriteAction,
-        BLEDataDidFailToWriteAction,
+        BleUartDidWriteAction,
+        BleUartDidFailToWriteAction,
     ];
 
     if (didFailToWrite) {
@@ -112,10 +112,10 @@ function* downloadAndRun(_action: HubDownloadAndRunAction): Generator {
         for (let j = 0; j < chunk.length; j += 20) {
             const writeAction = (yield put(
                 write(chunk.slice(j, j + 20)),
-            )) as BLEDataWriteAction;
+            )) as BleUartWriteAction;
             const [, didFailToWrite] = (yield waitForWrite(writeAction.id)) as [
-                BLEDataDidWriteAction,
-                BLEDataDidFailToWriteAction,
+                BleUartDidWriteAction,
+                BleUartDidFailToWriteAction,
             ];
 
             if (didFailToWrite) {

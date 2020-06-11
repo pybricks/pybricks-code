@@ -2,7 +2,7 @@
 // Copyright (c) 2020 The Pybricks Authors
 
 import { takeEvery } from 'redux-saga/effects';
-import { BLEDataActionType, BLEDataDidFailToWriteAction } from '../actions/ble';
+import { BleUartActionType, BleUartDidFailToWriteAction } from '../actions/ble-uart';
 import {
     BootloaderConnectionActionType,
     BootloaderConnectionDidErrorAction,
@@ -10,7 +10,7 @@ import {
     BootloaderConnectionFailureReason,
 } from '../actions/lwp3-bootloader';
 
-function bleDataDidFailToWrite(action: BLEDataDidFailToWriteAction): void {
+function bleDataDidFailToWrite(action: BleUartDidFailToWriteAction): void {
     console.error(action.err);
 }
 
@@ -29,7 +29,7 @@ function bootloaderDidError(action: BootloaderConnectionDidErrorAction): void {
 }
 
 export default function* (): Generator {
-    yield takeEvery(BLEDataActionType.DidFailToWrite, bleDataDidFailToWrite);
+    yield takeEvery(BleUartActionType.DidFailToWrite, bleDataDidFailToWrite);
     yield takeEvery(
         BootloaderConnectionActionType.DidFailToConnect,
         bootloaderDidFailToConnect,

@@ -2,8 +2,6 @@
 // Copyright (c) 2020 The Pybricks Authors
 
 import { Action } from 'redux';
-import { assert } from '../utils';
-import { createCountFunc } from '../utils/iter';
 
 /**
  * Bluetooth low energy connection action types.
@@ -59,69 +57,6 @@ export function disconnect(): BLEConnectAction {
 export function didDisconnect(): BLEConnectAction {
     return { type: BLEConnectActionType.DidDisconnect };
 }
-
-export enum BLEDataActionType {
-    /**
-     * Write data.
-     */
-    Write = 'ble.data.action.write',
-    /**
-     * Writing completed successfully.
-     */
-    DidWrite = 'ble.data.didWrite',
-    /**
-     * Writing failed.
-     */
-    DidFailToWrite = 'ble.data.action.didFailToWrite',
-    /**
-     * Notify that data was received.
-     */
-    Notify = 'ble.data.action.receive',
-}
-
-const nextId = createCountFunc();
-
-export type BLEDataWriteAction = Action<BLEDataActionType.Write> & {
-    id: number;
-    value: Uint8Array;
-};
-
-export function write(value: Uint8Array): BLEDataWriteAction {
-    assert(value.length <= 20, 'value can be at most 20 bytes');
-    return { type: BLEDataActionType.Write, id: nextId(), value };
-}
-
-export type BLEDataDidWriteAction = Action<BLEDataActionType.DidWrite> & {
-    id: number;
-};
-
-export function didWrite(id: number): BLEDataDidWriteAction {
-    return { type: BLEDataActionType.DidWrite, id };
-}
-
-export type BLEDataDidFailToWriteAction = Action<BLEDataActionType.DidFailToWrite> & {
-    id: number;
-    err: Error;
-};
-
-export function didFailToWrite(id: number, err: Error): BLEDataDidFailToWriteAction {
-    return { type: BLEDataActionType.DidFailToWrite, id, err };
-}
-
-export type BLEDataNotifyAction = Action<BLEDataActionType.Notify> & {
-    value: DataView;
-};
-
-export function notify(value: DataView): BLEDataNotifyAction {
-    return { type: BLEDataActionType.Notify, value };
-}
-
-/** Common type for low-level BLE data actions. */
-export type BLEDataAction =
-    | BLEDataWriteAction
-    | BLEDataDidWriteAction
-    | BLEDataDidFailToWriteAction
-    | BLEDataNotifyAction;
 
 /**
  * High-level BLE actions.
