@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020 The Pybricks Authors
 
-import { Channel, buffers } from 'redux-saga';
+import { Channel } from 'redux-saga';
 import { actionChannel, fork, put, take, takeEvery } from 'redux-saga/effects';
 import { Action } from '../actions';
 import {
@@ -51,12 +51,10 @@ import { hex } from '../utils';
 function* encodeRequest(): Generator {
     // Using a while loop to serialize sending data to avoid "busy" errors.
 
-    const chan = (yield actionChannel(
-        (a: Action) =>
-            Object.values(BootloaderRequestActionType).includes(
-                a.type as BootloaderRequestActionType,
-            ),
-        buffers.expanding(),
+    const chan = (yield actionChannel((a: Action) =>
+        Object.values(BootloaderRequestActionType).includes(
+            a.type as BootloaderRequestActionType,
+        ),
     )) as Channel<BootloaderRequestAction>;
     while (true) {
         const action = (yield take(chan)) as BootloaderRequestAction;
