@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020 The Pybricks Authors
 
-import { fmod, sumComplement32 } from './math';
+import { fmod, sumComplement32, xor8 } from './math';
 
 describe('fmod', () => {
     test('positive numbers', () => {
@@ -19,5 +19,17 @@ describe('sumComplement32', () => {
     });
     test('overflow', () => {
         expect(sumComplement32([0xffffffff, 0xffffffff])).toBe(-(-1 + -1));
+    });
+});
+
+describe('xor8', () => {
+    test('basic', () => {
+        expect(xor8([0])).toBe(0xff);
+    });
+    test('basic2', () => {
+        expect(xor8([0xff, 0xff, 0xff])).toBe(0);
+    });
+    test('basic3', () => {
+        expect(xor8([0xc0, 0x0c])).toBe(0x33);
     });
 });
