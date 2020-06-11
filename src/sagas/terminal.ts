@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020 The Pybricks Authors
 
-import { Channel, buffers } from 'redux-saga';
+import { Channel } from 'redux-saga';
 import {
     actionChannel,
     delay,
@@ -24,10 +24,9 @@ const encoder = new TextEncoder();
 const terminalDataSource = new PushStream<string>();
 
 function* receiveTerminalData(): Generator {
-    const channel = (yield actionChannel(
-        TerminalActionType.ReceivedData,
-        buffers.expanding(),
-    )) as Channel<TerminalDataReceiveDataAction>;
+    const channel = (yield actionChannel(TerminalActionType.ReceivedData)) as Channel<
+        TerminalDataReceiveDataAction
+    >;
     while (true) {
         // wait for input from terminal
         const action = (yield take(channel)) as TerminalDataReceiveDataAction;
