@@ -4,7 +4,7 @@
 import { Ace } from 'ace-builds';
 import { mock } from 'jest-mock-extended';
 import { AsyncSaga } from '../../test';
-import { BLEDataActionType, BLEDataWriteAction, didWrite } from '../actions/ble';
+import { BleUartActionType, BleUartWriteAction, didWrite } from '../actions/ble-uart';
 import {
     HubMessageActionType,
     HubRuntimeStatusMessageAction,
@@ -42,23 +42,23 @@ describe('downloadAndRun', () => {
 
         // first message is the length
         const writeAction = await saga.take();
-        expect(writeAction.type).toBe(BLEDataActionType.Write);
-        expect((writeAction as BLEDataWriteAction).value.length).toBe(4);
-        saga.put(didWrite((writeAction as BLEDataWriteAction).id));
+        expect(writeAction.type).toBe(BleUartActionType.Write);
+        expect((writeAction as BleUartWriteAction).value.length).toBe(4);
+        saga.put(didWrite((writeAction as BleUartWriteAction).id));
         saga.put(checksum(30));
 
         // then the first chunk of 20 bytes
         const writeAction2 = await saga.take();
-        expect(writeAction2.type).toBe(BLEDataActionType.Write);
-        expect((writeAction2 as BLEDataWriteAction).value.length).toBe(20);
-        saga.put(didWrite((writeAction2 as BLEDataWriteAction).id));
+        expect(writeAction2.type).toBe(BleUartActionType.Write);
+        expect((writeAction2 as BleUartWriteAction).value.length).toBe(20);
+        saga.put(didWrite((writeAction2 as BleUartWriteAction).id));
         saga.put(checksum(0));
 
         // then last chunk
         const writeAction3 = await saga.take();
-        expect(writeAction3.type).toBe(BLEDataActionType.Write);
-        expect((writeAction3 as BLEDataWriteAction).value.length).toBe(10);
-        saga.put(didWrite((writeAction3 as BLEDataWriteAction).id));
+        expect(writeAction3.type).toBe(BleUartActionType.Write);
+        expect((writeAction3 as BleUartWriteAction).value.length).toBe(10);
+        saga.put(didWrite((writeAction3 as BleUartWriteAction).id));
         saga.put(checksum(0));
 
         // Then a status message saying that we are done
@@ -80,7 +80,7 @@ test('repl', async () => {
     saga.put(repl());
 
     const compileAction = await saga.take();
-    expect(compileAction.type).toBe(BLEDataActionType.Write);
+    expect(compileAction.type).toBe(BleUartActionType.Write);
 
     await saga.end();
 });
@@ -91,7 +91,7 @@ test('stop', async () => {
     saga.put(stop());
 
     const compileAction = await saga.take();
-    expect(compileAction.type).toBe(BLEDataActionType.Write);
+    expect(compileAction.type).toBe(BleUartActionType.Write);
 
     await saga.end();
 });

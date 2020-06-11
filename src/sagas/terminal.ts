@@ -15,11 +15,11 @@ import {
 import PushStream from 'zen-push';
 import { Action } from '../actions';
 import {
-    BLEDataActionType,
-    BLEDataNotifyAction,
-    BLEDataWriteAction,
+    BleUartActionType,
+    BleUartNotifyAction,
+    BleUartWriteAction,
     write,
-} from '../actions/ble';
+} from '../actions/ble-uart';
 import { HubRuntimeStatusType, checksum, updateStatus } from '../actions/hub';
 import {
     TerminalActionType,
@@ -55,7 +55,7 @@ function* handleMatch(
     return true;
 }
 
-function* receiveUartData(action: BLEDataNotifyAction): Generator {
+function* receiveUartData(action: BleUartNotifyAction): Generator {
     const hubState = (yield select((s: RootState) => s.hub.runtime)) as HubRuntimeState;
 
     if (hubState === HubRuntimeState.Loading && action.value.buffer.byteLength === 1) {
@@ -119,17 +119,17 @@ function* receiveTerminalData(): Generator {
         for (let i = 0; i < data.length; i += 20) {
             const { id } = (yield put(
                 write(data.slice(i, i + 20)),
-            )) as BLEDataWriteAction;
+            )) as BleUartWriteAction;
 
             yield take(
                 (a: Action) =>
-                    (a.type === BLEDataActionType.DidWrite ||
-                        a.type === BLEDataActionType.DidFailToWrite) &&
+                    (a.type === BleUartActionType.DidWrite ||
+                        a.type === BleUartActionType.DidFailToWrite) &&
                     a.id === id,
             );
 
             // wait for echo so tht we don't overrun the hub with messages
-            yield race([take(BLEDataActionType.Notify), delay(100)]);
+            yield race([take(BleUartActionType.Notify), delay(100)]);
         }
     }
 }
@@ -140,7 +140,7 @@ function sendTerminalData(action: TerminalDataReceiveDataAction): void {
 }
 
 export default function* (): Generator {
-    yield takeEvery(BLEDataActionType.Notify, receiveUartData);
+    yield takeEvery(BleUartActionType.Notify, receiveUartData);
     yield fork(receiveTerminalData);
     yield takeEvery(TerminalActionType.SendData, sendTerminalData);
     yield put(setDataSource(terminalDataSource.observable));

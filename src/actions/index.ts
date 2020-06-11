@@ -2,7 +2,8 @@
 // Copyright (c) 2020 The Pybricks Authors
 
 import { Dispatch as ReduxDispatch } from 'redux';
-import { BLEAction, BLEConnectAction, BLEDataAction } from './ble';
+import { BLEAction, BLEConnectAction } from './ble';
+import { BleUartAction } from './ble-uart';
 import { EditorAction } from './editor';
 import { FlashFirmwareAction } from './flash-firmware';
 import { HubAction, HubMessageAction } from './hub';
@@ -23,7 +24,7 @@ import { TerminalDataAction } from './terminal';
 export type Action =
     | BLEAction
     | BLEConnectAction
-    | BLEDataAction
+    | BleUartAction
     | BootloaderConnectionAction
     | BootloaderDidRequestAction
     | BootloaderRequestAction

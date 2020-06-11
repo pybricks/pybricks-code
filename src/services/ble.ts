@@ -5,15 +5,17 @@ import { Action, Dispatch } from '../actions';
 import {
     BLEActionType,
     BLEConnectActionType,
-    BLEDataActionType,
     connect as connectAction,
     didConnect,
     didDisconnect,
+    disconnect as disconnectAction,
+} from '../actions/ble';
+import {
+    BleUartActionType,
     didFailToWrite,
     didWrite,
-    disconnect as disconnectAction,
     notify,
-} from '../actions/ble';
+} from '../actions/ble-uart';
 import { stop } from '../actions/hub';
 import * as notification from '../actions/notification';
 import { RootState } from '../reducers';
@@ -118,7 +120,7 @@ function disconnect(action: Action): void {
 }
 
 async function write(action: Action, dispatch: Dispatch): Promise<void> {
-    if (action.type !== BLEDataActionType.Write) {
+    if (action.type !== BleUartActionType.Write) {
         return;
     }
     try {
