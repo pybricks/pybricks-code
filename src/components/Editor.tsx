@@ -49,6 +49,9 @@ class Editor extends React.Component<EditorProps> {
 
     componentDidMount(): void {
         window.addEventListener('storage', this.onStorage);
+        // scroll bar is broken unless we do this when there is an ancestor
+        // that resizes things during load.
+        setTimeout(() => this.editorRef.current?.editor.resize(), 0);
     }
 
     componentWillUnmount(): void {
