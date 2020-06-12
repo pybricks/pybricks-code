@@ -49,9 +49,6 @@ class Editor extends React.Component<EditorProps> {
 
     componentDidMount(): void {
         window.addEventListener('storage', this.onStorage);
-        // scroll bar is broken unless we do this when there is an ancestor
-        // that resizes things during load.
-        setTimeout(() => this.editorRef.current?.editor.resize(), 0);
     }
 
     componentWillUnmount(): void {
@@ -60,10 +57,11 @@ class Editor extends React.Component<EditorProps> {
 
     render(): JSX.Element {
         const { i18n, onSessionChanged } = this.props;
-        const editor = this.editorRef.current?.editor;
         return (
             <div className="h-100">
-                <ResizeSensor onResize={(): void => editor?.resize()}>
+                <ResizeSensor
+                    onResize={(): void => this.editorRef.current?.editor.resize()}
+                >
                     <AceEditor
                         ref={this.editorRef}
                         mode="python"
@@ -116,12 +114,11 @@ class Editor extends React.Component<EditorProps> {
 
     renderContextMenu(): JSX.Element {
         const { i18n } = this.props;
-        const editor = this.editorRef.current?.editor;
         return (
             <Menu>
                 <MenuItem
                     onClick={(): void => {
-                        const selected = editor?.getSelectedText();
+                        const selected = this.editorRef.current?.editor?.getSelectedText();
                         if (selected) {
                             navigator.clipboard.writeText(selected);
                         }
@@ -129,11 +126,11 @@ class Editor extends React.Component<EditorProps> {
                     text={i18n.translate(EditorStringId.Copy)}
                     icon="duplicate"
                     label={/mac/i.test(navigator.platform) ? 'Cmd-C' : 'Ctrl-C'}
-                    disabled={editor?.getSelection().isEmpty()}
+                    disabled={this.editorRef.current?.editor?.getSelection().isEmpty()}
                 />
                 <MenuItem
                     onClick={async (): Promise<void> => {
-                        editor?.execCommand(
+                        this.editorRef.current?.editor?.execCommand(
                             'paste',
                             await navigator.clipboard.readText(),
                         );
@@ -144,19 +141,27 @@ class Editor extends React.Component<EditorProps> {
                 />
                 <MenuDivider />
                 <MenuItem
-                    onClick={(): void => editor?.undo()}
+                    onClick={(): void => this.editorRef.current?.editor?.undo()}
                     text={i18n.translate(EditorStringId.Undo)}
                     icon="undo"
                     label={this.keyBindings?.find((x) => x.command === 'undo')?.key}
-                    disabled={!editor?.session.getUndoManager().canUndo()}
+                    disabled={
+                        !this.editorRef.current?.editor?.session
+                            .getUndoManager()
+                            .canUndo()
+                    }
                 />
                 <MenuItem
-                    onClick={(): void => editor?.redo()}
+                    onClick={(): void => this.editorRef.current?.editor?.redo()}
                     text={i18n.translate(EditorStringId.Redo)}
                     icon="redo"
                     label={this.keyBindings?.find((x) => x.command === 'redo')?.key}
                     active
-                    disabled={!editor?.session.getUndoManager().canRedo()}
+                    disabled={
+                        !this.editorRef.current?.editor?.session
+                            .getUndoManager()
+                            .canRedo()
+                    }
                 />
             </Menu>
         );
