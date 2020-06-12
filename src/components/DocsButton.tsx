@@ -10,7 +10,7 @@ import ActionButton, { ActionButtonProps } from './ActionButton';
 import { TooltipId } from './button';
 import docsIcon from './images/run.svg'; // FIXME: need proper icon
 
-type StateProps = {};
+type StateProps = undefined;
 type DispatchProps = Pick<ActionButtonProps, 'onAction'>;
 type OwnProps = Pick<ActionButtonProps, 'id'>;
 
@@ -19,14 +19,13 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
 });
 
 const mergeProps = (
-    stateProps: StateProps,
+    _stateProps: StateProps,
     dispatchProps: DispatchProps,
     ownProps: OwnProps,
 ): ActionButtonProps => ({
     tooltip: TooltipId.Docs,
     icon: docsIcon,
     ...ownProps,
-    ...stateProps,
     ...dispatchProps,
 });
 
