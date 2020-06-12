@@ -2,6 +2,7 @@
 // Copyright (c) 2020 The Pybricks Authors
 
 import { combineReducers } from 'redux';
+import app, { AppState } from './app';
 import ble, { BleState } from './ble';
 import bootloader, { BootloaderState } from './bootloader';
 import editor, { EditorState } from './editor';
@@ -14,6 +15,7 @@ import terminal, { TerminalState } from './terminal';
  * Root state for redux store.
  */
 export interface RootState {
+    readonly app: AppState;
     readonly bootloader: BootloaderState;
     readonly ble: BleState;
     readonly editor: EditorState;
@@ -24,6 +26,7 @@ export interface RootState {
 }
 
 export default combineReducers({
+    app,
     bootloader,
     ble,
     editor,

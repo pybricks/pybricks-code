@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020 The Pybricks Authors
 
-import { all } from 'redux-saga/effects';
+import { all, put } from 'redux-saga/effects';
+import { startup } from '../actions/app';
+import app from './app';
 import bleUart from './ble-uart';
 import editor from './editor';
 import errorLog from './error-log';
@@ -14,6 +16,7 @@ import terminal from './terminal';
 /* istanbul ignore next */
 export default function* (): Generator {
     yield all([
+        app(),
         bleUart(),
         bootloader(),
         editor(),
@@ -22,5 +25,6 @@ export default function* (): Generator {
         hub(),
         mpy(),
         terminal(),
+        put(startup()),
     ]);
 }
