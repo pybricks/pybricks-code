@@ -11,4 +11,5 @@ export enum TooltipId {
     BluetoothConnect = 'bluetooth.connect.tooltip',
     BluetoothDisconnect = 'bluetooth.disconnect.tooltip',
     Docs = 'docs.tooltip',
+    Support = 'support.tooltip',
 }

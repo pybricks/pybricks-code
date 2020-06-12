@@ -9,5 +9,6 @@
         "disconnect": { "tooltip": "Disconnect Bluetooth" }
     },
     "flash": { "tooltip": "Flash hub firmware" },
-    "docs": { "tooltip": "Show/hide documentation" }
+    "docs": { "tooltip": "Show/hide documentation" },
+    "support": { "tooltip": "Open Pybricks Support web site" }
 }
