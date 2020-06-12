@@ -2,6 +2,11 @@
 // Copyright (c) 2020 The Pybricks Authors
 
 import { takeEvery } from 'redux-saga/effects';
+import {
+    BleDeviceActionType,
+    BleDeviceDidFailToConnectAction,
+    BleDeviceFailToConnectReasonType,
+} from '../actions/ble';
 import { BleUartActionType, BleUartDidFailToWriteAction } from '../actions/ble-uart';
 import {
     BootloaderConnectionActionType,
@@ -9,6 +14,12 @@ import {
     BootloaderConnectionDidFailToConnectAction,
     BootloaderConnectionFailureReason,
 } from '../actions/lwp3-bootloader';
+
+function bleDeviceDidFailToConnect(action: BleDeviceDidFailToConnectAction): void {
+    if (action.reason === BleDeviceFailToConnectReasonType.Unknown) {
+        console.error(action.err);
+    }
+}
 
 function bleDataDidFailToWrite(action: BleUartDidFailToWriteAction): void {
     console.error(action.err);
@@ -29,6 +40,7 @@ function bootloaderDidError(action: BootloaderConnectionDidErrorAction): void {
 }
 
 export default function* (): Generator {
+    yield takeEvery(BleDeviceActionType.DidFailToConnect, bleDeviceDidFailToConnect);
     yield takeEvery(BleUartActionType.DidFailToWrite, bleDataDidFailToWrite);
     yield takeEvery(
         BootloaderConnectionActionType.DidFailToConnect,

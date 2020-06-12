@@ -3,7 +3,6 @@
 // actions/ble-uart.ts: Actions for Bluetooth Low Energy nRF UART service
 
 import { Action } from 'redux';
-import { assert } from '../utils';
 import { createCountFunc } from '../utils/iter';
 
 /**
@@ -36,7 +35,6 @@ export type BleUartWriteAction = Action<BleUartActionType.Write> & {
 };
 
 export function write(value: Uint8Array): BleUartWriteAction {
-    assert(value.length <= 20, 'value can be at most 20 bytes');
     return { type: BleUartActionType.Write, id: nextId(), value };
 }
 

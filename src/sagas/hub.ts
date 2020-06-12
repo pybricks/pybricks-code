@@ -14,6 +14,7 @@ import {
     takeEvery,
 } from 'redux-saga/effects';
 import { Action } from '../actions';
+import { BleDeviceActionType } from '../actions/ble';
 import {
     BleUartActionType,
     BleUartDidFailToWriteAction,
@@ -37,6 +38,7 @@ import {
     MpyDidFailToCompileAction,
     compile,
 } from '../actions/mpy';
+import { SafeTxCharLength } from '../protocols/nrf-uart';
 import { RootState } from '../reducers';
 import { xor8 } from '../utils/math';
 
@@ -109,9 +111,9 @@ function* downloadAndRun(_action: HubDownloadAndRunAction): Generator {
         const chunk = mpy.data.slice(i, i + downloadChunkSize);
 
         // we can actually only write 20 bytes at a time
-        for (let j = 0; j < chunk.length; j += 20) {
+        for (let j = 0; j < chunk.length; j += SafeTxCharLength) {
             const writeAction = (yield put(
-                write(chunk.slice(j, j + 20)),
+                write(chunk.slice(j, j + SafeTxCharLength)),
             )) as BleUartWriteAction;
             const [, didFailToWrite] = (yield waitForWrite(writeAction.id)) as [
                 BleUartDidWriteAction,
@@ -158,4 +160,6 @@ export default function* (): Generator {
     yield takeEvery(HubActionType.DownloadAndRun, downloadAndRun);
     yield takeEvery(HubActionType.Repl, startRepl);
     yield takeEvery(HubActionType.Stop, stop);
+    // calling stop right after connecting should get the hub into a known state
+    yield takeEvery(BleDeviceActionType.DidConnect, stop);
 }

@@ -4,7 +4,6 @@
 import { Middleware } from 'redux';
 import { Action, Dispatch } from '../actions';
 import { RootState } from '../reducers';
-import ble from './ble';
 import bootloader from './lwp3-bootloader';
 
 type Service = (
@@ -36,7 +35,7 @@ export function combineServices(...services: Service[]): Service {
     };
 }
 
-const rootService = combineServices(ble, bootloader);
+const rootService = combineServices(bootloader);
 
 const serviceMiddleware: Middleware = (store) => (next) => (action): unknown => {
     runService(rootService, action, store.dispatch, store.getState());

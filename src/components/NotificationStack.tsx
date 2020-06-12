@@ -25,6 +25,7 @@ class NotificationStack extends React.Component<NotificationStackProps> {
                         level={n.level}
                         message={n.message}
                         messageId={n.messageId}
+                        replacements={n.replacements}
                         helpUrl={n.helpUrl}
                         action={n.action}
                     />

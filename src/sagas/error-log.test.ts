@@ -2,6 +2,10 @@
 // Copyright (c) 2020 The Pybricks Authors
 
 import { AsyncSaga } from '../../test';
+import {
+    BleDeviceFailToConnectReasonType,
+    didFailToConnect as bleDidFailToConnect,
+} from '../actions/ble';
 import { didFailToWrite } from '../actions/ble-uart';
 import {
     BootloaderConnectionFailureReason,
@@ -9,6 +13,27 @@ import {
     didFailToConnect,
 } from '../actions/lwp3-bootloader';
 import errorLog from './error-log';
+
+test('bleDeviceDidFailToConnect', async () => {
+    const saga = new AsyncSaga(errorLog);
+
+    console.error = jest.fn();
+
+    saga.put(
+        bleDidFailToConnect({ reason: BleDeviceFailToConnectReasonType.Canceled }),
+    );
+    expect(console.error).toHaveBeenCalledTimes(0);
+
+    saga.put(
+        bleDidFailToConnect({
+            reason: BleDeviceFailToConnectReasonType.Unknown,
+            err: new Error('test error'),
+        }),
+    );
+    expect(console.error).toHaveBeenCalledTimes(1);
+
+    await saga.end();
+});
 
 test('bleDataDidFailToWrite', async () => {
     const saga = new AsyncSaga(errorLog);

@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { Action, Dispatch } from '../actions';
 import { toggleBluetooth } from '../actions/ble';
 import { RootState } from '../reducers';
-import { BLEConnectionState } from '../reducers/ble';
+import { BleConnectionState } from '../reducers/ble';
 import { BootloaderConnectionState } from '../reducers/bootloader';
 import ActionButton, { ActionButtonProps } from './ActionButton';
 import { TooltipId } from './button';
@@ -17,7 +17,7 @@ type DispatchProps = Pick<ActionButtonProps, 'onAction'>;
 
 const mapStateToProps = (state: RootState): StateProps => {
     if (
-        state.ble.connection === BLEConnectionState.Disconnected &&
+        state.ble.connection === BleConnectionState.Disconnected &&
         state.bootloader.connection === BootloaderConnectionState.Disconnected
     ) {
         return {
@@ -29,7 +29,7 @@ const mapStateToProps = (state: RootState): StateProps => {
         return {
             tooltip: TooltipId.BluetoothDisconnect,
             icon: btConnectedIcon,
-            enabled: state.ble.connection === BLEConnectionState.Connected,
+            enabled: state.ble.connection === BleConnectionState.Connected,
         };
     }
 };
