@@ -8,6 +8,7 @@ import { WithI18nProps, withI18n } from '@shopify/react-i18n';
 import { Ace, config } from 'ace-builds';
 import React from 'react';
 import AceEditor from 'react-ace';
+import { IAceEditor } from 'react-ace/lib/types';
 import { connect } from 'react-redux';
 import { Action, Dispatch } from '../actions';
 import { setEditSession, storageChanged } from '../actions/editor';
@@ -37,11 +38,16 @@ class Editor extends React.Component<EditorProps> {
         this.editorRef = React.createRef();
     }
 
+    /** convenience property for getting Ace editor object */
+    private get editor(): IAceEditor | undefined {
+        return this.editorRef.current?.editor;
+    }
+
     onStorage = (e: StorageEvent): void => {
         if (
             e.key === 'program' &&
             e.newValue &&
-            e.newValue !== this.editorRef.current?.editor.getValue()
+            e.newValue !== this.editor?.getValue()
         ) {
             this.props.onProgramStorageChanged(e.newValue);
         }
@@ -59,9 +65,7 @@ class Editor extends React.Component<EditorProps> {
         const { i18n, onSessionChanged } = this.props;
         return (
             <div className="h-100">
-                <ResizeSensor
-                    onResize={(): void => this.editorRef.current?.editor.resize()}
-                >
+                <ResizeSensor onResize={(): void => this.editor?.resize()}>
                     <AceEditor
                         ref={this.editorRef}
                         mode="python"
@@ -118,7 +122,7 @@ class Editor extends React.Component<EditorProps> {
             <Menu>
                 <MenuItem
                     onClick={(): void => {
-                        const selected = this.editorRef.current?.editor?.getSelectedText();
+                        const selected = this.editor?.getSelectedText();
                         if (selected) {
                             navigator.clipboard.writeText(selected);
                         }
@@ -126,11 +130,11 @@ class Editor extends React.Component<EditorProps> {
                     text={i18n.translate(EditorStringId.Copy)}
                     icon="duplicate"
                     label={/mac/i.test(navigator.platform) ? 'Cmd-C' : 'Ctrl-C'}
-                    disabled={this.editorRef.current?.editor?.getSelection().isEmpty()}
+                    disabled={this.editor?.getSelection().isEmpty()}
                 />
                 <MenuItem
                     onClick={async (): Promise<void> => {
-                        this.editorRef.current?.editor?.execCommand(
+                        this.editor?.execCommand(
                             'paste',
                             await navigator.clipboard.readText(),
                         );
@@ -141,27 +145,19 @@ class Editor extends React.Component<EditorProps> {
                 />
                 <MenuDivider />
                 <MenuItem
-                    onClick={(): void => this.editorRef.current?.editor?.undo()}
+                    onClick={(): void => this.editor?.undo()}
                     text={i18n.translate(EditorStringId.Undo)}
                     icon="undo"
                     label={this.keyBindings?.find((x) => x.command === 'undo')?.key}
-                    disabled={
-                        !this.editorRef.current?.editor?.session
-                            .getUndoManager()
-                            .canUndo()
-                    }
+                    disabled={!this.editor?.session.getUndoManager().canUndo()}
                 />
                 <MenuItem
-                    onClick={(): void => this.editorRef.current?.editor?.redo()}
+                    onClick={(): void => this.editor?.redo()}
                     text={i18n.translate(EditorStringId.Redo)}
                     icon="redo"
                     label={this.keyBindings?.find((x) => x.command === 'redo')?.key}
                     active
-                    disabled={
-                        !this.editorRef.current?.editor?.session
-                            .getUndoManager()
-                            .canRedo()
-                    }
+                    disabled={!this.editor?.session.getUndoManager().canRedo()}
                 />
             </Menu>
         );
