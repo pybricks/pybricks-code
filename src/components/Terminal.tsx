@@ -49,6 +49,25 @@ class Terminal extends React.Component<TerminalProps> {
         this.terminalRef = React.createRef();
     }
 
+    private handleKeyDownEvent = (e: KeyboardEvent): void => {
+        // implement CTRL+SHIFT+C keyboard shortcut for copying text from terminal
+        if (e.key === 'C' && e.ctrlKey && e.shiftKey && !e.altKey && !e.metaKey) {
+            // this would otherwise open up debug console in web browser
+            e.preventDefault();
+
+            if (
+                document.hasFocus() &&
+                document.activeElement ===
+                    this.terminalRef.current?.getElementsByClassName(
+                        'xterm-helper-textarea',
+                    )[0] &&
+                this.xterm.hasSelection()
+            ) {
+                navigator.clipboard.writeText(this.xterm.getSelection());
+            }
+        }
+    };
+
     componentDidMount(): void {
         if (!this.terminalRef.current) {
             console.error('Missing terminal reference');
@@ -59,9 +78,11 @@ class Terminal extends React.Component<TerminalProps> {
         this.subscription = this.props.dataSource?.subscribe({
             next: (d) => this.xterm.write(d),
         });
+        window.addEventListener('keydown', this.handleKeyDownEvent);
     }
 
     componentWillUnmount(): void {
+        window.removeEventListener('keydown', this.handleKeyDownEvent);
         this.subscription?.unsubscribe();
         this.xterm.dispose();
     }
