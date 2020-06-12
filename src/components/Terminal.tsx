@@ -1,7 +1,10 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020 The Pybricks Authors
 
-import { ResizeSensor } from '@blueprintjs/core';
+import { Menu, MenuItem, ResizeSensor } from '@blueprintjs/core';
+// importing this way due to https://github.com/palantir/blueprint/issues/3891
+import { ContextMenuTarget } from '@blueprintjs/core/lib/esnext/components/context-menu/contextMenuTarget';
+import { WithI18nProps, withI18n } from '@shopify/react-i18n';
 import React from 'react';
 import { connect } from 'react-redux';
 import { Observable, Unsubscribe } from 'redux';
@@ -10,6 +13,8 @@ import { FitAddon } from 'xterm-addon-fit';
 import { Dispatch } from '../actions';
 import { receiveData } from '../actions/terminal';
 import { RootState } from '../reducers';
+import { TerminalStringId } from './terminal';
+import en from './terminal.en.json';
 
 import 'xterm/css/xterm.css';
 
@@ -21,8 +26,9 @@ interface DispatchProps {
     onData: (data: string) => void;
 }
 
-type TerminalProps = StateProps & DispatchProps;
+type TerminalProps = StateProps & DispatchProps & WithI18nProps;
 
+@ContextMenuTarget
 class Terminal extends React.Component<TerminalProps> {
     private xterm: XTerm;
     private fitAddon: FitAddon;
@@ -89,13 +95,39 @@ class Terminal extends React.Component<TerminalProps> {
 
     render(): JSX.Element {
         return (
-            <ResizeSensor onResize={(): void => this.fitAddon.fit()}>
-                <div
-                    ref={this.terminalRef}
-                    className="h-100"
-                    onContextMenu={(e): void => e.preventDefault()}
+            <div className="h-100">
+                <ResizeSensor onResize={(): void => this.fitAddon.fit()}>
+                    <div ref={this.terminalRef} className="h-100" />
+                </ResizeSensor>
+            </div>
+        );
+    }
+
+    renderContextMenu(): JSX.Element {
+        const { i18n } = this.props;
+        return (
+            <Menu>
+                <MenuItem
+                    onClick={(): void => {
+                        const selected = this.xterm.getSelection();
+                        if (selected) {
+                            navigator.clipboard.writeText(selected);
+                        }
+                    }}
+                    text={i18n.translate(TerminalStringId.Copy)}
+                    icon="duplicate"
+                    label={/mac/i.test(navigator.platform) ? 'Cmd-C' : 'Ctrl-Shift-C'}
+                    disabled={!this.xterm.hasSelection()}
                 />
-            </ResizeSensor>
+                <MenuItem
+                    onClick={async (): Promise<void> => {
+                        this.xterm.paste(await navigator.clipboard.readText());
+                    }}
+                    text={i18n.translate(TerminalStringId.Paste)}
+                    icon="clipboard"
+                    label={/mac/i.test(navigator.platform) ? 'Cmd-V' : 'Ctrl-Shift-V'}
+                />
+            </Menu>
         );
     }
 }
@@ -110,4 +142,7 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Terminal);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)(withI18n({ id: 'terminal', fallback: en, translations: { en } })(Terminal));
