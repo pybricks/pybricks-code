@@ -11,6 +11,7 @@ import ReplButton from './ReplButton';
 import RunButton from './RunButton';
 import SaveAsButton from './SaveAsButton';
 import StopButton from './StopButton';
+import SupportButton from './SupportButton';
 
 class Toolbar extends React.Component {
     render(): JSX.Element {
@@ -39,6 +40,7 @@ class Toolbar extends React.Component {
                 </Navbar.Group>
                 <Navbar.Group align={Alignment.RIGHT}>
                     <ButtonGroup>
+                        <SupportButton id="support" />
                         <DocsButton id="docs" />
                     </ButtonGroup>
                 </Navbar.Group>
