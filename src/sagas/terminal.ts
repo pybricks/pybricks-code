@@ -27,6 +27,7 @@ import {
     sendData,
     setDataSource,
 } from '../actions/terminal';
+import { SafeTxCharLength } from '../protocols/nrf-uart';
 import { RootState } from '../reducers';
 import { HubRuntimeState } from '../reducers/hub';
 
@@ -103,7 +104,7 @@ function* receiveTerminalData(): Generator {
         let value = action.value;
 
         // Try to collect more data so that we aren't sending just one byte at time
-        while (value.length < 20) {
+        while (value.length < SafeTxCharLength) {
             const [action, timeout] = (yield race([take(channel), delay(20)])) as [
                 TerminalDataReceiveDataAction,
                 boolean,
@@ -116,9 +117,9 @@ function* receiveTerminalData(): Generator {
 
         // stdin gets piped to BLE connection
         const data = encoder.encode(value);
-        for (let i = 0; i < data.length; i += 20) {
+        for (let i = 0; i < data.length; i += SafeTxCharLength) {
             const { id } = (yield put(
-                write(data.slice(i, i + 20)),
+                write(data.slice(i, i + SafeTxCharLength)),
             )) as BleUartWriteAction;
 
             yield take(

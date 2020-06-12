@@ -1,51 +1,56 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020 The Pybricks Authors
+// File: reducers/ble.ts
+// Manages state for the Bluetooth Low Energy connection.
+// This assumes that there is only one global connection to a single device.
 
 import { Reducer, combineReducers } from 'redux';
-import { BLEConnectActionType } from '../actions/ble';
+import { Action } from '../actions';
+import { BleDeviceActionType } from '../actions/ble';
 
 /**
  * Describes the state of the BLE connection.
  */
-export enum BLEConnectionState {
+export enum BleConnectionState {
     /**
      * No device is connected.
      */
-    Disconnected = 'ble.connection.disconnected',
+    Disconnected = 'ble.connection.state.disconnected',
     /**
      * Connecting to a device.
      */
-    Connecting = 'ble.connection.connecting',
+    Connecting = 'ble.connection.state.connecting',
     /**
      * Connected to a device.
      */
-    Connected = 'ble.connection.connected',
+    Connected = 'ble.connection.state.connected',
     /**
      * Disconnecting from a device.
      */
-    Disconnecting = 'ble.connection.disconnecting',
+    Disconnecting = 'ble.connection.state.disconnecting',
 }
 
-const connection: Reducer<BLEConnectionState> = (
-    state = BLEConnectionState.Disconnected,
+const connection: Reducer<BleConnectionState, Action> = (
+    state = BleConnectionState.Disconnected,
     action,
 ) => {
     switch (action.type) {
-        case BLEConnectActionType.Connect:
-            return BLEConnectionState.Connecting;
-        case BLEConnectActionType.DidConnect:
-            return BLEConnectionState.Connected;
-        case BLEConnectActionType.Disconnect:
-            return BLEConnectionState.Disconnecting;
-        case BLEConnectActionType.DidDisconnect:
-            return BLEConnectionState.Disconnected;
+        case BleDeviceActionType.Connect:
+            return BleConnectionState.Connecting;
+        case BleDeviceActionType.DidConnect:
+            return BleConnectionState.Connected;
+        case BleDeviceActionType.Disconnect:
+            return BleConnectionState.Disconnecting;
+        case BleDeviceActionType.DidFailToConnect:
+        case BleDeviceActionType.DidDisconnect:
+            return BleConnectionState.Disconnected;
         default:
             return state;
     }
 };
 
-export interface BLEState {
-    readonly connection: BLEConnectionState;
+export interface BleState {
+    readonly connection: BleConnectionState;
 }
 
 export default combineReducers({ connection });

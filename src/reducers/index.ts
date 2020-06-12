@@ -2,7 +2,7 @@
 // Copyright (c) 2020 The Pybricks Authors
 
 import { combineReducers } from 'redux';
-import ble, { BLEState } from './ble';
+import ble, { BleState } from './ble';
 import bootloader, { BootloaderState } from './bootloader';
 import editor, { EditorState } from './editor';
 import hub, { HubState } from './hub';
@@ -15,7 +15,7 @@ import terminal, { TerminalState } from './terminal';
  */
 export interface RootState {
     readonly bootloader: BootloaderState;
-    readonly ble: BLEState;
+    readonly ble: BleState;
     readonly editor: EditorState;
     readonly hub: HubState;
     readonly notification: NotificationState;

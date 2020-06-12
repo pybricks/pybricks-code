@@ -1,9 +1,11 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020 The Pybricks Authors
 
+import { PrimitiveReplacementDictionary } from '@shopify/react-i18n/dist/src/types';
 import { Reducer } from 'react';
 import { combineReducers } from 'redux';
 import { Action } from '../actions';
+import { BleDeviceActionType, BleDeviceFailToConnectReasonType } from '../actions/ble';
 import { EditorActionType, reloadProgram } from '../actions/editor';
 import {
     BootloaderConnectionActionType,
@@ -17,6 +19,7 @@ import { createCountFunc } from '../utils/iter';
 export enum MessageId {
     BleCannotWriteWithoutResponse = 'ble.cannotWriteWithoutResponse',
     BleConnectFailed = 'ble.connectFailed',
+    BleGattPermission = 'ble.gattPermission',
     BleGattServiceNotFound = 'ble.gattServiceNotFound',
     BleNoWebBluetooth = 'ble.noWebBluetooth',
     ProgramChanged = 'editor.programChanged',
@@ -53,6 +56,7 @@ export interface Notification {
     readonly level: Level;
     readonly message?: string;
     readonly messageId?: MessageId;
+    readonly replacements?: PrimitiveReplacementDictionary;
     readonly helpUrl?: string;
     readonly action?: MessageAction;
 }
@@ -65,20 +69,48 @@ function append(
     state: NotificationList,
     level: Level,
     messageId: MessageId,
+    replacements?: PrimitiveReplacementDictionary,
     helpUrl?: string,
     action?: MessageAction,
 ): NotificationList {
-    return [...state, { id: nextId(), level, messageId, helpUrl, action }];
+    return [
+        ...state,
+        { id: nextId(), level, messageId, replacements, helpUrl, action },
+    ];
 }
 
 const list: Reducer<NotificationList, Action> = (state = [], action) => {
     switch (action.type) {
+        case BleDeviceActionType.DidFailToConnect:
+            switch (action.reason) {
+                case BleDeviceFailToConnectReasonType.NoGatt:
+                    return append(state, Level.Error, MessageId.BleGattPermission);
+                case BleDeviceFailToConnectReasonType.NoService:
+                    return append(
+                        state,
+                        Level.Error,
+                        MessageId.BleGattServiceNotFound,
+                        { serviceName: 'Pybricks', hubName: 'Pybricks Hub' },
+                    );
+                case BleDeviceFailToConnectReasonType.NoWebBluetooth:
+                    return append(
+                        state,
+                        Level.Error,
+                        MessageId.BleNoWebBluetooth,
+                        undefined,
+                        'https://github.com/WebBluetoothCG/web-bluetooth/blob/master/implementation-status.md',
+                    );
+                case BleDeviceFailToConnectReasonType.Unknown:
+                    return append(state, Level.Error, MessageId.BleConnectFailed);
+            }
+            return state;
         case BootloaderConnectionActionType.DidConnect:
             if (!action.canWriteWithoutResponse) {
                 return append(
                     state,
                     Level.Warning,
                     MessageId.BleCannotWriteWithoutResponse,
+                    undefined,
                     'https://github.com/WebBluetoothCG/web-bluetooth/blob/master/implementation-status.md',
                 );
             }
@@ -86,12 +118,18 @@ const list: Reducer<NotificationList, Action> = (state = [], action) => {
         case BootloaderConnectionActionType.DidFailToConnect:
             switch (action.reason) {
                 case BootloaderConnectionFailureReason.GattServiceNotFound:
-                    return append(state, Level.Error, MessageId.BleGattServiceNotFound);
+                    return append(
+                        state,
+                        Level.Error,
+                        MessageId.BleGattServiceNotFound,
+                        { serviceName: 'LEGO Bootloader', hubName: 'LEGO Bootloader' },
+                    );
                 case BootloaderConnectionFailureReason.NoWebBluetooth:
                     return append(
                         state,
                         Level.Error,
                         MessageId.BleNoWebBluetooth,
+                        undefined,
                         'https://github.com/WebBluetoothCG/web-bluetooth/blob/master/implementation-status.md',
                     );
                 case BootloaderConnectionFailureReason.Unknown:
@@ -103,10 +141,17 @@ const list: Reducer<NotificationList, Action> = (state = [], action) => {
                 // don't show message again if it is already shown
                 return state;
             }
-            return append(state, Level.Info, MessageId.ProgramChanged, undefined, {
-                titleId: MessageId.YesReloadProgram,
-                action: reloadProgram(),
-            });
+            return append(
+                state,
+                Level.Info,
+                MessageId.ProgramChanged,
+                undefined,
+                undefined,
+                {
+                    titleId: MessageId.YesReloadProgram,
+                    action: reloadProgram(),
+                },
+            );
         case MpyActionType.DidFailToCompile:
             return [
                 ...state,
@@ -129,6 +174,7 @@ const list: Reducer<NotificationList, Action> = (state = [], action) => {
                 state,
                 Level.Info,
                 MessageId.ServiceWorkerUpdate,
+                undefined,
                 'https://bit.ly/CRA-PWA',
             );
         case ServiceWorkerActionType.Success:

@@ -3,6 +3,7 @@
 
 import { IconName, Intent, Toast } from '@blueprintjs/core';
 import { WithI18nProps, withI18n } from '@shopify/react-i18n';
+import { PrimitiveReplacementDictionary } from '@shopify/react-i18n/dist/src/types';
 import React from 'react';
 import { connect } from 'react-redux';
 import { Action, Dispatch } from '../actions';
@@ -20,6 +21,7 @@ interface OwnProps {
     level: NotificationLevel;
     message?: string;
     messageId?: string;
+    replacements?: PrimitiveReplacementDictionary;
     helpUrl?: string;
     action?: MessageAction;
 }
@@ -63,6 +65,7 @@ class Notification extends React.Component<NotificationProps> {
             messageId,
             onAction,
             onClose,
+            replacements,
         } = this.props;
         return (
             <Toast
@@ -74,7 +77,7 @@ class Notification extends React.Component<NotificationProps> {
                     <div>
                         <p>
                             {messageId
-                                ? i18n.translate(messageId)
+                                ? i18n.translate(messageId, replacements)
                                 : message || 'missing message!'}
                         </p>
                         {helpUrl && (

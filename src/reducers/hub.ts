@@ -3,7 +3,7 @@
 
 import { Reducer, combineReducers } from 'redux';
 import { Action } from '../actions';
-import { BLEConnectActionType } from '../actions/ble';
+import { BleDeviceActionType } from '../actions/ble';
 import { HubMessageActionType, HubRuntimeStatusType } from '../actions/hub';
 
 /**
@@ -45,9 +45,9 @@ const runtime: Reducer<HubRuntimeState, Action> = (
     action,
 ) => {
     switch (action.type) {
-        case BLEConnectActionType.DidDisconnect:
+        case BleDeviceActionType.DidDisconnect:
             return HubRuntimeState.Disconnected;
-        case BLEConnectActionType.DidConnect:
+        case BleDeviceActionType.DidConnect:
             return HubRuntimeState.Unknown;
         case HubMessageActionType.RuntimeStatus:
             switch (action.newStatus) {
