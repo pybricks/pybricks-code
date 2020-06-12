@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020 The Pybricks Authors
 
-import React, { EffectCallback, useEffect, useState } from 'react';
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import SplitterLayout from 'react-splitter-layout';
+import { RootState } from '../reducers';
 import Editor from './Editor';
 import StatusBar from './StatusBar';
 import Terminal from './Terminal';
@@ -10,28 +12,8 @@ import Toolbar from './Toolbar';
 
 import 'react-splitter-layout/lib/index.css';
 
-function useShowDocs(): boolean {
-    function getShowDocs(): boolean {
-        return window.innerWidth >= 1024;
-    }
-
-    const [showDocs, setShowDocs] = useState(getShowDocs);
-
-    useEffect((): ReturnType<EffectCallback> => {
-        function handleResize(): void {
-            setShowDocs(getShowDocs());
-        }
-
-        window.addEventListener('resize', handleResize);
-
-        return (): void => window.removeEventListener('resize', handleResize);
-    }, []); // Empty array ensures that effect is only run on mount and unmount
-
-    return showDocs;
-}
-
 function App(): JSX.Element {
-    const showDocs = useShowDocs();
+    const showDocs = useSelector((s: RootState): boolean => s.app.showDocs);
     const [dragging, setDragging] = useState(false);
 
     return (

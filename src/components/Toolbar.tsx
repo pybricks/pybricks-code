@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020 The Pybricks Authors
 
-import { ButtonGroup, Navbar } from '@blueprintjs/core';
+import { Alignment, ButtonGroup, Navbar } from '@blueprintjs/core';
 import React from 'react';
 import BluetoothButton from './BluetoothButton';
+import DocsButton from './DocsButton';
 import FlashButton from './FlashButton';
 import OpenButton from './OpenButton';
 import ReplButton from './ReplButton';
@@ -34,6 +35,11 @@ class Toolbar extends React.Component {
                     <ButtonGroup>
                         <ReplButton id="repl" />
                         <FlashButton id="flash" />
+                    </ButtonGroup>
+                </Navbar.Group>
+                <Navbar.Group align={Alignment.RIGHT}>
+                    <ButtonGroup>
+                        <DocsButton id="docs" />
                     </ButtonGroup>
                 </Navbar.Group>
             </Navbar>
