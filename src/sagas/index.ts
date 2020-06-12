@@ -7,7 +7,7 @@ import app from './app';
 import bleUart from './ble-uart';
 import editor from './editor';
 import errorLog from './error-log';
-import flashFirmware from './flash-firmare';
+import flashFirmware from './flash-firmware';
 import hub from './hub';
 import bootloader from './lwp3-bootloader';
 import mpy from './mpy';
