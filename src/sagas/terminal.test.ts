@@ -3,6 +3,7 @@
 
 import { AsyncSaga, delay } from '../../test';
 
+import { startup } from '../actions/app';
 import {
     BleUartActionType,
     BleUartWriteAction,
@@ -30,9 +31,6 @@ describe('Data receiver filters out hub status', () => {
     test('normal message - no status', async () => {
         const saga = new AsyncSaga(terminal);
 
-        const dataSourceAction = await saga.take();
-        expect(dataSourceAction.type).toBe(TerminalActionType.SetDataSource);
-
         // sending ASCII space character
         saga.setState({ hub: { runtime: HubRuntimeState.Unknown } });
         saga.put(notify(new DataView(new Uint8Array([0x20]).buffer)));
@@ -47,9 +45,6 @@ describe('Data receiver filters out hub status', () => {
     test('checksum message', async () => {
         const saga = new AsyncSaga(terminal);
 
-        const dataSourceAction = await saga.take();
-        expect(dataSourceAction.type).toBe(TerminalActionType.SetDataSource);
-
         saga.setState({ hub: { runtime: HubRuntimeState.Loading } });
         saga.put(notify(new DataView(new Uint8Array([0xaa]).buffer)));
 
@@ -62,9 +57,6 @@ describe('Data receiver filters out hub status', () => {
 
     test('idle message', async () => {
         const saga = new AsyncSaga(terminal);
-
-        const dataSourceAction = await saga.take();
-        expect(dataSourceAction.type).toBe(TerminalActionType.SetDataSource);
 
         // '>>>> IDLE'
         saga.setState({ hub: { runtime: HubRuntimeState.Unknown } });
@@ -97,9 +89,6 @@ describe('Data receiver filters out hub status', () => {
 
     test('idle message with extra text', async () => {
         const saga = new AsyncSaga(terminal);
-
-        const dataSourceAction = await saga.take();
-        expect(dataSourceAction.type).toBe(TerminalActionType.SetDataSource);
 
         // '0>>>> IDLE1'
         saga.setState({ hub: { runtime: HubRuntimeState.Unknown } });
@@ -145,9 +134,6 @@ describe('Data receiver filters out hub status', () => {
     test('error message', async () => {
         const saga = new AsyncSaga(terminal);
 
-        const dataSourceAction = await saga.take();
-        expect(dataSourceAction.type).toBe(TerminalActionType.SetDataSource);
-
         // '>>>> ERROR'
         saga.setState({ hub: { runtime: HubRuntimeState.Unknown } });
         saga.put(
@@ -180,9 +166,6 @@ describe('Data receiver filters out hub status', () => {
 
     test('error message with extra text', async () => {
         const saga = new AsyncSaga(terminal);
-
-        const dataSourceAction = await saga.take();
-        expect(dataSourceAction.type).toBe(TerminalActionType.SetDataSource);
 
         // '0>>>> ERROR1'
         saga.setState({ hub: { runtime: HubRuntimeState.Unknown } });
@@ -229,9 +212,6 @@ describe('Data receiver filters out hub status', () => {
     test('running message', async () => {
         const saga = new AsyncSaga(terminal);
 
-        const dataSourceAction = await saga.take();
-        expect(dataSourceAction.type).toBe(TerminalActionType.SetDataSource);
-
         // '>>>> ERROR'
         saga.setState({ hub: { runtime: HubRuntimeState.Unknown } });
         saga.put(
@@ -266,9 +246,6 @@ describe('Data receiver filters out hub status', () => {
 
     test('running message with extra text', async () => {
         const saga = new AsyncSaga(terminal);
-
-        const dataSourceAction = await saga.take();
-        expect(dataSourceAction.type).toBe(TerminalActionType.SetDataSource);
 
         // '0>>>> RUNNING1'
         saga.setState({ hub: { runtime: HubRuntimeState.Unknown } });
@@ -318,6 +295,7 @@ describe('Data receiver filters out hub status', () => {
 test('Terminal data source responds to send data actions', async () => {
     const saga = new AsyncSaga(terminal);
 
+    saga.put(startup());
     const dataSourceAction = await saga.take();
     expect(dataSourceAction.type).toBe(TerminalActionType.SetDataSource);
 
@@ -344,10 +322,6 @@ describe('Terminal data source responds to receive data actions', () => {
     test('basic function works', async () => {
         const saga = new AsyncSaga(terminal);
 
-        // set data source is always first action so we have to take it
-        const dataSourceAction = await saga.take();
-        expect(dataSourceAction.type).toBe(TerminalActionType.SetDataSource);
-
         saga.put(receiveData('test1234'));
 
         const action = await saga.take();
@@ -359,10 +333,6 @@ describe('Terminal data source responds to receive data actions', () => {
 
     test('messages are queued until previous has completed', async () => {
         const saga = new AsyncSaga(terminal);
-
-        // set data source is always first action so we have to take it
-        const dataSourceAction = await saga.take();
-        expect(dataSourceAction.type).toBe(TerminalActionType.SetDataSource);
 
         saga.put(receiveData('test1234'));
         await delay(50); // without delay, messages are combined
@@ -391,10 +361,6 @@ describe('Terminal data source responds to receive data actions', () => {
 
     test('messages are queued until previous has failed', async () => {
         const saga = new AsyncSaga(terminal);
-
-        // set data source is always first action so we have to take it
-        const dataSourceAction = await saga.take();
-        expect(dataSourceAction.type).toBe(TerminalActionType.SetDataSource);
 
         saga.put(receiveData('test1234'));
         await delay(50); // without delay, messages are combined
@@ -426,10 +392,6 @@ describe('Terminal data source responds to receive data actions', () => {
     test('small messages are combined', async () => {
         const saga = new AsyncSaga(terminal);
 
-        // set data source is always first action so we have to take it
-        const dataSourceAction = await saga.take();
-        expect(dataSourceAction.type).toBe(TerminalActionType.SetDataSource);
-
         saga.put(receiveData('test1234'));
         saga.put(receiveData('test1234'));
 
@@ -444,10 +406,6 @@ describe('Terminal data source responds to receive data actions', () => {
 
     test('long messages are split', async () => {
         const saga = new AsyncSaga(terminal);
-
-        // set data source is always first action so we have to take it
-        const dataSourceAction = await saga.take();
-        expect(dataSourceAction.type).toBe(TerminalActionType.SetDataSource);
 
         saga.put(receiveData('012345678901234567890123456789'));
 

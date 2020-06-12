@@ -14,6 +14,7 @@ import {
 } from 'redux-saga/effects';
 import PushStream from 'zen-push';
 import { Action } from '../actions';
+import { AppActionType, AppStartupAction } from '../actions/app';
 import {
     BleUartActionType,
     BleUartNotifyAction,
@@ -34,6 +35,10 @@ import { HubRuntimeState } from '../reducers/hub';
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
 const terminalDataSource = new PushStream<string>();
+
+function* startup(_action: AppStartupAction): Generator {
+    yield put(setDataSource(terminalDataSource.observable));
+}
 
 function* handleMatch(
     match: RegExpMatchArray | null,
@@ -141,8 +146,8 @@ function sendTerminalData(action: TerminalDataReceiveDataAction): void {
 }
 
 export default function* (): Generator {
+    yield takeEvery(AppActionType.Startup, startup);
     yield takeEvery(BleUartActionType.Notify, receiveUartData);
     yield fork(receiveTerminalData);
     yield takeEvery(TerminalActionType.SendData, sendTerminalData);
-    yield put(setDataSource(terminalDataSource.observable));
 }
