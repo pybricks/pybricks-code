@@ -4,7 +4,16 @@
 import cPlusHubZip from '@pybricks/firmware/build/cplushub.zip';
 import moveHubZip from '@pybricks/firmware/build/movehub.zip';
 import JSZip from 'jszip';
-import { Effect, call, delay, put, race, take, takeEvery } from 'redux-saga/effects';
+import {
+    Effect,
+    all,
+    call,
+    delay,
+    put,
+    race,
+    take,
+    takeEvery,
+} from 'redux-saga/effects';
 import { Action } from '../actions';
 import {
     FlashFirmwareActionType,
@@ -194,10 +203,10 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
     }
 
     const infoAction = (yield put(infoRequest())) as BootloaderInfoRequestAction;
-    yield waitForDidSend(infoAction.id);
-    const info = (yield waitForResponse(
-        BootloaderResponseActionType.Info,
-    )) as WaitResponse<BootloaderInfoResponseAction>;
+    const [, info] = (yield all([
+        waitForDidSend(infoAction.id),
+        waitForResponse(BootloaderResponseActionType.Info),
+    ])) as [BootloaderDidRequestAction, WaitResponse<BootloaderInfoResponseAction>];
     if (!info[0]) {
         throw Error(`failed to get info: ${info}`);
     }
@@ -255,11 +264,10 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
     }
 
     const eraseAction = (yield put(eraseRequest())) as BootloaderEraseRequestAction;
-    yield waitForDidSend(eraseAction.id);
-    const erase = (yield waitForResponse(
-        BootloaderResponseActionType.Erase,
-        5000,
-    )) as WaitResponse<BootloaderEraseResponseAction>;
+    const [, erase] = (yield all([
+        waitForDidSend(eraseAction.id),
+        waitForResponse(BootloaderResponseActionType.Erase, 5000),
+    ])) as [BootloaderDidRequestAction, WaitResponse<BootloaderEraseResponseAction>];
     if (!erase[0] || erase[0].result) {
         // TODO: proper error handling
         throw Error(`Failed to erase: ${erase}`);
@@ -268,10 +276,10 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
     const initAction = (yield put(
         initRequest(firmware.length),
     )) as BootloaderInitRequestAction;
-    yield waitForDidSend(initAction.id);
-    const init = (yield waitForResponse(
-        BootloaderResponseActionType.Init,
-    )) as WaitResponse<BootloaderInitResponseAction>;
+    const [, init] = (yield all([
+        waitForDidSend(initAction.id),
+        waitForResponse(BootloaderResponseActionType.Init),
+    ])) as [BootloaderDidRequestAction, WaitResponse<BootloaderInitResponseAction>];
     if (!init[0] || init[0].result) {
         // TODO: proper error handling
         throw Error(`Failed to init: ${init}`);
@@ -295,12 +303,13 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
                 const checksumAction = (yield put(
                     checksumRequest(),
                 )) as BootloaderChecksumRequestAction;
-                yield waitForDidSend(checksumAction.id);
-
-                const checksum = (yield waitForResponse(
-                    BootloaderResponseActionType.Checksum,
-                    5000,
-                )) as WaitResponse<BootloaderChecksumResponseAction>;
+                const [, checksum] = (yield all([
+                    waitForDidSend(checksumAction.id),
+                    waitForResponse(BootloaderResponseActionType.Checksum, 5000),
+                ])) as [
+                    BootloaderDidRequestAction,
+                    WaitResponse<BootloaderChecksumResponseAction>,
+                ];
                 if (!checksum[0]) {
                     // TODO: proper error handling
                     throw Error(`Failed to get checksum: ${checksum}`);
