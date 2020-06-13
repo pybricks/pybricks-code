@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020 The Pybricks Authors
+// File: sagas/lwp3-bootloader-protocol.ts
+// Handles LEGO Wireless Protocol v3 Bootloader protocol.
 
 import { Channel } from 'redux-saga';
 import { actionChannel, fork, put, take, takeEvery } from 'redux-saga/effects';

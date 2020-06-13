@@ -12,18 +12,24 @@ import {
     progress,
 } from '../actions/flash-firmware';
 import {
+    BootloaderChecksumRequestAction,
     BootloaderChecksumResponseAction,
     BootloaderConnectionActionType,
     BootloaderConnectionDidConnectAction,
     BootloaderConnectionDidFailToConnectAction,
     BootloaderDidRequestAction,
     BootloaderDidRequestType,
+    BootloaderDisconnectRequestAction,
+    BootloaderEraseRequestAction,
     BootloaderEraseResponseAction,
     BootloaderErrorResponseAction,
+    BootloaderInfoRequestAction,
     BootloaderInfoResponseAction,
+    BootloaderInitRequestAction,
     BootloaderInitResponseAction,
     BootloaderProgramRequestAction,
     BootloaderProgramResponseAction,
+    BootloaderRebootRequestAction,
     BootloaderResponseAction,
     BootloaderResponseActionType,
     checksumRequest,
@@ -59,13 +65,25 @@ type WaitResponse<T extends BootloaderResponseAction> = [
     boolean,
 ];
 
+function* waitForDidSend(id: number): Generator {
+    const didRequest = (yield take(
+        (a: Action) =>
+            a.type === BootloaderDidRequestType &&
+            (a as BootloaderDidRequestAction).id === id,
+    )) as BootloaderDidRequestAction;
+    if (didRequest.err) {
+        console.error(didRequest.err);
+    }
+    return didRequest;
+}
+
 /**
  * Waits for a response action, an error response or timeout, whichever comes
  * first.
  * @param type The action type to wait for.
  * @param timeout The timeout in milliseconds.
  */
-function wait(type: BootloaderResponseActionType, timeout = 500): Effect {
+function waitForResponse(type: BootloaderResponseActionType, timeout = 500): Effect {
     return race([take(type), take(BootloaderResponseActionType.Error), delay(timeout)]);
 }
 
@@ -175,10 +193,11 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
         return;
     }
 
-    yield put(infoRequest());
-    const info = (yield wait(BootloaderResponseActionType.Info)) as WaitResponse<
-        BootloaderInfoResponseAction
-    >;
+    const infoAction = (yield put(infoRequest())) as BootloaderInfoRequestAction;
+    yield waitForDidSend(infoAction.id);
+    const info = (yield waitForResponse(
+        BootloaderResponseActionType.Info,
+    )) as WaitResponse<BootloaderInfoResponseAction>;
     if (!info[0]) {
         throw Error(`failed to get info: ${info}`);
     }
@@ -203,7 +222,10 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
         const response = (yield call(() => fetch(firmwarePath))) as Response;
         if (!response.ok) {
             yield put(notification.add('error', 'Failed to fetch firmware.'));
-            yield put(disconnectRequest());
+            const disconnectAction = (yield put(
+                disconnectRequest(),
+            )) as BootloaderDisconnectRequestAction;
+            yield waitForDidSend(disconnectAction.id);
             return;
         }
 
@@ -225,12 +247,16 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
                 'City Hub is not compatible with this web browser.',
             ),
         );
-        yield put(disconnectRequest());
+        const disconnectAction = (yield put(
+            disconnectRequest(),
+        )) as BootloaderDisconnectRequestAction;
+        yield waitForDidSend(disconnectAction.id);
         return;
     }
 
-    yield put(eraseRequest());
-    const erase = (yield wait(
+    const eraseAction = (yield put(eraseRequest())) as BootloaderEraseRequestAction;
+    yield waitForDidSend(eraseAction.id);
+    const erase = (yield waitForResponse(
         BootloaderResponseActionType.Erase,
         5000,
     )) as WaitResponse<BootloaderEraseResponseAction>;
@@ -239,10 +265,13 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
         throw Error(`Failed to erase: ${erase}`);
     }
 
-    yield put(initRequest(firmware.length));
-    const init = (yield wait(BootloaderResponseActionType.Init)) as WaitResponse<
-        BootloaderInitResponseAction
-    >;
+    const initAction = (yield put(
+        initRequest(firmware.length),
+    )) as BootloaderInitRequestAction;
+    yield waitForDidSend(initAction.id);
+    const init = (yield waitForResponse(
+        BootloaderResponseActionType.Init,
+    )) as WaitResponse<BootloaderInitResponseAction>;
     if (!init[0] || init[0].result) {
         // TODO: proper error handling
         throw Error(`Failed to init: ${init}`);
@@ -252,25 +281,23 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
 
     for (let offset = 0; offset < firmware.length; offset += MaxProgramFlashSize) {
         const payload = firmware.slice(offset, offset + MaxProgramFlashSize);
-        const req = (yield put(
+        const programAction = (yield put(
             programRequest(info[0].startAddress + offset, payload.buffer),
         )) as BootloaderProgramRequestAction;
-
-        // TODO: check for error
-        yield take(
-            (a: Action) =>
-                a.type === BootloaderDidRequestType &&
-                (a as BootloaderDidRequestAction).id === req.id,
-        );
+        yield waitForDidSend(programAction.id);
 
         yield put(progress(offset, firmware.length));
 
         if (connectResult.canWriteWithoutResponse) {
-            // request checksum every 8K to prevent buffer overrun on the hub
-            // because of sending too much data at once
-            if (++count % 585 === 0) {
-                yield put(checksumRequest());
-                const checksum = (yield wait(
+            // request checksum every 25 packets to prevent buffer overrun on
+            // the hub because of sending too much data at once
+            if (++count % 25 === 0) {
+                const checksumAction = (yield put(
+                    checksumRequest(),
+                )) as BootloaderChecksumRequestAction;
+                yield waitForDidSend(checksumAction.id);
+
+                const checksum = (yield waitForResponse(
                     BootloaderResponseActionType.Checksum,
                     5000,
                 )) as WaitResponse<BootloaderChecksumResponseAction>;
@@ -282,7 +309,7 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
         }
     }
 
-    const flash = (yield wait(
+    const flash = (yield waitForResponse(
         BootloaderResponseActionType.Program,
         5000,
     )) as WaitResponse<BootloaderProgramResponseAction>;
@@ -297,7 +324,8 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
     yield put(progress(firmware.length, firmware.length));
 
     // this will cause the remote device to disconnect and reboot
-    yield put(rebootRequest());
+    const rebootAction = (yield put(rebootRequest())) as BootloaderRebootRequestAction;
+    yield waitForDidSend(rebootAction.id);
 }
 
 export default function* (): Generator {
