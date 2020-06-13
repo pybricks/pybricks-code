@@ -8,7 +8,7 @@ import { RootState } from '../reducers';
 import { BleConnectionState } from '../reducers/ble';
 import { BootloaderConnectionState } from '../reducers/bootloader';
 import ActionButton, { ActionButtonProps } from './ActionButton';
-import { TooltipId } from './button';
+import { TooltipId } from './button-i18n';
 import btConnectedIcon from './images/bt-connected.svg';
 import btDisconnectedIcon from './images/bt-disconnected.svg';
 

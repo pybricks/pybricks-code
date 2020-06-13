@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020 The Pybricks Authors
+// File: components/button-i18n.ts
+// Button translation keys.
 
 export enum TooltipId {
     Open = 'open.tooltip',

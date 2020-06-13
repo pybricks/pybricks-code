@@ -7,7 +7,7 @@ import { stop } from '../actions/hub';
 import { RootState } from '../reducers';
 import { HubRuntimeState } from '../reducers/hub';
 import ActionButton, { ActionButtonProps } from './ActionButton';
-import { TooltipId } from './button';
+import { TooltipId } from './button-i18n';
 import stopIcon from './images/stop.svg';
 
 type StateProps = Pick<ActionButtonProps, 'enabled'>;

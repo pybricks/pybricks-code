@@ -6,7 +6,7 @@ import { Dispatch } from '../actions';
 import * as editor from '../actions/editor';
 import { RootState } from '../reducers';
 import ActionButton, { ActionButtonProps } from './ActionButton';
-import { TooltipId } from './button';
+import { TooltipId } from './button-i18n';
 import downloadIcon from './images/download.svg';
 
 type StateProps = Pick<ActionButtonProps, 'enabled'>;

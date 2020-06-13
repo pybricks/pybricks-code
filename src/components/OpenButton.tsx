@@ -7,7 +7,7 @@ import * as editor from '../actions/editor';
 import * as notification from '../actions/notification';
 import { RootState } from '../reducers';
 import OpenFileButton, { OpenFileButtonProps } from './OpenFileButton';
-import { TooltipId } from './button';
+import { TooltipId } from './button-i18n';
 import openIcon from './images/open.svg';
 
 type StateProps = Pick<OpenFileButtonProps, 'enabled'>;

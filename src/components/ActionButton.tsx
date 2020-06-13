@@ -4,8 +4,8 @@
 import { Button, Intent, Position, Tooltip } from '@blueprintjs/core';
 import { WithI18nProps, withI18n } from '@shopify/react-i18n';
 import React from 'react';
-import { TooltipId } from './button';
-import en from './button.en.json';
+import { TooltipId } from './button-i18n';
+import en from './button-i18n.en.json';
 
 export interface ActionButtonProps {
     /** A unique id for each instance. */
