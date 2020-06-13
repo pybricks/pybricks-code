@@ -14,19 +14,8 @@ import {
 import { MpyActionType } from '../actions/mpy';
 import { NotificationActionType } from '../actions/notification';
 import { ServiceWorkerActionType } from '../actions/service-worker';
+import { MessageId } from '../components/notification-i18n';
 import { createCountFunc } from '../utils/iter';
-
-export enum MessageId {
-    BleCannotWriteWithoutResponse = 'ble.cannotWriteWithoutResponse',
-    BleConnectFailed = 'ble.connectFailed',
-    BleGattPermission = 'ble.gattPermission',
-    BleGattServiceNotFound = 'ble.gattServiceNotFound',
-    BleNoWebBluetooth = 'ble.noWebBluetooth',
-    ProgramChanged = 'editor.programChanged',
-    ServiceWorkerSuccess = 'serviceWorker.success',
-    ServiceWorkerUpdate = 'serviceWorker.update',
-    YesReloadProgram = 'editor.yesReloadProgram',
-}
 
 /**
  * Severity level of notification.

@@ -8,7 +8,7 @@ import * as notification from '../actions/notification';
 import { RootState } from '../reducers';
 import { BootloaderConnectionState } from '../reducers/bootloader';
 import OpenFileButton, { OpenFileButtonProps } from './OpenFileButton';
-import { TooltipId } from './button';
+import { TooltipId } from './button-i18n';
 import firmwareIcon from './images/firmware.svg';
 
 type StateProps = Pick<OpenFileButtonProps, 'enabled'>;

@@ -13,8 +13,8 @@ import { FitAddon } from 'xterm-addon-fit';
 import { Dispatch } from '../actions';
 import { receiveData } from '../actions/terminal';
 import { RootState } from '../reducers';
-import { TerminalStringId } from './terminal';
-import en from './terminal.en.json';
+import { TerminalStringId } from './terminal-i18n';
+import en from './terminal-i18n.en.json';
 
 import 'xterm/css/xterm.css';
 

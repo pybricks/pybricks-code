@@ -12,8 +12,8 @@ import { IAceEditor } from 'react-ace/lib/types';
 import { connect } from 'react-redux';
 import { Action, Dispatch } from '../actions';
 import { setEditSession, storageChanged } from '../actions/editor';
-import { EditorStringId } from './editor';
-import en from './editor.en.json';
+import { EditorStringId } from './editor-i18n';
+import en from './editor-i18n.en.json';
 
 import 'ace-builds/src-noconflict/mode-python';
 import 'ace-builds/src-noconflict/theme-xcode';

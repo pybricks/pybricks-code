@@ -7,7 +7,7 @@ import { repl } from '../actions/hub';
 import { RootState } from '../reducers';
 import { HubRuntimeState } from '../reducers/hub';
 import ActionButton, { ActionButtonProps } from './ActionButton';
-import { TooltipId } from './button';
+import { TooltipId } from './button-i18n';
 import replIcon from './images/repl.svg';
 
 type StateProps = Pick<ActionButtonProps, 'enabled'>;

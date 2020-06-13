@@ -9,7 +9,8 @@ import { connect } from 'react-redux';
 import { Action, Dispatch } from '../actions';
 import { NotificationLevel, remove } from '../actions/notification';
 import { Level, MessageAction } from '../reducers/notification';
-import en from './notification.en.json';
+import { MessageId } from './notification-i18n';
+import en from './notification-i18n.en.json';
 
 interface DispatchProps {
     onAction: (action: Action) => void;
@@ -20,7 +21,7 @@ interface OwnProps {
     id: number;
     level: NotificationLevel;
     message?: string;
-    messageId?: string;
+    messageId?: MessageId;
     replacements?: PrimitiveReplacementDictionary;
     helpUrl?: string;
     action?: MessageAction;

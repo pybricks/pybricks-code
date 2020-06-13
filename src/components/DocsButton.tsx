@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { Action, Dispatch } from '../actions';
 import { toggleDocs } from '../actions/app';
 import ActionButton, { ActionButtonProps } from './ActionButton';
-import { TooltipId } from './button';
+import { TooltipId } from './button-i18n';
 import docsIcon from './images/run.svg'; // FIXME: need proper icon
 
 type StateProps = undefined;

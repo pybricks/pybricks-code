@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020 The Pybricks Authors
+// File: components/editor-i18n.ts
+// Editor translation keys.
 
 export enum EditorStringId {
     Placeholder = 'editor.placeholder',
