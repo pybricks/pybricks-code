@@ -9,7 +9,8 @@ import editor from './editor';
 import errorLog from './error-log';
 import flashFirmware from './flash-firmware';
 import hub from './hub';
-import bootloader from './lwp3-bootloader';
+import lwp3BootloaderBle from './lwp3-bootloader-ble';
+import lwp3BootloaderProtocol from './lwp3-bootloader-protocol';
 import mpy from './mpy';
 import terminal from './terminal';
 
@@ -18,7 +19,8 @@ export default function* (): Generator {
     yield all([
         app(),
         bleUart(),
-        bootloader(),
+        lwp3BootloaderBle(),
+        lwp3BootloaderProtocol(),
         editor(),
         errorLog(),
         flashFirmware(),

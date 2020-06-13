@@ -16,7 +16,6 @@ import NotificationStack from './components/NotificationStack';
 import rootReducer from './reducers';
 import rootSaga from './sagas';
 import * as serviceWorker from './serviceWorker';
-import serviceMiddleware from './services';
 
 const sagaMiddleware = createSagaMiddleware();
 // TODO: add runtime option or filter - logger affects firmware flash performance
@@ -29,7 +28,7 @@ const i18n = new I18nManager({
 
 const store = createStore(
     rootReducer,
-    applyMiddleware(sagaMiddleware, serviceMiddleware, loggerMiddleware),
+    applyMiddleware(sagaMiddleware, loggerMiddleware),
 );
 
 sagaMiddleware.run(rootSaga);

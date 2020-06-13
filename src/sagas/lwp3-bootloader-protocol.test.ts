@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020 The Pybricks Authors
+// File: sagas/lwp3-bootloader-protocol.test.ts
 
 import { AsyncSaga } from '../../test';
 import {
@@ -33,7 +34,7 @@ import {
     Result,
 } from '../protocols/lwp3-bootloader';
 import { createCountFunc } from '../utils/iter';
-import bootloader from './lwp3-bootloader';
+import bootloader from './lwp3-bootloader-protocol';
 
 describe('message encoder', () => {
     test.each([

@@ -120,6 +120,8 @@ function* connect(_action: BleDeviceConnectAction): Generator {
         server.disconnect();
         yield takeMaybe(disconnectChannel);
         if (err instanceof DOMException && err.code === DOMException.NOT_FOUND_ERR) {
+            // Possibly/probably caused by Chrome BlueZ back-end bug
+            // https://chromium-review.googlesource.com/c/chromium/src/+/2214098
             yield put(didFailToConnect({ reason: Reason.NoService }));
         } else {
             yield put(didFailToConnect({ reason: Reason.Unknown, err }));
