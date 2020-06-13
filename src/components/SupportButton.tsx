@@ -4,7 +4,7 @@
 import { connect } from 'react-redux';
 import LinkButton, { LinkButtonProps } from './LinkButton';
 import { TooltipId } from './button-i18n';
-import supportIcon from './images/stop.svg'; // FIXME: replace with correct icon
+import supportIcon from './images/support.svg';
 
 type StateProps = undefined;
 type DispatchProps = undefined;
