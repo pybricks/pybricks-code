@@ -17,6 +17,11 @@ jobs:
     - run: yarn install
       env:
         NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - run: yarn coverage
+    - name: Coveralls
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
     - name: Build
       if: ${{ success() }}
       run: yarn build
