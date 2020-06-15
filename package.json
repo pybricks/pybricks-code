@@ -22,7 +22,7 @@
         "@types/zen-push": "^0.1.1",
         "ace-builds": "^1.4.11",
         "file-saver": "^2.0.2",
-        "jszip": "^3.4.0",
+        "jszip": "^3.5.0",
         "node-sass": "^4.14.1",
         "react": "^16.13.1",
         "react-ace": "^9.0.0",
