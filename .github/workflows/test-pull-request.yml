@@ -25,5 +25,9 @@ jobs:
         yarn lint
         git diff --exit-code
     - run: yarn test
+    - run: yarn coverage
+    - name: Coveralls
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
     - run: yarn build
-      if: ${{ success() }}
