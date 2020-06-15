@@ -97,3 +97,15 @@ body {
 .terminal-padding {
     padding-left: 10px;
 }
+
+.watermark::after {
+    content: "";
+    background: url("/static/beta.png");
+    opacity: 0.03;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    position: absolute;
+    pointer-events: none
+}
