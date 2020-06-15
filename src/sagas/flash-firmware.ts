@@ -126,13 +126,28 @@ function* loadFirmware(
     data: ArrayBuffer,
 ): Generator<unknown, { firmware: Uint8Array; deviceId: HubType }> {
     const zip = (yield call(() => JSZip.loadAsync(data))) as JSZip;
+
+    const firmwareBaseFile = zip.file('firmware-base.bin');
+    if (firmwareBaseFile === null) {
+        throw Error('Missing firmware-base.bin');
+    }
     const firmwareBase = (yield call(() =>
-        zip.file('firmware-base.bin').async('uint8array'),
+        firmwareBaseFile.async('uint8array'),
     )) as Uint8Array;
+
+    const metadataFile = zip.file('firmware.metadata.json');
+    if (metadataFile === null) {
+        throw Error('Missing firmware.metadata.json');
+    }
     const metadata = JSON.parse(
-        (yield call(() => zip.file('firmware.metadata.json').async('text'))) as string,
+        (yield call(() => metadataFile.async('text'))) as string,
     ) as FirmwareMetadata;
-    const main = (yield call(() => zip.file('main.py').async('text'))) as string;
+
+    const mainFile = zip.file('main.py');
+    if (mainFile === null) {
+        throw Error('Missing main.py');
+    }
+    const main = (yield call(() => mainFile.async('text'))) as string;
 
     if (metadata['mpy-abi-version'] !== 5) {
         throw Error(
