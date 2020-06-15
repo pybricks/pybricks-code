@@ -9,13 +9,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - uses: actions/setup-node@v1
+      with:
+        node-version: '10.x'
+        registry-url: 'https://npm.pkg.github.com'
     - uses: actions/checkout@v2
-    - name: Install
+    - run: yarn install
       env:
-        TOKEN: ${{ secrets.privateToken }}
-      run: |
-        echo "//npm.pkg.github.com/:_authToken=$TOKEN" >> .npmrc
-        yarn install
+        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Build
       if: ${{ success() }}
       run: yarn build
