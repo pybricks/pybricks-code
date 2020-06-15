@@ -16,6 +16,7 @@ import { EditorStringId } from './editor-i18n';
 import en from './editor-i18n.en.json';
 
 import 'ace-builds/src-noconflict/mode-python';
+import './editor-snippets';
 import 'ace-builds/src-noconflict/theme-xcode';
 import 'ace-builds/src-noconflict/ext-searchbox';
 import 'ace-builds/src-noconflict/ext-keybinding_menu';
@@ -80,6 +81,7 @@ class Editor extends React.Component<EditorProps> {
                         setOptions={{
                             enableBasicAutocompletion: true,
                             enableLiveAutocompletion: true,
+                            enableSnippets: true,
                         }}
                         onLoad={(e): void => {
                             config.loadModule(
