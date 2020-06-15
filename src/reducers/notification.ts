@@ -164,7 +164,7 @@ const list: Reducer<NotificationList, Action> = (state = [], action) => {
                 Level.Info,
                 MessageId.ServiceWorkerUpdate,
                 undefined,
-                'https://bit.ly/CRA-PWA',
+                'https://github.com/pybricks/pybricks-code/issues/102',
             );
         case ServiceWorkerActionType.Success:
             return append(state, Level.Info, MessageId.ServiceWorkerSuccess);
