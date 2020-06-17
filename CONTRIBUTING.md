@@ -39,6 +39,27 @@ You will need [Git][git] to get the source code from GitHub. (Say that 3 times f
 [git]: https://git-scm.com/
 
 
+## Github Packages
+
+We are currently depending on a couple of packages from the Github package
+registry. This requires you to log in first before you can install the packages.
+
+To do this, first you will need to create a new authentication token at
+<https://github.com/settings/tokens>.
+
+- Click the *Generate a new token* button.
+- Select the **repo** and **read:packages** scopes.
+- Click the *Generate token* button.
+- Click the clipboard icon top copy the token to be used below.
+
+Then run the following command and enter your username, authentication token
+and email:
+
+    npm login --registry=https://npm.pkg.github.com
+
+This only needs to be done once.
+
+
 ## Getting The Code
 
 After the tools above have been installed, open a command prompt in the directory
@@ -48,6 +69,8 @@ where you would like to save the source code and run:
     cd pybricks-code
     yarn install
 
+If you see a 401 not authorized error after running `yarn install`, then you
+probably skipped the logging into the Github package registry as described above.
 
 # Software Stack
 
