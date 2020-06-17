@@ -90,7 +90,7 @@ Runs the app in the development mode.
 
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-If you default browser is not compatible (i.e. not chromium), create a file
+If your default browser is not compatible (i.e. not chromium), create a file
 `.env.local` in the root directory with the full path to the browser:
 
     BROWSER=<path-to-chromium>
