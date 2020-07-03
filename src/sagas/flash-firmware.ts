@@ -303,9 +303,14 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
     }
 
     let count = 0;
+    const maxDataSize = MaxProgramFlashSize.get(info[0].hubType);
+    if (maxDataSize === undefined) {
+        // istanbul ignore next: indicates programmer error if reached
+        throw Error('Missing hub type in MaxProgramFlashSize');
+    }
 
-    for (let offset = 0; offset < firmware.length; offset += MaxProgramFlashSize) {
-        const payload = firmware.slice(offset, offset + MaxProgramFlashSize);
+    for (let offset = 0; offset < firmware.length; offset += maxDataSize) {
+        const payload = firmware.slice(offset, offset + maxDataSize);
         const programAction = (yield put(
             programRequest(info[0].startAddress + offset, payload.buffer),
         )) as BootloaderProgramRequestAction;
