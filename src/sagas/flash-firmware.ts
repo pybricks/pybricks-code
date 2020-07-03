@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020 The Pybricks Authors
 
+import cityHubZip from '@pybricks/firmware/build/cityhub.zip';
 import cPlusHubZip from '@pybricks/firmware/build/cplushub.zip';
 import moveHubZip from '@pybricks/firmware/build/movehub.zip';
 import JSZip from 'jszip';
@@ -61,6 +62,7 @@ import { HubType, MaxProgramFlashSize } from '../protocols/lwp3-bootloader';
 import { fmod, sumComplement32 } from '../utils/math';
 
 const firmwareZipMap = new Map<HubType, string>([
+    [HubType.CityHub, cityHubZip],
     [HubType.CPlusHub, cPlusHubZip],
     [HubType.MoveHub, moveHubZip],
 ]);
