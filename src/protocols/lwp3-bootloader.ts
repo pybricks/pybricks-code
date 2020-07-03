@@ -63,8 +63,19 @@ export enum Result {
 
 /**
  * The largest allowable size for the payload of the ProgramFlash command.
+ *
+ * Theoretically, this is MTU - 9. However, City hub and Control+ hub report
+ * MTU of 158 but don't seem to be able to handle receiving that much data.
+ * Anything larger than 32 causes the bootloader to lock up.
  */
-export const MaxProgramFlashSize = 14;
+export const MaxProgramFlashSize: ReadonlyMap<HubType, number> = new Map<
+    HubType,
+    number
+>([
+    [HubType.MoveHub, 14],
+    [HubType.CityHub, 32],
+    [HubType.CPlusHub, 32],
+]);
 
 /**
  * Flash memory protection level.
@@ -111,7 +122,6 @@ export function createProgramFlashRequest(
     payload: ArrayBuffer,
 ): Uint8Array {
     const size = payload.byteLength;
-    assert(size <= MaxProgramFlashSize, 'payload is bigger than MaxProgramFlashSize');
     const msg = new Uint8Array(size + 6);
     const view = new DataView(msg.buffer);
     view.setUint8(0, Command.ProgramFlash);
