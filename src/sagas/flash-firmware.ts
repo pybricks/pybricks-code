@@ -270,7 +270,7 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
         yield put(
             notification.add(
                 'error',
-                'City Hub is not compatible with this web browser.',
+                'City Hub bootloader is not compatible with this web browser.',
             ),
         );
         const disconnectAction = (yield put(
