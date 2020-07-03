@@ -319,9 +319,11 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
         yield put(progress(offset, firmware.length));
 
         if (connectResult.canWriteWithoutResponse) {
-            // request checksum every 25 packets to prevent buffer overrun on
-            // the hub because of sending too much data at once
-            if (++count % 25 === 0) {
+            // Request checksum every 10 packets to prevent buffer overrun on
+            // the hub because of sending too much data at once. The actual
+            // number of packets that can be queued in the Bluetooth chip on
+            // the hub is not known and could vary by device.
+            if (++count % 10 === 0) {
                 const checksumAction = (yield put(
                     checksumRequest(),
                 )) as BootloaderChecksumRequestAction;
