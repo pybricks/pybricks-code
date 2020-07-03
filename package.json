@@ -4,7 +4,7 @@
     "private": true,
     "dependencies": {
         "@blueprintjs/core": "^3.28.1",
-        "@pybricks/firmware": "2.2.0",
+        "@pybricks/firmware": "2.4.0",
         "@pybricks/mpy-cross-v5": "^1.0.0",
         "@shopify/react-i18n": "^5.0.0",
         "@testing-library/jest-dom": "^5.8.0",
