@@ -5,7 +5,7 @@
     "dependencies": {
         "@blueprintjs/core": "^3.28.1",
         "@pybricks/firmware": "2.4.0",
-        "@pybricks/mpy-cross-v5": "^1.0.0",
+        "@pybricks/mpy-cross-v5": "^1.1.0",
         "@shopify/react-i18n": "^5.0.0",
         "@testing-library/jest-dom": "^5.8.0",
         "@testing-library/react": "^10.2.1",
@@ -40,7 +40,7 @@
         "zen-push": "^0.2.1"
     },
     "scripts": {
-        "prepare": "mkdir -p public/static/js && cp node_modules/@pybricks/mpy-cross-v5/build/mpy-cross.wasm public/static/js/",
+        "prepare": "mkdir -p public/static/js && ncp node_modules/@pybricks/mpy-cross-v5/build/mpy-cross.wasm src/sagas/mpy-cross.emcwasm",
         "start": "react-scripts start",
         "build": "react-scripts build",
         "test": "react-scripts test --env=./test/env.js",
@@ -73,6 +73,7 @@
         "eslint-plugin-prettier": "^3.1.2",
         "eslint-plugin-react": "^7.20.0",
         "jest-mock-extended": "^1.0.9",
+        "ncp": "^2.0.0",
         "prettier": "^2.0.4"
     }
 }
