@@ -9,6 +9,7 @@ import {
     didCompile,
     didFailToCompile,
 } from '../actions/mpy';
+import wasm from './mpy-cross.emcwasm';
 
 /**
  * Compiles a script to .mpy and dispatches either didCompile on success or
@@ -17,7 +18,13 @@ import {
  */
 function* compile(action: MpyCompileAction): Generator {
     const result = (yield call(() =>
-        mpyCrossCompile('main.py', action.script, action.options),
+        mpyCrossCompile(
+            'main.py',
+            action.script,
+            action.options,
+            // HACK: testing user agent for jsdom is needed only for getting unit tests to work
+            navigator.userAgent.includes('jsdom') ? undefined : wasm,
+        ),
     )) as CompileResult;
     if (result.status === 0 && result.mpy) {
         yield put(didCompile(result.mpy));
