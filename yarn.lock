@@ -1826,10 +1826,10 @@
   dependencies:
     "@types/jest" "*"
 
-"@types/web-bluetooth@^0.0.6":
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/@types/web-bluetooth/-/web-bluetooth-0.0.6.tgz#71b56427353d3495ac7ba9a4d7a13c8f312f9c1e"
-  integrity sha512-S/Dhk1sMzYZMNNXvG1CHKz1X+HbabMf2l+FkdRStcvvuQVVlMvq0nPd/fQ3skniRKj0LqBPy19in3JN/XsB6Qg==
+"@types/web-bluetooth@^0.0.7":
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/@types/web-bluetooth/-/web-bluetooth-0.0.7.tgz#279886e64afedd195c045db2802f9ddc32a8d4bb"
+  integrity sha512-15hyl2QMvlJDy/FS9ZHBtTNUHf7Iyzhk8hS0mqjnJbXkfJeWksO3WvPKRX4HbHOHmGSIU5arOmSzKLjCIKgDqw==
 
 "@types/yargs-parser@*":
   version "15.0.0"

@@ -18,7 +18,7 @@
         "@types/react-redux": "^7.1.9",
         "@types/react-splitter-layout": "^3.0.0",
         "@types/redux-logger": "^3.0.8",
-        "@types/web-bluetooth": "^0.0.6",
+        "@types/web-bluetooth": "^0.0.7",
         "@types/zen-push": "^0.1.1",
         "ace-builds": "^1.4.11",
         "file-saver": "^2.0.2",
