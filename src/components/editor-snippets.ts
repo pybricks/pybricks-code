@@ -106,13 +106,6 @@ snippet ei
 snippet for
 	for \${1:item} in \${2:items}:
 		\${3:# TODO: write code...}
-# Encodes
-snippet cutf8
-	# -*- coding: utf-8 -*-
-snippet clatin1
-	# -*- coding: latin-1 -*-
-snippet cascii
-	# -*- coding: ascii -*-
 # Lambda
 snippet ld
 	\${1:var} = lambda \${2:vars} : \${3:action}
