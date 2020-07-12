@@ -26,12 +26,12 @@ ace.define('ace/snippets/python', ['require', 'exports', 'module'], function (
 
 	hub = CPlusHub()
 snippet cityhub
-		from pybricks.hubs import CityHub
-		from pybricks.pupdevices import Motor
-		from pybricks.parameters import Port, Stop
-		from pybricks.tools import wait
-	
-		hub = CityHub()
+	from pybricks.hubs import CityHub
+	from pybricks.pupdevices import Motor
+	from pybricks.parameters import Port, Stop
+	from pybricks.tools import wait
+
+	hub = CityHub()
 snippet movehub
 	from pybricks.hubs import MoveHub
 	from pybricks.pupdevices import Motor
