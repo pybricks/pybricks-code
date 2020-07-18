@@ -1,6 +1,7 @@
 {
     "terminal": {
         "copy": "Copy",
-        "paste": "Paste"
+        "paste": "Paste",
+        "clear": "Clear"
     }
 }

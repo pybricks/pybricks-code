@@ -6,4 +6,5 @@
 export enum TerminalStringId {
     Copy = 'terminal.copy',
     Paste = 'terminal.paste',
+    Clear = 'terminal.clear',
 }

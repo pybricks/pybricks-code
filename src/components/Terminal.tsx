@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020 The Pybricks Authors
 
-import { Menu, MenuItem, ResizeSensor } from '@blueprintjs/core';
+import { Menu, MenuDivider, MenuItem, ResizeSensor } from '@blueprintjs/core';
 // importing this way due to https://github.com/palantir/blueprint/issues/3891
 import { ContextMenuTarget } from '@blueprintjs/core/lib/esnext/components/context-menu/contextMenuTarget';
 import { WithI18nProps, withI18n } from '@shopify/react-i18n';
@@ -126,6 +126,12 @@ class Terminal extends React.Component<TerminalProps> {
                     text={i18n.translate(TerminalStringId.Paste)}
                     icon="clipboard"
                     label={/mac/i.test(navigator.platform) ? 'Cmd-V' : 'Ctrl-Shift-V'}
+                />
+                <MenuDivider />
+                <MenuItem
+                    onClick={(): void => this.xterm.clear()}
+                    text={i18n.translate(TerminalStringId.Clear)}
+                    icon="trash"
                 />
             </Menu>
         );
