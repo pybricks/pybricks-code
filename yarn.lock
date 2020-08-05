@@ -1353,10 +1353,10 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
-"@pybricks/firmware@2.5.0":
-  version "2.5.0"
-  resolved "https://npm.pkg.github.com/download/@pybricks/firmware/2.5.0/a43d9b2447ccf9ce5989ee036e6664f1df0ebafe0677d09c5c87d9f0bf57621c#15e062e68dc160d1e8975947327a965b2a5b2c05"
-  integrity sha512-pCefBhB+cgWYITQwf2Mo9nEyI/vcwNQcCq8HkU0zzIFp71QorNqvpEg11sfmzGODub1c22oguphcssxR6LZMLg==
+"@pybricks/firmware@2.6.0":
+  version "2.6.0"
+  resolved "https://npm.pkg.github.com/download/@pybricks/firmware/2.6.0/806334e97a38232bd2b48e3d13c8ecbce7d5ba84cd668a0412abbcb90f193518#ba534cc38ab4be595aa4718187b4869b5e7f3d9b"
+  integrity sha512-RtldtVyJHh4fD3V85n4ibN5/23Ci5zMaW1oJAKzDKVay4sCbmo6scyx3dw5+ARK+k14PafsMSkDjK+YDoRJW7w==
 
 "@pybricks/mpy-cross-v5@^1.1.0":
   version "1.1.0"
