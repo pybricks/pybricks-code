@@ -9464,10 +9464,10 @@ raw-body@2.4.0:
     iconv-lite "0.4.24"
     unpipe "1.0.0"
 
-react-ace@^9.0.0:
-  version "9.1.1"
-  resolved "https://registry.yarnpkg.com/react-ace/-/react-ace-9.1.1.tgz#fe27e1c668b0186dc1609c422198d1c2df34d2bf"
-  integrity sha512-dL0w6GwtnS1opsOoWhJaF7rF7xCM+NOEOfePmDfiaeU+EyZQ6nRWDBgyzKsuiB3hyXH3G9D6FX37ur/LKUdKjA==
+react-ace@^9.1.2:
+  version "9.1.2"
+  resolved "https://registry.yarnpkg.com/react-ace/-/react-ace-9.1.2.tgz#4a3ad8dbd07f84fd99c26d9ec697ea3b2ef0a963"
+  integrity sha512-rzsPiGZ2/d4dmlxg0+Zo15igCnagao+TIUJCGV8RGLBr8xpKFpq5sxnTLvsE3pWPoFbMbQAXYJiZTMWEkNpRtg==
   dependencies:
     ace-builds "^1.4.6"
     diff-match-patch "^1.0.4"
