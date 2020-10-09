@@ -40,7 +40,7 @@
         "zen-push": "^0.2.1"
     },
     "scripts": {
-        "prepare": "mkdir -p public/static/js && ncp node_modules/@pybricks/mpy-cross-v5/build/mpy-cross.wasm src/sagas/mpy-cross.emcwasm",
+        "prepare": "mkdirp public/static/js && ncp node_modules/@pybricks/mpy-cross-v5/build/mpy-cross.wasm src/sagas/mpy-cross.emcwasm",
         "start": "react-scripts start",
         "build": "react-scripts build",
         "test": "react-scripts test --env=./test/env.js",
@@ -73,6 +73,7 @@
         "eslint-plugin-prettier": "^3.1.2",
         "eslint-plugin-react": "^7.20.5",
         "jest-mock-extended": "^1.0.9",
+        "mkdirp": "^1.0.4",
         "ncp": "^2.0.0",
         "prettier": "^2.0.4"
     }
