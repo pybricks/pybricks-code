@@ -26,7 +26,7 @@ export const MaxMessageSize = 20;
 export enum HubType {
     MoveHub = 0x40,
     CityHub = 0x41,
-    CPlusHub = 0x80,
+    TechnicHub = 0x80,
 }
 
 /**
@@ -74,7 +74,7 @@ export const MaxProgramFlashSize: ReadonlyMap<HubType, number> = new Map<
 >([
     [HubType.MoveHub, 14],
     [HubType.CityHub, 32],
-    [HubType.CPlusHub, 32],
+    [HubType.TechnicHub, 32],
 ]);
 
 /**

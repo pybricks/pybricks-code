@@ -2,8 +2,8 @@
 // Copyright (c) 2020 The Pybricks Authors
 
 import cityHubZip from '@pybricks/firmware/build/cityhub.zip';
-import cPlusHubZip from '@pybricks/firmware/build/cplushub.zip';
 import moveHubZip from '@pybricks/firmware/build/movehub.zip';
+import technicHubZip from '@pybricks/firmware/build/technichub.zip';
 import JSZip from 'jszip';
 import {
     Effect,
@@ -63,7 +63,7 @@ import { fmod, sumComplement32 } from '../utils/math';
 
 const firmwareZipMap = new Map<HubType, string>([
     [HubType.CityHub, cityHubZip],
-    [HubType.CPlusHub, cPlusHubZip],
+    [HubType.TechnicHub, technicHubZip],
     [HubType.MoveHub, moveHubZip],
 ]);
 

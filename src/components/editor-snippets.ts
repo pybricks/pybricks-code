@@ -18,13 +18,13 @@ ace.define('ace/snippets/python', ['require', 'exports', 'module'], function (
 ) {
     // IMPORTANT!!!!!
     // Snippets must be indented with tab character, not spaces!
-    exports.snippetText = `snippet cplushub
-	from pybricks.hubs import CPlusHub
+    exports.snippetText = `snippet technichub
+	from pybricks.hubs import TechnicHub
 	from pybricks.pupdevices import Motor
 	from pybricks.parameters import Port, Stop
 	from pybricks.tools import wait
 
-	hub = CPlusHub()
+	hub = TechnicHub()
 snippet cityhub
 	from pybricks.hubs import CityHub
 	from pybricks.pupdevices import Motor
