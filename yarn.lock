@@ -1399,10 +1399,10 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
-"@pybricks/firmware@3.0.0":
-  version "3.0.0"
-  resolved "https://npm.pkg.github.com/download/@pybricks/firmware/3.0.0/7dddf6adf6037c2e5fa9edd55ff02a9ddfffac55fe4a66bb3b7529626b92bb46#4c19f5de6419cd5ce75e33a78921c1f6deff847c"
-  integrity sha512-ojaWr1ET/KUqRVytJ6CcSrGTG4Hd6oELw53+wceneHNLZIMRXjAsvuVndhVcRc1OJ23tPPlV8PblZPZRyEhRKA==
+"@pybricks/firmware@3.1.0":
+  version "3.1.0"
+  resolved "https://npm.pkg.github.com/download/@pybricks/firmware/3.1.0/9b3abdac044428108bed6d1acf1fe2e95266181026b8e28a3e4ffc8a5f4fa2e2#35abf937a7dc2d88cc73857da363a298a17453c6"
+  integrity sha512-aST/+8KZtejAhy2t/oGG16QaajT8RziHUDy3Li67dlIRuYA43xlKcTbTJAegCGJm3rpXlkcCEms5+yxP5+Krag==
 
 "@pybricks/mpy-cross-v5@^1.1.0":
   version "1.1.0"
