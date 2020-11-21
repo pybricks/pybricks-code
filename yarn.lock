@@ -1458,10 +1458,12 @@
     schema-utils "^2.6.5"
     source-map "^0.7.3"
 
-"@pybricks/firmware@3.1.0":
-  version "3.1.0"
-  resolved "https://npm.pkg.github.com/download/@pybricks/firmware/3.1.0/9b3abdac044428108bed6d1acf1fe2e95266181026b8e28a3e4ffc8a5f4fa2e2#35abf937a7dc2d88cc73857da363a298a17453c6"
-  integrity sha512-aST/+8KZtejAhy2t/oGG16QaajT8RziHUDy3Li67dlIRuYA43xlKcTbTJAegCGJm3rpXlkcCEms5+yxP5+Krag==
+"@pybricks/firmware@4.1.0":
+  version "4.1.0"
+  resolved "https://npm.pkg.github.com/download/@pybricks/firmware/4.1.0/a4c0914750afa8aee656dd3a771b22e4da75607f0201ded148fb6bbf3f017ed1#3deb1772c469c48944c4fc022f7322b0fb3102f9"
+  integrity sha512-aQ46+X86J7GHqO2wwgq02lDhvV4WZJWGOrfuOZJfH3ss4bdErhBJaIwZ7zjVxI2DrWlrbMwjGEA6H/b9NholFQ==
+  dependencies:
+    jszip "^3.5.0"
 
 "@pybricks/mpy-cross-v5@^1.1.0":
   version "1.1.0"

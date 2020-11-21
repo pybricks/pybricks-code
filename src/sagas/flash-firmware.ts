@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020 The Pybricks Authors
 
+import { FirmwareMetadata, FirmwareReader, HubType } from '@pybricks/firmware';
 import cityHubZip from '@pybricks/firmware/build/cityhub.zip';
 import moveHubZip from '@pybricks/firmware/build/movehub.zip';
 import technicHubZip from '@pybricks/firmware/build/technichub.zip';
-import JSZip from 'jszip';
 import {
     Effect,
     all,
@@ -58,7 +58,7 @@ import {
     compile,
 } from '../actions/mpy';
 import * as notification from '../actions/notification';
-import { HubType, MaxProgramFlashSize } from '../protocols/lwp3-bootloader';
+import { MaxProgramFlashSize } from '../protocols/lwp3-bootloader';
 import { fmod, sumComplement32 } from '../utils/math';
 
 const firmwareZipMap = new Map<HubType, string>([
@@ -98,17 +98,6 @@ function waitForResponse(type: BootloaderResponseActionType, timeout = 500): Eff
     return race([take(type), take(BootloaderResponseActionType.Error), delay(timeout)]);
 }
 
-interface FirmwareMetadata {
-    'metadata-version': string;
-    'firmware-version': string;
-    'device-id': HubType;
-    'checksum-type': 'sum' | 'crc32';
-    'mpy-abi-version': number;
-    'mpy-cross-options': string[];
-    'user-mpy-offset': number;
-    'max-firmware-size': number;
-}
-
 function* firmwareIterator(data: DataView, maxSize: number): Generator<number> {
     // read each 32-bit word of the firmware
     for (let i = 0; i < data.byteLength; i += 4) {
@@ -127,29 +116,11 @@ function* firmwareIterator(data: DataView, maxSize: number): Generator<number> {
 function* loadFirmware(
     data: ArrayBuffer,
 ): Generator<unknown, { firmware: Uint8Array; deviceId: HubType }> {
-    const zip = (yield call(() => JSZip.loadAsync(data))) as JSZip;
+    const reader = (yield call(() => FirmwareReader.load(data))) as FirmwareReader;
 
-    const firmwareBaseFile = zip.file('firmware-base.bin');
-    if (firmwareBaseFile === null) {
-        throw Error('Missing firmware-base.bin');
-    }
-    const firmwareBase = (yield call(() =>
-        firmwareBaseFile.async('uint8array'),
-    )) as Uint8Array;
-
-    const metadataFile = zip.file('firmware.metadata.json');
-    if (metadataFile === null) {
-        throw Error('Missing firmware.metadata.json');
-    }
-    const metadata = JSON.parse(
-        (yield call(() => metadataFile.async('text'))) as string,
-    ) as FirmwareMetadata;
-
-    const mainFile = zip.file('main.py');
-    if (mainFile === null) {
-        throw Error('Missing main.py');
-    }
-    const main = (yield call(() => mainFile.async('text'))) as string;
+    const firmwareBase = (yield call(() => reader.readFirmwareBase())) as Uint8Array;
+    const metadata = (yield call(() => reader.readMetadata())) as FirmwareMetadata;
+    const main = (yield call(() => reader.readMainPy())) as string;
 
     if (metadata['mpy-abi-version'] !== 5) {
         throw Error(
