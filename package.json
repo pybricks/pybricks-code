@@ -29,7 +29,7 @@
         "react-dom": "^16.13.1",
         "react-dropzone": "^11.0.1",
         "react-redux": "^7.2.1",
-        "react-scripts": "3.4.1",
+        "react-scripts": "4.0.0",
         "react-splitter-layout": "^4.0.0",
         "redux": "^4.0.5",
         "redux-logger": "^3.0.6",
@@ -59,19 +59,18 @@
             "not op_mini all"
         ],
         "development": [
-            "last 1 chrome version",
+            "chrome 79",
             "last 1 firefox version",
             "last 1 safari version"
         ]
     },
     "devDependencies": {
-        "@typescript-eslint/eslint-plugin": "^2.34.0",
-        "@typescript-eslint/parser": "^2.34.0",
-        "eslint": "^6.8.0",
-        "eslint-config-prettier": "^6.10.1",
-        "eslint-plugin-import": "^2.20.2",
-        "eslint-plugin-prettier": "^3.1.2",
-        "eslint-plugin-react": "^7.20.5",
+        "@typescript-eslint/eslint-plugin": "^4.8.1",
+        "@typescript-eslint/parser": "^4.8.1",
+        "eslint-config-prettier": "^6.15.0",
+        "eslint-plugin-import": "^2.22.1",
+        "eslint-plugin-prettier": "^3.1.4",
+        "eslint-plugin-react": "^7.21.5",
         "jest-mock-extended": "^1.0.9",
         "mkdirp": "^1.0.4",
         "ncp": "^2.0.0",

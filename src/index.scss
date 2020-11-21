@@ -100,7 +100,7 @@ body {
 
 .watermark::after {
     content: "";
-    background: url("/static/beta.svg");
+    background: url("./beta.svg");
     opacity: 1;
     top: 0;
     left: 0;

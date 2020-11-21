@@ -100,9 +100,9 @@ function* receiveUartData(action: BleUartNotifyAction): Generator {
 }
 
 function* receiveTerminalData(): Generator {
-    const channel = (yield actionChannel(TerminalActionType.ReceivedData)) as Channel<
-        TerminalDataReceiveDataAction
-    >;
+    const channel = (yield actionChannel(
+        TerminalActionType.ReceivedData,
+    )) as Channel<TerminalDataReceiveDataAction>;
     while (true) {
         // wait for input from terminal
         const action = (yield take(channel)) as TerminalDataReceiveDataAction;
