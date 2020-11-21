@@ -1,7 +1,7 @@
 /// <reference types="react-scripts" />
 
 declare module '*.json' {
-    const src: object;
+    const src: unknown;
     export default src;
 }
 

@@ -22,9 +22,7 @@ export enum HubMessageActionType {
     Checksum = 'hub.message.action.runtime.checksum',
 }
 
-export type HubRuntimeStatusMessageAction = Action<
-    HubMessageActionType.RuntimeStatus
-> & {
+export type HubRuntimeStatusMessageAction = Action<HubMessageActionType.RuntimeStatus> & {
     readonly newStatus: HubRuntimeStatusType;
 };
 

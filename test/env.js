@@ -14,5 +14,9 @@ module.exports = class CustomTestEnvironment extends Environment {
         if (this.global.TextDecoder === undefined) {
             this.global.TextDecoder = TextDecoder;
         }
+
+        // work around https://github.com/facebook/jest/issues/7780
+        this.global.Uint8Array = Uint8Array;
+        this.global.ArrayBuffer = ArrayBuffer;
     }
 };

@@ -15,7 +15,8 @@
         "noEmit": true,
         "jsx": "react",
         "downlevelIteration": true,
-        "experimentalDecorators": true
+        "experimentalDecorators": true,
+        "noFallthroughCasesInSwitch": true
     },
     "include": ["src", "test"]
 }

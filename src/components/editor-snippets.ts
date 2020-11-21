@@ -11,14 +11,13 @@ declare module 'ace-builds' {
     export function require(name: string[], callback: (module: any) => void): any;
 }
 
-ace.define('ace/snippets/python', ['require', 'exports', 'module'], function (
-    _require,
-    exports,
-    _module,
-) {
-    // IMPORTANT!!!!!
-    // Snippets must be indented with tab character, not spaces!
-    exports.snippetText = `snippet technichub
+ace.define(
+    'ace/snippets/python',
+    ['require', 'exports', 'module'],
+    function (_require, exports, _module) {
+        // IMPORTANT!!!!!
+        // Snippets must be indented with tab character, not spaces!
+        exports.snippetText = `snippet technichub
 	from pybricks.hubs import TechnicHub
 	from pybricks.pupdevices import Motor
 	from pybricks.parameters import Port, Stop
@@ -144,8 +143,9 @@ snippet "
 	\${1:doc}
 	"""
 `;
-    exports.scope = 'python';
-});
+        exports.scope = 'python';
+    },
+);
 
 (function (): void {
     ace.require(['ace/snippets/python'], function (m: any) {

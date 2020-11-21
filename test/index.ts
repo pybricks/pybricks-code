@@ -94,10 +94,10 @@ export function delay(ms: number): Promise<void> {
  * @param obj The object
  * @param id The property path
  */
-export function lookup(obj: object, id: string): string | undefined {
+export function lookup(obj: unknown, id: string): string | undefined {
     const value = id
         .split('.')
-        .reduce((pv, cv) => pv && (pv as Record<string, object>)[cv], obj);
+        .reduce((pv, cv) => pv && (pv as Record<string, unknown>)[cv], obj);
     if (typeof value === 'string') {
         return value;
     }

@@ -61,25 +61,15 @@ type Reason<T extends BleDeviceFailToConnectReasonType> = {
     reason: T;
 };
 
-export type BleDeviceFailToConnectNoWebBluetoothReason = Reason<
-    BleDeviceFailToConnectReasonType.NoWebBluetooth
->;
+export type BleDeviceFailToConnectNoWebBluetoothReason = Reason<BleDeviceFailToConnectReasonType.NoWebBluetooth>;
 
-export type BleDeviceFailToConnectCanceledReason = Reason<
-    BleDeviceFailToConnectReasonType.Canceled
->;
+export type BleDeviceFailToConnectCanceledReason = Reason<BleDeviceFailToConnectReasonType.Canceled>;
 
-export type BleDeviceFailToConnectNoGattReason = Reason<
-    BleDeviceFailToConnectReasonType.NoGatt
->;
+export type BleDeviceFailToConnectNoGattReason = Reason<BleDeviceFailToConnectReasonType.NoGatt>;
 
-export type BleDeviceFailToConnectNoServiceReason = Reason<
-    BleDeviceFailToConnectReasonType.NoService
->;
+export type BleDeviceFailToConnectNoServiceReason = Reason<BleDeviceFailToConnectReasonType.NoService>;
 
-export type BleDeviceFailToConnectUnknownReason = Reason<
-    BleDeviceFailToConnectReasonType.Unknown
-> & {
+export type BleDeviceFailToConnectUnknownReason = Reason<BleDeviceFailToConnectReasonType.Unknown> & {
     err: Error;
 };
 
@@ -90,9 +80,7 @@ export type BleDeviceDidFailToConnectReason =
     | BleDeviceFailToConnectNoServiceReason
     | BleDeviceFailToConnectUnknownReason;
 
-export type BleDeviceDidFailToConnectAction = Action<
-    BleDeviceActionType.DidFailToConnect
-> &
+export type BleDeviceDidFailToConnectAction = Action<BleDeviceActionType.DidFailToConnect> &
     BleDeviceDidFailToConnectReason;
 
 /**
