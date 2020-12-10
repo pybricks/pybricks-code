@@ -52,8 +52,18 @@ class Terminal extends React.Component<TerminalProps> {
         this.fitAddon = new FitAddon();
         this.xterm.loadAddon(this.fitAddon);
         this.xterm.onData((d) => this.props.onData(d));
+        this.xterm.attachCustomKeyEventHandler(this.handleKeyEvent);
         this.terminalRef = React.createRef();
     }
+
+    private handleKeyEvent = (e: KeyboardEvent): boolean => {
+        if (e.key === 'v' && e.ctrlKey && !e.shiftKey && !e.altKey && !e.metaKey) {
+            // this allows CTRL+V to be handled by the browser instead of sending
+            // a control character to the terminal.
+            return false;
+        }
+        return true;
+    };
 
     private handleKeyDownEvent = (e: KeyboardEvent): void => {
         // implement CTRL+SHIFT+C keyboard shortcut for copying text from terminal
@@ -125,7 +135,7 @@ class Terminal extends React.Component<TerminalProps> {
                     }}
                     text={i18n.translate(TerminalStringId.Paste)}
                     icon="clipboard"
-                    label={/mac/i.test(navigator.platform) ? 'Cmd-V' : 'Ctrl-Shift-V'}
+                    label={/mac/i.test(navigator.platform) ? 'Cmd-V' : 'Ctrl-V'}
                 />
                 <MenuDivider />
                 <MenuItem
