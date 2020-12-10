@@ -16,11 +16,12 @@ import { EditorStringId } from './editor-i18n';
 import en from './editor-i18n.en.json';
 
 import 'ace-builds/src-noconflict/mode-python';
-import './editor-snippets';
 import 'ace-builds/src-noconflict/theme-xcode';
 import 'ace-builds/src-noconflict/ext-searchbox';
 import 'ace-builds/src-noconflict/ext-keybinding_menu';
 import 'ace-builds/src-noconflict/ext-language_tools';
+
+import './editor-snippets';
 
 type DispatchProps = {
     onSessionChanged: (session?: Ace.EditSession) => void;

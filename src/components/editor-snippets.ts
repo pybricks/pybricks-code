@@ -20,24 +20,38 @@ ace.define(
         exports.snippetText = `snippet technichub
 	from pybricks.hubs import TechnicHub
 	from pybricks.pupdevices import Motor
-	from pybricks.parameters import Port, Stop
+	from pybricks.parameters import Port, Stop, Color
 	from pybricks.tools import wait
 
 	hub = TechnicHub()
 snippet cityhub
 	from pybricks.hubs import CityHub
 	from pybricks.pupdevices import Motor
-	from pybricks.parameters import Port, Stop
+	from pybricks.parameters import Port, Stop, Color
 	from pybricks.tools import wait
 
 	hub = CityHub()
 snippet movehub
 	from pybricks.hubs import MoveHub
 	from pybricks.pupdevices import Motor
-	from pybricks.parameters import Port, Stop
+	from pybricks.parameters import Port, Stop, Color
 	from pybricks.tools import wait
 
 	hub = MoveHub()
+snippet primehub
+	from pybricks.hubs import PrimeHub
+	from pybricks.pupdevices import Motor, ColorSensor, ForceSensor, UltrasonicSensor
+	from pybricks.parameters import Port, Stop, Color, Button
+	from pybricks.tools import wait
+
+	hub = PrimeHub()
+snippet inventorhub
+	from pybricks.hubs import InventorHub
+	from pybricks.pupdevices import Motor, ColorSensor, UltrasonicSensor
+	from pybricks.parameters import Port, Stop, Color, Button
+	from pybricks.tools import wait
+
+	hub = InventorHub()
 snippet uname
 	from uos import uname
 	
