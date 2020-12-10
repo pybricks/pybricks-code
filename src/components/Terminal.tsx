@@ -136,6 +136,11 @@ class Terminal extends React.Component<TerminalProps> {
             </Menu>
         );
     }
+
+    onContextMenuClose = () => {
+        // without this, the terminal looses focus
+        this.xterm.focus();
+    };
 }
 
 const mapStateToProps = (state: RootState): StateProps => ({
