@@ -11,7 +11,8 @@ import downloadIcon from './images/download.svg';
 
 type StateProps = Pick<ActionButtonProps, 'enabled'>;
 type DispatchProps = Pick<ActionButtonProps, 'onAction'>;
-type OwnProps = Pick<ActionButtonProps, 'id'>;
+type OwnProps = Pick<ActionButtonProps, 'id'> &
+    Pick<ActionButtonProps, 'keyboardShortcut'>;
 
 const mapStateToProps = (state: RootState): StateProps => ({
     enabled: state.editor.current !== null,

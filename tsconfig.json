@@ -16,6 +16,7 @@
         "jsx": "react",
         "downlevelIteration": true,
         "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
         "noFallthroughCasesInSwitch": true
     },
     "include": ["src", "test"]

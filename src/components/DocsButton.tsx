@@ -12,7 +12,8 @@ import docsIcon from './images/pybricks.svg';
 
 type StateProps = undefined;
 type DispatchProps = Pick<ActionButtonProps, 'onAction'>;
-type OwnProps = Pick<ActionButtonProps, 'id'>;
+type OwnProps = Pick<ActionButtonProps, 'id'> &
+    Pick<ActionButtonProps, 'keyboardShortcut'>;
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
     onAction: (): Action => dispatch(toggleDocs()),

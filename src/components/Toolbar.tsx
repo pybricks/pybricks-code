@@ -29,8 +29,8 @@ class Toolbar extends React.Component {
                     <Navbar.Divider />
                     <ButtonGroup>
                         <BluetoothButton id="bluetooth" />
-                        <RunButton id="run" />
-                        <StopButton id="stop" />
+                        <RunButton id="run" keyboardShortcut="F5" />
+                        <StopButton id="stop" keyboardShortcut="F6" />
                     </ButtonGroup>
                     <Navbar.Divider />
                     <ButtonGroup>
