@@ -62,6 +62,10 @@ class Terminal extends React.Component<TerminalProps> {
             // a control character to the terminal.
             return false;
         }
+        if (e.key === 'F5' || e.key === 'F6') {
+            // allow global handler for these keys
+            return false;
+        }
         return true;
     };
 
