@@ -18,7 +18,6 @@ class Toolbar extends React.Component {
         return (
             <Navbar
                 onContextMenu={(e): void => e.preventDefault()}
-                fixedToTop={true}
                 className="no-box-shadow"
             >
                 <Navbar.Group>
