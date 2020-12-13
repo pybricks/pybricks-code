@@ -28,8 +28,6 @@ $status-bar-height: 3vh;
 body {
     // no scrolling of the page
     overflow: hidden;
-    // See https://blueprintjs.com/docs/#core/components/navbar
-    padding-top: $pt-navbar-height;
 }
 
 // Utility classes
