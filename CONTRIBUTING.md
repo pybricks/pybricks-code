@@ -4,6 +4,28 @@
 
 These are the tools you will need to build and run `pybricks-code` locally.
 
+## Important Note about Github Packages
+
+**This step is mandatory and cannot be skipped. Otherwise you will have no access to some referenced dependencies in [package.json](./package.json)!**
+
+We are currently depending on a couple of packages from the Github package
+registry. [Github requires you](https://docs.github.com/en/free-pro-team@latest/packages/guides/configuring-npm-for-use-with-github-packages#authenticating-with-a-personal-access-token) to log in first before you can install public packages.
+
+To do this, first you will need to create a new authentication token at
+<https://github.com/settings/tokens>.
+
+- Click the *Generate a new token* button.
+- Select the **repo** and **read:packages** scopes.
+- Click the *Generate token* button.
+- Click the clipboard icon top copy the token to be used below.
+
+Then run the following command and enter your username, authentication token
+and email:
+
+    npm login --registry=https://npm.pkg.github.com
+
+This only needs to be done once.
+
 ## IDE
 
 Technically you can use any text editor you like but the project is set up to
@@ -11,7 +33,6 @@ use [VS Code][vscode]. The project includes some recommended extensions that
 will do nice things like automatically format the code for you.
 
 [vscode]: https://code.visualstudio.com/
-
 
 ## Toolchain
 
@@ -38,28 +59,6 @@ You will need [Git][git] to get the source code from GitHub. (Say that 3 times f
 
 [git]: https://git-scm.com/
 
-
-## Github Packages
-
-We are currently depending on a couple of packages from the Github package
-registry. This requires you to log in first before you can install the packages.
-
-To do this, first you will need to create a new authentication token at
-<https://github.com/settings/tokens>.
-
-- Click the *Generate a new token* button.
-- Select the **repo** and **read:packages** scopes.
-- Click the *Generate token* button.
-- Click the clipboard icon top copy the token to be used below.
-
-Then run the following command and enter your username, authentication token
-and email:
-
-    npm login --registry=https://npm.pkg.github.com
-
-This only needs to be done once.
-
-
 ## Getting The Code
 
 After the tools above have been installed, open a command prompt in the directory
@@ -70,7 +69,7 @@ where you would like to save the source code and run:
     yarn install
 
 If you see a 401 not authorized error after running `yarn install`, then you
-probably skipped the logging into the Github package registry as described above.
+probably skipped the logging into the Github package registry as [described above](#important-note-about-github-packages).
 
 # Software Stack
 
@@ -78,11 +77,9 @@ This project was bootstrapped with [Create React App][create-react-app].
 
 [create-react-app]: https://github.com/facebook/create-react-app
 
-
 ## Available Scripts
 
 In the project directory, you can run:
-
 
 ### `yarn start`
 
@@ -99,18 +96,15 @@ The page will reload if you make edits.
 
 You will also see any lint errors in the console.
 
-
 ### `yarn lint`
 
 Runs the code linter.
 
 This will automatically fix most lint errors for you.
 
-
 ### `yarn test`
 
 See [README](test/README.md) in the `test/` directory.
-
 
 ### `yarn build`
 
@@ -126,7 +120,6 @@ Your app is ready to be deployed!
 See the section about [deployment][deployment] for more information.
 
 [deployment]: https://facebook.github.io/create-react-app/docs/deployment
-
 
 ## Learn More
 
