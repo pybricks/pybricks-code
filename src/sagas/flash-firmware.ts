@@ -280,7 +280,7 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
         throw Error('Missing hub type in MaxProgramFlashSize');
     }
 
-    for (let offset = 0; offset < firmware.length; offset += maxDataSize) {
+    for (let offset = 0; ; ) {
         const payload = firmware.slice(offset, offset + maxDataSize);
         const programAction = (yield put(
             programRequest(info[0].startAddress + offset, payload.buffer),
@@ -288,6 +288,13 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
         yield waitForDidSend(programAction.id);
 
         yield put(progress(offset, firmware.length));
+
+        // we don't want to request checksum if this is the last packet since
+        // the bootloader will send a response to the program request already.
+        offset += maxDataSize;
+        if (offset >= firmware.length) {
+            break;
+        }
 
         if (connectResult.canWriteWithoutResponse) {
             // Request checksum every 10 packets to prevent buffer overrun on
