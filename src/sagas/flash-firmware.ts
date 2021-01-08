@@ -236,21 +236,6 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
         }
     }
 
-    // City hub bootloader is buggy. See note in encodeRequest().
-    if (info[0].hubType === HubType.CityHub && !connectResult.canWriteWithoutResponse) {
-        yield put(
-            notification.add(
-                'error',
-                'City Hub bootloader is not compatible with this web browser.',
-            ),
-        );
-        const disconnectAction = (yield put(
-            disconnectRequest(),
-        )) as BootloaderDisconnectRequestAction;
-        yield waitForDidSend(disconnectAction.id);
-        return;
-    }
-
     const eraseAction = (yield put(eraseRequest())) as BootloaderEraseRequestAction;
     const [, erase] = (yield all([
         waitForDidSend(eraseAction.id),
@@ -296,26 +281,24 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
             break;
         }
 
-        if (connectResult.canWriteWithoutResponse) {
-            // Request checksum every 10 packets to prevent buffer overrun on
-            // the hub because of sending too much data at once. The actual
-            // number of packets that can be queued in the Bluetooth chip on
-            // the hub is not known and could vary by device.
-            if (++count % 10 === 0) {
-                const checksumAction = (yield put(
-                    checksumRequest(),
-                )) as BootloaderChecksumRequestAction;
-                const [, checksum] = (yield all([
-                    waitForDidSend(checksumAction.id),
-                    waitForResponse(BootloaderResponseActionType.Checksum, 5000),
-                ])) as [
-                    BootloaderDidRequestAction,
-                    WaitResponse<BootloaderChecksumResponseAction>,
-                ];
-                if (!checksum[0]) {
-                    // TODO: proper error handling
-                    throw Error(`Failed to get checksum: ${checksum}`);
-                }
+        // Request checksum every 10 packets to prevent buffer overrun on
+        // the hub because of sending too much data at once. The actual
+        // number of packets that can be queued in the Bluetooth chip on
+        // the hub is not known and could vary by device.
+        if (++count % 10 === 0) {
+            const checksumAction = (yield put(
+                checksumRequest(),
+            )) as BootloaderChecksumRequestAction;
+            const [, checksum] = (yield all([
+                waitForDidSend(checksumAction.id),
+                waitForResponse(BootloaderResponseActionType.Checksum, 5000),
+            ])) as [
+                BootloaderDidRequestAction,
+                WaitResponse<BootloaderChecksumResponseAction>,
+            ];
+            if (!checksum[0]) {
+                // TODO: proper error handling
+                throw Error(`Failed to get checksum: ${checksum}`);
             }
         }
     }

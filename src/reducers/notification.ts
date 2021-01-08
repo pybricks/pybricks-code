@@ -93,17 +93,6 @@ const list: Reducer<NotificationList, Action> = (state = [], action) => {
                     return append(state, Level.Error, MessageId.BleConnectFailed);
             }
             return state;
-        case BootloaderConnectionActionType.DidConnect:
-            if (!action.canWriteWithoutResponse) {
-                return append(
-                    state,
-                    Level.Warning,
-                    MessageId.BleCannotWriteWithoutResponse,
-                    undefined,
-                    'https://github.com/WebBluetoothCG/web-bluetooth/blob/master/implementation-status.md',
-                );
-            }
-            return state;
         case BootloaderConnectionActionType.DidFailToConnect:
             switch (action.reason) {
                 case BootloaderConnectionFailureReason.GattServiceNotFound:

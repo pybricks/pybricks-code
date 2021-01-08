@@ -1458,10 +1458,10 @@
     schema-utils "^2.6.5"
     source-map "^0.7.3"
 
-"@pybricks/firmware@4.2.0":
-  version "4.2.0"
-  resolved "https://npm.pkg.github.com/download/@pybricks/firmware/4.2.0/7b91542f6fc6461f8654e67a437d6164bf63bea34bd34e7af22c648c670dad0c#666bedf9deb98a23852ea60c4c8410b9fc6c1009"
-  integrity sha512-71YaYrqoLz2lxOCwnXyX1d2bbs3CXU1eNgRWlpd7+/Lymv5oLK3cTQnW/QhnGcv1pSLhyGg5kKVxX2rOVx+R/A==
+"@pybricks/firmware@4.3.0":
+  version "4.3.0"
+  resolved "https://npm.pkg.github.com/download/@pybricks/firmware/4.3.0/89f260a050abcc837c803b7851edcb234944d5aff0a2f45706b556796fbc3a45#817b3bd9aa3daf77c80b67a5c5d5776779773491"
+  integrity sha512-5cTtBpTtRa0P98DS+M2WswYsF4FCQdeL65tMZd98S47sjZn/Yzw6AJzhSFfZHPJbRQzqDcHJm065awQHb7SXMg==
   dependencies:
     jszip "^3.5.0"
 

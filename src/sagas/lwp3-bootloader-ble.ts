@@ -17,24 +17,20 @@ import {
     didSend,
 } from '../actions/lwp3-bootloader';
 import { CharacteristicUUID, ServiceUUID } from '../protocols/lwp3-bootloader';
-import {
-    PolyfillBluetoothRemoteGATTCharacteristic,
-    polyfillBluetoothRemoteGATTCharacteristic,
-} from '../utils/web-bluetooth';
 
 function* handleNotify(data: DataView): Generator {
     yield put(didReceive(data));
 }
 
 function* write(
-    characteristic: PolyfillBluetoothRemoteGATTCharacteristic,
+    characteristic: BluetoothRemoteGATTCharacteristic,
     action: BootloaderConnectionSendAction,
 ): Generator {
     try {
         if (action.withResponse) {
-            yield call(() => characteristic.xWriteValueWithResponse(action.data));
+            yield call(() => characteristic.writeValueWithResponse(action.data));
         } else {
-            yield call(() => characteristic.xWriteValueWithoutResponse(action.data));
+            yield call(() => characteristic.writeValueWithoutResponse(action.data));
         }
         yield put(didSend());
     } catch (err) {
@@ -110,14 +106,12 @@ function* connect(_action: BootloaderConnectionAction): Generator {
         return;
     }
 
-    let characteristic: PolyfillBluetoothRemoteGATTCharacteristic;
+    let characteristic: BluetoothRemoteGATTCharacteristic;
     try {
-        characteristic = polyfillBluetoothRemoteGATTCharacteristic(
-            (yield call(
-                [service, 'getCharacteristic'],
-                CharacteristicUUID,
-            )) as BluetoothRemoteGATTCharacteristic,
-        );
+        characteristic = (yield call(
+            [service, 'getCharacteristic'],
+            CharacteristicUUID,
+        )) as BluetoothRemoteGATTCharacteristic;
     } catch (err) {
         server.disconnect();
         yield takeMaybe(disconnectChannel);
@@ -150,13 +144,7 @@ function* connect(_action: BootloaderConnectionAction): Generator {
     yield takeEvery(notificationChannel, handleNotify);
     yield takeEvery(BootloaderConnectionActionType.Send, write, characteristic);
 
-    // writeValueWithoutResponse() was introduced in Chrome 85.
-    // Older versions of Chrome for Android will write without response
-    // by default when using the deprecated writeValue().
-    const canWriteWithoutResponse =
-        characteristic.writeValueWithoutResponse !== undefined ||
-        /Android/i.test(navigator.userAgent);
-    yield put(didConnect(canWriteWithoutResponse));
+    yield put(didConnect());
 
     yield takeMaybe(disconnectChannel);
     notificationChannel.close();

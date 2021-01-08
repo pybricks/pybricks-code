@@ -4,7 +4,6 @@
 // Notification translation keys.
 
 export enum MessageId {
-    BleCannotWriteWithoutResponse = 'ble.cannotWriteWithoutResponse',
     BleConnectFailed = 'ble.connectFailed',
     BleGattPermission = 'ble.gattPermission',
     BleGattServiceNotFound = 'ble.gattServiceNotFound',

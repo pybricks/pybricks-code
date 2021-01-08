@@ -33,10 +33,6 @@ import {
 import { ServiceUUID as pybricksServiceUUID } from '../protocols/pybricks';
 import { RootState } from '../reducers';
 import { BleConnectionState } from '../reducers/ble';
-import {
-    PolyfillBluetoothRemoteGATTCharacteristic,
-    polyfillBluetoothRemoteGATTCharacteristic,
-} from '../utils/web-bluetooth';
 
 function disconnect(
     server: BluetoothRemoteGATTServer,
@@ -50,11 +46,11 @@ function* handleValueChanged(data: DataView): Generator {
 }
 
 function* write(
-    rxChar: PolyfillBluetoothRemoteGATTCharacteristic,
+    rxChar: BluetoothRemoteGATTCharacteristic,
     action: BleUartWriteAction,
 ): Generator {
     try {
-        yield call(() => rxChar.xWriteValueWithoutResponse(action.value.buffer));
+        yield call(() => rxChar.writeValueWithoutResponse(action.value.buffer));
         yield put(didWrite(action.id));
     } catch (err) {
         yield put(didFailToWrite(action.id, err));
@@ -129,14 +125,12 @@ function* connect(_action: BleDeviceConnectAction): Generator {
         return;
     }
 
-    let rxChar: PolyfillBluetoothRemoteGATTCharacteristic;
+    let rxChar: BluetoothRemoteGATTCharacteristic;
     try {
-        rxChar = polyfillBluetoothRemoteGATTCharacteristic(
-            (yield call(
-                [service, 'getCharacteristic'],
-                urtRxCharUUID,
-            )) as BluetoothRemoteGATTCharacteristic,
-        );
+        rxChar = (yield call(
+            [service, 'getCharacteristic'],
+            urtRxCharUUID,
+        )) as BluetoothRemoteGATTCharacteristic;
     } catch (err) {
         server.disconnect();
         yield takeMaybe(disconnectChannel);
