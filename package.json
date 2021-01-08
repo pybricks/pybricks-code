@@ -6,7 +6,7 @@
         "@blueprintjs/core": "^3.36.0",
         "@pybricks/firmware": "4.3.0",
         "@pybricks/mpy-cross-v5": "^1.1.0",
-        "@shopify/react-i18n": "^5.0.0",
+        "@shopify/react-i18n": "^5.2.0",
         "@testing-library/dom": "^7.29.2",
         "@testing-library/jest-dom": "^5.11.8",
         "@testing-library/react": "^11.2.3",
