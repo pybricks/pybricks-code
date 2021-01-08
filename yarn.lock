@@ -2001,17 +2001,17 @@
   dependencies:
     "@types/react" "^16"
 
-"@types/react-redux@^7.1.9":
-  version "7.1.11"
-  resolved "https://registry.yarnpkg.com/@types/react-redux/-/react-redux-7.1.11.tgz#a18e8ab3651e8e8cc94798934927937c66021217"
-  integrity sha512-OjaFlmqy0CRbYKBoaWF84dub3impqnLJUrz4u8PRjDzaa4n1A2cVmjMV81shwXyAD5x767efhA8STFGJz/r1Zg==
+"@types/react-redux@^7.1.15":
+  version "7.1.15"
+  resolved "https://registry.yarnpkg.com/@types/react-redux/-/react-redux-7.1.15.tgz#19075884db94101be762accef924d266a603fb1b"
+  integrity sha512-+piY42tUflPfI7y9Vy3UkG6MEMuJlrxfdtgeUcWmd5Z0qB57NXAPG6smkqu1DNXluo/KDyXPeRYhcFzMwt1BEA==
   dependencies:
     "@types/hoist-non-react-statics" "^3.3.0"
     "@types/react" "*"
     hoist-non-react-statics "^3.3.0"
     redux "^4.0.0"
 
-"@types/react-splitter-layout@^3.0.0":
+"@types/react-splitter-layout@^3.0.1":
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/@types/react-splitter-layout/-/react-splitter-layout-3.0.1.tgz#83fd7683b07f804fb1a7b72651f5eb99cd5258a9"
   integrity sha512-NsKq32LdG11G/Uj+xo2QmC9S8YSe8JRtxkBhsBE7ODFs0zcnzNEqFAQirP0H7rPe2WFGiu+d/44xbHsew7QAJw==
