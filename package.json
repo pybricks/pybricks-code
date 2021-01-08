@@ -26,7 +26,7 @@
         "react": "^16.13.1",
         "react-ace": "^9.2.1",
         "react-dom": "^16.13.1",
-        "react-dropzone": "^11.0.1",
+        "react-dropzone": "^11.2.4",
         "react-redux": "^7.2.1",
         "react-scripts": "4.0.0",
         "react-splitter-layout": "^4.0.0",
