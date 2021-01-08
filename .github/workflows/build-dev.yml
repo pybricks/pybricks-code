@@ -24,7 +24,7 @@ jobs:
         github-token: ${{ secrets.GITHUB_TOKEN }}
     - name: Build
       if: ${{ success() }}
-      run: CI= yarn build
+      run: yarn build
     - name: Install lftp
       if: ${{ success() }}
       run: sudo apt-get update && sudo apt-get install --yes lftp
