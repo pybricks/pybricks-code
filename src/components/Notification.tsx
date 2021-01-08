@@ -2,8 +2,7 @@
 // Copyright (c) 2020 The Pybricks Authors
 
 import { IconName, Intent, Toast } from '@blueprintjs/core';
-import { WithI18nProps, withI18n } from '@shopify/react-i18n';
-import { PrimitiveReplacementDictionary } from '@shopify/react-i18n/dist/src/types';
+import { Replacements, WithI18nProps, withI18n } from '@shopify/react-i18n';
 import React from 'react';
 import { connect } from 'react-redux';
 import { Action, Dispatch } from '../actions';
@@ -22,7 +21,7 @@ interface OwnProps {
     level: NotificationLevel;
     message?: string;
     messageId?: MessageId;
-    replacements?: PrimitiveReplacementDictionary;
+    replacements?: Replacements;
     helpUrl?: string;
     action?: MessageAction;
 }

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020 The Pybricks Authors
 
-import { PrimitiveReplacementDictionary } from '@shopify/react-i18n/dist/src/types';
+import { Replacements } from '@shopify/react-i18n';
 import { Reducer } from 'react';
 import { combineReducers } from 'redux';
 import { Action } from '../actions';
@@ -45,7 +45,7 @@ export interface Notification {
     readonly level: Level;
     readonly message?: string;
     readonly messageId?: MessageId;
-    readonly replacements?: PrimitiveReplacementDictionary;
+    readonly replacements?: Replacements;
     readonly helpUrl?: string;
     readonly action?: MessageAction;
 }
@@ -58,7 +58,7 @@ function append(
     state: NotificationList,
     level: Level,
     messageId: MessageId,
-    replacements?: PrimitiveReplacementDictionary,
+    replacements?: Replacements,
     helpUrl?: string,
     action?: MessageAction,
 ): NotificationList {
