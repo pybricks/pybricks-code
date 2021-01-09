@@ -1,9 +1,15 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020 The Pybricks Authors
 
-import { Button, Hotkey, Hotkeys, Intent, Position, Tooltip } from '@blueprintjs/core';
-// importing this way due to https://github.com/palantir/blueprint/issues/3604
-import { HotkeysTarget } from '@blueprintjs/core/lib/esnext/components/hotkeys/hotkeysTarget';
+import {
+    Button,
+    Hotkey,
+    Hotkeys,
+    HotkeysTarget,
+    Intent,
+    Position,
+    Tooltip,
+} from '@blueprintjs/core';
 import { WithI18nProps, withI18n } from '@shopify/react-i18n';
 import React from 'react';
 import { TooltipId } from './button-i18n';
