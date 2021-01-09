@@ -1,9 +1,13 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020 The Pybricks Authors
 
-import { Menu, MenuDivider, MenuItem, ResizeSensor } from '@blueprintjs/core';
-// importing this way due to https://github.com/palantir/blueprint/issues/3891
-import { ContextMenuTarget } from '@blueprintjs/core/lib/esnext/components/context-menu/contextMenuTarget';
+import {
+    ContextMenuTarget,
+    Menu,
+    MenuDivider,
+    MenuItem,
+    ResizeSensor,
+} from '@blueprintjs/core';
 import { WithI18nProps, withI18n } from '@shopify/react-i18n';
 import { Ace, config } from 'ace-builds';
 import React from 'react';
