@@ -40,7 +40,7 @@ These are the required software tools you need to install on your computer.
 
 ### Node.js
 
-We are using [Node.js][node] v10.x. We recommend using a tool such as [asdf][asdf]
+We are using [Node.js][node] v12.x. We recommend using a tool such as [asdf][asdf]
 or [nvm][nvm] if you need to install more than one version of Node.js.
 
 [node]: https://nodejs.org/en/
