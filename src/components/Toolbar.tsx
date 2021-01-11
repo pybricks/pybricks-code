@@ -27,14 +27,14 @@ class Toolbar extends React.Component {
                     </ButtonGroup>
                     <Navbar.Divider />
                     <ButtonGroup>
-                        <BluetoothButton id="bluetooth" />
                         <RunButton id="run" keyboardShortcut="F5" />
                         <StopButton id="stop" keyboardShortcut="F6" />
+                        <ReplButton id="repl" />
                     </ButtonGroup>
                     <Navbar.Divider />
                     <ButtonGroup>
-                        <ReplButton id="repl" />
                         <FlashButton id="flash" />
+                        <BluetoothButton id="bluetooth" />
                     </ButtonGroup>
                 </Navbar.Group>
                 <Navbar.Group align={Alignment.RIGHT}>
