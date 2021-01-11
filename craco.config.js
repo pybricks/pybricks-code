@@ -1,6 +1,11 @@
 // https://github.com/gsoft-inc/craco/blob/master/packages/craco/README.md#configuration
 
-const { getLoader, getLoaders, loaderByName } = require('@craco/craco');
+const {
+    addBeforeLoader,
+    getLoader,
+    getLoaders,
+    loaderByName,
+} = require('@craco/craco');
 
 module.exports = {
     webpack: {
@@ -44,6 +49,17 @@ module.exports = {
                         /\.html$/,
                         /\.json$/,
                     ];
+
+                    // work around default handling of .wasm files
+                    // https://github.com/webpack/webpack/issues/7352
+                    addBeforeLoader(webpackConfig, loaderByName('file-loader'), {
+                        test: /\.wasm$/,
+                        type: 'javascript/auto',
+                        loader: 'file-loader',
+                        options: {
+                            name: 'static/[name].[hash:8].[ext]',
+                        },
+                    });
 
                     return webpackConfig;
                 },
