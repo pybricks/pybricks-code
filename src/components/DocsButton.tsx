@@ -8,7 +8,7 @@ import { Action, Dispatch } from '../actions';
 import { toggleDocs } from '../actions/app';
 import ActionButton, { ActionButtonProps } from './ActionButton';
 import { TooltipId } from './button-i18n';
-import docsIcon from './images/pybricks.svg';
+import docsIcon from './images/question-mark.svg';
 
 type StateProps = undefined;
 type DispatchProps = Pick<ActionButtonProps, 'onAction'>;
