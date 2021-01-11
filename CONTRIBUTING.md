@@ -4,28 +4,6 @@
 
 These are the tools you will need to build and run `pybricks-code` locally.
 
-## Important Note about Github Packages
-
-**This step is mandatory and cannot be skipped. Otherwise you will have no access to some referenced dependencies in [package.json](./package.json)!**
-
-We are currently depending on a couple of packages from the Github package
-registry. [Github requires you](https://docs.github.com/en/free-pro-team@latest/packages/guides/configuring-npm-for-use-with-github-packages#authenticating-with-a-personal-access-token) to log in first before you can install public packages.
-
-To do this, first you will need to create a new authentication token at
-<https://github.com/settings/tokens>.
-
-- Click the *Generate a new token* button.
-- Select the **repo** and **read:packages** scopes.
-- Click the *Generate token* button.
-- Click the clipboard icon top copy the token to be used below.
-
-Then run the following command and enter your username, authentication token
-and email:
-
-    npm login --registry=https://npm.pkg.github.com
-
-This only needs to be done once.
-
 ## IDE
 
 Technically you can use any text editor you like but the project is set up to
@@ -67,9 +45,6 @@ where you would like to save the source code and run:
     git clone https://github.com/pybricks/pybricks-code
     cd pybricks-code
     yarn install
-
-If you see a 401 not authorized error after running `yarn install`, then you
-probably skipped the logging into the Github package registry as [described above](#important-note-about-github-packages).
 
 # Software Stack
 

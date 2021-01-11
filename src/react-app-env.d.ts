@@ -5,7 +5,7 @@ declare module '*.json' {
     export default src;
 }
 
-declare module '*.emcwasm' {
+declare module '*.wasm' {
     const src: string;
     export default src;
 }

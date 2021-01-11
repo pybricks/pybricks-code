@@ -16,11 +16,8 @@ jobs:
     - uses: actions/setup-node@v1
       with:
         node-version: '12.x'
-        registry-url: 'https://npm.pkg.github.com'
     - uses: actions/checkout@v2
     - run: yarn install
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - run: |
         yarn lint
         git diff --exit-code

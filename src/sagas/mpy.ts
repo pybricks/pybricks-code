@@ -2,6 +2,7 @@
 // Copyright (c) 2020 The Pybricks Authors
 
 import { CompileResult, compile as mpyCrossCompile } from '@pybricks/mpy-cross-v5';
+import wasm from '@pybricks/mpy-cross-v5/build/mpy-cross.wasm';
 import { call, put, takeEvery } from 'redux-saga/effects';
 import {
     MpyActionType,
@@ -9,7 +10,6 @@ import {
     didCompile,
     didFailToCompile,
 } from '../actions/mpy';
-import wasm from './mpy-cross.emcwasm';
 
 /**
  * Compiles a script to .mpy and dispatches either didCompile on success or
