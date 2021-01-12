@@ -17,6 +17,7 @@ import {
 import { MpyAction } from './mpy';
 import { NotificationAction } from './notification';
 import { ServiceWorkerAction } from './service-worker';
+import { SettingsAction } from './settings';
 import { TerminalDataAction } from './terminal';
 
 /**
@@ -38,6 +39,7 @@ export type Action =
     | MpyAction
     | NotificationAction
     | ServiceWorkerAction
+    | SettingsAction
     | TerminalDataAction;
 
 /**

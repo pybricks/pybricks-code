@@ -1,10 +1,21 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2021 The Pybricks Authors
 
-import { combineReducers } from 'redux';
+import { Reducer, combineReducers } from 'redux';
+import { Action } from '../actions';
+import { SettingsActionType } from '../actions/settings';
 
 export interface SettingsState {
-    readonly visible: boolean;
+    readonly darkMode: boolean;
 }
 
-export default combineReducers({});
+const darkMode: Reducer<boolean, Action> = (state = false, action) => {
+    switch (action.type) {
+        case SettingsActionType.ToggleDarkMode:
+            return !state;
+        default:
+            return state;
+    }
+};
+
+export default combineReducers({ darkMode });

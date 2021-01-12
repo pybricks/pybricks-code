@@ -1,5 +1,11 @@
 {
     "settings": {
-        "title": "Settings"
+        "title": "Settings",
+        "appearance": {
+            "title": "Appearance",
+            "dark-mode": {
+                "label": "Dark mode"
+            }
+        }
     }
 }

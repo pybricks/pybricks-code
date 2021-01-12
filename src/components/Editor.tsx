@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020 The Pybricks Authors
+// Copyright (c) 2020-2021 The Pybricks Authors
 
 import {
     ContextMenuTarget,
@@ -16,10 +16,12 @@ import { IAceEditor } from 'react-ace/lib/types';
 import { connect } from 'react-redux';
 import { Action, Dispatch } from '../actions';
 import { setEditSession, storageChanged } from '../actions/editor';
+import { RootState } from '../reducers';
 import { EditorStringId } from './editor-i18n';
 import en from './editor-i18n.en.json';
 
 import 'ace-builds/src-noconflict/mode-python';
+import 'ace-builds/src-noconflict/theme-tomorrow_night_eighties';
 import 'ace-builds/src-noconflict/theme-xcode';
 import 'ace-builds/src-noconflict/ext-searchbox';
 import 'ace-builds/src-noconflict/ext-keybinding_menu';
@@ -27,12 +29,16 @@ import 'ace-builds/src-noconflict/ext-language_tools';
 
 import './editor-snippets';
 
+type StateProps = {
+    darkMode: boolean;
+};
+
 type DispatchProps = {
     onSessionChanged: (session?: Ace.EditSession) => void;
     onProgramStorageChanged: (newValue: string) => void;
 };
 
-type EditorProps = DispatchProps & WithI18nProps;
+type EditorProps = StateProps & DispatchProps & WithI18nProps;
 
 @ContextMenuTarget
 class Editor extends React.Component<EditorProps> {
@@ -68,14 +74,14 @@ class Editor extends React.Component<EditorProps> {
     }
 
     render(): JSX.Element {
-        const { i18n, onSessionChanged } = this.props;
+        const { darkMode, i18n, onSessionChanged } = this.props;
         return (
             <div className="h-100 watermark">
                 <ResizeSensor onResize={(): void => this.editor?.resize()}>
                     <AceEditor
                         ref={this.editorRef}
                         mode="python"
-                        theme="xcode"
+                        theme={darkMode ? 'tomorrow_night_eighties' : 'xcode'}
                         fontSize="16pt"
                         width="100%"
                         height="100%"
@@ -171,12 +177,16 @@ class Editor extends React.Component<EditorProps> {
     }
 }
 
+const mapStateToProps = (state: RootState): StateProps => ({
+    darkMode: state.settings.darkMode,
+});
+
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
     onSessionChanged: (s): Action => dispatch(setEditSession(s)),
     onProgramStorageChanged: (v): Action => dispatch(storageChanged(v)),
 });
 
 export default connect(
-    undefined,
+    mapStateToProps,
     mapDispatchToProps,
 )(withI18n({ id: 'editor', fallback: en, translations: { en } })(Editor));

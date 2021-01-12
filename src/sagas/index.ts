@@ -12,6 +12,7 @@ import hub from './hub';
 import lwp3BootloaderBle from './lwp3-bootloader-ble';
 import lwp3BootloaderProtocol from './lwp3-bootloader-protocol';
 import mpy from './mpy';
+import settings from './settings';
 import terminal from './terminal';
 
 /* istanbul ignore next */
@@ -26,6 +27,7 @@ export default function* (): Generator {
         flashFirmware(),
         hub(),
         mpy(),
+        settings(),
         terminal(),
         put(startup()),
     ]);
