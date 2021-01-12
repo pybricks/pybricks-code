@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 import SplitterLayout from 'react-splitter-layout';
 import { RootState } from '../reducers';
 import Editor from './Editor';
+import SettingsDrawer from './SettingsDrawer';
 import StatusBar from './StatusBar';
 import Terminal from './Terminal';
 import Toolbar from './Toolbar';
@@ -61,6 +62,7 @@ function App(): JSX.Element {
                 )}
             </SplitterLayout>
             <StatusBar />
+            <SettingsDrawer />
         </div>
     );
 }

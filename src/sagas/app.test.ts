@@ -88,7 +88,7 @@ describe('storeDocsState', () => {
         const mockSetItem = jest
             .spyOn(Object.getPrototypeOf(window.localStorage), 'setItem')
             .mockImplementation((_key, value) => expect(value).toBe('true'));
-        saga.setState({ app: { showDocs: true } });
+        saga.setState({ app: { showSettings: false, showDocs: true } });
         saga.put(toggleDocs());
         expect(mockSetItem).toHaveBeenCalled();
 
@@ -101,7 +101,7 @@ describe('storeDocsState', () => {
         const mockSetItem = jest
             .spyOn(Object.getPrototypeOf(window.localStorage), 'setItem')
             .mockImplementation((_key, value) => expect(value).toBe('false'));
-        saga.setState({ app: { showDocs: false } });
+        saga.setState({ app: { showSettings: false, showDocs: false } });
         saga.put(toggleDocs());
         expect(mockSetItem).toHaveBeenCalled();
 
