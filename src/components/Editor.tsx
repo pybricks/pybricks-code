@@ -17,6 +17,7 @@ import { connect } from 'react-redux';
 import { Action, Dispatch } from '../actions';
 import { setEditSession, storageChanged } from '../actions/editor';
 import { RootState } from '../reducers';
+import { isMacOS } from '../utils/os';
 import { EditorStringId } from './editor-i18n';
 import en from './editor-i18n.en.json';
 
@@ -142,7 +143,7 @@ class Editor extends React.Component<EditorProps> {
                     }}
                     text={i18n.translate(EditorStringId.Copy)}
                     icon="duplicate"
-                    label={/mac/i.test(navigator.platform) ? 'Cmd-C' : 'Ctrl-C'}
+                    label={isMacOS() ? 'Cmd-C' : 'Ctrl-C'}
                     disabled={this.editor?.getSelection().isEmpty()}
                 />
                 <MenuItem
@@ -154,7 +155,7 @@ class Editor extends React.Component<EditorProps> {
                     }}
                     text={i18n.translate(EditorStringId.Paste)}
                     icon="clipboard"
-                    label={/mac/i.test(navigator.platform) ? 'Cmd-V' : 'Ctrl-V'}
+                    label={isMacOS() ? 'Cmd-V' : 'Ctrl-V'}
                 />
                 <MenuDivider />
                 <MenuItem

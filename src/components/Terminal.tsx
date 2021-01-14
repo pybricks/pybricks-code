@@ -17,6 +17,7 @@ import { FitAddon } from 'xterm-addon-fit';
 import { Dispatch } from '../actions';
 import { receiveData } from '../actions/terminal';
 import { RootState } from '../reducers';
+import { isMacOS } from '../utils/os';
 import { TerminalStringId } from './terminal-i18n';
 import en from './terminal-i18n.en.json';
 
@@ -137,7 +138,7 @@ class Terminal extends React.Component<TerminalProps> {
                     }}
                     text={i18n.translate(TerminalStringId.Copy)}
                     icon="duplicate"
-                    label={/mac/i.test(navigator.platform) ? 'Cmd-C' : 'Ctrl-Shift-C'}
+                    label={isMacOS() ? 'Cmd-C' : 'Ctrl-Shift-C'}
                     disabled={!this.xterm.hasSelection()}
                 />
                 <MenuItem
@@ -146,7 +147,7 @@ class Terminal extends React.Component<TerminalProps> {
                     }}
                     text={i18n.translate(TerminalStringId.Paste)}
                     icon="clipboard"
-                    label={/mac/i.test(navigator.platform) ? 'Cmd-V' : 'Ctrl-V'}
+                    label={isMacOS() ? 'Cmd-V' : 'Ctrl-V'}
                 />
                 <MenuDivider />
                 <MenuItem
