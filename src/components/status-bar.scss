@@ -1,0 +1,26 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2020-2021 The Pybricks Authors
+
+// Custom styling for the StatusBar control.
+
+@import '../variables.scss';
+
+.status-bar {
+    position: fixed;
+    top: calc(100vh - #{$pb-status-bar-height} - var(--mobile-pad));
+    background-color: $pb-pybricks-blue;
+    height: $pb-status-bar-height;
+    width: 100vw;
+    display: flex;
+    align-items: center;
+}
+
+.status-bar-item {
+    width: 25%;
+    margin-left: 10px;
+}
+
+.bp3-progress-bar.status-bar-item {
+    // override progress bar default gray1 backgound
+    background-color: $pt-app-background-color;
+}

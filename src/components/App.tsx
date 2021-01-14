@@ -12,6 +12,7 @@ import Terminal from './Terminal';
 import Toolbar from './Toolbar';
 
 import 'react-splitter-layout/lib/index.css';
+import './app.scss';
 
 function App(): JSX.Element {
     const showDocs = useSelector((s: RootState): boolean => s.settings.showDocs);

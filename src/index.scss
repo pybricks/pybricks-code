@@ -1,25 +1,9 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2021 The Pybricks Authors
 
-@import '@blueprintjs/core/lib/scss/variables.scss';
-
-// override variables here
-// See https://blueprintjs.com/docs/#core/variables
-
-$pt-navbar-height: 72px;
-
-$pybricks-blue: #0088ce;
-$pt-app-background-color: #e8e8e8;
-$pt-intent-primary: $pybricks-blue;
-$pt-outline-color: rgba($pybricks-blue, 0.6);
-
-$navbar-background-color: $pt-app-background-color;
-$dark-navbar-background-color: $pt-dark-app-background-color;
-
+@import './variables.scss';
 @import '~normalize.css';
 @import '@blueprintjs/core/src/blueprint.scss';
-
-$status-bar-height: 3vh;
 
 :root {
     --mobile-pad: 0px;
@@ -34,7 +18,7 @@ body {
 
 .h-body {
     // height makes everything fit without scrolling
-    height: calc(100vh - #{$pt-navbar-height} - #{$status-bar-height} - var(--mobile-pad)) !important;
+    height: calc(100vh - #{$pt-navbar-height} - #{$pb-status-bar-height} - var(--mobile-pad)) !important;
 }
 
 .h-100 {
@@ -51,73 +35,4 @@ body {
 
 .no-box-shadow {
     box-shadow: unset !important;
-}
-
-// Status bar. TODO: move this to separate file
-
-.status-bar {
-    position: fixed;
-    top: calc(100vh - #{$status-bar-height} - var(--mobile-pad));
-    background-color: $pybricks-blue;
-    height: $status-bar-height;
-    width: 100vw;
-    display: flex;
-    align-items: center;
-}
-
-.status-bar-item {
-    width: 25%;
-    margin-left: 10px;
-}
-
-.bp3-progress-bar.status-bar-item {
-    // override progress bar default gray1 backgound
-    background-color: $pt-app-background-color;
-}
-
-// Hacks
-
-.bp3-navbar-divider {
-    // don't draw vertical line since we are just using button groups
-    border-left: unset;
-}
-
-.bp3-dark .ace_gutter {
-    // make ace editor match app backgound color
-    background-color: $pt-dark-app-background-color !important;
-}
-
-.ace_gutter {
-    // make ace editor match app backgound color
-    background-color: $pt-app-background-color !important;
-}
-
-.bp3-dark .splitter-layout > .layout-splitter  {
-    // make layout splitter match app color scheme
-    background-color: $pt-dark-app-background-color !important;
-}
-
-.layout-splitter {
-    // make layout splitter match app color scheme
-    background-color: $pt-app-background-color !important;
-}
-
-.bp3-dark .terminal-padding {
-    background-color: black;
-}
-
-.terminal-padding {
-    padding-left: 10px;
-}
-
-.watermark::after {
-    content: "";
-    background: url("./beta.svg");
-    opacity: 1;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    position: absolute;
-    pointer-events: none
 }

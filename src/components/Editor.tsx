@@ -29,6 +29,7 @@ import 'ace-builds/src-noconflict/ext-keybinding_menu';
 import 'ace-builds/src-noconflict/ext-language_tools';
 
 import './editor-snippets';
+import './editor.scss';
 
 type StateProps = {
     darkMode: boolean;

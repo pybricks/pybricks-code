@@ -12,6 +12,8 @@ import SaveAsButton from './SaveAsButton';
 import SettingsButton from './SettingsButton';
 import StopButton from './StopButton';
 
+import './toolbar.scss';
+
 class Toolbar extends React.Component {
     render(): JSX.Element {
         return (

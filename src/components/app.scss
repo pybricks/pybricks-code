@@ -1,0 +1,24 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2020-2021 The Pybricks Authors
+
+// Custom styling for the App control.
+
+@import '../variables.scss';
+
+.bp3-dark .splitter-layout > .layout-splitter  {
+    // make layout splitter match app color scheme
+    background-color: $pt-dark-app-background-color;
+}
+
+.splitter-layout > .layout-splitter {
+    // make layout splitter match app color scheme
+    background-color: $pt-app-background-color;
+}
+
+.bp3-dark .terminal-padding {
+    background-color: black;
+}
+
+.terminal-padding {
+    padding-left: 10px;
+}
