@@ -4,7 +4,6 @@
 import { Alignment, ButtonGroup, Navbar } from '@blueprintjs/core';
 import React from 'react';
 import BluetoothButton from './BluetoothButton';
-import DocsButton from './DocsButton';
 import FlashButton from './FlashButton';
 import OpenButton from './OpenButton';
 import ReplButton from './ReplButton';
@@ -40,7 +39,6 @@ class Toolbar extends React.Component {
                 <Navbar.Group align={Alignment.RIGHT}>
                     <ButtonGroup>
                         <SettingsButton id="settings" />
-                        <DocsButton id="docs" />
                     </ButtonGroup>
                 </Navbar.Group>
             </Navbar>

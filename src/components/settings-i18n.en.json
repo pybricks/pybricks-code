@@ -3,6 +3,9 @@
         "title": "Settings",
         "appearance": {
             "title": "Appearance",
+            "documentation": {
+                "label": "Documentation"
+            },
             "dark-mode": {
                 "label": "Dark mode"
             }

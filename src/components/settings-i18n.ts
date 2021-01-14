@@ -6,5 +6,6 @@
 export enum SettingsStringId {
     Title = 'settings.title',
     AppearanceTitle = 'settings.appearance.title',
+    AppearanceDocumentationLabel = 'settings.appearance.documentation.label',
     AppearanceDarkModeLabel = 'settings.appearance.dark-mode.label',
 }

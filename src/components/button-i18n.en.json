@@ -9,6 +9,5 @@
         "disconnect": { "tooltip": "Disconnect Bluetooth" }
     },
     "flash": { "tooltip": "Flash hub firmware" },
-    "docs": { "tooltip": "Show/hide documentation" },
-    "settings": { "tooltip": "Open setting" }
+    "settings": { "tooltip": "Settings" }
 }

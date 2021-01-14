@@ -1,11 +1,12 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020 The Pybricks Authors
+// Copyright (c) 2020-2021 The Pybricks Authors
 // File: sagas/app.test.ts
 // Tests for app sagas.
 
 import { AsyncSaga } from '../../test';
-import { AppActionType, startup, toggleDocs } from '../actions/app';
-import app from './app';
+import { startup } from '../actions/app';
+import { SettingsActionType, toggleDarkMode, toggleDocs } from '../actions/settings';
+import settings from './settings';
 
 afterAll(() => {
     jest.restoreAllMocks();
@@ -13,7 +14,7 @@ afterAll(() => {
 
 describe('startup', () => {
     test('with large screen', async () => {
-        const saga = new AsyncSaga(app);
+        const saga = new AsyncSaga(settings);
 
         jest.spyOn(
             Object.getPrototypeOf(window.localStorage),
@@ -25,13 +26,13 @@ describe('startup', () => {
 
         // toggles documentation to be visible
         const toggleDocsAction = await saga.take();
-        expect(toggleDocsAction.type).toBe(AppActionType.ToggleDocs);
+        expect(toggleDocsAction.type).toBe(SettingsActionType.ToggleDocs);
 
         await saga.end();
     });
 
     test('with small screen', async () => {
-        const saga = new AsyncSaga(app);
+        const saga = new AsyncSaga(settings);
 
         jest.spyOn(
             Object.getPrototypeOf(window.localStorage),
@@ -47,30 +48,30 @@ describe('startup', () => {
     });
 
     test('with stored value "true"', async () => {
-        const saga = new AsyncSaga(app);
+        const saga = new AsyncSaga(settings);
 
         jest.spyOn(
             Object.getPrototypeOf(window.localStorage),
             'getItem',
-        ).mockReturnValue('true');
+        ).mockReturnValue('{"showDocs":true}');
         innerWidth = 800;
 
         saga.put(startup());
 
         // toggles documentation to be visible
         const toggleDocsAction = await saga.take();
-        expect(toggleDocsAction.type).toBe(AppActionType.ToggleDocs);
+        expect(toggleDocsAction.type).toBe(SettingsActionType.ToggleDocs);
 
         await saga.end();
     });
 
     test('with stored value "false"', async () => {
-        const saga = new AsyncSaga(app);
+        const saga = new AsyncSaga(settings);
 
         jest.spyOn(
             Object.getPrototypeOf(window.localStorage),
             'getItem',
-        ).mockReturnValue('false');
+        ).mockReturnValue('{"showDocs":false}');
         innerWidth = 1024;
 
         saga.put(startup());
@@ -81,28 +82,36 @@ describe('startup', () => {
     });
 });
 
-describe('storeDocsState', () => {
-    test('showing', async () => {
-        const saga = new AsyncSaga(app);
+describe('store settings to local storage', () => {
+    test('showDocs', async () => {
+        const saga = new AsyncSaga(settings);
 
+        // NOTE: we aren't testing reducers here, so value doesn't change
+        // even though we call the toggle function
         const mockSetItem = jest
             .spyOn(Object.getPrototypeOf(window.localStorage), 'setItem')
-            .mockImplementation((_key, value) => expect(value).toBe('true'));
-        saga.setState({ app: { showSettings: false, showDocs: true } });
+            .mockImplementation((_key, value) =>
+                expect(value).toBe('{"darkMode":false,"showDocs":true}'),
+            );
+        saga.setState({ settings: { darkMode: false, showDocs: true } });
         saga.put(toggleDocs());
         expect(mockSetItem).toHaveBeenCalled();
 
         await saga.end();
     });
 
-    test('hidden', async () => {
-        const saga = new AsyncSaga(app);
+    test('darkMode', async () => {
+        const saga = new AsyncSaga(settings);
 
+        // NOTE: we aren't testing reducers here, so value doesn't change
+        // even though we call the toggle function
         const mockSetItem = jest
             .spyOn(Object.getPrototypeOf(window.localStorage), 'setItem')
-            .mockImplementation((_key, value) => expect(value).toBe('false'));
-        saga.setState({ app: { showSettings: false, showDocs: false } });
-        saga.put(toggleDocs());
+            .mockImplementation((_key, value) =>
+                expect(value).toBe('{"darkMode":true,"showDocs":false}'),
+            );
+        saga.setState({ settings: { darkMode: true, showDocs: false } });
+        saga.put(toggleDarkMode());
         expect(mockSetItem).toHaveBeenCalled();
 
         await saga.end();

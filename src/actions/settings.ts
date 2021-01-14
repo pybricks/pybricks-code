@@ -5,7 +5,16 @@ import { Action } from 'redux';
 
 /** Actions related to settings. */
 export enum SettingsActionType {
+    ToggleDocs = 'settings.action.toggleDocs',
     ToggleDarkMode = 'settings.action.toggleDarkMode',
+}
+
+/** Action to toggle show docs setting. */
+export type SettingsToggleDocsAction = Action<SettingsActionType.ToggleDocs>;
+
+/** Toggles show docs setting on or off. */
+export function toggleDocs(): SettingsToggleDocsAction {
+    return { type: SettingsActionType.ToggleDocs };
 }
 
 /** Action to toggle dark mode setting. */
@@ -17,4 +26,4 @@ export function toggleDarkMode(): SettingsToggleDarkModeAction {
 }
 
 /** common type for all settings actions. */
-export type SettingsAction = SettingsToggleDarkModeAction;
+export type SettingsAction = SettingsToggleDocsAction | SettingsToggleDarkModeAction;

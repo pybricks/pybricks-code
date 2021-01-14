@@ -7,6 +7,7 @@ import { SettingsActionType } from '../actions/settings';
 
 export interface SettingsState {
     readonly darkMode: boolean;
+    readonly showDocs: boolean;
 }
 
 const darkMode: Reducer<boolean, Action> = (state = false, action) => {
@@ -18,4 +19,13 @@ const darkMode: Reducer<boolean, Action> = (state = false, action) => {
     }
 };
 
-export default combineReducers({ darkMode });
+const showDocs: Reducer<boolean, Action> = (state = false, action) => {
+    switch (action.type) {
+        case SettingsActionType.ToggleDocs:
+            return !state;
+        default:
+            return state;
+    }
+};
+
+export default combineReducers({ darkMode, showDocs });

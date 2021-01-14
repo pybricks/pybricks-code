@@ -18,18 +18,8 @@ const showSettings: Reducer<boolean, Action> = (state = false, action) => {
     }
 };
 
-const showDocs: Reducer<boolean, Action> = (state = false, action) => {
-    switch (action.type) {
-        case AppActionType.ToggleDocs:
-            return !state;
-        default:
-            return state;
-    }
-};
-
 export interface AppState {
     readonly showSettings: boolean;
-    readonly showDocs: boolean;
 }
 
-export default combineReducers({ showSettings, showDocs });
+export default combineReducers({ showSettings });

@@ -1,17 +1,23 @@
 import { put, select, takeEvery } from 'redux-saga/effects';
 import { AppActionType } from '../actions/app';
-import { SettingsActionType, toggleDarkMode } from '../actions/settings';
+import { SettingsActionType, toggleDarkMode, toggleDocs } from '../actions/settings';
 import { RootState } from '../reducers';
 import { SettingsState } from '../reducers/settings';
 
 function* loadSettings(): Generator {
-    const settingsString = localStorage.getItem('settings');
-    if (!settingsString) {
-        return;
-    }
+    const settingsString = localStorage.getItem('settings') || '{}';
     const settings = JSON.parse(settingsString) as SettingsState;
 
     // TODO: there has to be a better way to initialize app state from settings
+
+    if (
+        settings.showDocs === undefined
+            ? window.innerWidth >= 1024
+            : settings.showDocs === true
+    ) {
+        yield put(toggleDocs());
+    }
+
     if (settings.darkMode) {
         yield put(toggleDarkMode());
     }
@@ -22,6 +28,7 @@ function* saveSettings(): Generator {
     localStorage.setItem('settings', JSON.stringify(settings));
 }
 
+// TODO: this should really be part of component, not saga
 function* updateDarkModeClass(): Generator {
     const darkMode = (yield select((s: RootState) => s.settings.darkMode)) as boolean;
     if (darkMode) {

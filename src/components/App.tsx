@@ -14,7 +14,7 @@ import Toolbar from './Toolbar';
 import 'react-splitter-layout/lib/index.css';
 
 function App(): JSX.Element {
-    const showDocs = useSelector((s: RootState): boolean => s.app.showDocs);
+    const showDocs = useSelector((s: RootState): boolean => s.settings.showDocs);
     const [dragging, setDragging] = useState(false);
 
     return (
