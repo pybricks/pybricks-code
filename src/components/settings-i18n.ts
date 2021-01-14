@@ -8,4 +8,5 @@ export enum SettingsStringId {
     AppearanceTitle = 'settings.appearance.title',
     AppearanceDocumentationLabel = 'settings.appearance.documentation.label',
     AppearanceDarkModeLabel = 'settings.appearance.dark-mode.label',
+    AppearanceZoomHelp = 'settings.appearance.zoom.help',
 }

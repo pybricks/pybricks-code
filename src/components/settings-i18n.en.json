@@ -8,6 +8,9 @@
             },
             "dark-mode": {
                 "label": "Dark mode"
+            },
+            "zoom": {
+                "help": "Use {in} and {out} to zoom."
             }
         }
     }

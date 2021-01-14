@@ -10,6 +10,7 @@ import { closeSettings } from '../actions/app';
 import { setBoolean } from '../actions/settings';
 import { RootState } from '../reducers';
 import { SettingId } from '../settings';
+import { isMacOS } from '../utils/os';
 import { SettingsStringId } from './settings-i18n';
 import en from './settings-i18n.en.json';
 
@@ -49,7 +50,16 @@ class SettingsDrawer extends React.PureComponent<SettingsProps> {
                 onClose={() => onClose()}
             >
                 <div className="pb-settings">
-                    <FormGroup label={i18n.translate(SettingsStringId.AppearanceTitle)}>
+                    <FormGroup
+                        label={i18n.translate(SettingsStringId.AppearanceTitle)}
+                        helperText={i18n.translate(
+                            SettingsStringId.AppearanceZoomHelp,
+                            {
+                                in: <span>{isMacOS() ? 'Cmd' : 'Ctrl'}-+</span>,
+                                out: <span>{isMacOS() ? 'Cmd' : 'Ctrl'}--</span>,
+                            },
+                        )}
+                    >
                         <Switch
                             label={i18n.translate(
                                 SettingsStringId.AppearanceDocumentationLabel,
