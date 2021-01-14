@@ -7,8 +7,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Action, Dispatch } from '../actions';
 import { closeSettings } from '../actions/app';
-import { toggleDarkMode, toggleDocs } from '../actions/settings';
+import { setBoolean } from '../actions/settings';
 import { RootState } from '../reducers';
+import { SettingId } from '../settings';
 import { SettingsStringId } from './settings-i18n';
 import en from './settings-i18n.en.json';
 
@@ -22,8 +23,8 @@ type StateProps = {
 
 type DispatchProps = {
     onClose: () => void;
-    onShowDocsChanged: () => void;
-    onDarkModeChanged: () => void;
+    onShowDocsChanged: (checked: boolean) => void;
+    onDarkModeChanged: (checked: boolean) => void;
 };
 
 type SettingsProps = StateProps & DispatchProps & WithI18nProps;
@@ -55,7 +56,11 @@ class SettingsDrawer extends React.PureComponent<SettingsProps> {
                             )}
                             large={true}
                             checked={showDocs}
-                            onChange={() => onShowDocsChanged()}
+                            onChange={(e) =>
+                                onShowDocsChanged(
+                                    (e.target as HTMLInputElement).checked,
+                                )
+                            }
                         />
                         <Switch
                             label={i18n.translate(
@@ -63,7 +68,11 @@ class SettingsDrawer extends React.PureComponent<SettingsProps> {
                             )}
                             large={true}
                             checked={darkMode}
-                            onChange={() => onDarkModeChanged()}
+                            onChange={(e) =>
+                                onDarkModeChanged(
+                                    (e.target as HTMLInputElement).checked,
+                                )
+                            }
                         />
                     </FormGroup>
                 </div>
@@ -80,8 +89,10 @@ const mapStateToProps = (state: RootState): StateProps => ({
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
     onClose: (): Action => dispatch(closeSettings()),
-    onShowDocsChanged: (): Action => dispatch(toggleDocs()),
-    onDarkModeChanged: (): Action => dispatch(toggleDarkMode()),
+    onShowDocsChanged: (checked): Action =>
+        dispatch(setBoolean(SettingId.ShowDocs, checked)),
+    onDarkModeChanged: (checked): Action =>
+        dispatch(setBoolean(SettingId.DarkMode, checked)),
 });
 
 export default connect(

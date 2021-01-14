@@ -1,11 +1,13 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2021 The Pybricks Authors
-// File: sagas/app.test.ts
-// Tests for app sagas.
+// File: sagas/settings.test.ts
+// Tests for settings sagas.
 
 import { AsyncSaga } from '../../test';
 import { startup } from '../actions/app';
-import { SettingsActionType, toggleDarkMode, toggleDocs } from '../actions/settings';
+import { didBooleanChange, didFailToSetBoolean, setBoolean } from '../actions/settings';
+import { SettingsState } from '../reducers/settings';
+import { SettingId } from '../settings';
 import settings from './settings';
 
 afterAll(() => {
@@ -13,89 +15,243 @@ afterAll(() => {
 });
 
 describe('startup', () => {
-    test('with large screen', async () => {
-        const saga = new AsyncSaga(settings);
+    describe('showDocs', () => {
+        test('with large screen and no value set', async () => {
+            const saga = new AsyncSaga(settings);
 
-        jest.spyOn(
-            Object.getPrototypeOf(window.localStorage),
-            'getItem',
-        ).mockReturnValue(null);
-        innerWidth = 1024;
+            jest.spyOn(
+                Object.getPrototypeOf(window.localStorage),
+                'getItem',
+            ).mockReturnValue(null);
+            innerWidth = 1024;
 
-        saga.put(startup());
+            saga.put(startup());
 
-        // toggles documentation to be visible
-        const toggleDocsAction = await saga.take();
-        expect(toggleDocsAction.type).toBe(SettingsActionType.ToggleDocs);
+            // does nothing
 
-        await saga.end();
+            await saga.end();
+        });
+
+        test('with small screen and no value set', async () => {
+            const saga = new AsyncSaga(settings);
+
+            jest.spyOn(
+                Object.getPrototypeOf(window.localStorage),
+                'getItem',
+            ).mockReturnValue(null);
+            innerWidth = 800;
+
+            saga.put(startup());
+
+            // does nothing
+
+            await saga.end();
+        });
+
+        test('with large screen and stored value "true"', async () => {
+            const saga = new AsyncSaga(settings);
+
+            jest.spyOn(
+                Object.getPrototypeOf(window.localStorage),
+                'getItem',
+            ).mockImplementation((key) => {
+                switch (key) {
+                    case 'setting.showDocs':
+                        return 'true';
+                    default:
+                        return null;
+                }
+            });
+            innerWidth = 1024;
+
+            saga.put(startup());
+
+            // does nothing
+
+            await saga.end();
+        });
+
+        test('with small screen and stored value "true"', async () => {
+            const saga = new AsyncSaga(settings);
+
+            jest.spyOn(
+                Object.getPrototypeOf(window.localStorage),
+                'getItem',
+            ).mockImplementation((key) => {
+                switch (key) {
+                    case 'setting.showDocs':
+                        return 'true';
+                    default:
+                        return null;
+                }
+            });
+            innerWidth = 800;
+
+            saga.put(startup());
+
+            // requests documentation to be shown
+            const action = await saga.take();
+            expect(action).toEqual(didBooleanChange(SettingId.ShowDocs, true));
+
+            await saga.end();
+        });
+
+        test('with large screen stored value "false"', async () => {
+            const saga = new AsyncSaga(settings);
+
+            jest.spyOn(
+                Object.getPrototypeOf(window.localStorage),
+                'getItem',
+            ).mockImplementation((key) => {
+                switch (key) {
+                    case 'setting.showDocs':
+                        return 'false';
+                    default:
+                        return null;
+                }
+            });
+            innerWidth = 1024;
+
+            saga.put(startup());
+
+            // requests documentation to be hidden
+            const action = await saga.take();
+            expect(action).toEqual(didBooleanChange(SettingId.ShowDocs, false));
+
+            await saga.end();
+        });
+
+        test('with small screen stored value "false"', async () => {
+            const saga = new AsyncSaga(settings);
+
+            jest.spyOn(
+                Object.getPrototypeOf(window.localStorage),
+                'getItem',
+            ).mockImplementation((key) => {
+                switch (key) {
+                    case 'setting.showDocs':
+                        return 'false';
+                    default:
+                        return null;
+                }
+            });
+            innerWidth = 800;
+
+            saga.put(startup());
+
+            // does nothing
+
+            await saga.end();
+        });
     });
 
-    test('with small screen', async () => {
-        const saga = new AsyncSaga(settings);
+    describe('darkMode', () => {
+        test('with no value set', async () => {
+            const saga = new AsyncSaga(settings);
 
-        jest.spyOn(
-            Object.getPrototypeOf(window.localStorage),
-            'getItem',
-        ).mockReturnValue(null);
-        innerWidth = 800;
+            jest.spyOn(
+                Object.getPrototypeOf(window.localStorage),
+                'getItem',
+            ).mockReturnValue(null);
 
-        saga.put(startup());
+            saga.put(startup());
 
-        // does nothing
+            // does nothing
 
-        await saga.end();
-    });
+            await saga.end();
+        });
 
-    test('with stored value "true"', async () => {
-        const saga = new AsyncSaga(settings);
+        test('with value set to true', async () => {
+            const saga = new AsyncSaga(settings);
 
-        jest.spyOn(
-            Object.getPrototypeOf(window.localStorage),
-            'getItem',
-        ).mockReturnValue('{"showDocs":true}');
-        innerWidth = 800;
+            jest.spyOn(
+                Object.getPrototypeOf(window.localStorage),
+                'getItem',
+            ).mockImplementation((key) => {
+                switch (key) {
+                    case 'setting.darkMode':
+                        return 'true';
+                    default:
+                        return null;
+                }
+            });
 
-        saga.put(startup());
+            saga.put(startup());
 
-        // toggles documentation to be visible
-        const toggleDocsAction = await saga.take();
-        expect(toggleDocsAction.type).toBe(SettingsActionType.ToggleDocs);
+            // requests to enable dark mode
+            const action = await saga.take();
+            expect(action).toEqual(didBooleanChange(SettingId.DarkMode, true));
 
-        await saga.end();
-    });
+            await saga.end();
+        });
 
-    test('with stored value "false"', async () => {
-        const saga = new AsyncSaga(settings);
+        test('with value set to false', async () => {
+            const saga = new AsyncSaga(settings);
 
-        jest.spyOn(
-            Object.getPrototypeOf(window.localStorage),
-            'getItem',
-        ).mockReturnValue('{"showDocs":false}');
-        innerWidth = 1024;
+            jest.spyOn(
+                Object.getPrototypeOf(window.localStorage),
+                'getItem',
+            ).mockImplementation((key) => {
+                switch (key) {
+                    case 'setting.darkMode':
+                        return 'false';
+                    default:
+                        return null;
+                }
+            });
 
-        saga.put(startup());
+            saga.put(startup());
 
-        // does nothing
+            // does nothing
 
-        await saga.end();
+            await saga.end();
+        });
     });
 });
 
 describe('store settings to local storage', () => {
+    test('failed storage', async () => {
+        const saga = new AsyncSaga(settings);
+
+        const testError = new Error('local storage is disabled');
+
+        const mockSetItem = jest
+            .spyOn(Object.getPrototypeOf(window.localStorage), 'setItem')
+            .mockImplementation(() => {
+                throw testError;
+            });
+
+        saga.setState({ settings: { showDocs: false } as SettingsState });
+        saga.put(setBoolean(SettingId.ShowDocs, true));
+        expect(mockSetItem).toHaveBeenCalled();
+
+        // raises error that storing setting didn't work
+        const action1 = await saga.take();
+        expect(action1).toEqual(didFailToSetBoolean(SettingId.ShowDocs, testError));
+
+        // but the setting is still applied anyway
+        const action2 = await saga.take();
+        expect(action2).toEqual(didBooleanChange(SettingId.ShowDocs, true));
+
+        await saga.end();
+    });
+
     test('showDocs', async () => {
         const saga = new AsyncSaga(settings);
 
-        // NOTE: we aren't testing reducers here, so value doesn't change
-        // even though we call the toggle function
         const mockSetItem = jest
             .spyOn(Object.getPrototypeOf(window.localStorage), 'setItem')
-            .mockImplementation((_key, value) =>
-                expect(value).toBe('{"darkMode":false,"showDocs":true}'),
-            );
-        saga.setState({ settings: { darkMode: false, showDocs: true } });
-        saga.put(toggleDocs());
+            .mockImplementation((key, value) => {
+                expect(key).toBe('setting.showDocs');
+                expect(value).toBe('true');
+            });
+
+        saga.setState({ settings: { showDocs: false } as SettingsState });
+        saga.put(setBoolean(SettingId.ShowDocs, true));
         expect(mockSetItem).toHaveBeenCalled();
+
+        const action = await saga.take();
+        expect(action).toEqual(didBooleanChange(SettingId.ShowDocs, true));
 
         await saga.end();
     });
@@ -103,16 +259,71 @@ describe('store settings to local storage', () => {
     test('darkMode', async () => {
         const saga = new AsyncSaga(settings);
 
-        // NOTE: we aren't testing reducers here, so value doesn't change
-        // even though we call the toggle function
         const mockSetItem = jest
             .spyOn(Object.getPrototypeOf(window.localStorage), 'setItem')
-            .mockImplementation((_key, value) =>
-                expect(value).toBe('{"darkMode":true,"showDocs":false}'),
-            );
-        saga.setState({ settings: { darkMode: true, showDocs: false } });
-        saga.put(toggleDarkMode());
+            .mockImplementation((key, value) => {
+                expect(key).toBe('setting.darkMode');
+                expect(value).toBe('false');
+            });
+
+        saga.setState({ settings: { darkMode: true } as SettingsState });
+        saga.put(setBoolean(SettingId.DarkMode, false));
         expect(mockSetItem).toHaveBeenCalled();
+
+        const action = await saga.take();
+        expect(action).toEqual(didBooleanChange(SettingId.DarkMode, false));
+
+        await saga.end();
+    });
+});
+
+describe('storage monitor', () => {
+    test('ignores other keys', async () => {
+        const saga = new AsyncSaga(settings);
+
+        window.dispatchEvent(
+            new StorageEvent('storage', {
+                key: 'not a setting',
+                storageArea: localStorage,
+            }),
+        );
+
+        // nothing happens
+
+        await saga.end();
+    });
+
+    test('puts action when setting changes', async () => {
+        const saga = new AsyncSaga(settings);
+
+        window.dispatchEvent(
+            new StorageEvent('storage', {
+                key: 'setting.showDocs',
+                newValue: 'true',
+                oldValue: 'false',
+                storageArea: localStorage,
+            }),
+        );
+
+        const action = await saga.take();
+        expect(action).toEqual(didBooleanChange(SettingId.ShowDocs, true));
+
+        await saga.end();
+    });
+
+    test('ignores session storage', async () => {
+        const saga = new AsyncSaga(settings);
+
+        window.dispatchEvent(
+            new StorageEvent('storage', {
+                key: 'setting.showDocs',
+                newValue: 'true',
+                oldValue: 'false',
+                storageArea: sessionStorage,
+            }),
+        );
+
+        // nothing happens
 
         await saga.end();
     });
