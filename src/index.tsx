@@ -10,7 +10,7 @@ import { applyMiddleware, createStore } from 'redux';
 import { createLogger } from 'redux-logger';
 import createSagaMiddleware from 'redux-saga';
 import './index.scss';
-import { success, update } from './actions/service-worker';
+import { didSucceed, didUpdate } from './actions/service-worker';
 import App from './components/App';
 import NotificationStack from './components/NotificationStack';
 import rootReducer from './reducers';
@@ -76,8 +76,8 @@ ReactDOM.render(
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://cra.link/PWA
 serviceWorkerRegistration.register({
-    onUpdate: (r) => store.dispatch(update(r)),
-    onSuccess: (r) => store.dispatch(success(r)),
+    onUpdate: (r) => store.dispatch(didUpdate(r)),
+    onSuccess: (r) => store.dispatch(didSucceed(r)),
 });
 
 // If you want to start measuring performance in your app, pass a function

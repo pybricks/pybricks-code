@@ -147,7 +147,7 @@ const list: Reducer<NotificationList, Action> = (state = [], action) => {
             ];
         case NotificationActionType.Remove:
             return state.filter((e) => e.id !== action.id);
-        case ServiceWorkerActionType.Update:
+        case ServiceWorkerActionType.DidUpdate:
             return append(
                 state,
                 Level.Info,
@@ -155,7 +155,7 @@ const list: Reducer<NotificationList, Action> = (state = [], action) => {
                 undefined,
                 'https://github.com/pybricks/pybricks-code/issues/102',
             );
-        case ServiceWorkerActionType.Success:
+        case ServiceWorkerActionType.DidSucceed:
             return append(state, Level.Info, MessageId.ServiceWorkerSuccess);
         default:
             return state;

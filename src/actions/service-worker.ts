@@ -4,8 +4,8 @@
 import { Action } from 'redux';
 
 export enum ServiceWorkerActionType {
-    Update = 'serviceWorker.update',
-    Success = 'serviceWorker.success',
+    DidUpdate = 'serviceWorker.didUpdate',
+    DidSucceed = 'serviceWorker.didSucceed',
 }
 
 export type ServiceWorkerAction<
@@ -14,14 +14,14 @@ export type ServiceWorkerAction<
     registration: ServiceWorkerRegistration;
 };
 
-export function update(
+export function didUpdate(
     registration: ServiceWorkerRegistration,
-): ServiceWorkerAction<ServiceWorkerActionType.Update> {
-    return { type: ServiceWorkerActionType.Update, registration };
+): ServiceWorkerAction<ServiceWorkerActionType.DidUpdate> {
+    return { type: ServiceWorkerActionType.DidUpdate, registration };
 }
 
-export function success(
+export function didSucceed(
     registration: ServiceWorkerRegistration,
-): ServiceWorkerAction<ServiceWorkerActionType.Success> {
-    return { type: ServiceWorkerActionType.Success, registration };
+): ServiceWorkerAction<ServiceWorkerActionType.DidSucceed> {
+    return { type: ServiceWorkerActionType.DidSucceed, registration };
 }
