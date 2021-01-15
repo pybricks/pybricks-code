@@ -1,6 +1,6 @@
 {
     "settings": {
-        "title": "Settings",
+        "title": "Settings & Help",
         "appearance": {
             "title": "Appearance",
             "documentation": {
@@ -20,6 +20,12 @@
             "flash-current-program": {
                 "label": "Include current program",
                 "tooltip": "Select to include your program when installing the firmware."
+            }
+        },
+        "help": {
+            "title": "Help",
+            "about": {
+                "label": "About"
             }
         }
     }

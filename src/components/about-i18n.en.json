@@ -1,0 +1,6 @@
+{
+    "about": {
+        "description": "A simple web app for programming LEGO® Powered Up smart hubs using Pybricks MicroPython.",
+        "websiteButton": { "label": "Pybricks Website" }
+    }
+}

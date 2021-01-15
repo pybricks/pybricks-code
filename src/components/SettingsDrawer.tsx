@@ -6,7 +6,7 @@ import { WithI18nProps, withI18n } from '@shopify/react-i18n';
 import React from 'react';
 import { connect } from 'react-redux';
 import { Action, Dispatch } from '../actions';
-import { closeSettings } from '../actions/app';
+import { closeSettings, openAboutDialog } from '../actions/app';
 import { setBoolean } from '../actions/settings';
 import { RootState } from '../reducers';
 import { tooltipDelay } from '../settings/ui';
@@ -29,6 +29,7 @@ type DispatchProps = {
     onShowDocsChanged: (checked: boolean) => void;
     onDarkModeChanged: (checked: boolean) => void;
     onFlashCurrentProgramChanged: (checked: boolean) => void;
+    onAbout: () => void;
 };
 
 type SettingsProps = StateProps & DispatchProps & WithI18nProps;
@@ -45,6 +46,7 @@ class SettingsDrawer extends React.PureComponent<SettingsProps> {
             onDarkModeChanged,
             flashCurrentProgram,
             onFlashCurrentProgramChanged,
+            onAbout,
         } = this.props;
         return (
             <Drawer
@@ -131,6 +133,16 @@ class SettingsDrawer extends React.PureComponent<SettingsProps> {
                             />
                         </Tooltip>
                     </FormGroup>
+                    <FormGroup label={i18n.translate(SettingsStringId.HelpTitle)}>
+                        <a
+                            onClick={() => {
+                                onAbout();
+                                return true;
+                            }}
+                        >
+                            {i18n.translate(SettingsStringId.HelpAboutLabel)}
+                        </a>
+                    </FormGroup>
                 </div>
             </Drawer>
         );
@@ -152,6 +164,7 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
         dispatch(setBoolean(SettingId.DarkMode, checked)),
     onFlashCurrentProgramChanged: (checked): Action =>
         dispatch(setBoolean(SettingId.FlashCurrentProgram, checked)),
+    onAbout: (): Action => dispatch(openAboutDialog()),
 });
 
 export default connect(

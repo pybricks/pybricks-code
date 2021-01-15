@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import SplitterLayout from 'react-splitter-layout';
 import { RootState } from '../reducers';
+import AboutDialog from './AboutDialog';
 import Editor from './Editor';
 import SettingsDrawer from './SettingsDrawer';
 import StatusBar from './StatusBar';
@@ -64,6 +65,7 @@ function App(): JSX.Element {
             </SplitterLayout>
             <StatusBar />
             <SettingsDrawer />
+            <AboutDialog key="about" />
         </div>
     );
 }
