@@ -37,7 +37,9 @@ class AboutDialog extends React.Component<AboutDialogProps> {
                     <p>{pybricksCopyright}</p>
                 </div>
                 <div className={Classes.DIALOG_FOOTER}>
-                    <p>{legoDisclaimer}</p>
+                    <p>
+                        <small>{legoDisclaimer}</small>
+                    </p>
                     <div className={Classes.DIALOG_FOOTER_ACTIONS}>
                         <AnchorButton href={pybricksWebsiteUrl} target="blank_">
                             {i18n.translate(AboutStringId.WebsiteButtonLabel)}

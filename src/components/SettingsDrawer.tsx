@@ -1,7 +1,14 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2021 The Pybricks Authors
 
-import { Drawer, FormGroup, Position, Switch, Tooltip } from '@blueprintjs/core';
+import {
+    Classes,
+    Drawer,
+    FormGroup,
+    Position,
+    Switch,
+    Tooltip,
+} from '@blueprintjs/core';
 import { WithI18nProps, withI18n } from '@shopify/react-i18n';
 import React from 'react';
 import { connect } from 'react-redux';
@@ -14,8 +21,6 @@ import { SettingId } from '../settings/user';
 import { isMacOS } from '../utils/os';
 import { SettingsStringId } from './settings-i18n';
 import en from './settings-i18n.en.json';
-
-import './settings.scss';
 
 type StateProps = {
     open: boolean;
@@ -56,93 +61,97 @@ class SettingsDrawer extends React.PureComponent<SettingsProps> {
                 title={i18n.translate(SettingsStringId.Title)}
                 onClose={() => onClose()}
             >
-                <div className="pb-settings">
-                    <FormGroup
-                        label={i18n.translate(SettingsStringId.AppearanceTitle)}
-                        helperText={i18n.translate(
-                            SettingsStringId.AppearanceZoomHelp,
-                            {
-                                in: <span>{isMacOS() ? 'Cmd' : 'Ctrl'}-+</span>,
-                                out: <span>{isMacOS() ? 'Cmd' : 'Ctrl'}--</span>,
-                            },
-                        )}
-                    >
-                        <Tooltip
-                            content={i18n.translate(
-                                SettingsStringId.AppearanceDocumentationTooltip,
+                <div className={Classes.DRAWER_BODY}>
+                    <div className={Classes.DIALOG_BODY}>
+                        <FormGroup
+                            label={i18n.translate(SettingsStringId.AppearanceTitle)}
+                            helperText={i18n.translate(
+                                SettingsStringId.AppearanceZoomHelp,
+                                {
+                                    in: <span>{isMacOS() ? 'Cmd' : 'Ctrl'}-+</span>,
+                                    out: <span>{isMacOS() ? 'Cmd' : 'Ctrl'}--</span>,
+                                },
                             )}
-                            position={Position.LEFT}
-                            targetTagName="div"
-                            hoverOpenDelay={tooltipDelay}
                         >
-                            <Switch
-                                label={i18n.translate(
-                                    SettingsStringId.AppearanceDocumentationLabel,
+                            <Tooltip
+                                content={i18n.translate(
+                                    SettingsStringId.AppearanceDocumentationTooltip,
                                 )}
-                                large={true}
-                                checked={showDocs}
-                                onChange={(e) =>
-                                    onShowDocsChanged(
-                                        (e.target as HTMLInputElement).checked,
-                                    )
-                                }
-                            />
-                        </Tooltip>
-                        <Tooltip
-                            content={i18n.translate(
-                                SettingsStringId.AppearanceDarkModeTooltip,
-                            )}
-                            position={Position.LEFT}
-                            targetTagName="div"
-                            hoverOpenDelay={tooltipDelay}
-                        >
-                            <Switch
-                                label={i18n.translate(
-                                    SettingsStringId.AppearanceDarkModeLabel,
+                                boundary="window"
+                                position={Position.LEFT}
+                                targetTagName="div"
+                                hoverOpenDelay={tooltipDelay}
+                            >
+                                <Switch
+                                    label={i18n.translate(
+                                        SettingsStringId.AppearanceDocumentationLabel,
+                                    )}
+                                    checked={showDocs}
+                                    onChange={(e) =>
+                                        onShowDocsChanged(
+                                            (e.target as HTMLInputElement).checked,
+                                        )
+                                    }
+                                />
+                            </Tooltip>
+                            <Tooltip
+                                content={i18n.translate(
+                                    SettingsStringId.AppearanceDarkModeTooltip,
                                 )}
-                                large={true}
-                                checked={darkMode}
-                                onChange={(e) =>
-                                    onDarkModeChanged(
-                                        (e.target as HTMLInputElement).checked,
-                                    )
-                                }
-                            />
-                        </Tooltip>
-                    </FormGroup>
-                    <FormGroup label={i18n.translate(SettingsStringId.FirmwareTitle)}>
-                        <Tooltip
-                            content={i18n.translate(
-                                SettingsStringId.FirmwareCurrentProgramTooltip,
-                            )}
-                            position={Position.LEFT}
-                            targetTagName="div"
-                            hoverOpenDelay={tooltipDelay}
+                                boundary="window"
+                                position={Position.LEFT}
+                                targetTagName="div"
+                                hoverOpenDelay={tooltipDelay}
+                            >
+                                <Switch
+                                    label={i18n.translate(
+                                        SettingsStringId.AppearanceDarkModeLabel,
+                                    )}
+                                    checked={darkMode}
+                                    onChange={(e) =>
+                                        onDarkModeChanged(
+                                            (e.target as HTMLInputElement).checked,
+                                        )
+                                    }
+                                />
+                            </Tooltip>
+                        </FormGroup>
+                        <FormGroup
+                            label={i18n.translate(SettingsStringId.FirmwareTitle)}
                         >
-                            <Switch
-                                label={i18n.translate(
-                                    SettingsStringId.FirmwareCurrentProgramLabel,
+                            <Tooltip
+                                content={i18n.translate(
+                                    SettingsStringId.FirmwareCurrentProgramTooltip,
                                 )}
-                                large={true}
-                                checked={flashCurrentProgram}
-                                onChange={(e) =>
-                                    onFlashCurrentProgramChanged(
-                                        (e.target as HTMLInputElement).checked,
-                                    )
-                                }
-                            />
-                        </Tooltip>
-                    </FormGroup>
-                    <FormGroup label={i18n.translate(SettingsStringId.HelpTitle)}>
-                        <a
-                            onClick={() => {
-                                onAbout();
-                                return true;
-                            }}
-                        >
-                            {i18n.translate(SettingsStringId.HelpAboutLabel)}
-                        </a>
-                    </FormGroup>
+                                boundary="window"
+                                position={Position.LEFT}
+                                targetTagName="div"
+                                hoverOpenDelay={tooltipDelay}
+                            >
+                                <Switch
+                                    label={i18n.translate(
+                                        SettingsStringId.FirmwareCurrentProgramLabel,
+                                    )}
+                                    checked={flashCurrentProgram}
+                                    onChange={(e) =>
+                                        onFlashCurrentProgramChanged(
+                                            (e.target as HTMLInputElement).checked,
+                                        )
+                                    }
+                                />
+                            </Tooltip>
+                        </FormGroup>
+                        <FormGroup label={i18n.translate(SettingsStringId.HelpTitle)}>
+                            <a
+                                onClick={() => {
+                                    onAbout();
+                                    return true;
+                                }}
+                            >
+                                {i18n.translate(SettingsStringId.HelpAboutLabel)}
+                            </a>
+                        </FormGroup>
+                    </div>
                 </div>
             </Drawer>
         );

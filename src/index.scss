@@ -36,3 +36,9 @@ body {
 .no-box-shadow {
     box-shadow: unset !important;
 }
+
+// global style tweaks
+
+.bp3-form-group > .bp3-label {
+    font-weight: bolder;
+}
