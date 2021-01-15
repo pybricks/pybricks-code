@@ -4,6 +4,7 @@
 import { Button, Intent, Position, Tooltip } from '@blueprintjs/core';
 import { WithI18nProps, withI18n } from '@shopify/react-i18n';
 import React from 'react';
+import { tooltipDelay } from '../settings/ui';
 import { TooltipId } from './button-i18n';
 import en from './button-i18n.en.json';
 
@@ -28,6 +29,7 @@ class LinkButton extends React.Component<Props> {
             <Tooltip
                 content={this.props.i18n.translate(this.props.tooltip)}
                 position={Position.BOTTOM}
+                hoverOpenDelay={tooltipDelay}
             >
                 <Button
                     intent={Intent.PRIMARY}

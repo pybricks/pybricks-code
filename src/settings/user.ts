@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2021 The Pybricks Authors
 
-import { prefersDarkMode } from '../utils/os';
+// Definitions for user selectable settings.
 
-// Definitions for user settings.
+import { prefersDarkMode } from '../utils/os';
 
 export enum SettingId {
     ShowDocs = 'showDocs',

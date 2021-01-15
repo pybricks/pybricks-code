@@ -7,7 +7,7 @@ import { AsyncSaga } from '../../test';
 import { startup } from '../actions/app';
 import { didBooleanChange, didFailToSetBoolean, setBoolean } from '../actions/settings';
 import { SettingsState } from '../reducers/settings';
-import { SettingId } from '../settings';
+import { SettingId } from '../settings/user';
 import settings from './settings';
 
 afterAll(() => {

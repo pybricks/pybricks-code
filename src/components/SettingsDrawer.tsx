@@ -9,14 +9,13 @@ import { Action, Dispatch } from '../actions';
 import { closeSettings } from '../actions/app';
 import { setBoolean } from '../actions/settings';
 import { RootState } from '../reducers';
-import { SettingId } from '../settings';
+import { tooltipDelay } from '../settings/ui';
+import { SettingId } from '../settings/user';
 import { isMacOS } from '../utils/os';
 import { SettingsStringId } from './settings-i18n';
 import en from './settings-i18n.en.json';
 
 import './settings.scss';
-
-const tooltipDelay = 1000;
 
 type StateProps = {
     open: boolean;
