@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2021 The Pybricks Authors
 
-import { Drawer, FormGroup, Switch } from '@blueprintjs/core';
+import { Drawer, FormGroup, Position, Switch, Tooltip } from '@blueprintjs/core';
 import { WithI18nProps, withI18n } from '@shopify/react-i18n';
 import React from 'react';
 import { connect } from 'react-redux';
@@ -15,6 +15,8 @@ import { SettingsStringId } from './settings-i18n';
 import en from './settings-i18n.en.json';
 
 import './settings.scss';
+
+const tooltipDelay = 1000;
 
 type StateProps = {
     open: boolean;
@@ -64,44 +66,71 @@ class SettingsDrawer extends React.PureComponent<SettingsProps> {
                             },
                         )}
                     >
-                        <Switch
-                            label={i18n.translate(
-                                SettingsStringId.AppearanceDocumentationLabel,
+                        <Tooltip
+                            content={i18n.translate(
+                                SettingsStringId.AppearanceDocumentationTooltip,
                             )}
-                            large={true}
-                            checked={showDocs}
-                            onChange={(e) =>
-                                onShowDocsChanged(
-                                    (e.target as HTMLInputElement).checked,
-                                )
-                            }
-                        />
-                        <Switch
-                            label={i18n.translate(
-                                SettingsStringId.AppearanceDarkModeLabel,
+                            position={Position.LEFT}
+                            targetTagName="div"
+                            hoverOpenDelay={tooltipDelay}
+                        >
+                            <Switch
+                                label={i18n.translate(
+                                    SettingsStringId.AppearanceDocumentationLabel,
+                                )}
+                                large={true}
+                                checked={showDocs}
+                                onChange={(e) =>
+                                    onShowDocsChanged(
+                                        (e.target as HTMLInputElement).checked,
+                                    )
+                                }
+                            />
+                        </Tooltip>
+                        <Tooltip
+                            content={i18n.translate(
+                                SettingsStringId.AppearanceDarkModeTooltip,
                             )}
-                            large={true}
-                            checked={darkMode}
-                            onChange={(e) =>
-                                onDarkModeChanged(
-                                    (e.target as HTMLInputElement).checked,
-                                )
-                            }
-                        />
+                            position={Position.LEFT}
+                            targetTagName="div"
+                            hoverOpenDelay={tooltipDelay}
+                        >
+                            <Switch
+                                label={i18n.translate(
+                                    SettingsStringId.AppearanceDarkModeLabel,
+                                )}
+                                large={true}
+                                checked={darkMode}
+                                onChange={(e) =>
+                                    onDarkModeChanged(
+                                        (e.target as HTMLInputElement).checked,
+                                    )
+                                }
+                            />
+                        </Tooltip>
                     </FormGroup>
                     <FormGroup label={i18n.translate(SettingsStringId.FirmwareTitle)}>
-                        <Switch
-                            label={i18n.translate(
-                                SettingsStringId.FirmwareCurrentProgramLabel,
+                        <Tooltip
+                            content={i18n.translate(
+                                SettingsStringId.FirmwareCurrentProgramTooltip,
                             )}
-                            large={true}
-                            checked={flashCurrentProgram}
-                            onChange={(e) =>
-                                onFlashCurrentProgramChanged(
-                                    (e.target as HTMLInputElement).checked,
-                                )
-                            }
-                        />
+                            position={Position.LEFT}
+                            targetTagName="div"
+                            hoverOpenDelay={tooltipDelay}
+                        >
+                            <Switch
+                                label={i18n.translate(
+                                    SettingsStringId.FirmwareCurrentProgramLabel,
+                                )}
+                                large={true}
+                                checked={flashCurrentProgram}
+                                onChange={(e) =>
+                                    onFlashCurrentProgramChanged(
+                                        (e.target as HTMLInputElement).checked,
+                                    )
+                                }
+                            />
+                        </Tooltip>
                     </FormGroup>
                 </div>
             </Drawer>
