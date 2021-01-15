@@ -19,6 +19,8 @@ import {
 import { AboutStringId } from './about-i18n';
 import en from './about-i18n.en.json';
 
+import './about.scss';
+
 type StateProps = { showAboutDialog: boolean };
 
 type DispatchProps = { onClose: () => void };
@@ -31,6 +33,9 @@ class AboutDialog extends React.Component<AboutDialogProps> {
         return (
             <Dialog title={appName} isOpen={showAboutDialog} onClose={() => onClose()}>
                 <div className={Classes.DIALOG_BODY}>
+                    <div className="pb-about-icon">
+                        <img src="favicon.ico" />
+                    </div>
                     <p>
                         <strong>{i18n.translate(AboutStringId.Description)}</strong>
                     </p>
