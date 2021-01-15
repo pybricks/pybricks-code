@@ -2,6 +2,7 @@
 // Copyright (c) 2021 The Pybricks Authors
 
 import {
+    Button,
     Classes,
     Drawer,
     FormGroup,
@@ -142,14 +143,16 @@ class SettingsDrawer extends React.PureComponent<SettingsProps> {
                             </Tooltip>
                         </FormGroup>
                         <FormGroup label={i18n.translate(SettingsStringId.HelpTitle)}>
-                            <a
+                            <Button
+                                icon="info-sign"
+                                minimal={true}
                                 onClick={() => {
                                     onAbout();
                                     return true;
                                 }}
                             >
                                 {i18n.translate(SettingsStringId.HelpAboutLabel)}
-                            </a>
+                            </Button>
                         </FormGroup>
                     </div>
                 </div>
