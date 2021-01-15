@@ -4,14 +4,15 @@
 import { Alignment, ButtonGroup, Navbar } from '@blueprintjs/core';
 import React from 'react';
 import BluetoothButton from './BluetoothButton';
-import DocsButton from './DocsButton';
 import FlashButton from './FlashButton';
 import OpenButton from './OpenButton';
 import ReplButton from './ReplButton';
 import RunButton from './RunButton';
 import SaveAsButton from './SaveAsButton';
+import SettingsButton from './SettingsButton';
 import StopButton from './StopButton';
-import SupportButton from './SupportButton';
+
+import './toolbar.scss';
 
 class Toolbar extends React.Component {
     render(): JSX.Element {
@@ -27,20 +28,19 @@ class Toolbar extends React.Component {
                     </ButtonGroup>
                     <Navbar.Divider />
                     <ButtonGroup>
-                        <BluetoothButton id="bluetooth" />
                         <RunButton id="run" keyboardShortcut="F5" />
                         <StopButton id="stop" keyboardShortcut="F6" />
+                        <ReplButton id="repl" />
                     </ButtonGroup>
                     <Navbar.Divider />
                     <ButtonGroup>
-                        <ReplButton id="repl" />
                         <FlashButton id="flash" />
+                        <BluetoothButton id="bluetooth" />
                     </ButtonGroup>
                 </Navbar.Group>
                 <Navbar.Group align={Alignment.RIGHT}>
                     <ButtonGroup>
-                        <SupportButton id="support" />
-                        <DocsButton id="docs" />
+                        <SettingsButton id="settings" />
                     </ButtonGroup>
                 </Navbar.Group>
             </Navbar>

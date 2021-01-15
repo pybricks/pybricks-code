@@ -1,0 +1,9 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2020-2021 The Pybricks Authors
+
+// Custom styling for the Toolbar control.
+
+.bp3-navbar-divider {
+    // don't draw vertical line since we are just using button groups
+    border-left: unset;
+}

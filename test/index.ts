@@ -22,7 +22,9 @@ export class AsyncSaga {
                 channel: this.channel,
                 dispatch: this.dispatch.bind(this),
                 getState: () => this.state,
-                onError: (e) => fail(e),
+                onError: (e, _i): void => {
+                    throw e;
+                },
             },
             saga,
         );
@@ -68,7 +70,9 @@ export class AsyncSaga {
         this.task.cancel();
         await this.task.toPromise();
         if (this.dispatches.some((x) => x.type !== END.type)) {
-            fail(`unhandled dispatches remain: ${JSON.stringify(this.dispatches)}`);
+            throw Error(
+                `unhandled dispatches remain: ${JSON.stringify(this.dispatches)}`,
+            );
         }
     }
 

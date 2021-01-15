@@ -1,0 +1,26 @@
+{
+    "settings": {
+        "title": "Settings",
+        "appearance": {
+            "title": "Appearance",
+            "documentation": {
+                "label": "Documentation",
+                "tooltip": "Hides/shows the documentation pane in the app."
+            },
+            "dark-mode": {
+                "label": "Dark mode",
+                "tooltip": "Disables/enables dark mode."
+            },
+            "zoom": {
+                "help": "Use {in} and {out} to zoom."
+            }
+        },
+        "firmware": {
+            "title": "Firmware",
+            "flash-current-program": {
+                "label": "Flash my program",
+                "tooltip": "Selects including a default program or your program when flashing firmware on a hub."
+            }
+        }
+    }
+}

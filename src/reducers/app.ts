@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020 The Pybricks Authors
+// Copyright (c) 2020-2021 The Pybricks Authors
 // File: reducers/app.ts
 // Manages state the app in general.
 
@@ -7,17 +7,19 @@ import { Reducer, combineReducers } from 'redux';
 import { Action } from '../actions';
 import { AppActionType } from '../actions/app';
 
-const showDocs: Reducer<boolean, Action> = (state = false, action) => {
+const showSettings: Reducer<boolean, Action> = (state = false, action) => {
     switch (action.type) {
-        case AppActionType.ToggleDocs:
-            return !state;
+        case AppActionType.OpenSettings:
+            return true;
+        case AppActionType.CloseSettings:
+            return false;
         default:
             return state;
     }
 };
 
 export interface AppState {
-    readonly showDocs: boolean;
+    readonly showSettings: boolean;
 }
 
-export default combineReducers({ showDocs });
+export default combineReducers({ showSettings });

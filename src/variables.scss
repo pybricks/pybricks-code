@@ -1,0 +1,18 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2020-2021 The Pybricks Authors
+
+@import '@blueprintjs/core/lib/scss/variables.scss';
+
+// override variables here
+// See https://blueprintjs.com/docs/#core/variables
+
+$pt-navbar-height: 72px;
+$pb-status-bar-height: 3vh;
+
+$pb-pybricks-blue: #0088ce;
+$pt-app-background-color: #e8e8e8;
+$pt-intent-primary: $pb-pybricks-blue;
+$pt-outline-color: rgba($pb-pybricks-blue, 0.6);
+
+$navbar-background-color: $pt-app-background-color;
+$dark-navbar-background-color: $pt-dark-app-background-color;

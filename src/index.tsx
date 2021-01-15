@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020 The Pybricks Authors
+// Copyright (c) 2020-2021 The Pybricks Authors
 
 import { ResizeSensor } from '@blueprintjs/core';
 import { I18nContext, I18nManager } from '@shopify/react-i18n';
@@ -31,6 +31,20 @@ const store = createStore(
     rootReducer,
     applyMiddleware(sagaMiddleware, loggerMiddleware),
 );
+
+// Hook in blueprints dark mode class to setting
+let oldDarkMode = false;
+store.subscribe(() => {
+    const newDarkMode = store.getState().settings.darkMode;
+    if (newDarkMode !== oldDarkMode) {
+        if (newDarkMode) {
+            document.body.classList.add('bp3-dark');
+        } else {
+            document.body.classList.remove('bp3-dark');
+        }
+        oldDarkMode = newDarkMode;
+    }
+});
 
 sagaMiddleware.run(rootSaga);
 

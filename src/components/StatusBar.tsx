@@ -6,6 +6,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { RootState } from '../reducers';
 
+import './status-bar.scss';
+
 type StateProps = { progress: number };
 
 type StatusProps = StateProps;

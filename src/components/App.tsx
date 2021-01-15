@@ -6,14 +6,16 @@ import { useSelector } from 'react-redux';
 import SplitterLayout from 'react-splitter-layout';
 import { RootState } from '../reducers';
 import Editor from './Editor';
+import SettingsDrawer from './SettingsDrawer';
 import StatusBar from './StatusBar';
 import Terminal from './Terminal';
 import Toolbar from './Toolbar';
 
 import 'react-splitter-layout/lib/index.css';
+import './app.scss';
 
 function App(): JSX.Element {
-    const showDocs = useSelector((s: RootState): boolean => s.app.showDocs);
+    const showDocs = useSelector((s: RootState): boolean => s.settings.showDocs);
     const [dragging, setDragging] = useState(false);
 
     return (
@@ -61,6 +63,7 @@ function App(): JSX.Element {
                 )}
             </SplitterLayout>
             <StatusBar />
+            <SettingsDrawer />
         </div>
     );
 }

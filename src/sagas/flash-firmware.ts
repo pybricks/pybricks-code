@@ -5,6 +5,7 @@ import { FirmwareMetadata, FirmwareReader, HubType } from '@pybricks/firmware';
 import cityHubZip from '@pybricks/firmware/build/cityhub.zip';
 import moveHubZip from '@pybricks/firmware/build/movehub.zip';
 import technicHubZip from '@pybricks/firmware/build/technichub.zip';
+import { Ace } from 'ace-builds';
 import {
     Effect,
     all,
@@ -12,6 +13,7 @@ import {
     delay,
     put,
     race,
+    select,
     take,
     takeEvery,
 } from 'redux-saga/effects';
@@ -59,6 +61,7 @@ import {
 } from '../actions/mpy';
 import * as notification from '../actions/notification';
 import { MaxProgramFlashSize } from '../protocols/lwp3-bootloader';
+import { RootState } from '../reducers';
 import { fmod, sumComplement32 } from '../utils/math';
 
 const firmwareZipMap = new Map<HubType, string>([
@@ -112,15 +115,21 @@ function* firmwareIterator(data: DataView, maxSize: number): Generator<number> {
 /**
  * Loads Pybricks firmware from a .zip file
  * @param data The zip file raw data
+ * @param program User program or `undefined` to use main.py from firmware.zip
  */
 function* loadFirmware(
     data: ArrayBuffer,
+    program: string | undefined,
 ): Generator<unknown, { firmware: Uint8Array; deviceId: HubType }> {
     const reader = (yield call(() => FirmwareReader.load(data))) as FirmwareReader;
 
     const firmwareBase = (yield call(() => reader.readFirmwareBase())) as Uint8Array;
     const metadata = (yield call(() => reader.readMetadata())) as FirmwareMetadata;
-    const main = (yield call(() => reader.readMainPy())) as string;
+
+    // if a user program was not given, then use main.py from the frimware.zip
+    if (program === undefined) {
+        program = (yield call(() => reader.readMainPy())) as string;
+    }
 
     if (metadata['mpy-abi-version'] !== 5) {
         throw Error(
@@ -128,7 +137,7 @@ function* loadFirmware(
         );
     }
 
-    yield put(compile(main, metadata['mpy-cross-options']));
+    yield put(compile(program, metadata['mpy-cross-options']));
     const [mpy, mpyFail] = (yield race([
         take(MpyActionType.DidCompile),
         take(MpyActionType.DidFailToCompile),
@@ -174,8 +183,28 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
     let firmware: Uint8Array | undefined = undefined;
     let deviceId: HubType | undefined = undefined;
 
+    let program: string | undefined = undefined;
+
+    const flashCurrentProgram = (yield select(
+        (s: RootState) => s.settings.flashCurrentProgram,
+    )) as boolean;
+
+    if (flashCurrentProgram) {
+        const editor = (yield select(
+            (s: RootState) => s.editor.current,
+        )) as Ace.EditSession | null;
+
+        // istanbul ignore if: it is a bug to dispatch this action with no current editor
+        if (editor === null) {
+            console.error('flashFirmware: No current editor');
+            return;
+        }
+
+        program = editor.getValue();
+    }
+
     if (action.data !== undefined) {
-        ({ firmware, deviceId } = yield* loadFirmware(action.data));
+        ({ firmware, deviceId } = yield* loadFirmware(action.data, program));
     }
 
     yield put(connect());
@@ -227,7 +256,7 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
         }
 
         const data = (yield call(() => response.arrayBuffer())) as ArrayBuffer;
-        ({ firmware, deviceId } = yield* loadFirmware(data));
+        ({ firmware, deviceId } = yield* loadFirmware(data, program));
 
         if (deviceId !== undefined && info[0].hubType !== deviceId) {
             throw Error(

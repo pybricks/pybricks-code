@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020 The Pybricks Authors
+// Copyright (c) 2020-2021 The Pybricks Authors
 
 import {
     ContextMenuTarget,
@@ -17,6 +17,7 @@ import { FitAddon } from 'xterm-addon-fit';
 import { Dispatch } from '../actions';
 import { receiveData } from '../actions/terminal';
 import { RootState } from '../reducers';
+import { isMacOS } from '../utils/os';
 import { TerminalStringId } from './terminal-i18n';
 import en from './terminal-i18n.en.json';
 
@@ -24,6 +25,7 @@ import 'xterm/css/xterm.css';
 
 interface StateProps {
     dataSource: Observable<string> | null;
+    darkMode: boolean;
 }
 
 interface DispatchProps {
@@ -45,13 +47,6 @@ class Terminal extends React.Component<TerminalProps> {
             cursorBlink: true,
             cursorStyle: 'underline',
             fontSize: 18,
-            theme: {
-                background: 'white',
-                foreground: 'black',
-                cursor: 'black',
-                // transparency is needed to work around https://github.com/xtermjs/xterm.js/issues/2808
-                selection: 'rgba(181,213,255,0.5)', // this should match AceEditor theme
-            },
         });
         this.fitAddon = new FitAddon();
         this.xterm.loadAddon(this.fitAddon);
@@ -112,6 +107,15 @@ class Terminal extends React.Component<TerminalProps> {
     }
 
     render(): JSX.Element {
+        this.xterm.setOption('theme', {
+            background: this.props.darkMode ? 'black' : 'white',
+            foreground: this.props.darkMode ? 'white' : 'black',
+            cursor: this.props.darkMode ? 'white' : 'black',
+            // transparency is needed to work around https://github.com/xtermjs/xterm.js/issues/2808
+            selection: this.props.darkMode
+                ? 'rgb(81,81,81,0.5)'
+                : 'rgba(181,213,255,0.5)', // this should match AceEditor theme
+        });
         return (
             <div className="h-100">
                 <ResizeSensor onResize={(): void => this.fitAddon.fit()}>
@@ -134,7 +138,7 @@ class Terminal extends React.Component<TerminalProps> {
                     }}
                     text={i18n.translate(TerminalStringId.Copy)}
                     icon="duplicate"
-                    label={/mac/i.test(navigator.platform) ? 'Cmd-C' : 'Ctrl-Shift-C'}
+                    label={isMacOS() ? 'Cmd-C' : 'Ctrl-Shift-C'}
                     disabled={!this.xterm.hasSelection()}
                 />
                 <MenuItem
@@ -143,7 +147,7 @@ class Terminal extends React.Component<TerminalProps> {
                     }}
                     text={i18n.translate(TerminalStringId.Paste)}
                     icon="clipboard"
-                    label={/mac/i.test(navigator.platform) ? 'Cmd-V' : 'Ctrl-V'}
+                    label={isMacOS() ? 'Cmd-V' : 'Ctrl-V'}
                 />
                 <MenuDivider />
                 <MenuItem
@@ -163,6 +167,7 @@ class Terminal extends React.Component<TerminalProps> {
 
 const mapStateToProps = (state: RootState): StateProps => ({
     dataSource: state.terminal.dataSource,
+    darkMode: state.settings.darkMode,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
