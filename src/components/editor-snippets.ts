@@ -127,26 +127,26 @@ snippet .
 snippet try Try/Except
 	try:
 		\${1:# TODO: write code...}
-	except \${2:Exception}, \${3:e}:
+	except \${2:Exception} as \${3:e}:
 		\${4:raise $3}
 snippet try Try/Except/Else
 	try:
 		\${1:# TODO: write code...}
-	except \${2:Exception}, \${3:e}:
+	except \${2:Exception} as \${3:e}:
 		\${4:raise $3}
 	else:
 		\${5:# TODO: write code...}
 snippet try Try/Except/Finally
 	try:
 		\${1:# TODO: write code...}
-	except \${2:Exception}, \${3:e}:
+	except \${2:Exception} as \${3:e}:
 		\${4:raise $3}
 	finally:
 		\${5:# TODO: write code...}
 snippet try Try/Except/Else/Finally
 	try:
 		\${1:# TODO: write code...}
-	except \${2:Exception}, \${3:e}:
+	except \${2:Exception} as \${3:e}:
 		\${4:raise $3}
 	else:
 		\${5:# TODO: write code...}
