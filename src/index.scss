@@ -39,6 +39,6 @@ body {
 
 // global style tweaks
 
-.bp3-form-group > .bp3-label {
+.#{$ns}-form-group > .#{$ns}-label {
     font-weight: bolder;
 }

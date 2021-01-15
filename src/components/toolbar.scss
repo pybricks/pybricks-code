@@ -3,7 +3,9 @@
 
 // Custom styling for the Toolbar control.
 
-.bp3-navbar-divider {
+@import '../variables.scss';
+
+.#{$ns}-navbar-divider {
     // don't draw vertical line since we are just using button groups
     border-left: unset;
 }

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2021 The Pybricks Authors
 
-import { ResizeSensor } from '@blueprintjs/core';
+import { Classes, ResizeSensor } from '@blueprintjs/core';
 import { I18nContext, I18nManager } from '@shopify/react-i18n';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -38,9 +38,9 @@ store.subscribe(() => {
     const newDarkMode = store.getState().settings.darkMode;
     if (newDarkMode !== oldDarkMode) {
         if (newDarkMode) {
-            document.body.classList.add('bp3-dark');
+            document.body.classList.add(Classes.DARK);
         } else {
-            document.body.classList.remove('bp3-dark');
+            document.body.classList.remove(Classes.DARK);
         }
         oldDarkMode = newDarkMode;
     }
