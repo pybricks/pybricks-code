@@ -275,6 +275,26 @@ describe('store settings to local storage', () => {
 
         await saga.end();
     });
+
+    test('flashCurrentProgram', async () => {
+        const saga = new AsyncSaga(settings);
+
+        const mockSetItem = jest
+            .spyOn(Object.getPrototypeOf(window.localStorage), 'setItem')
+            .mockImplementation((key, value) => {
+                expect(key).toBe('setting.flashCurrentProgram');
+                expect(value).toBe('false');
+            });
+
+        saga.setState({ settings: { flashCurrentProgram: true } as SettingsState });
+        saga.put(setBoolean(SettingId.FlashCurrentProgram, false));
+        expect(mockSetItem).toHaveBeenCalled();
+
+        const action = await saga.take();
+        expect(action).toEqual(didBooleanChange(SettingId.FlashCurrentProgram, false));
+
+        await saga.end();
+    });
 });
 
 describe('storage monitor', () => {

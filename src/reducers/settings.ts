@@ -9,6 +9,7 @@ import { SettingId, getDefaultBooleanValue } from '../settings';
 export interface SettingsState {
     readonly darkMode: boolean;
     readonly showDocs: boolean;
+    readonly flashCurrentProgram: boolean;
 }
 
 const darkMode: Reducer<boolean, Action> = (
@@ -41,4 +42,19 @@ const showDocs: Reducer<boolean, Action> = (
     }
 };
 
-export default combineReducers({ darkMode, showDocs });
+const flashCurrentProgram: Reducer<boolean, Action> = (
+    state = getDefaultBooleanValue(SettingId.FlashCurrentProgram),
+    action,
+) => {
+    switch (action.type) {
+        case SettingsActionType.DidBooleanChange:
+            if (action.id === SettingId.FlashCurrentProgram) {
+                return action.newState;
+            }
+            return state;
+        default:
+            return state;
+    }
+};
+
+export default combineReducers({ darkMode, showDocs, flashCurrentProgram });

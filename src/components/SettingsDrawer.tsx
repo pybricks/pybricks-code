@@ -20,12 +20,14 @@ type StateProps = {
     open: boolean;
     showDocs: boolean;
     darkMode: boolean;
+    flashCurrentProgram: boolean;
 };
 
 type DispatchProps = {
     onClose: () => void;
     onShowDocsChanged: (checked: boolean) => void;
     onDarkModeChanged: (checked: boolean) => void;
+    onFlashCurrentProgramChanged: (checked: boolean) => void;
 };
 
 type SettingsProps = StateProps & DispatchProps & WithI18nProps;
@@ -40,6 +42,8 @@ class SettingsDrawer extends React.PureComponent<SettingsProps> {
             onShowDocsChanged,
             darkMode,
             onDarkModeChanged,
+            flashCurrentProgram,
+            onFlashCurrentProgramChanged,
         } = this.props;
         return (
             <Drawer
@@ -85,6 +89,20 @@ class SettingsDrawer extends React.PureComponent<SettingsProps> {
                             }
                         />
                     </FormGroup>
+                    <FormGroup label={i18n.translate(SettingsStringId.FirmwareTitle)}>
+                        <Switch
+                            label={i18n.translate(
+                                SettingsStringId.FirmwareCurrentProgramLabel,
+                            )}
+                            large={true}
+                            checked={flashCurrentProgram}
+                            onChange={(e) =>
+                                onFlashCurrentProgramChanged(
+                                    (e.target as HTMLInputElement).checked,
+                                )
+                            }
+                        />
+                    </FormGroup>
                 </div>
             </Drawer>
         );
@@ -95,6 +113,7 @@ const mapStateToProps = (state: RootState): StateProps => ({
     open: state.app.showSettings,
     showDocs: state.settings.showDocs,
     darkMode: state.settings.darkMode,
+    flashCurrentProgram: state.settings.flashCurrentProgram,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
@@ -103,6 +122,8 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
         dispatch(setBoolean(SettingId.ShowDocs, checked)),
     onDarkModeChanged: (checked): Action =>
         dispatch(setBoolean(SettingId.DarkMode, checked)),
+    onFlashCurrentProgramChanged: (checked): Action =>
+        dispatch(setBoolean(SettingId.FlashCurrentProgram, checked)),
 });
 
 export default connect(

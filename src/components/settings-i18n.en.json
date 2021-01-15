@@ -12,6 +12,12 @@
             "zoom": {
                 "help": "Use {in} and {out} to zoom."
             }
+        },
+        "firmware": {
+            "title": "Firmware",
+            "flash-current-program": {
+                "label": "Flash my program"
+            }
         }
     }
 }

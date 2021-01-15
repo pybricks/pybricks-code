@@ -9,4 +9,6 @@ export enum SettingsStringId {
     AppearanceDocumentationLabel = 'settings.appearance.documentation.label',
     AppearanceDarkModeLabel = 'settings.appearance.dark-mode.label',
     AppearanceZoomHelp = 'settings.appearance.zoom.help',
+    FirmwareTitle = 'settings.firmware.title',
+    FirmwareCurrentProgramLabel = 'settings.firmware.flash-current-program.label',
 }
