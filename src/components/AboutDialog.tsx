@@ -16,6 +16,7 @@ import {
     pybricksCopyright,
     pybricksWebsiteUrl,
 } from '../settings/ui';
+import ExternalLinkIcon from './ExternalLinkIcon';
 import { AboutStringId } from './about-i18n';
 import en from './about-i18n.en.json';
 
@@ -47,7 +48,8 @@ class AboutDialog extends React.Component<AboutDialogProps> {
                     </p>
                     <div className={Classes.DIALOG_FOOTER_ACTIONS}>
                         <AnchorButton href={pybricksWebsiteUrl} target="blank_">
-                            {i18n.translate(AboutStringId.WebsiteButtonLabel)}
+                            {i18n.translate(AboutStringId.WebsiteButtonLabel)}&nbsp;
+                            <ExternalLinkIcon />
                         </AnchorButton>
                     </div>
                 </div>

@@ -12,6 +12,15 @@ export const appName = 'Pybricks Code';
 /** URL to main Pybricks website. */
 export const pybricksWebsiteUrl = 'https://pybricks.com';
 
+/** URL to Pybricks support site. */
+export const pybricksSupportUrl = 'https://github.com/pybricks/support/discussions';
+
+/** URL to Pybricks bug report site. */
+export const pybricksBugReportsUrl = 'https://github.com/pybricks/support/issues';
+
+/** URL for Pybricks community chat on Gitter */
+export const pybricksGitterUrl = 'https://gitter.im/pybricks/community';
+
 /** Pybricks copyright statement. */
 export const pybricksCopyright = 'Copyright (c) 2020-2021 The Pybricks Authors';
 

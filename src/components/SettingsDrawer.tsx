@@ -2,7 +2,9 @@
 // Copyright (c) 2021 The Pybricks Authors
 
 import {
+    AnchorButton,
     Button,
+    ButtonGroup,
     Classes,
     Drawer,
     FormGroup,
@@ -17,9 +19,15 @@ import { Action, Dispatch } from '../actions';
 import { closeSettings, openAboutDialog } from '../actions/app';
 import { setBoolean } from '../actions/settings';
 import { RootState } from '../reducers';
-import { tooltipDelay } from '../settings/ui';
+import {
+    pybricksBugReportsUrl,
+    pybricksGitterUrl,
+    pybricksSupportUrl,
+    tooltipDelay,
+} from '../settings/ui';
 import { SettingId } from '../settings/user';
 import { isMacOS } from '../utils/os';
+import ExternalLinkIcon from './ExternalLinkIcon';
 import { SettingsStringId } from './settings-i18n';
 import en from './settings-i18n.en.json';
 
@@ -143,16 +151,48 @@ class SettingsDrawer extends React.PureComponent<SettingsProps> {
                             </Tooltip>
                         </FormGroup>
                         <FormGroup label={i18n.translate(SettingsStringId.HelpTitle)}>
-                            <Button
-                                icon="info-sign"
+                            <ButtonGroup
                                 minimal={true}
-                                onClick={() => {
-                                    onAbout();
-                                    return true;
-                                }}
+                                vertical={true}
+                                alignText="left"
                             >
-                                {i18n.translate(SettingsStringId.HelpAboutLabel)}
-                            </Button>
+                                <AnchorButton
+                                    icon="help"
+                                    href={pybricksSupportUrl}
+                                    target="blank_"
+                                >
+                                    {i18n.translate(SettingsStringId.HelpSupportLabel)}
+                                    &nbsp;
+                                    <ExternalLinkIcon />
+                                </AnchorButton>
+                                <AnchorButton
+                                    icon="chat"
+                                    href={pybricksGitterUrl}
+                                    target="blank_"
+                                >
+                                    {i18n.translate(SettingsStringId.HelpChatLabel)}
+                                    &nbsp;
+                                    <ExternalLinkIcon />
+                                </AnchorButton>
+                                <AnchorButton
+                                    icon="virus"
+                                    href={pybricksBugReportsUrl}
+                                    target="blank_"
+                                >
+                                    {i18n.translate(SettingsStringId.HelpBugsLabel)}
+                                    &nbsp;
+                                    <ExternalLinkIcon />
+                                </AnchorButton>
+                                <Button
+                                    icon="info-sign"
+                                    onClick={() => {
+                                        onAbout();
+                                        return true;
+                                    }}
+                                >
+                                    {i18n.translate(SettingsStringId.HelpAboutLabel)}
+                                </Button>
+                            </ButtonGroup>
                         </FormGroup>
                     </div>
                 </div>

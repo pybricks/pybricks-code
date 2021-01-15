@@ -24,6 +24,15 @@
         },
         "help": {
             "title": "Help",
+            "support": {
+                "label": "Support"
+            },
+            "chat": {
+                "label": "Chat"
+            },
+            "bugs": {
+                "label": "Bug Reports"
+            },
             "about": {
                 "label": "About"
             }
