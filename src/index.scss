@@ -42,3 +42,36 @@ body {
 .#{$ns}-form-group > .#{$ns}-label {
     font-weight: bolder;
 }
+
+::-webkit-scrollbar {
+    width: 16px;
+}
+
+.#{$ns}-dark ::-webkit-scrollbar-track {
+    background: $pt-dark-app-background-color;
+}
+
+::-webkit-scrollbar-track {
+    background: $pt-app-background-color;
+}
+
+.#{$ns}-dark ::-webkit-scrollbar-thumb {
+    border-color: $pt-dark-app-background-color;
+    background: $pt-dark-icon-color;
+}
+
+::-webkit-scrollbar-thumb {
+    border-width: 3px;
+    border-style: solid;
+    border-radius: 8px;
+    border-color: $pt-app-background-color;
+    background: $pt-icon-color;
+}
+
+.#{$ns}-dark ::-webkit-scrollbar-thumb:hover {
+    background: $pt-dark-icon-color-hover;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: $pt-icon-color-hover;
+}
