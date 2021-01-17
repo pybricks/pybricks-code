@@ -12,6 +12,7 @@
 body {
     // no scrolling of the page
     overflow: hidden;
+    user-select: none;
 }
 
 // Utility classes
@@ -38,6 +39,10 @@ body {
 }
 
 // global style tweaks
+
+.#{$ns}-dialog {
+    user-select: none;
+}
 
 .#{$ns}-form-group > .#{$ns}-label {
     font-weight: bolder;
