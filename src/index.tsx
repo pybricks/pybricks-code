@@ -46,6 +46,11 @@ store.subscribe(() => {
     }
 });
 
+// special styling for beta versions
+if (process.env.REACT_APP_VERSION?.match(/beta/)) {
+    document.body.classList.add('pb-beta');
+}
+
 sagaMiddleware.run(rootSaga);
 
 ReactDOM.render(
