@@ -7,6 +7,7 @@ import {
     didFailToConnect as bleDidFailToConnect,
 } from '../actions/ble';
 import { didFailToWrite } from '../actions/ble-uart';
+import { didFailToFetchList } from '../actions/license';
 import {
     BootloaderConnectionFailureReason,
     didError,
@@ -64,6 +65,20 @@ test('bootloaderDidError', async () => {
 
     console.error = jest.fn();
     saga.put(didError(new Error('test error')));
+    expect(console.error).toHaveBeenCalledTimes(1);
+
+    await saga.end();
+});
+
+test('licenseDidFailToFetch', async () => {
+    const saga = new AsyncSaga(errorLog);
+
+    console.error = jest.fn();
+    saga.put(
+        didFailToFetchList(
+            new Response(undefined, { status: 404, statusText: 'not found' }),
+        ),
+    );
     expect(console.error).toHaveBeenCalledTimes(1);
 
     await saga.end();

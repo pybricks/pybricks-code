@@ -3,7 +3,7 @@
 
 import { call, put, select, takeEvery } from 'redux-saga/effects';
 import { AppActionType } from '../actions/app';
-import { didFetchList } from '../actions/license';
+import { didFailToFetchList, didFetchList } from '../actions/license';
 import { RootState } from '../reducers';
 import { LicenseList } from '../reducers/license';
 
@@ -19,8 +19,7 @@ function* fetchLicenses(): Generator {
 
     const response = (yield call(() => fetch('static/oss-licenses.json'))) as Response;
     if (!response.ok || response.body === null) {
-        // TODO: dispatch an action to notify user
-        console.error('failed to fetch oss-licenses.json', response.statusText);
+        yield put(didFailToFetchList(response));
         return;
     }
 
