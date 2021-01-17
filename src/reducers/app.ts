@@ -7,6 +7,12 @@ import { Reducer, combineReducers } from 'redux';
 import { Action } from '../actions';
 import { AppActionType } from '../actions/app';
 
+export interface AppState {
+    readonly showSettings: boolean;
+    readonly showAboutDialog: boolean;
+    readonly showLicenseDialog: boolean;
+}
+
 const showSettings: Reducer<boolean, Action> = (state = false, action) => {
     switch (action.type) {
         case AppActionType.OpenSettings:
@@ -18,8 +24,26 @@ const showSettings: Reducer<boolean, Action> = (state = false, action) => {
     }
 };
 
-export interface AppState {
-    readonly showSettings: boolean;
-}
+const showAboutDialog: Reducer<boolean, Action> = (state = false, action) => {
+    switch (action.type) {
+        case AppActionType.OpenAboutDialog:
+            return true;
+        case AppActionType.CloseAboutDialog:
+            return false;
+        default:
+            return state;
+    }
+};
 
-export default combineReducers({ showSettings });
+const showLicenseDialog: Reducer<boolean, Action> = (state = false, action) => {
+    switch (action.type) {
+        case AppActionType.OpenLicenseDialog:
+            return true;
+        case AppActionType.CloseLicenseDialog:
+            return false;
+        default:
+            return state;
+    }
+};
+
+export default combineReducers({ showSettings, showAboutDialog, showLicenseDialog });

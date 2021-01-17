@@ -12,6 +12,7 @@ import {
 } from '@blueprintjs/core';
 import { WithI18nProps, withI18n } from '@shopify/react-i18n';
 import React from 'react';
+import { tooltipDelay } from '../settings/ui';
 import { TooltipId } from './button-i18n';
 import en from './button-i18n.en.json';
 
@@ -42,7 +43,11 @@ class ActionButton extends React.Component<Props> {
             tooltipText += ` (${this.props.keyboardShortcut})`;
         }
         return (
-            <Tooltip content={tooltipText} position={Position.BOTTOM}>
+            <Tooltip
+                content={tooltipText}
+                position={Position.BOTTOM}
+                hoverOpenDelay={tooltipDelay}
+            >
                 <Button
                     ref={this.buttonRef}
                     intent={Intent.PRIMARY}

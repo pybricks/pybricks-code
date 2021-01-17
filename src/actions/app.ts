@@ -13,8 +13,14 @@ export enum AppActionType {
     OpenSettings = 'app.action.openSettings',
     /** Close settings dialog. */
     CloseSettings = 'app.action.closeSettings',
-    /** Toggle documentation visibility. */
-    ToggleDocs = 'app.action.toggleDocs',
+    /** Open about dialog. */
+    OpenAboutDialog = 'app.action.openAboutDialog',
+    /** Close about dialog. */
+    CloseAboutDialog = 'app.action.closeAboutDialog',
+    /** Open license dialog. */
+    OpenLicenseDialog = 'app.action.openLicenseDialog',
+    /** Close license dialog. */
+    CloseLicenseDialog = 'app.action.closeLicenseDialog',
 }
 
 /** Action that indicates the app has just started. */
@@ -41,12 +47,36 @@ export function closeSettings(): AppCloseSettingsAction {
     return { type: AppActionType.CloseSettings };
 }
 
-/** Action to toggle documentation visibility. */
-export type AppToggleDocsAction = Action<AppActionType.ToggleDocs>;
+/** Action to open the about dialog. */
+export type AppOpenAboutDialogAction = Action<AppActionType.OpenAboutDialog>;
 
-/** Creates an action to toggle documentation visibility. */
-export function toggleDocs(): AppToggleDocsAction {
-    return { type: AppActionType.ToggleDocs };
+/** Creates an action to open the about dialog. */
+export function openAboutDialog(): AppOpenAboutDialogAction {
+    return { type: AppActionType.OpenAboutDialog };
+}
+
+/** Action to close the about dialog. */
+export type AppCloseAboutDialogAction = Action<AppActionType.CloseAboutDialog>;
+
+/** Creates an action to close the about dialog. */
+export function closeAboutDialog(): AppCloseAboutDialogAction {
+    return { type: AppActionType.CloseAboutDialog };
+}
+
+/** Action to open the license dialog. */
+export type AppOpenLicenseDialogAction = Action<AppActionType.OpenLicenseDialog>;
+
+/** Creates an action to open the license dialog. */
+export function openLicenseDialog(): AppOpenLicenseDialogAction {
+    return { type: AppActionType.OpenLicenseDialog };
+}
+
+/** Action to close the license dialog. */
+export type AppCloseLicenseDialogAction = Action<AppActionType.CloseLicenseDialog>;
+
+/** Creates an action to close the license dialog. */
+export function closeLicenseDialog(): AppCloseLicenseDialogAction {
+    return { type: AppActionType.CloseLicenseDialog };
 }
 
 /** common type for all app actions. */
@@ -54,4 +84,7 @@ export type AppAction =
     | AppStartupAction
     | AppOpenSettingsAction
     | AppCloseSettingsAction
-    | AppToggleDocsAction;
+    | AppOpenAboutDialogAction
+    | AppCloseAboutDialogAction
+    | AppOpenLicenseDialogAction
+    | AppCloseLicenseDialogAction;

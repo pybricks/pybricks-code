@@ -6,6 +6,10 @@
 // override variables here
 // See https://blueprintjs.com/docs/#core/variables
 
+$pt-font-size: $pt-grid-size * 1.6;
+$pt-font-size-large: $pt-grid-size * 1.8;
+$pt-font-size-small: $pt-grid-size * 1.4;
+
 $pt-navbar-height: 72px;
 $pb-status-bar-height: 3vh;
 

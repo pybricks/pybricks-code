@@ -1,0 +1,9 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2021 The Pybricks Authors
+
+@import '../variables.scss';
+
+// override some button magic in case this is used in a button
+.#{$ns}-button .pb-external-link .#{$ns}-icon:first-child:last-child {
+    margin: 0;
+}

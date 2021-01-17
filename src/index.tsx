@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2021 The Pybricks Authors
 
-import { ResizeSensor } from '@blueprintjs/core';
+import { Classes, ResizeSensor } from '@blueprintjs/core';
 import { I18nContext, I18nManager } from '@shopify/react-i18n';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -10,7 +10,7 @@ import { applyMiddleware, createStore } from 'redux';
 import { createLogger } from 'redux-logger';
 import createSagaMiddleware from 'redux-saga';
 import './index.scss';
-import { success, update } from './actions/service-worker';
+import { didSucceed, didUpdate } from './actions/service-worker';
 import App from './components/App';
 import NotificationStack from './components/NotificationStack';
 import rootReducer from './reducers';
@@ -38,9 +38,9 @@ store.subscribe(() => {
     const newDarkMode = store.getState().settings.darkMode;
     if (newDarkMode !== oldDarkMode) {
         if (newDarkMode) {
-            document.body.classList.add('bp3-dark');
+            document.body.classList.add(Classes.DARK);
         } else {
-            document.body.classList.remove('bp3-dark');
+            document.body.classList.remove(Classes.DARK);
         }
         oldDarkMode = newDarkMode;
     }
@@ -76,8 +76,8 @@ ReactDOM.render(
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://cra.link/PWA
 serviceWorkerRegistration.register({
-    onUpdate: (r) => store.dispatch(update(r)),
-    onSuccess: (r) => store.dispatch(success(r)),
+    onUpdate: (r) => store.dispatch(didUpdate(r)),
+    onSuccess: (r) => store.dispatch(didSucceed(r)),
 });
 
 // If you want to start measuring performance in your app, pass a function

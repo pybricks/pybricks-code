@@ -8,6 +8,7 @@ import editor from './editor';
 import errorLog from './error-log';
 import flashFirmware from './flash-firmware';
 import hub from './hub';
+import license from './license';
 import lwp3BootloaderBle from './lwp3-bootloader-ble';
 import lwp3BootloaderProtocol from './lwp3-bootloader-protocol';
 import mpy from './mpy';
@@ -24,6 +25,7 @@ export default function* (): Generator {
         errorLog(),
         flashFirmware(),
         hub(),
+        license(),
         mpy(),
         settings(),
         terminal(),

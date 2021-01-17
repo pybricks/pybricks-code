@@ -15,7 +15,7 @@ import {
     didFailToSetBoolean,
 } from '../actions/settings';
 import { RootState } from '../reducers';
-import { SettingId, getDefaultBooleanValue } from '../settings';
+import { SettingId, getDefaultBooleanValue } from '../settings/user';
 
 function stringToBoolean(value: string): boolean {
     return value.toLowerCase().match(/(true|yes|1)/) !== null;

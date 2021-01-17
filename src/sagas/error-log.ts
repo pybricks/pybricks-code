@@ -8,6 +8,7 @@ import {
     BleDeviceFailToConnectReasonType,
 } from '../actions/ble';
 import { BleUartActionType, BleUartDidFailToWriteAction } from '../actions/ble-uart';
+import { LicenseActionType, LicenseDidFailToFetchListAction } from '../actions/license';
 import {
     BootloaderConnectionActionType,
     BootloaderConnectionDidErrorAction,
@@ -39,6 +40,10 @@ function bootloaderDidError(action: BootloaderConnectionDidErrorAction): void {
     console.error(action.err);
 }
 
+function licenseDidFailToFetch(action: LicenseDidFailToFetchListAction): void {
+    console.error(`Failed to fetch licenses: ${action.reason.statusText}`);
+}
+
 export default function* (): Generator {
     yield takeEvery(BleDeviceActionType.DidFailToConnect, bleDeviceDidFailToConnect);
     yield takeEvery(BleUartActionType.DidFailToWrite, bleDataDidFailToWrite);
@@ -47,4 +52,5 @@ export default function* (): Generator {
         bootloaderDidFailToConnect,
     );
     yield takeEvery(BootloaderConnectionActionType.DidError, bootloaderDidError);
+    yield takeEvery(LicenseActionType.DidFailToFetchList, licenseDidFailToFetch);
 }

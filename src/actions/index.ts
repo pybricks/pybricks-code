@@ -8,6 +8,7 @@ import { BleUartAction } from './ble-uart';
 import { EditorAction } from './editor';
 import { FlashFirmwareAction } from './flash-firmware';
 import { HubAction, HubMessageAction } from './hub';
+import { LicenseAction } from './license';
 import {
     BootloaderConnectionAction,
     BootloaderDidRequestAction,
@@ -36,6 +37,7 @@ export type Action =
     | FlashFirmwareAction
     | HubAction
     | HubMessageAction
+    | LicenseAction
     | MpyAction
     | NotificationAction
     | ServiceWorkerAction

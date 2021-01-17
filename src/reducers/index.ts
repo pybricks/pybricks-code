@@ -7,6 +7,7 @@ import ble, { BleState } from './ble';
 import bootloader, { BootloaderState } from './bootloader';
 import editor, { EditorState } from './editor';
 import hub, { HubState } from './hub';
+import license, { LicenseState } from './license';
 import notification, { NotificationState } from './notification';
 import settings, { SettingsState } from './settings';
 import status, { StatusState } from './status';
@@ -21,6 +22,7 @@ export interface RootState {
     readonly ble: BleState;
     readonly editor: EditorState;
     readonly hub: HubState;
+    readonly license: LicenseState;
     readonly notification: NotificationState;
     readonly settings: SettingsState;
     readonly status: StatusState;
@@ -33,6 +35,7 @@ export default combineReducers({
     ble,
     editor,
     hub,
+    license,
     notification,
     settings,
     status,

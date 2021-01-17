@@ -20,7 +20,7 @@
     margin-left: 10px;
 }
 
-.bp3-progress-bar.status-bar-item {
+.#{$ns}-progress-bar.status-bar-item {
     // override progress bar default gray1 backgound
     background-color: $pt-app-background-color;
 }

@@ -2,7 +2,7 @@
 // Copyright (c) 2021 The Pybricks Authors
 
 import { Action } from 'redux';
-import { SettingId } from '../settings';
+import { SettingId } from '../settings/user';
 
 /** Actions related to settings. */
 export enum SettingsActionType {

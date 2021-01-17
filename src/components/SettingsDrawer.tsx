@@ -1,22 +1,36 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2021 The Pybricks Authors
 
-import { Drawer, FormGroup, Position, Switch, Tooltip } from '@blueprintjs/core';
+import {
+    AnchorButton,
+    Button,
+    ButtonGroup,
+    Classes,
+    Drawer,
+    FormGroup,
+    Position,
+    Switch,
+    Tooltip,
+} from '@blueprintjs/core';
 import { WithI18nProps, withI18n } from '@shopify/react-i18n';
 import React from 'react';
 import { connect } from 'react-redux';
 import { Action, Dispatch } from '../actions';
-import { closeSettings } from '../actions/app';
+import { closeSettings, openAboutDialog } from '../actions/app';
 import { setBoolean } from '../actions/settings';
 import { RootState } from '../reducers';
-import { SettingId } from '../settings';
+import {
+    pybricksBugReportsUrl,
+    pybricksGitterUrl,
+    pybricksSupportUrl,
+    tooltipDelay,
+} from '../settings/ui';
+import { SettingId } from '../settings/user';
 import { isMacOS } from '../utils/os';
+import AboutDialog from './AboutDialog';
+import ExternalLinkIcon from './ExternalLinkIcon';
 import { SettingsStringId } from './settings-i18n';
 import en from './settings-i18n.en.json';
-
-import './settings.scss';
-
-const tooltipDelay = 1000;
 
 type StateProps = {
     open: boolean;
@@ -30,6 +44,7 @@ type DispatchProps = {
     onShowDocsChanged: (checked: boolean) => void;
     onDarkModeChanged: (checked: boolean) => void;
     onFlashCurrentProgramChanged: (checked: boolean) => void;
+    onAbout: () => void;
 };
 
 type SettingsProps = StateProps & DispatchProps & WithI18nProps;
@@ -46,6 +61,7 @@ class SettingsDrawer extends React.PureComponent<SettingsProps> {
             onDarkModeChanged,
             flashCurrentProgram,
             onFlashCurrentProgramChanged,
+            onAbout,
         } = this.props;
         return (
             <Drawer
@@ -55,83 +71,132 @@ class SettingsDrawer extends React.PureComponent<SettingsProps> {
                 title={i18n.translate(SettingsStringId.Title)}
                 onClose={() => onClose()}
             >
-                <div className="pb-settings">
-                    <FormGroup
-                        label={i18n.translate(SettingsStringId.AppearanceTitle)}
-                        helperText={i18n.translate(
-                            SettingsStringId.AppearanceZoomHelp,
-                            {
-                                in: <span>{isMacOS() ? 'Cmd' : 'Ctrl'}-+</span>,
-                                out: <span>{isMacOS() ? 'Cmd' : 'Ctrl'}--</span>,
-                            },
-                        )}
-                    >
-                        <Tooltip
-                            content={i18n.translate(
-                                SettingsStringId.AppearanceDocumentationTooltip,
+                <div className={Classes.DRAWER_BODY}>
+                    <div className={Classes.DIALOG_BODY}>
+                        <FormGroup
+                            label={i18n.translate(SettingsStringId.AppearanceTitle)}
+                            helperText={i18n.translate(
+                                SettingsStringId.AppearanceZoomHelp,
+                                {
+                                    in: <span>{isMacOS() ? 'Cmd' : 'Ctrl'}-+</span>,
+                                    out: <span>{isMacOS() ? 'Cmd' : 'Ctrl'}--</span>,
+                                },
                             )}
-                            position={Position.LEFT}
-                            targetTagName="div"
-                            hoverOpenDelay={tooltipDelay}
                         >
-                            <Switch
-                                label={i18n.translate(
-                                    SettingsStringId.AppearanceDocumentationLabel,
+                            <Tooltip
+                                content={i18n.translate(
+                                    SettingsStringId.AppearanceDocumentationTooltip,
                                 )}
-                                large={true}
-                                checked={showDocs}
-                                onChange={(e) =>
-                                    onShowDocsChanged(
-                                        (e.target as HTMLInputElement).checked,
-                                    )
-                                }
-                            />
-                        </Tooltip>
-                        <Tooltip
-                            content={i18n.translate(
-                                SettingsStringId.AppearanceDarkModeTooltip,
-                            )}
-                            position={Position.LEFT}
-                            targetTagName="div"
-                            hoverOpenDelay={tooltipDelay}
+                                boundary="window"
+                                position={Position.LEFT}
+                                targetTagName="div"
+                                hoverOpenDelay={tooltipDelay}
+                            >
+                                <Switch
+                                    label={i18n.translate(
+                                        SettingsStringId.AppearanceDocumentationLabel,
+                                    )}
+                                    checked={showDocs}
+                                    onChange={(e) =>
+                                        onShowDocsChanged(
+                                            (e.target as HTMLInputElement).checked,
+                                        )
+                                    }
+                                />
+                            </Tooltip>
+                            <Tooltip
+                                content={i18n.translate(
+                                    SettingsStringId.AppearanceDarkModeTooltip,
+                                )}
+                                boundary="window"
+                                position={Position.LEFT}
+                                targetTagName="div"
+                                hoverOpenDelay={tooltipDelay}
+                            >
+                                <Switch
+                                    label={i18n.translate(
+                                        SettingsStringId.AppearanceDarkModeLabel,
+                                    )}
+                                    checked={darkMode}
+                                    onChange={(e) =>
+                                        onDarkModeChanged(
+                                            (e.target as HTMLInputElement).checked,
+                                        )
+                                    }
+                                />
+                            </Tooltip>
+                        </FormGroup>
+                        <FormGroup
+                            label={i18n.translate(SettingsStringId.FirmwareTitle)}
                         >
-                            <Switch
-                                label={i18n.translate(
-                                    SettingsStringId.AppearanceDarkModeLabel,
+                            <Tooltip
+                                content={i18n.translate(
+                                    SettingsStringId.FirmwareCurrentProgramTooltip,
                                 )}
-                                large={true}
-                                checked={darkMode}
-                                onChange={(e) =>
-                                    onDarkModeChanged(
-                                        (e.target as HTMLInputElement).checked,
-                                    )
-                                }
-                            />
-                        </Tooltip>
-                    </FormGroup>
-                    <FormGroup label={i18n.translate(SettingsStringId.FirmwareTitle)}>
-                        <Tooltip
-                            content={i18n.translate(
-                                SettingsStringId.FirmwareCurrentProgramTooltip,
-                            )}
-                            position={Position.LEFT}
-                            targetTagName="div"
-                            hoverOpenDelay={tooltipDelay}
-                        >
-                            <Switch
-                                label={i18n.translate(
-                                    SettingsStringId.FirmwareCurrentProgramLabel,
-                                )}
-                                large={true}
-                                checked={flashCurrentProgram}
-                                onChange={(e) =>
-                                    onFlashCurrentProgramChanged(
-                                        (e.target as HTMLInputElement).checked,
-                                    )
-                                }
-                            />
-                        </Tooltip>
-                    </FormGroup>
+                                boundary="window"
+                                position={Position.LEFT}
+                                targetTagName="div"
+                                hoverOpenDelay={tooltipDelay}
+                            >
+                                <Switch
+                                    label={i18n.translate(
+                                        SettingsStringId.FirmwareCurrentProgramLabel,
+                                    )}
+                                    checked={flashCurrentProgram}
+                                    onChange={(e) =>
+                                        onFlashCurrentProgramChanged(
+                                            (e.target as HTMLInputElement).checked,
+                                        )
+                                    }
+                                />
+                            </Tooltip>
+                        </FormGroup>
+                        <FormGroup label={i18n.translate(SettingsStringId.HelpTitle)}>
+                            <ButtonGroup
+                                minimal={true}
+                                vertical={true}
+                                alignText="left"
+                            >
+                                <AnchorButton
+                                    icon="help"
+                                    href={pybricksSupportUrl}
+                                    target="blank_"
+                                >
+                                    {i18n.translate(SettingsStringId.HelpSupportLabel)}
+                                    &nbsp;
+                                    <ExternalLinkIcon />
+                                </AnchorButton>
+                                <AnchorButton
+                                    icon="chat"
+                                    href={pybricksGitterUrl}
+                                    target="blank_"
+                                >
+                                    {i18n.translate(SettingsStringId.HelpChatLabel)}
+                                    &nbsp;
+                                    <ExternalLinkIcon />
+                                </AnchorButton>
+                                <AnchorButton
+                                    icon="virus"
+                                    href={pybricksBugReportsUrl}
+                                    target="blank_"
+                                >
+                                    {i18n.translate(SettingsStringId.HelpBugsLabel)}
+                                    &nbsp;
+                                    <ExternalLinkIcon />
+                                </AnchorButton>
+                                <Button
+                                    icon="info-sign"
+                                    onClick={() => {
+                                        onAbout();
+                                        return true;
+                                    }}
+                                >
+                                    {i18n.translate(SettingsStringId.HelpAboutLabel)}
+                                </Button>
+                                <AboutDialog />
+                            </ButtonGroup>
+                        </FormGroup>
+                    </div>
                 </div>
             </Drawer>
         );
@@ -153,6 +218,7 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
         dispatch(setBoolean(SettingId.DarkMode, checked)),
     onFlashCurrentProgramChanged: (checked): Action =>
         dispatch(setBoolean(SettingId.FlashCurrentProgram, checked)),
+    onAbout: (): Action => dispatch(openAboutDialog()),
 });
 
 export default connect(

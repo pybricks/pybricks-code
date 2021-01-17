@@ -4,7 +4,7 @@
 import { Reducer, combineReducers } from 'redux';
 import { Action } from '../actions';
 import { SettingsActionType } from '../actions/settings';
-import { SettingId, getDefaultBooleanValue } from '../settings';
+import { SettingId, getDefaultBooleanValue } from '../settings/user';
 
 export interface SettingsState {
     readonly darkMode: boolean;
