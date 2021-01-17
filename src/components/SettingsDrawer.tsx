@@ -27,6 +27,7 @@ import {
 } from '../settings/ui';
 import { SettingId } from '../settings/user';
 import { isMacOS } from '../utils/os';
+import AboutDialog from './AboutDialog';
 import ExternalLinkIcon from './ExternalLinkIcon';
 import { SettingsStringId } from './settings-i18n';
 import en from './settings-i18n.en.json';
@@ -192,6 +193,7 @@ class SettingsDrawer extends React.PureComponent<SettingsProps> {
                                 >
                                     {i18n.translate(SettingsStringId.HelpAboutLabel)}
                                 </Button>
+                                <AboutDialog />
                             </ButtonGroup>
                         </FormGroup>
                     </div>

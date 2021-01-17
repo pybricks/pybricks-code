@@ -1,6 +1,7 @@
 {
     "about": {
         "description": "A simple web app for programming LEGO® Powered Up smart hubs using Pybricks MicroPython.",
+        "licenseButton": { "label": "Open Source Licenses" },
         "websiteButton": { "label": "Pybricks Website" }
     }
 }

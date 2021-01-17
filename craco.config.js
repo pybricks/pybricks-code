@@ -6,9 +6,16 @@ const {
     getLoaders,
     loaderByName,
 } = require('@craco/craco');
+const LicensePlugin = require('webpack-license-plugin');
 
 module.exports = {
     webpack: {
+        plugins: [
+            new LicensePlugin({
+                outputFilename: 'static/oss-licenses.json',
+                replenishDefaultLicenseTexts: true,
+            }),
+        ],
         configure: {
             resolve: {
                 // need 'esnext' first to avoid compile errors
