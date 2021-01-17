@@ -9,10 +9,8 @@ export interface LicenseInfo {
     readonly name: string;
     readonly version: string;
     readonly author: string | undefined;
-    readonly repository: string | null;
-    readonly source: string;
     readonly license: string;
-    readonly licenseText: string | null;
+    readonly licenseText: string;
 }
 
 export type LicenseList = LicenseInfo[];
