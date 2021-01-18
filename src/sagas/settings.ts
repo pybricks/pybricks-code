@@ -101,6 +101,6 @@ function* storeSetting(action: SettingsSetBooleanAction): Generator {
 
 export default function* (): Generator {
     yield fork(monitorLocalStorage);
-    yield takeEvery(AppActionType.Startup, loadSettings);
+    yield takeEvery(AppActionType.DidStart, loadSettings);
     yield takeEvery(SettingsActionType.SetBoolean, storeSetting);
 }

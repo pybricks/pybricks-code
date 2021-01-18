@@ -2,7 +2,7 @@
 // Copyright (c) 2020-2021 The Pybricks Authors
 
 import { all, put } from 'redux-saga/effects';
-import { startup } from '../actions/app';
+import { didStart } from '../actions/app';
 import bleUart from './ble-uart';
 import editor from './editor';
 import errorLog from './error-log';
@@ -31,6 +31,6 @@ export default function* (): Generator {
         notification(),
         settings(),
         terminal(),
-        put(startup()),
+        put(didStart()),
     ]);
 }
