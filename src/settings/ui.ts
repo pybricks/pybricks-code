@@ -7,7 +7,7 @@
 export const tooltipDelay = 1000;
 
 /** Official name of the app. */
-export const appName = 'Pybricks Code';
+export const appName = 'Pybricks';
 
 /** URL to main Pybricks website. */
 export const pybricksWebsiteUrl = 'https://pybricks.com';
