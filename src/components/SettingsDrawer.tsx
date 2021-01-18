@@ -22,6 +22,7 @@ import { RootState } from '../reducers';
 import {
     pybricksBugReportsUrl,
     pybricksGitterUrl,
+    pybricksProjectsUrl,
     pybricksSupportUrl,
     tooltipDelay,
 } from '../settings/ui';
@@ -157,6 +158,15 @@ class SettingsDrawer extends React.PureComponent<SettingsProps> {
                                 vertical={true}
                                 alignText="left"
                             >
+                                <AnchorButton
+                                    icon="lightbulb"
+                                    href={pybricksProjectsUrl}
+                                    target="blank_"
+                                >
+                                    {i18n.translate(SettingsStringId.HelpProjectsLabel)}
+                                    &nbsp;
+                                    <ExternalLinkIcon />
+                                </AnchorButton>
                                 <AnchorButton
                                     icon="help"
                                     href={pybricksSupportUrl}
