@@ -15,6 +15,7 @@ export enum SettingsStringId {
     FirmwareCurrentProgramLabel = 'settings.firmware.flash-current-program.label',
     FirmwareCurrentProgramTooltip = 'settings.firmware.flash-current-program.tooltip',
     HelpTitle = 'settings.help.title',
+    HelpProjectsLabel = 'settings.help.projects.label',
     HelpSupportLabel = 'settings.help.support.label',
     HelpChatLabel = 'settings.help.chat.label',
     HelpBugsLabel = 'settings.help.bugs.label',

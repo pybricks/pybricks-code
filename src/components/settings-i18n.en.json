@@ -24,6 +24,9 @@
         },
         "help": {
             "title": "Help",
+            "projects": {
+                "label": "Example Projects"
+            },
             "support": {
                 "label": "Support"
             },
