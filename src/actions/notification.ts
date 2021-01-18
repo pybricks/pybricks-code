@@ -1,27 +1,16 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020 The Pybricks Authors
+// Copyright (c) 2020-2021 The Pybricks Authors
 
 import { Action } from 'redux';
-import { createCountFunc } from '../utils/iter';
 
 export enum NotificationActionType {
-    /**
-     * Add a notification to the list of notifications.
-     */
+    /** Add a notification to the list of notifications. */
     Add = 'notification.action.add',
-    /**
-     * Remove a notification from the list of notifications.
-     */
-    Remove = 'notification.action.Remove',
 }
 
 export type NotificationLevel = 'error' | 'warning' | 'info';
 
 export type NotificationAddAction = Action<NotificationActionType.Add> & {
-    /**
-     * Unique ID for this notification instance.
-     */
-    readonly id: number;
     /**
      * The type of notification.
      */
@@ -36,17 +25,6 @@ export type NotificationAddAction = Action<NotificationActionType.Add> & {
     readonly helpUrl?: string;
 };
 
-export type NotificationRemoveAction = Action<NotificationActionType.Remove> & {
-    /**
-     * ID of an existing notification.
-     */
-    readonly id: number;
-};
-
-export type NotificationAction = NotificationAddAction | NotificationRemoveAction;
-
-const nextId = createCountFunc();
-
 /**
  * Action to add a notification to the list.
  * @param level The severity level
@@ -58,13 +36,7 @@ export function add(
     message: string,
     helpUrl?: string,
 ): NotificationAddAction {
-    return { type: NotificationActionType.Add, id: -nextId(), level, message, helpUrl };
+    return { type: NotificationActionType.Add, level, message, helpUrl };
 }
 
-/**
- * Action to removes a notification from the list.
- * @param id The id of the notification to remove
- */
-export function remove(id: number): NotificationRemoveAction {
-    return { type: NotificationActionType.Remove, id };
-}
+export type NotificationAction = NotificationAddAction;

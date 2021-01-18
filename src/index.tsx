@@ -12,20 +12,22 @@ import createSagaMiddleware from 'redux-saga';
 import './index.scss';
 import { didSucceed, didUpdate } from './actions/service-worker';
 import App from './components/App';
-import NotificationStack from './components/NotificationStack';
+import * as I18nToaster from './components/I18nToaster';
 import rootReducer from './reducers';
 import reportWebVitals from './reportWebVitals';
 import rootSaga from './sagas';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 
-const sagaMiddleware = createSagaMiddleware();
-// TODO: add runtime option or filter - logger affects firmware flash performance
-const loggerMiddleware = createLogger({ predicate: () => false });
-
 const i18n = new I18nManager({
     locale: 'en',
     onError: (err): void => console.error(err),
 });
+
+const toaster = I18nToaster.create(i18n);
+
+const sagaMiddleware = createSagaMiddleware({ context: { notification: { toaster } } });
+// TODO: add runtime option or filter - logger affects firmware flash performance
+const loggerMiddleware = createLogger({ predicate: () => false });
 
 const store = createStore(
     rootReducer,
@@ -69,7 +71,6 @@ ReactDOM.render(
                 >
                     <div id="vh" className="h-100 w-100 p-absolute" />
                 </ResizeSensor>
-                <NotificationStack />
                 <App />
             </I18nContext.Provider>
         </Provider>

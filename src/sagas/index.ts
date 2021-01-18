@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020 The Pybricks Authors
+// Copyright (c) 2020-2021 The Pybricks Authors
 
 import { all, put } from 'redux-saga/effects';
 import { startup } from '../actions/app';
@@ -12,6 +12,7 @@ import license from './license';
 import lwp3BootloaderBle from './lwp3-bootloader-ble';
 import lwp3BootloaderProtocol from './lwp3-bootloader-protocol';
 import mpy from './mpy';
+import notification from './notification';
 import settings from './settings';
 import terminal from './terminal';
 
@@ -27,6 +28,7 @@ export default function* (): Generator {
         hub(),
         license(),
         mpy(),
+        notification(),
         settings(),
         terminal(),
         put(startup()),

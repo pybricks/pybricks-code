@@ -12,4 +12,5 @@ export enum MessageId {
     ServiceWorkerSuccess = 'serviceWorker.success',
     ServiceWorkerUpdate = 'serviceWorker.update',
     YesReloadProgram = 'editor.yesReloadProgram',
+    MpyError = 'mpy.error',
 }
