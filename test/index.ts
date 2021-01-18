@@ -12,7 +12,7 @@ export class AsyncSaga {
     private state: Partial<RootState>;
     private task: Task;
 
-    public constructor(saga: Saga) {
+    public constructor(saga: Saga, context?: Record<string, unknown>) {
         this.channel = stdChannel();
         this.dispatches = [];
         this.takers = [];
@@ -25,6 +25,7 @@ export class AsyncSaga {
                 onError: (e, _i): void => {
                     throw e;
                 },
+                context,
             },
             saga,
         );
