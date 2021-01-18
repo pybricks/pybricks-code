@@ -237,10 +237,6 @@ function* showServiceWorkerUpdate(): Generator {
     );
 }
 
-function* showServiceWorkerSuccess(): Generator {
-    yield* showSingleton(Level.Info, MessageId.ServiceWorkerSuccess);
-}
-
 export default function* (): Generator {
     yield takeEvery(
         BleDeviceActionType.DidFailToConnect,
@@ -254,5 +250,4 @@ export default function* (): Generator {
     yield takeEvery(MpyActionType.DidFailToCompile, showCompilerError);
     yield takeEvery(NotificationActionType.Add, addNotification);
     yield takeEvery(ServiceWorkerActionType.DidUpdate, showServiceWorkerUpdate);
-    yield takeEvery(ServiceWorkerActionType.DidSucceed, showServiceWorkerSuccess);
 }

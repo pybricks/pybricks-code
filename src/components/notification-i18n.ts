@@ -9,7 +9,6 @@ export enum MessageId {
     BleGattServiceNotFound = 'ble.gattServiceNotFound',
     BleNoWebBluetooth = 'ble.noWebBluetooth',
     ProgramChanged = 'editor.programChanged',
-    ServiceWorkerSuccess = 'serviceWorker.success',
     ServiceWorkerUpdate = 'serviceWorker.update',
     YesReloadProgram = 'editor.yesReloadProgram',
     MpyError = 'mpy.error',

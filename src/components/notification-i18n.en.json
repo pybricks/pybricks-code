@@ -13,7 +13,6 @@
         "error": "{errorMessage}"
     },
     "serviceWorker": {
-        "success": "Content is cached for offline use.",
         "update": "New content is available and will be used when all tabs for this page are closed.'"
     }
 }

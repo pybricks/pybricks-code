@@ -34,7 +34,6 @@ test.each([
     add('warning', 'message'),
     add('error', 'message', 'url'),
     didUpdate({} as ServiceWorkerRegistration),
-    didSucceed({} as ServiceWorkerRegistration),
 ])('actions that should show notification: %o', async (action: Action) => {
     const getToasts = jest.fn().mockReturnValue([]);
     const show = jest.fn();
@@ -62,6 +61,7 @@ test.each([
 test.each([
     bleDidFailToConnect({ reason: BleDeviceFailToConnectReasonType.Canceled }),
     bootloaderDidFailToConnect(BootloaderConnectionFailureReason.Canceled),
+    didSucceed({} as ServiceWorkerRegistration),
 ])('actions that should not show a notification: %o', async (action: Action) => {
     const getToasts = jest.fn().mockReturnValue([]);
     const show = jest.fn();
