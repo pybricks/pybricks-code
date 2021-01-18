@@ -14,7 +14,7 @@
         "@pybricks/mpy-cross-v5": "^1.2.0",
         "@shopify/react-i18n": "^5.2.0",
         "@testing-library/dom": "^7.29.2",
-        "@testing-library/jest-dom": "^5.11.8",
+        "@testing-library/jest-dom": "^5.11.9",
         "@testing-library/react": "^11.2.3",
         "@testing-library/user-event": "^12.6.0",
         "@types/file-saver": "^2.0.1",
