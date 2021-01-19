@@ -201,9 +201,9 @@ function* showEditorStorageChanged(): Generator {
 
     yield* showSingleton(
         Level.Info,
-        MessageId.ProgramChanged,
+        MessageId.ProgramChangedMessage,
         undefined,
-        dispatchAction(MessageId.YesReloadProgram, ch.put, 'tick'),
+        dispatchAction(MessageId.ProgramChangedAction, ch.put, 'tick'),
         ch.close,
     );
 
