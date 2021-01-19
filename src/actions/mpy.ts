@@ -32,10 +32,10 @@ export function didCompile(data: Uint8Array): MpyDidCompileAction {
 
 export type MpyDidFailToCompileAction = Action<MpyActionType.DidFailToCompile> & {
     /** Error output. */
-    readonly err: string;
+    readonly err: string[];
 };
 
-export function didFailToCompile(err: string): MpyDidFailToCompileAction {
+export function didFailToCompile(err: string[]): MpyDidFailToCompileAction {
     return { type: MpyActionType.DidFailToCompile, err };
 }
 

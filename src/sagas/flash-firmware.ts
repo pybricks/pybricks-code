@@ -146,7 +146,7 @@ function* loadFirmware(
     ])) as [MpyDidCompileAction, MpyDidFailToCompileAction];
 
     if (mpyFail) {
-        throw Error(mpyFail.err);
+        throw Error(mpyFail.err.join('\n'));
     }
 
     // compute offset for checksum - must be aligned to 4-byte boundary

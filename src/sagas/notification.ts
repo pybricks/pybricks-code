@@ -220,7 +220,9 @@ function* dismissCompilerError(): Generator {
 }
 
 function* showCompilerError(action: MpyDidFailToCompileAction): Generator {
-    yield* showSingleton(Level.Error, MessageId.MpyError, { errorMessage: action.err });
+    yield* showSingleton(Level.Error, MessageId.MpyError, {
+        errorMessage: React.createElement('pre', undefined, action.err.join('\n')),
+    });
 }
 
 function* addNotification(action: NotificationAddAction): Generator {

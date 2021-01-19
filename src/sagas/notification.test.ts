@@ -31,7 +31,7 @@ test.each([
     bootloaderDidFailToConnect(BootloaderConnectionFailureReason.NoWebBluetooth),
     bootloaderDidFailToConnect(BootloaderConnectionFailureReason.GattServiceNotFound),
     storageChanged('test'),
-    didFailToCompile('reason'),
+    didFailToCompile(['reason']),
     add('warning', 'message'),
     add('error', 'message', 'url'),
     didUpdate({} as ServiceWorkerRegistration),

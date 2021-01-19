@@ -111,7 +111,6 @@ SOFTWARE.`;
 
 const licenseTextOverrides = {
     '@pybricks/firmware': pybricksLicense,
-    '@pybricks/mpy-cross-v5': pybricksLicense,
     '@shopify/dates': shopifyLicense,
     '@shopify/decorators': shopifyLicense,
     '@shopify/function-enhancers': shopifyLicense,

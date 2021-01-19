@@ -1462,10 +1462,10 @@
   dependencies:
     jszip "^3.5.0"
 
-"@pybricks/mpy-cross-v5@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@pybricks/mpy-cross-v5/-/mpy-cross-v5-1.2.0.tgz#29cbd949c579c0551792d2fd1cd777d193aa925c"
-  integrity sha512-A1FXGP0teuZa3tPBTz9niCdEol4Ld6jOABl9FkglmutGWO99eLwuyYibh8wQqHNKwXRHrzCJmo/W+/42HmSjog==
+"@pybricks/mpy-cross-v5@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@pybricks/mpy-cross-v5/-/mpy-cross-v5-2.0.0.tgz#9d64e1dedda0a7a028117f510ce5365f504df400"
+  integrity sha512-s3B+0tsXRHF3Y+FfOeDkNLoM+dwwT8P05UowVYPQvTV/UjhBGwruUdEoG/cYz2cFrqx+VFF8gpgmpw+5aA7/hQ==
 
 "@redux-saga/core@^1.1.3":
   version "1.1.3"
