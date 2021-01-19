@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020 The Pybricks Authors
+// Copyright (c) 2020-2021 The Pybricks Authors
 // File: components/button-i18n.ts
 // Button translation keys.
 
@@ -9,7 +9,8 @@ export enum TooltipId {
     Run = 'run.tooltip',
     Stop = 'stop.tooltip',
     Repl = 'repl.tooltip',
-    Flash = 'flash.tooltip',
+    Flash = 'flash.action.tooltip',
+    FlashProgress = 'flash.progress.tooltip',
     BluetoothConnect = 'bluetooth.connect.tooltip',
     BluetoothDisconnect = 'bluetooth.disconnect.tooltip',
     Settings = 'settings.tooltip',

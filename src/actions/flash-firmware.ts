@@ -1,20 +1,23 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020 The Pybricks Authors
+// Copyright (c) 2020-2021 The Pybricks Authors
 
 import { Action } from 'redux';
+import { assert } from '../utils';
 
 /**
  * High-level bootloader actions.
  */
 export enum FlashFirmwareActionType {
-    /**
-     * Flash new firmware to the device.
-     */
+    /** Request to flash new firmware to the device. */
     FlashFirmware = 'flashFirmware.action.flashFirmware',
-    /**
-     * Firmware flash progress.
-     */
-    Progress = 'flashFirmware.action.progress',
+    /** Flashing started. */
+    DidStart = 'flashFirmware.action.didStart',
+    /** Firmware flash progress. */
+    DidProgress = 'flashFirmware.action.didProgress',
+    /** Flashing finished successfully. */
+    DidFinish = 'flashFirmware.action.didFinish',
+    /** Flashing firmware failed. */
+    DidFailToFinish = 'flashFirmware.action.didFailToFinish',
 }
 
 /**
@@ -33,19 +36,46 @@ export function flashFirmware(data?: ArrayBuffer): FlashFirmwareFlashAction {
     return { type: FlashFirmwareActionType.FlashFirmware, data };
 }
 
-export type FlashFirmwareProgressAction = Action<FlashFirmwareActionType.Progress> & {
-    /**
-     * The number of bytes that have been flashed so far.
-     */
-    complete: number;
-    /**
-     * The total number of bytes to be flashed.
-     */
-    total: number;
+/** Action that indicates flashing firmware started. */
+export type FlashFirmwareDidStartAction = Action<FlashFirmwareActionType.DidStart>;
+
+/**
+ * Action that indicates flashing firmware started.
+ * @param total The total number of bytes to be flashed.
+ */
+export function didStart(): FlashFirmwareDidStartAction {
+    return { type: FlashFirmwareActionType.DidStart };
+}
+
+/** Action that indicates current firmware flashing progress. */
+export type FlashFirmwareDidProgressAction = Action<FlashFirmwareActionType.DidProgress> & {
+    /** The current progress (0 to 1). */
+    value: number;
 };
 
-export function progress(complete: number, total: number): FlashFirmwareProgressAction {
-    return { type: FlashFirmwareActionType.Progress, complete, total };
+/**
+ * Action that indicates current firmware flashing progress.
+ * @param value The current progress (0 to 1).
+ */
+export function didProgress(value: number): FlashFirmwareDidProgressAction {
+    assert(value >= 0 && value <= 1, 'value out of range');
+    return { type: FlashFirmwareActionType.DidProgress, value };
+}
+
+/** Action that indicates that flashing firmware completed successfully. */
+export type FlashFirmwareDidFinishAction = Action<FlashFirmwareActionType.DidFinish>;
+
+/** Action that indicates that flashing firmware completed successfully. */
+export function didFinish(): FlashFirmwareDidFinishAction {
+    return { type: FlashFirmwareActionType.DidFinish };
+}
+
+/** Action that indicates that flashing failed. */
+export type FlashFirmwareDidFailToFinishAction = Action<FlashFirmwareActionType.DidFailToFinish>;
+
+/** Action that indicates that flashing failed. */
+export function didFailToFinish(): FlashFirmwareDidFailToFinishAction {
+    return { type: FlashFirmwareActionType.DidFailToFinish };
 }
 
 /**
@@ -53,4 +83,7 @@ export function progress(complete: number, total: number): FlashFirmwareProgress
  */
 export type FlashFirmwareAction =
     | FlashFirmwareFlashAction
-    | FlashFirmwareProgressAction;
+    | FlashFirmwareDidStartAction
+    | FlashFirmwareDidProgressAction
+    | FlashFirmwareDidFinishAction
+    | FlashFirmwareDidFailToFinishAction;

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020 The Pybricks Authors
+// Copyright (c) 2020-2021 The Pybricks Authors
 
 import { connect } from 'react-redux';
 import { Dispatch } from '../actions';
@@ -11,12 +11,18 @@ import OpenFileButton, { OpenFileButtonProps } from './OpenFileButton';
 import { TooltipId } from './button-i18n';
 import firmwareIcon from './images/firmware.svg';
 
-type StateProps = Pick<OpenFileButtonProps, 'enabled'>;
+type StateProps = Pick<
+    OpenFileButtonProps,
+    'tooltip' | 'enabled' | 'showProgress' | 'progress'
+>;
 type DispatchProps = Pick<OpenFileButtonProps, 'onFile' | 'onReject' | 'onClick'>;
 type OwnProps = Pick<OpenFileButtonProps, 'id'>;
 
 const mapStateToProps = (state: RootState): StateProps => ({
+    tooltip: state.firmware.flashing ? TooltipId.FlashProgress : TooltipId.Flash,
     enabled: state.bootloader.connection === BootloaderConnectionState.Disconnected,
+    showProgress: state.firmware.flashing,
+    progress: state.firmware.progress === null ? undefined : state.firmware.progress,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
@@ -39,7 +45,6 @@ const mergeProps = (
     ownProps: OwnProps,
 ): OpenFileButtonProps => ({
     fileExtension: '.zip',
-    tooltip: TooltipId.Flash,
     icon: firmwareIcon,
     ...ownProps,
     ...stateProps,

@@ -21,7 +21,9 @@ import { Action } from '../actions';
 import {
     FlashFirmwareActionType,
     FlashFirmwareFlashAction,
-    progress,
+    didFinish,
+    didProgress,
+    didStart,
 } from '../actions/flash-firmware';
 import {
     BootloaderChecksumRequestAction,
@@ -265,6 +267,8 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
         }
     }
 
+    yield put(didStart());
+
     const eraseAction = (yield put(eraseRequest())) as BootloaderEraseRequestAction;
     const [, erase] = (yield all([
         waitForDidSend(eraseAction.id),
@@ -301,7 +305,7 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
         )) as BootloaderProgramRequestAction;
         yield waitForDidSend(programAction.id);
 
-        yield put(progress(offset, firmware.length));
+        yield put(didProgress(offset / firmware.length));
 
         // we don't want to request checksum if this is the last packet since
         // the bootloader will send a response to the program request already.
@@ -344,11 +348,13 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
         throw Error("Didn't flash all bytes");
     }
 
-    yield put(progress(firmware.length, firmware.length));
+    yield put(didProgress(1));
 
     // this will cause the remote device to disconnect and reboot
     const rebootAction = (yield put(rebootRequest())) as BootloaderRebootRequestAction;
     yield waitForDidSend(rebootAction.id);
+
+    yield put(didFinish());
 }
 
 export default function* (): Generator {
