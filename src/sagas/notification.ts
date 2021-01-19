@@ -14,6 +14,7 @@ import { Replacements } from '@shopify/react-i18n';
 import React from 'react';
 import { channel } from 'redux-saga';
 import { delay, getContext, put, take, takeEvery } from 'redux-saga/effects';
+import { reload } from '../actions/app';
 import {
     BleDeviceActionType,
     BleDeviceDidFailToConnectAction,
@@ -30,6 +31,7 @@ import { NotificationActionType, NotificationAddAction } from '../actions/notifi
 import { ServiceWorkerActionType } from '../actions/service-worker';
 import Notification from '../components/Notification';
 import { MessageId } from '../components/notification-i18n';
+import { appName } from '../settings/ui';
 
 type NotificationContext = {
     toaster: IToaster;
@@ -229,12 +231,26 @@ function* addNotification(action: NotificationAddAction): Generator {
 }
 
 function* showServiceWorkerUpdate(): Generator {
+    const ch = channel<React.MouseEvent<HTMLElement>>();
+    const action = dispatchAction(
+        MessageId.ServiceWorkerUpdateAction,
+        ch.put,
+        'refresh',
+    );
     yield* showSingleton(
         Level.Info,
-        MessageId.ServiceWorkerUpdate,
-        undefined,
-        helpAction('https://github.com/pybricks/pybricks-code/issues/102'),
+        MessageId.ServiceWorkerUpdateMessage,
+        {
+            appName,
+            action: React.createElement('strong', undefined, action.text),
+        },
+        action,
+        ch.close,
     );
+
+    yield take(ch);
+
+    yield put(reload());
 }
 
 export default function* (): Generator {

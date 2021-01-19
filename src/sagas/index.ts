@@ -3,6 +3,7 @@
 
 import { all, put } from 'redux-saga/effects';
 import { didStart } from '../actions/app';
+import app from './app';
 import bleUart from './ble-uart';
 import editor from './editor';
 import errorLog from './error-log';
@@ -19,6 +20,7 @@ import terminal from './terminal';
 /* istanbul ignore next */
 export default function* (): Generator {
     yield all([
+        app(),
         bleUart(),
         lwp3BootloaderBle(),
         lwp3BootloaderProtocol(),

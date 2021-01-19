@@ -13,6 +13,9 @@
         "error": "{errorMessage}"
     },
     "serviceWorker": {
-        "update": "New content is available and will be used when all tabs for this page are closed.'"
+        "update": {
+            "message": "A new version of {appName} is available. Click {action} to start using the new version.",
+            "action": "Restart"
+        }
     }
 }

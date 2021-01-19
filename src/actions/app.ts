@@ -7,6 +7,8 @@ import { Action } from 'redux';
 
 /** App action types. */
 export enum AppActionType {
+    /** Reload the app. */
+    Reload = 'app.action.reload',
     /** The app has just ben started. */
     DidStart = 'app.action.didStart',
     /** Open settings dialog. */
@@ -21,6 +23,14 @@ export enum AppActionType {
     OpenLicenseDialog = 'app.action.openLicenseDialog',
     /** Close license dialog. */
     CloseLicenseDialog = 'app.action.closeLicenseDialog',
+}
+
+/** Action that requests the app to reload. */
+export type AppReloadAction = Action<AppActionType.Reload>;
+
+/** Creates an action that requests the app to reload. */
+export function reload(): AppReloadAction {
+    return { type: AppActionType.Reload };
 }
 
 /** Action that indicates the app has just started. */
@@ -81,6 +91,7 @@ export function closeLicenseDialog(): AppCloseLicenseDialogAction {
 
 /** common type for all app actions. */
 export type AppAction =
+    | AppReloadAction
     | AppDidStartAction
     | AppOpenSettingsAction
     | AppCloseSettingsAction
