@@ -121,6 +121,11 @@ describe('message encoder', () => {
             ],
         ],
     ])('encode %s request', async (_n, request, expected) => {
+        const messageTypesThatShouldBeCalledWithoutResponse = [
+            BootloaderRequestActionType.Program,
+            BootloaderRequestActionType.Reboot,
+            BootloaderRequestActionType.Disconnect,
+        ];
         const saga = new AsyncSaga(bootloader);
         saga.put(request);
         const message = new Uint8Array(expected);
@@ -128,7 +133,7 @@ describe('message encoder', () => {
         expect(action).toEqual(
             send(
                 message,
-                /* withResponse */ request.type !== BootloaderRequestActionType.Program,
+                !messageTypesThatShouldBeCalledWithoutResponse.includes(request.type),
             ),
         );
         await saga.end();
