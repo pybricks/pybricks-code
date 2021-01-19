@@ -78,7 +78,7 @@ class Editor extends React.Component<EditorProps> {
     render(): JSX.Element {
         const { darkMode, i18n, onSessionChanged } = this.props;
         return (
-            <div className="h-100 watermark">
+            <div className="h-100">
                 <ResizeSensor onResize={(): void => this.editor?.resize()}>
                     <AceEditor
                         ref={this.editorRef}

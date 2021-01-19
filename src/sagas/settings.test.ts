@@ -4,7 +4,7 @@
 // Tests for settings sagas.
 
 import { AsyncSaga } from '../../test';
-import { startup } from '../actions/app';
+import { didStart } from '../actions/app';
 import { didBooleanChange, didFailToSetBoolean, setBoolean } from '../actions/settings';
 import { SettingsState } from '../reducers/settings';
 import { SettingId } from '../settings/user';
@@ -25,7 +25,7 @@ describe('startup', () => {
             ).mockReturnValue(null);
             innerWidth = 1024;
 
-            saga.put(startup());
+            saga.put(didStart());
 
             // does nothing
 
@@ -41,7 +41,7 @@ describe('startup', () => {
             ).mockReturnValue(null);
             innerWidth = 800;
 
-            saga.put(startup());
+            saga.put(didStart());
 
             // does nothing
 
@@ -64,7 +64,7 @@ describe('startup', () => {
             });
             innerWidth = 1024;
 
-            saga.put(startup());
+            saga.put(didStart());
 
             // does nothing
 
@@ -87,7 +87,7 @@ describe('startup', () => {
             });
             innerWidth = 800;
 
-            saga.put(startup());
+            saga.put(didStart());
 
             // requests documentation to be shown
             const action = await saga.take();
@@ -112,7 +112,7 @@ describe('startup', () => {
             });
             innerWidth = 1024;
 
-            saga.put(startup());
+            saga.put(didStart());
 
             // requests documentation to be hidden
             const action = await saga.take();
@@ -137,7 +137,7 @@ describe('startup', () => {
             });
             innerWidth = 800;
 
-            saga.put(startup());
+            saga.put(didStart());
 
             // does nothing
 
@@ -154,7 +154,7 @@ describe('startup', () => {
                 'getItem',
             ).mockReturnValue(null);
 
-            saga.put(startup());
+            saga.put(didStart());
 
             // does nothing
 
@@ -176,7 +176,7 @@ describe('startup', () => {
                 }
             });
 
-            saga.put(startup());
+            saga.put(didStart());
 
             // requests to enable dark mode
             const action = await saga.take();
@@ -200,7 +200,7 @@ describe('startup', () => {
                 }
             });
 
-            saga.put(startup());
+            saga.put(didStart());
 
             // does nothing
 

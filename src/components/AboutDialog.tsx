@@ -23,6 +23,8 @@ import en from './about-i18n.en.json';
 
 import './about.scss';
 
+const version = process.env.REACT_APP_VERSION;
+
 type StateProps = { showAboutDialog: boolean };
 
 type DispatchProps = { onClose: () => void; onLicenseButtonClick: () => void };
@@ -33,7 +35,11 @@ class AboutDialog extends React.Component<AboutDialogProps> {
     render(): JSX.Element {
         const { i18n, showAboutDialog, onClose, onLicenseButtonClick } = this.props;
         return (
-            <Dialog title={appName} isOpen={showAboutDialog} onClose={() => onClose()}>
+            <Dialog
+                title={`${appName} v${version}`}
+                isOpen={showAboutDialog}
+                onClose={() => onClose()}
+            >
                 <div className={Classes.DIALOG_BODY}>
                     <div className="pb-about-icon">
                         <img src="favicon.ico" />

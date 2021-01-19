@@ -5,17 +5,19 @@
 
 @import '../variables.scss';
 
+// make ace editor match app backgound color
+
 .#{$ns}-dark .ace_gutter {
-    // make ace editor match app backgound color
     background-color: $pt-dark-app-background-color;
 }
 
 .ace_gutter {
-    // make ace editor match app backgound color
     background-color: $pt-app-background-color;
 }
 
-.watermark::after {
+// add "BETA" watermark
+
+.pb-beta .ace_scroller::after {
     content: "";
     background: url("./images/beta.svg");
     opacity: 1;

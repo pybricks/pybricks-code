@@ -3,7 +3,7 @@
 
 import { AsyncSaga, delay } from '../../test';
 
-import { startup } from '../actions/app';
+import { didStart } from '../actions/app';
 import {
     BleUartActionType,
     BleUartWriteAction,
@@ -295,7 +295,7 @@ describe('Data receiver filters out hub status', () => {
 test('Terminal data source responds to send data actions', async () => {
     const saga = new AsyncSaga(terminal);
 
-    saga.put(startup());
+    saga.put(didStart());
     const dataSourceAction = await saga.take();
     expect(dataSourceAction.type).toBe(TerminalActionType.SetDataSource);
 
