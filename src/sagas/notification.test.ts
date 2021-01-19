@@ -13,9 +13,10 @@ import {
     BootloaderConnectionFailureReason,
     didFailToConnect as bootloaderDidFailToConnect,
 } from '../actions/lwp3-bootloader';
-import { didFailToCompile } from '../actions/mpy';
+import { didCompile, didFailToCompile } from '../actions/mpy';
 import { add } from '../actions/notification';
 import { didSucceed, didUpdate } from '../actions/service-worker';
+import { MessageId } from '../components/notification-i18n';
 import notification from './notification';
 
 test.each([
@@ -86,3 +87,30 @@ test.each([
 
     await saga.end();
 });
+
+test.each([[didCompile(new Uint8Array()), MessageId.MpyError]])(
+    'actions that should close a notification: %o',
+    async (action: Action, key: string) => {
+        const getToasts = jest.fn().mockReturnValue([]);
+        const show = jest.fn();
+        const dismiss = jest.fn();
+        const clear = jest.fn();
+
+        const toaster: IToaster = {
+            getToasts,
+            show,
+            dismiss,
+            clear,
+        };
+
+        const saga = new AsyncSaga(notification, { notification: { toaster } });
+
+        saga.put(action);
+
+        expect(show).not.toBeCalled();
+        expect(dismiss).toBeCalledWith(key);
+        expect(clear).not.toBeCalled();
+
+        await saga.end();
+    },
+);

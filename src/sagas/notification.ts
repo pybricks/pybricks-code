@@ -214,6 +214,11 @@ function* showEditorStorageChanged(): Generator {
     yield put(reloadProgram());
 }
 
+function* dismissCompilerError(): Generator {
+    const { toaster } = (yield getContext('notification')) as NotificationContext;
+    toaster.dismiss(MessageId.MpyError);
+}
+
 function* showCompilerError(action: MpyDidFailToCompileAction): Generator {
     yield* showSingleton(Level.Error, MessageId.MpyError, { errorMessage: action.err });
 }
@@ -263,6 +268,7 @@ export default function* (): Generator {
         showBootloaderDidFailToConnectError,
     );
     yield takeEvery(EditorActionType.StorageChanged, showEditorStorageChanged);
+    yield takeEvery(MpyActionType.DidCompile, dismissCompilerError);
     yield takeEvery(MpyActionType.DidFailToCompile, showCompilerError);
     yield takeEvery(NotificationActionType.Add, addNotification);
     yield takeEvery(ServiceWorkerActionType.DidUpdate, showServiceWorkerUpdate);
