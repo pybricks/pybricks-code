@@ -5,8 +5,6 @@ import { call, takeEvery } from 'redux-saga/effects';
 import { AppActionType } from '../actions/app';
 
 function* reload(): Generator {
-    console.log('reload');
-
     // unregister the service worker so that when the page reloads, it uses
     // the new version
     const registrations = (yield call(() =>
