@@ -31,8 +31,6 @@ function bootloaderDidFailToConnect(
 ): void {
     if (action.reason === BootloaderConnectionFailureReason.Unknown) {
         console.error(action.err);
-    } else {
-        console.debug(action.err);
     }
 }
 

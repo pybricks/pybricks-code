@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020 The Pybricks Authors
+// Copyright (c) 2020-2021 The Pybricks Authors
 
 import { Action } from 'redux';
 import {
@@ -64,26 +64,63 @@ export function didConnect(): BootloaderConnectionDidConnectAction {
  * Possible reasons a device could fail to connect.
  */
 export enum BootloaderConnectionFailureReason {
-    /** The reason is not known */
-    Unknown = 'unknown',
-    /** The connection was canceled */
-    Canceled = 'canceled',
     /** Web Bluetooth is not available */
     NoWebBluetooth = 'no-web-bluetooth',
     /** Connected but failed to find the bootloader GATT service */
     GattServiceNotFound = 'gatt-service-not-found',
+    /** The connection was canceled */
+    Canceled = 'canceled',
+    /** The reason is not known */
+    Unknown = 'unknown',
 }
 
-export type BootloaderConnectionDidFailToConnectAction = Action<BootloaderConnectionActionType.DidFailToConnect> & {
-    reason: BootloaderConnectionFailureReason;
-    err?: Error;
+type Reason<T extends BootloaderConnectionFailureReason> = {
+    reason: T;
 };
+
+export type BootloaderConnectionFailToConnectNoWebBluetoothReason = Reason<BootloaderConnectionFailureReason.NoWebBluetooth>;
+
+export type BootloaderConnectionFailToConnectGattServiceNotFoundReason = Reason<BootloaderConnectionFailureReason.GattServiceNotFound>;
+
+export type BootloaderConnectionFailToConnectCanceledReason = Reason<BootloaderConnectionFailureReason.Canceled>;
+
+export type BootloaderConnectionFailToConnectUnknownReason = Reason<BootloaderConnectionFailureReason.Unknown> & {
+    err: Error;
+};
+
+export type BootloaderConnectionDidFailToConnectReason =
+    | BootloaderConnectionFailToConnectNoWebBluetoothReason
+    | BootloaderConnectionFailToConnectGattServiceNotFoundReason
+    | BootloaderConnectionFailToConnectCanceledReason
+    | BootloaderConnectionFailToConnectUnknownReason;
+
+export type BootloaderConnectionDidFailToConnectAction = Action<BootloaderConnectionActionType.DidFailToConnect> &
+    BootloaderConnectionDidFailToConnectReason;
+
+export function didFailToConnect(
+    reason: Exclude<
+        BootloaderConnectionFailureReason,
+        BootloaderConnectionFailureReason.Unknown
+    >,
+): BootloaderConnectionDidFailToConnectAction;
+
+export function didFailToConnect(
+    reason: BootloaderConnectionFailureReason.Unknown,
+    err: Error,
+): BootloaderConnectionDidFailToConnectAction;
 
 export function didFailToConnect(
     reason: BootloaderConnectionFailureReason,
     err?: Error,
 ): BootloaderConnectionDidFailToConnectAction {
-    return { type: BootloaderConnectionActionType.DidFailToConnect, reason, err };
+    if (reason === BootloaderConnectionFailureReason.Unknown) {
+        return <BootloaderConnectionDidFailToConnectAction>{
+            type: BootloaderConnectionActionType.DidFailToConnect,
+            reason,
+            err,
+        };
+    }
+    return { type: BootloaderConnectionActionType.DidFailToConnect, reason };
 }
 
 export type BootloaderConnectionDidErrorAction = Action<BootloaderConnectionActionType.DidError> & {
