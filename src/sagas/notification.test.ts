@@ -27,7 +27,9 @@ test.each([
         reason: BleDeviceFailToConnectReasonType.Unknown,
         err: { name: 'test', message: 'unknown' },
     }),
-    bootloaderDidFailToConnect(BootloaderConnectionFailureReason.Unknown),
+    bootloaderDidFailToConnect(BootloaderConnectionFailureReason.Unknown, <Error>{
+        message: 'test',
+    }),
     bootloaderDidFailToConnect(BootloaderConnectionFailureReason.NoWebBluetooth),
     bootloaderDidFailToConnect(BootloaderConnectionFailureReason.GattServiceNotFound),
     storageChanged('test'),

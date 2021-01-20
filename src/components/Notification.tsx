@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020 The Pybricks Authors
+// Copyright (c) 2021 The Pybricks Authors
+
+// provides translation for notification text
 
 import { Replacements, useI18n } from '@shopify/react-i18n';
 import React from 'react';
 import { MessageId } from './notification-i18n';
 import en from './notification-i18n.en.json';
-
-// provides translation for notification text
 
 type OwnProps = {
     messageId: MessageId;
