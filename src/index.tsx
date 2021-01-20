@@ -2,7 +2,7 @@
 // Copyright (c) 2020-2021 The Pybricks Authors
 
 import { Classes, ResizeSensor } from '@blueprintjs/core';
-import { I18nContext, I18nManager } from '@shopify/react-i18n';
+import { I18nContext } from '@shopify/react-i18n';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
@@ -17,13 +17,9 @@ import rootReducer from './reducers';
 import reportWebVitals from './reportWebVitals';
 import rootSaga from './sagas';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
+import { i18nManager } from './settings/i18n';
 
-const i18n = new I18nManager({
-    locale: 'en',
-    onError: (err): void => console.error(err),
-});
-
-const toaster = I18nToaster.create(i18n);
+const toaster = I18nToaster.create(i18nManager);
 
 const sagaMiddleware = createSagaMiddleware({ context: { notification: { toaster } } });
 // TODO: add runtime option or filter - logger affects firmware flash performance
@@ -58,7 +54,7 @@ sagaMiddleware.run(rootSaga);
 ReactDOM.render(
     <React.StrictMode>
         <Provider store={store}>
-            <I18nContext.Provider value={i18n}>
+            <I18nContext.Provider value={i18nManager}>
                 {/* This is a hack for correctly sizing to view height on mobile when not running in fullscreen mode. */}
                 {/* https://css-tricks.com/the-trick-to-viewport-units-on-mobile/ */}
                 <ResizeSensor
