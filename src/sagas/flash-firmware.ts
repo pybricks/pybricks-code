@@ -82,7 +82,7 @@ type WaitResponse<T extends BootloaderResponseAction> = [
     boolean,
 ];
 
-function* waitForDidSend(id: number): Generator {
+function* waitForDidRequest(id: number): Generator {
     const didRequest = (yield take(
         (a: Action) =>
             a.type === BootloaderDidRequestType &&
@@ -228,7 +228,7 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
         infoRequest(nextMessageId()),
     )) as BootloaderInfoRequestAction;
     const [, info] = (yield all([
-        waitForDidSend(infoAction.id),
+        waitForDidRequest(infoAction.id),
         waitForResponse(BootloaderResponseActionType.Info),
     ])) as [BootloaderDidRequestAction, WaitResponse<BootloaderInfoResponseAction>];
     if (!info[0]) {
@@ -258,7 +258,7 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
             const disconnectAction = (yield put(
                 disconnectRequest(nextMessageId()),
             )) as BootloaderDisconnectRequestAction;
-            yield waitForDidSend(disconnectAction.id);
+            yield waitForDidRequest(disconnectAction.id);
             return;
         }
 
@@ -278,7 +278,7 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
         eraseRequest(nextMessageId()),
     )) as BootloaderEraseRequestAction;
     const [, erase] = (yield all([
-        waitForDidSend(eraseAction.id),
+        waitForDidRequest(eraseAction.id),
         waitForResponse(BootloaderResponseActionType.Erase, 5000),
     ])) as [BootloaderDidRequestAction, WaitResponse<BootloaderEraseResponseAction>];
     if (!erase[0] || erase[0].result) {
@@ -290,7 +290,7 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
         initRequest(nextMessageId(), firmware.length),
     )) as BootloaderInitRequestAction;
     const [, init] = (yield all([
-        waitForDidSend(initAction.id),
+        waitForDidRequest(initAction.id),
         waitForResponse(BootloaderResponseActionType.Init),
     ])) as [BootloaderDidRequestAction, WaitResponse<BootloaderInitResponseAction>];
     if (!init[0] || init[0].result) {
@@ -314,7 +314,7 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
                 payload.buffer,
             ),
         )) as BootloaderProgramRequestAction;
-        yield waitForDidSend(programAction.id);
+        yield waitForDidRequest(programAction.id);
 
         yield put(didProgress(offset / firmware.length));
 
@@ -334,7 +334,7 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
                 checksumRequest(nextMessageId()),
             )) as BootloaderChecksumRequestAction;
             const [, checksum] = (yield all([
-                waitForDidSend(checksumAction.id),
+                waitForDidRequest(checksumAction.id),
                 waitForResponse(BootloaderResponseActionType.Checksum, 5000),
             ])) as [
                 BootloaderDidRequestAction,
@@ -365,7 +365,7 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
     const rebootAction = (yield put(
         rebootRequest(nextMessageId()),
     )) as BootloaderRebootRequestAction;
-    yield waitForDidSend(rebootAction.id);
+    yield waitForDidRequest(rebootAction.id);
 
     yield put(didFinish());
 }
