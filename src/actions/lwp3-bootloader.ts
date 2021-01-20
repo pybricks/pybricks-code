@@ -8,7 +8,6 @@ import {
     ProtectionLevel,
     Result,
 } from '../protocols/lwp3-bootloader';
-import { createCountFunc } from '../utils/iter';
 
 /**
  * Bootloader BLE connection actions.
@@ -193,8 +192,6 @@ export enum BootloaderRequestActionType {
     Disconnect = 'bootloader.action.request.disconnect',
 }
 
-const nextRequestId = createCountFunc();
-
 type BaseBootloaderRequestAction<T extends BootloaderRequestActionType> = Action<T> & {
     /**
      * Unique identifier for this action.
@@ -210,8 +207,8 @@ export type BootloaderEraseRequestAction = BaseBootloaderRequestAction<Bootloade
 /**
  * Creates a request to erase the flash memory.
  */
-export function eraseRequest(): BootloaderEraseRequestAction {
-    return { type: BootloaderRequestActionType.Erase, id: nextRequestId() };
+export function eraseRequest(id: number): BootloaderEraseRequestAction {
+    return { type: BootloaderRequestActionType.Erase, id };
 }
 
 /**
@@ -228,12 +225,13 @@ export type BootloaderProgramRequestAction = BaseBootloaderRequestAction<Bootloa
  * @param payload The bytes to write (max 14 bytes!)
  */
 export function programRequest(
+    id: number,
     address: number,
     payload: ArrayBuffer,
 ): BootloaderProgramRequestAction {
     return {
         type: BootloaderRequestActionType.Program,
-        id: nextRequestId(),
+        id,
         address,
         payload,
     };
@@ -247,8 +245,8 @@ export type BootloaderRebootRequestAction = BaseBootloaderRequestAction<Bootload
 /**
  * Creates a request to reboot the hub.
  */
-export function rebootRequest(): BootloaderRebootRequestAction {
-    return { type: BootloaderRequestActionType.Reboot, id: nextRequestId() };
+export function rebootRequest(id: number): BootloaderRebootRequestAction {
+    return { type: BootloaderRequestActionType.Reboot, id };
 }
 
 /**
@@ -262,10 +260,13 @@ export type BootloaderInitRequestAction = BaseBootloaderRequestAction<Bootloader
  * Creates a request to initialize the firmware flashing process.
  * @param firmwareSize The size of the firmware to written to flash memory.
  */
-export function initRequest(firmwareSize: number): BootloaderInitRequestAction {
+export function initRequest(
+    id: number,
+    firmwareSize: number,
+): BootloaderInitRequestAction {
     return {
         type: BootloaderRequestActionType.Init,
-        id: nextRequestId(),
+        id,
         firmwareSize,
     };
 }
@@ -278,8 +279,8 @@ export type BootloaderInfoRequestAction = BaseBootloaderRequestAction<Bootloader
 /**
  * Creates a request to get information about the hub.
  */
-export function infoRequest(): BootloaderInfoRequestAction {
-    return { type: BootloaderRequestActionType.Info, id: nextRequestId() };
+export function infoRequest(id: number): BootloaderInfoRequestAction {
+    return { type: BootloaderRequestActionType.Info, id };
 }
 
 /**
@@ -292,8 +293,8 @@ export type BootloaderChecksumRequestAction = BaseBootloaderRequestAction<Bootlo
  * Creates a request to get the checksum of the bytes that have been written
  * to flash so far.
  */
-export function checksumRequest(): BootloaderChecksumRequestAction {
-    return { type: BootloaderRequestActionType.Checksum, id: nextRequestId() };
+export function checksumRequest(id: number): BootloaderChecksumRequestAction {
+    return { type: BootloaderRequestActionType.Checksum, id };
 }
 
 /**
@@ -304,8 +305,8 @@ export type BootloaderStateRequestAction = BaseBootloaderRequestAction<Bootloade
 /**
  * Creates a request to get the bootloader flash memory protection state.
  */
-export function stateRequest(): BootloaderStateRequestAction {
-    return { type: BootloaderRequestActionType.State, id: nextRequestId() };
+export function stateRequest(id: number): BootloaderStateRequestAction {
+    return { type: BootloaderRequestActionType.State, id };
 }
 
 /**
@@ -316,8 +317,8 @@ export type BootloaderDisconnectRequestAction = BaseBootloaderRequestAction<Boot
 /**
  * Creates a request to disconnect the hub.
  */
-export function disconnectRequest(): BootloaderDisconnectRequestAction {
-    return { type: BootloaderRequestActionType.Disconnect, id: nextRequestId() };
+export function disconnectRequest(id: number): BootloaderDisconnectRequestAction {
+    return { type: BootloaderRequestActionType.Disconnect, id };
 }
 
 /**

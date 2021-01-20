@@ -11,6 +11,7 @@ import {
     all,
     call,
     delay,
+    getContext,
     put,
     race,
     select,
@@ -221,7 +222,11 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
         return;
     }
 
-    const infoAction = (yield put(infoRequest())) as BootloaderInfoRequestAction;
+    const nextMessageId = (yield getContext('nextMessageId')) as () => number;
+
+    const infoAction = (yield put(
+        infoRequest(nextMessageId()),
+    )) as BootloaderInfoRequestAction;
     const [, info] = (yield all([
         waitForDidSend(infoAction.id),
         waitForResponse(BootloaderResponseActionType.Info),
@@ -243,7 +248,7 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
                     "Sorry, we don't have firmware for this hub yet.",
                 ),
             );
-            yield put(disconnectRequest());
+            yield put(disconnectRequest(nextMessageId()));
             return;
         }
 
@@ -251,7 +256,7 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
         if (!response.ok) {
             yield put(notification.add('error', 'Failed to fetch firmware.'));
             const disconnectAction = (yield put(
-                disconnectRequest(),
+                disconnectRequest(nextMessageId()),
             )) as BootloaderDisconnectRequestAction;
             yield waitForDidSend(disconnectAction.id);
             return;
@@ -269,7 +274,9 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
 
     yield put(didStart());
 
-    const eraseAction = (yield put(eraseRequest())) as BootloaderEraseRequestAction;
+    const eraseAction = (yield put(
+        eraseRequest(nextMessageId()),
+    )) as BootloaderEraseRequestAction;
     const [, erase] = (yield all([
         waitForDidSend(eraseAction.id),
         waitForResponse(BootloaderResponseActionType.Erase, 5000),
@@ -280,7 +287,7 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
     }
 
     const initAction = (yield put(
-        initRequest(firmware.length),
+        initRequest(nextMessageId(), firmware.length),
     )) as BootloaderInitRequestAction;
     const [, init] = (yield all([
         waitForDidSend(initAction.id),
@@ -301,7 +308,11 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
     for (let offset = 0; ; ) {
         const payload = firmware.slice(offset, offset + maxDataSize);
         const programAction = (yield put(
-            programRequest(info[0].startAddress + offset, payload.buffer),
+            programRequest(
+                nextMessageId(),
+                info[0].startAddress + offset,
+                payload.buffer,
+            ),
         )) as BootloaderProgramRequestAction;
         yield waitForDidSend(programAction.id);
 
@@ -320,7 +331,7 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
         // the hub is not known and could vary by device.
         if (++count % 10 === 0) {
             const checksumAction = (yield put(
-                checksumRequest(),
+                checksumRequest(nextMessageId()),
             )) as BootloaderChecksumRequestAction;
             const [, checksum] = (yield all([
                 waitForDidSend(checksumAction.id),
@@ -351,7 +362,9 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
     yield put(didProgress(1));
 
     // this will cause the remote device to disconnect and reboot
-    const rebootAction = (yield put(rebootRequest())) as BootloaderRebootRequestAction;
+    const rebootAction = (yield put(
+        rebootRequest(nextMessageId()),
+    )) as BootloaderRebootRequestAction;
     yield waitForDidSend(rebootAction.id);
 
     yield put(didFinish());

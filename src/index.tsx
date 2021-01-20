@@ -18,10 +18,17 @@ import reportWebVitals from './reportWebVitals';
 import rootSaga from './sagas';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import { i18nManager } from './settings/i18n';
+import { createCountFunc } from './utils/iter';
 
 const toaster = I18nToaster.create(i18nManager);
 
-const sagaMiddleware = createSagaMiddleware({ context: { notification: { toaster } } });
+const sagaMiddleware = createSagaMiddleware({
+    context: {
+        nextMessageId: createCountFunc(),
+        notification: { toaster },
+    },
+});
+
 // TODO: add runtime option or filter - logger affects firmware flash performance
 const loggerMiddleware = createLogger({ predicate: () => false });
 

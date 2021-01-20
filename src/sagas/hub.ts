@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020 The Pybricks Authors
+// Copyright (c) 2020-2021 The Pybricks Authors
 
 import { Ace } from 'ace-builds';
 import { Channel } from 'redux-saga';
@@ -7,6 +7,7 @@ import {
     RaceEffect,
     TakeEffect,
     actionChannel,
+    getContext,
     put,
     race,
     select,
@@ -80,11 +81,15 @@ function* downloadAndRun(_action: HubDownloadAndRunAction): Generator {
         HubMessageActionType.Checksum,
     )) as Channel<HubChecksumMessageAction>;
 
+    const nextMessageId = (yield getContext('nextMessageId')) as () => number;
+
     // first send payload size as big-endian 32-bit integer
     const sizeBuf = new Uint8Array(4);
     const sizeView = new DataView(sizeBuf.buffer);
     sizeView.setUint32(0, mpy.data.byteLength, true);
-    const writeAction = (yield put(write(sizeBuf))) as BleUartWriteAction;
+    const writeAction = (yield put(
+        write(nextMessageId(), sizeBuf),
+    )) as BleUartWriteAction;
     const [, didFailToWrite] = (yield waitForWrite(writeAction.id)) as [
         BleUartDidWriteAction,
         BleUartDidFailToWriteAction,
@@ -113,7 +118,7 @@ function* downloadAndRun(_action: HubDownloadAndRunAction): Generator {
         // we can actually only write 20 bytes at a time
         for (let j = 0; j < chunk.length; j += SafeTxCharLength) {
             const writeAction = (yield put(
-                write(chunk.slice(j, j + SafeTxCharLength)),
+                write(nextMessageId(), chunk.slice(j, j + SafeTxCharLength)),
             )) as BleUartWriteAction;
             const [, didFailToWrite] = (yield waitForWrite(writeAction.id)) as [
                 BleUartDidWriteAction,
@@ -146,14 +151,16 @@ function* downloadAndRun(_action: HubDownloadAndRunAction): Generator {
 const startReplCommand = new Uint8Array([0x20, 0x20, 0x20, 0x20]);
 
 function* startRepl(_action: HubReplAction): Generator {
-    yield put(write(startReplCommand));
+    const nextMessageId = (yield getContext('nextMessageId')) as () => number;
+    yield put(write(nextMessageId(), startReplCommand));
 }
 
 // CTRL+C, CTRL+C, CTRL+D
 const stopCommand = new Uint8Array([0x03, 0x03, 0x04]);
 
 function* stop(_action: HubStopAction): Generator {
-    yield put(write(stopCommand));
+    const nextMessageId = (yield getContext('nextMessageId')) as () => number;
+    yield put(write(nextMessageId(), stopCommand));
 }
 
 export default function* (): Generator {

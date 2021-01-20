@@ -1,11 +1,12 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020 The Pybricks Authors
+// Copyright (c) 2020-2021 The Pybricks Authors
 
 import { Channel } from 'redux-saga';
 import {
     actionChannel,
     delay,
     fork,
+    getContext,
     put,
     race,
     select,
@@ -120,11 +121,13 @@ function* receiveTerminalData(): Generator {
             value += action.value;
         }
 
+        const nextMessageId = (yield getContext('nextMessageId')) as () => number;
+
         // stdin gets piped to BLE connection
         const data = encoder.encode(value);
         for (let i = 0; i < data.length; i += SafeTxCharLength) {
             const { id } = (yield put(
-                write(data.slice(i, i + SafeTxCharLength)),
+                write(nextMessageId(), data.slice(i, i + SafeTxCharLength)),
             )) as BleUartWriteAction;
 
             yield take(
