@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`flashFirmware normal flow 1`] = `
+Object {
+  "options": Array [
+    "-mno-unicode",
+  ],
+  "script": "print(\\"test\\")",
+  "type": "mpy.action.compile",
+}
+`;
+
+exports[`flashFirmware user supplied firmware.zip 1`] = `
+Object {
+  "options": Array [
+    "-mno-unicode",
+  ],
+  "script": "print(\\"test\\")",
+  "type": "mpy.action.compile",
+}
+`;
+
+exports[`flashFirmware user supplied main.py 1`] = `
+Object {
+  "options": Array [
+    "-mno-unicode",
+  ],
+  "script": "print(\\"test\\")",
+  "type": "mpy.action.compile",
+}
+`;
