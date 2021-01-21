@@ -298,14 +298,10 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
         throw Error(`Failed to init: ${init}`);
     }
 
-    let count = 0;
-    const maxDataSize = MaxProgramFlashSize.get(info[0].hubType);
-    if (maxDataSize === undefined) {
-        // istanbul ignore next: indicates programmer error if reached
-        throw Error('Missing hub type in MaxProgramFlashSize');
-    }
+    // 14 is "safe" size for all hubs
+    const maxDataSize = MaxProgramFlashSize.get(info[0].hubType) || 14;
 
-    for (let offset = 0; ; ) {
+    for (let count = 1, offset = 0; ; count++) {
         const payload = firmware.slice(offset, offset + maxDataSize);
         const programAction = (yield put(
             programRequest(
@@ -329,7 +325,7 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
         // the hub because of sending too much data at once. The actual
         // number of packets that can be queued in the Bluetooth chip on
         // the hub is not known and could vary by device.
-        if (++count % 10 === 0) {
+        if (count % 10 === 0) {
             const checksumAction = (yield put(
                 checksumRequest(nextMessageId()),
             )) as BootloaderChecksumRequestAction;
