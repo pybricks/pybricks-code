@@ -77,7 +77,7 @@ const firmwareZipMap = new Map<HubType, string>([
  * Disconnects the BLE if we are connected and cancels the task (including the
  * parent task).
  */
-function* disconnectAndCancel(): SagaGenerator<never> {
+function* disconnectAndCancel(): SagaGenerator<void> {
     const connection = yield* select((s: RootState) => s.bootloader.connection);
 
     if (connection === BootloaderConnectionState.Connected) {
@@ -85,12 +85,6 @@ function* disconnectAndCancel(): SagaGenerator<never> {
     }
 
     yield* cancel();
-
-    // HACK: cancel effect doesn't return, so we need this to make typescript
-    // happy about the never return type.
-
-    // istanbul ignore next: not reachable
-    throw undefined;
 }
 
 function* waitForDidRequest(id: number): SagaGenerator<BootloaderDidRequestAction> {
@@ -312,21 +306,18 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
     });
 
     if (deviceId !== undefined && info.hubType !== deviceId) {
-        throw Error(`Connected to ${info.hubType} but firmware is for ${deviceId}`);
+        yield* put(didFailToFinish(FailToFinishReasonType.DeviceMismatch));
+        yield* disconnectAndCancel();
     }
 
     if (firmware === undefined) {
         const firmwarePath = firmwareZipMap.get(info.hubType);
         if (firmwarePath === undefined) {
-            yield* put(
-                notification.add(
-                    'error',
-                    "Sorry, we don't have firmware for this hub yet.",
-                ),
-            );
-            yield* put(disconnectRequest(nextMessageId()));
-            return;
+            yield* put(didFailToFinish(FailToFinishReasonType.NoFirmware));
+            yield* disconnectAndCancel();
         }
+
+        defined(firmwarePath);
 
         const response = yield* call(() => fetch(firmwarePath));
         if (!response.ok) {
