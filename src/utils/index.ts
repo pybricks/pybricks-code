@@ -7,9 +7,29 @@
  * @param condition A condition that is assumed to be true
  * @param message Informational message for debugging
  */
-export function assert(condition: boolean, message: string): void {
+export function assert(condition: boolean, message: string): asserts condition {
     if (!condition) {
         throw Error(message);
+    }
+}
+
+/**
+ * Asserts that an object is not undefined. This is used to make the type
+ * checker happy with `maybe()` and saga `race()` and `all()` effects where
+ * we have the condition "if A is undefined, then B is not undefined".
+ */
+export function defined<T>(obj: T): asserts obj is NonNullable<T> {
+    assert(obj !== undefined, 'undefined object');
+}
+
+export type Maybe<T> = [T?, Error?];
+
+/** Wraps a promise in try/catch and returns the promise result or error. */
+export async function maybe<T>(promise: Promise<T>): Promise<Maybe<T>> {
+    try {
+        return [await promise];
+    } catch (err) {
+        return [undefined, err];
     }
 }
 

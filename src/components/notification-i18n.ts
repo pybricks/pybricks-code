@@ -4,7 +4,9 @@
 // Notification translation keys.
 
 export enum MessageId {
-    BleConnectFailed = 'ble.connectFailed',
+    CopyErrorMessage = 'copyErrorMessage',
+    ReportBug = 'reportBug',
+    BleUnexpectedError = 'ble.unexpectedError',
     BleGattPermission = 'ble.gattPermission',
     BleGattServiceNotFound = 'ble.gattServiceNotFound',
     BleNoWebBluetooth = 'ble.noWebBluetooth',

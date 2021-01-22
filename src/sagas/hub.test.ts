@@ -15,13 +15,14 @@ import {
     stop,
 } from '../actions/hub';
 import { MpyActionType, didCompile } from '../actions/mpy';
+import { createCountFunc } from '../utils/iter';
 import hub from './hub';
 
 jest.mock('ace-builds');
 
 describe('downloadAndRun', () => {
     test('no errors', async () => {
-        const saga = new AsyncSaga(hub);
+        const saga = new AsyncSaga(hub, { nextMessageId: createCountFunc() });
 
         const mockEditor = mock<Ace.EditSession>();
         saga.setState({ editor: { current: mockEditor } });
@@ -75,7 +76,7 @@ describe('downloadAndRun', () => {
 });
 
 test('repl', async () => {
-    const saga = new AsyncSaga(hub);
+    const saga = new AsyncSaga(hub, { nextMessageId: createCountFunc() });
 
     saga.put(repl());
 
@@ -86,7 +87,7 @@ test('repl', async () => {
 });
 
 test('stop', async () => {
-    const saga = new AsyncSaga(hub);
+    const saga = new AsyncSaga(hub, { nextMessageId: createCountFunc() });
 
     saga.put(stop());
 

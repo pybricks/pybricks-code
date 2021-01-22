@@ -6,7 +6,6 @@
 import { AsyncSaga } from '../../test';
 import { didStart } from '../actions/app';
 import { didBooleanChange, didFailToSetBoolean, setBoolean } from '../actions/settings';
-import { SettingsState } from '../reducers/settings';
 import { SettingId } from '../settings/user';
 import settings from './settings';
 
@@ -221,7 +220,7 @@ describe('store settings to local storage', () => {
                 throw testError;
             });
 
-        saga.setState({ settings: { showDocs: false } as SettingsState });
+        saga.setState({ settings: { showDocs: false } });
         saga.put(setBoolean(SettingId.ShowDocs, true));
         expect(mockSetItem).toHaveBeenCalled();
 
@@ -246,7 +245,7 @@ describe('store settings to local storage', () => {
                 expect(value).toBe('true');
             });
 
-        saga.setState({ settings: { showDocs: false } as SettingsState });
+        saga.setState({ settings: { showDocs: false } });
         saga.put(setBoolean(SettingId.ShowDocs, true));
         expect(mockSetItem).toHaveBeenCalled();
 
@@ -266,7 +265,7 @@ describe('store settings to local storage', () => {
                 expect(value).toBe('false');
             });
 
-        saga.setState({ settings: { darkMode: true } as SettingsState });
+        saga.setState({ settings: { darkMode: true } });
         saga.put(setBoolean(SettingId.DarkMode, false));
         expect(mockSetItem).toHaveBeenCalled();
 
@@ -286,7 +285,7 @@ describe('store settings to local storage', () => {
                 expect(value).toBe('false');
             });
 
-        saga.setState({ settings: { flashCurrentProgram: true } as SettingsState });
+        saga.setState({ settings: { flashCurrentProgram: true } });
         saga.put(setBoolean(SettingId.FlashCurrentProgram, false));
         expect(mockSetItem).toHaveBeenCalled();
 

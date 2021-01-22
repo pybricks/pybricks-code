@@ -37,7 +37,7 @@ test('compiler error works', async () => {
     const action = await saga.take();
     expect(action.type).toBe(MpyActionType.DidFailToCompile);
     const { err } = action as MpyDidFailToCompileAction;
-    expect(err).toContain('SyntaxError');
+    expect(err).toMatchSnapshot();
 
     await saga.end();
 });

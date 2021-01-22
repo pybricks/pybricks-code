@@ -8,6 +8,9 @@
         "connect": { "tooltip": "Connect using Bluetooth" },
         "disconnect": { "tooltip": "Disconnect Bluetooth" }
     },
-    "flash": { "tooltip": "Install Pybricks firmware" },
+    "flash": {
+        "action": { "tooltip": "Install Pybricks firmware" },
+        "progress": { "tooltip": "Flashing… {percent}" }
+    },
     "settings": { "tooltip": "Settings" }
 }

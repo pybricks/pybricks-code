@@ -1,9 +1,8 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020 The Pybricks Authors
+// Copyright (c) 2020-2021 The Pybricks Authors
 // actions/ble-uart.ts: Actions for Bluetooth Low Energy nRF UART service
 
 import { Action } from 'redux';
-import { createCountFunc } from '../utils/iter';
 
 /**
  * BLE nRF UART service actions types.
@@ -27,15 +26,13 @@ export enum BleUartActionType {
     Notify = 'ble.data.action.receive',
 }
 
-const nextId = createCountFunc();
-
 export type BleUartWriteAction = Action<BleUartActionType.Write> & {
     id: number;
     value: Uint8Array;
 };
 
-export function write(value: Uint8Array): BleUartWriteAction {
-    return { type: BleUartActionType.Write, id: nextId(), value };
+export function write(id: number, value: Uint8Array): BleUartWriteAction {
+    return { type: BleUartActionType.Write, id, value };
 }
 
 export type BleUartDidWriteAction = Action<BleUartActionType.DidWrite> & {

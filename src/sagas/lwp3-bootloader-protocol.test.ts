@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020 The Pybricks Authors
+// Copyright (c) 2020-2021 The Pybricks Authors
 // File: sagas/lwp3-bootloader-protocol.test.ts
 
 import { AsyncSaga } from '../../test';
@@ -40,7 +40,7 @@ describe('message encoder', () => {
     test.each([
         [
             'erase',
-            eraseRequest(),
+            eraseRequest(0),
             [
                 0x11, // erase command
             ],
@@ -48,6 +48,7 @@ describe('message encoder', () => {
         [
             'program',
             programRequest(
+                1,
                 0x08005000,
                 new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]).buffer,
             ),
@@ -76,14 +77,14 @@ describe('message encoder', () => {
         ],
         [
             'reboot',
-            rebootRequest(),
+            rebootRequest(2),
             [
                 0x33, // reboot command
             ],
         ],
         [
             'init',
-            initRequest(100000),
+            initRequest(3, 100000),
             [
                 0x44, // init command
                 0xa0, // size LSB
@@ -94,33 +95,38 @@ describe('message encoder', () => {
         ],
         [
             'info',
-            infoRequest(),
+            infoRequest(4),
             [
                 0x55, // info command
             ],
         ],
         [
             'checksum',
-            checksumRequest(),
+            checksumRequest(5),
             [
                 0x66, // checksum command
             ],
         ],
         [
             'state',
-            stateRequest(),
+            stateRequest(6),
             [
                 0x77, // state command
             ],
         ],
         [
             'disconnect',
-            disconnectRequest(),
+            disconnectRequest(7),
             [
                 0x88, // disconnect command
             ],
         ],
     ])('encode %s request', async (_n, request, expected) => {
+        const messageTypesThatShouldBeCalledWithoutResponse = [
+            BootloaderRequestActionType.Program,
+            BootloaderRequestActionType.Reboot,
+            BootloaderRequestActionType.Disconnect,
+        ];
         const saga = new AsyncSaga(bootloader);
         saga.put(request);
         const message = new Uint8Array(expected);
@@ -128,7 +134,7 @@ describe('message encoder', () => {
         expect(action).toEqual(
             send(
                 message,
-                /* withResponse */ request.type !== BootloaderRequestActionType.Program,
+                !messageTypesThatShouldBeCalledWithoutResponse.includes(request.type),
             ),
         );
         await saga.end();
@@ -138,10 +144,10 @@ describe('message encoder', () => {
         const saga = new AsyncSaga(bootloader);
 
         // we send 4 requests
-        saga.put({ ...eraseRequest(), id: 0 });
-        saga.put({ ...eraseRequest(), id: 1 });
-        saga.put({ ...eraseRequest(), id: 2 });
-        saga.put({ ...eraseRequest(), id: 3 });
+        saga.put(eraseRequest(0));
+        saga.put(eraseRequest(1));
+        saga.put(eraseRequest(2));
+        saga.put(eraseRequest(3));
 
         // but only two didSend action meaning only the first two completed
         saga.put(didSend());

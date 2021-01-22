@@ -81,7 +81,7 @@ function* encodeRequest(): Generator {
                 );
                 break;
             case BootloaderRequestActionType.Reboot:
-                yield put(send(createStartAppRequest()));
+                yield put(send(createStartAppRequest(), /* withResponse */ false));
                 break;
             case BootloaderRequestActionType.Init:
                 yield put(send(createInitLoaderRequest(action.firmwareSize)));
@@ -96,7 +96,7 @@ function* encodeRequest(): Generator {
                 yield put(send(createGetFlashStateRequest()));
                 break;
             case BootloaderRequestActionType.Disconnect:
-                yield put(send(createDisconnectRequest()));
+                yield put(send(createDisconnectRequest(), /* withResponse */ false));
                 break;
             /* istanbul ignore next: should not be possible to reach */
             default:

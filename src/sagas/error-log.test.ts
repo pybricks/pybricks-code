@@ -49,12 +49,8 @@ test('bleDataDidFailToWrite', async () => {
 test('bootloaderDidFailToConnect', async () => {
     const saga = new AsyncSaga(errorLog);
 
-    console.debug = jest.fn();
-    saga.put(didFailToConnect(BootloaderConnectionFailureReason.Canceled));
-    expect(console.debug).toHaveBeenCalledTimes(1);
-
     console.error = jest.fn();
-    saga.put(didFailToConnect(BootloaderConnectionFailureReason.Unknown));
+    saga.put(didFailToConnect(BootloaderConnectionFailureReason.Unknown, <Error>{}));
     expect(console.error).toHaveBeenCalledTimes(1);
 
     await saga.end();

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020 The Pybricks Authors
+// Copyright (c) 2020-2021 The Pybricks Authors
 
-import { Button, Intent, Position, Tooltip } from '@blueprintjs/core';
+import { Button, Intent, Position, Spinner, Tooltip } from '@blueprintjs/core';
 import { WithI18nProps, withI18n } from '@shopify/react-i18n';
 import React from 'react';
 import Dropzone, { FileRejection } from 'react-dropzone';
@@ -20,6 +20,10 @@ export interface OpenFileButtonProps {
     readonly icon: string;
     /** When true or undefined, the button is enabled. */
     readonly enabled?: boolean;
+    /** Show progress spinner instead of icon. */
+    readonly showProgress?: boolean;
+    /** The progress value (0 to 1) for the progress spinner. */
+    readonly progress?: number;
     /** Callback that is called when a file has been selected and opened for reading. */
     readonly onFile: (data: ArrayBuffer) => void;
     /** Callback that is called when a file has been rejected (e.g. bad file extension). */
@@ -80,7 +84,19 @@ class OpenFileButton extends React.Component<Props> {
             >
                 {({ getRootProps, getInputProps }): JSX.Element => (
                     <Tooltip
-                        content={this.props.i18n.translate(this.props.tooltip)}
+                        content={this.props.i18n.translate(
+                            this.props.tooltip,
+                            this.props.tooltip === TooltipId.FlashProgress
+                                ? {
+                                      percent:
+                                          this.props.progress === undefined
+                                              ? ''
+                                              : this.props.i18n.formatPercentage(
+                                                    this.props.progress,
+                                                ),
+                                  }
+                                : undefined,
+                        )}
                         position={Position.BOTTOM}
                         hoverOpenDelay={tooltipDelay}
                     >
@@ -102,7 +118,14 @@ class OpenFileButton extends React.Component<Props> {
                                 : {})}
                         >
                             <input {...getInputProps()} />
-                            <img src={this.props.icon} alt={this.props.id} />
+                            {this.props.showProgress ? (
+                                <Spinner
+                                    value={this.props.progress}
+                                    intent={Intent.PRIMARY}
+                                />
+                            ) : (
+                                <img src={this.props.icon} alt={this.props.id} />
+                            )}
                         </Button>
                     </Tooltip>
                 )}

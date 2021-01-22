@@ -30,6 +30,7 @@ import { MpyActionType, MpyDidFailToCompileAction } from '../actions/mpy';
 import { NotificationActionType, NotificationAddAction } from '../actions/notification';
 import { ServiceWorkerActionType } from '../actions/service-worker';
 import Notification from '../components/Notification';
+import UnexpectedErrorNotification from '../components/UnexpectedErrorNotification';
 import { MessageId } from '../components/notification-i18n';
 import { appName } from '../settings/ui';
 
@@ -140,6 +141,17 @@ function* showSingleton(
     );
 }
 
+/** Shows a special notification for unexpected errors. */
+function* showUnexpectedError(messageId: MessageId, err: Error): Generator {
+    const { toaster } = (yield getContext('notification')) as NotificationContext;
+    toaster.show({
+        intent: mapIntent(Level.Error),
+        icon: mapIcon(Level.Error),
+        message: React.createElement(UnexpectedErrorNotification, { messageId, err }),
+        timeout: 0,
+    });
+}
+
 function* showBleDeviceDidFailToConnectError(
     action: BleDeviceDidFailToConnectAction,
 ): Generator {
@@ -165,7 +177,7 @@ function* showBleDeviceDidFailToConnectError(
             );
             break;
         case BleDeviceFailToConnectReasonType.Unknown:
-            yield* showSingleton(Level.Error, MessageId.BleConnectFailed);
+            yield* showUnexpectedError(MessageId.BleUnexpectedError, action.err);
             break;
     }
 }
@@ -191,7 +203,7 @@ function* showBootloaderDidFailToConnectError(
             );
             break;
         case BootloaderConnectionFailureReason.Unknown:
-            yield* showSingleton(Level.Error, MessageId.BleConnectFailed);
+            yield* showUnexpectedError(MessageId.BleUnexpectedError, action.err);
             break;
     }
 }
@@ -214,8 +226,15 @@ function* showEditorStorageChanged(): Generator {
     yield put(reloadProgram());
 }
 
+function* dismissCompilerError(): Generator {
+    const { toaster } = (yield getContext('notification')) as NotificationContext;
+    toaster.dismiss(MessageId.MpyError);
+}
+
 function* showCompilerError(action: MpyDidFailToCompileAction): Generator {
-    yield* showSingleton(Level.Error, MessageId.MpyError, { errorMessage: action.err });
+    yield* showSingleton(Level.Error, MessageId.MpyError, {
+        errorMessage: React.createElement('pre', undefined, action.err.join('\n')),
+    });
 }
 
 function* addNotification(action: NotificationAddAction): Generator {
@@ -263,6 +282,7 @@ export default function* (): Generator {
         showBootloaderDidFailToConnectError,
     );
     yield takeEvery(EditorActionType.StorageChanged, showEditorStorageChanged);
+    yield takeEvery(MpyActionType.DidCompile, dismissCompilerError);
     yield takeEvery(MpyActionType.DidFailToCompile, showCompilerError);
     yield takeEvery(NotificationActionType.Add, addNotification);
     yield takeEvery(ServiceWorkerActionType.DidUpdate, showServiceWorkerUpdate);

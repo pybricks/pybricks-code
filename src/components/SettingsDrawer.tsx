@@ -19,6 +19,7 @@ import { Action, Dispatch } from '../actions';
 import { closeSettings, openAboutDialog } from '../actions/app';
 import { setBoolean } from '../actions/settings';
 import { RootState } from '../reducers';
+import { pseudolocalize } from '../settings/i18n';
 import {
     pybricksBugReportsUrl,
     pybricksGitterUrl,
@@ -206,6 +207,15 @@ class SettingsDrawer extends React.PureComponent<SettingsProps> {
                                 <AboutDialog />
                             </ButtonGroup>
                         </FormGroup>
+                        {process.env.NODE_ENV === 'development' && (
+                            <FormGroup label="Developer">
+                                <Switch
+                                    checked={i18n.pseudolocalize !== false}
+                                    onClick={() => pseudolocalize(!i18n.pseudolocalize)}
+                                    label="Pseudolocalize"
+                                />
+                            </FormGroup>
+                        )}
                     </div>
                 </div>
             </Drawer>

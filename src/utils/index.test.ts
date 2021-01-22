@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020 The Pybricks Authors
 
-import { assert, hex } from '.';
+import { assert, defined, hex, maybe } from '.';
 
 test('assert', () => {
     const assertTrue = jest.fn(() => assert(true, 'should not throw'));
@@ -9,6 +9,24 @@ test('assert', () => {
     expect(assertTrue).toHaveReturned();
 
     expect(() => assert(false, 'should throw')).toThrow();
+});
+
+describe('defined', () => {
+    expect(() => defined('test')).not.toThrow();
+    expect(() => defined(undefined)).toThrowError();
+});
+
+describe('maybe', () => {
+    test('resolved', async () => {
+        const [result, error] = await maybe(Promise.resolve('test'));
+        expect(result).toBe('test');
+        expect(error).toBeUndefined();
+    });
+    test('rejected', async () => {
+        const [result, error] = await maybe(Promise.reject(new Error('test')));
+        expect(result).toBeUndefined();
+        expect(error).toBeInstanceOf(Error);
+    });
 });
 
 test('hex', () => {
