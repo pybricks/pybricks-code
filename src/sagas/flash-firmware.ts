@@ -174,7 +174,8 @@ function* loadFirmware(
     const firmwareView = new DataView(firmware.buffer);
 
     if (firmware.length > metadata['max-firmware-size']) {
-        throw Error('firmware + main.mpy is too large');
+        yield* put(didFailToStart(FailToStartReasonType.FirmwareSize));
+        yield* cancel();
     }
 
     firmware.set(firmwareBase);

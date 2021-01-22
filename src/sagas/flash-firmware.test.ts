@@ -466,6 +466,61 @@ describe('flashFirmware', () => {
 
             await saga.end();
         });
+
+        test('firmware too big', async () => {
+            const metadata: FirmwareMetadata = {
+                'metadata-version': '1.0.0',
+                'device-id': HubType.MoveHub,
+                'checksum-type': 'sum',
+                'firmware-version': '1.2.3',
+                'max-firmware-size': 1, // low limit to trigger error
+                'mpy-abi-version': 5,
+                'mpy-cross-options': ['-mno-unicode'],
+                'user-mpy-offset': 100,
+            };
+
+            const zip = new JSZip();
+            zip.file('firmware-base.bin', new Uint8Array(64));
+            zip.file('firmware.metadata.json', JSON.stringify(metadata));
+            zip.file('main.py', 'print("test")');
+            zip.file('ReadMe_OSS.txt', 'test');
+
+            const saga = new AsyncSaga(flashFirmware, {
+                nextMessageId: createCountFunc(),
+            });
+
+            saga.setState({ settings: { flashCurrentProgram: false } });
+
+            // saga is triggered by this action
+
+            saga.put(
+                flashFirmwareAction(await zip.generateAsync({ type: 'arraybuffer' })),
+            );
+
+            // the first step is to compile main.py to .mpy
+
+            let action = await saga.take();
+            expect(action).toMatchInlineSnapshot(`
+                Object {
+                  "options": Array [
+                    "-mno-unicode",
+                  ],
+                  "script": "print(\\"test\\")",
+                  "type": "mpy.action.compile",
+                }
+            `);
+
+            const mpySize = 20;
+            const mpyBinaryData = new Uint8Array(mpySize);
+            saga.put(didCompile(mpyBinaryData));
+
+            // should fail due to firmware being too big
+
+            action = await saga.take();
+            expect(action).toEqual(didFailToStart(FailToStartReasonType.FirmwareSize));
+
+            await saga.end();
+        });
     });
 
     test('user supplied main.py', async () => {
