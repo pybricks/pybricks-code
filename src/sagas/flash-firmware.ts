@@ -23,6 +23,7 @@ import {
     FailToStartReasonType,
     FlashFirmwareActionType,
     FlashFirmwareFlashAction,
+    MetadataProblem,
     didFailToStart,
     didFinish,
     didProgress,
@@ -139,9 +140,14 @@ function* loadFirmware(
     }
 
     if (metadata['mpy-abi-version'] !== 5) {
-        throw Error(
-            `Firmware requires mpy-cross ABI version ${metadata['mpy-abi-version']} we have v5`,
+        yield* put(
+            didFailToStart(
+                FailToStartReasonType.BadMetadata,
+                'mpy-abi-version',
+                MetadataProblem.NotSupported,
+            ),
         );
+        yield* cancel();
     }
 
     yield* put(compile(program, metadata['mpy-cross-options']));

@@ -10,6 +10,7 @@ import JSZip from 'jszip';
 import { AsyncSaga } from '../../test';
 import {
     FailToStartReasonType,
+    MetadataProblem,
     didFailToStart,
     didFinish,
     didProgress,
@@ -345,6 +346,50 @@ describe('flashFirmware', () => {
                     new FirmwareReaderError(
                         FirmwareReaderErrorCode.MissingFirmwareBaseBin,
                     ),
+                ),
+            );
+
+            await saga.end();
+        });
+
+        test('unsupported mpy-cross version', async () => {
+            const metadata: FirmwareMetadata = {
+                'metadata-version': '1.0.0',
+                'device-id': HubType.MoveHub,
+                'checksum-type': 'sum',
+                'firmware-version': '1.2.3',
+                'max-firmware-size': 1024,
+                'mpy-abi-version': 4, // unsupported version
+                'mpy-cross-options': ['-mno-unicode'],
+                'user-mpy-offset': 100,
+            };
+
+            const zip = new JSZip();
+            zip.file('firmware-base.bin', new Uint8Array(64));
+            zip.file('firmware.metadata.json', JSON.stringify(metadata));
+            zip.file('main.py', 'print("test")');
+            zip.file('ReadMe_OSS.txt', 'test');
+
+            const saga = new AsyncSaga(flashFirmware, {
+                nextMessageId: createCountFunc(),
+            });
+
+            saga.setState({ settings: { flashCurrentProgram: false } });
+
+            // saga is triggered by this action
+
+            saga.put(
+                flashFirmwareAction(await zip.generateAsync({ type: 'arraybuffer' })),
+            );
+
+            // should get failure due to unsupported mpy-cross version
+
+            const action = await saga.take();
+            expect(action).toStrictEqual(
+                didFailToStart(
+                    FailToStartReasonType.BadMetadata,
+                    'mpy-abi-version',
+                    MetadataProblem.NotSupported,
                 ),
             );
 
