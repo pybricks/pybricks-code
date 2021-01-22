@@ -120,7 +120,9 @@ describe('flashFirmware', () => {
                 }
             `);
 
-            const mpySize = 20;
+            // this makes total firmware size 140 bytes to check for
+            // https://github.com/pybricks/support/issues/178
+            const mpySize = 40 - 8;
             const mpyBinaryData = new Uint8Array(mpySize);
             saga.put(didCompile(mpyBinaryData));
 
@@ -167,6 +169,7 @@ describe('flashFirmware', () => {
                 // last payload is sent, otherwise the hub gets confused.
 
                 if (offset + 14 >= totalFirmwareSize) {
+                    expect(count).toBe(10);
                     break;
                 }
 
@@ -849,7 +852,9 @@ describe('flashFirmware', () => {
                 }
             `);
 
-            const mpySize = 20;
+            // make sure that total firmware size is big enough that checksum
+            // is called at least once
+            const mpySize = 100;
             const mpyBinaryData = new Uint8Array(mpySize);
             saga.put(didCompile(mpyBinaryData));
 
@@ -914,6 +919,7 @@ describe('flashFirmware', () => {
                 // last payload is sent, otherwise the hub gets confused.
 
                 if (offset + 14 >= totalFirmwareSize) {
+                    expect(count).toBeGreaterThan(10);
                     break;
                 }
 
