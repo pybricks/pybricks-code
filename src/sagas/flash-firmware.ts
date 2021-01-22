@@ -31,9 +31,8 @@ import {
 } from '../actions/flash-firmware';
 import {
     BootloaderChecksumResponseAction,
+    BootloaderConnectionAction,
     BootloaderConnectionActionType,
-    BootloaderConnectionDidConnectAction,
-    BootloaderConnectionDidFailToConnectAction,
     BootloaderDidRequestAction,
     BootloaderDidRequestType,
     BootloaderEraseResponseAction,
@@ -233,15 +232,13 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
     }
 
     yield* put(connect());
-    const connectResult = yield* take<
-        | BootloaderConnectionDidConnectAction
-        | BootloaderConnectionDidFailToConnectAction
-    >([
+    const connectResult = yield* take<BootloaderConnectionAction>([
         BootloaderConnectionActionType.DidConnect,
         BootloaderConnectionActionType.DidFailToConnect,
     ]);
 
     if (connectResult.type === BootloaderConnectionActionType.DidFailToConnect) {
+        yield* put(didFailToStart(FailToStartReasonType.FailedToConnect));
         return;
     }
 
