@@ -9,9 +9,9 @@ import {
 import JSZip from 'jszip';
 import { AsyncSaga } from '../../test';
 import {
-    FailToStartReasonType,
+    FailToFinishReasonType,
     MetadataProblem,
-    didFailToStart,
+    didFailToFinish,
     didFinish,
     didProgress,
     didStart,
@@ -235,7 +235,7 @@ describe('flashFirmware', () => {
 
             action = await saga.take();
             expect(action).toEqual(
-                didFailToStart(FailToStartReasonType.FailedToConnect),
+                didFailToFinish(FailToFinishReasonType.FailedToConnect),
             );
 
             await saga.end();
@@ -294,7 +294,9 @@ describe('flashFirmware', () => {
             // should get a failure to start
 
             action = await saga.take();
-            expect(action).toEqual(didFailToStart(FailToStartReasonType.Disconnected));
+            expect(action).toEqual(
+                didFailToFinish(FailToFinishReasonType.Disconnected),
+            );
 
             await saga.end();
         });
@@ -350,7 +352,7 @@ describe('flashFirmware', () => {
 
             action = await saga.take();
             expect(action).toEqual(
-                didFailToStart(FailToStartReasonType.BleError, testError),
+                didFailToFinish(FailToFinishReasonType.BleError, testError),
             );
 
             // should request to disconnect after failure
@@ -536,8 +538,8 @@ describe('flashFirmware', () => {
 
             const action = await saga.take();
             expect(action).toStrictEqual(
-                didFailToStart(
-                    FailToStartReasonType.ZipError,
+                didFailToFinish(
+                    FailToFinishReasonType.ZipError,
                     new FirmwareReaderError(
                         FirmwareReaderErrorCode.MissingFirmwareBaseBin,
                     ),
@@ -581,8 +583,8 @@ describe('flashFirmware', () => {
 
             const action = await saga.take();
             expect(action).toStrictEqual(
-                didFailToStart(
-                    FailToStartReasonType.BadMetadata,
+                didFailToFinish(
+                    FailToFinishReasonType.BadMetadata,
                     'mpy-abi-version',
                     MetadataProblem.NotSupported,
                 ),
@@ -640,7 +642,7 @@ describe('flashFirmware', () => {
 
             action = await saga.take();
             expect(action).toEqual(
-                didFailToStart(FailToStartReasonType.FailedToCompile),
+                didFailToFinish(FailToFinishReasonType.FailedToCompile),
             );
 
             await saga.end();
@@ -696,7 +698,9 @@ describe('flashFirmware', () => {
             // should fail due to firmware being too big
 
             action = await saga.take();
-            expect(action).toEqual(didFailToStart(FailToStartReasonType.FirmwareSize));
+            expect(action).toEqual(
+                didFailToFinish(FailToFinishReasonType.FirmwareSize),
+            );
 
             await saga.end();
         });
@@ -753,8 +757,8 @@ describe('flashFirmware', () => {
 
             action = await saga.take();
             expect(action).toEqual(
-                didFailToStart(
-                    FailToStartReasonType.BadMetadata,
+                didFailToFinish(
+                    FailToFinishReasonType.BadMetadata,
                     'checksum-type',
                     MetadataProblem.NotSupported,
                 ),

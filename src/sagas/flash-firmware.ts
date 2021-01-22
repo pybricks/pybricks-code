@@ -22,13 +22,11 @@ import {
 import { Action } from '../actions';
 import {
     FailToFinishReasonType,
-    FailToStartReasonType,
     FlashFirmwareActionType,
     FlashFirmwareFlashAction,
     HubError,
     MetadataProblem,
     didFailToFinish,
-    didFailToStart,
     didFinish,
     didProgress,
     didStart,
@@ -79,7 +77,7 @@ function* waitForDidRequest(id: number): SagaGenerator<BootloaderDidRequestActio
         (a: Action) => a.type === BootloaderDidRequestType && a.id === id,
     );
     if (request.err) {
-        yield* put(didFailToStart(FailToStartReasonType.BleError, request.err));
+        yield* put(didFailToFinish(FailToFinishReasonType.BleError, request.err));
         yield* put(disconnect());
         yield* cancel();
     }
@@ -104,14 +102,14 @@ function* waitForResponse<T extends BootloaderResponseAction>(
     });
 
     if (timedOut) {
-        yield* put(didFailToStart(FailToStartReasonType.TimedOut));
+        yield* put(didFailToFinish(FailToFinishReasonType.TimedOut));
         yield* put(disconnect());
         yield* cancel();
     }
 
     if (error) {
         yield* put(
-            didFailToStart(FailToStartReasonType.HubError, HubError.UnknownCommand),
+            didFailToFinish(FailToFinishReasonType.HubError, HubError.UnknownCommand),
         );
         yield* put(disconnect());
         cancel();
@@ -136,8 +134,6 @@ function* firmwareIterator(data: DataView, maxSize: number): Generator<number> {
 /**
  * Loads Pybricks firmware from a .zip file.
  *
- * This can raise didFailToStart() actions, so don't call this after didStart().
- *
  * @param data The zip file raw data
  * @param program User program or `undefined` to use main.py from firmware.zip
  */
@@ -150,9 +146,9 @@ function* loadFirmware(
     if (readerErr) {
         // istanbul ignore else: unexpected error
         if (readerErr instanceof FirmwareReaderError) {
-            yield* put(didFailToStart(FailToStartReasonType.ZipError, readerErr));
+            yield* put(didFailToFinish(FailToFinishReasonType.ZipError, readerErr));
         } else {
-            yield* put(didFailToStart(FailToStartReasonType.Unknown, readerErr));
+            yield* put(didFailToFinish(FailToFinishReasonType.Unknown, readerErr));
         }
         yield* cancel();
     }
@@ -169,8 +165,8 @@ function* loadFirmware(
 
     if (metadata['mpy-abi-version'] !== 5) {
         yield* put(
-            didFailToStart(
-                FailToStartReasonType.BadMetadata,
+            didFailToFinish(
+                FailToFinishReasonType.BadMetadata,
                 'mpy-abi-version',
                 MetadataProblem.NotSupported,
             ),
@@ -185,7 +181,7 @@ function* loadFirmware(
     });
 
     if (mpyFail) {
-        yield* put(didFailToStart(FailToStartReasonType.FailedToCompile));
+        yield* put(didFailToFinish(FailToFinishReasonType.FailedToCompile));
         yield* cancel();
     }
 
@@ -199,7 +195,7 @@ function* loadFirmware(
     const firmwareView = new DataView(firmware.buffer);
 
     if (firmware.length > metadata['max-firmware-size']) {
-        yield* put(didFailToStart(FailToStartReasonType.FirmwareSize));
+        yield* put(didFailToFinish(FailToFinishReasonType.FirmwareSize));
         yield* cancel();
     }
 
@@ -209,8 +205,8 @@ function* loadFirmware(
 
     if (metadata['checksum-type'] !== 'sum') {
         yield* put(
-            didFailToStart(
-                FailToStartReasonType.BadMetadata,
+            didFailToFinish(
+                FailToFinishReasonType.BadMetadata,
                 'checksum-type',
                 MetadataProblem.NotSupported,
             ),
@@ -232,29 +228,16 @@ function* loadFirmware(
  * action is raised and the task (including the parent task) is canceled.
  */
 function* disconnectMonitor(): SagaGenerator<void> {
-    const { disconnectedBeforeStart } = yield* race({
-        disconnectedBeforeStart: take(BootloaderConnectionActionType.DidDisconnect),
-        started: take(FlashFirmwareActionType.DidStart),
-    });
-
-    if (disconnectedBeforeStart) {
-        yield* put(didFailToStart(FailToStartReasonType.Disconnected));
-        yield* cancel();
-    }
-
-    // if we get here, `started` won the race
-
-    const { disconnectedAfterStart } = yield* race({
-        disconnectedAfterStart: take(BootloaderConnectionActionType.DidDisconnect),
+    const { disconnected } = yield* race({
+        disconnected: take(BootloaderConnectionActionType.DidDisconnect),
         finished: take(FlashFirmwareActionType.DidFinish),
+        failedToFinish: take(FlashFirmwareActionType.DidFailToFinish),
     });
 
-    if (disconnectedAfterStart) {
+    if (disconnected) {
         yield* put(didFailToFinish(FailToFinishReasonType.Disconnected));
         yield* cancel();
     }
-
-    // if we get here, `finished` won the race.
 }
 
 /**
@@ -294,7 +277,7 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
     ]);
 
     if (connectResult.type === BootloaderConnectionActionType.DidFailToConnect) {
-        yield* put(didFailToStart(FailToStartReasonType.FailedToConnect));
+        yield* put(didFailToFinish(FailToFinishReasonType.FailedToConnect));
         return;
     }
 
