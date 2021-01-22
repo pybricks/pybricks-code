@@ -11,6 +11,7 @@ import {
     call,
     cancel,
     delay,
+    fork,
     getContext,
     put,
     race,
@@ -19,11 +20,14 @@ import {
     takeEvery,
 } from 'typed-redux-saga/macro';
 import { Action } from '../actions';
+import { disconnect } from '../actions/ble';
 import {
+    FailToFinishReasonType,
     FailToStartReasonType,
     FlashFirmwareActionType,
     FlashFirmwareFlashAction,
     MetadataProblem,
+    didFailToFinish,
     didFailToStart,
     didFinish,
     didProgress,
@@ -202,6 +206,50 @@ function* loadFirmware(
 }
 
 /**
+ * The purpose of this function is two-fold. If the BLE device is disconnected,
+ * then it will raise a failure action and cancel the task (including the
+ * parent task). Or, if the parent task fails, it will disconnect the BLE device
+ * and return.
+ */
+function* disconnectMonitor(): SagaGenerator<void> {
+    const { disconnectedBeforeStart, failedToStart } = yield* race({
+        disconnectedBeforeStart: take(BootloaderConnectionActionType.DidDisconnect),
+        started: take(FlashFirmwareActionType.DidStart),
+        failedToStart: take(FlashFirmwareActionType.DidFailToStart),
+    });
+
+    if (disconnectedBeforeStart) {
+        yield* put(didFailToStart(FailToStartReasonType.Disconnected));
+        yield* cancel();
+    }
+
+    if (failedToStart) {
+        yield* put(disconnect());
+        return;
+    }
+
+    // if we get here, `started` won the race
+
+    const { disconnectedAfterStart, failedToFinish } = yield* race({
+        disconnectedAfterStart: take(BootloaderConnectionActionType.DidDisconnect),
+        finished: take(FlashFirmwareActionType.DidFinish),
+        failedToFinish: take(FlashFirmwareActionType.DidFailToFinish),
+    });
+
+    if (disconnectedAfterStart) {
+        yield* put(didFailToFinish(FailToFinishReasonType.Disconnected));
+        yield* cancel();
+    }
+
+    if (failedToFinish) {
+        yield* put(disconnect());
+        return;
+    }
+
+    // if we get here, `finished` won the race.
+}
+
+/**
  * Flashes firmware to a Powered Up device.
  * @param action The action that triggered this saga.
  */
@@ -241,6 +289,8 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
         yield* put(didFailToStart(FailToStartReasonType.FailedToConnect));
         return;
     }
+
+    const disconnectMonitorTask = yield* fork(disconnectMonitor);
 
     const nextMessageId = yield* getContext<() => number>('nextMessageId');
 
@@ -378,6 +428,7 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
 
     // this will cause the remote device to disconnect and reboot
     const rebootAction = yield* put(rebootRequest(nextMessageId()));
+    disconnectMonitorTask.cancel();
     yield* waitForDidRequest(rebootAction.id);
 
     yield* put(didFinish());

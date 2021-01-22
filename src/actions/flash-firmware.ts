@@ -50,6 +50,8 @@ type Reason<T> = {
 export enum FailToStartReasonType {
     /** Connecting to the hub failed. */
     FailedToConnect = 'flashFirmware.failToStart.reason.failedToConnect',
+    /** The hub was disconnected. */
+    Disconnected = 'flashFirmware.failToStart.reason.disconnected',
     /** The is no firmware available that matches the connected hub. */
     NoFirmware = 'flashFirmware.failToStart.reason.noFirmware',
     /** The provided firmware.zip does not match the connected hub. */
@@ -67,6 +69,8 @@ export enum FailToStartReasonType {
 }
 
 export type FailToStartReasonFailedToConnect = Reason<FailToStartReasonType.FailedToConnect>;
+
+export type FailToStartReasonDisconnected = Reason<FailToStartReasonType.Disconnected>;
 
 export type FailToStartReasonNoFirmware = Reason<FailToStartReasonType.NoFirmware>;
 
@@ -91,6 +95,7 @@ export type FailToStartReasonUnknown = Reason<FailToStartReasonType.Unknown> & {
 
 export type FailToStartReason =
     | FailToStartReasonFailedToConnect
+    | FailToStartReasonDisconnected
     | FailToStartReasonNoFirmware
     | FailToStartReasonDeviceMismatch
     | FailToStartReasonZipError
