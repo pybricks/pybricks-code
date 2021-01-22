@@ -332,9 +332,8 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
             ({ firmware, deviceId } = yield* loadFirmware(data, program));
 
             if (deviceId !== undefined && info.hubType !== deviceId) {
-                throw Error(
-                    `Connected to ${info.hubType} but firmware is for ${deviceId}`,
-                );
+                yield* put(didFailToFinish(FailToFinishReasonType.DeviceMismatch));
+                yield* disconnectAndCancel();
             }
         }
 
