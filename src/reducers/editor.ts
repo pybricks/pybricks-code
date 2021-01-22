@@ -6,9 +6,7 @@ import { Reducer, combineReducers } from 'redux';
 import { Action } from '../actions';
 import { EditorActionType } from '../actions/editor';
 
-type CurrentEditSession = Ace.EditSession | null;
-
-const current: Reducer<CurrentEditSession, Action> = (state = null, action) => {
+const current: Reducer<Ace.EditSession | null, Action> = (state = null, action) => {
     switch (action.type) {
         case EditorActionType.Current:
             return action.editSession || null;
@@ -18,6 +16,6 @@ const current: Reducer<CurrentEditSession, Action> = (state = null, action) => {
 };
 
 export interface EditorState {
-    current: CurrentEditSession;
+    current: Ace.EditSession | null;
 }
 export default combineReducers({ current });
