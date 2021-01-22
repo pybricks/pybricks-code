@@ -13,6 +13,17 @@ export function assert(condition: boolean, message: string): void {
     }
 }
 
+export type Maybe<T> = T | Error;
+
+/** Wraps a promise in try/catch and returns the promise result or error. */
+export async function maybe<T>(promise: Promise<T>): Promise<Maybe<T>> {
+    try {
+        return await promise;
+    } catch (err) {
+        return err;
+    }
+}
+
 /**
  * Formats a number as hex (0x00...)
  * @param n The number to format

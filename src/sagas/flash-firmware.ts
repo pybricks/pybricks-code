@@ -1,15 +1,22 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020 The Pybricks Authors
+// Copyright (c) 2020-2021 The Pybricks Authors
 
-import { FirmwareMetadata, FirmwareReader, HubType } from '@pybricks/firmware';
+import {
+    FirmwareMetadata,
+    FirmwareReader,
+    FirmwareReaderError,
+    HubType,
+} from '@pybricks/firmware';
 import cityHubZip from '@pybricks/firmware/build/cityhub.zip';
 import moveHubZip from '@pybricks/firmware/build/movehub.zip';
 import technicHubZip from '@pybricks/firmware/build/technichub.zip';
 import { Ace } from 'ace-builds';
 import {
     Effect,
+    StrictEffect,
     all,
     call,
+    cancel,
     delay,
     getContext,
     put,
@@ -20,8 +27,10 @@ import {
 } from 'redux-saga/effects';
 import { Action } from '../actions';
 import {
+    FailToStartReasonType,
     FlashFirmwareActionType,
     FlashFirmwareFlashAction,
+    didFailToStart,
     didFinish,
     didProgress,
     didStart,
@@ -65,6 +74,7 @@ import {
 import * as notification from '../actions/notification';
 import { MaxProgramFlashSize } from '../protocols/lwp3-bootloader';
 import { RootState } from '../reducers';
+import { Maybe, maybe } from '../utils';
 import { fmod, sumComplement32 } from '../utils/math';
 
 const firmwareZipMap = new Map<HubType, string>([
@@ -123,8 +133,20 @@ function* firmwareIterator(data: DataView, maxSize: number): Generator<number> {
 function* loadFirmware(
     data: ArrayBuffer,
     program: string | undefined,
-): Generator<unknown, { firmware: Uint8Array; deviceId: HubType }> {
-    const reader = (yield call(() => FirmwareReader.load(data))) as FirmwareReader;
+): Generator<StrictEffect, { firmware: Uint8Array; deviceId: HubType }> {
+    const reader = (yield call(() =>
+        maybe(FirmwareReader.load(data)),
+    )) as Maybe<FirmwareReader>;
+
+    if (reader instanceof Error) {
+        if (reader instanceof FirmwareReaderError) {
+            yield put(didFailToStart(FailToStartReasonType.ZipError, reader));
+        } else {
+            yield put(didFailToStart(FailToStartReasonType.Unknown, reader));
+        }
+        yield cancel();
+        throw 'not reached';
+    }
 
     const firmwareBase = (yield call(() => reader.readFirmwareBase())) as Uint8Array;
     const metadata = (yield call(() => reader.readMetadata())) as FirmwareMetadata;

@@ -10,7 +10,7 @@ Object {
 }
 `;
 
-exports[`flashFirmware user supplied firmware.zip 1`] = `
+exports[`flashFirmware user supplied firmware.zip success 1`] = `
 Object {
   "options": Array [
     "-mno-unicode",
