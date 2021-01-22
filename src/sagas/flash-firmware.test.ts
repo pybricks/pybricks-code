@@ -541,6 +541,77 @@ describe('flashFirmware', () => {
             await saga.end();
         });
 
+        test('failed to fetch firmware', async () => {
+            const metadata: FirmwareMetadata = {
+                'metadata-version': '1.0.0',
+                'device-id': HubType.MoveHub,
+                'checksum-type': 'sum',
+                'firmware-version': '1.2.3',
+                'max-firmware-size': 1024,
+                'mpy-abi-version': 5,
+                'mpy-cross-options': ['-mno-unicode'],
+                'user-mpy-offset': 100,
+            };
+
+            const zip = new JSZip();
+            zip.file('firmware-base.bin', new Uint8Array(64));
+            zip.file('firmware.metadata.json', JSON.stringify(metadata));
+            zip.file('main.py', 'print("test")');
+            zip.file('ReadMe_OSS.txt', 'test');
+
+            const response = new Response(undefined, { status: 404 });
+            jest.spyOn(window, 'fetch').mockResolvedValueOnce(response);
+
+            const saga = new AsyncSaga(
+                flashFirmware,
+                {
+                    bootloader: { connection: BootloaderConnectionState.Disconnected },
+                    settings: { flashCurrentProgram: false },
+                },
+                {
+                    nextMessageId: createCountFunc(),
+                },
+            );
+
+            // saga is triggered by this action
+
+            saga.put(flashFirmwareAction());
+
+            // first step is to connect to the hub bootloader
+
+            let action = await saga.take();
+            expect(action).toEqual(connect());
+
+            saga.updateState({
+                bootloader: { connection: BootloaderConnectionState.Connected },
+            });
+            saga.put(didConnect());
+
+            // then find out what kind of hub it is
+
+            action = await saga.take();
+            expect(action).toEqual(infoRequest(0));
+
+            // received an unknown hub type ID
+
+            saga.put(didRequest(0));
+            saga.put(infoResponse(0x01000000, 0x08005000, 0x081f800, HubType.MoveHub));
+
+            // should raise an error that we don't have any firmware for this hub
+
+            action = await saga.take();
+            expect(action).toStrictEqual(
+                didFailToFinish(FailToFinishReasonType.FailedToFetch, response),
+            );
+
+            // should request to disconnect after failure
+
+            action = await saga.take();
+            expect(action).toEqual(disconnect());
+
+            await saga.end();
+        });
+
         test('connected device does not match firmware device', async () => {
             const metadata: FirmwareMetadata = {
                 'metadata-version': '1.0.0',

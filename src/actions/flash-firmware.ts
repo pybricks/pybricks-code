@@ -53,6 +53,8 @@ export enum FailToFinishReasonType {
     NoFirmware = 'flashFirmware.failToFinish.reason.noFirmware',
     /** The provided firmware.zip does not match the connected hub. */
     DeviceMismatch = 'flashFirmware.failToFinish.reason.deviceMismatch',
+    /** Failed to fetch firmware from the server. */
+    FailedToFetch = 'flashFirmware.failToFinish.reason.failedToFetch',
     /** There was a problem with the zip file. */
     ZipError = 'flashFirmware.failToFinish.reason.zipError',
     /** Metadata property is missing or invalid. */
@@ -87,6 +89,10 @@ export type FailToFinishReasonNoFirmware = Reason<FailToFinishReasonType.NoFirmw
 
 export type FailToFinishReasonDeviceMismatch = Reason<FailToFinishReasonType.DeviceMismatch>;
 
+export type FailToFinishReasonFailedToFetch = Reason<FailToFinishReasonType.FailedToFetch> & {
+    response: Response;
+};
+
 export type FailToFinishReasonZipError = Reason<FailToFinishReasonType.ZipError> & {
     err: FirmwareReaderError;
 };
@@ -112,6 +118,7 @@ export type FailToFinishReason =
     | FailToFinishReasonHubError
     | FailToFinishReasonNoFirmware
     | FailToFinishReasonDeviceMismatch
+    | FailToFinishReasonFailedToFetch
     | FailToFinishReasonZipError
     | FailToFinishReasonBadMetadata
     | FailToFinishReasonFirmwareSize
@@ -184,6 +191,11 @@ export function didFailToFinish(
 ): FlashFirmwareDidFailToFinishAction;
 
 export function didFailToFinish(
+    reason: FailToFinishReasonType.FailedToFetch,
+    response: Response,
+): FlashFirmwareDidFailToFinishAction;
+
+export function didFailToFinish(
     reason: FailToFinishReasonType.ZipError,
     err: FirmwareReaderError,
 ): FlashFirmwareDidFailToFinishAction;
@@ -204,6 +216,7 @@ export function didFailToFinish(
         FailToFinishReasonType,
         | FailToFinishReasonType.BleError
         | FailToFinishReasonType.HubError
+        | FailToFinishReasonType.FailedToFetch
         | FailToFinishReasonType.ZipError
         | FailToFinishReasonType.BadMetadata
         | FailToFinishReasonType.Unknown
@@ -216,7 +229,7 @@ export function didFailToFinish(
  */
 export function didFailToFinish(
     reason: FailToFinishReasonType,
-    arg1?: string | HubError | Error,
+    arg1?: string | HubError | Error | Response,
     arg2?: MetadataProblem,
 ): FlashFirmwareDidFailToFinishAction {
     if (reason === FailToFinishReasonType.BleError) {
@@ -238,6 +251,17 @@ export function didFailToFinish(
         return {
             type: FlashFirmwareActionType.DidFailToFinish,
             reason: { reason, hubError: arg1 },
+        };
+    }
+
+    if (reason === FailToFinishReasonType.FailedToFetch) {
+        // istanbul ignore if: programmer error give wrong arg
+        if (!(arg1 instanceof Response)) {
+            throw new Error('missing or invalid response');
+        }
+        return {
+            type: FlashFirmwareActionType.DidFailToFinish,
+            reason: { reason, response: arg1 },
         };
     }
 

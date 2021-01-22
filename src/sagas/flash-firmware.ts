@@ -47,7 +47,6 @@ import {
     checksumRequest,
     connect,
     disconnect,
-    disconnectRequest,
     eraseRequest,
     infoRequest,
     initRequest,
@@ -60,7 +59,6 @@ import {
     MpyDidFailToCompileAction,
     compile,
 } from '../actions/mpy';
-import * as notification from '../actions/notification';
 import { MaxProgramFlashSize, Result } from '../protocols/lwp3-bootloader';
 import { RootState } from '../reducers';
 import { BootloaderConnectionState } from '../reducers/bootloader';
@@ -322,10 +320,10 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
 
             const response = yield* call(() => fetch(firmwarePath));
             if (!response.ok) {
-                yield* put(notification.add('error', 'Failed to fetch firmware.'));
-                const disconnectAction = yield* put(disconnectRequest(nextMessageId()));
-                yield* waitForDidRequest(disconnectAction.id);
-                return;
+                yield* put(
+                    didFailToFinish(FailToFinishReasonType.FailedToFetch, response),
+                );
+                yield* disconnectAndCancel();
             }
 
             const data = yield* call(() => response.arrayBuffer());
