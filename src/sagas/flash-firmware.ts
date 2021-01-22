@@ -183,7 +183,14 @@ function* loadFirmware(
     firmware.set(mpy.data, metadata['user-mpy-offset'] + 4);
 
     if (metadata['checksum-type'] !== 'sum') {
-        throw Error(`Unknown checksum type "${metadata['checksum-type']}"`);
+        yield* put(
+            didFailToStart(
+                FailToStartReasonType.BadMetadata,
+                'checksum-type',
+                MetadataProblem.NotSupported,
+            ),
+        );
+        yield* cancel();
     }
 
     firmwareView.setUint32(
