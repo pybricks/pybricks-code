@@ -92,7 +92,15 @@ describe('flashFirmware', () => {
         // then compile main.py to .mpy
 
         action = await saga.take();
-        expect(action).toMatchSnapshot();
+        expect(action).toMatchInlineSnapshot(`
+            Object {
+              "options": Array [
+                "-mno-unicode",
+              ],
+              "script": "print(\\"test\\")",
+              "type": "mpy.action.compile",
+            }
+        `);
 
         const mpySize = 20;
         const mpyBinaryData = new Uint8Array(mpySize);
@@ -209,7 +217,15 @@ describe('flashFirmware', () => {
             // the first step is to compile main.py to .mpy
 
             let action = await saga.take();
-            expect(action).toMatchSnapshot();
+            expect(action).toMatchInlineSnapshot(`
+                Object {
+                  "options": Array [
+                    "-mno-unicode",
+                  ],
+                  "script": "print(\\"test\\")",
+                  "type": "mpy.action.compile",
+                }
+            `);
 
             const mpySize = 20;
             const mpyBinaryData = new Uint8Array(mpySize);
@@ -452,7 +468,15 @@ describe('flashFirmware', () => {
         // then compile main.py to .mpy
 
         action = await saga.take();
-        expect(action).toMatchSnapshot();
+        expect(action).toMatchInlineSnapshot(`
+            Object {
+              "options": Array [
+                "-mno-unicode",
+              ],
+              "script": "print(\\"test\\")",
+              "type": "mpy.action.compile",
+            }
+        `);
 
         const mpySize = 20;
         const mpyBinaryData = new Uint8Array(mpySize);

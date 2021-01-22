@@ -37,7 +37,13 @@ test('compiler error works', async () => {
     const action = await saga.take();
     expect(action.type).toBe(MpyActionType.DidFailToCompile);
     const { err } = action as MpyDidFailToCompileAction;
-    expect(err).toMatchSnapshot();
+    expect(err).toMatchInlineSnapshot(`
+        Array [
+          "Traceback (most recent call last):",
+          "  File \\"main.py\\", line 1",
+          "SyntaxError: invalid syntax",
+        ]
+    `);
 
     await saga.end();
 });
