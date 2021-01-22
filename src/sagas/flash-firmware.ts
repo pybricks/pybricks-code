@@ -63,6 +63,7 @@ import {
 import * as notification from '../actions/notification';
 import { MaxProgramFlashSize } from '../protocols/lwp3-bootloader';
 import { RootState } from '../reducers';
+import { BootloaderConnectionState } from '../reducers/bootloader';
 import { defined, maybe } from '../utils';
 import { fmod, sumComplement32 } from '../utils/math';
 
@@ -72,14 +73,33 @@ const firmwareZipMap = new Map<HubType, string>([
     [HubType.MoveHub, moveHubZip],
 ]);
 
+/**
+ * Disconnects the BLE if we are connected and cancels the task (including the
+ * parent task).
+ */
+function* disconnectAndCancel(): SagaGenerator<never> {
+    const connection = yield* select((s: RootState) => s.bootloader.connection);
+
+    if (connection === BootloaderConnectionState.Connected) {
+        yield* put(disconnect());
+    }
+
+    yield* cancel();
+
+    // HACK: cancel effect doesn't return, so we need this to make typescript
+    // happy about the never return type.
+
+    // istanbul ignore next: not reachable
+    throw undefined;
+}
+
 function* waitForDidRequest(id: number): SagaGenerator<BootloaderDidRequestAction> {
     const request = yield* take<BootloaderDidRequestAction>(
         (a: Action) => a.type === BootloaderDidRequestType && a.id === id,
     );
     if (request.err) {
         yield* put(didFailToFinish(FailToFinishReasonType.BleError, request.err));
-        yield* put(disconnect());
-        yield* cancel();
+        yield* disconnectAndCancel();
     }
 
     return request;
@@ -103,16 +123,14 @@ function* waitForResponse<T extends BootloaderResponseAction>(
 
     if (timedOut) {
         yield* put(didFailToFinish(FailToFinishReasonType.TimedOut));
-        yield* put(disconnect());
-        yield* cancel();
+        yield* disconnectAndCancel();
     }
 
     if (error) {
         yield* put(
             didFailToFinish(FailToFinishReasonType.HubError, HubError.UnknownCommand),
         );
-        yield* put(disconnect());
-        cancel();
+        yield* disconnectAndCancel();
     }
 
     defined(response);
@@ -150,7 +168,7 @@ function* loadFirmware(
         } else {
             yield* put(didFailToFinish(FailToFinishReasonType.Unknown, readerErr));
         }
-        yield* cancel();
+        yield* disconnectAndCancel();
     }
 
     defined(reader);
@@ -171,7 +189,7 @@ function* loadFirmware(
                 MetadataProblem.NotSupported,
             ),
         );
-        yield* cancel();
+        yield* disconnectAndCancel();
     }
 
     yield* put(compile(program, metadata['mpy-cross-options']));
@@ -182,7 +200,7 @@ function* loadFirmware(
 
     if (mpyFail) {
         yield* put(didFailToFinish(FailToFinishReasonType.FailedToCompile));
-        yield* cancel();
+        yield* disconnectAndCancel();
     }
 
     defined(mpy);
@@ -196,7 +214,7 @@ function* loadFirmware(
 
     if (firmware.length > metadata['max-firmware-size']) {
         yield* put(didFailToFinish(FailToFinishReasonType.FirmwareSize));
-        yield* cancel();
+        yield* disconnectAndCancel();
     }
 
     firmware.set(firmwareBase);
@@ -211,7 +229,7 @@ function* loadFirmware(
                 MetadataProblem.NotSupported,
             ),
         );
-        yield* cancel();
+        yield* disconnectAndCancel();
     }
 
     firmwareView.setUint32(
@@ -236,7 +254,7 @@ function* disconnectMonitor(): SagaGenerator<void> {
 
     if (disconnected) {
         yield* put(didFailToFinish(FailToFinishReasonType.Disconnected));
-        yield* cancel();
+        yield* disconnectAndCancel();
     }
 }
 

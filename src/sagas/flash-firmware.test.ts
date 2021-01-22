@@ -40,6 +40,7 @@ import {
 } from '../actions/lwp3-bootloader';
 import { didCompile, didFailToCompile } from '../actions/mpy';
 import { HubType, Result } from '../protocols/lwp3-bootloader';
+import { BootloaderConnectionState } from '../reducers/bootloader';
 import { createCountFunc } from '../utils/iter';
 import flashFirmware from './flash-firmware';
 
@@ -86,6 +87,9 @@ describe('flashFirmware', () => {
             let action = await saga.take();
             expect(action).toEqual(connect());
 
+            saga.setState({
+                bootloader: { connection: BootloaderConnectionState.Connected },
+            });
             saga.put(didConnect());
 
             // then find out what kind of hub it is
@@ -278,6 +282,9 @@ describe('flashFirmware', () => {
             let action = await saga.take();
             expect(action).toEqual(connect());
 
+            saga.setState({
+                bootloader: { connection: BootloaderConnectionState.Connected },
+            });
             saga.put(didConnect());
 
             // then find out what kind of hub it is
@@ -289,6 +296,9 @@ describe('flashFirmware', () => {
 
             // hub disconnects before replying
 
+            saga.setState({
+                bootloader: { connection: BootloaderConnectionState.Disconnected },
+            });
             saga.put(didDisconnect());
 
             // should get a failure to start
@@ -338,6 +348,9 @@ describe('flashFirmware', () => {
             let action = await saga.take();
             expect(action).toEqual(connect());
 
+            saga.setState({
+                bootloader: { connection: BootloaderConnectionState.Connected },
+            });
             saga.put(didConnect());
 
             // then find out what kind of hub it is
@@ -417,6 +430,9 @@ describe('flashFirmware', () => {
             action = await saga.take();
             expect(action).toEqual(connect());
 
+            saga.setState({
+                bootloader: { connection: BootloaderConnectionState.Connected },
+            });
             saga.put(didConnect());
 
             // then find out what kind of hub it is
@@ -526,7 +542,10 @@ describe('flashFirmware', () => {
                 nextMessageId: createCountFunc(),
             });
 
-            saga.setState({ settings: { flashCurrentProgram: false } });
+            saga.setState({
+                bootloader: { connection: BootloaderConnectionState.Disconnected },
+                settings: { flashCurrentProgram: false },
+            });
 
             // saga is triggered by this action
 
@@ -571,7 +590,10 @@ describe('flashFirmware', () => {
                 nextMessageId: createCountFunc(),
             });
 
-            saga.setState({ settings: { flashCurrentProgram: false } });
+            saga.setState({
+                bootloader: { connection: BootloaderConnectionState.Disconnected },
+                settings: { flashCurrentProgram: false },
+            });
 
             // saga is triggered by this action
 
@@ -636,6 +658,12 @@ describe('flashFirmware', () => {
                 }
             `);
 
+            // this triggers a failure
+
+            saga.setState({
+                bootloader: { connection: BootloaderConnectionState.Disconnected },
+            });
+
             saga.put(didFailToCompile(['test']));
 
             // compiler error should trigger firmware flash failure
@@ -690,6 +718,10 @@ describe('flashFirmware', () => {
                   "type": "mpy.action.compile",
                 }
             `);
+
+            saga.setState({
+                bootloader: { connection: BootloaderConnectionState.Disconnected },
+            });
 
             const mpySize = 20;
             const mpyBinaryData = new Uint8Array(mpySize);
@@ -748,6 +780,10 @@ describe('flashFirmware', () => {
                   "type": "mpy.action.compile",
                 }
             `);
+
+            saga.setState({
+                bootloader: { connection: BootloaderConnectionState.Disconnected },
+            });
 
             const mpySize = 20;
             const mpyBinaryData = new Uint8Array(mpySize);
@@ -810,6 +846,9 @@ describe('flashFirmware', () => {
         let action = await saga.take();
         expect(action).toEqual(connect());
 
+        saga.setState({
+            bootloader: { connection: BootloaderConnectionState.Connected },
+        });
         saga.put(didConnect());
 
         // then find out what kind of hub it is
