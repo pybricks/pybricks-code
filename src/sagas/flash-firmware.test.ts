@@ -34,7 +34,7 @@ import {
     programResponse,
     rebootRequest,
 } from '../actions/lwp3-bootloader';
-import { didCompile } from '../actions/mpy';
+import { didCompile, didFailToCompile } from '../actions/mpy';
 import { HubType, Result } from '../protocols/lwp3-bootloader';
 import { createCountFunc } from '../utils/iter';
 import flashFirmware from './flash-firmware';
@@ -407,6 +407,61 @@ describe('flashFirmware', () => {
                     'mpy-abi-version',
                     MetadataProblem.NotSupported,
                 ),
+            );
+
+            await saga.end();
+        });
+
+        test('compile error', async () => {
+            const metadata: FirmwareMetadata = {
+                'metadata-version': '1.0.0',
+                'device-id': HubType.MoveHub,
+                'checksum-type': 'sum',
+                'firmware-version': '1.2.3',
+                'max-firmware-size': 1024,
+                'mpy-abi-version': 5,
+                'mpy-cross-options': ['-mno-unicode'],
+                'user-mpy-offset': 100,
+            };
+
+            const zip = new JSZip();
+            zip.file('firmware-base.bin', new Uint8Array(64));
+            zip.file('firmware.metadata.json', JSON.stringify(metadata));
+            zip.file('main.py', 'print("test")');
+            zip.file('ReadMe_OSS.txt', 'test');
+
+            const saga = new AsyncSaga(flashFirmware, {
+                nextMessageId: createCountFunc(),
+            });
+
+            saga.setState({ settings: { flashCurrentProgram: false } });
+
+            // saga is triggered by this action
+
+            saga.put(
+                flashFirmwareAction(await zip.generateAsync({ type: 'arraybuffer' })),
+            );
+
+            // the first step is to compile main.py to .mpy
+
+            let action = await saga.take();
+            expect(action).toMatchInlineSnapshot(`
+                Object {
+                  "options": Array [
+                    "-mno-unicode",
+                  ],
+                  "script": "print(\\"test\\")",
+                  "type": "mpy.action.compile",
+                }
+            `);
+
+            saga.put(didFailToCompile(['test']));
+
+            // compiler error should trigger firmware flash failure
+
+            action = await saga.take();
+            expect(action).toEqual(
+                didFailToStart(FailToStartReasonType.FailedToCompile),
             );
 
             await saga.end();

@@ -109,7 +109,10 @@ function* firmwareIterator(data: DataView, maxSize: number): Generator<number> {
 }
 
 /**
- * Loads Pybricks firmware from a .zip file
+ * Loads Pybricks firmware from a .zip file.
+ *
+ * This can raise didFailToStart() actions, so don't call this after didStart().
+ *
  * @param data The zip file raw data
  * @param program User program or `undefined` to use main.py from firmware.zip
  */
@@ -157,7 +160,8 @@ function* loadFirmware(
     });
 
     if (mpyFail) {
-        throw Error(mpyFail.err.join('\n'));
+        yield* put(didFailToStart(FailToStartReasonType.FailedToCompile));
+        yield* cancel();
     }
 
     defined(mpy);
