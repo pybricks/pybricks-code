@@ -50,8 +50,14 @@ type Reason<T> = {
 export enum FailToStartReasonType {
     /** Connecting to the hub failed. */
     FailedToConnect = 'flashFirmware.failToStart.reason.failedToConnect',
+    /** The hub connection timed out. */
+    TimedOut = 'flashFirmware.failToStart.reason.timedOut',
+    /** Something went wrong with the BLE connection. */
+    BleError = 'flashFirmware.failToStart.reason.bleError',
     /** The hub was disconnected. */
     Disconnected = 'flashFirmware.failToStart.reason.disconnected',
+    /** The hub sent a response indicating a problem. */
+    HubError = 'flashFirmware.failToStart.reason.hubError',
     /** The is no firmware available that matches the connected hub. */
     NoFirmware = 'flashFirmware.failToStart.reason.noFirmware',
     /** The provided firmware.zip does not match the connected hub. */
@@ -70,7 +76,17 @@ export enum FailToStartReasonType {
 
 export type FailToStartReasonFailedToConnect = Reason<FailToStartReasonType.FailedToConnect>;
 
+export type FailToStartReasonTimedOut = Reason<FailToStartReasonType.TimedOut>;
+
+export type FailToStartReasonBleError = Reason<FailToStartReasonType.BleError> & {
+    err: Error;
+};
+
 export type FailToStartReasonDisconnected = Reason<FailToStartReasonType.Disconnected>;
+
+export type FailToStartReasonHubError = Reason<FailToStartReasonType.HubError> & {
+    hubError: HubError;
+};
 
 export type FailToStartReasonNoFirmware = Reason<FailToStartReasonType.NoFirmware>;
 
@@ -95,7 +111,10 @@ export type FailToStartReasonUnknown = Reason<FailToStartReasonType.Unknown> & {
 
 export type FailToStartReason =
     | FailToStartReasonFailedToConnect
+    | FailToStartReasonTimedOut
+    | FailToStartReasonBleError
     | FailToStartReasonDisconnected
+    | FailToStartReasonHubError
     | FailToStartReasonNoFirmware
     | FailToStartReasonDeviceMismatch
     | FailToStartReasonZipError
@@ -119,7 +138,9 @@ export enum FailToFinishReasonType {
 
 export type FailToFinishReasonTimedOut = Reason<FailToFinishReasonType.TimedOut>;
 
-export type FailToFinishReasonBleError = Reason<FailToFinishReasonType.BleError>;
+export type FailToFinishReasonBleError = Reason<FailToFinishReasonType.BleError> & {
+    err: Error;
+};
 
 export type FailToFinishReasonDisconnected = Reason<FailToFinishReasonType.Disconnected>;
 
@@ -171,6 +192,16 @@ export type FlashFirmwareDidFailToStartAction = Action<FlashFirmwareActionType.D
 };
 
 export function didFailToStart(
+    reason: FailToStartReasonType.BleError,
+    err: Error,
+): FlashFirmwareDidFailToStartAction;
+
+export function didFailToStart(
+    reason: FailToStartReasonType.HubError,
+    hubError: HubError,
+): FlashFirmwareDidFailToStartAction;
+
+export function didFailToStart(
     reason: FailToStartReasonType.ZipError,
     err: FirmwareReaderError,
 ): FlashFirmwareDidFailToStartAction;
@@ -189,6 +220,8 @@ export function didFailToStart(
 export function didFailToStart(
     reason: Exclude<
         FailToStartReasonType,
+        | FailToStartReasonType.BleError
+        | FailToStartReasonType.HubError
         | FailToStartReasonType.ZipError
         | FailToStartReasonType.BadMetadata
         | FailToStartReasonType.Unknown
@@ -201,9 +234,31 @@ export function didFailToStart(
  */
 export function didFailToStart(
     reason: FailToStartReasonType,
-    arg1?: string | Error,
+    arg1?: string | HubError | Error,
     arg2?: MetadataProblem,
 ): FlashFirmwareDidFailToStartAction {
+    if (reason === FailToStartReasonType.BleError) {
+        // istanbul ignore if: programmer error give wrong arg
+        if (!(arg1 instanceof Error)) {
+            throw new Error('missing or invalid err');
+        }
+        return {
+            type: FlashFirmwareActionType.DidFailToStart,
+            reason: { reason, err: arg1 },
+        };
+    }
+
+    if (reason === FailToStartReasonType.HubError) {
+        // istanbul ignore if: programmer error give wrong arg
+        if (!isHubError(arg1)) {
+            throw new Error('missing or invalid hubError');
+        }
+        return {
+            type: FlashFirmwareActionType.DidFailToStart,
+            reason: { reason, hubError: arg1 },
+        };
+    }
+
     if (reason === FailToStartReasonType.ZipError) {
         // istanbul ignore if: programmer error give wrong arg
         if (!(arg1 instanceof FirmwareReaderError)) {
@@ -282,6 +337,11 @@ export type FlashFirmwareDidFailToFinishAction = Action<FlashFirmwareActionType.
 };
 
 export function didFailToFinish(
+    reason: FailToFinishReasonType.BleError,
+    err: Error,
+): FlashFirmwareDidFailToFinishAction;
+
+export function didFailToFinish(
     reason: FailToFinishReasonType.HubError,
     hubError: HubError,
 ): FlashFirmwareDidFailToFinishAction;
@@ -294,7 +354,9 @@ export function didFailToFinish(
 export function didFailToFinish(
     reason: Exclude<
         FailToFinishReasonType,
-        FailToFinishReasonType.HubError | FailToFinishReasonType.Unknown
+        | FailToFinishReasonType.BleError
+        | FailToFinishReasonType.HubError
+        | FailToFinishReasonType.Unknown
     >,
 ): FlashFirmwareDidFailToFinishAction;
 
@@ -303,6 +365,17 @@ export function didFailToFinish(
     reason: FailToFinishReasonType,
     arg1?: HubError | Error,
 ): FlashFirmwareDidFailToFinishAction {
+    if (reason === FailToFinishReasonType.BleError) {
+        // istanbul ignore if: programmer error give wrong arg
+        if (!(arg1 instanceof Error)) {
+            throw new Error('missing or invalid err');
+        }
+        return {
+            type: FlashFirmwareActionType.DidFailToFinish,
+            reason: { reason, err: arg1 },
+        };
+    }
+
     if (reason === FailToFinishReasonType.HubError) {
         // istanbul ignore if: programmer error give wrong arg
         if (!isHubError(arg1)) {

@@ -42,6 +42,10 @@ export enum BootloaderConnectionActionType {
      */
     DidReceive = 'bootloader.action.connection.did.receive',
     /**
+     * Initiate disconnection/
+     */
+    Disconnect = 'bootloader.action.connection.disconnect',
+    /**
      * The connection has been closed.
      */
     DidDisconnect = 'bootloader.action.connection.did.disconnect',
@@ -57,6 +61,12 @@ export type BootloaderConnectionDidConnectAction = Action<BootloaderConnectionAc
 
 export function didConnect(): BootloaderConnectionDidConnectAction {
     return { type: BootloaderConnectionActionType.DidConnect };
+}
+
+export type BootloaderConnectionDisconnectAction = Action<BootloaderConnectionActionType.Disconnect>;
+
+export function disconnect(): BootloaderConnectionDisconnectAction {
+    return { type: BootloaderConnectionActionType.Disconnect };
 }
 
 /**

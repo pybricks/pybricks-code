@@ -27,6 +27,7 @@ import {
     didDisconnect,
     didFailToConnect,
     didRequest,
+    disconnect,
     eraseRequest,
     eraseResponse,
     infoRequest,
@@ -294,6 +295,68 @@ describe('flashFirmware', () => {
 
             action = await saga.take();
             expect(action).toEqual(didFailToStart(FailToStartReasonType.Disconnected));
+
+            await saga.end();
+        });
+
+        test('fail to send info request', async () => {
+            const metadata: FirmwareMetadata = {
+                'metadata-version': '1.0.0',
+                'device-id': HubType.MoveHub,
+                'checksum-type': 'sum',
+                'firmware-version': '1.2.3',
+                'max-firmware-size': 1024,
+                'mpy-abi-version': 5,
+                'mpy-cross-options': ['-mno-unicode'],
+                'user-mpy-offset': 100,
+            };
+
+            const zip = new JSZip();
+            zip.file('firmware-base.bin', new Uint8Array(64));
+            zip.file('firmware.metadata.json', JSON.stringify(metadata));
+            zip.file('main.py', 'print("test")');
+            zip.file('ReadMe_OSS.txt', 'test');
+
+            jest.spyOn(window, 'fetch').mockResolvedValueOnce(
+                new Response(await zip.generateAsync({ type: 'blob' })),
+            );
+
+            const saga = new AsyncSaga(flashFirmware, {
+                nextMessageId: createCountFunc(),
+            });
+
+            saga.setState({ settings: { flashCurrentProgram: false } });
+
+            // saga is triggered by this action
+
+            saga.put(flashFirmwareAction());
+
+            // first step is to connect to the hub bootloader
+
+            let action = await saga.take();
+            expect(action).toEqual(connect());
+
+            saga.put(didConnect());
+
+            // then find out what kind of hub it is
+
+            action = await saga.take();
+            expect(action).toEqual(infoRequest(0));
+
+            const testError = new Error('test');
+            saga.put(didRequest(0, testError));
+
+            // should get a failure to start
+
+            action = await saga.take();
+            expect(action).toEqual(
+                didFailToStart(FailToStartReasonType.BleError, testError),
+            );
+
+            // should request to disconnect after failure
+
+            action = await saga.take();
+            expect(action).toEqual(disconnect());
 
             await saga.end();
         });

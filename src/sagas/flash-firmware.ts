@@ -20,12 +20,12 @@ import {
     takeEvery,
 } from 'typed-redux-saga/macro';
 import { Action } from '../actions';
-import { disconnect } from '../actions/ble';
 import {
     FailToFinishReasonType,
     FailToStartReasonType,
     FlashFirmwareActionType,
     FlashFirmwareFlashAction,
+    HubError,
     MetadataProblem,
     didFailToFinish,
     didFailToStart,
@@ -48,6 +48,7 @@ import {
     BootloaderResponseActionType,
     checksumRequest,
     connect,
+    disconnect,
     disconnectRequest,
     eraseRequest,
     infoRequest,
@@ -74,9 +75,16 @@ const firmwareZipMap = new Map<HubType, string>([
 ]);
 
 function* waitForDidRequest(id: number): SagaGenerator<BootloaderDidRequestAction> {
-    return yield* take<BootloaderDidRequestAction>(
+    const request = yield* take<BootloaderDidRequestAction>(
         (a: Action) => a.type === BootloaderDidRequestType && a.id === id,
     );
+    if (request.err) {
+        yield* put(didFailToStart(FailToStartReasonType.BleError, request.err));
+        yield* put(disconnect());
+        yield* cancel();
+    }
+
+    return request;
 }
 
 /**
@@ -88,16 +96,30 @@ function* waitForDidRequest(id: number): SagaGenerator<BootloaderDidRequestActio
 function* waitForResponse<T extends BootloaderResponseAction>(
     type: BootloaderResponseActionType,
     timeout = 500,
-): SagaGenerator<{
-    response?: T;
-    error?: BootloaderErrorResponseAction;
-    timeout?: boolean;
-}> {
-    return yield* race({
+): SagaGenerator<T> {
+    const { response, error, timedOut } = yield* race({
         response: take<T>(type),
         error: take<BootloaderErrorResponseAction>(BootloaderResponseActionType.Error),
-        timeout: delay(timeout),
+        timedOut: delay(timeout),
     });
+
+    if (timedOut) {
+        yield* put(didFailToStart(FailToStartReasonType.TimedOut));
+        yield* put(disconnect());
+        yield* cancel();
+    }
+
+    if (error) {
+        yield* put(
+            didFailToStart(FailToStartReasonType.HubError, HubError.UnknownCommand),
+        );
+        yield* put(disconnect());
+        cancel();
+    }
+
+    defined(response);
+
+    return response;
 }
 
 function* firmwareIterator(data: DataView, maxSize: number): Generator<number> {
@@ -206,16 +228,13 @@ function* loadFirmware(
 }
 
 /**
- * The purpose of this function is two-fold. If the BLE device is disconnected,
- * then it will raise a failure action and cancel the task (including the
- * parent task). Or, if the parent task fails, it will disconnect the BLE device
- * and return.
+ * Monitors for BLE disconnection event. If disconnection occurs, then a failure
+ * action is raised and the task (including the parent task) is canceled.
  */
 function* disconnectMonitor(): SagaGenerator<void> {
-    const { disconnectedBeforeStart, failedToStart } = yield* race({
+    const { disconnectedBeforeStart } = yield* race({
         disconnectedBeforeStart: take(BootloaderConnectionActionType.DidDisconnect),
         started: take(FlashFirmwareActionType.DidStart),
-        failedToStart: take(FlashFirmwareActionType.DidFailToStart),
     });
 
     if (disconnectedBeforeStart) {
@@ -223,27 +242,16 @@ function* disconnectMonitor(): SagaGenerator<void> {
         yield* cancel();
     }
 
-    if (failedToStart) {
-        yield* put(disconnect());
-        return;
-    }
-
     // if we get here, `started` won the race
 
-    const { disconnectedAfterStart, failedToFinish } = yield* race({
+    const { disconnectedAfterStart } = yield* race({
         disconnectedAfterStart: take(BootloaderConnectionActionType.DidDisconnect),
         finished: take(FlashFirmwareActionType.DidFinish),
-        failedToFinish: take(FlashFirmwareActionType.DidFailToFinish),
     });
 
     if (disconnectedAfterStart) {
         yield* put(didFailToFinish(FailToFinishReasonType.Disconnected));
         yield* cancel();
-    }
-
-    if (failedToFinish) {
-        yield* put(disconnect());
-        return;
     }
 
     // if we get here, `finished` won the race.
@@ -301,18 +309,13 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
             BootloaderResponseActionType.Info,
         ),
     });
-    if (!info.response) {
-        throw Error(`failed to get info: ${info}`);
-    }
 
-    if (deviceId !== undefined && info.response.hubType !== deviceId) {
-        throw Error(
-            `Connected to ${info.response.hubType} but firmware is for ${deviceId}`,
-        );
+    if (deviceId !== undefined && info.hubType !== deviceId) {
+        throw Error(`Connected to ${info.hubType} but firmware is for ${deviceId}`);
     }
 
     if (firmware === undefined) {
-        const firmwarePath = firmwareZipMap.get(info.response.hubType);
+        const firmwarePath = firmwareZipMap.get(info.hubType);
         if (firmwarePath === undefined) {
             yield* put(
                 notification.add(
@@ -335,10 +338,8 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
         const data = yield* call(() => response.arrayBuffer());
         ({ firmware, deviceId } = yield* loadFirmware(data, program));
 
-        if (deviceId !== undefined && info.response.hubType !== deviceId) {
-            throw Error(
-                `Connected to ${info.response.hubType} but firmware is for ${deviceId}`,
-            );
+        if (deviceId !== undefined && info.hubType !== deviceId) {
+            throw Error(`Connected to ${info.hubType} but firmware is for ${deviceId}`);
         }
     }
 
@@ -352,7 +353,7 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
             5000,
         ),
     });
-    if (!erase.response || erase.response.result) {
+    if (erase.result) {
         // TODO: proper error handling
         throw Error(`Failed to erase: ${erase}`);
     }
@@ -364,22 +365,18 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
             BootloaderResponseActionType.Init,
         ),
     });
-    if (!init.response || init.response.result) {
+    if (init.result) {
         // TODO: proper error handling
         throw Error(`Failed to init: ${init}`);
     }
 
     // 14 is "safe" size for all hubs
-    const maxDataSize = MaxProgramFlashSize.get(info.response.hubType) || 14;
+    const maxDataSize = MaxProgramFlashSize.get(info.hubType) || 14;
 
     for (let count = 1, offset = 0; ; count++) {
         const payload = firmware.slice(offset, offset + maxDataSize);
         const programAction = yield* put(
-            programRequest(
-                nextMessageId(),
-                info.response.startAddress + offset,
-                payload.buffer,
-            ),
+            programRequest(nextMessageId(), info.startAddress + offset, payload.buffer),
         );
         yield* waitForDidRequest(programAction.id);
 
@@ -398,17 +395,13 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
         // the hub is not known and could vary by device.
         if (count % 10 === 0) {
             const checksumAction = yield* put(checksumRequest(nextMessageId()));
-            const { checksum } = yield* all({
+            yield* all({
                 sent: waitForDidRequest(checksumAction.id),
                 checksum: waitForResponse<BootloaderChecksumResponseAction>(
                     BootloaderResponseActionType.Checksum,
                     5000,
                 ),
             });
-            if (!checksum.response) {
-                // TODO: proper error handling
-                throw Error(`Failed to get checksum: ${checksum}`);
-            }
         }
     }
 
@@ -416,10 +409,7 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
         BootloaderResponseActionType.Program,
         5000,
     );
-    if (!flash.response) {
-        throw Error(`failed to get final response: ${flash}`);
-    }
-    if (flash.response.count !== firmware.length) {
+    if (flash.count !== firmware.length) {
         // TODO: proper error handling
         throw Error("Didn't flash all bytes");
     }

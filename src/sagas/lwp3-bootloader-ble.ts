@@ -143,6 +143,7 @@ function* connect(_action: BootloaderConnectionAction): Generator {
 
     yield takeEvery(notificationChannel, handleNotify);
     yield takeEvery(BootloaderConnectionActionType.Send, write, characteristic);
+    yield takeEvery(BootloaderConnectionActionType.Disconnect, server.disconnect);
 
     yield put(didConnect());
 
