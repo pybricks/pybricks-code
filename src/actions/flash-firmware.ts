@@ -35,10 +35,7 @@ export enum HubError {
 }
 
 function isHubError(arg: unknown): arg is HubError {
-    if (typeof arg !== 'string') {
-        return false;
-    }
-    return Object.keys(HubError).includes(arg);
+    return Object.values(HubError).includes(arg as HubError);
 }
 
 export enum FailToFinishReasonType {
