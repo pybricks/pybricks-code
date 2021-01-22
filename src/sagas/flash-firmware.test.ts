@@ -463,6 +463,107 @@ describe('flashFirmware', () => {
 
             await saga.end();
         });
+
+        test('erase response is failed', async () => {
+            const metadata: FirmwareMetadata = {
+                'metadata-version': '1.0.0',
+                'device-id': HubType.MoveHub,
+                'checksum-type': 'sum',
+                'firmware-version': '1.2.3',
+                'max-firmware-size': 1024,
+                'mpy-abi-version': 5,
+                'mpy-cross-options': ['-mno-unicode'],
+                'user-mpy-offset': 100,
+            };
+
+            const zip = new JSZip();
+            zip.file('firmware-base.bin', new Uint8Array(64));
+            zip.file('firmware.metadata.json', JSON.stringify(metadata));
+            zip.file('main.py', 'print("test")');
+            zip.file('ReadMe_OSS.txt', 'test');
+
+            jest.spyOn(window, 'fetch').mockResolvedValueOnce(
+                new Response(await zip.generateAsync({ type: 'blob' })),
+            );
+
+            const saga = new AsyncSaga(
+                flashFirmware,
+                {
+                    bootloader: { connection: BootloaderConnectionState.Disconnected },
+                    settings: { flashCurrentProgram: false },
+                },
+                {
+                    nextMessageId: createCountFunc(),
+                },
+            );
+
+            // saga is triggered by this action
+
+            saga.put(flashFirmwareAction());
+
+            // first step is to connect to the hub bootloader
+
+            let action = await saga.take();
+            expect(action).toEqual(connect());
+
+            saga.updateState({
+                bootloader: { connection: BootloaderConnectionState.Connected },
+            });
+            saga.put(didConnect());
+
+            // then find out what kind of hub it is
+
+            action = await saga.take();
+            expect(action).toEqual(infoRequest(0));
+
+            saga.put(didRequest(0));
+            saga.put(infoResponse(0x01000000, 0x08005000, 0x081f800, HubType.MoveHub));
+
+            // then compile main.py to .mpy
+
+            action = await saga.take();
+            expect(action).toMatchInlineSnapshot(`
+                Object {
+                  "options": Array [
+                    "-mno-unicode",
+                  ],
+                  "script": "print(\\"test\\")",
+                  "type": "mpy.action.compile",
+                }
+            `);
+
+            const mpySize = 20;
+            const mpyBinaryData = new Uint8Array(mpySize);
+            saga.put(didCompile(mpyBinaryData));
+
+            // then start flashing the firmware
+
+            // should get didStart action just before starting to erase
+            action = await saga.take();
+            expect(action).toEqual(didStart());
+
+            // erase first
+
+            action = await saga.take();
+            expect(action).toEqual(eraseRequest(1));
+
+            saga.put(didRequest(1));
+            saga.put(eraseResponse(Result.Error));
+
+            // should get a hub error
+
+            action = await saga.take();
+            expect(action).toEqual(
+                didFailToFinish(FailToFinishReasonType.HubError, HubError.EraseFailed),
+            );
+
+            // should request to disconnect after failure
+
+            action = await saga.take();
+            expect(action).toEqual(disconnect());
+
+            await saga.end();
+        });
     });
 
     describe('user supplied firmware.zip', () => {

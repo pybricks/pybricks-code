@@ -61,7 +61,7 @@ import {
     compile,
 } from '../actions/mpy';
 import * as notification from '../actions/notification';
-import { MaxProgramFlashSize } from '../protocols/lwp3-bootloader';
+import { MaxProgramFlashSize, Result } from '../protocols/lwp3-bootloader';
 import { RootState } from '../reducers';
 import { BootloaderConnectionState } from '../reducers/bootloader';
 import { defined, maybe } from '../utils';
@@ -354,9 +354,11 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
             5000,
         ),
     });
-    if (erase.result) {
-        // TODO: proper error handling
-        throw Error(`Failed to erase: ${erase}`);
+    if (erase.result !== Result.OK) {
+        yield* put(
+            didFailToFinish(FailToFinishReasonType.HubError, HubError.EraseFailed),
+        );
+        yield* disconnectAndCancel();
     }
 
     const initAction = yield* put(initRequest(nextMessageId(), firmware.length));
