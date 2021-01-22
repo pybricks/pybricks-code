@@ -5,11 +5,15 @@ import { END, MulticastChannel, Saga, Task, runSaga, stdChannel } from 'redux-sa
 import { Action } from '../src/actions';
 import { RootState } from '../src/reducers';
 
+type RecursivePartial<T> = {
+    [P in keyof T]?: RecursivePartial<T[P]>;
+};
+
 export class AsyncSaga {
     private channel: MulticastChannel<Action>;
     private dispatches: (Action | END)[];
     private takers: { put: (action: Action | END) => void }[];
-    private state: Partial<RootState>;
+    private state: RecursivePartial<RootState>;
     private task: Task;
 
     public constructor(saga: Saga, context?: Record<string, unknown>) {
@@ -63,7 +67,7 @@ export class AsyncSaga {
         return Promise.resolve(next);
     }
 
-    public setState(state: Partial<RootState>): void {
+    public setState(state: RecursivePartial<RootState>): void {
         this.state = state;
     }
 

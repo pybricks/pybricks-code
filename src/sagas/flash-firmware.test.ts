@@ -35,8 +35,6 @@ import {
 } from '../actions/lwp3-bootloader';
 import { didCompile } from '../actions/mpy';
 import { HubType, Result } from '../protocols/lwp3-bootloader';
-import { EditorState } from '../reducers/editor';
-import { SettingsState } from '../reducers/settings';
 import { createCountFunc } from '../utils/iter';
 import flashFirmware from './flash-firmware';
 
@@ -69,7 +67,7 @@ describe('flashFirmware', () => {
 
         const saga = new AsyncSaga(flashFirmware, { nextMessageId: createCountFunc() });
 
-        saga.setState({ settings: { flashCurrentProgram: false } as SettingsState });
+        saga.setState({ settings: { flashCurrentProgram: false } });
 
         // saga is triggered by this action
 
@@ -199,9 +197,7 @@ describe('flashFirmware', () => {
                 nextMessageId: createCountFunc(),
             });
 
-            saga.setState({
-                settings: { flashCurrentProgram: false } as SettingsState,
-            });
+            saga.setState({ settings: { flashCurrentProgram: false } });
 
             // saga is triggered by this action
 
@@ -332,9 +328,7 @@ describe('flashFirmware', () => {
                 nextMessageId: createCountFunc(),
             });
 
-            saga.setState({
-                settings: { flashCurrentProgram: false } as SettingsState,
-            });
+            saga.setState({ settings: { flashCurrentProgram: false } });
 
             // saga is triggered by this action
 
@@ -387,8 +381,8 @@ describe('flashFirmware', () => {
         const saga = new AsyncSaga(flashFirmware, { nextMessageId: createCountFunc() });
 
         saga.setState({
-            editor: { current: editor } as EditorState,
-            settings: { flashCurrentProgram: true } as SettingsState,
+            editor: { current: editor },
+            settings: { flashCurrentProgram: true },
         });
 
         // saga is triggered by this action
