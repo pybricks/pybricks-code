@@ -33,7 +33,7 @@ describe('Data receiver filters out hub status', () => {
         const saga = new AsyncSaga(terminal, { nextMessageId: createCountFunc() });
 
         // sending ASCII space character
-        saga.setState({ hub: { runtime: HubRuntimeState.Unknown } });
+        saga.updateState({ hub: { runtime: HubRuntimeState.Unknown } });
         saga.put(notify(new DataView(new Uint8Array([0x20]).buffer)));
 
         const action = await saga.take();
@@ -46,7 +46,7 @@ describe('Data receiver filters out hub status', () => {
     test('checksum message', async () => {
         const saga = new AsyncSaga(terminal, { nextMessageId: createCountFunc() });
 
-        saga.setState({ hub: { runtime: HubRuntimeState.Loading } });
+        saga.updateState({ hub: { runtime: HubRuntimeState.Loading } });
         saga.put(notify(new DataView(new Uint8Array([0xaa]).buffer)));
 
         const action = await saga.take();
@@ -60,7 +60,7 @@ describe('Data receiver filters out hub status', () => {
         const saga = new AsyncSaga(terminal, { nextMessageId: createCountFunc() });
 
         // '>>>> IDLE'
-        saga.setState({ hub: { runtime: HubRuntimeState.Unknown } });
+        saga.updateState({ hub: { runtime: HubRuntimeState.Unknown } });
         saga.put(
             notify(
                 new DataView(
@@ -92,7 +92,7 @@ describe('Data receiver filters out hub status', () => {
         const saga = new AsyncSaga(terminal, { nextMessageId: createCountFunc() });
 
         // '0>>>> IDLE1'
-        saga.setState({ hub: { runtime: HubRuntimeState.Unknown } });
+        saga.updateState({ hub: { runtime: HubRuntimeState.Unknown } });
         saga.put(
             notify(
                 new DataView(
@@ -136,7 +136,7 @@ describe('Data receiver filters out hub status', () => {
         const saga = new AsyncSaga(terminal, { nextMessageId: createCountFunc() });
 
         // '>>>> ERROR'
-        saga.setState({ hub: { runtime: HubRuntimeState.Unknown } });
+        saga.updateState({ hub: { runtime: HubRuntimeState.Unknown } });
         saga.put(
             notify(
                 new DataView(
@@ -169,7 +169,7 @@ describe('Data receiver filters out hub status', () => {
         const saga = new AsyncSaga(terminal, { nextMessageId: createCountFunc() });
 
         // '0>>>> ERROR1'
-        saga.setState({ hub: { runtime: HubRuntimeState.Unknown } });
+        saga.updateState({ hub: { runtime: HubRuntimeState.Unknown } });
         saga.put(
             notify(
                 new DataView(
@@ -214,7 +214,7 @@ describe('Data receiver filters out hub status', () => {
         const saga = new AsyncSaga(terminal, { nextMessageId: createCountFunc() });
 
         // '>>>> ERROR'
-        saga.setState({ hub: { runtime: HubRuntimeState.Unknown } });
+        saga.updateState({ hub: { runtime: HubRuntimeState.Unknown } });
         saga.put(
             notify(
                 new DataView(
@@ -249,7 +249,7 @@ describe('Data receiver filters out hub status', () => {
         const saga = new AsyncSaga(terminal, { nextMessageId: createCountFunc() });
 
         // '0>>>> RUNNING1'
-        saga.setState({ hub: { runtime: HubRuntimeState.Unknown } });
+        saga.updateState({ hub: { runtime: HubRuntimeState.Unknown } });
         saga.put(
             notify(
                 new DataView(

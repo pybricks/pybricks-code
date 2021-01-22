@@ -25,7 +25,7 @@ describe('downloadAndRun', () => {
         const saga = new AsyncSaga(hub, { nextMessageId: createCountFunc() });
 
         const mockEditor = mock<Ace.EditSession>();
-        saga.setState({ editor: { current: mockEditor } });
+        saga.updateState({ editor: { current: mockEditor } });
 
         saga.put(downloadAndRun());
 

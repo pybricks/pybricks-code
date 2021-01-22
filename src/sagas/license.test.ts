@@ -24,7 +24,7 @@ describe('fetchLicenses', () => {
 
         // initially, license list starts as null, so fetch is called to get
         // the list
-        saga.setState({ license: { list: null } });
+        saga.updateState({ license: { list: null } });
         saga.put(openLicenseDialog());
 
         const action = await saga.take();
@@ -42,7 +42,7 @@ describe('fetchLicenses', () => {
 
         // after we have the list, we don't fetch it again since it will
         // always be the same list
-        saga.setState({ license: { list: testLicenseList } });
+        saga.updateState({ license: { list: testLicenseList } });
         saga.put(openLicenseDialog());
 
         // have to yield to be sure fetch call would have taken place on error
@@ -56,7 +56,7 @@ describe('fetchLicenses', () => {
 
         jest.spyOn(globalThis, 'fetch').mockResolvedValue(failResponse);
 
-        saga.setState({ license: { list: null } });
+        saga.updateState({ license: { list: null } });
         saga.put(openLicenseDialog());
 
         const action = await saga.take();

@@ -76,7 +76,7 @@ describe('flashFirmware', () => {
                 nextMessageId: createCountFunc(),
             });
 
-            saga.setState({ settings: { flashCurrentProgram: false } });
+            saga.updateState({ settings: { flashCurrentProgram: false } });
 
             // saga is triggered by this action
 
@@ -87,7 +87,7 @@ describe('flashFirmware', () => {
             let action = await saga.take();
             expect(action).toEqual(connect());
 
-            saga.setState({
+            saga.updateState({
                 bootloader: { connection: BootloaderConnectionState.Connected },
             });
             saga.put(didConnect());
@@ -220,7 +220,7 @@ describe('flashFirmware', () => {
                 nextMessageId: createCountFunc(),
             });
 
-            saga.setState({ settings: { flashCurrentProgram: false } });
+            saga.updateState({ settings: { flashCurrentProgram: false } });
 
             // saga is triggered by this action
 
@@ -271,7 +271,7 @@ describe('flashFirmware', () => {
                 nextMessageId: createCountFunc(),
             });
 
-            saga.setState({ settings: { flashCurrentProgram: false } });
+            saga.updateState({ settings: { flashCurrentProgram: false } });
 
             // saga is triggered by this action
 
@@ -282,7 +282,7 @@ describe('flashFirmware', () => {
             let action = await saga.take();
             expect(action).toEqual(connect());
 
-            saga.setState({
+            saga.updateState({
                 bootloader: { connection: BootloaderConnectionState.Connected },
             });
             saga.put(didConnect());
@@ -296,7 +296,7 @@ describe('flashFirmware', () => {
 
             // hub disconnects before replying
 
-            saga.setState({
+            saga.updateState({
                 bootloader: { connection: BootloaderConnectionState.Disconnected },
             });
             saga.put(didDisconnect());
@@ -337,7 +337,7 @@ describe('flashFirmware', () => {
                 nextMessageId: createCountFunc(),
             });
 
-            saga.setState({ settings: { flashCurrentProgram: false } });
+            saga.updateState({ settings: { flashCurrentProgram: false } });
 
             // saga is triggered by this action
 
@@ -348,7 +348,7 @@ describe('flashFirmware', () => {
             let action = await saga.take();
             expect(action).toEqual(connect());
 
-            saga.setState({
+            saga.updateState({
                 bootloader: { connection: BootloaderConnectionState.Connected },
             });
             saga.put(didConnect());
@@ -402,7 +402,7 @@ describe('flashFirmware', () => {
                 nextMessageId: createCountFunc(),
             });
 
-            saga.setState({ settings: { flashCurrentProgram: false } });
+            saga.updateState({ settings: { flashCurrentProgram: false } });
 
             // saga is triggered by this action
 
@@ -413,7 +413,7 @@ describe('flashFirmware', () => {
             let action = await saga.take();
             expect(action).toEqual(connect());
 
-            saga.setState({
+            saga.updateState({
                 bootloader: { connection: BootloaderConnectionState.Connected },
             });
             saga.put(didConnect());
@@ -462,7 +462,7 @@ describe('flashFirmware', () => {
                 nextMessageId: createCountFunc(),
             });
 
-            saga.setState({ settings: { flashCurrentProgram: false } });
+            saga.updateState({ settings: { flashCurrentProgram: false } });
 
             // saga is triggered by this action
 
@@ -492,7 +492,7 @@ describe('flashFirmware', () => {
             action = await saga.take();
             expect(action).toEqual(connect());
 
-            saga.setState({
+            saga.updateState({
                 bootloader: { connection: BootloaderConnectionState.Connected },
             });
             saga.put(didConnect());
@@ -604,7 +604,7 @@ describe('flashFirmware', () => {
                 nextMessageId: createCountFunc(),
             });
 
-            saga.setState({
+            saga.updateState({
                 bootloader: { connection: BootloaderConnectionState.Disconnected },
                 settings: { flashCurrentProgram: false },
             });
@@ -652,7 +652,7 @@ describe('flashFirmware', () => {
                 nextMessageId: createCountFunc(),
             });
 
-            saga.setState({
+            saga.updateState({
                 bootloader: { connection: BootloaderConnectionState.Disconnected },
                 settings: { flashCurrentProgram: false },
             });
@@ -699,7 +699,7 @@ describe('flashFirmware', () => {
                 nextMessageId: createCountFunc(),
             });
 
-            saga.setState({ settings: { flashCurrentProgram: false } });
+            saga.updateState({ settings: { flashCurrentProgram: false } });
 
             // saga is triggered by this action
 
@@ -722,7 +722,7 @@ describe('flashFirmware', () => {
 
             // this triggers a failure
 
-            saga.setState({
+            saga.updateState({
                 bootloader: { connection: BootloaderConnectionState.Disconnected },
             });
 
@@ -760,7 +760,7 @@ describe('flashFirmware', () => {
                 nextMessageId: createCountFunc(),
             });
 
-            saga.setState({ settings: { flashCurrentProgram: false } });
+            saga.updateState({ settings: { flashCurrentProgram: false } });
 
             // saga is triggered by this action
 
@@ -781,7 +781,7 @@ describe('flashFirmware', () => {
                 }
             `);
 
-            saga.setState({
+            saga.updateState({
                 bootloader: { connection: BootloaderConnectionState.Disconnected },
             });
 
@@ -822,7 +822,7 @@ describe('flashFirmware', () => {
                 nextMessageId: createCountFunc(),
             });
 
-            saga.setState({ settings: { flashCurrentProgram: false } });
+            saga.updateState({ settings: { flashCurrentProgram: false } });
 
             // saga is triggered by this action
 
@@ -843,7 +843,7 @@ describe('flashFirmware', () => {
                 }
             `);
 
-            saga.setState({
+            saga.updateState({
                 bootloader: { connection: BootloaderConnectionState.Disconnected },
             });
 
@@ -894,7 +894,7 @@ describe('flashFirmware', () => {
 
         const saga = new AsyncSaga(flashFirmware, { nextMessageId: createCountFunc() });
 
-        saga.setState({
+        saga.updateState({
             editor: { current: editor },
             settings: { flashCurrentProgram: true },
         });
@@ -908,7 +908,7 @@ describe('flashFirmware', () => {
         let action = await saga.take();
         expect(action).toEqual(connect());
 
-        saga.setState({
+        saga.updateState({
             bootloader: { connection: BootloaderConnectionState.Connected },
         });
         saga.put(didConnect());

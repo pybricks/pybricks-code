@@ -220,7 +220,7 @@ describe('store settings to local storage', () => {
                 throw testError;
             });
 
-        saga.setState({ settings: { showDocs: false } });
+        saga.updateState({ settings: { showDocs: false } });
         saga.put(setBoolean(SettingId.ShowDocs, true));
         expect(mockSetItem).toHaveBeenCalled();
 
@@ -245,7 +245,7 @@ describe('store settings to local storage', () => {
                 expect(value).toBe('true');
             });
 
-        saga.setState({ settings: { showDocs: false } });
+        saga.updateState({ settings: { showDocs: false } });
         saga.put(setBoolean(SettingId.ShowDocs, true));
         expect(mockSetItem).toHaveBeenCalled();
 
@@ -265,7 +265,7 @@ describe('store settings to local storage', () => {
                 expect(value).toBe('false');
             });
 
-        saga.setState({ settings: { darkMode: true } });
+        saga.updateState({ settings: { darkMode: true } });
         saga.put(setBoolean(SettingId.DarkMode, false));
         expect(mockSetItem).toHaveBeenCalled();
 
@@ -285,7 +285,7 @@ describe('store settings to local storage', () => {
                 expect(value).toBe('false');
             });
 
-        saga.setState({ settings: { flashCurrentProgram: true } });
+        saga.updateState({ settings: { flashCurrentProgram: true } });
         saga.put(setBoolean(SettingId.FlashCurrentProgram, false));
         expect(mockSetItem).toHaveBeenCalled();
 

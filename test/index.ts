@@ -67,8 +67,8 @@ export class AsyncSaga {
         return Promise.resolve(next);
     }
 
-    public setState(state: RecursivePartial<RootState>): void {
-        this.state = state;
+    public updateState(state: RecursivePartial<RootState>): void {
+        this.state = { ...this.state, ...state };
     }
 
     public async end(): Promise<void> {

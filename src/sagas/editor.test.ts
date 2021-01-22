@@ -15,7 +15,7 @@ test('open', async () => {
     const mockEditor = mock<Ace.EditSession>();
     const data = new Uint8Array().buffer;
 
-    saga.setState({ editor: { current: mockEditor } });
+    saga.updateState({ editor: { current: mockEditor } });
     saga.put(open(data));
 
     expect(mockEditor.setValue).toBeCalled();
@@ -27,7 +27,7 @@ test('saveAs', async () => {
     const saga = new AsyncSaga(editor);
     const mockEditor = mock<Ace.EditSession>();
 
-    saga.setState({ editor: { current: mockEditor } });
+    saga.updateState({ editor: { current: mockEditor } });
     saga.put(saveAs());
 
     expect(mockEditor.getValue).toBeCalled();
@@ -39,7 +39,7 @@ test('reloadProgram', async () => {
     const saga = new AsyncSaga(editor);
     const mockEditor = mock<Ace.EditSession>();
 
-    saga.setState({ editor: { current: mockEditor } });
+    saga.updateState({ editor: { current: mockEditor } });
     saga.put(reloadProgram());
 
     expect(mockEditor.setValue).toHaveBeenCalled();
