@@ -16,11 +16,15 @@ export class AsyncSaga {
     private state: RecursivePartial<RootState>;
     private task: Task;
 
-    public constructor(saga: Saga, context?: Record<string, unknown>) {
+    public constructor(
+        saga: Saga,
+        state: RecursivePartial<RootState> = {},
+        context?: Record<string, unknown>,
+    ) {
         this.channel = stdChannel();
         this.dispatches = [];
         this.takers = [];
-        this.state = {};
+        this.state = state;
         this.task = runSaga(
             {
                 channel: this.channel,

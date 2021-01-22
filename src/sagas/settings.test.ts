@@ -210,7 +210,7 @@ describe('startup', () => {
 
 describe('store settings to local storage', () => {
     test('failed storage', async () => {
-        const saga = new AsyncSaga(settings);
+        const saga = new AsyncSaga(settings, { settings: { showDocs: false } });
 
         const testError = new Error('local storage is disabled');
 
@@ -220,7 +220,6 @@ describe('store settings to local storage', () => {
                 throw testError;
             });
 
-        saga.updateState({ settings: { showDocs: false } });
         saga.put(setBoolean(SettingId.ShowDocs, true));
         expect(mockSetItem).toHaveBeenCalled();
 
@@ -236,7 +235,7 @@ describe('store settings to local storage', () => {
     });
 
     test('showDocs', async () => {
-        const saga = new AsyncSaga(settings);
+        const saga = new AsyncSaga(settings, { settings: { showDocs: false } });
 
         const mockSetItem = jest
             .spyOn(Object.getPrototypeOf(window.localStorage), 'setItem')
@@ -245,7 +244,6 @@ describe('store settings to local storage', () => {
                 expect(value).toBe('true');
             });
 
-        saga.updateState({ settings: { showDocs: false } });
         saga.put(setBoolean(SettingId.ShowDocs, true));
         expect(mockSetItem).toHaveBeenCalled();
 
@@ -256,7 +254,7 @@ describe('store settings to local storage', () => {
     });
 
     test('darkMode', async () => {
-        const saga = new AsyncSaga(settings);
+        const saga = new AsyncSaga(settings, { settings: { darkMode: true } });
 
         const mockSetItem = jest
             .spyOn(Object.getPrototypeOf(window.localStorage), 'setItem')
@@ -265,7 +263,6 @@ describe('store settings to local storage', () => {
                 expect(value).toBe('false');
             });
 
-        saga.updateState({ settings: { darkMode: true } });
         saga.put(setBoolean(SettingId.DarkMode, false));
         expect(mockSetItem).toHaveBeenCalled();
 
@@ -276,7 +273,9 @@ describe('store settings to local storage', () => {
     });
 
     test('flashCurrentProgram', async () => {
-        const saga = new AsyncSaga(settings);
+        const saga = new AsyncSaga(settings, {
+            settings: { flashCurrentProgram: true },
+        });
 
         const mockSetItem = jest
             .spyOn(Object.getPrototypeOf(window.localStorage), 'setItem')
@@ -285,7 +284,6 @@ describe('store settings to local storage', () => {
                 expect(value).toBe('false');
             });
 
-        saga.updateState({ settings: { flashCurrentProgram: true } });
         saga.put(setBoolean(SettingId.FlashCurrentProgram, false));
         expect(mockSetItem).toHaveBeenCalled();
 

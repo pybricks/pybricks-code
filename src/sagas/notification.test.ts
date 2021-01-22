@@ -50,7 +50,7 @@ test.each([
         clear,
     };
 
-    const saga = new AsyncSaga(notification, { notification: { toaster } });
+    const saga = new AsyncSaga(notification, {}, { notification: { toaster } });
 
     saga.put(action);
 
@@ -78,7 +78,7 @@ test.each([
         clear,
     };
 
-    const saga = new AsyncSaga(notification, { notification: { toaster } });
+    const saga = new AsyncSaga(notification, {}, { notification: { toaster } });
 
     saga.put(action);
 
@@ -105,7 +105,7 @@ test.each([[didCompile(new Uint8Array()), MessageId.MpyError]])(
             clear,
         };
 
-        const saga = new AsyncSaga(notification, { notification: { toaster } });
+        const saga = new AsyncSaga(notification, {}, { notification: { toaster } });
 
         saga.put(action);
 

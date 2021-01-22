@@ -16,7 +16,7 @@ afterAll(() => {
 describe('fetchLicenses', () => {
     test('first call', async () => {
         const testLicenseList: LicenseList = [];
-        const saga = new AsyncSaga(license);
+        const saga = new AsyncSaga(license, { license: { list: null } });
 
         jest.spyOn(globalThis, 'fetch').mockResolvedValue(
             new Response(JSON.stringify(testLicenseList)),
@@ -24,7 +24,6 @@ describe('fetchLicenses', () => {
 
         // initially, license list starts as null, so fetch is called to get
         // the list
-        saga.updateState({ license: { list: null } });
         saga.put(openLicenseDialog());
 
         const action = await saga.take();
@@ -34,7 +33,7 @@ describe('fetchLicenses', () => {
     });
     test('second call', async () => {
         const testLicenseList: LicenseList = [];
-        const saga = new AsyncSaga(license);
+        const saga = new AsyncSaga(license, { license: { list: testLicenseList } });
 
         jest.spyOn(globalThis, 'fetch').mockRejectedValue(
             'fetch () should not have been called',
@@ -42,7 +41,6 @@ describe('fetchLicenses', () => {
 
         // after we have the list, we don't fetch it again since it will
         // always be the same list
-        saga.updateState({ license: { list: testLicenseList } });
         saga.put(openLicenseDialog());
 
         // have to yield to be sure fetch call would have taken place on error
@@ -52,11 +50,10 @@ describe('fetchLicenses', () => {
     });
     test('failed fetch', async () => {
         const failResponse = new Response(undefined, { status: 404 });
-        const saga = new AsyncSaga(license);
+        const saga = new AsyncSaga(license, { license: { list: null } });
 
         jest.spyOn(globalThis, 'fetch').mockResolvedValue(failResponse);
 
-        saga.updateState({ license: { list: null } });
         saga.put(openLicenseDialog());
 
         const action = await saga.take();

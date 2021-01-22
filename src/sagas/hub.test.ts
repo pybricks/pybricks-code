@@ -22,10 +22,12 @@ jest.mock('ace-builds');
 
 describe('downloadAndRun', () => {
     test('no errors', async () => {
-        const saga = new AsyncSaga(hub, { nextMessageId: createCountFunc() });
-
         const mockEditor = mock<Ace.EditSession>();
-        saga.updateState({ editor: { current: mockEditor } });
+        const saga = new AsyncSaga(
+            hub,
+            { editor: { current: mockEditor } },
+            { nextMessageId: createCountFunc() },
+        );
 
         saga.put(downloadAndRun());
 
@@ -76,7 +78,7 @@ describe('downloadAndRun', () => {
 });
 
 test('repl', async () => {
-    const saga = new AsyncSaga(hub, { nextMessageId: createCountFunc() });
+    const saga = new AsyncSaga(hub, {}, { nextMessageId: createCountFunc() });
 
     saga.put(repl());
 
@@ -87,7 +89,7 @@ test('repl', async () => {
 });
 
 test('stop', async () => {
-    const saga = new AsyncSaga(hub, { nextMessageId: createCountFunc() });
+    const saga = new AsyncSaga(hub, {}, { nextMessageId: createCountFunc() });
 
     saga.put(stop());
 
