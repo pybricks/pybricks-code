@@ -16,11 +16,15 @@ export class AsyncSaga {
     private state: RecursivePartial<RootState>;
     private task: Task;
 
-    public constructor(saga: Saga, context?: Record<string, unknown>) {
+    public constructor(
+        saga: Saga,
+        state: RecursivePartial<RootState> = {},
+        context?: Record<string, unknown>,
+    ) {
         this.channel = stdChannel();
         this.dispatches = [];
         this.takers = [];
-        this.state = {};
+        this.state = state;
         this.task = runSaga(
             {
                 channel: this.channel,
@@ -67,8 +71,11 @@ export class AsyncSaga {
         return Promise.resolve(next);
     }
 
-    public setState(state: RecursivePartial<RootState>): void {
-        this.state = state;
+    public updateState(state: RecursivePartial<RootState>): void {
+        for (const key of Object.keys(state) as Array<keyof RootState>) {
+            // @ts-expect-error: writing to readonly for testing
+            this.state[key] = { ...this.state[key], ...state[key] };
+        }
     }
 
     public async end(): Promise<void> {

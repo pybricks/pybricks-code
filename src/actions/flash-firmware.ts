@@ -11,10 +11,8 @@ import { assert } from '../utils';
 export enum FlashFirmwareActionType {
     /** Request to flash new firmware to the device. */
     FlashFirmware = 'flashFirmware.action.flashFirmware',
-    /** Flashing started. */
+    /** Actual modification of the flash memory on the device started. */
     DidStart = 'flashFirmware.action.didStart',
-    /** Flashing was not able to start. */
-    DidFailToStart = 'flashFirmware.action.didFailStart',
     /** Firmware flash progress. */
     DidProgress = 'flashFirmware.action.didProgress',
     /** Flashing finished successfully. */
@@ -37,84 +35,49 @@ export enum HubError {
 }
 
 function isHubError(arg: unknown): arg is HubError {
-    if (typeof arg !== 'string') {
-        return false;
-    }
-    return Object.keys(HubError).includes(arg);
+    return Object.values(HubError).includes(arg as HubError);
 }
-
-type Reason<T> = {
-    reason: T;
-};
-
-export enum FailToStartReasonType {
-    /** Connecting to the hub failed. */
-    FailedToConnect = 'flashFirmware.failToStart.reason.failedToConnect',
-    /** The is no firmware available that matches the connected hub. */
-    NoFirmware = 'flashFirmware.failToStart.reason.noFirmware',
-    /** The provided firmware.zip does not match the connected hub. */
-    DeviceMismatch = 'flashFirmware.failToStart.reason.deviceMismatch',
-    /** There was a problem with the zip file. */
-    ZipError = 'flashFirmware.failToStart.reason.zipError',
-    /** Metadata property is missing or invalid. */
-    BadMetadata = 'flashFirmware.failToStart.reason.badMetadata',
-    /** The main.py file failed to compile. */
-    FailedToCompile = 'flashFirmware.failToStart.reason.failedToCompile',
-    /** The combined firmware-base.bin and main.mpy are too big. */
-    FirmwareSize = 'flashFirmware.failToStart.reason.firmwareSize',
-    /** An unexpected error occurred. */
-    Unknown = 'flashFirmware.failToStart.reason.unknown',
-}
-
-export type FailToStartReasonFailedToConnect = Reason<FailToStartReasonType.FailedToConnect>;
-
-export type FailToStartReasonNoFirmware = Reason<FailToStartReasonType.NoFirmware>;
-
-export type FailToStartReasonDeviceMismatch = Reason<FailToStartReasonType.DeviceMismatch>;
-
-export type FailToStartReasonZipError = Reason<FailToStartReasonType.ZipError> & {
-    err: FirmwareReaderError;
-};
-
-export type FailToStartReasonBadMetadata = Reason<FailToStartReasonType.BadMetadata> & {
-    property: keyof FirmwareMetadata;
-    problem: MetadataProblem;
-};
-
-export type FailToStartReasonFirmwareSize = Reason<FailToStartReasonType.FirmwareSize>;
-
-export type FailToStartReasonFailedToCompile = Reason<FailToStartReasonType.FailedToCompile>;
-
-export type FailToStartReasonUnknown = Reason<FailToStartReasonType.Unknown> & {
-    err: Error;
-};
-
-export type FailToStartReason =
-    | FailToStartReasonFailedToConnect
-    | FailToStartReasonNoFirmware
-    | FailToStartReasonDeviceMismatch
-    | FailToStartReasonZipError
-    | FailToStartReasonBadMetadata
-    | FailToStartReasonFirmwareSize
-    | FailToStartReasonFailedToCompile
-    | FailToStartReasonUnknown;
 
 export enum FailToFinishReasonType {
-    /** Waiting for a response from the hub took too long. */
+    /** Connecting to the hub failed. */
+    FailedToConnect = 'flashFirmware.failToFinish.reason.failedToConnect',
+    /** The hub connection timed out. */
     TimedOut = 'flashFirmware.failToFinish.reason.timedOut',
     /** Something went wrong with the BLE connection. */
     BleError = 'flashFirmware.failToFinish.reason.bleError',
-    /** The BLE connection was lost before flashing completed. */
+    /** The hub was disconnected. */
     Disconnected = 'flashFirmware.failToFinish.reason.disconnected',
     /** The hub sent a response indicating a problem. */
     HubError = 'flashFirmware.failToFinish.reason.hubError',
+    /** The is no firmware available that matches the connected hub. */
+    NoFirmware = 'flashFirmware.failToFinish.reason.noFirmware',
+    /** The provided firmware.zip does not match the connected hub. */
+    DeviceMismatch = 'flashFirmware.failToFinish.reason.deviceMismatch',
+    /** Failed to fetch firmware from the server. */
+    FailedToFetch = 'flashFirmware.failToFinish.reason.failedToFetch',
+    /** There was a problem with the zip file. */
+    ZipError = 'flashFirmware.failToFinish.reason.zipError',
+    /** Metadata property is missing or invalid. */
+    BadMetadata = 'flashFirmware.failToFinish.reason.badMetadata',
+    /** The main.py file failed to compile. */
+    FailedToCompile = 'flashFirmware.failToFinish.reason.failedToCompile',
+    /** The combined firmware-base.bin and main.mpy are too big. */
+    FirmwareSize = 'flashFirmware.failToFinish.reason.firmwareSize',
     /** An unexpected error occurred. */
     Unknown = 'flashFirmware.failToFinish.reason.unknown',
 }
 
+type Reason<T extends FailToFinishReasonType> = {
+    reason: T;
+};
+
+export type FailToFinishReasonFailedToConnect = Reason<FailToFinishReasonType.FailedToConnect>;
+
 export type FailToFinishReasonTimedOut = Reason<FailToFinishReasonType.TimedOut>;
 
-export type FailToFinishReasonBleError = Reason<FailToFinishReasonType.BleError>;
+export type FailToFinishReasonBleError = Reason<FailToFinishReasonType.BleError> & {
+    err: Error;
+};
 
 export type FailToFinishReasonDisconnected = Reason<FailToFinishReasonType.Disconnected>;
 
@@ -122,15 +85,44 @@ export type FailToFinishReasonHubError = Reason<FailToFinishReasonType.HubError>
     hubError: HubError;
 };
 
+export type FailToFinishReasonNoFirmware = Reason<FailToFinishReasonType.NoFirmware>;
+
+export type FailToFinishReasonDeviceMismatch = Reason<FailToFinishReasonType.DeviceMismatch>;
+
+export type FailToFinishReasonFailedToFetch = Reason<FailToFinishReasonType.FailedToFetch> & {
+    response: Response;
+};
+
+export type FailToFinishReasonZipError = Reason<FailToFinishReasonType.ZipError> & {
+    err: FirmwareReaderError;
+};
+
+export type FailToFinishReasonBadMetadata = Reason<FailToFinishReasonType.BadMetadata> & {
+    property: keyof FirmwareMetadata;
+    problem: MetadataProblem;
+};
+
+export type FailToFinishReasonFirmwareSize = Reason<FailToFinishReasonType.FirmwareSize>;
+
+export type FailToFinishReasonFailedToCompile = Reason<FailToFinishReasonType.FailedToCompile>;
+
 export type FailToFinishReasonUnknown = Reason<FailToFinishReasonType.Unknown> & {
     err: Error;
 };
 
 export type FailToFinishReason =
+    | FailToFinishReasonFailedToConnect
     | FailToFinishReasonTimedOut
     | FailToFinishReasonBleError
     | FailToFinishReasonDisconnected
     | FailToFinishReasonHubError
+    | FailToFinishReasonNoFirmware
+    | FailToFinishReasonDeviceMismatch
+    | FailToFinishReasonFailedToFetch
+    | FailToFinishReasonZipError
+    | FailToFinishReasonBadMetadata
+    | FailToFinishReasonFirmwareSize
+    | FailToFinishReasonFailedToCompile
     | FailToFinishReasonUnknown;
 
 /**
@@ -158,94 +150,6 @@ export type FlashFirmwareDidStartAction = Action<FlashFirmwareActionType.DidStar
  */
 export function didStart(): FlashFirmwareDidStartAction {
     return { type: FlashFirmwareActionType.DidStart };
-}
-
-/** Action that indicates flashing did not start because of an error. */
-export type FlashFirmwareDidFailToStartAction = Action<FlashFirmwareActionType.DidFailToStart> & {
-    reason: FailToStartReason;
-};
-
-export function didFailToStart(
-    reason: FailToStartReasonType.ZipError,
-    err: FirmwareReaderError,
-): FlashFirmwareDidFailToStartAction;
-
-export function didFailToStart(
-    reason: FailToStartReasonType.BadMetadata,
-    property: keyof FirmwareMetadata,
-    problem: MetadataProblem,
-): FlashFirmwareDidFailToStartAction;
-
-export function didFailToStart(
-    reason: FailToStartReasonType.Unknown,
-    err: Error,
-): FlashFirmwareDidFailToStartAction;
-
-export function didFailToStart(
-    reason: Exclude<
-        FailToStartReasonType,
-        | FailToStartReasonType.ZipError
-        | FailToStartReasonType.BadMetadata
-        | FailToStartReasonType.Unknown
-    >,
-): FlashFirmwareDidFailToStartAction;
-
-/**
- * Action that indicates flashing did not start because of an error.
- * @param total The total number of bytes to be flashed.
- */
-export function didFailToStart(
-    reason: FailToStartReasonType,
-    arg1?: string | Error,
-    arg2?: MetadataProblem,
-): FlashFirmwareDidFailToStartAction {
-    if (reason === FailToStartReasonType.ZipError) {
-        // istanbul ignore if: programmer error give wrong arg
-        if (!(arg1 instanceof FirmwareReaderError)) {
-            throw new Error('missing or invalid err');
-        }
-        return {
-            type: FlashFirmwareActionType.DidFailToStart,
-            reason: { reason, err: arg1 },
-        };
-    }
-
-    if (reason === FailToStartReasonType.BadMetadata) {
-        // istanbul ignore if: programmer error give wrong arg
-        if (
-            arg1 !== 'metadata-version' &&
-            arg1 !== 'firmware-version' &&
-            arg1 !== 'device-id' &&
-            arg1 !== 'checksum-type' &&
-            arg1 !== 'mpy-abi-version' &&
-            arg1 !== 'mpy-cross-options' &&
-            arg1 !== 'user-mpy-offset' &&
-            arg1 !== 'max-firmware-size'
-        ) {
-            throw new Error('missing or invalid property');
-        }
-        // istanbul ignore if: programmer error give wrong arg
-        if (arg2 === undefined) {
-            throw new Error('missing or invalid problem');
-        }
-        return {
-            type: FlashFirmwareActionType.DidFailToStart,
-            reason: { reason, property: arg1, problem: arg2 },
-        };
-    }
-
-    if (reason === FailToStartReasonType.Unknown) {
-        // istanbul ignore if: programmer error give wrong arg
-        if (!(arg1 instanceof Error)) {
-            throw new Error('missing or invalid err');
-        }
-        return {
-            type: FlashFirmwareActionType.DidFailToStart,
-            reason: { reason, err: arg1 },
-        };
-    }
-
-    return { type: FlashFirmwareActionType.DidFailToStart, reason: { reason } };
 }
 
 /** Action that indicates current firmware flashing progress. */
@@ -277,8 +181,29 @@ export type FlashFirmwareDidFailToFinishAction = Action<FlashFirmwareActionType.
 };
 
 export function didFailToFinish(
+    reason: FailToFinishReasonType.BleError,
+    err: Error,
+): FlashFirmwareDidFailToFinishAction;
+
+export function didFailToFinish(
     reason: FailToFinishReasonType.HubError,
     hubError: HubError,
+): FlashFirmwareDidFailToFinishAction;
+
+export function didFailToFinish(
+    reason: FailToFinishReasonType.FailedToFetch,
+    response: Response,
+): FlashFirmwareDidFailToFinishAction;
+
+export function didFailToFinish(
+    reason: FailToFinishReasonType.ZipError,
+    err: FirmwareReaderError,
+): FlashFirmwareDidFailToFinishAction;
+
+export function didFailToFinish(
+    reason: FailToFinishReasonType.BadMetadata,
+    property: keyof FirmwareMetadata,
+    problem: MetadataProblem,
 ): FlashFirmwareDidFailToFinishAction;
 
 export function didFailToFinish(
@@ -289,23 +214,89 @@ export function didFailToFinish(
 export function didFailToFinish(
     reason: Exclude<
         FailToFinishReasonType,
-        FailToFinishReasonType.HubError | FailToFinishReasonType.Unknown
+        | FailToFinishReasonType.BleError
+        | FailToFinishReasonType.HubError
+        | FailToFinishReasonType.FailedToFetch
+        | FailToFinishReasonType.ZipError
+        | FailToFinishReasonType.BadMetadata
+        | FailToFinishReasonType.Unknown
     >,
 ): FlashFirmwareDidFailToFinishAction;
 
-/** Action that indicates that flashing failed. */
+/**
+ * Action that indicates flashing did not start because of an error.
+ * @param total The total number of bytes to be flashed.
+ */
 export function didFailToFinish(
     reason: FailToFinishReasonType,
-    arg1?: HubError | Error,
+    arg1?: string | HubError | Error | Response,
+    arg2?: MetadataProblem,
 ): FlashFirmwareDidFailToFinishAction {
-    if (reason === FailToFinishReasonType.HubError) {
+    if (reason === FailToFinishReasonType.BleError) {
         // istanbul ignore if: programmer error give wrong arg
-        if (!isHubError(arg1)) {
+        if (!(arg1 instanceof Error)) {
             throw new Error('missing or invalid err');
         }
         return {
             type: FlashFirmwareActionType.DidFailToFinish,
+            reason: { reason, err: arg1 },
+        };
+    }
+
+    if (reason === FailToFinishReasonType.HubError) {
+        // istanbul ignore if: programmer error give wrong arg
+        if (!isHubError(arg1)) {
+            throw new Error('missing or invalid hubError');
+        }
+        return {
+            type: FlashFirmwareActionType.DidFailToFinish,
             reason: { reason, hubError: arg1 },
+        };
+    }
+
+    if (reason === FailToFinishReasonType.FailedToFetch) {
+        // istanbul ignore if: programmer error give wrong arg
+        if (!(arg1 instanceof Response)) {
+            throw new Error('missing or invalid response');
+        }
+        return {
+            type: FlashFirmwareActionType.DidFailToFinish,
+            reason: { reason, response: arg1 },
+        };
+    }
+
+    if (reason === FailToFinishReasonType.ZipError) {
+        // istanbul ignore if: programmer error give wrong arg
+        if (!(arg1 instanceof FirmwareReaderError)) {
+            throw new Error('missing or invalid err');
+        }
+        return {
+            type: FlashFirmwareActionType.DidFailToFinish,
+            reason: { reason, err: arg1 },
+        };
+    }
+
+    if (reason === FailToFinishReasonType.BadMetadata) {
+        // istanbul ignore if: programmer error give wrong arg
+        if (
+            arg1 !== 'metadata-version' &&
+            arg1 !== 'firmware-version' &&
+            arg1 !== 'device-id' &&
+            arg1 !== 'checksum-type' &&
+            arg1 !== 'mpy-abi-version' &&
+            arg1 !== 'mpy-cross-options' &&
+            arg1 !== 'user-mpy-offset' &&
+            arg1 !== 'max-firmware-size'
+        ) {
+            throw new Error('missing or invalid property');
+        }
+        // istanbul ignore if: programmer error give wrong arg
+        if (arg2 === undefined) {
+            throw new Error('missing or invalid problem');
+        }
+        return {
+            type: FlashFirmwareActionType.DidFailToFinish,
+            reason: { reason, property: arg1, problem: arg2 },
         };
     }
 
@@ -329,7 +320,6 @@ export function didFailToFinish(
 export type FlashFirmwareAction =
     | FlashFirmwareFlashAction
     | FlashFirmwareDidStartAction
-    | FlashFirmwareDidFailToStartAction
     | FlashFirmwareDidProgressAction
     | FlashFirmwareDidFinishAction
     | FlashFirmwareDidFailToFinishAction;

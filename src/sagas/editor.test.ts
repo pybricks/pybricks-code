@@ -11,11 +11,10 @@ jest.mock('ace-builds');
 jest.mock('file-saver');
 
 test('open', async () => {
-    const saga = new AsyncSaga(editor);
     const mockEditor = mock<Ace.EditSession>();
-    const data = new Uint8Array().buffer;
+    const saga = new AsyncSaga(editor, { editor: { current: mockEditor } });
 
-    saga.setState({ editor: { current: mockEditor } });
+    const data = new Uint8Array().buffer;
     saga.put(open(data));
 
     expect(mockEditor.setValue).toBeCalled();
@@ -24,10 +23,9 @@ test('open', async () => {
 });
 
 test('saveAs', async () => {
-    const saga = new AsyncSaga(editor);
     const mockEditor = mock<Ace.EditSession>();
+    const saga = new AsyncSaga(editor, { editor: { current: mockEditor } });
 
-    saga.setState({ editor: { current: mockEditor } });
     saga.put(saveAs());
 
     expect(mockEditor.getValue).toBeCalled();
@@ -36,10 +34,9 @@ test('saveAs', async () => {
 });
 
 test('reloadProgram', async () => {
-    const saga = new AsyncSaga(editor);
     const mockEditor = mock<Ace.EditSession>();
+    const saga = new AsyncSaga(editor, { editor: { current: mockEditor } });
 
-    saga.setState({ editor: { current: mockEditor } });
     saga.put(reloadProgram());
 
     expect(mockEditor.setValue).toHaveBeenCalled();

@@ -13,6 +13,20 @@
             "action": "Reload"
         }
     },
+    "flashFirmware": {
+        "timedOut": "The hub took too long to respond. Restart the hub and try again.",
+        "bleError": "There was a problem with Bluetooth.",
+        "disconnected": "The hub was disconnected before flashing was completed. Restart the hub and try again.",
+        "hubError": "The hub said something went wrong.",
+        "unsupportedDevice": "The connected hub is not supported.",
+        "deviceMismatch": "The firmware is for a different kind of hub from the connected hub.",
+        "failToFetch": "Failed to fetch firmware from the server: {status}",
+        "badZipFile": "The firmware.zip file is missing required files or is corrupt.",
+        "badMetadata": "The firmware.metadata.py file contains missing or invalid entries. Fix it then try again.",
+        "compileError": "The included main.py file could not be compiled. Fix it then try again.",
+        "sizeTooBig": "The combined firmware and main.py are too big to fit in the flash memory.",
+        "unexpectedError": "Unexpected error while trying to flash firmware: {errorMessage}"
+    },
     "mpy": {
         "error": "{errorMessage}"
     },

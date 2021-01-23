@@ -20,19 +20,20 @@ import {
 } from 'typed-redux-saga/macro';
 import { Action } from '../actions';
 import {
-    FailToStartReasonType,
+    FailToFinishReasonType,
     FlashFirmwareActionType,
     FlashFirmwareFlashAction,
-    didFailToStart,
+    HubError,
+    MetadataProblem,
+    didFailToFinish,
     didFinish,
     didProgress,
     didStart,
 } from '../actions/flash-firmware';
 import {
     BootloaderChecksumResponseAction,
+    BootloaderConnectionAction,
     BootloaderConnectionActionType,
-    BootloaderConnectionDidConnectAction,
-    BootloaderConnectionDidFailToConnectAction,
     BootloaderDidRequestAction,
     BootloaderDidRequestType,
     BootloaderEraseResponseAction,
@@ -44,7 +45,7 @@ import {
     BootloaderResponseActionType,
     checksumRequest,
     connect,
-    disconnectRequest,
+    disconnect,
     eraseRequest,
     infoRequest,
     initRequest,
@@ -57,9 +58,9 @@ import {
     MpyDidFailToCompileAction,
     compile,
 } from '../actions/mpy';
-import * as notification from '../actions/notification';
-import { MaxProgramFlashSize } from '../protocols/lwp3-bootloader';
+import { MaxProgramFlashSize, Result } from '../protocols/lwp3-bootloader';
 import { RootState } from '../reducers';
+import { BootloaderConnectionState } from '../reducers/bootloader';
 import { defined, maybe } from '../utils';
 import { fmod, sumComplement32 } from '../utils/math';
 
@@ -69,10 +70,30 @@ const firmwareZipMap = new Map<HubType, string>([
     [HubType.MoveHub, moveHubZip],
 ]);
 
+/**
+ * Disconnects the BLE if we are connected and cancels the task (including the
+ * parent task).
+ */
+function* disconnectAndCancel(): SagaGenerator<void> {
+    const connection = yield* select((s: RootState) => s.bootloader.connection);
+
+    if (connection === BootloaderConnectionState.Connected) {
+        yield* put(disconnect());
+    }
+
+    yield* cancel();
+}
+
 function* waitForDidRequest(id: number): SagaGenerator<BootloaderDidRequestAction> {
-    return yield* take<BootloaderDidRequestAction>(
+    const request = yield* take<BootloaderDidRequestAction>(
         (a: Action) => a.type === BootloaderDidRequestType && a.id === id,
     );
+    if (request.err) {
+        yield* put(didFailToFinish(FailToFinishReasonType.BleError, request.err));
+        yield* disconnectAndCancel();
+    }
+
+    return request;
 }
 
 /**
@@ -84,16 +105,34 @@ function* waitForDidRequest(id: number): SagaGenerator<BootloaderDidRequestActio
 function* waitForResponse<T extends BootloaderResponseAction>(
     type: BootloaderResponseActionType,
     timeout = 500,
-): SagaGenerator<{
-    response?: T;
-    error?: BootloaderErrorResponseAction;
-    timeout?: boolean;
-}> {
-    return yield* race({
+): SagaGenerator<T> {
+    const { response, error, disconnected, timedOut } = yield* race({
         response: take<T>(type),
         error: take<BootloaderErrorResponseAction>(BootloaderResponseActionType.Error),
-        timeout: delay(timeout),
+        disconnected: take(BootloaderConnectionActionType.DidDisconnect),
+        timedOut: delay(timeout),
     });
+
+    if (timedOut) {
+        yield* put(didFailToFinish(FailToFinishReasonType.TimedOut));
+        yield* disconnectAndCancel();
+    }
+
+    if (error) {
+        yield* put(
+            didFailToFinish(FailToFinishReasonType.HubError, HubError.UnknownCommand),
+        );
+        yield* disconnectAndCancel();
+    }
+
+    if (disconnected) {
+        yield* put(didFailToFinish(FailToFinishReasonType.Disconnected));
+        yield* disconnectAndCancel();
+    }
+
+    defined(response);
+
+    return response;
 }
 
 function* firmwareIterator(data: DataView, maxSize: number): Generator<number> {
@@ -108,7 +147,8 @@ function* firmwareIterator(data: DataView, maxSize: number): Generator<number> {
 }
 
 /**
- * Loads Pybricks firmware from a .zip file
+ * Loads Pybricks firmware from a .zip file.
+ *
  * @param data The zip file raw data
  * @param program User program or `undefined` to use main.py from firmware.zip
  */
@@ -121,11 +161,11 @@ function* loadFirmware(
     if (readerErr) {
         // istanbul ignore else: unexpected error
         if (readerErr instanceof FirmwareReaderError) {
-            yield* put(didFailToStart(FailToStartReasonType.ZipError, readerErr));
+            yield* put(didFailToFinish(FailToFinishReasonType.ZipError, readerErr));
         } else {
-            yield* put(didFailToStart(FailToStartReasonType.Unknown, readerErr));
+            yield* put(didFailToFinish(FailToFinishReasonType.Unknown, readerErr));
         }
-        yield* cancel();
+        yield* disconnectAndCancel();
     }
 
     defined(reader);
@@ -139,9 +179,14 @@ function* loadFirmware(
     }
 
     if (metadata['mpy-abi-version'] !== 5) {
-        throw Error(
-            `Firmware requires mpy-cross ABI version ${metadata['mpy-abi-version']} we have v5`,
+        yield* put(
+            didFailToFinish(
+                FailToFinishReasonType.BadMetadata,
+                'mpy-abi-version',
+                MetadataProblem.NotSupported,
+            ),
         );
+        yield* disconnectAndCancel();
     }
 
     yield* put(compile(program, metadata['mpy-cross-options']));
@@ -151,7 +196,8 @@ function* loadFirmware(
     });
 
     if (mpyFail) {
-        throw Error(mpyFail.err.join('\n'));
+        yield* put(didFailToFinish(FailToFinishReasonType.FailedToCompile));
+        yield* disconnectAndCancel();
     }
 
     defined(mpy);
@@ -164,7 +210,8 @@ function* loadFirmware(
     const firmwareView = new DataView(firmware.buffer);
 
     if (firmware.length > metadata['max-firmware-size']) {
-        throw Error('firmware + main.mpy is too large');
+        yield* put(didFailToFinish(FailToFinishReasonType.FirmwareSize));
+        yield* disconnectAndCancel();
     }
 
     firmware.set(firmwareBase);
@@ -172,14 +219,21 @@ function* loadFirmware(
     firmware.set(mpy.data, metadata['user-mpy-offset'] + 4);
 
     if (metadata['checksum-type'] !== 'sum') {
-        throw Error(`Unknown checksum type "${metadata['checksum-type']}"`);
+        yield* put(
+            didFailToFinish(
+                FailToFinishReasonType.BadMetadata,
+                'checksum-type',
+                MetadataProblem.NotSupported,
+            ),
+        );
+        yield* disconnectAndCancel();
     }
 
-    firmwareView.setUint32(
-        checksumOffset,
-        sumComplement32(firmwareIterator(firmwareView, metadata['max-firmware-size'])),
-        true,
+    const checksum = sumComplement32(
+        firmwareIterator(firmwareView, metadata['max-firmware-size']),
     );
+
+    firmwareView.setUint32(checksumOffset, checksum, true);
 
     return { firmware, deviceId: metadata['device-id'] };
 }
@@ -189,183 +243,198 @@ function* loadFirmware(
  * @param action The action that triggered this saga.
  */
 function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
-    let firmware: Uint8Array | undefined = undefined;
-    let deviceId: HubType | undefined = undefined;
+    try {
+        let firmware: Uint8Array | undefined = undefined;
+        let deviceId: HubType | undefined = undefined;
 
-    let program: string | undefined = undefined;
+        let program: string | undefined = undefined;
 
-    const flashCurrentProgram = yield* select(
-        (s: RootState) => s.settings.flashCurrentProgram,
-    );
-
-    if (flashCurrentProgram) {
-        const editor = yield* select((s: RootState) => s.editor.current);
-
-        // istanbul ignore if: it is a bug to dispatch this action with no current editor
-        if (editor === null) {
-            console.error('flashFirmware: No current editor');
-            return;
-        }
-
-        program = editor.getValue();
-    }
-
-    if (action.data !== undefined) {
-        ({ firmware, deviceId } = yield* loadFirmware(action.data, program));
-    }
-
-    yield* put(connect());
-    const connectResult = yield* take<
-        | BootloaderConnectionDidConnectAction
-        | BootloaderConnectionDidFailToConnectAction
-    >([
-        BootloaderConnectionActionType.DidConnect,
-        BootloaderConnectionActionType.DidFailToConnect,
-    ]);
-
-    if (connectResult.type === BootloaderConnectionActionType.DidFailToConnect) {
-        return;
-    }
-
-    const nextMessageId = yield* getContext<() => number>('nextMessageId');
-
-    const infoAction = yield* put(infoRequest(nextMessageId()));
-    const { info } = yield* all({
-        sent: waitForDidRequest(infoAction.id),
-        info: waitForResponse<BootloaderInfoResponseAction>(
-            BootloaderResponseActionType.Info,
-        ),
-    });
-    if (!info.response) {
-        throw Error(`failed to get info: ${info}`);
-    }
-
-    if (deviceId !== undefined && info.response.hubType !== deviceId) {
-        throw Error(
-            `Connected to ${info.response.hubType} but firmware is for ${deviceId}`,
+        const flashCurrentProgram = yield* select(
+            (s: RootState) => s.settings.flashCurrentProgram,
         );
-    }
 
-    if (firmware === undefined) {
-        const firmwarePath = firmwareZipMap.get(info.response.hubType);
-        if (firmwarePath === undefined) {
-            yield* put(
-                notification.add(
-                    'error',
-                    "Sorry, we don't have firmware for this hub yet.",
-                ),
-            );
-            yield* put(disconnectRequest(nextMessageId()));
+        if (flashCurrentProgram) {
+            const editor = yield* select((s: RootState) => s.editor.current);
+
+            // istanbul ignore if: it is a bug to dispatch this action with no current editor
+            if (editor === null) {
+                console.error('flashFirmware: No current editor');
+                return;
+            }
+
+            program = editor.getValue();
+        }
+
+        if (action.data !== undefined) {
+            ({ firmware, deviceId } = yield* loadFirmware(action.data, program));
+        }
+
+        yield* put(connect());
+        const connectResult = yield* take<BootloaderConnectionAction>([
+            BootloaderConnectionActionType.DidConnect,
+            BootloaderConnectionActionType.DidFailToConnect,
+        ]);
+
+        if (connectResult.type === BootloaderConnectionActionType.DidFailToConnect) {
+            yield* put(didFailToFinish(FailToFinishReasonType.FailedToConnect));
             return;
         }
 
-        const response = yield* call(() => fetch(firmwarePath));
-        if (!response.ok) {
-            yield* put(notification.add('error', 'Failed to fetch firmware.'));
-            const disconnectAction = yield* put(disconnectRequest(nextMessageId()));
-            yield* waitForDidRequest(disconnectAction.id);
-            return;
-        }
+        const nextMessageId = yield* getContext<() => number>('nextMessageId');
 
-        const data = yield* call(() => response.arrayBuffer());
-        ({ firmware, deviceId } = yield* loadFirmware(data, program));
-
-        if (deviceId !== undefined && info.response.hubType !== deviceId) {
-            throw Error(
-                `Connected to ${info.response.hubType} but firmware is for ${deviceId}`,
-            );
-        }
-    }
-
-    yield* put(didStart());
-
-    const eraseAction = yield* put(eraseRequest(nextMessageId()));
-    const { erase } = yield* all({
-        sent: waitForDidRequest(eraseAction.id),
-        erase: waitForResponse<BootloaderEraseResponseAction>(
-            BootloaderResponseActionType.Erase,
-            5000,
-        ),
-    });
-    if (!erase.response || erase.response.result) {
-        // TODO: proper error handling
-        throw Error(`Failed to erase: ${erase}`);
-    }
-
-    const initAction = yield* put(initRequest(nextMessageId(), firmware.length));
-    const { init } = yield* all({
-        sent: waitForDidRequest(initAction.id),
-        init: waitForResponse<BootloaderInitResponseAction>(
-            BootloaderResponseActionType.Init,
-        ),
-    });
-    if (!init.response || init.response.result) {
-        // TODO: proper error handling
-        throw Error(`Failed to init: ${init}`);
-    }
-
-    // 14 is "safe" size for all hubs
-    const maxDataSize = MaxProgramFlashSize.get(info.response.hubType) || 14;
-
-    for (let count = 1, offset = 0; ; count++) {
-        const payload = firmware.slice(offset, offset + maxDataSize);
-        const programAction = yield* put(
-            programRequest(
-                nextMessageId(),
-                info.response.startAddress + offset,
-                payload.buffer,
+        const infoAction = yield* put(infoRequest(nextMessageId()));
+        const { info } = yield* all({
+            sent: waitForDidRequest(infoAction.id),
+            info: waitForResponse<BootloaderInfoResponseAction>(
+                BootloaderResponseActionType.Info,
             ),
-        );
-        yield* waitForDidRequest(programAction.id);
+        });
 
-        yield* put(didProgress(offset / firmware.length));
-
-        // we don't want to request checksum if this is the last packet since
-        // the bootloader will send a response to the program request already.
-        offset += maxDataSize;
-        if (offset >= firmware.length) {
-            break;
+        if (deviceId !== undefined && info.hubType !== deviceId) {
+            yield* put(didFailToFinish(FailToFinishReasonType.DeviceMismatch));
+            yield* disconnectAndCancel();
         }
 
-        // Request checksum every 10 packets to prevent buffer overrun on
-        // the hub because of sending too much data at once. The actual
-        // number of packets that can be queued in the Bluetooth chip on
-        // the hub is not known and could vary by device.
-        if (count % 10 === 0) {
-            const checksumAction = yield* put(checksumRequest(nextMessageId()));
-            const { checksum } = yield* all({
-                sent: waitForDidRequest(checksumAction.id),
-                checksum: waitForResponse<BootloaderChecksumResponseAction>(
-                    BootloaderResponseActionType.Checksum,
-                    5000,
-                ),
-            });
-            if (!checksum.response) {
-                // TODO: proper error handling
-                throw Error(`Failed to get checksum: ${checksum}`);
+        if (firmware === undefined) {
+            const firmwarePath = firmwareZipMap.get(info.hubType);
+            if (firmwarePath === undefined) {
+                yield* put(didFailToFinish(FailToFinishReasonType.NoFirmware));
+                yield* disconnectAndCancel();
+            }
+
+            defined(firmwarePath);
+
+            const response = yield* call(() => fetch(firmwarePath));
+            if (!response.ok) {
+                yield* put(
+                    didFailToFinish(FailToFinishReasonType.FailedToFetch, response),
+                );
+                yield* disconnectAndCancel();
+            }
+
+            const data = yield* call(() => response.arrayBuffer());
+            ({ firmware, deviceId } = yield* loadFirmware(data, program));
+
+            if (deviceId !== undefined && info.hubType !== deviceId) {
+                yield* put(didFailToFinish(FailToFinishReasonType.DeviceMismatch));
+                yield* disconnectAndCancel();
             }
         }
+
+        yield* put(didStart());
+
+        const eraseAction = yield* put(eraseRequest(nextMessageId()));
+        const { erase } = yield* all({
+            sent: waitForDidRequest(eraseAction.id),
+            erase: waitForResponse<BootloaderEraseResponseAction>(
+                BootloaderResponseActionType.Erase,
+                5000,
+            ),
+        });
+        if (erase.result !== Result.OK) {
+            yield* put(
+                didFailToFinish(FailToFinishReasonType.HubError, HubError.EraseFailed),
+            );
+            yield* disconnectAndCancel();
+        }
+
+        const initAction = yield* put(initRequest(nextMessageId(), firmware.length));
+        const { init } = yield* all({
+            sent: waitForDidRequest(initAction.id),
+            init: waitForResponse<BootloaderInitResponseAction>(
+                BootloaderResponseActionType.Init,
+            ),
+        });
+        if (init.result) {
+            yield* put(
+                didFailToFinish(FailToFinishReasonType.HubError, HubError.InitFailed),
+            );
+            yield* disconnectAndCancel();
+        }
+
+        // 14 is "safe" size for all hubs
+        const maxDataSize = MaxProgramFlashSize.get(info.hubType) || 14;
+
+        for (let count = 1, offset = 0; ; count++) {
+            const payload = firmware.slice(offset, offset + maxDataSize);
+            const programAction = yield* put(
+                programRequest(
+                    nextMessageId(),
+                    info.startAddress + offset,
+                    payload.buffer,
+                ),
+            );
+            yield* waitForDidRequest(programAction.id);
+
+            yield* put(didProgress(offset / firmware.length));
+
+            // we don't want to request checksum if this is the last packet since
+            // the bootloader will send a response to the program request already.
+            offset += maxDataSize;
+            if (offset >= firmware.length) {
+                break;
+            }
+
+            // Request checksum every 10 packets to prevent buffer overrun on
+            // the hub because of sending too much data at once. The actual
+            // number of packets that can be queued in the Bluetooth chip on
+            // the hub is not known and could vary by device.
+            if (count % 10 === 0) {
+                const checksumAction = yield* put(checksumRequest(nextMessageId()));
+                yield* all({
+                    sent: waitForDidRequest(checksumAction.id),
+                    checksum: waitForResponse<BootloaderChecksumResponseAction>(
+                        BootloaderResponseActionType.Checksum,
+                        5000,
+                    ),
+                });
+            }
+        }
+
+        const flash = yield* waitForResponse<BootloaderProgramResponseAction>(
+            BootloaderResponseActionType.Program,
+            5000,
+        );
+
+        if (flash.count !== firmware.length) {
+            yield* put(
+                didFailToFinish(
+                    FailToFinishReasonType.HubError,
+                    HubError.CountMismatch,
+                ),
+            );
+            yield* disconnectAndCancel();
+        }
+
+        const checksum = firmware.reduce((prev, curr) => prev ^ curr, 0xff);
+        if (flash.checksum !== checksum) {
+            if (process.env.NODE_ENV !== 'test') {
+                console.log(
+                    'checksum:',
+                    flash.checksum.toString(16).padStart(2, '0').padStart(4, '0x'),
+                    checksum.toString(16).padStart(2, '0').padStart(4, '0x'),
+                );
+            }
+            yield* put(
+                didFailToFinish(
+                    FailToFinishReasonType.HubError,
+                    HubError.ChecksumMismatch,
+                ),
+            );
+            yield* disconnectAndCancel();
+        }
+
+        yield* put(didProgress(1));
+
+        // this will cause the remote device to disconnect and reboot
+        const rebootAction = yield* put(rebootRequest(nextMessageId()));
+        yield* waitForDidRequest(rebootAction.id);
+
+        yield* put(didFinish());
+    } catch (err) {
+        yield* put(didFailToFinish(FailToFinishReasonType.Unknown, err));
+        yield* disconnectAndCancel();
     }
-
-    const flash = yield* waitForResponse<BootloaderProgramResponseAction>(
-        BootloaderResponseActionType.Program,
-        5000,
-    );
-    if (!flash.response) {
-        throw Error(`failed to get final response: ${flash}`);
-    }
-    if (flash.response.count !== firmware.length) {
-        // TODO: proper error handling
-        throw Error("Didn't flash all bytes");
-    }
-
-    yield* put(didProgress(1));
-
-    // this will cause the remote device to disconnect and reboot
-    const rebootAction = yield* put(rebootRequest(nextMessageId()));
-    yield* waitForDidRequest(rebootAction.id);
-
-    yield* put(didFinish());
 }
 
 export default function* (): Generator {

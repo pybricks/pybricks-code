@@ -2,6 +2,7 @@
 // Copyright (c) 2021 The Pybricks Authors
 
 import { IToaster } from '@blueprintjs/core';
+import { FirmwareReaderError, FirmwareReaderErrorCode } from '@pybricks/firmware';
 import { AsyncSaga } from '../../test';
 import { Action } from '../actions';
 import {
@@ -9,6 +10,12 @@ import {
     didFailToConnect as bleDidFailToConnect,
 } from '../actions/ble';
 import { storageChanged } from '../actions/editor';
+import {
+    FailToFinishReasonType,
+    HubError,
+    MetadataProblem,
+    didFailToFinish,
+} from '../actions/flash-firmware';
 import {
     BootloaderConnectionFailureReason,
     didFailToConnect as bootloaderDidFailToConnect,
@@ -37,6 +44,31 @@ test.each([
     add('warning', 'message'),
     add('error', 'message', 'url'),
     didUpdate({} as ServiceWorkerRegistration),
+    didFailToFinish(FailToFinishReasonType.TimedOut),
+    didFailToFinish(
+        FailToFinishReasonType.BleError,
+        new DOMException('test error', 'NetworkError'),
+    ),
+    didFailToFinish(FailToFinishReasonType.Disconnected),
+    didFailToFinish(FailToFinishReasonType.HubError, HubError.UnknownCommand),
+    didFailToFinish(FailToFinishReasonType.NoFirmware),
+    didFailToFinish(FailToFinishReasonType.DeviceMismatch),
+    didFailToFinish(
+        FailToFinishReasonType.FailedToFetch,
+        new Response(undefined, { status: 404 }),
+    ),
+    didFailToFinish(
+        FailToFinishReasonType.ZipError,
+        new FirmwareReaderError(FirmwareReaderErrorCode.ZipError),
+    ),
+    didFailToFinish(
+        FailToFinishReasonType.BadMetadata,
+        'device-id',
+        MetadataProblem.NotSupported,
+    ),
+    didFailToFinish(FailToFinishReasonType.FailedToCompile),
+    didFailToFinish(FailToFinishReasonType.FirmwareSize),
+    didFailToFinish(FailToFinishReasonType.Unknown, new Error('test error')),
 ])('actions that should show notification: %o', async (action: Action) => {
     const getToasts = jest.fn().mockReturnValue([]);
     const show = jest.fn();
@@ -50,7 +82,7 @@ test.each([
         clear,
     };
 
-    const saga = new AsyncSaga(notification, { notification: { toaster } });
+    const saga = new AsyncSaga(notification, {}, { notification: { toaster } });
 
     saga.put(action);
 
@@ -64,6 +96,7 @@ test.each([
 test.each([
     bleDidFailToConnect({ reason: BleDeviceFailToConnectReasonType.Canceled }),
     bootloaderDidFailToConnect(BootloaderConnectionFailureReason.Canceled),
+    didFailToFinish(FailToFinishReasonType.FailedToConnect),
     didSucceed({} as ServiceWorkerRegistration),
 ])('actions that should not show a notification: %o', async (action: Action) => {
     const getToasts = jest.fn().mockReturnValue([]);
@@ -78,7 +111,7 @@ test.each([
         clear,
     };
 
-    const saga = new AsyncSaga(notification, { notification: { toaster } });
+    const saga = new AsyncSaga(notification, {}, { notification: { toaster } });
 
     saga.put(action);
 
@@ -105,7 +138,7 @@ test.each([[didCompile(new Uint8Array()), MessageId.MpyError]])(
             clear,
         };
 
-        const saga = new AsyncSaga(notification, { notification: { toaster } });
+        const saga = new AsyncSaga(notification, {}, { notification: { toaster } });
 
         saga.put(action);
 

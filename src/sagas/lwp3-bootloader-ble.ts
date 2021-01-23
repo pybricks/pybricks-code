@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020 The Pybricks Authors
+// Copyright (c) 2020-2021 The Pybricks Authors
 // File: sagas/lwp3-bootloader-ble.ts
 // Handles Bluetooth Low Energy connection to LEGO Wireless Protocol v3 Bootloader service.
 
 import { END, eventChannel } from 'redux-saga';
-import { call, cancel, put, takeEvery, takeMaybe } from 'redux-saga/effects';
+import { call, cancel, put, spawn, takeEvery, takeMaybe } from 'redux-saga/effects';
 import {
     BootloaderConnectionAction,
     BootloaderConnectionActionType,
@@ -132,6 +132,14 @@ function* connect(_action: BootloaderConnectionAction): Generator {
     });
 
     try {
+        try {
+            yield call([characteristic, 'stopNotifications']);
+        } catch {
+            // HACK: Chromium on Linux (BlueZ) will not receive notifications
+            // if a device disconnects while notifications are enabled and then
+            // reconnects. So we have to call stopNotifications() first to get
+            // back to a known state. https://crbug.com/1170085
+        }
         yield call([characteristic, 'startNotifications']);
     } catch (err) {
         notificationChannel.close();
@@ -141,8 +149,19 @@ function* connect(_action: BootloaderConnectionAction): Generator {
         return;
     }
 
+    // Spawning write so that it can't be canceled. This is important because
+    // other sagas always expect it to complete with success action or error
+    // action.
+    function* spawnWrite(action: BootloaderConnectionSendAction): Generator {
+        yield spawn(write, characteristic, action);
+    }
+
     yield takeEvery(notificationChannel, handleNotify);
-    yield takeEvery(BootloaderConnectionActionType.Send, write, characteristic);
+    yield takeEvery(BootloaderConnectionActionType.Send, spawnWrite);
+    yield takeEvery(
+        BootloaderConnectionActionType.Disconnect,
+        server.disconnect.bind(server),
+    );
 
     yield put(didConnect());
 
