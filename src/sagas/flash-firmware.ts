@@ -150,7 +150,7 @@ function* firmwareIterator(data: DataView, maxSize: number): Generator<number> {
 function* loadFirmware(
     data: ArrayBuffer,
     program: string | undefined,
-): SagaGenerator<{ firmware: Uint8Array; deviceId: HubType }> {
+): SagaGenerator<{ firmware: Uint8Array; deviceId: HubType; checksum: number }> {
     const [reader, readerErr] = yield* call(() => maybe(FirmwareReader.load(data)));
 
     if (readerErr) {
@@ -224,13 +224,13 @@ function* loadFirmware(
         yield* disconnectAndCancel();
     }
 
-    firmwareView.setUint32(
-        checksumOffset,
-        sumComplement32(firmwareIterator(firmwareView, metadata['max-firmware-size'])),
-        true,
+    const checksum = sumComplement32(
+        firmwareIterator(firmwareView, metadata['max-firmware-size']),
     );
 
-    return { firmware, deviceId: metadata['device-id'] };
+    firmwareView.setUint32(checksumOffset, checksum, true);
+
+    return { firmware, deviceId: metadata['device-id'], checksum };
 }
 
 /**
@@ -258,6 +258,7 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
     try {
         let firmware: Uint8Array | undefined = undefined;
         let deviceId: HubType | undefined = undefined;
+        let checksum: number | undefined = undefined;
 
         let program: string | undefined = undefined;
 
@@ -278,7 +279,10 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
         }
 
         if (action.data !== undefined) {
-            ({ firmware, deviceId } = yield* loadFirmware(action.data, program));
+            ({ firmware, deviceId, checksum } = yield* loadFirmware(
+                action.data,
+                program,
+            ));
         }
 
         yield* put(connect());
@@ -327,7 +331,7 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
             }
 
             const data = yield* call(() => response.arrayBuffer());
-            ({ firmware, deviceId } = yield* loadFirmware(data, program));
+            ({ firmware, deviceId, checksum } = yield* loadFirmware(data, program));
 
             if (deviceId !== undefined && info.hubType !== deviceId) {
                 yield* put(didFailToFinish(FailToFinishReasonType.DeviceMismatch));
@@ -409,11 +413,22 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
             BootloaderResponseActionType.Program,
             5000,
         );
+
         if (flash.count !== firmware.length) {
             yield* put(
                 didFailToFinish(
                     FailToFinishReasonType.HubError,
                     HubError.CountMismatch,
+                ),
+            );
+            yield* disconnectAndCancel();
+        }
+
+        if (~flash.checksum !== checksum) {
+            yield* put(
+                didFailToFinish(
+                    FailToFinishReasonType.HubError,
+                    HubError.ChecksumMismatch,
                 ),
             );
             yield* disconnectAndCancel();

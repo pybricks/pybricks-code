@@ -184,7 +184,7 @@ describe('flashFirmware', () => {
 
             // hub indicates success
 
-            saga.put(programResponse(0, totalFirmwareSize));
+            saga.put(programResponse(0xffffff42, totalFirmwareSize));
 
             action = await saga.take();
             expect(action).toEqual(didProgress(1));
@@ -1113,7 +1113,7 @@ describe('flashFirmware', () => {
 
             // hub indicates incorrect size
 
-            saga.put(programResponse(0, totalFirmwareSize - 1));
+            saga.put(programResponse(0xffffff33, totalFirmwareSize - 1));
 
             // should get a hub error
 
@@ -1122,6 +1122,156 @@ describe('flashFirmware', () => {
                 didFailToFinish(
                     FailToFinishReasonType.HubError,
                     HubError.CountMismatch,
+                ),
+            );
+
+            // should request to disconnect after failure
+
+            action = await saga.take();
+            expect(action).toEqual(disconnect());
+
+            await saga.end();
+        });
+
+        test('checksum mismatch after flashing', async () => {
+            const metadata: FirmwareMetadata = {
+                'metadata-version': '1.0.0',
+                'device-id': HubType.MoveHub,
+                'checksum-type': 'sum',
+                'firmware-version': '1.2.3',
+                'max-firmware-size': 1024,
+                'mpy-abi-version': 5,
+                'mpy-cross-options': ['-mno-unicode'],
+                'user-mpy-offset': 100,
+            };
+
+            const zip = new JSZip();
+            zip.file('firmware-base.bin', new Uint8Array(64));
+            zip.file('firmware.metadata.json', JSON.stringify(metadata));
+            zip.file('main.py', 'print("test")');
+            zip.file('ReadMe_OSS.txt', 'test');
+
+            jest.spyOn(window, 'fetch').mockResolvedValueOnce(
+                new Response(await zip.generateAsync({ type: 'blob' })),
+            );
+
+            const saga = new AsyncSaga(
+                flashFirmware,
+                {
+                    bootloader: { connection: BootloaderConnectionState.Disconnected },
+                    settings: { flashCurrentProgram: false },
+                },
+                {
+                    nextMessageId: createCountFunc(),
+                },
+            );
+
+            // saga is triggered by this action
+
+            saga.put(flashFirmwareAction());
+
+            // first step is to connect to the hub bootloader
+
+            let action = await saga.take();
+            expect(action).toEqual(connect());
+
+            saga.updateState({
+                bootloader: { connection: BootloaderConnectionState.Connected },
+            });
+            saga.put(didConnect());
+
+            // then find out what kind of hub it is
+
+            action = await saga.take();
+            expect(action).toEqual(infoRequest(0));
+
+            saga.put(didRequest(0));
+            saga.put(infoResponse(0x01000000, 0x08005000, 0x081f800, HubType.MoveHub));
+
+            // then compile main.py to .mpy
+
+            action = await saga.take();
+            expect(action).toMatchInlineSnapshot(`
+                Object {
+                  "options": Array [
+                    "-mno-unicode",
+                  ],
+                  "script": "print(\\"test\\")",
+                  "type": "mpy.action.compile",
+                }
+            `);
+
+            const mpySize = 20;
+            const mpyBinaryData = new Uint8Array(mpySize);
+            saga.put(didCompile(mpyBinaryData));
+
+            // then start flashing the firmware
+
+            // should get didStart action just before starting to erase
+            action = await saga.take();
+            expect(action).toEqual(didStart());
+
+            // erase first
+
+            action = await saga.take();
+            expect(action).toEqual(eraseRequest(1));
+
+            saga.put(didRequest(1));
+            saga.put(eraseResponse(Result.OK));
+
+            // then write the new firmware
+
+            const totalFirmwareSize = metadata['user-mpy-offset'] + mpySize + 8;
+            action = await saga.take();
+            expect(action).toEqual(initRequest(2, totalFirmwareSize));
+
+            saga.put(didRequest(2));
+            saga.put(initResponse(Result.OK));
+
+            const dummyPayload = new ArrayBuffer(0);
+            let id = 2;
+            for (let count = 1, offset = 0; ; count++, offset += 14) {
+                action = await saga.take();
+                expect(action).toEqual(
+                    programRequest(++id, 0x08005000 + offset, dummyPayload),
+                );
+                expect(
+                    (action as BootloaderProgramRequestAction).payload.byteLength,
+                ).toBe(Math.min(14, totalFirmwareSize - offset));
+
+                saga.put(didRequest(id));
+
+                action = await saga.take();
+                expect(action).toEqual(didProgress(offset / totalFirmwareSize));
+
+                // Have to be careful that a checksum request is not sent after
+                // last payload is sent, otherwise the hub gets confused.
+
+                if (offset + 14 >= totalFirmwareSize) {
+                    expect(count).toBe(10);
+                    break;
+                }
+
+                if (count % 10 === 0) {
+                    action = await saga.take();
+                    expect(action).toEqual(checksumRequest(++id));
+
+                    saga.put(didRequest(id));
+                    saga.put(checksumResponse(0));
+                }
+            }
+
+            // hub indicates incorrect checksum
+
+            saga.put(programResponse(0xffffffff, totalFirmwareSize));
+
+            // should get a hub error
+
+            action = await saga.take();
+            expect(action).toEqual(
+                didFailToFinish(
+                    FailToFinishReasonType.HubError,
+                    HubError.ChecksumMismatch,
                 ),
             );
 
@@ -1265,7 +1415,7 @@ describe('flashFirmware', () => {
 
             // hub indicates success
 
-            saga.put(programResponse(0, totalFirmwareSize));
+            saga.put(programResponse(0xffffff97, totalFirmwareSize));
 
             action = await saga.take();
             expect(action).toEqual(didProgress(1));
@@ -1794,7 +1944,7 @@ describe('flashFirmware', () => {
 
         // hub indicates success
 
-        saga.put(programResponse(0, totalFirmwareSize));
+        saga.put(programResponse(0xffffff33, totalFirmwareSize));
 
         action = await saga.take();
         expect(action).toEqual(didProgress(1));
