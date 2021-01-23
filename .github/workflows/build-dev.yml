@@ -2,7 +2,8 @@ name: Build and publish dev version
 
 on:
   push:
-    branches: [ master ]
+    tags:
+      - v1.*-beta.*
 
 jobs:
   build:
