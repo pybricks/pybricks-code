@@ -132,6 +132,14 @@ function* connect(_action: BootloaderConnectionAction): Generator {
     });
 
     try {
+        try {
+            yield call([characteristic, 'stopNotifications']);
+        } catch {
+            // HACK: Chromium on Linux (BlueZ) will not receive notifications
+            // if a device disconnects while notifications are enabled and then
+            // reconnects. So we have to call stopNotifications() first to get
+            // back to a known state. https://crbug.com/1170085
+        }
         yield call([characteristic, 'startNotifications']);
     } catch (err) {
         notificationChannel.close();
