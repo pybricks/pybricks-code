@@ -72,7 +72,10 @@ export class AsyncSaga {
     }
 
     public updateState(state: RecursivePartial<RootState>): void {
-        this.state = { ...this.state, ...state };
+        for (const key of Object.keys(state) as Array<keyof RootState>) {
+            // @ts-expect-error: writing to readonly for testing
+            this.state[key] = { ...this.state[key], ...state[key] };
+        }
     }
 
     public async end(): Promise<void> {
