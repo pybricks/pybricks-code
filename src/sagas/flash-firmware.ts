@@ -11,7 +11,6 @@ import {
     call,
     cancel,
     delay,
-    fork,
     getContext,
     put,
     race,
@@ -107,9 +106,10 @@ function* waitForResponse<T extends BootloaderResponseAction>(
     type: BootloaderResponseActionType,
     timeout = 500,
 ): SagaGenerator<T> {
-    const { response, error, timedOut } = yield* race({
+    const { response, error, disconnected, timedOut } = yield* race({
         response: take<T>(type),
         error: take<BootloaderErrorResponseAction>(BootloaderResponseActionType.Error),
+        disconnected: take(BootloaderConnectionActionType.DidDisconnect),
         timedOut: delay(timeout),
     });
 
@@ -122,6 +122,11 @@ function* waitForResponse<T extends BootloaderResponseAction>(
         yield* put(
             didFailToFinish(FailToFinishReasonType.HubError, HubError.UnknownCommand),
         );
+        yield* disconnectAndCancel();
+    }
+
+    if (disconnected) {
+        yield* put(didFailToFinish(FailToFinishReasonType.Disconnected));
         yield* disconnectAndCancel();
     }
 
@@ -234,23 +239,6 @@ function* loadFirmware(
 }
 
 /**
- * Monitors for BLE disconnection event. If disconnection occurs, then a failure
- * action is raised and the task (including the parent task) is canceled.
- */
-function* disconnectMonitor(): SagaGenerator<void> {
-    const { disconnected } = yield* race({
-        disconnected: take(BootloaderConnectionActionType.DidDisconnect),
-        finished: take(FlashFirmwareActionType.DidFinish),
-        failedToFinish: take(FlashFirmwareActionType.DidFailToFinish),
-    });
-
-    if (disconnected) {
-        yield* put(didFailToFinish(FailToFinishReasonType.Disconnected));
-        yield* disconnectAndCancel();
-    }
-}
-
-/**
  * Flashes firmware to a Powered Up device.
  * @param action The action that triggered this saga.
  */
@@ -295,8 +283,6 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
             yield* put(didFailToFinish(FailToFinishReasonType.FailedToConnect));
             return;
         }
-
-        const disconnectMonitorTask = yield* fork(disconnectMonitor);
 
         const nextMessageId = yield* getContext<() => number>('nextMessageId');
 
@@ -438,7 +424,6 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
 
         // this will cause the remote device to disconnect and reboot
         const rebootAction = yield* put(rebootRequest(nextMessageId()));
-        disconnectMonitorTask.cancel();
         yield* waitForDidRequest(rebootAction.id);
 
         yield* put(didFinish());

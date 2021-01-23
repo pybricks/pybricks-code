@@ -312,8 +312,6 @@ describe('flashFirmware', () => {
             action = await saga.take();
             expect(action).toEqual(infoRequest(0));
 
-            saga.put(didRequest(0));
-
             // hub disconnects before replying
 
             saga.updateState({
@@ -327,6 +325,11 @@ describe('flashFirmware', () => {
             expect(action).toEqual(
                 didFailToFinish(FailToFinishReasonType.Disconnected),
             );
+
+            // On city hub, we can end up in this situation. BLE writeValueWithResponse()
+            // doesn't return until erasing is done, so there is a long window for
+            // this to happen.
+            saga.put(didRequest(0, new Error('failed due to disconnect')));
 
             await saga.end();
         });
