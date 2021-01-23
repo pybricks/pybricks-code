@@ -155,7 +155,7 @@ function* firmwareIterator(data: DataView, maxSize: number): Generator<number> {
 function* loadFirmware(
     data: ArrayBuffer,
     program: string | undefined,
-): SagaGenerator<{ firmware: Uint8Array; deviceId: HubType; checksum: number }> {
+): SagaGenerator<{ firmware: Uint8Array; deviceId: HubType }> {
     const [reader, readerErr] = yield* call(() => maybe(FirmwareReader.load(data)));
 
     if (readerErr) {
@@ -235,7 +235,7 @@ function* loadFirmware(
 
     firmwareView.setUint32(checksumOffset, checksum, true);
 
-    return { firmware, deviceId: metadata['device-id'], checksum };
+    return { firmware, deviceId: metadata['device-id'] };
 }
 
 /**
@@ -246,7 +246,6 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
     try {
         let firmware: Uint8Array | undefined = undefined;
         let deviceId: HubType | undefined = undefined;
-        let checksum: number | undefined = undefined;
 
         let program: string | undefined = undefined;
 
@@ -267,10 +266,7 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
         }
 
         if (action.data !== undefined) {
-            ({ firmware, deviceId, checksum } = yield* loadFirmware(
-                action.data,
-                program,
-            ));
+            ({ firmware, deviceId } = yield* loadFirmware(action.data, program));
         }
 
         yield* put(connect());
@@ -317,7 +313,7 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
             }
 
             const data = yield* call(() => response.arrayBuffer());
-            ({ firmware, deviceId, checksum } = yield* loadFirmware(data, program));
+            ({ firmware, deviceId } = yield* loadFirmware(data, program));
 
             if (deviceId !== undefined && info.hubType !== deviceId) {
                 yield* put(didFailToFinish(FailToFinishReasonType.DeviceMismatch));
@@ -410,7 +406,15 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
             yield* disconnectAndCancel();
         }
 
-        if (~flash.checksum !== checksum) {
+        const checksum = firmware.reduce((prev, curr) => prev ^ curr, 0xff);
+        if (flash.checksum !== checksum) {
+            if (process.env.NODE_ENV !== 'test') {
+                console.log(
+                    'checksum:',
+                    flash.checksum.toString(16).padStart(2, '0').padStart(4, '0x'),
+                    checksum.toString(16).padStart(2, '0').padStart(4, '0x'),
+                );
+            }
             yield* put(
                 didFailToFinish(
                     FailToFinishReasonType.HubError,

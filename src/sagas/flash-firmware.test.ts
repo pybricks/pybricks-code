@@ -184,7 +184,7 @@ describe('flashFirmware', () => {
 
             // hub indicates success
 
-            saga.put(programResponse(0xffffff42, totalFirmwareSize));
+            saga.put(programResponse(0x62, totalFirmwareSize));
 
             action = await saga.take();
             expect(action).toEqual(didProgress(1));
@@ -1116,7 +1116,7 @@ describe('flashFirmware', () => {
 
             // hub indicates incorrect size
 
-            saga.put(programResponse(0xffffff33, totalFirmwareSize - 1));
+            saga.put(programResponse(0x62, totalFirmwareSize - 1));
 
             // should get a hub error
 
@@ -1266,7 +1266,7 @@ describe('flashFirmware', () => {
 
             // hub indicates incorrect checksum
 
-            saga.put(programResponse(0xffffffff, totalFirmwareSize));
+            saga.put(programResponse(0x100, totalFirmwareSize));
 
             // should get a hub error
 
@@ -1418,7 +1418,7 @@ describe('flashFirmware', () => {
 
             // hub indicates success
 
-            saga.put(programResponse(0xffffff97, totalFirmwareSize));
+            saga.put(programResponse(0xf3, totalFirmwareSize));
 
             action = await saga.take();
             expect(action).toEqual(didProgress(1));
@@ -1947,7 +1947,7 @@ describe('flashFirmware', () => {
 
         // hub indicates success
 
-        saga.put(programResponse(0xffffff33, totalFirmwareSize));
+        saga.put(programResponse(0x27, totalFirmwareSize));
 
         action = await saga.take();
         expect(action).toEqual(didProgress(1));
