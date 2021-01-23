@@ -410,8 +410,13 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
             5000,
         );
         if (flash.count !== firmware.length) {
-            // TODO: proper error handling
-            throw Error("Didn't flash all bytes");
+            yield* put(
+                didFailToFinish(
+                    FailToFinishReasonType.HubError,
+                    HubError.CountMismatch,
+                ),
+            );
+            yield* disconnectAndCancel();
         }
 
         yield* put(didProgress(1));
