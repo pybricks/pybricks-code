@@ -360,8 +360,10 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
             ),
         });
         if (init.result) {
-            // TODO: proper error handling
-            throw Error(`Failed to init: ${init}`);
+            yield* put(
+                didFailToFinish(FailToFinishReasonType.HubError, HubError.InitFailed),
+            );
+            yield* disconnectAndCancel();
         }
 
         // 14 is "safe" size for all hubs
