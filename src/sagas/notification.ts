@@ -22,6 +22,11 @@ import {
 } from '../actions/ble';
 import { EditorActionType, reloadProgram } from '../actions/editor';
 import {
+    FailToFinishReasonType,
+    FlashFirmwareActionType,
+    FlashFirmwareDidFailToFinishAction,
+} from '../actions/flash-firmware';
+import {
     BootloaderConnectionActionType,
     BootloaderConnectionDidFailToConnectAction,
     BootloaderConnectionFailureReason,
@@ -226,6 +231,69 @@ function* showEditorStorageChanged(): Generator {
     yield put(reloadProgram());
 }
 
+function* showFlashFirmwareError(
+    action: FlashFirmwareDidFailToFinishAction,
+): Generator {
+    switch (action.reason.reason) {
+        case FailToFinishReasonType.FailedToConnect:
+            yield* showSingleton(Level.Error, MessageId.FlashFirmwareConnectionFailed);
+            break;
+        case FailToFinishReasonType.TimedOut:
+            yield* showSingleton(Level.Error, MessageId.FlashFirmwareTimedOut);
+            break;
+        case FailToFinishReasonType.BleError:
+            yield* showUnexpectedError(
+                MessageId.FlashFirmwareBleError,
+                action.reason.err,
+            );
+            break;
+        case FailToFinishReasonType.Disconnected:
+            yield* showSingleton(Level.Error, MessageId.FlashFirmwareDisconnected);
+            break;
+        case FailToFinishReasonType.HubError:
+            yield* showSingleton(Level.Error, MessageId.FlashFirmwareHubError);
+            if (process.env.NODE_ENV !== 'test') {
+                console.error(action.reason.hubError);
+            }
+            break;
+        case FailToFinishReasonType.NoFirmware:
+            yield* showSingleton(Level.Error, MessageId.FlashFirmwareUnsupportedDevice);
+            break;
+        case FailToFinishReasonType.DeviceMismatch:
+            yield* showSingleton(Level.Error, MessageId.FlashFirmwareDeviceMismatch);
+            break;
+        case FailToFinishReasonType.FailedToFetch:
+            yield* showSingleton(Level.Error, MessageId.FlashFirmwareFailToFetch, {
+                status: action.reason.response.statusText,
+            });
+            break;
+        case FailToFinishReasonType.ZipError:
+            yield* showSingleton(Level.Error, MessageId.FlashFirmwareBadZipFile);
+            if (process.env.NODE_ENV !== 'test') {
+                console.error(action.reason.err);
+            }
+            break;
+        case FailToFinishReasonType.BadMetadata:
+            yield* showSingleton(Level.Error, MessageId.FlashFirmwareBadMetadata);
+            if (process.env.NODE_ENV !== 'test') {
+                console.error(action.reason.property, action.reason.problem);
+            }
+            break;
+        case FailToFinishReasonType.FailedToCompile:
+            yield* showSingleton(Level.Error, MessageId.FlashFirmwareCompileError);
+            break;
+        case FailToFinishReasonType.FirmwareSize:
+            yield* showSingleton(Level.Error, MessageId.FlashFirmwareSizeTooBig);
+            break;
+        case FailToFinishReasonType.Unknown:
+            yield* showUnexpectedError(
+                MessageId.FlashFirmwareUnexpectedError,
+                action.reason.err,
+            );
+            break;
+    }
+}
+
 function* dismissCompilerError(): Generator {
     const { toaster } = (yield getContext('notification')) as NotificationContext;
     toaster.dismiss(MessageId.MpyError);
@@ -282,6 +350,7 @@ export default function* (): Generator {
         showBootloaderDidFailToConnectError,
     );
     yield takeEvery(EditorActionType.StorageChanged, showEditorStorageChanged);
+    yield takeEvery(FlashFirmwareActionType.DidFailToFinish, showFlashFirmwareError);
     yield takeEvery(MpyActionType.DidCompile, dismissCompilerError);
     yield takeEvery(MpyActionType.DidFailToCompile, showCompilerError);
     yield takeEvery(NotificationActionType.Add, addNotification);
