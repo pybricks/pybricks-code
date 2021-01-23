@@ -235,9 +235,6 @@ function* showFlashFirmwareError(
     action: FlashFirmwareDidFailToFinishAction,
 ): Generator {
     switch (action.reason.reason) {
-        case FailToFinishReasonType.FailedToConnect:
-            yield* showSingleton(Level.Error, MessageId.FlashFirmwareConnectionFailed);
-            break;
         case FailToFinishReasonType.TimedOut:
             yield* showSingleton(Level.Error, MessageId.FlashFirmwareTimedOut);
             break;

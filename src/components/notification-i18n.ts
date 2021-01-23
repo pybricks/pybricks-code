@@ -10,7 +10,6 @@ export enum MessageId {
     BleGattPermission = 'ble.gattPermission',
     BleGattServiceNotFound = 'ble.gattServiceNotFound',
     BleNoWebBluetooth = 'ble.noWebBluetooth',
-    FlashFirmwareConnectionFailed = 'flashFirmware.connectionFailed',
     FlashFirmwareTimedOut = 'flashFirmware.timedOut',
     FlashFirmwareBleError = 'flashFirmware.bleError',
     FlashFirmwareDisconnected = 'flashFirmware.disconnected',

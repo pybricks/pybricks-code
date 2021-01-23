@@ -14,7 +14,6 @@
         }
     },
     "flashFirmware": {
-        "connectionFailed": "Could not connect to the hub. Restart the hub and try again.",
         "timedOut": "The hub took too long to respond. Restart the hub and try again.",
         "bleError": "There was a problem with Bluetooth.",
         "disconnected": "The hub was disconnected before flashing was completed. Restart the hub and try again.",
