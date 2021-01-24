@@ -13,6 +13,7 @@ import {
     didConnect,
     didDisconnect,
     didFailToConnect,
+    didFailToSend,
     didReceive,
     didSend,
 } from '../actions/lwp3-bootloader';
@@ -34,7 +35,7 @@ function* write(
         }
         yield* put(didSend());
     } catch (err) {
-        yield* put(didSend(err));
+        yield* put(didFailToSend(err));
     }
 }
 

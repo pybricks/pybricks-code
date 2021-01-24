@@ -38,6 +38,10 @@ export enum BootloaderConnectionActionType {
      */
     DidSend = 'bootloader.action.connection.did.send',
     /**
+     * Sending a message failed with error.
+     */
+    DidFailToSend = 'bootloader.action.connection.did.failToSend',
+    /**
      * The connection received a message.
      */
     DidReceive = 'bootloader.action.connection.did.receive',
@@ -152,12 +156,18 @@ export function send(
     return { type: BootloaderConnectionActionType.Send, data, withResponse };
 }
 
-export type BootloaderConnectionDidSendAction = Action<BootloaderConnectionActionType.DidSend> & {
-    err?: Error;
+export type BootloaderConnectionDidSendAction = Action<BootloaderConnectionActionType.DidSend>;
+
+export function didSend(): BootloaderConnectionDidSendAction {
+    return { type: BootloaderConnectionActionType.DidSend };
+}
+
+export type BootloaderConnectionDidFailToSendAction = Action<BootloaderConnectionActionType.DidFailToSend> & {
+    err: Error;
 };
 
-export function didSend(err?: Error): BootloaderConnectionDidSendAction {
-    return { type: BootloaderConnectionActionType.DidSend, err };
+export function didFailToSend(err: Error): BootloaderConnectionDidFailToSendAction {
+    return { type: BootloaderConnectionActionType.DidFailToSend, err };
 }
 
 export type BootloaderConnectionDidReceiveAction = Action<BootloaderConnectionActionType.DidReceive> & {
@@ -184,7 +194,7 @@ export type BootloaderConnectionAction =
     | BootloaderConnectionDidErrorAction
     | BootloaderConnectionSendAction
     | BootloaderConnectionDidSendAction
-    | BootloaderConnectionDidSendAction
+    | BootloaderConnectionDidFailToSendAction
     | BootloaderConnectionDidReceiveAction
     | BootloaderConnectionDidDisconnectAction;
 
