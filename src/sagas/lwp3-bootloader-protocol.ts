@@ -3,8 +3,7 @@
 // File: sagas/lwp3-bootloader-protocol.ts
 // Handles LEGO Wireless Protocol v3 Bootloader protocol.
 
-import { Channel } from 'redux-saga';
-import { actionChannel, fork, put, take, takeEvery } from 'redux-saga/effects';
+import { actionChannel, fork, put, take, takeEvery } from 'typed-redux-saga/macro';
 import { Action } from '../actions';
 import {
     BootloaderConnectionActionType,
@@ -53,13 +52,14 @@ import { hex } from '../utils';
 function* encodeRequest(): Generator {
     // Using a while loop to serialize sending data to avoid "busy" errors.
 
-    const chan = (yield actionChannel((a: Action) =>
+    const chan = yield* actionChannel<BootloaderRequestAction>((a: Action) =>
         Object.values(BootloaderRequestActionType).includes(
             a.type as BootloaderRequestActionType,
         ),
-    )) as Channel<BootloaderRequestAction>;
+    );
+
     while (true) {
-        const action = (yield take(chan)) as BootloaderRequestAction;
+        const action = yield* take(chan);
 
         // NB: Commands other than program on city hub will cause BlueZ to
         // disconnect because they will send a response even if we write without
@@ -70,10 +70,10 @@ function* encodeRequest(): Generator {
 
         switch (action.type) {
             case BootloaderRequestActionType.Erase:
-                yield put(send(createEraseFlashRequest()));
+                yield* put(send(createEraseFlashRequest()));
                 break;
             case BootloaderRequestActionType.Program:
-                yield put(
+                yield* put(
                     send(
                         createProgramFlashRequest(action.address, action.payload),
                         /* withResponse */ false,
@@ -81,22 +81,22 @@ function* encodeRequest(): Generator {
                 );
                 break;
             case BootloaderRequestActionType.Reboot:
-                yield put(send(createStartAppRequest(), /* withResponse */ false));
+                yield* put(send(createStartAppRequest(), /* withResponse */ false));
                 break;
             case BootloaderRequestActionType.Init:
-                yield put(send(createInitLoaderRequest(action.firmwareSize)));
+                yield* put(send(createInitLoaderRequest(action.firmwareSize)));
                 break;
             case BootloaderRequestActionType.Info:
-                yield put(send(createGetInfoRequest()));
+                yield* put(send(createGetInfoRequest()));
                 break;
             case BootloaderRequestActionType.Checksum:
-                yield put(send(createGetChecksumRequest()));
+                yield* put(send(createGetChecksumRequest()));
                 break;
             case BootloaderRequestActionType.State:
-                yield put(send(createGetFlashStateRequest()));
+                yield* put(send(createGetFlashStateRequest()));
                 break;
             case BootloaderRequestActionType.Disconnect:
-                yield put(send(createDisconnectRequest(), /* withResponse */ false));
+                yield* put(send(createDisconnectRequest(), /* withResponse */ false));
                 break;
             /* istanbul ignore next: should not be possible to reach */
             default:
@@ -104,10 +104,10 @@ function* encodeRequest(): Generator {
                 continue;
         }
 
-        const sent = (yield take(
+        const sent = yield* take<BootloaderConnectionDidSendAction>(
             BootloaderConnectionActionType.DidSend,
-        )) as BootloaderConnectionDidSendAction;
-        yield put(didRequest(action.id, sent.err));
+        );
+        yield* put(didRequest(action.id, sent.err));
     }
 }
 
@@ -120,25 +120,25 @@ function* decodeResponse(action: BootloaderConnectionDidReceiveAction): Generato
         const responseType = getMessageType(action.data);
         switch (responseType) {
             case Command.EraseFlash:
-                yield put(eraseResponse(parseEraseFlashResponse(action.data)));
+                yield* put(eraseResponse(parseEraseFlashResponse(action.data)));
                 break;
             case Command.ProgramFlash:
-                yield put(programResponse(...parseProgramFlashResponse(action.data)));
+                yield* put(programResponse(...parseProgramFlashResponse(action.data)));
                 break;
             case Command.InitLoader:
-                yield put(initResponse(parseInitLoaderResponse(action.data)));
+                yield* put(initResponse(parseInitLoaderResponse(action.data)));
                 break;
             case Command.GetInfo:
-                yield put(infoResponse(...parseGetInfoResponse(action.data)));
+                yield* put(infoResponse(...parseGetInfoResponse(action.data)));
                 break;
             case Command.GetChecksum:
-                yield put(checksumResponse(parseGetChecksumResponse(action.data)));
+                yield* put(checksumResponse(parseGetChecksumResponse(action.data)));
                 break;
             case Command.GetFlashState:
-                yield put(stateResponse(parseGetFlashStateResponse(action.data)));
+                yield* put(stateResponse(parseGetFlashStateResponse(action.data)));
                 break;
             case ErrorBytecode:
-                yield put(errorResponse(parseErrorResponse(action.data)));
+                yield* put(errorResponse(parseErrorResponse(action.data)));
                 break;
             default:
                 throw new ProtocolError(
@@ -147,11 +147,11 @@ function* decodeResponse(action: BootloaderConnectionDidReceiveAction): Generato
                 );
         }
     } catch (err) {
-        yield put(didError(err));
+        yield* put(didError(err));
     }
 }
 
 export default function* (): Generator {
-    yield fork(encodeRequest);
-    yield takeEvery(BootloaderConnectionActionType.DidReceive, decodeResponse);
+    yield* fork(encodeRequest);
+    yield* takeEvery(BootloaderConnectionActionType.DidReceive, decodeResponse);
 }
