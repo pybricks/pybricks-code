@@ -249,6 +249,7 @@ function* showFlashFirmwareError(
             break;
         case FailToFinishReasonType.HubError:
             yield* showSingleton(Level.Error, MessageId.FlashFirmwareHubError);
+            // istanbul ignore next
             if (process.env.NODE_ENV !== 'test') {
                 console.error(action.reason.hubError);
             }
@@ -266,12 +267,14 @@ function* showFlashFirmwareError(
             break;
         case FailToFinishReasonType.ZipError:
             yield* showSingleton(Level.Error, MessageId.FlashFirmwareBadZipFile);
+            // istanbul ignore next
             if (process.env.NODE_ENV !== 'test') {
                 console.error(action.reason.err);
             }
             break;
         case FailToFinishReasonType.BadMetadata:
             yield* showSingleton(Level.Error, MessageId.FlashFirmwareBadMetadata);
+            // istanbul ignore next
             if (process.env.NODE_ENV !== 'test') {
                 console.error(action.reason.property, action.reason.problem);
             }
