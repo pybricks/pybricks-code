@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020 The Pybricks Authors
 
-import { takeEvery } from 'redux-saga/effects';
+import { takeEvery } from 'typed-redux-saga/macro';
 import {
     BleDeviceActionType,
     BleDeviceDidFailToConnectAction,
@@ -43,12 +43,12 @@ function licenseDidFailToFetch(action: LicenseDidFailToFetchListAction): void {
 }
 
 export default function* (): Generator {
-    yield takeEvery(BleDeviceActionType.DidFailToConnect, bleDeviceDidFailToConnect);
-    yield takeEvery(BleUartActionType.DidFailToWrite, bleDataDidFailToWrite);
-    yield takeEvery(
+    yield* takeEvery(BleDeviceActionType.DidFailToConnect, bleDeviceDidFailToConnect);
+    yield* takeEvery(BleUartActionType.DidFailToWrite, bleDataDidFailToWrite);
+    yield* takeEvery(
         BootloaderConnectionActionType.DidFailToConnect,
         bootloaderDidFailToConnect,
     );
-    yield takeEvery(BootloaderConnectionActionType.DidError, bootloaderDidError);
-    yield takeEvery(LicenseActionType.DidFailToFetchList, licenseDidFailToFetch);
+    yield* takeEvery(BootloaderConnectionActionType.DidError, bootloaderDidError);
+    yield* takeEvery(LicenseActionType.DidFailToFetchList, licenseDidFailToFetch);
 }

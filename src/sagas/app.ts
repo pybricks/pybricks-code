@@ -1,23 +1,21 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2021 The Pybricks Authors
 
-import { call, takeEvery } from 'redux-saga/effects';
+import { call, takeEvery } from 'typed-redux-saga/macro';
 import { AppActionType } from '../actions/app';
 
 function* reload(): Generator {
     // unregister the service worker so that when the page reloads, it uses
     // the new version
-    const registrations = (yield call(() =>
-        navigator.serviceWorker.getRegistrations(),
-    )) as ServiceWorkerRegistration[];
+    const registrations = yield* call(() => navigator.serviceWorker.getRegistrations());
 
     for (const r of registrations) {
-        yield call(() => r.unregister());
+        yield* call(() => r.unregister());
     }
 
     location.reload();
 }
 
 export default function* app(): Generator {
-    yield takeEvery(AppActionType.Reload, reload);
+    yield* takeEvery(AppActionType.Reload, reload);
 }

@@ -6,7 +6,7 @@
 // change action that can be used by reducers to compute the new state.
 
 import { EventChannel, eventChannel } from 'redux-saga';
-import { call, fork, put, select, take, takeEvery } from 'redux-saga/effects';
+import { call, fork, put, select, take, takeEvery } from 'typed-redux-saga/macro';
 import { AppActionType } from '../actions/app';
 import {
     SettingsActionType,
@@ -36,12 +36,10 @@ function createLocalStorageEventChannel(): EventChannel<StorageEvent> {
 }
 
 function* monitorLocalStorage(): Generator {
-    const chan = (yield call(
-        createLocalStorageEventChannel,
-    )) as EventChannel<StorageEvent>;
+    const chan = yield* call(createLocalStorageEventChannel);
 
     while (true) {
-        const event = (yield take(chan)) as StorageEvent;
+        const event = yield* take(chan);
 
         // only care about storage keys 'setting.*'
         if (!event.key?.startsWith('setting.')) {
@@ -56,7 +54,7 @@ function* monitorLocalStorage(): Generator {
             continue;
         }
 
-        yield put(didBooleanChange(id, stringToBoolean(event.newValue || 'false')));
+        yield* put(didBooleanChange(id, stringToBoolean(event.newValue || 'false')));
     }
 }
 
@@ -68,7 +66,7 @@ function* loadSettings(): Generator {
             storageValue === null ? defaultValue : stringToBoolean(storageValue);
 
         if (value !== defaultValue) {
-            yield put(didBooleanChange(id, value));
+            yield* put(didBooleanChange(id, value));
         }
     }
 }
@@ -80,13 +78,13 @@ function* storeSetting(action: SettingsSetBooleanAction): Generator {
     try {
         localStorage.setItem(key, newValue);
     } catch (err) {
-        yield put(didFailToSetBoolean(action.id, err));
+        yield* put(didFailToSetBoolean(action.id, err));
     }
 
     // storage event is only raised when a value is changed externally, so we
     // mimic the event when we call setItem(), whether it actually succeeded
     // or not.
-    const oldState = (yield select((s: RootState) => s.settings[action.id])) as boolean;
+    const oldState = yield* select((s: RootState) => s.settings[action.id]);
     if (action.newState !== oldState) {
         window.dispatchEvent(
             new StorageEvent('storage', {
@@ -100,7 +98,7 @@ function* storeSetting(action: SettingsSetBooleanAction): Generator {
 }
 
 export default function* (): Generator {
-    yield fork(monitorLocalStorage);
-    yield takeEvery(AppActionType.DidStart, loadSettings);
-    yield takeEvery(SettingsActionType.SetBoolean, storeSetting);
+    yield* fork(monitorLocalStorage);
+    yield* takeEvery(AppActionType.DidStart, loadSettings);
+    yield* takeEvery(SettingsActionType.SetBoolean, storeSetting);
 }

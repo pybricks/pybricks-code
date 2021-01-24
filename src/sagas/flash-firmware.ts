@@ -408,8 +408,9 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
 
         const checksum = firmware.reduce((prev, curr) => prev ^ curr, 0xff);
         if (flash.checksum !== checksum) {
+            // istanbul ignore next
             if (process.env.NODE_ENV !== 'test') {
-                console.log(
+                console.error(
                     'checksum:',
                     flash.checksum.toString(16).padStart(2, '0').padStart(4, '0x'),
                     checksum.toString(16).padStart(2, '0').padStart(4, '0x'),

@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020 The Pybricks Authors
 
-import { CompileResult, compile as mpyCrossCompile } from '@pybricks/mpy-cross-v5';
+import { compile as mpyCrossCompile } from '@pybricks/mpy-cross-v5';
 import wasm from '@pybricks/mpy-cross-v5/build/mpy-cross.wasm';
-import { call, put, takeEvery } from 'redux-saga/effects';
+import { call, put, takeEvery } from 'typed-redux-saga/macro';
 import {
     MpyActionType,
     MpyCompileAction,
@@ -17,7 +17,7 @@ import {
  * @param action A mpy compile action.
  */
 function* compile(action: MpyCompileAction): Generator {
-    const result = (yield call(() =>
+    const result = yield* call(() =>
         mpyCrossCompile(
             'main.py',
             action.script,
@@ -25,14 +25,14 @@ function* compile(action: MpyCompileAction): Generator {
             // HACK: testing user agent for jsdom is needed only for getting unit tests to work
             navigator.userAgent.includes('jsdom') ? undefined : wasm,
         ),
-    )) as CompileResult;
+    );
     if (result.status === 0 && result.mpy) {
-        yield put(didCompile(result.mpy));
+        yield* put(didCompile(result.mpy));
     } else {
-        yield put(didFailToCompile(result.err));
+        yield* put(didFailToCompile(result.err));
     }
 }
 
 export default function* (): Generator {
-    yield takeEvery(MpyActionType.Compile, compile);
+    yield* takeEvery(MpyActionType.Compile, compile);
 }
