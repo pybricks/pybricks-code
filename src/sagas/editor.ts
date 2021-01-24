@@ -1,9 +1,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020 The Pybricks Authors
 
-import { Ace } from 'ace-builds';
 import FileSaver from 'file-saver';
-import { select, takeEvery } from 'redux-saga/effects';
+import { select, takeEvery } from 'typed-redux-saga/macro';
 import {
     EditorActionType,
     EditorOpenAction,
@@ -15,9 +14,7 @@ import { RootState } from '../reducers';
 const decoder = new TextDecoder();
 
 function* open(action: EditorOpenAction): Generator {
-    const editor = (yield select(
-        (s: RootState) => s.editor.current,
-    )) as Ace.EditSession | null;
+    const editor = yield* select((s: RootState) => s.editor.current);
 
     // istanbul ignore next: it is a bug to dispatch this action with no current editor
     if (editor === null) {
@@ -30,9 +27,7 @@ function* open(action: EditorOpenAction): Generator {
 }
 
 function* saveAs(_action: EditorSaveAsAction): Generator {
-    const editor = (yield select(
-        (s: RootState) => s.editor.current,
-    )) as Ace.EditSession | null;
+    const editor = yield* select((s: RootState) => s.editor.current);
 
     // istanbul ignore next: it is a bug to dispatch this action with no current editor
     if (editor === null) {
@@ -46,9 +41,7 @@ function* saveAs(_action: EditorSaveAsAction): Generator {
 }
 
 function* reloadProgram(_action: EditorReloadProgramAction): Generator {
-    const editor = (yield select(
-        (s: RootState) => s.editor.current,
-    )) as Ace.EditSession | null;
+    const editor = yield* select((s: RootState) => s.editor.current);
 
     // istanbul ignore next: it is a bug to dispatch this action with no current editor
     if (editor === null) {
@@ -60,7 +53,7 @@ function* reloadProgram(_action: EditorReloadProgramAction): Generator {
 }
 
 export default function* (): Generator {
-    yield takeEvery(EditorActionType.Open, open);
-    yield takeEvery(EditorActionType.SaveAs, saveAs);
-    yield takeEvery(EditorActionType.ReloadProgram, reloadProgram);
+    yield* takeEvery(EditorActionType.Open, open);
+    yield* takeEvery(EditorActionType.SaveAs, saveAs);
+    yield* takeEvery(EditorActionType.ReloadProgram, reloadProgram);
 }
