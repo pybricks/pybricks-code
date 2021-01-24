@@ -40,7 +40,11 @@ body {
 
 // global style tweaks
 
-.#{$ns}-dialog {
+.#{$ns}-toast {
+    user-select: text;
+}
+
+.#{$ns}-button {
     user-select: none;
 }
 
