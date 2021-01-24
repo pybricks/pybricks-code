@@ -21,6 +21,7 @@ import {
     BootloaderRequestActionType,
     checksumResponse,
     didError,
+    didFailToRequest,
     didRequest,
     eraseResponse,
     errorResponse,
@@ -120,7 +121,12 @@ function* encodeRequest(): Generator {
                 BootloaderConnectionActionType.DidFailToSend,
             ),
         });
-        yield* put(didRequest(action.id, failedToSend?.err));
+
+        if (failedToSend) {
+            yield* put(didFailToRequest(action.id, failedToSend.err));
+        } else {
+            yield* put(didRequest(action.id));
+        }
     }
 }
 

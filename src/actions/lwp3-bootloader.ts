@@ -365,26 +365,57 @@ export type BootloaderDidRequestType = 'bootloader.action.did.request';
 export const BootloaderDidRequestType = 'bootloader.action.did.request';
 
 /**
- * Action that indicates a request was sent or failed to send.
+ * Action that indicates a request was sent.
  */
 export type BootloaderDidRequestAction = Action<BootloaderDidRequestType> & {
     /**
      * The unique identifier of the action.
      */
     id: number;
-    /**
-     * The error on failure or undefined on success.
-     */
-    err?: Error;
 };
 
 /**
- * Creates an action that indicates a request was sent or failed to send.
+ * Creates an action that indicates a request was sent.
  * @param id The unique identifier of the action.
- * @param err The error message on failure or undefined on success.
  */
-export function didRequest(id: number, err?: Error): BootloaderDidRequestAction {
-    return { type: BootloaderDidRequestType, id, err };
+export function didRequest(id: number): BootloaderDidRequestAction {
+    return { type: BootloaderDidRequestType, id };
+}
+
+/**
+ * Action type for bootloader did fail to request action.
+ */
+export type BootloaderDidFailToRequestType = 'bootloader.action.did.failToRequest';
+
+/**
+ * Action type for bootloader did fail to request action.
+ */
+export const BootloaderDidFailToRequestType = 'bootloader.action.did.failToRequest';
+
+/**
+ * Action that indicates a request failed to send.
+ */
+export type BootloaderDidFailToRequestAction = Action<BootloaderDidFailToRequestType> & {
+    /**
+     * The unique identifier of the action.
+     */
+    id: number;
+    /**
+     * The error.
+     */
+    err: Error;
+};
+
+/**
+ * Creates an action that indicates a request failed to send.
+ * @param id The unique identifier of the action.
+ * @param err The error message.
+ */
+export function didFailToRequest(
+    id: number,
+    err: Error,
+): BootloaderDidFailToRequestAction {
+    return { type: BootloaderDidFailToRequestType, id, err };
 }
 
 /**

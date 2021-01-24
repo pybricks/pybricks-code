@@ -11,6 +11,7 @@ import { HubAction, HubMessageAction } from './hub';
 import { LicenseAction } from './license';
 import {
     BootloaderConnectionAction,
+    BootloaderDidFailToRequestAction,
     BootloaderDidRequestAction,
     BootloaderRequestAction,
     BootloaderResponseAction,
@@ -31,6 +32,7 @@ export type Action =
     | BleUartAction
     | BootloaderConnectionAction
     | BootloaderDidRequestAction
+    | BootloaderDidFailToRequestAction
     | BootloaderRequestAction
     | BootloaderResponseAction
     | EditorAction
