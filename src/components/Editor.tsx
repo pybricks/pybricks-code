@@ -158,6 +158,12 @@ class Editor extends React.Component<EditorProps> {
                     icon="clipboard"
                     label={isMacOS() ? 'Cmd-V' : 'Ctrl-V'}
                 />
+                <MenuItem
+                    onClick={() => this.editor?.selectAll()}
+                    text={i18n.translate(EditorStringId.SelectAll)}
+                    icon="blank"
+                    label={isMacOS() ? 'Cmd-A' : 'Ctrl-A'}
+                />
                 <MenuDivider />
                 <MenuItem
                     onClick={(): void => this.editor?.undo()}

@@ -7,6 +7,7 @@ export enum EditorStringId {
     Placeholder = 'editor.placeholder',
     Copy = 'editor.copy',
     Paste = 'editor.paste',
+    SelectAll = 'editor.selectAll',
     Undo = 'editor.undo',
     Redo = 'editor.redo',
 }
