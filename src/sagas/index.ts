@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2021 The Pybricks Authors
 
-import { all, put } from 'redux-saga/effects';
+import { all, put } from 'typed-redux-saga/macro';
 import { didStart } from '../actions/app';
 import app from './app';
 import bleUart from './ble-uart';
@@ -19,7 +19,7 @@ import terminal from './terminal';
 
 /* istanbul ignore next */
 export default function* (): Generator {
-    yield all([
+    yield* all([
         app(),
         bleUart(),
         lwp3BootloaderBle(),
