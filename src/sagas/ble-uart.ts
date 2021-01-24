@@ -4,7 +4,14 @@
 // Manages connection to a Bluetooth Low Energy device with the Nordic (nRF) UART service.
 
 import { END, eventChannel } from 'redux-saga';
-import { call, cancel, put, select, takeEvery, takeMaybe } from 'redux-saga/effects';
+import {
+    call,
+    cancel,
+    put,
+    select,
+    takeEvery,
+    takeMaybe,
+} from 'typed-redux-saga/macro';
 import {
     BLEActionType,
     BleDeviceActionType as BLEDeviceActionType,
@@ -42,7 +49,7 @@ function disconnect(
 }
 
 function* handleValueChanged(data: DataView): Generator {
-    yield put(notify(data));
+    yield* put(notify(data));
 }
 
 function* write(
@@ -50,16 +57,16 @@ function* write(
     action: BleUartWriteAction,
 ): Generator {
     try {
-        yield call(() => rxChar.writeValueWithoutResponse(action.value.buffer));
-        yield put(didWrite(action.id));
+        yield* call(() => rxChar.writeValueWithoutResponse(action.value.buffer));
+        yield* put(didWrite(action.id));
     } catch (err) {
-        yield put(didFailToWrite(action.id, err));
+        yield* put(didFailToWrite(action.id, err));
     }
 }
 
 function* connect(_action: BleDeviceConnectAction): Generator {
     if (navigator.bluetooth === undefined) {
-        yield put(didFailToConnect({ reason: Reason.NoWebBluetooth }));
+        yield* put(didFailToConnect({ reason: Reason.NoWebBluetooth }));
         return;
     }
 
@@ -67,24 +74,24 @@ function* connect(_action: BleDeviceConnectAction): Generator {
 
     let device: BluetoothDevice;
     try {
-        device = (yield call(() =>
+        device = yield* call(() =>
             navigator.bluetooth.requestDevice({
                 filters: [{ services: [pybricksServiceUUID] }],
                 optionalServices: [uartServiceUUID],
             }),
-        )) as BluetoothDevice;
+        );
     } catch (err) {
         if (err instanceof DOMException && err.code === DOMException.NOT_FOUND_ERR) {
             // this can happen if the use cancels the dialog
-            yield put(didFailToConnect({ reason: Reason.Canceled }));
+            yield* put(didFailToConnect({ reason: Reason.Canceled }));
         } else {
-            yield put(didFailToConnect({ reason: Reason.Unknown, err }));
+            yield* put(didFailToConnect({ reason: Reason.Unknown, err }));
         }
         return;
     }
 
     if (device.gatt === undefined) {
-        yield put(didFailToConnect({ reason: Reason.NoGatt }));
+        yield* put(didFailToConnect({ reason: Reason.NoGatt }));
         return;
     }
 
@@ -97,57 +104,48 @@ function* connect(_action: BleDeviceConnectAction): Generator {
 
     let server: BluetoothRemoteGATTServer;
     try {
-        server = (yield call([device.gatt, 'connect'])) as BluetoothRemoteGATTServer;
+        server = yield* call([device.gatt, 'connect']);
     } catch (err) {
         disconnectChannel.close();
-        yield put(didFailToConnect({ reason: Reason.Unknown, err }));
+        yield* put(didFailToConnect({ reason: Reason.Unknown, err }));
         return;
     }
 
-    yield takeEvery(BLEDeviceActionType.Disconnect, disconnect, server);
+    yield* takeEvery(BLEDeviceActionType.Disconnect, disconnect, server);
 
     let service: BluetoothRemoteGATTService;
     try {
-        service = (yield call(
-            [server, 'getPrimaryService'],
-            uartServiceUUID,
-        )) as BluetoothRemoteGATTService;
+        service = yield* call([server, 'getPrimaryService'], uartServiceUUID);
     } catch (err) {
         server.disconnect();
-        yield takeMaybe(disconnectChannel);
+        yield* takeMaybe(disconnectChannel);
         if (err instanceof DOMException && err.code === DOMException.NOT_FOUND_ERR) {
             // Possibly/probably caused by Chrome BlueZ back-end bug
             // https://chromium-review.googlesource.com/c/chromium/src/+/2214098
-            yield put(didFailToConnect({ reason: Reason.NoService }));
+            yield* put(didFailToConnect({ reason: Reason.NoService }));
         } else {
-            yield put(didFailToConnect({ reason: Reason.Unknown, err }));
+            yield* put(didFailToConnect({ reason: Reason.Unknown, err }));
         }
         return;
     }
 
     let rxChar: BluetoothRemoteGATTCharacteristic;
     try {
-        rxChar = (yield call(
-            [service, 'getCharacteristic'],
-            urtRxCharUUID,
-        )) as BluetoothRemoteGATTCharacteristic;
+        rxChar = yield* call([service, 'getCharacteristic'], urtRxCharUUID);
     } catch (err) {
         server.disconnect();
-        yield takeMaybe(disconnectChannel);
-        yield put(didFailToConnect({ reason: Reason.Unknown, err }));
+        yield* takeMaybe(disconnectChannel);
+        yield* put(didFailToConnect({ reason: Reason.Unknown, err }));
         return;
     }
 
     let txChar: BluetoothRemoteGATTCharacteristic;
     try {
-        txChar = (yield call(
-            [service, 'getCharacteristic'],
-            uartTxCharUUID,
-        )) as BluetoothRemoteGATTCharacteristic;
+        txChar = yield* call([service, 'getCharacteristic'], uartTxCharUUID);
     } catch (err) {
         server.disconnect();
-        yield takeMaybe(disconnectChannel);
-        yield put(didFailToConnect({ reason: Reason.Unknown, err }));
+        yield* takeMaybe(disconnectChannel);
+        yield* put(didFailToConnect({ reason: Reason.Unknown, err }));
         return;
     }
 
@@ -169,27 +167,27 @@ function* connect(_action: BleDeviceConnectAction): Generator {
         // and reconnecting unless we stop notifications before we start them
         // again. Wireshark shows that no enable notification descriptor write
         // is performed but notifications are received.
-        yield call([txChar, 'stopNotifications']);
-        yield call([txChar, 'startNotifications']);
+        yield* call([txChar, 'stopNotifications']);
+        yield* call([txChar, 'startNotifications']);
     } catch (err) {
         txChannel.close();
         server.disconnect();
-        yield takeMaybe(disconnectChannel);
-        yield put(didFailToConnect({ reason: Reason.Unknown, err }));
+        yield* takeMaybe(disconnectChannel);
+        yield* put(didFailToConnect({ reason: Reason.Unknown, err }));
         return;
     }
 
-    yield takeEvery(txChannel, handleValueChanged);
-    yield takeEvery(BleUartActionType.Write, write, rxChar);
+    yield* takeEvery(txChannel, handleValueChanged);
+    yield* takeEvery(BleUartActionType.Write, write, rxChar);
 
-    yield put(didConnect());
+    yield* put(didConnect());
 
-    yield takeMaybe(disconnectChannel);
+    yield* takeMaybe(disconnectChannel);
     txChannel.close();
     try {
-        yield cancel(); // have to cancel to stop forked effects
+        yield* cancel(); // have to cancel to stop forked effects
     } finally {
-        yield put(didDisconnect());
+        yield* put(didDisconnect());
     }
 }
 
@@ -200,15 +198,15 @@ function* toggle(_action: BLEToggleAction): Generator {
 
     switch (connectionState) {
         case BleConnectionState.Connected:
-            yield put(disconnectAction());
+            yield* put(disconnectAction());
             break;
         case BleConnectionState.Disconnected:
-            yield put(connectAction());
+            yield* put(connectAction());
             break;
     }
 }
 
 export default function* (): Generator {
-    yield takeEvery(BLEDeviceActionType.Connect, connect);
-    yield takeEvery(BLEActionType.Toggle, toggle);
+    yield* takeEvery(BLEDeviceActionType.Connect, connect);
+    yield* takeEvery(BLEActionType.Toggle, toggle);
 }
