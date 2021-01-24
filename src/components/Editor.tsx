@@ -16,6 +16,7 @@ import { IAceEditor } from 'react-ace/lib/types';
 import { connect } from 'react-redux';
 import { Action, Dispatch } from '../actions';
 import { setEditSession, storageChanged } from '../actions/editor';
+import { compile } from '../actions/mpy';
 import { RootState } from '../reducers';
 import { isMacOS } from '../utils/os';
 import { EditorStringId } from './editor-i18n';
@@ -38,6 +39,7 @@ type StateProps = {
 type DispatchProps = {
     onSessionChanged: (session?: Ace.EditSession) => void;
     onProgramStorageChanged: (newValue: string) => void;
+    onCheck: (script: string) => void;
 };
 
 type EditorProps = StateProps & DispatchProps & WithI18nProps;
@@ -76,7 +78,7 @@ class Editor extends React.Component<EditorProps> {
     }
 
     render(): JSX.Element {
-        const { darkMode, i18n, onSessionChanged } = this.props;
+        const { darkMode, i18n, onSessionChanged, onCheck } = this.props;
         return (
             <div className="h-100">
                 <ResizeSensor onResize={(): void => this.editor?.resize()}>
@@ -97,12 +99,19 @@ class Editor extends React.Component<EditorProps> {
                             enableSnippets: true,
                         }}
                         onLoad={(e): void => {
+                            // default binding is F2 which conflicts with 'check'
+                            e.commands.byName['toggleFoldWidget'].bindKey = {
+                                win: 'Shift-F2',
+                                mac: 'Shift-F2',
+                            };
+
                             config.loadModule(
                                 'ace/ext/menu_tools/get_editor_keyboard_shortcuts',
                                 (m) => {
                                     this.keyBindings = m.getEditorKeybordShortcuts(e);
                                 },
                             );
+
                             config.loadModule('ace/ext/keybinding_menu', (m) =>
                                 m.init(e),
                             );
@@ -114,6 +123,12 @@ class Editor extends React.Component<EditorProps> {
                             localStorage.setItem('program', v);
                         }}
                         commands={[
+                            {
+                                // command to check current program for errors
+                                name: 'check',
+                                bindKey: { win: 'F2', mac: 'F2' },
+                                exec: (editor) => onCheck(editor.getValue()),
+                            },
                             {
                                 name: 'save',
                                 bindKey: { win: 'Ctrl-S', mac: 'Cmd-S' },
@@ -192,6 +207,9 @@ const mapStateToProps = (state: RootState): StateProps => ({
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
     onSessionChanged: (s): Action => dispatch(setEditSession(s)),
     onProgramStorageChanged: (v): Action => dispatch(storageChanged(v)),
+    // REVISIT: the options here might need to be changed - hopefully there is
+    // one setting that works for all hub types for cases where we aren't connected.
+    onCheck: (script) => dispatch(compile(script)),
 });
 
 export default connect(
