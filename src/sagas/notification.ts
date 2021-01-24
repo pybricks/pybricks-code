@@ -13,7 +13,7 @@ import {
 import { Replacements } from '@shopify/react-i18n';
 import React from 'react';
 import { channel } from 'redux-saga';
-import { delay, getContext, put, take, takeEvery } from 'redux-saga/effects';
+import { delay, getContext, put, take, takeEvery } from 'typed-redux-saga/macro';
 import { reload } from '../actions/app';
 import {
     BleDeviceActionType,
@@ -119,7 +119,7 @@ function* showSingleton(
     action?: IActionProps & ILinkProps,
     onDismiss?: (didTimeoutExpire: boolean) => void,
 ): Generator {
-    const { toaster } = (yield getContext('notification')) as NotificationContext;
+    const { toaster } = yield* getContext<NotificationContext>('notification');
 
     // if the message is already showing, close it and wait some time so that
     // users can see that something triggered the message again
@@ -130,7 +130,7 @@ function* showSingleton(
             .includes(messageId)
     ) {
         toaster.dismiss(messageId);
-        yield delay(500);
+        yield* delay(500);
     }
 
     toaster.show(
@@ -148,7 +148,7 @@ function* showSingleton(
 
 /** Shows a special notification for unexpected errors. */
 function* showUnexpectedError(messageId: MessageId, err: Error): Generator {
-    const { toaster } = (yield getContext('notification')) as NotificationContext;
+    const { toaster } = yield* getContext<NotificationContext>('notification');
     toaster.show({
         intent: mapIntent(Level.Error),
         icon: mapIcon(Level.Error),
@@ -226,9 +226,9 @@ function* showEditorStorageChanged(): Generator {
 
     // if the notification is dismissed without clicking on the action, the
     // saga will be cancelled here
-    yield take(ch);
+    yield* take(ch);
 
-    yield put(reloadProgram());
+    yield* put(reloadProgram());
 }
 
 function* showFlashFirmwareError(
@@ -295,7 +295,7 @@ function* showFlashFirmwareError(
 }
 
 function* dismissCompilerError(): Generator {
-    const { toaster } = (yield getContext('notification')) as NotificationContext;
+    const { toaster } = yield* getContext<NotificationContext>('notification');
     toaster.dismiss(MessageId.MpyError);
 }
 
@@ -306,7 +306,7 @@ function* showCompilerError(action: MpyDidFailToCompileAction): Generator {
 }
 
 function* addNotification(action: NotificationAddAction): Generator {
-    const { toaster } = (yield getContext('notification')) as NotificationContext;
+    const { toaster } = yield* getContext<NotificationContext>('notification');
 
     toaster.show({
         intent: mapIntent(action.level as Level),
@@ -335,24 +335,24 @@ function* showServiceWorkerUpdate(): Generator {
         ch.close,
     );
 
-    yield take(ch);
+    yield* take(ch);
 
-    yield put(reload());
+    yield* put(reload());
 }
 
 export default function* (): Generator {
-    yield takeEvery(
+    yield* takeEvery(
         BleDeviceActionType.DidFailToConnect,
         showBleDeviceDidFailToConnectError,
     );
-    yield takeEvery(
+    yield* takeEvery(
         BootloaderConnectionActionType.DidFailToConnect,
         showBootloaderDidFailToConnectError,
     );
-    yield takeEvery(EditorActionType.StorageChanged, showEditorStorageChanged);
-    yield takeEvery(FlashFirmwareActionType.DidFailToFinish, showFlashFirmwareError);
-    yield takeEvery(MpyActionType.DidCompile, dismissCompilerError);
-    yield takeEvery(MpyActionType.DidFailToCompile, showCompilerError);
-    yield takeEvery(NotificationActionType.Add, addNotification);
-    yield takeEvery(ServiceWorkerActionType.DidUpdate, showServiceWorkerUpdate);
+    yield* takeEvery(EditorActionType.StorageChanged, showEditorStorageChanged);
+    yield* takeEvery(FlashFirmwareActionType.DidFailToFinish, showFlashFirmwareError);
+    yield* takeEvery(MpyActionType.DidCompile, dismissCompilerError);
+    yield* takeEvery(MpyActionType.DidFailToCompile, showCompilerError);
+    yield* takeEvery(NotificationActionType.Add, addNotification);
+    yield* takeEvery(ServiceWorkerActionType.DidUpdate, showServiceWorkerUpdate);
 }
