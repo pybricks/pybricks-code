@@ -149,6 +149,11 @@ class Terminal extends React.Component<TerminalProps> {
                     icon="clipboard"
                     label={isMacOS() ? 'Cmd-V' : 'Ctrl-V'}
                 />
+                <MenuItem
+                    onClick={() => this.xterm.selectAll()}
+                    text={i18n.translate(TerminalStringId.SelectAll)}
+                    icon="blank"
+                />
                 <MenuDivider />
                 <MenuItem
                     onClick={(): void => this.xterm.clear()}

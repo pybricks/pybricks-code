@@ -34,6 +34,8 @@ import {
     BootloaderChecksumResponseAction,
     BootloaderConnectionAction,
     BootloaderConnectionActionType,
+    BootloaderDidFailToRequestAction,
+    BootloaderDidFailToRequestType,
     BootloaderDidRequestAction,
     BootloaderDidRequestType,
     BootloaderEraseResponseAction,
@@ -85,15 +87,25 @@ function* disconnectAndCancel(): SagaGenerator<void> {
 }
 
 function* waitForDidRequest(id: number): SagaGenerator<BootloaderDidRequestAction> {
-    const request = yield* take<BootloaderDidRequestAction>(
-        (a: Action) => a.type === BootloaderDidRequestType && a.id === id,
-    );
-    if (request.err) {
-        yield* put(didFailToFinish(FailToFinishReasonType.BleError, request.err));
+    const { requested, failedToRequest } = yield* race({
+        requested: take<BootloaderDidRequestAction>(
+            (a: Action) => a.type === BootloaderDidRequestType && a.id === id,
+        ),
+        failedToRequest: take<BootloaderDidFailToRequestAction>(
+            (a: Action) => a.type === BootloaderDidFailToRequestType && a.id === id,
+        ),
+    });
+
+    if (failedToRequest) {
+        yield* put(
+            didFailToFinish(FailToFinishReasonType.BleError, failedToRequest.err),
+        );
         yield* disconnectAndCancel();
     }
 
-    return request;
+    defined(requested);
+
+    return requested;
 }
 
 /**

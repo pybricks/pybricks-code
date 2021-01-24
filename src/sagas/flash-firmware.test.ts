@@ -27,6 +27,7 @@ import {
     didConnect,
     didDisconnect,
     didFailToConnect,
+    didFailToRequest,
     didRequest,
     disconnect,
     eraseRequest,
@@ -329,7 +330,7 @@ describe('flashFirmware', () => {
             // On city hub, we can end up in this situation. BLE writeValueWithResponse()
             // doesn't return until erasing is done, so there is a long window for
             // this to happen.
-            saga.put(didRequest(0, new Error('failed due to disconnect')));
+            saga.put(didFailToRequest(0, new Error('failed due to disconnect')));
 
             await saga.end();
         });
@@ -387,7 +388,7 @@ describe('flashFirmware', () => {
             expect(action).toEqual(infoRequest(0));
 
             const testError = new Error('test');
-            saga.put(didRequest(0, testError));
+            saga.put(didFailToRequest(0, testError));
 
             // should get a failure to start
 

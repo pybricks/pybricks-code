@@ -38,6 +38,10 @@ export enum BootloaderConnectionActionType {
      */
     DidSend = 'bootloader.action.connection.did.send',
     /**
+     * Sending a message failed with error.
+     */
+    DidFailToSend = 'bootloader.action.connection.did.failToSend',
+    /**
      * The connection received a message.
      */
     DidReceive = 'bootloader.action.connection.did.receive',
@@ -152,12 +156,18 @@ export function send(
     return { type: BootloaderConnectionActionType.Send, data, withResponse };
 }
 
-export type BootloaderConnectionDidSendAction = Action<BootloaderConnectionActionType.DidSend> & {
-    err?: Error;
+export type BootloaderConnectionDidSendAction = Action<BootloaderConnectionActionType.DidSend>;
+
+export function didSend(): BootloaderConnectionDidSendAction {
+    return { type: BootloaderConnectionActionType.DidSend };
+}
+
+export type BootloaderConnectionDidFailToSendAction = Action<BootloaderConnectionActionType.DidFailToSend> & {
+    err: Error;
 };
 
-export function didSend(err?: Error): BootloaderConnectionDidSendAction {
-    return { type: BootloaderConnectionActionType.DidSend, err };
+export function didFailToSend(err: Error): BootloaderConnectionDidFailToSendAction {
+    return { type: BootloaderConnectionActionType.DidFailToSend, err };
 }
 
 export type BootloaderConnectionDidReceiveAction = Action<BootloaderConnectionActionType.DidReceive> & {
@@ -184,7 +194,7 @@ export type BootloaderConnectionAction =
     | BootloaderConnectionDidErrorAction
     | BootloaderConnectionSendAction
     | BootloaderConnectionDidSendAction
-    | BootloaderConnectionDidSendAction
+    | BootloaderConnectionDidFailToSendAction
     | BootloaderConnectionDidReceiveAction
     | BootloaderConnectionDidDisconnectAction;
 
@@ -355,26 +365,57 @@ export type BootloaderDidRequestType = 'bootloader.action.did.request';
 export const BootloaderDidRequestType = 'bootloader.action.did.request';
 
 /**
- * Action that indicates a request was sent or failed to send.
+ * Action that indicates a request was sent.
  */
 export type BootloaderDidRequestAction = Action<BootloaderDidRequestType> & {
     /**
      * The unique identifier of the action.
      */
     id: number;
-    /**
-     * The error on failure or undefined on success.
-     */
-    err?: Error;
 };
 
 /**
- * Creates an action that indicates a request was sent or failed to send.
+ * Creates an action that indicates a request was sent.
  * @param id The unique identifier of the action.
- * @param err The error message on failure or undefined on success.
  */
-export function didRequest(id: number, err?: Error): BootloaderDidRequestAction {
-    return { type: BootloaderDidRequestType, id, err };
+export function didRequest(id: number): BootloaderDidRequestAction {
+    return { type: BootloaderDidRequestType, id };
+}
+
+/**
+ * Action type for bootloader did fail to request action.
+ */
+export type BootloaderDidFailToRequestType = 'bootloader.action.did.failToRequest';
+
+/**
+ * Action type for bootloader did fail to request action.
+ */
+export const BootloaderDidFailToRequestType = 'bootloader.action.did.failToRequest';
+
+/**
+ * Action that indicates a request failed to send.
+ */
+export type BootloaderDidFailToRequestAction = Action<BootloaderDidFailToRequestType> & {
+    /**
+     * The unique identifier of the action.
+     */
+    id: number;
+    /**
+     * The error.
+     */
+    err: Error;
+};
+
+/**
+ * Creates an action that indicates a request failed to send.
+ * @param id The unique identifier of the action.
+ * @param err The error message.
+ */
+export function didFailToRequest(
+    id: number,
+    err: Error,
+): BootloaderDidFailToRequestAction {
+    return { type: BootloaderDidFailToRequestType, id, err };
 }
 
 /**

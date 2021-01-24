@@ -3,16 +3,25 @@
 // File: sagas/lwp3-bootloader-protocol.ts
 // Handles LEGO Wireless Protocol v3 Bootloader protocol.
 
-import { actionChannel, fork, put, take, takeEvery } from 'typed-redux-saga/macro';
+import {
+    actionChannel,
+    fork,
+    put,
+    race,
+    take,
+    takeEvery,
+} from 'typed-redux-saga/macro';
 import { Action } from '../actions';
 import {
     BootloaderConnectionActionType,
+    BootloaderConnectionDidFailToSendAction,
     BootloaderConnectionDidReceiveAction,
     BootloaderConnectionDidSendAction,
     BootloaderRequestAction,
     BootloaderRequestActionType,
     checksumResponse,
     didError,
+    didFailToRequest,
     didRequest,
     eraseResponse,
     errorResponse,
@@ -104,10 +113,20 @@ function* encodeRequest(): Generator {
                 continue;
         }
 
-        const sent = yield* take<BootloaderConnectionDidSendAction>(
-            BootloaderConnectionActionType.DidSend,
-        );
-        yield* put(didRequest(action.id, sent.err));
+        const { failedToSend } = yield* race({
+            sent: take<BootloaderConnectionDidSendAction>(
+                BootloaderConnectionActionType.DidSend,
+            ),
+            failedToSend: take<BootloaderConnectionDidFailToSendAction>(
+                BootloaderConnectionActionType.DidFailToSend,
+            ),
+        });
+
+        if (failedToSend) {
+            yield* put(didFailToRequest(action.id, failedToSend.err));
+        } else {
+            yield* put(didRequest(action.id));
+        }
     }
 }
 
