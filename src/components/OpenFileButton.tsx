@@ -100,33 +100,38 @@ class OpenFileButton extends React.Component<Props> {
                         position={Position.BOTTOM}
                         hoverOpenDelay={tooltipDelay}
                     >
-                        <Button
+                        <div
                             {...getRootProps()}
-                            intent={Intent.PRIMARY}
-                            disabled={this.props.enabled === false}
-                            className="no-box-shadow"
-                            style={
-                                this.props.enabled === false
-                                    ? { pointerEvents: 'none' }
-                                    : undefined
-                            }
-                            // onClick={this.props.onClick}
-                            // breaks Dropzone when this.props.onClick is undefined
-                            // so we have to do it the long way
-                            {...(this.props.onClick
-                                ? { onClick: this.props.onClick }
-                                : {})}
+                            tabIndex={-1}
+                            className="pb-open-file-button-root"
                         >
-                            <input {...getInputProps()} />
-                            {this.props.showProgress ? (
-                                <Spinner
-                                    value={this.props.progress}
-                                    intent={Intent.PRIMARY}
-                                />
-                            ) : (
-                                <img src={this.props.icon} alt={this.props.id} />
-                            )}
-                        </Button>
+                            <Button
+                                intent={Intent.PRIMARY}
+                                disabled={this.props.enabled === false}
+                                className="no-box-shadow"
+                                style={
+                                    this.props.enabled === false
+                                        ? { pointerEvents: 'none' }
+                                        : undefined
+                                }
+                                // onClick={this.props.onClick}
+                                // breaks Dropzone when this.props.onClick is undefined
+                                // so we have to do it the long way
+                                {...(this.props.onClick
+                                    ? { onClick: this.props.onClick }
+                                    : {})}
+                            >
+                                <input {...getInputProps()} />
+                                {this.props.showProgress ? (
+                                    <Spinner
+                                        value={this.props.progress}
+                                        intent={Intent.PRIMARY}
+                                    />
+                                ) : (
+                                    <img src={this.props.icon} alt={this.props.id} />
+                                )}
+                            </Button>
+                        </div>
                     </Tooltip>
                 )}
             </Dropzone>
