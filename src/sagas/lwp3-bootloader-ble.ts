@@ -4,7 +4,7 @@
 // Handles Bluetooth Low Energy connection to LEGO Wireless Protocol v3 Bootloader service.
 
 import { END, eventChannel } from 'redux-saga';
-import { call, cancel, put, spawn, takeEvery, takeMaybe } from 'redux-saga/effects';
+import { call, cancel, put, spawn, takeEvery, takeMaybe } from 'typed-redux-saga/macro';
 import {
     BootloaderConnectionAction,
     BootloaderConnectionActionType,
@@ -19,7 +19,7 @@ import {
 import { CharacteristicUUID, ServiceUUID } from '../protocols/lwp3-bootloader';
 
 function* handleNotify(data: DataView): Generator {
-    yield put(didReceive(data));
+    yield* put(didReceive(data));
 }
 
 function* write(
@@ -28,19 +28,19 @@ function* write(
 ): Generator {
     try {
         if (action.withResponse) {
-            yield call(() => characteristic.writeValueWithResponse(action.data));
+            yield* call(() => characteristic.writeValueWithResponse(action.data));
         } else {
-            yield call(() => characteristic.writeValueWithoutResponse(action.data));
+            yield* call(() => characteristic.writeValueWithoutResponse(action.data));
         }
-        yield put(didSend());
+        yield* put(didSend());
     } catch (err) {
-        yield put(didSend(err));
+        yield* put(didSend(err));
     }
 }
 
 function* connect(_action: BootloaderConnectionAction): Generator {
     if (navigator.bluetooth === undefined) {
-        yield put(didFailToConnect(Reason.NoWebBluetooth));
+        yield* put(didFailToConnect(Reason.NoWebBluetooth));
         return;
     }
 
@@ -48,24 +48,24 @@ function* connect(_action: BootloaderConnectionAction): Generator {
 
     let device: BluetoothDevice;
     try {
-        device = (yield call(() =>
+        device = yield* call(() =>
             navigator.bluetooth.requestDevice({
                 filters: [{ services: [ServiceUUID] }],
                 optionalServices: [ServiceUUID],
             }),
-        )) as BluetoothDevice;
+        );
     } catch (err) {
         if (err instanceof DOMException && err.code === DOMException.NOT_FOUND_ERR) {
             // this can happen if the use cancels the dialog
-            yield put(didFailToConnect(Reason.Canceled));
+            yield* put(didFailToConnect(Reason.Canceled));
         } else {
-            yield put(didFailToConnect(Reason.Unknown, err));
+            yield* put(didFailToConnect(Reason.Unknown, err));
         }
         return;
     }
 
     if (device.gatt === undefined) {
-        yield put(
+        yield* put(
             didFailToConnect(Reason.Unknown, new Error('Device does not support GATT')),
         );
         return;
@@ -80,42 +80,39 @@ function* connect(_action: BootloaderConnectionAction): Generator {
 
     let server: BluetoothRemoteGATTServer;
     try {
-        server = (yield call([device.gatt, 'connect'])) as BluetoothRemoteGATTServer;
+        server = yield* call([device.gatt, 'connect']);
     } catch (err) {
         disconnectChannel.close();
-        yield put(didFailToConnect(Reason.Unknown, err));
+        yield* put(didFailToConnect(Reason.Unknown, err));
         return;
     }
 
     let service: BluetoothRemoteGATTService;
     try {
-        service = (yield call(
-            [server, 'getPrimaryService'],
-            ServiceUUID,
-        )) as BluetoothRemoteGATTService;
+        service = yield* call([server, 'getPrimaryService'], ServiceUUID);
     } catch (err) {
         server.disconnect();
-        yield takeMaybe(disconnectChannel);
+        yield* takeMaybe(disconnectChannel);
         if (err instanceof DOMException && err.code === DOMException.NOT_FOUND_ERR) {
             // Possibly/probably caused by Chrome BlueZ back-end bug
             // https://chromium-review.googlesource.com/c/chromium/src/+/2214098
-            yield put(didFailToConnect(Reason.GattServiceNotFound));
+            yield* put(didFailToConnect(Reason.GattServiceNotFound));
         } else {
-            yield put(didFailToConnect(Reason.Unknown, err));
+            yield* put(didFailToConnect(Reason.Unknown, err));
         }
         return;
     }
 
     let characteristic: BluetoothRemoteGATTCharacteristic;
     try {
-        characteristic = (yield call(
+        characteristic = yield* call(
             [service, 'getCharacteristic'],
             CharacteristicUUID,
-        )) as BluetoothRemoteGATTCharacteristic;
+        );
     } catch (err) {
         server.disconnect();
-        yield takeMaybe(disconnectChannel);
-        yield put(didFailToConnect(Reason.Unknown, err));
+        yield* takeMaybe(disconnectChannel);
+        yield* put(didFailToConnect(Reason.Unknown, err));
         return;
     }
 
@@ -133,19 +130,19 @@ function* connect(_action: BootloaderConnectionAction): Generator {
 
     try {
         try {
-            yield call([characteristic, 'stopNotifications']);
+            yield* call([characteristic, 'stopNotifications']);
         } catch {
             // HACK: Chromium on Linux (BlueZ) will not receive notifications
             // if a device disconnects while notifications are enabled and then
             // reconnects. So we have to call stopNotifications() first to get
             // back to a known state. https://crbug.com/1170085
         }
-        yield call([characteristic, 'startNotifications']);
+        yield* call([characteristic, 'startNotifications']);
     } catch (err) {
         notificationChannel.close();
         server.disconnect();
-        yield takeMaybe(disconnectChannel);
-        yield put(didFailToConnect(Reason.Unknown, err));
+        yield* takeMaybe(disconnectChannel);
+        yield* put(didFailToConnect(Reason.Unknown, err));
         return;
     }
 
@@ -153,27 +150,27 @@ function* connect(_action: BootloaderConnectionAction): Generator {
     // other sagas always expect it to complete with success action or error
     // action.
     function* spawnWrite(action: BootloaderConnectionSendAction): Generator {
-        yield spawn(write, characteristic, action);
+        yield* spawn(write, characteristic, action);
     }
 
-    yield takeEvery(notificationChannel, handleNotify);
-    yield takeEvery(BootloaderConnectionActionType.Send, spawnWrite);
-    yield takeEvery(
+    yield* takeEvery(notificationChannel, handleNotify);
+    yield* takeEvery(BootloaderConnectionActionType.Send, spawnWrite);
+    yield* takeEvery(
         BootloaderConnectionActionType.Disconnect,
         server.disconnect.bind(server),
     );
 
-    yield put(didConnect());
+    yield* put(didConnect());
 
-    yield takeMaybe(disconnectChannel);
+    yield* takeMaybe(disconnectChannel);
     notificationChannel.close();
     try {
-        yield cancel(); // have to cancel to stop forked effects
+        yield* cancel(); // have to cancel to stop forked effects
     } finally {
-        yield put(didDisconnect());
+        yield* put(didDisconnect());
     }
 }
 
 export default function* (): Generator {
-    yield takeEvery(BootloaderConnectionActionType.Connect, connect);
+    yield* takeEvery(BootloaderConnectionActionType.Connect, connect);
 }
