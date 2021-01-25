@@ -12,7 +12,7 @@
         "@craco/craco": "^6.0.0",
         "@pybricks/firmware": "4.5.0",
         "@pybricks/mpy-cross-v5": "^2.0.0",
-        "@shopify/react-i18n": "^5.2.0",
+        "@shopify/react-i18n": "^5.2.1",
         "@testing-library/dom": "^7.29.2",
         "@testing-library/jest-dom": "^5.11.8",
         "@testing-library/react": "^11.2.3",
