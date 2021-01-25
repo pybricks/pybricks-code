@@ -48,6 +48,10 @@ body {
     user-select: none;
 }
 
+.#{$ns}-button-text > img {
+    display: block;
+}
+
 .#{$ns}-form-group > .#{$ns}-label {
     font-weight: bolder;
 }
