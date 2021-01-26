@@ -51,6 +51,7 @@ class ActionButton extends React.Component<Props> {
                 <Button
                     ref={this.buttonRef}
                     intent={Intent.PRIMARY}
+                    onMouseDown={(e) => e.preventDefault()} // prevent focus
                     onClick={(): void => this.props.onAction()}
                     disabled={this.props.enabled === false}
                     className="no-box-shadow"
