@@ -211,7 +211,9 @@ class SettingsDrawer extends React.PureComponent<SettingsProps> {
                             <FormGroup label="Developer">
                                 <Switch
                                     checked={i18n.pseudolocalize !== false}
-                                    onClick={() => pseudolocalize(!i18n.pseudolocalize)}
+                                    onChange={() =>
+                                        pseudolocalize(!i18n.pseudolocalize)
+                                    }
                                     label="Pseudolocalize"
                                 />
                             </FormGroup>
