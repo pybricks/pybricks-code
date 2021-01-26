@@ -52,7 +52,7 @@ function App(): JSX.Element {
                     <div className="h-100 w-100">
                         {dragging && <div className="h-100 w-100 p-absolute" />}
                         <iframe
-                            src="https://docs.pybricks.com"
+                            src="static/docs/index.html"
                             allowFullScreen={true}
                             title="docs"
                             width="100%"
