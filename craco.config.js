@@ -8,6 +8,7 @@ const {
     getLoaders,
     loaderByName,
 } = require('@craco/craco');
+const CopyPlugin = require('copy-webpack-plugin');
 const LicensePlugin = require('license-webpack-plugin').LicenseWebpackPlugin;
 const satisfies = require('spdx-satisfies');
 
@@ -187,6 +188,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.`,
 module.exports = {
     webpack: {
         plugins: [
+            new CopyPlugin({
+                patterns: [
+                    {
+                        from: 'node_modules/@pybricks/ide-docs/build/html',
+                        to: 'static/docs',
+                    },
+                ],
+            }),
             new LicensePlugin({
                 outputFilename: 'static/oss-licenses.json',
                 perChunkOutput: false,
