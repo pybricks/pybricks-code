@@ -22,3 +22,9 @@
 .terminal-padding {
     padding-left: 10px;
 }
+
+// hide the docs and resize separator
+
+div.pb-hide-docs > :not(.layout-pane-primary) {
+    display: none;
+}
