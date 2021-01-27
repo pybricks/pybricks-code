@@ -2,9 +2,12 @@
 // Copyright (c) 2020 The Pybricks Authors
 
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import SplitterLayout from 'react-splitter-layout';
+import { toggleBoolean } from '../actions/settings';
 import { RootState } from '../reducers';
+import { SettingId } from '../settings/user';
+import { isMacOS } from '../utils/os';
 import Editor from './Editor';
 import SettingsDrawer from './SettingsDrawer';
 import StatusBar from './StatusBar';
@@ -17,6 +20,7 @@ import './app.scss';
 function App(): JSX.Element {
     const showDocs = useSelector((s: RootState): boolean => s.settings.showDocs);
     const [dragging, setDragging] = useState(false);
+    const dispatch = useDispatch();
 
     return (
         <div className="app">
@@ -117,6 +121,21 @@ function App(): JSX.Element {
                                     } else {
                                         iframeScroll = contentWindow.scrollY;
                                     }
+                                }
+                            });
+
+                            // Override browser default key bindings in iframe.
+                            contentWindow.document.addEventListener('keydown', (e) => {
+                                // use Ctrl-D/Cmd-D to toggle docs
+                                if (
+                                    (isMacOS()
+                                        ? e.metaKey && !e.ctrlKey
+                                        : e.ctrlKey && !e.metaKey) &&
+                                    !e.altKey &&
+                                    e.key == 'd'
+                                ) {
+                                    e.preventDefault();
+                                    dispatch(toggleBoolean(SettingId.ShowDocs));
                                 }
                             });
                         }}
