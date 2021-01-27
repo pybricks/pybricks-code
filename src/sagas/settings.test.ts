@@ -5,7 +5,12 @@
 
 import { AsyncSaga } from '../../test';
 import { didStart } from '../actions/app';
-import { didBooleanChange, didFailToSetBoolean, setBoolean } from '../actions/settings';
+import {
+    didBooleanChange,
+    didFailToSetBoolean,
+    setBoolean,
+    toggleBoolean,
+} from '../actions/settings';
 import { SettingId } from '../settings/user';
 import settings from './settings';
 
@@ -341,6 +346,27 @@ describe('storage monitor', () => {
         );
 
         // nothing happens
+
+        await saga.end();
+    });
+});
+
+describe('toggle', () => {
+    test('showDocs', async () => {
+        const saga = new AsyncSaga(settings, { settings: { showDocs: false } });
+
+        const mockSetItem = jest
+            .spyOn(Object.getPrototypeOf(window.localStorage), 'setItem')
+            .mockImplementation((key, value) => {
+                expect(key).toBe('setting.showDocs');
+                expect(value).toBe('true');
+            });
+
+        saga.put(toggleBoolean(SettingId.ShowDocs));
+        expect(mockSetItem).toHaveBeenCalled();
+
+        const action = await saga.take();
+        expect(action).toEqual(didBooleanChange(SettingId.ShowDocs, true));
 
         await saga.end();
     });

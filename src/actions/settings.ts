@@ -7,6 +7,7 @@ import { SettingId } from '../settings/user';
 /** Actions related to settings. */
 export enum SettingsActionType {
     SetBoolean = 'settings.action.setBoolean',
+    ToggleBoolean = 'settings.action.toggleBoolean',
     DidFailToSetBoolean = 'settings.action.didFailToSetBoolean',
     DidBooleanChange = 'settings.action.didBooleanChange',
 }
@@ -25,6 +26,16 @@ export type SettingsSetBooleanAction = Action<SettingsActionType.SetBoolean> &
 /** Creates an action to set/store a setting. */
 export function setBoolean(id: SettingId, newState: boolean): SettingsSetBooleanAction {
     return { type: SettingsActionType.SetBoolean, id, newState };
+}
+
+/** Action to toggle a setting. */
+export type SettingsToggleBooleanAction = Action<SettingsActionType.ToggleBoolean> & {
+    id: SettingId;
+};
+
+/** Creates an action to toggle a setting. */
+export function toggleBoolean(id: SettingId): SettingsToggleBooleanAction {
+    return { type: SettingsActionType.ToggleBoolean, id };
 }
 
 /** Action that indicates setting/storing a setting failed. */
@@ -56,5 +67,6 @@ export function didBooleanChange(
 /** Common type for all settings actions. */
 export type SettingsAction =
     | SettingsSetBooleanAction
+    | SettingsToggleBooleanAction
     | SettingsDidFailToSetBooleanAction
     | SettingsDidBooleanChangeAction;
