@@ -15,6 +15,12 @@
     height: 600px;
 }
 
+@media only screen and (max-height: 800px) {
+    .pb-license-browser {
+        height: 400px;
+    }
+}
+
 .pb-license-list {
     width: 25%;
     flex-flow: column;
