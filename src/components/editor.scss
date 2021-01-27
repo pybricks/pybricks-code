@@ -15,6 +15,12 @@
     background-color: $pt-app-background-color;
 }
 
+// higher contrast
+
+.ace-tomorrow-night-eighties .ace_print-margin {
+    background: $dark-gray4;
+}
+
 // add "BETA" watermark
 
 .pb-beta .ace_scroller::after {
