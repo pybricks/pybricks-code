@@ -171,6 +171,9 @@ function* showBleDeviceDidFailToConnectError(
                 hubName: 'Pybricks Hub',
             });
             break;
+        case BleDeviceFailToConnectReasonType.NoBluetooth:
+            yield* showSingleton(Level.Error, MessageId.BleNoBluetooth);
+            break;
         case BleDeviceFailToConnectReasonType.NoWebBluetooth:
             yield* showSingleton(
                 Level.Error,
@@ -206,6 +209,9 @@ function* showBootloaderDidFailToConnectError(
                     'https://github.com/WebBluetoothCG/web-bluetooth/blob/master/implementation-status.md',
                 ),
             );
+            break;
+        case BootloaderConnectionFailureReason.NoBluetooth:
+            yield* showSingleton(Level.Error, MessageId.BleNoBluetooth);
             break;
         case BootloaderConnectionFailureReason.Unknown:
             yield* showUnexpectedError(MessageId.BleUnexpectedError, action.err);

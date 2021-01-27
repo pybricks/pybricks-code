@@ -45,7 +45,11 @@ function* connect(_action: BootloaderConnectionAction): Generator {
         return;
     }
 
-    // TODO: check navigator.bluetooth.getAvailability()
+    const available = yield* call(() => navigator.bluetooth.getAvailability());
+    if (!available) {
+        yield* put(didFailToConnect(Reason.NoBluetooth));
+        return;
+    }
 
     let device: BluetoothDevice;
     try {

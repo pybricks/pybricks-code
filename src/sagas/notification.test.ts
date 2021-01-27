@@ -28,6 +28,7 @@ import notification from './notification';
 
 test.each([
     bleDidFailToConnect({ reason: BleDeviceFailToConnectReasonType.NoWebBluetooth }),
+    bleDidFailToConnect({ reason: BleDeviceFailToConnectReasonType.NoBluetooth }),
     bleDidFailToConnect({ reason: BleDeviceFailToConnectReasonType.NoGatt }),
     bleDidFailToConnect({ reason: BleDeviceFailToConnectReasonType.NoService }),
     bleDidFailToConnect({
@@ -38,6 +39,7 @@ test.each([
         message: 'test',
     }),
     bootloaderDidFailToConnect(BootloaderConnectionFailureReason.NoWebBluetooth),
+    bootloaderDidFailToConnect(BootloaderConnectionFailureReason.NoBluetooth),
     bootloaderDidFailToConnect(BootloaderConnectionFailureReason.GattServiceNotFound),
     storageChanged('test'),
     didFailToCompile(['reason']),
