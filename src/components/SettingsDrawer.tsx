@@ -8,6 +8,9 @@ import {
     Classes,
     Drawer,
     FormGroup,
+    Hotkey,
+    Hotkeys,
+    HotkeysTarget,
     Position,
     Switch,
     Tooltip,
@@ -17,7 +20,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Action, Dispatch } from '../actions';
 import { closeSettings, openAboutDialog } from '../actions/app';
-import { setBoolean } from '../actions/settings';
+import { setBoolean, toggleBoolean } from '../actions/settings';
 import { RootState } from '../reducers';
 import { pseudolocalize } from '../settings/i18n';
 import {
@@ -47,10 +50,12 @@ type DispatchProps = {
     onDarkModeChanged: (checked: boolean) => void;
     onFlashCurrentProgramChanged: (checked: boolean) => void;
     onAbout: () => void;
+    onToggleDocs: () => void;
 };
 
 type SettingsProps = StateProps & DispatchProps & WithI18nProps;
 
+@HotkeysTarget
 class SettingsDrawer extends React.PureComponent<SettingsProps> {
     render(): JSX.Element {
         const {
@@ -223,6 +228,22 @@ class SettingsDrawer extends React.PureComponent<SettingsProps> {
             </Drawer>
         );
     }
+
+    renderHotkeys(): JSX.Element {
+        return (
+            <Hotkeys>
+                <Hotkey
+                    combo="mod+d"
+                    label={this.props.i18n.translate(
+                        SettingsStringId.AppearanceDocumentationTooltip,
+                    )}
+                    global={true}
+                    preventDefault={true}
+                    onKeyDown={() => this.props.onToggleDocs()}
+                />
+            </Hotkeys>
+        );
+    }
 }
 
 const mapStateToProps = (state: RootState): StateProps => ({
@@ -241,6 +262,7 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
     onFlashCurrentProgramChanged: (checked): Action =>
         dispatch(setBoolean(SettingId.FlashCurrentProgram, checked)),
     onAbout: (): Action => dispatch(openAboutDialog()),
+    onToggleDocs: (): Action => dispatch(toggleBoolean(SettingId.ShowDocs)),
 });
 
 export default connect(
