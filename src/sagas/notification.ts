@@ -14,7 +14,7 @@ import { Replacements } from '@shopify/react-i18n';
 import React from 'react';
 import { channel } from 'redux-saga';
 import { delay, getContext, put, take, takeEvery } from 'typed-redux-saga/macro';
-import { reload } from '../actions/app';
+import { AppActionType, AppDidCheckForUpdateAction, reload } from '../actions/app';
 import {
     BleDeviceActionType,
     BleDeviceDidFailToConnectAction,
@@ -351,6 +351,23 @@ function* showServiceWorkerUpdate(
     yield* put(reload(updateAction.registration));
 }
 
+function* showNoUpdateInfo(action: AppDidCheckForUpdateAction): Generator {
+    if (action.updateFound) {
+        // this will be handled by ServiceWorkerActionType.DidUpdate action
+        return;
+    }
+
+    const { toaster } = yield* getContext<NotificationContext>('notification');
+    toaster.show({
+        intent: mapIntent(Level.Info),
+        icon: mapIcon(Level.Info),
+        message: React.createElement(Notification, {
+            messageId: MessageId.AppNoUpdateFound,
+            replacements: { appName },
+        }),
+    });
+}
+
 export default function* (): Generator {
     yield* takeEvery(
         BleDeviceActionType.DidFailToConnect,
@@ -366,4 +383,5 @@ export default function* (): Generator {
     yield* takeEvery(MpyActionType.DidFailToCompile, showCompilerError);
     yield* takeEvery(NotificationActionType.Add, addNotification);
     yield* takeEvery(ServiceWorkerActionType.DidUpdate, showServiceWorkerUpdate);
+    yield* takeEvery(AppActionType.DidCheckForUpdate, showNoUpdateInfo);
 }

@@ -1,6 +1,9 @@
 {
     "copyErrorMessage": "Copy Error Message",
     "reportBug": "Report Bug",
+    "app": {
+        "noUpdateFound": "{appName} is already up to date."
+    },
     "ble": {
         "gattPermission": "The web browser did not give permission to use Bluetooth Low Energy",
         "gattServiceNotFound": "Connected to hub but failed to get {serviceName} service. Try removing the \"{hubName}\" device in your OS Bluetooth settings, then try again.",

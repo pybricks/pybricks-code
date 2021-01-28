@@ -4,6 +4,7 @@
 // Notification translation keys.
 
 export enum MessageId {
+    AppNoUpdateFound = 'app.noUpdateFound',
     CopyErrorMessage = 'copyErrorMessage',
     ReportBug = 'reportBug',
     BleUnexpectedError = 'ble.unexpectedError',

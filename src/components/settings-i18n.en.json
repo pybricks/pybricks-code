@@ -35,6 +35,15 @@
             },
             "bugs": {
                 "label": "Bug Reports"
+            }
+        },
+        "app": {
+            "title": "App",
+            "checkForUpdate": {
+                "label": "Check for Update"
+            },
+            "restart": {
+                "label": "Restart to Install Update"
             },
             "about": {
                 "label": "About"

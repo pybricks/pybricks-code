@@ -9,6 +9,10 @@ import { Action } from 'redux';
 export enum AppActionType {
     /** Reload the app. */
     Reload = 'app.action.reload',
+    /** Checks for an available update. */
+    CheckForUpdate = 'app.action.checkForUpdate',
+    /** Indicates that checking for update finished. */
+    DidCheckForUpdate = 'app.action.didCheckForUpdate',
     /** The app has just ben started. */
     DidStart = 'app.action.didStart',
     /** Open settings dialog. */
@@ -33,6 +37,28 @@ export type AppReloadAction = Action<AppActionType.Reload> & {
 /** Creates an action that requests the app to reload. */
 export function reload(registration: ServiceWorkerRegistration): AppReloadAction {
     return { type: AppActionType.Reload, registration };
+}
+
+/** Action that requests to check for updates. */
+export type AppCheckForUpdatesAction = Action<AppActionType.CheckForUpdate> & {
+    registration: ServiceWorkerRegistration;
+};
+
+/** Action that requests to check for updates. */
+export function checkForUpdate(
+    registration: ServiceWorkerRegistration,
+): AppCheckForUpdatesAction {
+    return { type: AppActionType.CheckForUpdate, registration };
+}
+
+/** Action that indicates that checking for an update has completed. */
+export type AppDidCheckForUpdateAction = Action<AppActionType.DidCheckForUpdate> & {
+    updateFound: boolean;
+};
+
+/** Action that indicates that checking for an update has completed. */
+export function didCheckForUpdate(updateFound: boolean): AppDidCheckForUpdateAction {
+    return { type: AppActionType.DidCheckForUpdate, updateFound };
 }
 
 /** Action that indicates the app has just started. */
@@ -94,6 +120,8 @@ export function closeLicenseDialog(): AppCloseLicenseDialogAction {
 /** common type for all app actions. */
 export type AppAction =
     | AppReloadAction
+    | AppCheckForUpdatesAction
+    | AppDidCheckForUpdateAction
     | AppDidStartAction
     | AppOpenSettingsAction
     | AppCloseSettingsAction
