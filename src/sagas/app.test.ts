@@ -13,11 +13,6 @@ test('reload', async () => {
         unregister: jest.fn(),
     };
 
-    // @ts-expect-error: navigator.serviceWorker is not implemented in JSDOM
-    navigator.serviceWorker = {
-        getRegistrations: jest.fn().mockResolvedValue([registration]),
-    };
-
     // @ts-expect-error: JSDOM implementation of location.reload() causes error
     delete window.location;
     // @ts-expect-error: JSDOM implementation of location.reload() causes error
@@ -25,7 +20,7 @@ test('reload', async () => {
         reload: jest.fn(),
     };
 
-    saga.put(reload());
+    saga.put(reload(registration as ServiceWorkerRegistration));
 
     // yield to allow generators to complete
     await delay(0);

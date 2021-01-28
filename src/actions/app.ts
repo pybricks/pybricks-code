@@ -26,11 +26,13 @@ export enum AppActionType {
 }
 
 /** Action that requests the app to reload. */
-export type AppReloadAction = Action<AppActionType.Reload>;
+export type AppReloadAction = Action<AppActionType.Reload> & {
+    registration: ServiceWorkerRegistration;
+};
 
 /** Creates an action that requests the app to reload. */
-export function reload(): AppReloadAction {
-    return { type: AppActionType.Reload };
+export function reload(registration: ServiceWorkerRegistration): AppReloadAction {
+    return { type: AppActionType.Reload, registration };
 }
 
 /** Action that indicates the app has just started. */

@@ -33,7 +33,10 @@ import {
 } from '../actions/lwp3-bootloader';
 import { MpyActionType, MpyDidFailToCompileAction } from '../actions/mpy';
 import { NotificationActionType, NotificationAddAction } from '../actions/notification';
-import { ServiceWorkerActionType } from '../actions/service-worker';
+import {
+    ServiceWorkerAction,
+    ServiceWorkerActionType,
+} from '../actions/service-worker';
 import Notification from '../components/Notification';
 import UnexpectedErrorNotification from '../components/UnexpectedErrorNotification';
 import { MessageId } from '../components/notification-i18n';
@@ -323,7 +326,9 @@ function* addNotification(action: NotificationAddAction): Generator {
     });
 }
 
-function* showServiceWorkerUpdate(): Generator {
+function* showServiceWorkerUpdate(
+    updateAction: ServiceWorkerAction<ServiceWorkerActionType.DidUpdate>,
+): Generator {
     const ch = channel<React.MouseEvent<HTMLElement>>();
     const action = dispatchAction(
         MessageId.ServiceWorkerUpdateAction,
@@ -343,7 +348,7 @@ function* showServiceWorkerUpdate(): Generator {
 
     yield* take(ch);
 
-    yield* put(reload());
+    yield* put(reload(updateAction.registration));
 }
 
 export default function* (): Generator {
