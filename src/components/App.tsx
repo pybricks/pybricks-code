@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020 The Pybricks Authors
 
+import { Classes } from '@blueprintjs/core';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import SplitterLayout from 'react-splitter-layout';
@@ -55,6 +56,11 @@ function App(): JSX.Element {
                 <div className="h-100 w-100">
                     {dragging && <div className="h-100 w-100 p-absolute" />}
                     <iframe
+                        // REVISIT: some of this could be moved to the docs repo
+                        // so that it runs earlier to prevent flashing in the UI.
+                        // The load event doesn't run until after the page is fully
+                        // loaded and there doesn't seem to be a reasonable way to
+                        // hook into the iframe to know when it has a new document.
                         onLoad={(e) => {
                             // HACK: this mess restores the scroll position when
                             // the documentation iframe visibility is toggled.
@@ -138,6 +144,59 @@ function App(): JSX.Element {
                                     dispatch(toggleBoolean(SettingId.ShowDocs));
                                 }
                             });
+
+                            const style = document.createElement('style');
+
+                            // TODO: how to get these programmatically from values set in variables.scss?
+                            const iconColor = '#5c7080';
+                            const iconColorHover = '#182026';
+                            const appBackgroundColor = '#e8e8e8';
+                            const darkIconColor = '#a7b6c2';
+                            const darkIconColorHover = '#f5f8fa';
+                            const darkAppBackgroundColor = '#293742';
+
+                            // This is scrollbar style coped from index.scss.
+                            style.innerText = `
+::-webkit-scrollbar {
+    width: 16px;
+}
+
+.${Classes.DARK} ::-webkit-scrollbar-track {
+    background: ${darkAppBackgroundColor};
+}
+
+::-webkit-scrollbar-track {
+    background: ${appBackgroundColor};
+}
+
+.${Classes.DARK} ::-webkit-scrollbar-thumb {
+    border-color: ${darkAppBackgroundColor};
+    background: ${darkIconColor};
+}
+
+::-webkit-scrollbar-thumb {
+    border-width: 3px;
+    border-style: solid;
+    border-radius: 8px;
+    border-color: ${appBackgroundColor};
+    background: ${iconColor};
+}
+
+.${Classes.DARK} ::-webkit-scrollbar-thumb:hover {
+    background: ${darkIconColorHover};
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: ${iconColorHover};
+}
+`;
+                            contentWindow.document.head.appendChild(style);
+
+                            if (document.body.classList.contains(Classes.DARK)) {
+                                contentWindow.document.documentElement.classList.add(
+                                    Classes.DARK,
+                                );
+                            }
                         }}
                         src="static/docs/index.html"
                         allowFullScreen={true}
