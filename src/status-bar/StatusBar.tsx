@@ -10,7 +10,7 @@ class StatusBar extends React.Component {
     render(): JSX.Element {
         return (
             <div
-                className="status-bar"
+                className="pb-status-bar"
                 onContextMenu={(e): void => e.preventDefault()}
             ></div>
         );

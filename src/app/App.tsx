@@ -24,10 +24,12 @@ function App(): JSX.Element {
     const dispatch = useDispatch();
 
     return (
-        <div className="app">
+        <div className="pb-app">
             <Toolbar />
             <SplitterLayout
-                customClassName={`h-body ${showDocs ? 'pb-show-docs' : 'pb-hide-docs'}`}
+                customClassName={`pb-app-body ${
+                    showDocs ? 'pb-show-docs' : 'pb-hide-docs'
+                }`}
                 onDragStart={(): void => setDragging(true)}
                 onDragEnd={(): void => setDragging(false)}
                 percentage={true}

@@ -5,6 +5,13 @@
 
 @import '../variables.scss';
 
+.pb-app-body {
+    // height makes everything fit without scrolling
+    height: calc(
+        var(--pb-vh, 100vh) - #{$pt-navbar-height} - #{$pb-status-bar-height}
+    ) !important;
+}
+
 .#{$ns}-dark .splitter-layout > .layout-splitter {
     // make layout splitter match app color scheme
     background-color: $pt-dark-app-background-color;

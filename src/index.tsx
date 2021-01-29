@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2021 The Pybricks Authors
 
-import { Classes, ResizeSensor } from '@blueprintjs/core';
+import { Classes } from '@blueprintjs/core';
 import { I18nContext } from '@shopify/react-i18n';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -19,6 +19,7 @@ import rootSaga from './sagas';
 import { didSucceed, didUpdate } from './service-worker/actions';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import { defaultTerminalContext } from './terminal/TerminalContext';
+import ViewHeightSensor from './utils/ViewHeightSensor';
 import { createCountFunc } from './utils/iter';
 
 const toaster = I18nToaster.create(i18nManager);
@@ -74,18 +75,7 @@ ReactDOM.render(
     <React.StrictMode>
         <Provider store={store}>
             <I18nContext.Provider value={i18nManager}>
-                {/* This is a hack for correctly sizing to view height on mobile when not running in fullscreen mode. */}
-                {/* https://css-tricks.com/the-trick-to-viewport-units-on-mobile/ */}
-                <ResizeSensor
-                    onResize={(e): void => {
-                        document.documentElement.style.setProperty(
-                            '--mobile-pad',
-                            `${e[0].contentRect.height - window.innerHeight}px`,
-                        );
-                    }}
-                >
-                    <div id="vh" className="h-100 w-100 p-absolute" />
-                </ResizeSensor>
+                <ViewHeightSensor />
                 <App />
             </I18nContext.Provider>
         </Provider>
