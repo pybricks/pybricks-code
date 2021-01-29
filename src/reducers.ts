@@ -10,7 +10,6 @@ import hub, { HubState } from './hub/reducers';
 import licenses, { LicenseState } from './licenses/reducers';
 import bootloader, { BootloaderState } from './lwp3-bootloader/reducers';
 import settings, { SettingsState } from './settings/reducers';
-import terminal, { TerminalState } from './terminal/reducers';
 
 /**
  * Root state for redux store.
@@ -24,7 +23,6 @@ export interface RootState {
     readonly hub: HubState;
     readonly license: LicenseState;
     readonly settings: SettingsState;
-    readonly terminal: TerminalState;
 }
 
 export default combineReducers({
@@ -36,5 +34,4 @@ export default combineReducers({
     hub,
     licenses,
     settings,
-    terminal,
 });

@@ -11,11 +11,12 @@ import {
 import { WithI18nProps, withI18n } from '@shopify/react-i18n';
 import React from 'react';
 import { connect } from 'react-redux';
-import { Observable, Unsubscribe } from 'redux';
+import { Unsubscribe } from 'redux';
 import { Terminal as XTerm } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
 import { RootState } from '../reducers';
 import { isMacOS } from '../utils/os';
+import { TerminalContext } from './TerminalContext';
 import { receiveData } from './actions';
 import { TerminalStringId } from './i18n';
 import en from './i18n.en.json';
@@ -23,7 +24,6 @@ import en from './i18n.en.json';
 import 'xterm/css/xterm.css';
 
 interface StateProps {
-    dataSource: Observable<string> | null;
     darkMode: boolean;
 }
 
@@ -53,6 +53,9 @@ class Terminal extends React.Component<TerminalProps> {
         this.xterm.attachCustomKeyEventHandler(this.handleKeyEvent);
         this.terminalRef = React.createRef();
     }
+
+    static contextType = TerminalContext;
+    context!: React.ContextType<typeof TerminalContext>;
 
     private handleKeyEvent = (e: KeyboardEvent): boolean => {
         if (e.key === 'v' && e.ctrlKey && !e.shiftKey && !e.altKey && !e.metaKey) {
@@ -93,7 +96,7 @@ class Terminal extends React.Component<TerminalProps> {
         }
         this.xterm.open(this.terminalRef.current);
         this.fitAddon.fit();
-        this.subscription = this.props.dataSource?.subscribe({
+        this.subscription = this.context.dataSource.observable.subscribe({
             next: (d) => this.xterm.write(d),
         });
         window.addEventListener('keydown', this.handleKeyDownEvent);
@@ -170,7 +173,6 @@ class Terminal extends React.Component<TerminalProps> {
 }
 
 const mapStateToProps = (state: RootState): StateProps => ({
-    dataSource: state.terminal.dataSource,
     darkMode: state.settings.darkMode,
 });
 

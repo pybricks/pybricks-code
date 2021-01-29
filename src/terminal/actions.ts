@@ -1,13 +1,9 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020 The Pybricks Authors
 
-import { Action, Observable } from 'redux';
+import { Action } from 'redux';
 
 export enum TerminalActionType {
-    /**
-     * Set the current data source.
-     */
-    SetDataSource = 'terminal.action.setDataSource',
     /**
      * Send data.
      */
@@ -16,16 +12,6 @@ export enum TerminalActionType {
      * Data was received.
      */
     ReceivedData = 'terminal.action.receiveData',
-}
-
-export type TerminalSetDataSourceAction = Action<TerminalActionType.SetDataSource> & {
-    dataSource: Observable<string>;
-};
-
-export function setDataSource(
-    dataSource: Observable<string>,
-): TerminalSetDataSourceAction {
-    return { type: TerminalActionType.SetDataSource, dataSource };
 }
 
 export type TerminalDataSendDataAction = Action<TerminalActionType.SendData> & {
@@ -45,6 +31,5 @@ export function receiveData(data: string): TerminalDataReceiveDataAction {
 }
 
 export type TerminalDataAction =
-    | TerminalSetDataSourceAction
     | TerminalDataSendDataAction
     | TerminalDataReceiveDataAction;

@@ -12,29 +12,18 @@ import {
     take,
     takeEvery,
 } from 'typed-redux-saga/macro';
-import PushStream from 'zen-push';
 import { Action } from '../actions';
-import { AppActionType, AppDidStartAction } from '../app/actions';
 import { BleUartActionType, BleUartNotifyAction, write } from '../ble-uart/actions';
 import { SafeTxCharLength } from '../ble-uart/protocol';
 import { HubRuntimeStatusType, checksum, updateStatus } from '../hub/actions';
 import { HubRuntimeState } from '../hub/reducers';
 import { RootState } from '../reducers';
 import { defined } from '../utils';
-import {
-    TerminalActionType,
-    TerminalDataReceiveDataAction,
-    sendData,
-    setDataSource,
-} from './actions';
+import { TerminalContextValue } from './TerminalContext';
+import { TerminalActionType, TerminalDataReceiveDataAction, sendData } from './actions';
 
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
-const terminalDataSource = new PushStream<string>();
-
-function* startup(_action: AppDidStartAction): Generator {
-    yield* put(setDataSource(terminalDataSource.observable));
-}
 
 function* handleMatch(
     match: RegExpMatchArray | null,
@@ -139,13 +128,13 @@ function* receiveTerminalData(): Generator {
     }
 }
 
-function sendTerminalData(action: TerminalDataReceiveDataAction): void {
+function* sendTerminalData(action: TerminalDataReceiveDataAction): Generator {
+    const { dataSource } = yield* getContext<TerminalContextValue>('terminal');
     // This is used to provide a data source for the Terminal component
-    terminalDataSource.next(action.value);
+    dataSource.next(action.value);
 }
 
 export default function* (): Generator {
-    yield* takeEvery(AppActionType.DidStart, startup);
     yield* takeEvery(BleUartActionType.Notify, receiveUartData);
     yield* fork(receiveTerminalData);
     yield* takeEvery(TerminalActionType.SendData, sendTerminalData);

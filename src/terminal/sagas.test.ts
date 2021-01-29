@@ -1,9 +1,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2021 The Pybricks Authors
 
+import PushStream from 'zen-push';
 import { AsyncSaga, delay } from '../../test';
-
-import { didStart } from '../app/actions';
 import {
     BleUartActionType,
     BleUartWriteAction,
@@ -22,7 +21,6 @@ import { createCountFunc } from '../utils/iter';
 import {
     TerminalActionType,
     TerminalDataSendDataAction,
-    TerminalSetDataSourceAction,
     receiveData,
     sendData,
 } from './actions';
@@ -318,15 +316,15 @@ describe('Data receiver filters out hub status', () => {
 });
 
 test('Terminal data source responds to send data actions', async () => {
-    const saga = new AsyncSaga(terminal, {}, { nextMessageId: createCountFunc() });
+    const dataSource = new PushStream<string>();
+    const saga = new AsyncSaga(
+        terminal,
+        {},
+        { nextMessageId: createCountFunc(), terminal: { dataSource } },
+    );
 
-    saga.put(didStart());
-    const dataSourceAction = await saga.take();
-    expect(dataSourceAction.type).toBe(TerminalActionType.SetDataSource);
-
-    const dataSource = (dataSourceAction as TerminalSetDataSourceAction).dataSource;
     const data = new Array<string>();
-    dataSource.subscribe({ next: (v) => data.push(v) });
+    dataSource.observable.subscribe({ next: (v) => data.push(v) });
 
     saga.put(sendData('1'));
     saga.put(sendData('2'));

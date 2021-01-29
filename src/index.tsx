@@ -18,6 +18,7 @@ import reportWebVitals from './reportWebVitals';
 import rootSaga from './sagas';
 import { didSucceed, didUpdate } from './service-worker/actions';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
+import { defaultTerminalContext } from './terminal/TerminalContext';
 import { createCountFunc } from './utils/iter';
 
 const toaster = I18nToaster.create(i18nManager);
@@ -26,6 +27,7 @@ const sagaMiddleware = createSagaMiddleware({
     context: {
         nextMessageId: createCountFunc(),
         notification: { toaster },
+        terminal: defaultTerminalContext,
     },
 });
 
