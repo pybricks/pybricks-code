@@ -14,7 +14,7 @@ import { Replacements } from '@shopify/react-i18n';
 import React from 'react';
 import { channel } from 'redux-saga';
 import { delay, getContext, put, take, takeEvery } from 'typed-redux-saga/macro';
-import { reload } from '../actions/app';
+import { AppActionType, AppDidCheckForUpdateAction, reload } from '../actions/app';
 import {
     BleDeviceActionType,
     BleDeviceDidFailToConnectAction,
@@ -33,7 +33,10 @@ import {
 } from '../actions/lwp3-bootloader';
 import { MpyActionType, MpyDidFailToCompileAction } from '../actions/mpy';
 import { NotificationActionType, NotificationAddAction } from '../actions/notification';
-import { ServiceWorkerActionType } from '../actions/service-worker';
+import {
+    ServiceWorkerAction,
+    ServiceWorkerActionType,
+} from '../actions/service-worker';
 import Notification from '../components/Notification';
 import UnexpectedErrorNotification from '../components/UnexpectedErrorNotification';
 import { MessageId } from '../components/notification-i18n';
@@ -171,6 +174,9 @@ function* showBleDeviceDidFailToConnectError(
                 hubName: 'Pybricks Hub',
             });
             break;
+        case BleDeviceFailToConnectReasonType.NoBluetooth:
+            yield* showSingleton(Level.Error, MessageId.BleNoBluetooth);
+            break;
         case BleDeviceFailToConnectReasonType.NoWebBluetooth:
             yield* showSingleton(
                 Level.Error,
@@ -206,6 +212,9 @@ function* showBootloaderDidFailToConnectError(
                     'https://github.com/WebBluetoothCG/web-bluetooth/blob/master/implementation-status.md',
                 ),
             );
+            break;
+        case BootloaderConnectionFailureReason.NoBluetooth:
+            yield* showSingleton(Level.Error, MessageId.BleNoBluetooth);
             break;
         case BootloaderConnectionFailureReason.Unknown:
             yield* showUnexpectedError(MessageId.BleUnexpectedError, action.err);
@@ -317,7 +326,9 @@ function* addNotification(action: NotificationAddAction): Generator {
     });
 }
 
-function* showServiceWorkerUpdate(): Generator {
+function* showServiceWorkerUpdate(
+    updateAction: ServiceWorkerAction<ServiceWorkerActionType.DidUpdate>,
+): Generator {
     const ch = channel<React.MouseEvent<HTMLElement>>();
     const action = dispatchAction(
         MessageId.ServiceWorkerUpdateAction,
@@ -337,7 +348,24 @@ function* showServiceWorkerUpdate(): Generator {
 
     yield* take(ch);
 
-    yield* put(reload());
+    yield* put(reload(updateAction.registration));
+}
+
+function* showNoUpdateInfo(action: AppDidCheckForUpdateAction): Generator {
+    if (action.updateFound) {
+        // this will be handled by ServiceWorkerActionType.DidUpdate action
+        return;
+    }
+
+    const { toaster } = yield* getContext<NotificationContext>('notification');
+    toaster.show({
+        intent: mapIntent(Level.Info),
+        icon: mapIcon(Level.Info),
+        message: React.createElement(Notification, {
+            messageId: MessageId.AppNoUpdateFound,
+            replacements: { appName },
+        }),
+    });
 }
 
 export default function* (): Generator {
@@ -355,4 +383,5 @@ export default function* (): Generator {
     yield* takeEvery(MpyActionType.DidFailToCompile, showCompilerError);
     yield* takeEvery(NotificationActionType.Add, addNotification);
     yield* takeEvery(ServiceWorkerActionType.DidUpdate, showServiceWorkerUpdate);
+    yield* takeEvery(AppActionType.DidCheckForUpdate, showNoUpdateInfo);
 }

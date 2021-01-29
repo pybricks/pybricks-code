@@ -3,7 +3,7 @@
 
 @import './variables.scss';
 @import '~normalize.css';
-@import '@blueprintjs/core/src/blueprint.scss';
+@import '~@blueprintjs/core/src/blueprint.scss';
 
 :root {
     --mobile-pad: 0px;
@@ -19,7 +19,9 @@ body {
 
 .h-body {
     // height makes everything fit without scrolling
-    height: calc(100vh - #{$pt-navbar-height} - #{$pb-status-bar-height} - var(--mobile-pad)) !important;
+    height: calc(
+        100vh - #{$pt-navbar-height} - #{$pb-status-bar-height} - var(--mobile-pad)
+    ) !important;
 }
 
 .h-100 {

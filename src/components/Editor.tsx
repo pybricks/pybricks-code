@@ -17,7 +17,9 @@ import { connect } from 'react-redux';
 import { Action, Dispatch } from '../actions';
 import { setEditSession, storageChanged } from '../actions/editor';
 import { compile } from '../actions/mpy';
+import { toggleBoolean } from '../actions/settings';
 import { RootState } from '../reducers';
+import { SettingId } from '../settings/user';
 import { isMacOS } from '../utils/os';
 import { EditorStringId } from './editor-i18n';
 import en from './editor-i18n.en.json';
@@ -34,12 +36,14 @@ import './editor.scss';
 
 type StateProps = {
     darkMode: boolean;
+    showDocs: boolean;
 };
 
 type DispatchProps = {
     onSessionChanged: (session?: Ace.EditSession) => void;
     onProgramStorageChanged: (newValue: string) => void;
     onCheck: (script: string) => void;
+    onToggleDocs: () => void;
 };
 
 type EditorProps = StateProps & DispatchProps & WithI18nProps;
@@ -78,7 +82,7 @@ class Editor extends React.Component<EditorProps> {
     }
 
     render(): JSX.Element {
-        const { darkMode, i18n, onSessionChanged, onCheck } = this.props;
+        const { i18n, darkMode, onSessionChanged, onCheck, onToggleDocs } = this.props;
         return (
             <div className="h-100">
                 <ResizeSensor onResize={(): void => this.editor?.resize()}>
@@ -105,6 +109,13 @@ class Editor extends React.Component<EditorProps> {
                                 mac: 'Shift-F2',
                             };
 
+                            // we want to use Ctrl-D for docs toggle, so change
+                            // delete line to VSCode default
+                            e.commands.byName['removeline'].bindKey = {
+                                win: 'Ctrl-Shift-K',
+                                mac: 'Cmd-Shift-K',
+                            };
+
                             config.loadModule(
                                 'ace/ext/menu_tools/get_editor_keyboard_shortcuts',
                                 (m) => {
@@ -128,6 +139,11 @@ class Editor extends React.Component<EditorProps> {
                                 name: 'check',
                                 bindKey: { win: 'F2', mac: 'F2' },
                                 exec: (editor) => onCheck(editor.getValue()),
+                            },
+                            {
+                                name: 'toggleDocs',
+                                bindKey: { win: 'Ctrl-D', mac: 'Cmd-D' },
+                                exec: () => onToggleDocs(),
                             },
                             {
                                 name: 'save',
@@ -202,6 +218,7 @@ class Editor extends React.Component<EditorProps> {
 
 const mapStateToProps = (state: RootState): StateProps => ({
     darkMode: state.settings.darkMode,
+    showDocs: state.settings.showDocs,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
@@ -210,6 +227,7 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
     // REVISIT: the options here might need to be changed - hopefully there is
     // one setting that works for all hub types for cases where we aren't connected.
     onCheck: (script) => dispatch(compile(script)),
+    onToggleDocs: () => dispatch(toggleBoolean(SettingId.ShowDocs)),
 });
 
 export default connect(

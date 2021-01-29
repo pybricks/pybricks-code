@@ -4,12 +4,14 @@
 // Notification translation keys.
 
 export enum MessageId {
+    AppNoUpdateFound = 'app.noUpdateFound',
     CopyErrorMessage = 'copyErrorMessage',
     ReportBug = 'reportBug',
     BleUnexpectedError = 'ble.unexpectedError',
     BleGattPermission = 'ble.gattPermission',
     BleGattServiceNotFound = 'ble.gattServiceNotFound',
     BleNoWebBluetooth = 'ble.noWebBluetooth',
+    BleNoBluetooth = 'ble.noBluetooth',
     FlashFirmwareTimedOut = 'flashFirmware.timedOut',
     FlashFirmwareBleError = 'flashFirmware.bleError',
     FlashFirmwareDisconnected = 'flashFirmware.disconnected',

@@ -8,6 +8,9 @@ import {
     Classes,
     Drawer,
     FormGroup,
+    Hotkey,
+    Hotkeys,
+    HotkeysTarget,
     Position,
     Switch,
     Tooltip,
@@ -16,8 +19,14 @@ import { WithI18nProps, withI18n } from '@shopify/react-i18n';
 import React from 'react';
 import { connect } from 'react-redux';
 import { Action, Dispatch } from '../actions';
-import { closeSettings, openAboutDialog } from '../actions/app';
-import { setBoolean } from '../actions/settings';
+import {
+    checkForUpdate,
+    closeSettings,
+    installPrompt,
+    openAboutDialog,
+    reload,
+} from '../actions/app';
+import { setBoolean, toggleBoolean } from '../actions/settings';
 import { RootState } from '../reducers';
 import { pseudolocalize } from '../settings/i18n';
 import {
@@ -28,6 +37,7 @@ import {
     tooltipDelay,
 } from '../settings/ui';
 import { SettingId } from '../settings/user';
+import { BeforeInstallPromptEvent } from '../utils/dom';
 import { isMacOS } from '../utils/os';
 import AboutDialog from './AboutDialog';
 import ExternalLinkIcon from './ExternalLinkIcon';
@@ -39,6 +49,11 @@ type StateProps = {
     showDocs: boolean;
     darkMode: boolean;
     flashCurrentProgram: boolean;
+    serviceWorker: ServiceWorkerRegistration | null;
+    checkingForUpdate: boolean;
+    updateAvailable: boolean;
+    beforeInstallPrompt: BeforeInstallPromptEvent | null;
+    promptingInstall: boolean;
 };
 
 type DispatchProps = {
@@ -47,23 +62,36 @@ type DispatchProps = {
     onDarkModeChanged: (checked: boolean) => void;
     onFlashCurrentProgramChanged: (checked: boolean) => void;
     onAbout: () => void;
+    onToggleDocs: () => void;
+    onCheckForUpdate: (registration: ServiceWorkerRegistration) => void;
+    onReload: (registration: ServiceWorkerRegistration) => void;
+    onInstallPrompt: (event: BeforeInstallPromptEvent) => void;
 };
 
 type SettingsProps = StateProps & DispatchProps & WithI18nProps;
 
+@HotkeysTarget
 class SettingsDrawer extends React.PureComponent<SettingsProps> {
     render(): JSX.Element {
         const {
-            i18n,
             open,
-            onClose,
             showDocs,
-            onShowDocsChanged,
             darkMode,
-            onDarkModeChanged,
+            serviceWorker,
             flashCurrentProgram,
+            checkingForUpdate,
+            updateAvailable,
+            beforeInstallPrompt,
+            promptingInstall,
+            onClose,
+            onShowDocsChanged,
+            onDarkModeChanged,
             onFlashCurrentProgramChanged,
             onAbout,
+            onCheckForUpdate,
+            onReload,
+            onInstallPrompt: onInstall,
+            i18n,
         } = this.props;
         return (
             <Drawer
@@ -195,6 +223,47 @@ class SettingsDrawer extends React.PureComponent<SettingsProps> {
                                     &nbsp;
                                     <ExternalLinkIcon />
                                 </AnchorButton>
+                                <AboutDialog />
+                            </ButtonGroup>
+                        </FormGroup>
+                        <FormGroup label={i18n.translate(SettingsStringId.AppTitle)}>
+                            <ButtonGroup
+                                minimal={true}
+                                vertical={true}
+                                alignText="left"
+                            >
+                                {beforeInstallPrompt && (
+                                    <Button
+                                        icon="add"
+                                        onClick={() => onInstall(beforeInstallPrompt)}
+                                        loading={promptingInstall}
+                                    >
+                                        {i18n.translate(
+                                            SettingsStringId.AppInstallLabel,
+                                        )}
+                                    </Button>
+                                )}
+                                {serviceWorker && !updateAvailable && (
+                                    <Button
+                                        icon="refresh"
+                                        onClick={() => onCheckForUpdate(serviceWorker)}
+                                        loading={checkingForUpdate}
+                                    >
+                                        {i18n.translate(
+                                            SettingsStringId.AppCheckForUpdateLabel,
+                                        )}
+                                    </Button>
+                                )}
+                                {serviceWorker && updateAvailable && (
+                                    <Button
+                                        icon="refresh"
+                                        onClick={() => onReload(serviceWorker)}
+                                    >
+                                        {i18n.translate(
+                                            SettingsStringId.AppRestartLabel,
+                                        )}
+                                    </Button>
+                                )}
                                 <Button
                                     icon="info-sign"
                                     onClick={() => {
@@ -202,16 +271,17 @@ class SettingsDrawer extends React.PureComponent<SettingsProps> {
                                         return true;
                                     }}
                                 >
-                                    {i18n.translate(SettingsStringId.HelpAboutLabel)}
+                                    {i18n.translate(SettingsStringId.AppAboutLabel)}
                                 </Button>
-                                <AboutDialog />
                             </ButtonGroup>
                         </FormGroup>
                         {process.env.NODE_ENV === 'development' && (
                             <FormGroup label="Developer">
                                 <Switch
                                     checked={i18n.pseudolocalize !== false}
-                                    onClick={() => pseudolocalize(!i18n.pseudolocalize)}
+                                    onChange={() =>
+                                        pseudolocalize(!i18n.pseudolocalize)
+                                    }
                                     label="Pseudolocalize"
                                 />
                             </FormGroup>
@@ -221,6 +291,22 @@ class SettingsDrawer extends React.PureComponent<SettingsProps> {
             </Drawer>
         );
     }
+
+    renderHotkeys(): JSX.Element {
+        return (
+            <Hotkeys>
+                <Hotkey
+                    combo="mod+d"
+                    label={this.props.i18n.translate(
+                        SettingsStringId.AppearanceDocumentationTooltip,
+                    )}
+                    global={true}
+                    preventDefault={true}
+                    onKeyDown={() => this.props.onToggleDocs()}
+                />
+            </Hotkeys>
+        );
+    }
 }
 
 const mapStateToProps = (state: RootState): StateProps => ({
@@ -228,6 +314,11 @@ const mapStateToProps = (state: RootState): StateProps => ({
     showDocs: state.settings.showDocs,
     darkMode: state.settings.darkMode,
     flashCurrentProgram: state.settings.flashCurrentProgram,
+    serviceWorker: state.app.serviceWorker,
+    checkingForUpdate: state.app.checkingForUpdate,
+    updateAvailable: state.app.updateAvailable,
+    beforeInstallPrompt: state.app.beforeInstallPrompt,
+    promptingInstall: state.app.promptingInstall,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
@@ -239,6 +330,10 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
     onFlashCurrentProgramChanged: (checked): Action =>
         dispatch(setBoolean(SettingId.FlashCurrentProgram, checked)),
     onAbout: (): Action => dispatch(openAboutDialog()),
+    onToggleDocs: (): Action => dispatch(toggleBoolean(SettingId.ShowDocs)),
+    onCheckForUpdate: (registration) => dispatch(checkForUpdate(registration)),
+    onReload: (registration) => dispatch(reload(registration)),
+    onInstallPrompt: (event) => dispatch(installPrompt(event)),
 });
 
 export default connect(

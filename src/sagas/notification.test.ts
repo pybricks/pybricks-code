@@ -5,6 +5,7 @@ import { IToaster } from '@blueprintjs/core';
 import { FirmwareReaderError, FirmwareReaderErrorCode } from '@pybricks/firmware';
 import { AsyncSaga } from '../../test';
 import { Action } from '../actions';
+import { didCheckForUpdate } from '../actions/app';
 import {
     BleDeviceFailToConnectReasonType,
     didFailToConnect as bleDidFailToConnect,
@@ -28,6 +29,7 @@ import notification from './notification';
 
 test.each([
     bleDidFailToConnect({ reason: BleDeviceFailToConnectReasonType.NoWebBluetooth }),
+    bleDidFailToConnect({ reason: BleDeviceFailToConnectReasonType.NoBluetooth }),
     bleDidFailToConnect({ reason: BleDeviceFailToConnectReasonType.NoGatt }),
     bleDidFailToConnect({ reason: BleDeviceFailToConnectReasonType.NoService }),
     bleDidFailToConnect({
@@ -38,6 +40,7 @@ test.each([
         message: 'test',
     }),
     bootloaderDidFailToConnect(BootloaderConnectionFailureReason.NoWebBluetooth),
+    bootloaderDidFailToConnect(BootloaderConnectionFailureReason.NoBluetooth),
     bootloaderDidFailToConnect(BootloaderConnectionFailureReason.GattServiceNotFound),
     storageChanged('test'),
     didFailToCompile(['reason']),
@@ -69,6 +72,7 @@ test.each([
     didFailToFinish(FailToFinishReasonType.FailedToCompile),
     didFailToFinish(FailToFinishReasonType.FirmwareSize),
     didFailToFinish(FailToFinishReasonType.Unknown, new Error('test error')),
+    didCheckForUpdate(false),
 ])('actions that should show notification: %o', async (action: Action) => {
     const getToasts = jest.fn().mockReturnValue([]);
     const show = jest.fn();
@@ -98,6 +102,7 @@ test.each([
     bootloaderDidFailToConnect(BootloaderConnectionFailureReason.Canceled),
     didFailToFinish(FailToFinishReasonType.FailedToConnect),
     didSucceed({} as ServiceWorkerRegistration),
+    didCheckForUpdate(true),
 ])('actions that should not show a notification: %o', async (action: Action) => {
     const getToasts = jest.fn().mockReturnValue([]);
     const show = jest.fn();

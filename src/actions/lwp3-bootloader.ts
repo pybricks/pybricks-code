@@ -79,6 +79,8 @@ export function disconnect(): BootloaderConnectionDisconnectAction {
 export enum BootloaderConnectionFailureReason {
     /** Web Bluetooth is not available */
     NoWebBluetooth = 'no-web-bluetooth',
+    /** Bluetooth is not available */
+    NoBluetooth = 'no-bluetooth',
     /** Connected but failed to find the bootloader GATT service */
     GattServiceNotFound = 'gatt-service-not-found',
     /** The connection was canceled */
@@ -93,6 +95,8 @@ type Reason<T extends BootloaderConnectionFailureReason> = {
 
 export type BootloaderConnectionFailToConnectNoWebBluetoothReason = Reason<BootloaderConnectionFailureReason.NoWebBluetooth>;
 
+export type BootloaderConnectionFailToConnectNoBluetoothReason = Reason<BootloaderConnectionFailureReason.NoBluetooth>;
+
 export type BootloaderConnectionFailToConnectGattServiceNotFoundReason = Reason<BootloaderConnectionFailureReason.GattServiceNotFound>;
 
 export type BootloaderConnectionFailToConnectCanceledReason = Reason<BootloaderConnectionFailureReason.Canceled>;
@@ -103,6 +107,7 @@ export type BootloaderConnectionFailToConnectUnknownReason = Reason<BootloaderCo
 
 export type BootloaderConnectionDidFailToConnectReason =
     | BootloaderConnectionFailToConnectNoWebBluetoothReason
+    | BootloaderConnectionFailToConnectNoBluetoothReason
     | BootloaderConnectionFailToConnectGattServiceNotFoundReason
     | BootloaderConnectionFailToConnectCanceledReason
     | BootloaderConnectionFailToConnectUnknownReason;

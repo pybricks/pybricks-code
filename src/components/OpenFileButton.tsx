@@ -114,6 +114,7 @@ class OpenFileButton extends React.Component<Props> {
                                         ? { pointerEvents: 'none' }
                                         : undefined
                                 }
+                                onMouseDown={(e) => e.preventDefault()} // prevent focus
                                 // onClick={this.props.onClick}
                                 // breaks Dropzone when this.props.onClick is undefined
                                 // so we have to do it the long way

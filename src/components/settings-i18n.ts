@@ -19,5 +19,9 @@ export enum SettingsStringId {
     HelpSupportLabel = 'settings.help.support.label',
     HelpChatLabel = 'settings.help.chat.label',
     HelpBugsLabel = 'settings.help.bugs.label',
-    HelpAboutLabel = 'settings.help.about.label',
+    AppTitle = 'settings.app.title',
+    AppInstallLabel = 'settings.app.install.label',
+    AppCheckForUpdateLabel = 'settings.app.checkForUpdate.label',
+    AppRestartLabel = 'settings.app.restart.label',
+    AppAboutLabel = 'settings.app.about.label',
 }

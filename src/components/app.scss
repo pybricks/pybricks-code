@@ -5,7 +5,7 @@
 
 @import '../variables.scss';
 
-.#{$ns}-dark .splitter-layout > .layout-splitter  {
+.#{$ns}-dark .splitter-layout > .layout-splitter {
     // make layout splitter match app color scheme
     background-color: $pt-dark-app-background-color;
 }
@@ -21,4 +21,10 @@
 
 .terminal-padding {
     padding-left: 10px;
+}
+
+// hide the docs and resize separator
+
+div.pb-hide-docs > :not(.layout-pane-primary) {
+    display: none;
 }

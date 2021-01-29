@@ -70,7 +70,11 @@ function* connect(_action: BleDeviceConnectAction): Generator {
         return;
     }
 
-    // TODO: check navigator.bluetooth.getAvailability()
+    const available = yield* call(() => navigator.bluetooth.getAvailability());
+    if (!available) {
+        yield* put(didFailToConnect({ reason: Reason.NoBluetooth }));
+        return;
+    }
 
     let device: BluetoothDevice;
     try {

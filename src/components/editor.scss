@@ -24,13 +24,13 @@
 // add "BETA" watermark
 
 .pb-beta .ace_scroller::after {
-    content: "";
-    background: url("./images/beta.svg");
+    content: '';
+    background: url('./images/beta.svg');
     opacity: 1;
     top: 0;
     left: 0;
     bottom: 0;
     right: 0;
     position: absolute;
-    pointer-events: none
+    pointer-events: none;
 }

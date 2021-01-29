@@ -11,8 +11,10 @@ import { AppActionType } from '../actions/app';
 import {
     SettingsActionType,
     SettingsSetBooleanAction,
+    SettingsToggleBooleanAction,
     didBooleanChange,
     didFailToSetBoolean,
+    setBoolean,
 } from '../actions/settings';
 import { RootState } from '../reducers';
 import { SettingId, getDefaultBooleanValue } from '../settings/user';
@@ -97,8 +99,14 @@ function* storeSetting(action: SettingsSetBooleanAction): Generator {
     }
 }
 
+function* toggleSetting(action: SettingsToggleBooleanAction): Generator {
+    const oldValue = yield* select((s: RootState) => s.settings[action.id]);
+    yield* storeSetting(setBoolean(action.id, !oldValue));
+}
+
 export default function* (): Generator {
     yield* fork(monitorLocalStorage);
     yield* takeEvery(AppActionType.DidStart, loadSettings);
     yield* takeEvery(SettingsActionType.SetBoolean, storeSetting);
+    yield* takeEvery(SettingsActionType.ToggleBoolean, toggleSetting);
 }

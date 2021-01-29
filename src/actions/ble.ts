@@ -51,6 +51,7 @@ export function didConnect(): BleDeviceDidConnectAction {
 
 export enum BleDeviceFailToConnectReasonType {
     NoWebBluetooth = 'ble.device.didFailToConnect.noWebBluetooth',
+    NoBluetooth = 'ble.device.didFailToConnect.noBluetooth',
     Canceled = 'ble.device.didFailToConnect.canceled',
     NoGatt = 'ble.device.didFailToConnect.noGatt',
     NoService = 'ble.device.didFailToConnect.noService',
@@ -62,6 +63,8 @@ type Reason<T extends BleDeviceFailToConnectReasonType> = {
 };
 
 export type BleDeviceFailToConnectNoWebBluetoothReason = Reason<BleDeviceFailToConnectReasonType.NoWebBluetooth>;
+
+export type BleDeviceFailToConnectNoBluetoothReason = Reason<BleDeviceFailToConnectReasonType.NoBluetooth>;
 
 export type BleDeviceFailToConnectCanceledReason = Reason<BleDeviceFailToConnectReasonType.Canceled>;
 
@@ -75,6 +78,7 @@ export type BleDeviceFailToConnectUnknownReason = Reason<BleDeviceFailToConnectR
 
 export type BleDeviceDidFailToConnectReason =
     | BleDeviceFailToConnectNoWebBluetoothReason
+    | BleDeviceFailToConnectNoBluetoothReason
     | BleDeviceFailToConnectCanceledReason
     | BleDeviceFailToConnectNoGattReason
     | BleDeviceFailToConnectNoServiceReason
