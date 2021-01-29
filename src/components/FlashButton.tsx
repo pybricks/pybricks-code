@@ -2,7 +2,6 @@
 // Copyright (c) 2020-2021 The Pybricks Authors
 
 import { connect } from 'react-redux';
-import { Dispatch } from '../actions';
 import { flashFirmware } from '../actions/flash-firmware';
 import * as notification from '../actions/notification';
 import { RootState } from '../reducers';
@@ -25,19 +24,12 @@ const mapStateToProps = (state: RootState): StateProps => ({
     progress: state.firmware.progress === null ? undefined : state.firmware.progress,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
-    onFile: (data): void => {
-        dispatch(flashFirmware(data));
-    },
-    onReject: (file): void => {
-        dispatch(
-            notification.add('error', `'${file.name}' is not a valid firmware file.`),
-        );
-    },
-    onClick: (): void => {
-        dispatch(flashFirmware());
-    },
-});
+const mapDispatchToProps: DispatchProps = {
+    onFile: flashFirmware,
+    onReject: (file) =>
+        notification.add('error', `'${file.name}' is not a valid firmware file.`),
+    onClick: () => flashFirmware(),
+};
 
 const mergeProps = (
     stateProps: StateProps,

@@ -2,7 +2,6 @@
 // Copyright (c) 2020 The Pybricks Authors
 
 import { connect } from 'react-redux';
-import { Action, Dispatch } from '../actions';
 import { stop } from '../actions/hub';
 import { RootState } from '../reducers';
 import { HubRuntimeState } from '../reducers/hub';
@@ -19,9 +18,9 @@ const mapStateToProps = (state: RootState): StateProps => ({
     enabled: state.hub.runtime === HubRuntimeState.Running,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
-    onAction: (): Action => dispatch(stop()),
-});
+const mapDispatchToProps: DispatchProps = {
+    onAction: stop,
+};
 
 const mergeProps = (
     stateProps: StateProps,

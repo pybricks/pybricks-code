@@ -2,7 +2,6 @@
 // Copyright (c) 2020 The Pybricks Authors
 
 import { connect } from 'react-redux';
-import { Action, Dispatch } from '../actions';
 import { toggleBluetooth } from '../actions/ble';
 import { RootState } from '../reducers';
 import { BleConnectionState } from '../reducers/ble';
@@ -34,8 +33,8 @@ const mapStateToProps = (state: RootState): StateProps => {
     }
 };
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
-    onAction: (): Action => dispatch(toggleBluetooth()),
-});
+const mapDispatchToProps: DispatchProps = {
+    onAction: toggleBluetooth,
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(ActionButton);

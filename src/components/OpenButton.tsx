@@ -2,7 +2,6 @@
 // Copyright (c) 2020 The Pybricks Authors
 
 import { connect } from 'react-redux';
-import { Dispatch } from '../actions';
 import * as editor from '../actions/editor';
 import * as notification from '../actions/notification';
 import { RootState } from '../reducers';
@@ -18,16 +17,11 @@ const mapStateToProps = (state: RootState): StateProps => ({
     enabled: state.editor.current !== null,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
-    onFile: (data): void => {
-        dispatch(editor.open(data));
-    },
-    onReject: (file): void => {
-        dispatch(
-            notification.add('error', `'${file.name}' is not a valid python file.`),
-        );
-    },
-});
+const mapDispatchToProps: DispatchProps = {
+    onFile: editor.open,
+    onReject: (file) =>
+        notification.add('error', `'${file.name}' is not a valid python file.`),
+};
 
 const mergeProps = (
     stateProps: StateProps,

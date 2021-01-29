@@ -2,7 +2,6 @@
 // Copyright (c) 2020 The Pybricks Authors
 
 import { connect } from 'react-redux';
-import { Action, Dispatch } from '../actions';
 import { downloadAndRun } from '../actions/hub';
 import { RootState } from '../reducers';
 import { HubRuntimeState } from '../reducers/hub';
@@ -20,9 +19,9 @@ const mapStateToProps = (state: RootState): StateProps => ({
         state.editor.current !== null && state.hub.runtime === HubRuntimeState.Idle,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
-    onAction: (): Action => dispatch(downloadAndRun()),
-});
+const mapDispatchToProps: DispatchProps = {
+    onAction: downloadAndRun,
+};
 
 const mergeProps = (
     stateProps: StateProps,

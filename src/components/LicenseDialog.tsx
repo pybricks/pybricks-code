@@ -15,7 +15,6 @@ import {
 import { WithI18nProps, withI18n } from '@shopify/react-i18n';
 import React from 'react';
 import { connect } from 'react-redux';
-import { Action, Dispatch } from '../actions';
 import { closeLicenseDialog } from '../actions/app';
 import { select } from '../actions/license';
 import { RootState } from '../reducers';
@@ -152,10 +151,10 @@ const mapStateToProps = (state: RootState): StateProps => ({
     licenseInfo: state.license.selected,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
-    onClose: (): Action => dispatch(closeLicenseDialog()),
-    onSelectPackage: (info): Action => dispatch(select(info)),
-});
+const mapDispatchToProps: DispatchProps = {
+    onClose: closeLicenseDialog,
+    onSelectPackage: select,
+};
 
 export default connect(
     mapStateToProps,

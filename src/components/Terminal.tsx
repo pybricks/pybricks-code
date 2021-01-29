@@ -14,7 +14,6 @@ import { connect } from 'react-redux';
 import { Observable, Unsubscribe } from 'redux';
 import { Terminal as XTerm } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
-import { Dispatch } from '../actions';
 import { receiveData } from '../actions/terminal';
 import { RootState } from '../reducers';
 import { isMacOS } from '../utils/os';
@@ -175,11 +174,9 @@ const mapStateToProps = (state: RootState): StateProps => ({
     darkMode: state.settings.darkMode,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
-    onData: (d): void => {
-        dispatch(receiveData(d));
-    },
-});
+const mapDispatchToProps: DispatchProps = {
+    onData: receiveData,
+};
 
 export default connect(
     mapStateToProps,

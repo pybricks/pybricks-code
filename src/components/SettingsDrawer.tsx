@@ -18,7 +18,6 @@ import {
 import { WithI18nProps, withI18n } from '@shopify/react-i18n';
 import React from 'react';
 import { connect } from 'react-redux';
-import { Action, Dispatch } from '../actions';
 import {
     checkForUpdate,
     closeSettings,
@@ -330,20 +329,18 @@ const mapStateToProps = (state: RootState): StateProps => ({
     readyForOfflineUse: state.app.readyForOfflineUse,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
-    onClose: (): Action => dispatch(closeSettings()),
-    onShowDocsChanged: (checked): Action =>
-        dispatch(setBoolean(SettingId.ShowDocs, checked)),
-    onDarkModeChanged: (checked): Action =>
-        dispatch(setBoolean(SettingId.DarkMode, checked)),
-    onFlashCurrentProgramChanged: (checked): Action =>
-        dispatch(setBoolean(SettingId.FlashCurrentProgram, checked)),
-    onAbout: (): Action => dispatch(openAboutDialog()),
-    onToggleDocs: (): Action => dispatch(toggleBoolean(SettingId.ShowDocs)),
-    onCheckForUpdate: (registration) => dispatch(checkForUpdate(registration)),
-    onReload: (registration) => dispatch(reload(registration)),
-    onInstallPrompt: (event) => dispatch(installPrompt(event)),
-});
+const mapDispatchToProps: DispatchProps = {
+    onClose: closeSettings,
+    onShowDocsChanged: (checked) => setBoolean(SettingId.ShowDocs, checked),
+    onDarkModeChanged: (checked) => setBoolean(SettingId.DarkMode, checked),
+    onFlashCurrentProgramChanged: (checked) =>
+        setBoolean(SettingId.FlashCurrentProgram, checked),
+    onAbout: openAboutDialog,
+    onToggleDocs: () => toggleBoolean(SettingId.ShowDocs),
+    onCheckForUpdate: checkForUpdate,
+    onReload: reload,
+    onInstallPrompt: installPrompt,
+};
 
 export default connect(
     mapStateToProps,

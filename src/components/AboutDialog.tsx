@@ -7,7 +7,6 @@ import { AnchorButton, Button, Classes, Dialog } from '@blueprintjs/core';
 import { WithI18nProps, withI18n } from '@shopify/react-i18n';
 import React from 'react';
 import { connect } from 'react-redux';
-import { Action, Dispatch } from '../actions';
 import { closeAboutDialog, openLicenseDialog } from '../actions/app';
 import { RootState } from '../reducers';
 import {
@@ -73,10 +72,10 @@ const mapStateToProps = (state: RootState): StateProps => ({
     showAboutDialog: state.app.showAboutDialog,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
-    onClose: (): Action => dispatch(closeAboutDialog()),
-    onLicenseButtonClick: (): Action => dispatch(openLicenseDialog()),
-});
+const mapDispatchToProps: DispatchProps = {
+    onClose: closeAboutDialog,
+    onLicenseButtonClick: openLicenseDialog,
+};
 
 export default connect(
     mapStateToProps,

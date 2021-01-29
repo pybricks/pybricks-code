@@ -14,7 +14,6 @@ import React from 'react';
 import AceEditor from 'react-ace';
 import { IAceEditor } from 'react-ace/lib/types';
 import { connect } from 'react-redux';
-import { Action, Dispatch } from '../actions';
 import { setEditSession, storageChanged } from '../actions/editor';
 import { compile } from '../actions/mpy';
 import { toggleBoolean } from '../actions/settings';
@@ -221,14 +220,14 @@ const mapStateToProps = (state: RootState): StateProps => ({
     showDocs: state.settings.showDocs,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
-    onSessionChanged: (s): Action => dispatch(setEditSession(s)),
-    onProgramStorageChanged: (v): Action => dispatch(storageChanged(v)),
+const mapDispatchToProps: DispatchProps = {
+    onSessionChanged: setEditSession,
+    onProgramStorageChanged: storageChanged,
     // REVISIT: the options here might need to be changed - hopefully there is
     // one setting that works for all hub types for cases where we aren't connected.
-    onCheck: (script) => dispatch(compile(script)),
-    onToggleDocs: () => dispatch(toggleBoolean(SettingId.ShowDocs)),
-});
+    onCheck: compile,
+    onToggleDocs: () => toggleBoolean(SettingId.ShowDocs),
+};
 
 export default connect(
     mapStateToProps,

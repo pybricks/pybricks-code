@@ -2,7 +2,6 @@
 // Copyright (c) 2020 The Pybricks Authors
 
 import { connect } from 'react-redux';
-import { Dispatch } from '../actions';
 import * as editor from '../actions/editor';
 import { RootState } from '../reducers';
 import ActionButton, { ActionButtonProps } from './ActionButton';
@@ -18,11 +17,9 @@ const mapStateToProps = (state: RootState): StateProps => ({
     enabled: state.editor.current !== null,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
-    onAction: (): void => {
-        dispatch(editor.saveAs());
-    },
-});
+const mapDispatchToProps: DispatchProps = {
+    onAction: editor.saveAs,
+};
 
 const mergeProps = (
     stateProps: StateProps,
