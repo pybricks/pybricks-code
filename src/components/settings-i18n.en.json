@@ -39,6 +39,7 @@
         },
         "app": {
             "title": "App",
+            "offlineUseHelp": "Ready for offline use.",
             "install": {
                 "label": "Install as App"
             },

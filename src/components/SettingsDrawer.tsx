@@ -54,6 +54,7 @@ type StateProps = {
     updateAvailable: boolean;
     beforeInstallPrompt: BeforeInstallPromptEvent | null;
     promptingInstall: boolean;
+    readyForOfflineUse: boolean;
 };
 
 type DispatchProps = {
@@ -83,6 +84,7 @@ class SettingsDrawer extends React.PureComponent<SettingsProps> {
             updateAvailable,
             beforeInstallPrompt,
             promptingInstall,
+            readyForOfflineUse,
             onClose,
             onShowDocsChanged,
             onDarkModeChanged,
@@ -226,7 +228,13 @@ class SettingsDrawer extends React.PureComponent<SettingsProps> {
                                 <AboutDialog />
                             </ButtonGroup>
                         </FormGroup>
-                        <FormGroup label={i18n.translate(SettingsStringId.AppTitle)}>
+                        <FormGroup
+                            label={i18n.translate(SettingsStringId.AppTitle)}
+                            helperText={
+                                readyForOfflineUse &&
+                                i18n.translate(SettingsStringId.AppOfflineUseHelp)
+                            }
+                        >
                             <ButtonGroup
                                 minimal={true}
                                 vertical={true}
@@ -319,6 +327,7 @@ const mapStateToProps = (state: RootState): StateProps => ({
     updateAvailable: state.app.updateAvailable,
     beforeInstallPrompt: state.app.beforeInstallPrompt,
     promptingInstall: state.app.promptingInstall,
+    readyForOfflineUse: state.app.readyForOfflineUse,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
