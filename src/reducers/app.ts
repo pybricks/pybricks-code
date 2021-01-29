@@ -18,6 +18,7 @@ export interface AppState {
     readonly updateAvailable: boolean;
     readonly beforeInstallPrompt: BeforeInstallPromptEvent;
     readonly promptingInstall: boolean;
+    readonly readyForOfflineUse: boolean;
 }
 
 const showSettings: Reducer<boolean, Action> = (state = false, action) => {
@@ -116,6 +117,15 @@ const promptingInstall: Reducer<boolean, Action> = (state = false, action) => {
     }
 };
 
+const readyForOfflineUse: Reducer<boolean, Action> = (state = false, action) => {
+    switch (action.type) {
+        case ServiceWorkerActionType.DidSucceed:
+            return true;
+        default:
+            return state;
+    }
+};
+
 export default combineReducers({
     showSettings,
     showAboutDialog,
@@ -125,4 +135,5 @@ export default combineReducers({
     updateAvailable,
     beforeInstallPrompt,
     promptingInstall,
+    readyForOfflineUse,
 });
