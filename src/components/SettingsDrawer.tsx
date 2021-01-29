@@ -19,7 +19,13 @@ import { WithI18nProps, withI18n } from '@shopify/react-i18n';
 import React from 'react';
 import { connect } from 'react-redux';
 import { Action, Dispatch } from '../actions';
-import { checkForUpdate, closeSettings, openAboutDialog, reload } from '../actions/app';
+import {
+    checkForUpdate,
+    closeSettings,
+    installPrompt,
+    openAboutDialog,
+    reload,
+} from '../actions/app';
 import { setBoolean, toggleBoolean } from '../actions/settings';
 import { RootState } from '../reducers';
 import { pseudolocalize } from '../settings/i18n';
@@ -31,6 +37,7 @@ import {
     tooltipDelay,
 } from '../settings/ui';
 import { SettingId } from '../settings/user';
+import { BeforeInstallPromptEvent } from '../utils/dom';
 import { isMacOS } from '../utils/os';
 import AboutDialog from './AboutDialog';
 import ExternalLinkIcon from './ExternalLinkIcon';
@@ -45,6 +52,8 @@ type StateProps = {
     serviceWorker: ServiceWorkerRegistration | null;
     checkingForUpdate: boolean;
     updateAvailable: boolean;
+    beforeInstallPrompt: BeforeInstallPromptEvent | null;
+    promptingInstall: boolean;
 };
 
 type DispatchProps = {
@@ -56,6 +65,7 @@ type DispatchProps = {
     onToggleDocs: () => void;
     onCheckForUpdate: (registration: ServiceWorkerRegistration) => void;
     onReload: (registration: ServiceWorkerRegistration) => void;
+    onInstallPrompt: (event: BeforeInstallPromptEvent) => void;
 };
 
 type SettingsProps = StateProps & DispatchProps & WithI18nProps;
@@ -71,6 +81,8 @@ class SettingsDrawer extends React.PureComponent<SettingsProps> {
             flashCurrentProgram,
             checkingForUpdate,
             updateAvailable,
+            beforeInstallPrompt,
+            promptingInstall,
             onClose,
             onShowDocsChanged,
             onDarkModeChanged,
@@ -78,6 +90,7 @@ class SettingsDrawer extends React.PureComponent<SettingsProps> {
             onAbout,
             onCheckForUpdate,
             onReload,
+            onInstallPrompt: onInstall,
             i18n,
         } = this.props;
         return (
@@ -219,6 +232,17 @@ class SettingsDrawer extends React.PureComponent<SettingsProps> {
                                 vertical={true}
                                 alignText="left"
                             >
+                                {beforeInstallPrompt && (
+                                    <Button
+                                        icon="add"
+                                        onClick={() => onInstall(beforeInstallPrompt)}
+                                        loading={promptingInstall}
+                                    >
+                                        {i18n.translate(
+                                            SettingsStringId.AppInstallLabel,
+                                        )}
+                                    </Button>
+                                )}
                                 {serviceWorker && !updateAvailable && (
                                     <Button
                                         icon="refresh"
@@ -293,6 +317,8 @@ const mapStateToProps = (state: RootState): StateProps => ({
     serviceWorker: state.app.serviceWorker,
     checkingForUpdate: state.app.checkingForUpdate,
     updateAvailable: state.app.updateAvailable,
+    beforeInstallPrompt: state.app.beforeInstallPrompt,
+    promptingInstall: state.app.promptingInstall,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
@@ -307,6 +333,7 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
     onToggleDocs: (): Action => dispatch(toggleBoolean(SettingId.ShowDocs)),
     onCheckForUpdate: (registration) => dispatch(checkForUpdate(registration)),
     onReload: (registration) => dispatch(reload(registration)),
+    onInstallPrompt: (event) => dispatch(installPrompt(event)),
 });
 
 export default connect(

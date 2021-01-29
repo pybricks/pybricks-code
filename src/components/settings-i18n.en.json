@@ -39,6 +39,9 @@
         },
         "app": {
             "title": "App",
+            "install": {
+                "label": "Install as App"
+            },
             "checkForUpdate": {
                 "label": "Check for Update"
             },

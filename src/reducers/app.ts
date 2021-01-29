@@ -7,6 +7,7 @@ import { Reducer, combineReducers } from 'redux';
 import { Action } from '../actions';
 import { AppActionType } from '../actions/app';
 import { ServiceWorkerActionType } from '../actions/service-worker';
+import { BeforeInstallPromptEvent } from '../utils/dom';
 
 export interface AppState {
     readonly showSettings: boolean;
@@ -15,6 +16,8 @@ export interface AppState {
     readonly serviceWorker: ServiceWorkerRegistration | null;
     readonly checkingForUpdate: boolean;
     readonly updateAvailable: boolean;
+    readonly beforeInstallPrompt: BeforeInstallPromptEvent;
+    readonly promptingInstall: boolean;
 }
 
 const showSettings: Reducer<boolean, Action> = (state = false, action) => {
@@ -88,6 +91,31 @@ const updateAvailable: Reducer<boolean, Action> = (state = false, action) => {
     }
 };
 
+const beforeInstallPrompt: Reducer<BeforeInstallPromptEvent | null, Action> = (
+    state = null,
+    action,
+) => {
+    switch (action.type) {
+        case AppActionType.DidBeforeInstallPrompt:
+            return action.event;
+        case AppActionType.DidInstall:
+            return null;
+        default:
+            return state;
+    }
+};
+
+const promptingInstall: Reducer<boolean, Action> = (state = false, action) => {
+    switch (action.type) {
+        case AppActionType.InstallPrompt:
+            return true;
+        case AppActionType.DidInstallPrompt:
+            return false;
+        default:
+            return state;
+    }
+};
+
 export default combineReducers({
     showSettings,
     showAboutDialog,
@@ -95,4 +123,6 @@ export default combineReducers({
     serviceWorker,
     checkingForUpdate,
     updateAvailable,
+    beforeInstallPrompt,
+    promptingInstall,
 });
