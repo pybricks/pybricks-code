@@ -22,11 +22,11 @@
     background-color: $pt-app-background-color;
 }
 
-.#{$ns}-dark .terminal-padding {
+.#{$ns}-dark .pb-app-terminal-padding {
     background-color: black;
 }
 
-.terminal-padding {
+.pb-app-terminal-padding {
     padding-left: 10px;
 }
 

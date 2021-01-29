@@ -51,7 +51,7 @@ function App(): JSX.Element {
                     }
                 >
                     <Editor />
-                    <div className="terminal-padding h-100">
+                    <div className="pb-app-terminal-padding h-100">
                         <Terminal />
                     </div>
                 </SplitterLayout>
