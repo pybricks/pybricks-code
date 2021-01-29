@@ -10,14 +10,14 @@ import { applyMiddleware, createStore } from 'redux';
 import { createLogger } from 'redux-logger';
 import createSagaMiddleware from 'redux-saga';
 import './index.scss';
-import { didSucceed, didUpdate } from './actions/service-worker';
-import App from './components/App';
-import * as I18nToaster from './components/I18nToaster';
+import App from './app/App';
+import { i18nManager } from './i18n';
+import * as I18nToaster from './notifications/I18nToaster';
 import rootReducer from './reducers';
 import reportWebVitals from './reportWebVitals';
 import rootSaga from './sagas';
+import { didSucceed, didUpdate } from './service-worker/actions';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
-import { i18nManager } from './settings/i18n';
 import { createCountFunc } from './utils/iter';
 
 const toaster = I18nToaster.create(i18nManager);
