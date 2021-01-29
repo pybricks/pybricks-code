@@ -47,7 +47,6 @@ store.subscribe(() => {
         if (newDarkMode) {
             document.body.classList.add(Classes.DARK);
             for (const frame of document.getElementsByTagName('iframe')) {
-                console.log('dark');
                 frame.contentWindow?.document.documentElement.classList.add(
                     Classes.DARK,
                 );
@@ -55,7 +54,6 @@ store.subscribe(() => {
         } else {
             document.body.classList.remove(Classes.DARK);
             for (const frame of document.getElementsByTagName('iframe')) {
-                console.log('light');
                 frame.contentWindow?.document.documentElement.classList.remove(
                     Classes.DARK,
                 );
