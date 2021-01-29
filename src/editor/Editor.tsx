@@ -225,7 +225,7 @@ const mapDispatchToProps: DispatchProps = {
     onProgramStorageChanged: storageChanged,
     // REVISIT: the options here might need to be changed - hopefully there is
     // one setting that works for all hub types for cases where we aren't connected.
-    onCheck: compile,
+    onCheck: (script) => compile(script, []),
     onToggleDocs: () => toggleBoolean(SettingId.ShowDocs),
 };
 

@@ -14,10 +14,10 @@ export type MpyCompileAction = Action<MpyActionType.Compile> & {
     /** The script to compile. */
     readonly script: string;
     /** The compiler command line options */
-    options?: string[];
+    options: string[];
 };
 
-export function compile(script: string, options?: string[]): MpyCompileAction {
+export function compile(script: string, options: string[]): MpyCompileAction {
     return { type: MpyActionType.Compile, script, options };
 }
 

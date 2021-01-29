@@ -129,15 +129,15 @@ export type FailToFinishReason =
  * Action that flashes firmware to a hub.
  */
 export type FlashFirmwareFlashAction = Action<FlashFirmwareActionType.FlashFirmware> & {
-    /** The firmware zip file data or undefined to get firmware later. */
-    data?: ArrayBuffer;
+    /** The firmware zip file data or `null` to get firmware later. */
+    data: ArrayBuffer | null;
 };
 
 /**
  * Creates a new action to flash firmware to a hub.
- * @param data The firmware zip file data or undefined to get firmware later.
+ * @param data The firmware zip file data or `null` to get firmware later.
  */
-export function flashFirmware(data?: ArrayBuffer): FlashFirmwareFlashAction {
+export function flashFirmware(data: ArrayBuffer | null): FlashFirmwareFlashAction {
     return { type: FlashFirmwareActionType.FlashFirmware, data };
 }
 

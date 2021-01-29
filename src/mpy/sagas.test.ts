@@ -18,7 +18,7 @@ enum MpyFeatureFlags {
 test('compiler works', async () => {
     const saga = new AsyncSaga(mpy);
 
-    saga.put(compile('print("hello!")'));
+    saga.put(compile('print("hello!")', []));
 
     const action = await saga.take();
     expect(action.type).toBe(MpyActionType.DidCompile);
@@ -32,7 +32,7 @@ test('compiler works', async () => {
 test('compiler error works', async () => {
     const saga = new AsyncSaga(mpy);
 
-    saga.put(compile('syntax error!'));
+    saga.put(compile('syntax error!', []));
 
     const action = await saga.take();
     expect(action.type).toBe(MpyActionType.DidFailToCompile);

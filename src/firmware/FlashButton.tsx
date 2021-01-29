@@ -28,7 +28,7 @@ const mapDispatchToProps: DispatchProps = {
     onFile: flashFirmware,
     onReject: (file) =>
         notification.add('error', `'${file.name}' is not a valid firmware file.`),
-    onClick: () => flashFirmware(),
+    onClick: () => flashFirmware(null),
 };
 
 const mergeProps = (

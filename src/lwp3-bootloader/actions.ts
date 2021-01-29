@@ -124,13 +124,13 @@ export function didFailToConnect(
 
 export function didFailToConnect(
     reason: BootloaderConnectionFailureReason,
-    err?: Error,
+    arg1?: Error,
 ): BootloaderConnectionDidFailToConnectAction {
     if (reason === BootloaderConnectionFailureReason.Unknown) {
         return <BootloaderConnectionDidFailToConnectAction>{
             type: BootloaderConnectionActionType.DidFailToConnect,
             reason,
-            err,
+            err: arg1,
         };
     }
     return { type: BootloaderConnectionActionType.DidFailToConnect, reason };

@@ -277,7 +277,7 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
             program = editor.getValue();
         }
 
-        if (action.data !== undefined) {
+        if (action.data !== null) {
             ({ firmware, deviceId } = yield* loadFirmware(action.data, program));
         }
 

@@ -88,7 +88,7 @@ describe('flashFirmware', () => {
 
             // saga is triggered by this action
 
-            saga.put(flashFirmwareAction());
+            saga.put(flashFirmwareAction(null));
 
             // first step is to connect to the hub bootloader
 
@@ -240,7 +240,7 @@ describe('flashFirmware', () => {
 
             // saga is triggered by this action
 
-            saga.put(flashFirmwareAction());
+            saga.put(flashFirmwareAction(null));
 
             // first step is to connect to the hub bootloader
 
@@ -296,7 +296,7 @@ describe('flashFirmware', () => {
 
             // saga is triggered by this action
 
-            saga.put(flashFirmwareAction());
+            saga.put(flashFirmwareAction(null));
 
             // first step is to connect to the hub bootloader
 
@@ -370,7 +370,7 @@ describe('flashFirmware', () => {
 
             // saga is triggered by this action
 
-            saga.put(flashFirmwareAction());
+            saga.put(flashFirmwareAction(null));
 
             // first step is to connect to the hub bootloader
 
@@ -440,7 +440,7 @@ describe('flashFirmware', () => {
 
             // saga is triggered by this action
 
-            saga.put(flashFirmwareAction());
+            saga.put(flashFirmwareAction(null));
 
             // first step is to connect to the hub bootloader
 
@@ -513,7 +513,7 @@ describe('flashFirmware', () => {
 
             // saga is triggered by this action
 
-            saga.put(flashFirmwareAction());
+            saga.put(flashFirmwareAction(null));
 
             // first step is to connect to the hub bootloader
 
@@ -579,7 +579,7 @@ describe('flashFirmware', () => {
 
             // saga is triggered by this action
 
-            saga.put(flashFirmwareAction());
+            saga.put(flashFirmwareAction(null));
 
             // first step is to connect to the hub bootloader
 
@@ -651,7 +651,7 @@ describe('flashFirmware', () => {
 
             // saga is triggered by this action
 
-            saga.put(flashFirmwareAction());
+            saga.put(flashFirmwareAction(null));
 
             // first step is to connect to the hub bootloader
 
@@ -739,7 +739,7 @@ describe('flashFirmware', () => {
 
             // saga is triggered by this action
 
-            saga.put(flashFirmwareAction());
+            saga.put(flashFirmwareAction(null));
 
             // first step is to connect to the hub bootloader
 
@@ -811,7 +811,7 @@ describe('flashFirmware', () => {
 
             // saga is triggered by this action
 
-            saga.put(flashFirmwareAction());
+            saga.put(flashFirmwareAction(null));
 
             // first step is to connect to the hub bootloader
 
@@ -912,7 +912,7 @@ describe('flashFirmware', () => {
 
             // saga is triggered by this action
 
-            saga.put(flashFirmwareAction());
+            saga.put(flashFirmwareAction(null));
 
             // first step is to connect to the hub bootloader
 
@@ -1022,7 +1022,7 @@ describe('flashFirmware', () => {
 
             // saga is triggered by this action
 
-            saga.put(flashFirmwareAction());
+            saga.put(flashFirmwareAction(null));
 
             // first step is to connect to the hub bootloader
 
@@ -1172,7 +1172,7 @@ describe('flashFirmware', () => {
 
             // saga is triggered by this action
 
-            saga.put(flashFirmwareAction());
+            saga.put(flashFirmwareAction(null));
 
             // first step is to connect to the hub bootloader
 
@@ -1854,7 +1854,7 @@ describe('flashFirmware', () => {
 
         // saga is triggered by this action
 
-        saga.put(flashFirmwareAction());
+        saga.put(flashFirmwareAction(null));
 
         // first step is to connect to the hub bootloader
 
