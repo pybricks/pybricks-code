@@ -8,6 +8,7 @@ import {
     didConnect,
     didDisconnect,
     didFailToConnect,
+    didFailToDisconnect,
     disconnect,
 } from './actions';
 import reducers, { BleConnectionState } from './reducers';
@@ -47,4 +48,10 @@ test('connection', () => {
             didDisconnect(),
         ).connection,
     ).toBe(BleConnectionState.Disconnected);
+    expect(
+        reducers(
+            { connection: BleConnectionState.Disconnecting } as State,
+            didFailToDisconnect(),
+        ).connection,
+    ).toBe(BleConnectionState.Connected);
 });

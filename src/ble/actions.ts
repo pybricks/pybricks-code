@@ -29,6 +29,10 @@ export enum BleDeviceActionType {
      * The device was disconnected.
      */
     DidDisconnect = 'ble.device.action.didDisconnect',
+    /**
+     * The device fail to disconnect.
+     */
+    DidFailToDisconnect = 'ble.device.action.didFailToDisconnect',
 }
 
 export type BleDeviceConnectAction = Action<BleDeviceActionType.Connect>;
@@ -114,6 +118,15 @@ export function didDisconnect(): BleDeviceDidDisconnectAction {
     return { type: BleDeviceActionType.DidDisconnect };
 }
 
+export type BleDeviceDidFailToDisconnectAction = Action<BleDeviceActionType.DidFailToDisconnect>;
+
+/**
+ * Creates an action that indicates a device failed to disconnect.
+ */
+export function didFailToDisconnect(): BleDeviceDidFailToDisconnectAction {
+    return { type: BleDeviceActionType.DidFailToDisconnect };
+}
+
 /**
  * Common type for all BLE connection actions.
  */
@@ -122,7 +135,8 @@ export type BLEConnectAction =
     | BleDeviceDidConnectAction
     | BleDeviceDidFailToConnectAction
     | BleDeviceDisconnectAction
-    | BleDeviceDidDisconnectAction;
+    | BleDeviceDidDisconnectAction
+    | BleDeviceDidFailToDisconnectAction;
 
 /**
  * High-level BLE actions.

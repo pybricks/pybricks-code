@@ -38,6 +38,7 @@ const connection: Reducer<BleConnectionState, Action> = (
         case BleDeviceActionType.Connect:
             return BleConnectionState.Connecting;
         case BleDeviceActionType.DidConnect:
+        case BleDeviceActionType.DidFailToDisconnect:
             return BleConnectionState.Connected;
         case BleDeviceActionType.Disconnect:
             return BleConnectionState.Disconnecting;
