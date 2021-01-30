@@ -9,17 +9,6 @@ import { ServiceWorkerActionType } from '../service-worker/actions';
 import { BeforeInstallPromptEvent } from '../utils/dom';
 import { AppActionType } from './actions';
 
-const showSettings: Reducer<boolean, Action> = (state = false, action) => {
-    switch (action.type) {
-        case AppActionType.OpenSettings:
-            return true;
-        case AppActionType.CloseSettings:
-            return false;
-        default:
-            return state;
-    }
-};
-
 const serviceWorker: Reducer<ServiceWorkerRegistration | null, Action> = (
     state = null,
     action,
@@ -93,7 +82,6 @@ const readyForOfflineUse: Reducer<boolean, Action> = (state = false, action) => 
 };
 
 export default combineReducers({
-    showSettings,
     serviceWorker,
     checkingForUpdate,
     updateAvailable,

@@ -11,10 +11,15 @@ import ReplButton from '../hub/ReplButton';
 import RunButton from '../hub/RunButton';
 import StopButton from '../hub/StopButton';
 import SettingsButton from '../settings/SettingsButton';
+import SettingsDrawer from '../settings/SettingsDrawer';
 
 import './toolbar.scss';
 
 class Toolbar extends React.Component {
+    public state = {
+        settingsDrawerIsOpen: false,
+    };
+
     render(): JSX.Element {
         return (
             <Navbar
@@ -40,7 +45,18 @@ class Toolbar extends React.Component {
                 </Navbar.Group>
                 <Navbar.Group align={Alignment.RIGHT}>
                     <ButtonGroup>
-                        <SettingsButton id="settings" />
+                        <SettingsButton
+                            id="settings"
+                            onAction={() =>
+                                this.setState({ settingsDrawerIsOpen: true })
+                            }
+                        />
+                        <SettingsDrawer
+                            isOpen={this.state.settingsDrawerIsOpen}
+                            onClose={() =>
+                                this.setState({ settingsDrawerIsOpen: false })
+                            }
+                        />
                     </ButtonGroup>
                 </Navbar.Group>
             </Navbar>

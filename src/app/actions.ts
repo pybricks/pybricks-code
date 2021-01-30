@@ -24,10 +24,6 @@ export enum AppActionType {
     DidInstall = 'app.action.didInstallPrompt',
     /** The app has just ben started. */
     DidStart = 'app.action.didStart',
-    /** Open settings dialog. */
-    OpenSettings = 'app.action.openSettings',
-    /** Close settings dialog. */
-    CloseSettings = 'app.action.closeSettings',
 }
 
 /** Action that requests the app to reload. */
@@ -108,22 +104,6 @@ export function didStart(): AppDidStartAction {
     return { type: AppActionType.DidStart };
 }
 
-/** Action to open the settings dialog. */
-export type AppOpenSettingsAction = Action<AppActionType.OpenSettings>;
-
-/** Creates an action to open the settings dialog. */
-export function openSettings(): AppOpenSettingsAction {
-    return { type: AppActionType.OpenSettings };
-}
-
-/** Action to close the settings dialog. */
-export type AppCloseSettingsAction = Action<AppActionType.CloseSettings>;
-
-/** Creates an action to close the settings dialog. */
-export function closeSettings(): AppCloseSettingsAction {
-    return { type: AppActionType.CloseSettings };
-}
-
 /** common type for all app actions. */
 export type AppAction =
     | AppReloadAction
@@ -133,6 +113,4 @@ export type AppAction =
     | AppInstallPromptAction
     | AppDidInstallPromptAction
     | AppDidInstallAction
-    | AppDidStartAction
-    | AppOpenSettingsAction
-    | AppCloseSettingsAction;
+    | AppDidStartAction;

@@ -19,7 +19,7 @@ import { WithI18nProps, withI18n } from '@shopify/react-i18n';
 import React from 'react';
 import { connect } from 'react-redux';
 import AboutDialog from '../about/AboutDialog';
-import { checkForUpdate, closeSettings, installPrompt, reload } from '../app/actions';
+import { checkForUpdate, installPrompt, reload } from '../app/actions';
 import {
     pybricksBugReportsUrl,
     pybricksGitterUrl,
@@ -38,7 +38,6 @@ import { SettingsStringId } from './i18n';
 import en from './i18n.en.json';
 
 type StateProps = {
-    open: boolean;
     showDocs: boolean;
     darkMode: boolean;
     flashCurrentProgram: boolean;
@@ -51,7 +50,6 @@ type StateProps = {
 };
 
 type DispatchProps = {
-    onClose: () => void;
     onShowDocsChanged: (checked: boolean) => void;
     onDarkModeChanged: (checked: boolean) => void;
     onFlashCurrentProgramChanged: (checked: boolean) => void;
@@ -61,7 +59,12 @@ type DispatchProps = {
     onInstallPrompt: (event: BeforeInstallPromptEvent) => void;
 };
 
-type SettingsProps = StateProps & DispatchProps & WithI18nProps;
+type OwnProps = {
+    isOpen: boolean;
+    onClose(): void;
+};
+
+type SettingsProps = StateProps & DispatchProps & OwnProps & WithI18nProps;
 
 @HotkeysTarget
 class SettingsDrawer extends React.PureComponent<SettingsProps> {
@@ -71,7 +74,6 @@ class SettingsDrawer extends React.PureComponent<SettingsProps> {
 
     render(): JSX.Element {
         const {
-            open,
             showDocs,
             darkMode,
             serviceWorker,
@@ -81,18 +83,19 @@ class SettingsDrawer extends React.PureComponent<SettingsProps> {
             beforeInstallPrompt,
             promptingInstall,
             readyForOfflineUse,
-            onClose,
             onShowDocsChanged,
             onDarkModeChanged,
             onFlashCurrentProgramChanged,
             onCheckForUpdate,
             onReload,
-            onInstallPrompt: onInstall,
+            onInstallPrompt,
+            isOpen,
+            onClose,
             i18n,
         } = this.props;
         return (
             <Drawer
-                isOpen={open}
+                isOpen={isOpen}
                 icon="cog"
                 size={Drawer.SIZE_SMALL}
                 title={i18n.translate(SettingsStringId.Title)}
@@ -243,7 +246,9 @@ class SettingsDrawer extends React.PureComponent<SettingsProps> {
                                 {beforeInstallPrompt && (
                                     <Button
                                         icon="add"
-                                        onClick={() => onInstall(beforeInstallPrompt)}
+                                        onClick={() =>
+                                            onInstallPrompt(beforeInstallPrompt)
+                                        }
                                         loading={promptingInstall}
                                     >
                                         {i18n.translate(
@@ -318,7 +323,6 @@ class SettingsDrawer extends React.PureComponent<SettingsProps> {
 }
 
 const mapStateToProps = (state: RootState): StateProps => ({
-    open: state.app.showSettings,
     showDocs: state.settings.showDocs,
     darkMode: state.settings.darkMode,
     flashCurrentProgram: state.settings.flashCurrentProgram,
@@ -331,7 +335,6 @@ const mapStateToProps = (state: RootState): StateProps => ({
 });
 
 const mapDispatchToProps: DispatchProps = {
-    onClose: closeSettings,
     onShowDocsChanged: (checked) => setBoolean(SettingId.ShowDocs, checked),
     onDarkModeChanged: (checked) => setBoolean(SettingId.DarkMode, checked),
     onFlashCurrentProgramChanged: (checked) =>

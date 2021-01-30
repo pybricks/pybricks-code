@@ -7,7 +7,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import SplitterLayout from 'react-splitter-layout';
 import Editor from '../editor/Editor';
 import { RootState } from '../reducers';
-import SettingsDrawer from '../settings/SettingsDrawer';
 import { toggleBoolean } from '../settings/actions';
 import { SettingId } from '../settings/defaults';
 import StatusBar from '../status-bar/StatusBar';
@@ -163,7 +162,6 @@ function App(): JSX.Element {
                 </div>
             </SplitterLayout>
             <StatusBar />
-            <SettingsDrawer />
         </div>
     );
 }
