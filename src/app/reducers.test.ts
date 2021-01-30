@@ -7,7 +7,6 @@ import { BeforeInstallPromptEvent } from '../utils/dom';
 import {
     checkForUpdate,
     closeAboutDialog,
-    closeLicenseDialog,
     closeSettings,
     didBeforeInstallPrompt,
     didCheckForUpdate,
@@ -15,7 +14,6 @@ import {
     didInstallPrompt,
     installPrompt,
     openAboutDialog,
-    openLicenseDialog,
     openSettings,
 } from './actions';
 import reducers from './reducers';
@@ -31,7 +29,6 @@ test('initial state', () => {
           "readyForOfflineUse": false,
           "serviceWorker": null,
           "showAboutDialog": false,
-          "showLicenseDialog": false,
           "showSettings": false,
           "updateAvailable": false,
         }
@@ -55,17 +52,6 @@ test('showAboutDialog', () => {
     expect(
         reducers({ showAboutDialog: true } as State, closeAboutDialog())
             .showAboutDialog,
-    ).toBe(false);
-});
-
-test('showLicenseDialog', () => {
-    expect(
-        reducers({ showLicenseDialog: false } as State, openLicenseDialog())
-            .showLicenseDialog,
-    ).toBe(true);
-    expect(
-        reducers({ showLicenseDialog: true } as State, closeLicenseDialog())
-            .showLicenseDialog,
     ).toBe(false);
 });
 

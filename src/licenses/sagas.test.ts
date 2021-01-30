@@ -4,8 +4,7 @@
 // Tests for license sagas.
 
 import { AsyncSaga, delay } from '../../test';
-import { openLicenseDialog } from '../app/actions';
-import { didFailToFetchList, didFetchList } from './actions';
+import { didFailToFetchList, didFetchList, fetchList } from './actions';
 import { LicenseList } from './reducers';
 import license from './sagas';
 
@@ -24,7 +23,7 @@ describe('fetchLicenses', () => {
 
         // initially, license list starts as null, so fetch is called to get
         // the list
-        saga.put(openLicenseDialog());
+        saga.put(fetchList());
 
         const action = await saga.take();
         expect(action).toEqual(didFetchList(testLicenseList));
@@ -41,7 +40,7 @@ describe('fetchLicenses', () => {
 
         // after we have the list, we don't fetch it again since it will
         // always be the same list
-        saga.put(openLicenseDialog());
+        saga.put(fetchList());
 
         // have to yield to be sure fetch call would have taken place on error
         await delay(0);
@@ -54,7 +53,7 @@ describe('fetchLicenses', () => {
 
         jest.spyOn(globalThis, 'fetch').mockResolvedValue(failResponse);
 
-        saga.put(openLicenseDialog());
+        saga.put(fetchList());
 
         const action = await saga.take();
         expect(action).toEqual(didFailToFetchList(failResponse));

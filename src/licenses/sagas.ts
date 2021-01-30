@@ -2,9 +2,8 @@
 // Copyright (c) 2021 The Pybricks Authors
 
 import { call, put, select, takeEvery } from 'typed-redux-saga/macro';
-import { AppActionType } from '../app/actions';
 import { RootState } from '../reducers';
-import { didFailToFetchList, didFetchList } from './actions';
+import { LicenseActionType, didFailToFetchList, didFetchList } from './actions';
 
 function* fetchLicenses(): Generator {
     const licenses = yield* select((s: RootState) => s.licenses.list);
@@ -25,5 +24,5 @@ function* fetchLicenses(): Generator {
 }
 
 export default function* (): Generator {
-    yield* takeEvery(AppActionType.OpenLicenseDialog, fetchLicenses);
+    yield* takeEvery(LicenseActionType.FetchList, fetchLicenses);
 }

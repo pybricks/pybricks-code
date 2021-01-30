@@ -31,17 +31,6 @@ const showAboutDialog: Reducer<boolean, Action> = (state = false, action) => {
     }
 };
 
-const showLicenseDialog: Reducer<boolean, Action> = (state = false, action) => {
-    switch (action.type) {
-        case AppActionType.OpenLicenseDialog:
-            return true;
-        case AppActionType.CloseLicenseDialog:
-            return false;
-        default:
-            return state;
-    }
-};
-
 const serviceWorker: Reducer<ServiceWorkerRegistration | null, Action> = (
     state = null,
     action,
@@ -117,7 +106,6 @@ const readyForOfflineUse: Reducer<boolean, Action> = (state = false, action) => 
 export default combineReducers({
     showSettings,
     showAboutDialog,
-    showLicenseDialog,
     serviceWorker,
     checkingForUpdate,
     updateAvailable,

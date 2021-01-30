@@ -15,10 +15,9 @@ import {
 import { WithI18nProps, withI18n } from '@shopify/react-i18n';
 import React from 'react';
 import { connect } from 'react-redux';
-import { closeLicenseDialog } from '../app/actions';
 import { appName } from '../app/constants';
 import { RootState } from '../reducers';
-import { select } from './actions';
+import { fetchList, select } from './actions';
 import { LicenseStringId } from './i18n';
 import en from './i18n.en.json';
 import { LicenseInfo, LicenseList } from './reducers';
@@ -26,34 +25,40 @@ import { LicenseInfo, LicenseList } from './reducers';
 import './license.scss';
 
 type StateProps = {
-    showLicenseDialog: boolean;
     licenseList: LicenseList | null;
     licenseInfo: LicenseInfo | null;
 };
 
 type DispatchProps = {
-    onClose: () => void;
+    onOpening: () => void;
     onSelectPackage: (info: LicenseInfo) => void;
 };
 
-type LicenseDialogProps = StateProps & DispatchProps & WithI18nProps;
+type OwnProps = {
+    isOpen: boolean;
+    onClose(): void;
+};
+
+type LicenseDialogProps = StateProps & DispatchProps & OwnProps & WithI18nProps;
 
 class LicenseDialog extends React.Component<LicenseDialogProps> {
     render(): JSX.Element {
         const infoDiv = React.createRef<HTMLDivElement>();
 
         const {
-            i18n,
-            showLicenseDialog,
-            onClose,
             licenseList,
             licenseInfo,
+            onOpening,
             onSelectPackage,
+            isOpen,
+            onClose,
+            i18n,
         } = this.props;
         return (
             <Dialog
                 title={i18n.translate(LicenseStringId.Title)}
-                isOpen={showLicenseDialog}
+                isOpen={isOpen}
+                onOpening={() => onOpening()}
                 onClose={() => onClose()}
                 className="pb-license-dialog"
             >
@@ -146,13 +151,12 @@ class LicenseDialog extends React.Component<LicenseDialogProps> {
 }
 
 const mapStateToProps = (state: RootState): StateProps => ({
-    showLicenseDialog: state.app.showLicenseDialog,
     licenseList: state.licenses.list,
     licenseInfo: state.licenses.selected,
 });
 
 const mapDispatchToProps: DispatchProps = {
-    onClose: closeLicenseDialog,
+    onOpening: fetchList,
     onSelectPackage: select,
 };
 

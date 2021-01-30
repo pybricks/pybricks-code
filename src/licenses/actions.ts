@@ -5,9 +5,16 @@ import { Action } from 'redux';
 import { LicenseInfo, LicenseList } from './reducers';
 
 export enum LicenseActionType {
+    FetchList = 'license.action.fetchList',
     DidFetchList = 'license.action.didFetchList',
     DidFailToFetchList = 'license.action.didFailToFetchList',
     Select = 'license.action.select',
+}
+
+export type LicenseFetchListAction = Action<LicenseActionType.FetchList>;
+
+export function fetchList(): LicenseFetchListAction {
+    return { type: LicenseActionType.FetchList };
 }
 
 export type LicenseDidFetchListAction = Action<LicenseActionType.DidFetchList> & {
@@ -35,6 +42,7 @@ export function select(info: LicenseInfo): LicenseSelectAction {
 }
 
 export type LicenseAction =
+    | LicenseFetchListAction
     | LicenseDidFetchListAction
     | LicenseDidFailToFetchListAction
     | LicenseSelectAction;
