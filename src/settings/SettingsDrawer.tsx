@@ -19,13 +19,7 @@ import { WithI18nProps, withI18n } from '@shopify/react-i18n';
 import React from 'react';
 import { connect } from 'react-redux';
 import AboutDialog from '../about/AboutDialog';
-import {
-    checkForUpdate,
-    closeSettings,
-    installPrompt,
-    openAboutDialog,
-    reload,
-} from '../app/actions';
+import { checkForUpdate, closeSettings, installPrompt, reload } from '../app/actions';
 import {
     pybricksBugReportsUrl,
     pybricksGitterUrl,
@@ -61,7 +55,6 @@ type DispatchProps = {
     onShowDocsChanged: (checked: boolean) => void;
     onDarkModeChanged: (checked: boolean) => void;
     onFlashCurrentProgramChanged: (checked: boolean) => void;
-    onAbout: () => void;
     onToggleDocs: () => void;
     onCheckForUpdate: (registration: ServiceWorkerRegistration) => void;
     onReload: (registration: ServiceWorkerRegistration) => void;
@@ -72,6 +65,10 @@ type SettingsProps = StateProps & DispatchProps & WithI18nProps;
 
 @HotkeysTarget
 class SettingsDrawer extends React.PureComponent<SettingsProps> {
+    public state = {
+        aboutDialogIsOpen: false,
+    };
+
     render(): JSX.Element {
         const {
             open,
@@ -88,7 +85,6 @@ class SettingsDrawer extends React.PureComponent<SettingsProps> {
             onShowDocsChanged,
             onDarkModeChanged,
             onFlashCurrentProgramChanged,
-            onAbout,
             onCheckForUpdate,
             onReload,
             onInstallPrompt: onInstall,
@@ -224,7 +220,12 @@ class SettingsDrawer extends React.PureComponent<SettingsProps> {
                                     &nbsp;
                                     <ExternalLinkIcon />
                                 </AnchorButton>
-                                <AboutDialog />
+                                <AboutDialog
+                                    isOpen={this.state.aboutDialogIsOpen}
+                                    onClose={() =>
+                                        this.setState({ aboutDialogIsOpen: false })
+                                    }
+                                />
                             </ButtonGroup>
                         </FormGroup>
                         <FormGroup
@@ -274,7 +275,7 @@ class SettingsDrawer extends React.PureComponent<SettingsProps> {
                                 <Button
                                     icon="info-sign"
                                     onClick={() => {
-                                        onAbout();
+                                        this.setState({ aboutDialogIsOpen: true });
                                         return true;
                                     }}
                                 >
@@ -335,7 +336,6 @@ const mapDispatchToProps: DispatchProps = {
     onDarkModeChanged: (checked) => setBoolean(SettingId.DarkMode, checked),
     onFlashCurrentProgramChanged: (checked) =>
         setBoolean(SettingId.FlashCurrentProgram, checked),
-    onAbout: openAboutDialog,
     onToggleDocs: () => toggleBoolean(SettingId.ShowDocs),
     onCheckForUpdate: checkForUpdate,
     onReload: reload,

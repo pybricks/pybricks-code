@@ -7,7 +7,6 @@ import { AnchorButton, Button, Classes, Dialog } from '@blueprintjs/core';
 import { WithI18nProps, withI18n } from '@shopify/react-i18n';
 import React from 'react';
 import { connect } from 'react-redux';
-import { closeAboutDialog } from '../app/actions';
 import {
     appName,
     legoDisclaimer,
@@ -15,7 +14,6 @@ import {
     pybricksWebsiteUrl,
 } from '../app/constants';
 import LicenseDialog from '../licenses/LicenseDialog';
-import { RootState } from '../reducers';
 import ExternalLinkIcon from '../utils/ExternalLinkIcon';
 import { AboutStringId } from './i18n';
 import en from './i18n.en.json';
@@ -24,11 +22,9 @@ import './about.scss';
 
 const version = process.env.REACT_APP_VERSION;
 
-type StateProps = { showAboutDialog: boolean };
+type OwnProps = { isOpen: boolean; onClose: () => void };
 
-type DispatchProps = { onClose: () => void };
-
-type AboutDialogProps = StateProps & DispatchProps & WithI18nProps;
+type AboutDialogProps = OwnProps & WithI18nProps;
 
 class AboutDialog extends React.Component<AboutDialogProps> {
     public state = {
@@ -36,11 +32,11 @@ class AboutDialog extends React.Component<AboutDialogProps> {
     };
 
     render(): JSX.Element {
-        const { i18n, showAboutDialog, onClose } = this.props;
+        const { isOpen, onClose, i18n } = this.props;
         return (
             <Dialog
                 title={`${appName} v${version}`}
-                isOpen={showAboutDialog}
+                isOpen={isOpen}
                 onClose={() => onClose()}
             >
                 <div className={Classes.DIALOG_BODY}>
@@ -77,15 +73,6 @@ class AboutDialog extends React.Component<AboutDialogProps> {
     }
 }
 
-const mapStateToProps = (state: RootState): StateProps => ({
-    showAboutDialog: state.app.showAboutDialog,
-});
-
-const mapDispatchToProps: DispatchProps = {
-    onClose: closeAboutDialog,
-};
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(withI18n({ id: 'about', fallback: en, translations: { en } })(AboutDialog));
+export default connect()(
+    withI18n({ id: 'about', fallback: en, translations: { en } })(AboutDialog),
+);

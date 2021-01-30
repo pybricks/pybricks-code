@@ -6,14 +6,12 @@ import { didSucceed, didUpdate } from '../service-worker/actions';
 import { BeforeInstallPromptEvent } from '../utils/dom';
 import {
     checkForUpdate,
-    closeAboutDialog,
     closeSettings,
     didBeforeInstallPrompt,
     didCheckForUpdate,
     didInstall,
     didInstallPrompt,
     installPrompt,
-    openAboutDialog,
     openSettings,
 } from './actions';
 import reducers from './reducers';
@@ -28,7 +26,6 @@ test('initial state', () => {
           "promptingInstall": false,
           "readyForOfflineUse": false,
           "serviceWorker": null,
-          "showAboutDialog": false,
           "showSettings": false,
           "updateAvailable": false,
         }
@@ -41,17 +38,6 @@ test('showSettings', () => {
     ).toBe(true);
     expect(
         reducers({ showSettings: true } as State, closeSettings()).showSettings,
-    ).toBe(false);
-});
-
-test('showAboutDialog', () => {
-    expect(
-        reducers({ showAboutDialog: false } as State, openAboutDialog())
-            .showAboutDialog,
-    ).toBe(true);
-    expect(
-        reducers({ showAboutDialog: true } as State, closeAboutDialog())
-            .showAboutDialog,
     ).toBe(false);
 });
 

@@ -28,10 +28,6 @@ export enum AppActionType {
     OpenSettings = 'app.action.openSettings',
     /** Close settings dialog. */
     CloseSettings = 'app.action.closeSettings',
-    /** Open about dialog. */
-    OpenAboutDialog = 'app.action.openAboutDialog',
-    /** Close about dialog. */
-    CloseAboutDialog = 'app.action.closeAboutDialog',
 }
 
 /** Action that requests the app to reload. */
@@ -128,22 +124,6 @@ export function closeSettings(): AppCloseSettingsAction {
     return { type: AppActionType.CloseSettings };
 }
 
-/** Action to open the about dialog. */
-export type AppOpenAboutDialogAction = Action<AppActionType.OpenAboutDialog>;
-
-/** Creates an action to open the about dialog. */
-export function openAboutDialog(): AppOpenAboutDialogAction {
-    return { type: AppActionType.OpenAboutDialog };
-}
-
-/** Action to close the about dialog. */
-export type AppCloseAboutDialogAction = Action<AppActionType.CloseAboutDialog>;
-
-/** Creates an action to close the about dialog. */
-export function closeAboutDialog(): AppCloseAboutDialogAction {
-    return { type: AppActionType.CloseAboutDialog };
-}
-
 /** common type for all app actions. */
 export type AppAction =
     | AppReloadAction
@@ -155,6 +135,4 @@ export type AppAction =
     | AppDidInstallAction
     | AppDidStartAction
     | AppOpenSettingsAction
-    | AppCloseSettingsAction
-    | AppOpenAboutDialogAction
-    | AppCloseAboutDialogAction;
+    | AppCloseSettingsAction;
