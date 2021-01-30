@@ -49,8 +49,4 @@ const connection: Reducer<BleConnectionState, Action> = (
     }
 };
 
-export interface BleState {
-    readonly connection: BleConnectionState;
-}
-
 export default combineReducers({ connection });

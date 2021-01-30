@@ -13,7 +13,7 @@ import './index.scss';
 import App from './app/App';
 import { i18nManager } from './i18n';
 import * as I18nToaster from './notifications/I18nToaster';
-import rootReducer from './reducers';
+import { rootReducer } from './reducers';
 import reportWebVitals from './reportWebVitals';
 import rootSaga from './sagas';
 import { didSucceed, didUpdate } from './service-worker/actions';

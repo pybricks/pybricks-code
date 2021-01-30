@@ -7,7 +7,7 @@ import { RootState } from '../reducers';
 import { didFailToFetchList, didFetchList } from './actions';
 
 function* fetchLicenses(): Generator {
-    const licenses = yield* select((s: RootState) => s.license.list);
+    const licenses = yield* select((s: RootState) => s.licenses.list);
 
     // if we already have license list, nothing to do
     if (licenses !== null) {

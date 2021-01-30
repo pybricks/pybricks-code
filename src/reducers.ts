@@ -1,31 +1,20 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2021 The Pybricks Authors
 
-import { combineReducers } from 'redux';
-import app, { AppState } from './app/reducers';
-import ble, { BleState } from './ble/reducers';
-import editor, { EditorState } from './editor/reducers';
-import firmware, { FirmwareState } from './firmware/reducers';
-import hub, { HubState } from './hub/reducers';
-import licenses, { LicenseState } from './licenses/reducers';
-import bootloader, { BootloaderState } from './lwp3-bootloader/reducers';
-import settings, { SettingsState } from './settings/reducers';
+import { Reducer, combineReducers } from 'redux';
+import app from './app/reducers';
+import ble from './ble/reducers';
+import editor from './editor/reducers';
+import firmware from './firmware/reducers';
+import hub from './hub/reducers';
+import licenses from './licenses/reducers';
+import bootloader from './lwp3-bootloader/reducers';
+import settings from './settings/reducers';
 
 /**
- * Root state for redux store.
+ * Root reducer for redux store.
  */
-export interface RootState {
-    readonly app: AppState;
-    readonly bootloader: BootloaderState;
-    readonly ble: BleState;
-    readonly editor: EditorState;
-    readonly firmware: FirmwareState;
-    readonly hub: HubState;
-    readonly license: LicenseState;
-    readonly settings: SettingsState;
-}
-
-export default combineReducers({
+export const rootReducer = combineReducers({
     app,
     bootloader,
     ble,
@@ -35,3 +24,10 @@ export default combineReducers({
     licenses,
     settings,
 });
+
+/**
+ * Root state for redux store.
+ */
+type StateFromReducer<R> = R extends Reducer<infer S> ? S : never;
+
+export type RootState = StateFromReducer<typeof rootReducer>;

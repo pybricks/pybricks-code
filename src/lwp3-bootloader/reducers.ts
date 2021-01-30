@@ -47,8 +47,4 @@ const connection: Reducer<BootloaderConnectionState, Action> = (
     }
 };
 
-export interface BootloaderState {
-    readonly connection: BootloaderConnectionState;
-}
-
 export default combineReducers({ connection });

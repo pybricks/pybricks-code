@@ -147,8 +147,8 @@ class LicenseDialog extends React.Component<LicenseDialogProps> {
 
 const mapStateToProps = (state: RootState): StateProps => ({
     showLicenseDialog: state.app.showLicenseDialog,
-    licenseList: state.license.list,
-    licenseInfo: state.license.selected,
+    licenseList: state.licenses.list,
+    licenseInfo: state.licenses.selected,
 });
 
 const mapDispatchToProps: DispatchProps = {

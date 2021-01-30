@@ -9,18 +9,6 @@ import { ServiceWorkerActionType } from '../service-worker/actions';
 import { BeforeInstallPromptEvent } from '../utils/dom';
 import { AppActionType } from './actions';
 
-export interface AppState {
-    readonly showSettings: boolean;
-    readonly showAboutDialog: boolean;
-    readonly showLicenseDialog: boolean;
-    readonly serviceWorker: ServiceWorkerRegistration | null;
-    readonly checkingForUpdate: boolean;
-    readonly updateAvailable: boolean;
-    readonly beforeInstallPrompt: BeforeInstallPromptEvent;
-    readonly promptingInstall: boolean;
-    readonly readyForOfflineUse: boolean;
-}
-
 const showSettings: Reducer<boolean, Action> = (state = false, action) => {
     switch (action.type) {
         case AppActionType.OpenSettings:

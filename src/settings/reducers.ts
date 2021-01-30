@@ -6,12 +6,6 @@ import { Action } from '../actions';
 import { SettingsActionType } from './actions';
 import { SettingId, getDefaultBooleanValue } from './defaults';
 
-export interface SettingsState {
-    readonly darkMode: boolean;
-    readonly showDocs: boolean;
-    readonly flashCurrentProgram: boolean;
-}
-
 const darkMode: Reducer<boolean, Action> = (
     state = getDefaultBooleanValue(SettingId.DarkMode),
     action,

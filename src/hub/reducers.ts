@@ -70,8 +70,4 @@ const runtime: Reducer<HubRuntimeState, Action> = (
     }
 };
 
-export interface HubState {
-    readonly runtime: HubRuntimeState;
-}
-
 export default combineReducers({ runtime });

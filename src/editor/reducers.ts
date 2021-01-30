@@ -15,7 +15,4 @@ const current: Reducer<Ace.EditSession | null, Action> = (state = null, action) 
     }
 };
 
-export interface EditorState {
-    current: Ace.EditSession | null;
-}
 export default combineReducers({ current });

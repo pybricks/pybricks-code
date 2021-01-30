@@ -5,13 +5,6 @@ import { Reducer, combineReducers } from 'redux';
 import { Action } from '../actions';
 import { FlashFirmwareActionType } from './actions';
 
-export interface FirmwareState {
-    /** The firmware is being erased/flashed right now. */
-    flashing: boolean;
-    /** The current progress (0 to 1) or null for unknown (e.g erasing) */
-    progress: number | null;
-}
-
 const flashing: Reducer<boolean, Action> = (state = false, action) => {
     switch (action.type) {
         case FlashFirmwareActionType.DidStart:

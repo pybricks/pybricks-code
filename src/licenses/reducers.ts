@@ -15,11 +15,6 @@ export interface LicenseInfo {
 
 export type LicenseList = LicenseInfo[];
 
-export interface LicenseState {
-    readonly list: LicenseList | null;
-    readonly selected: LicenseInfo | null;
-}
-
 const list: Reducer<LicenseList | null, Action> = (state = null, action) => {
     switch (action.type) {
         case LicenseActionType.DidFetchList:
