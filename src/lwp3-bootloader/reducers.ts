@@ -35,7 +35,9 @@ const connection: Reducer<BootloaderConnectionState, Action> = (
         case BootloaderConnectionActionType.Connect:
             return BootloaderConnectionState.Connecting;
         case BootloaderConnectionActionType.DidConnect:
+        case BootloaderConnectionActionType.DidFailToDisconnect:
             return BootloaderConnectionState.Connected;
+        case BootloaderConnectionActionType.Disconnect:
         case BootloaderRequestActionType.Reboot:
         case BootloaderRequestActionType.Disconnect:
             return BootloaderConnectionState.Disconnecting;

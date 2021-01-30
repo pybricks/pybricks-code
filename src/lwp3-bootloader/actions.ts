@@ -48,6 +48,10 @@ export enum BootloaderConnectionActionType {
      * The connection has been closed.
      */
     DidDisconnect = 'bootloader.action.connection.did.disconnect',
+    /**
+     * Disconnecting failed.
+     */
+    DidFailToDisconnect = 'bootloader.action.connection.did.failToDisconnect',
 }
 
 export type BootloaderConnectionConnectAction = Action<BootloaderConnectionActionType.Connect>;
@@ -184,6 +188,12 @@ export function didDisconnect(): BootloaderConnectionDidDisconnectAction {
     return { type: BootloaderConnectionActionType.DidDisconnect };
 }
 
+export type BootloaderConnectionDidFailToDisconnectAction = Action<BootloaderConnectionActionType.DidFailToDisconnect>;
+
+export function didFailToDisconnect(): BootloaderConnectionDidFailToDisconnectAction {
+    return { type: BootloaderConnectionActionType.DidFailToDisconnect };
+}
+
 /**
  * Common type for all bootloader connection actions.
  */
@@ -196,7 +206,9 @@ export type BootloaderConnectionAction =
     | BootloaderConnectionDidSendAction
     | BootloaderConnectionDidFailToSendAction
     | BootloaderConnectionDidReceiveAction
-    | BootloaderConnectionDidDisconnectAction;
+    | BootloaderConnectionDisconnectAction
+    | BootloaderConnectionDidDisconnectAction
+    | BootloaderConnectionDidFailToDisconnectAction;
 
 /**
  * Bootloader request actions for sending commands over the connection.
