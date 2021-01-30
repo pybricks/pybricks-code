@@ -11,6 +11,8 @@ class StatusBar extends React.Component {
         return (
             <div
                 className="pb-status-bar"
+                role="status"
+                aria-live="off"
                 onContextMenu={(e): void => e.preventDefault()}
             ></div>
         );
