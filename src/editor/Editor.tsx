@@ -1,13 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2021 The Pybricks Authors
 
-import {
-    ContextMenu,
-    Menu,
-    MenuDivider,
-    MenuItem,
-    ResizeSensor,
-} from '@blueprintjs/core';
+import { Menu, MenuDivider, MenuItem, ResizeSensor } from '@blueprintjs/core';
 import { WithI18nProps, withI18n } from '@shopify/react-i18n';
 import { Ace, config } from 'ace-builds';
 import React from 'react';
@@ -18,6 +12,7 @@ import { compile } from '../mpy/actions';
 import { RootState } from '../reducers';
 import { toggleBoolean } from '../settings/actions';
 import { SettingId } from '../settings/defaults';
+import { IContextMenuTarget, handleContextMenu } from '../utils/IContextMenuTarget';
 import { isMacOS } from '../utils/os';
 import { setEditSession, storageChanged } from './actions';
 import { EditorStringId } from './i18n';
@@ -47,7 +42,7 @@ type DispatchProps = {
 
 type EditorProps = StateProps & DispatchProps & WithI18nProps;
 
-class Editor extends React.Component<EditorProps> {
+class Editor extends React.Component<EditorProps> implements IContextMenuTarget {
     private editorRef: React.RefObject<AceEditor>;
     private keyBindings?: Array<{ key: string; command: string }>;
 
@@ -82,34 +77,7 @@ class Editor extends React.Component<EditorProps> {
     render(): JSX.Element {
         const { i18n, darkMode, onSessionChanged, onCheck, onToggleDocs } = this.props;
         return (
-            <div
-                className="h-100"
-                onContextMenu={(e) => {
-                    // istanbul ignore if: not expected
-                    if (e.defaultPrevented) {
-                        return;
-                    }
-
-                    e.preventDefault();
-                    const menu = this.renderContextMenu();
-                    const listener = (e: KeyboardEvent) => {
-                        if (e.key === 'Escape') {
-                            // istanbul ignore if: not expected
-                            if (e.defaultPrevented) {
-                                return;
-                            }
-
-                            e.preventDefault();
-                            ContextMenu.hide();
-                        }
-                    };
-                    window.addEventListener('keydown', listener);
-                    ContextMenu.show(menu, { left: e.clientX, top: e.clientY }, () => {
-                        window.removeEventListener('keydown', listener);
-                        this.onContextMenuClose();
-                    });
-                }}
-            >
+            <div className="h-100" onContextMenu={(e) => handleContextMenu(e, this)}>
                 <ResizeSensor onResize={(): void => this.editor?.resize()}>
                     <AceEditor
                         ref={this.editorRef}

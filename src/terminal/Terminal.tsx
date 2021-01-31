@@ -1,13 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2021 The Pybricks Authors
 
-import {
-    ContextMenu,
-    Menu,
-    MenuDivider,
-    MenuItem,
-    ResizeSensor,
-} from '@blueprintjs/core';
+import { Menu, MenuDivider, MenuItem, ResizeSensor } from '@blueprintjs/core';
 import { WithI18nProps, withI18n } from '@shopify/react-i18n';
 import React from 'react';
 import { connect } from 'react-redux';
@@ -15,6 +9,7 @@ import { Unsubscribe } from 'redux';
 import { Terminal as XTerm } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
 import { RootState } from '../reducers';
+import { IContextMenuTarget, handleContextMenu } from '../utils/IContextMenuTarget';
 import { isMacOS } from '../utils/os';
 import { TerminalContext } from './TerminalContext';
 import { receiveData } from './actions';
@@ -22,7 +17,6 @@ import { TerminalStringId } from './i18n';
 import en from './i18n.en.json';
 
 import 'xterm/css/xterm.css';
-
 interface StateProps {
     darkMode: boolean;
 }
@@ -33,7 +27,7 @@ interface DispatchProps {
 
 type TerminalProps = StateProps & DispatchProps & WithI18nProps;
 
-class Terminal extends React.Component<TerminalProps> {
+class Terminal extends React.Component<TerminalProps> implements IContextMenuTarget {
     private xterm: XTerm;
     private fitAddon: FitAddon;
     private terminalRef: React.RefObject<HTMLDivElement>;
@@ -118,34 +112,7 @@ class Terminal extends React.Component<TerminalProps> {
                 : 'rgba(181,213,255,0.5)', // this should match AceEditor theme
         });
         return (
-            <div
-                className="h-100"
-                onContextMenu={(e) => {
-                    // istanbul ignore if: not expected
-                    if (e.defaultPrevented) {
-                        return;
-                    }
-
-                    e.preventDefault();
-                    const menu = this.renderContextMenu();
-                    const listener = (e: KeyboardEvent) => {
-                        if (e.key === 'Escape') {
-                            // istanbul ignore if: not expected
-                            if (e.defaultPrevented) {
-                                return;
-                            }
-
-                            e.preventDefault();
-                            ContextMenu.hide();
-                        }
-                    };
-                    window.addEventListener('keydown', listener);
-                    ContextMenu.show(menu, { left: e.clientX, top: e.clientY }, () => {
-                        window.removeEventListener('keydown', listener);
-                        this.onContextMenuClose();
-                    });
-                }}
-            >
+            <div className="h-100" onContextMenu={(e) => handleContextMenu(e, this)}>
                 <ResizeSensor onResize={(): void => this.fitAddon.fit()}>
                     <div ref={this.terminalRef} className="h-100" />
                 </ResizeSensor>
