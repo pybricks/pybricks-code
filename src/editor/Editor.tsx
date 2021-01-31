@@ -2,7 +2,7 @@
 // Copyright (c) 2020-2021 The Pybricks Authors
 
 import {
-    ContextMenuTarget,
+    ContextMenu,
     Menu,
     MenuDivider,
     MenuItem,
@@ -47,7 +47,6 @@ type DispatchProps = {
 
 type EditorProps = StateProps & DispatchProps & WithI18nProps;
 
-@ContextMenuTarget
 class Editor extends React.Component<EditorProps> {
     private editorRef: React.RefObject<AceEditor>;
     private keyBindings?: Array<{ key: string; command: string }>;
@@ -83,7 +82,34 @@ class Editor extends React.Component<EditorProps> {
     render(): JSX.Element {
         const { i18n, darkMode, onSessionChanged, onCheck, onToggleDocs } = this.props;
         return (
-            <div className="h-100">
+            <div
+                className="h-100"
+                onContextMenu={(e) => {
+                    // istanbul ignore if: not expected
+                    if (e.defaultPrevented) {
+                        return;
+                    }
+
+                    e.preventDefault();
+                    const menu = this.renderContextMenu();
+                    const listener = (e: KeyboardEvent) => {
+                        if (e.key === 'Escape') {
+                            // istanbul ignore if: not expected
+                            if (e.defaultPrevented) {
+                                return;
+                            }
+
+                            e.preventDefault();
+                            ContextMenu.hide();
+                        }
+                    };
+                    window.addEventListener('keydown', listener);
+                    ContextMenu.show(menu, { left: e.clientX, top: e.clientY }, () => {
+                        window.removeEventListener('keydown', listener);
+                        this.onContextMenuClose();
+                    });
+                }}
+            >
                 <ResizeSensor onResize={(): void => this.editor?.resize()}>
                     <AceEditor
                         ref={this.editorRef}
@@ -213,6 +239,10 @@ class Editor extends React.Component<EditorProps> {
             </Menu>
         );
     }
+
+    onContextMenuClose = () => {
+        this.editorRef.current?.editor.focus();
+    };
 }
 
 const mapStateToProps = (state: RootState): StateProps => ({
