@@ -1,12 +1,15 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
-import { rootReducer } from '../reducers';
+import { Store } from 'redux';
 import StatusBar from './StatusBar';
 
 it('should prevent browser context menu', () => {
-    const store = createStore(rootReducer);
+    const store = ({
+        getState: jest.fn(),
+        dispatch: jest.fn(),
+        subscribe: jest.fn(),
+    } as unknown) as Store;
     render(
         <Provider store={store}>
             <StatusBar />

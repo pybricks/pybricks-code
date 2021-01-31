@@ -11,12 +11,15 @@ import {
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
-import { rootReducer } from '../reducers';
+import { Store } from 'redux';
 import AboutDialog from './AboutDialog';
 
 it('should close when the button is clicked', () => {
-    const store = createStore(rootReducer);
+    const store = ({
+        getState: jest.fn(() => ({ licenses: { list: null } })),
+        dispatch: jest.fn(),
+        subscribe: jest.fn(),
+    } as unknown) as Store;
     const i18n = new I18nManager({ locale: 'en' });
     const close = jest.fn();
     render(
@@ -33,7 +36,11 @@ it('should close when the button is clicked', () => {
 });
 
 it('should manage license dialog open/close', async () => {
-    const store = createStore(rootReducer);
+    const store = ({
+        getState: jest.fn(() => ({ licenses: { list: null } })),
+        dispatch: jest.fn(),
+        subscribe: jest.fn(),
+    } as unknown) as Store;
     const i18n = new I18nManager({ locale: 'en' });
     render(
         <Provider store={store}>
