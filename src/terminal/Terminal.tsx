@@ -2,7 +2,7 @@
 // Copyright (c) 2020-2021 The Pybricks Authors
 
 import {
-    ContextMenuTarget,
+    ContextMenu,
     Menu,
     MenuDivider,
     MenuItem,
@@ -33,7 +33,6 @@ interface DispatchProps {
 
 type TerminalProps = StateProps & DispatchProps & WithI18nProps;
 
-@ContextMenuTarget
 class Terminal extends React.Component<TerminalProps> {
     private xterm: XTerm;
     private fitAddon: FitAddon;
@@ -119,7 +118,34 @@ class Terminal extends React.Component<TerminalProps> {
                 : 'rgba(181,213,255,0.5)', // this should match AceEditor theme
         });
         return (
-            <div className="h-100">
+            <div
+                className="h-100"
+                onContextMenu={(e) => {
+                    // istanbul ignore if: not expected
+                    if (e.defaultPrevented) {
+                        return;
+                    }
+
+                    e.preventDefault();
+                    const menu = this.renderContextMenu();
+                    const listener = (e: KeyboardEvent) => {
+                        if (e.key === 'Escape') {
+                            // istanbul ignore if: not expected
+                            if (e.defaultPrevented) {
+                                return;
+                            }
+
+                            e.preventDefault();
+                            ContextMenu.hide();
+                        }
+                    };
+                    window.addEventListener('keydown', listener);
+                    ContextMenu.show(menu, { left: e.clientX, top: e.clientY }, () => {
+                        window.removeEventListener('keydown', listener);
+                        this.onContextMenuClose();
+                    });
+                }}
+            >
                 <ResizeSensor onResize={(): void => this.fitAddon.fit()}>
                     <div ref={this.terminalRef} className="h-100" />
                 </ResizeSensor>
