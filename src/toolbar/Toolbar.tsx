@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020 The Pybricks Authors
 
-import { Alignment, ButtonGroup, Navbar } from '@blueprintjs/core';
+import { ButtonGroup } from '@blueprintjs/core';
 import React from 'react';
 import OpenButton from '../editor/OpenButton';
 import SaveAsButton from '../editor/SaveAsButton';
@@ -22,44 +22,35 @@ class Toolbar extends React.Component {
 
     render(): JSX.Element {
         return (
-            <Navbar
+            <div
+                role="toolbar"
                 onContextMenu={(e): void => e.preventDefault()}
-                className="no-box-shadow"
+                className="pb-toolbar no-box-shadow"
             >
-                <Navbar.Group>
-                    <ButtonGroup>
-                        <OpenButton id="open" />
-                        <SaveAsButton id="saveAs" />
-                    </ButtonGroup>
-                    <Navbar.Divider />
-                    <ButtonGroup>
-                        <RunButton id="run" keyboardShortcut="F5" />
-                        <StopButton id="stop" keyboardShortcut="F6" />
-                        <ReplButton id="repl" />
-                    </ButtonGroup>
-                    <Navbar.Divider />
-                    <ButtonGroup>
-                        <FlashButton id="flash" />
-                        <BluetoothButton id="bluetooth" />
-                    </ButtonGroup>
-                </Navbar.Group>
-                <Navbar.Group align={Alignment.RIGHT}>
-                    <ButtonGroup>
-                        <SettingsButton
-                            id="settings"
-                            onAction={() =>
-                                this.setState({ settingsDrawerIsOpen: true })
-                            }
-                        />
-                        <SettingsDrawer
-                            isOpen={this.state.settingsDrawerIsOpen}
-                            onClose={() =>
-                                this.setState({ settingsDrawerIsOpen: false })
-                            }
-                        />
-                    </ButtonGroup>
-                </Navbar.Group>
-            </Navbar>
+                <ButtonGroup className="pb-toolbar-group pb-align-left">
+                    <OpenButton id="open" />
+                    <SaveAsButton id="saveAs" />
+                </ButtonGroup>
+                <ButtonGroup className="pb-toolbar-group pb-align-left">
+                    <RunButton id="run" keyboardShortcut="F5" />
+                    <StopButton id="stop" keyboardShortcut="F6" />
+                    <ReplButton id="repl" />
+                </ButtonGroup>
+                <ButtonGroup className="pb-toolbar-group pb-align-left">
+                    <FlashButton id="flash" />
+                    <BluetoothButton id="bluetooth" />
+                </ButtonGroup>
+                <ButtonGroup className="pb-toolbar-group pb-align-right">
+                    <SettingsButton
+                        id="settings"
+                        onAction={() => this.setState({ settingsDrawerIsOpen: true })}
+                    />
+                    <SettingsDrawer
+                        isOpen={this.state.settingsDrawerIsOpen}
+                        onClose={() => this.setState({ settingsDrawerIsOpen: false })}
+                    />
+                </ButtonGroup>
+            </div>
         );
     }
 }

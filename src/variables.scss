@@ -10,13 +10,10 @@ $pt-font-size: $pt-grid-size * 1.6;
 $pt-font-size-large: $pt-grid-size * 1.8;
 $pt-font-size-small: $pt-grid-size * 1.4;
 
-$pt-navbar-height: 72px;
+$pb-toolbar-height: 72px;
 $pb-status-bar-height: 24px;
 
 $pb-pybricks-blue: #0088ce;
 $pt-app-background-color: #e8e8e8;
 $pt-intent-primary: $pb-pybricks-blue;
 $pt-outline-color: rgba($pb-pybricks-blue, 0.6);
-
-$navbar-background-color: $pt-app-background-color;
-$dark-navbar-background-color: $pt-dark-app-background-color;

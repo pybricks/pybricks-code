@@ -5,7 +5,31 @@
 
 @import '../variables.scss';
 
-.#{$ns}-navbar-divider {
-    // don't draw vertical line since we are just using button groups
-    border-left: unset;
+.#{$ns}-dark .pb-toolbar {
+    background-color: $pt-dark-app-background-color;
+}
+
+.pb-toolbar {
+    height: $pb-toolbar-height;
+    background-color: $pt-app-background-color;
+    padding: 0 $pt-grid-size * 1.5;
+    position: relative;
+    width: 100%;
+    z-index: $pt-z-index-content;
+}
+
+.pb-toolbar-group {
+    align-items: center;
+    display: flex;
+    height: $pb-toolbar-height;
+
+    &.pb-align-left {
+        float: left;
+        margin-right: $pt-grid-size * 2;
+    }
+
+    &.pb-align-right {
+        float: right;
+        margin-left: $pt-grid-size * 2;
+    }
 }
