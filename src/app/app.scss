@@ -8,7 +8,7 @@
 .pb-app-body {
     // height makes everything fit without scrolling
     height: calc(
-        var(--pb-vh, 100vh) - #{$pt-navbar-height} - #{$pb-status-bar-height}
+        var(--pb-vh, 100vh) - #{$pb-toolbar-height} - #{$pb-status-bar-height}
     ) !important;
 }
 
