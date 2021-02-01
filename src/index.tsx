@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2021 The Pybricks Authors
 
-import { Classes, ResizeSensor } from '@blueprintjs/core';
+import { Classes } from '@blueprintjs/core';
 import { I18nContext } from '@shopify/react-i18n';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -10,14 +10,16 @@ import { applyMiddleware, createStore } from 'redux';
 import { createLogger } from 'redux-logger';
 import createSagaMiddleware from 'redux-saga';
 import './index.scss';
-import { didSucceed, didUpdate } from './actions/service-worker';
-import App from './components/App';
-import * as I18nToaster from './components/I18nToaster';
-import rootReducer from './reducers';
+import App from './app/App';
+import { i18nManager } from './i18n';
+import * as I18nToaster from './notifications/I18nToaster';
+import { rootReducer } from './reducers';
 import reportWebVitals from './reportWebVitals';
 import rootSaga from './sagas';
+import { didSucceed, didUpdate } from './service-worker/actions';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
-import { i18nManager } from './settings/i18n';
+import { defaultTerminalContext } from './terminal/TerminalContext';
+import ViewHeightSensor from './utils/ViewHeightSensor';
 import { createCountFunc } from './utils/iter';
 
 const toaster = I18nToaster.create(i18nManager);
@@ -26,6 +28,7 @@ const sagaMiddleware = createSagaMiddleware({
     context: {
         nextMessageId: createCountFunc(),
         notification: { toaster },
+        terminal: defaultTerminalContext,
     },
 });
 
@@ -45,7 +48,6 @@ store.subscribe(() => {
         if (newDarkMode) {
             document.body.classList.add(Classes.DARK);
             for (const frame of document.getElementsByTagName('iframe')) {
-                console.log('dark');
                 frame.contentWindow?.document.documentElement.classList.add(
                     Classes.DARK,
                 );
@@ -53,7 +55,6 @@ store.subscribe(() => {
         } else {
             document.body.classList.remove(Classes.DARK);
             for (const frame of document.getElementsByTagName('iframe')) {
-                console.log('light');
                 frame.contentWindow?.document.documentElement.classList.remove(
                     Classes.DARK,
                 );
@@ -74,18 +75,7 @@ ReactDOM.render(
     <React.StrictMode>
         <Provider store={store}>
             <I18nContext.Provider value={i18nManager}>
-                {/* This is a hack for correctly sizing to view height on mobile when not running in fullscreen mode. */}
-                {/* https://css-tricks.com/the-trick-to-viewport-units-on-mobile/ */}
-                <ResizeSensor
-                    onResize={(e): void => {
-                        document.documentElement.style.setProperty(
-                            '--mobile-pad',
-                            `${e[0].contentRect.height - window.innerHeight}px`,
-                        );
-                    }}
-                >
-                    <div id="vh" className="h-100 w-100 p-absolute" />
-                </ResizeSensor>
+                <ViewHeightSensor />
                 <App />
             </I18nContext.Provider>
         </Provider>

@@ -1,0 +1,37 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2020-2021 The Pybricks Authors
+
+// Custom styling for the App control.
+
+@import '../variables.scss';
+
+.pb-app-body {
+    // height makes everything fit without scrolling
+    height: calc(
+        var(--pb-vh, 100vh) - #{$pt-navbar-height} - #{$pb-status-bar-height}
+    ) !important;
+}
+
+.#{$ns}-dark .splitter-layout > .layout-splitter {
+    // make layout splitter match app color scheme
+    background-color: $pt-dark-app-background-color;
+}
+
+.splitter-layout > .layout-splitter {
+    // make layout splitter match app color scheme
+    background-color: $pt-app-background-color;
+}
+
+.#{$ns}-dark .pb-app-terminal-padding {
+    background-color: black;
+}
+
+.pb-app-terminal-padding {
+    padding-left: 10px;
+}
+
+// hide the docs and resize separator
+
+div.pb-hide-docs > :not(.layout-pane-primary) {
+    display: none;
+}
