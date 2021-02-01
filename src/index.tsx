@@ -11,6 +11,7 @@ import { createLogger } from 'redux-logger';
 import createSagaMiddleware from 'redux-saga';
 import './index.scss';
 import App from './app/App';
+import { appVersion } from './app/constants';
 import { i18nManager } from './i18n';
 import * as I18nToaster from './notifications/I18nToaster';
 import { rootReducer } from './reducers';
@@ -65,7 +66,7 @@ store.subscribe(() => {
 });
 
 // special styling for beta versions
-if (process.env.REACT_APP_VERSION?.match(/beta/)) {
+if (appVersion.match(/beta/)) {
     document.body.classList.add('pb-beta');
 }
 

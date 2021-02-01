@@ -9,6 +9,10 @@ export const tooltipDelay = 1000;
 /** Official name of the app. */
 export const appName = process.env.REACT_APP_NAME || 'REACT_APP_NAME is undefined';
 
+/** The version of the app (without the "v" prefix). */
+export const appVersion =
+    process.env.REACT_APP_VERSION || 'REACT_APP_VERSION is undefined';
+
 /** URL to main Pybricks website. */
 export const pybricksWebsiteUrl = 'https://pybricks.com';
 

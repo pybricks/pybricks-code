@@ -9,6 +9,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import {
     appName,
+    appVersion,
     legoDisclaimer,
     pybricksCopyright,
     pybricksWebsiteUrl,
@@ -19,8 +20,6 @@ import { AboutStringId } from './i18n';
 import en from './i18n.en.json';
 
 import './about.scss';
-
-const version = process.env.REACT_APP_VERSION;
 
 type OwnProps = { isOpen: boolean; onClose: () => void };
 
@@ -35,7 +34,7 @@ class AboutDialog extends React.Component<AboutDialogProps> {
         const { isOpen, onClose, i18n } = this.props;
         return (
             <Dialog
-                title={`${appName} v${version}`}
+                title={`${appName} v${appVersion}`}
                 isOpen={isOpen}
                 onClose={() => onClose()}
             >
