@@ -31,6 +31,13 @@ We are using [Yarn][yarn] 1.x for package management.
 
 [yarn]: https://classic.yarnpkg.com/
 
+### Python
+
+One of the node depedencies needs Python 2 in order to build!
+
+If you see [this error](https://github.com/palantir/blueprint/issues/4273),
+that is what is going on.
+
 ### Git Version Control
 
 You will need [Git][git] to get the source code from GitHub. (Say that 3 times fast!)
