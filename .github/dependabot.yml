@@ -3,13 +3,11 @@ updates:
 - package-ecosystem: npm
   directory: "/"
   schedule:
-    interval: weekly
+    interval: daily
   ignore:
   - dependency-name: "@types/node"
     versions:
     - ">= 13.a"
-    - "< 14"
-  - dependency-name: "@types/node"
+  - dependency-name: "@types/react"
     versions:
-    - ">= 14.a"
-    - "< 15"
+    - ">= 17.a"
