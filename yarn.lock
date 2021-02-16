@@ -2645,12 +2645,12 @@
   resolved "https://registry.yarnpkg.com/@types/q/-/q-1.5.4.tgz#15925414e0ad2cd765bfef58842f7e26a7accb24"
   integrity sha512-1HcDas8SEj4z1Wc696tH56G8OlRaH/sqZOynNNB+HF0WOeXPaxTtbYzJY2oEfiUxjSKjhCKr+MvR7dCHcEelug==
 
-"@types/react-dom@^16.9.8":
-  version "16.9.10"
-  resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-16.9.10.tgz#4485b0bec3d41f856181b717f45fd7831101156f"
-  integrity sha512-ItatOrnXDMAYpv6G8UCk2VhbYVTjZT9aorLtA/OzDN9XJ2GKcfam68jutoAcILdRjsRUO8qb7AmyObF77Q8QFw==
+"@types/react-dom@^17.0.1":
+  version "17.0.1"
+  resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-17.0.1.tgz#d92d77d020bfb083e07cc8e0ac9f933599a4d56a"
+  integrity sha512-yIVyopxQb8IDZ7SOHeTovurFq+fXiPICa+GV3gp0Xedsl+MwQlMLKmvrnEjFbQxjliH5YVAEWFh975eVNmKj7Q==
   dependencies:
-    "@types/react" "^16"
+    "@types/react" "*"
 
 "@types/react-redux@^7.1.16":
   version "7.1.16"
@@ -2677,7 +2677,7 @@
     "@types/prop-types" "*"
     csstype "^3.0.2"
 
-"@types/react@^16", "@types/react@^16.14.4":
+"@types/react@^16.14.4":
   version "16.14.4"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-16.14.4.tgz#365f6a1e117d1eec960ba792c7e1e91ecad38e6f"
   integrity sha512-ETj7GbkPGjca/A4trkVeGvoIakmLV6ZtX3J8dcmOpzKzWVybbrOxanwaIPG71GZwImoMDY6Fq4wIe34lEqZ0FQ==
