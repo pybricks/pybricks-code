@@ -2218,62 +2218,62 @@
     estree-walker "^1.0.1"
     picomatch "^2.2.2"
 
-"@shopify/dates@^0.5.1":
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/@shopify/dates/-/dates-0.5.1.tgz#85aaa4e991590cddf6ff4d8253efae2bdc6139f3"
-  integrity sha512-d2xTxESl7JFpq+/vFNTTzNNKsY8kDDN44RmoW8u5drG50qUlfwP56Q8DB1j1hUMMTxb09PrFFfepTSxyQiEKIg==
+"@shopify/dates@^0.5.2":
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/@shopify/dates/-/dates-0.5.2.tgz#b8e2c1aa5a6748bb1d49f4db40722056c35a9527"
+  integrity sha512-zXBahiFoJ+KdVQXR43/qrEo6rDmgSnBCstsnGxcMpQYvdH8u4pgYwGEwsO04zTJUynCwdeNxgPXsmM9uki+uIQ==
   dependencies:
-    "@shopify/decorators" "^1.2.0"
+    "@shopify/decorators" "^1.2.1"
     tslib "^1.14.1"
 
-"@shopify/decorators@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@shopify/decorators/-/decorators-1.2.0.tgz#8d464d2378a2cb768fc57b5a9fc826d0d859d153"
-  integrity sha512-KjiE612ErFcZQ40TMQJVo/LLcjuU+BQT/vRJrZVJlxLXAjxzmwRd3oCL7KMQrpDCfDWGr2b3OigK3ldXWoh+vA==
+"@shopify/decorators@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@shopify/decorators/-/decorators-1.2.1.tgz#566779eab86b34dcd850aee21a726181e526b8ad"
+  integrity sha512-Sw89B6gwL6BtQAGou3a2EJujSnlsmz04VolFBIHV98iG7TvkodHiSjvhyTBd6YCsYtVwsrI8xXXN0C0DvpqaPw==
   dependencies:
-    "@shopify/function-enhancers" "^1.1.0"
+    "@shopify/function-enhancers" "^1.1.1"
     tslib "^1.14.1"
 
-"@shopify/function-enhancers@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@shopify/function-enhancers/-/function-enhancers-1.1.0.tgz#3c42b78edd59f8cb6fe85408ca39fc92f3e5dad3"
-  integrity sha512-wIrGDa5aRiOr8E3JT3+8svkBskFE7NjGCzLo/Tu7SA5t5spgxTqF85J/ilbSPFnOsvBO/teeDIVKClFtGSlkhw==
-  dependencies:
-    tslib "^1.14.1"
-
-"@shopify/i18n@^0.2.1":
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/@shopify/i18n/-/i18n-0.2.1.tgz#da707afe474fa11fbd273694be465bfa08128f24"
-  integrity sha512-6BuRaPbfZSUYcnjJkrBM439+qUUW+KkZsWf4wSjnlKJgR37sp/7UAwO58qZntV722MQ1txHsvqgmOCZLJFRh8g==
+"@shopify/function-enhancers@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@shopify/function-enhancers/-/function-enhancers-1.1.1.tgz#724d347f981e86d3930ea529863d5b882f2bc41c"
+  integrity sha512-ZRn/khk2CEenyuSFIdWinkEnvd58sX5mw9a/GylnN0SUJlUeMw5F9mqkqatKbA62AdUm3Dc/7zge4Z9WHsveng==
   dependencies:
     tslib "^1.14.1"
 
-"@shopify/react-effect@^3.3.0":
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/@shopify/react-effect/-/react-effect-3.3.0.tgz#9538ee55e5e9b20831a70744071be17d2b317228"
-  integrity sha512-Mnm/CXLY2/1Vc3or9KMJYrdK3nDmxZx/l1oc1u3bbtB8HhkUcbQWjxBip5dyNBv6R5Gp42Cg28q+F+fn7Sziww==
+"@shopify/i18n@^0.2.2":
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/@shopify/i18n/-/i18n-0.2.2.tgz#1f13c30cf678d82147c61246b0805aafe6be146c"
+  integrity sha512-eQh7QQq1Wg2IFYr7/J10DgLBOgt1rhdjGwY11nmeXLRXUl7irhYdKNuR1NsRWydQ6AG7yQJIQXYlOkVT8YUI1A==
   dependencies:
     tslib "^1.14.1"
 
-"@shopify/react-hooks@^1.12.0":
-  version "1.12.0"
-  resolved "https://registry.yarnpkg.com/@shopify/react-hooks/-/react-hooks-1.12.0.tgz#b31e7eb3c1a1eaa8f20a1473b0def619f90cb462"
-  integrity sha512-j8c9J0alSt0/NcuPg1K5L57GO8rYfbskulqFrsCv4gCYVgEVPyJd3DqKaErxcY9kYzDEKfEDI2+hIAiR3Uiqsw==
+"@shopify/react-effect@^3.3.1":
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/@shopify/react-effect/-/react-effect-3.3.1.tgz#ca52d7a8d6912c8772ad2952a96fdb68fe5127d3"
+  integrity sha512-wXJJz5FFdGfC+WBIvrIqgSQiHgNMCO35i1ATXUARQKfvZEUTq16ZGk7j/nxFGDvKsNg1zF31DpxVmMxETKrvKQ==
   dependencies:
     tslib "^1.14.1"
 
-"@shopify/react-i18n@^5.2.2":
-  version "5.2.2"
-  resolved "https://registry.yarnpkg.com/@shopify/react-i18n/-/react-i18n-5.2.2.tgz#4e5864cef791400bbd7e91e6c4a052d36630615d"
-  integrity sha512-M+zk2luTHgsTKF4/8JlNdzDdggmp14U3bQeuysSDlMUg5r2lTRTkhMIPh8c8t1hujF2sxdZMHhk+55oa+qHDhA==
+"@shopify/react-hooks@^1.12.1":
+  version "1.12.1"
+  resolved "https://registry.yarnpkg.com/@shopify/react-hooks/-/react-hooks-1.12.1.tgz#b417cfe25850d39a7b39a5deda504b8c41e19a72"
+  integrity sha512-re5/msM1LxLBydTDGSThfizz+yo7ZHAL5+LP5hDB6K57JCePBo2tZ+JCu13NLgyh5ASK0kI8XKSz+pddMm7wnA==
   dependencies:
-    "@shopify/dates" "^0.5.1"
-    "@shopify/decorators" "^1.2.0"
-    "@shopify/function-enhancers" "^1.1.0"
-    "@shopify/i18n" "^0.2.1"
-    "@shopify/react-effect" "^3.3.0"
-    "@shopify/react-hooks" "^1.12.0"
-    "@shopify/useful-types" "^2.3.0"
+    tslib "^1.14.1"
+
+"@shopify/react-i18n@^5.2.3":
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/@shopify/react-i18n/-/react-i18n-5.2.3.tgz#6f231392c9ba2a3fab5ac872e5454610741523a1"
+  integrity sha512-/YLoHPloCaj3Bq77ATAwyY3Xm9qc7N5pxozNJ+lxQpfrOpEsbEJnGdVMmEmitxVcQtIAQhKpAtxydviT6gbLaw==
+  dependencies:
+    "@shopify/dates" "^0.5.2"
+    "@shopify/decorators" "^1.2.1"
+    "@shopify/function-enhancers" "^1.1.1"
+    "@shopify/i18n" "^0.2.2"
+    "@shopify/react-effect" "^3.3.1"
+    "@shopify/react-hooks" "^1.12.1"
+    "@shopify/useful-types" "^2.3.1"
     "@types/hoist-non-react-statics" "^3.0.1"
     change-case "^3.1.0"
     glob "^7.1.4"
@@ -2287,10 +2287,10 @@
     "@babel/traverse" "^7.0.0"
     fs-extra "^8.1.0"
 
-"@shopify/useful-types@^2.3.0":
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/@shopify/useful-types/-/useful-types-2.3.0.tgz#d14376eb9da2c45ffbb3849cb3be2da98c7ef1c0"
-  integrity sha512-T5FuS/hNFTxS18kpB3Z8fTwaM0q7fkXPpZLpV6fug5pHw1dFiuCTvidBUDALJJyCRJ5mONQc2m2bQt8MGvn90A==
+"@shopify/useful-types@^2.3.1":
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/@shopify/useful-types/-/useful-types-2.3.1.tgz#9d5614573a81591f880599b68b5d05f5e44aaf82"
+  integrity sha512-gyYX1W634eQdE2UflCO3tDC5jcLAO+G29z3iJiXHEZA6jEIhyoZO7JNbGLtG9MD3GqldIpNoGx6xdgiyaY0sow==
   dependencies:
     tslib "^1.14.1"
 
