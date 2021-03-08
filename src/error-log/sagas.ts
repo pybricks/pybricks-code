@@ -1,7 +1,11 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020 The Pybricks Authors
+// Copyright (c) 2020-2021 The Pybricks Authors
 
 import { takeEvery } from 'typed-redux-saga/macro';
+import {
+    BlePybricksServiceEventActionType,
+    BlePybricksServiceEventProtocolErrorAction,
+} from '../ble-pybricks-service/actions';
 import { BleUartActionType, BleUartDidFailToWriteAction } from '../ble-uart/actions';
 import {
     BleDeviceActionType,
@@ -23,6 +27,12 @@ function bleDeviceDidFailToConnect(action: BleDeviceDidFailToConnectAction): voi
     if (action.reason === BleDeviceFailToConnectReasonType.Unknown) {
         console.error(action.err);
     }
+}
+
+function pybricksProtocolError(
+    action: BlePybricksServiceEventProtocolErrorAction,
+): void {
+    console.error(action.err);
 }
 
 function bleDataDidFailToWrite(action: BleUartDidFailToWriteAction): void {
@@ -47,6 +57,10 @@ function licenseDidFailToFetch(action: LicenseDidFailToFetchListAction): void {
 
 export default function* (): Generator {
     yield* takeEvery(BleDeviceActionType.DidFailToConnect, bleDeviceDidFailToConnect);
+    yield* takeEvery(
+        BlePybricksServiceEventActionType.ProtocolError,
+        pybricksProtocolError,
+    );
     yield* takeEvery(BleUartActionType.DidFailToWrite, bleDataDidFailToWrite);
     yield* takeEvery(
         BootloaderConnectionActionType.DidFailToConnect,

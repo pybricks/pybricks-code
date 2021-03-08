@@ -13,9 +13,9 @@ import {
     takeEvery,
 } from 'typed-redux-saga/macro';
 import { Action } from '../actions';
-import { BleUartActionType, BleUartNotifyAction, write } from '../ble-uart/actions';
+import { BleUartActionType, BleUartDidNotifyAction, write } from '../ble-uart/actions';
 import { SafeTxCharLength } from '../ble-uart/protocol';
-import { HubRuntimeStatusType, checksum, updateStatus } from '../hub/actions';
+import { checksum } from '../hub/actions';
 import { HubRuntimeState } from '../hub/reducers';
 import { RootState } from '../reducers';
 import { defined } from '../utils';
@@ -25,28 +25,7 @@ import { TerminalActionType, TerminalDataReceiveDataAction, sendData } from './a
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
 
-function* handleMatch(
-    match: RegExpMatchArray | null,
-    status: HubRuntimeStatusType,
-): Generator<unknown, boolean> {
-    if (!match) {
-        return false;
-    }
-
-    if (match[1]) {
-        yield* put(sendData(match[1]));
-    }
-
-    yield* put(updateStatus(status));
-
-    if (match[2]) {
-        yield* put(sendData(match[2]));
-    }
-
-    return true;
-}
-
-function* receiveUartData(action: BleUartNotifyAction): Generator {
+function* receiveUartData(action: BleUartDidNotifyAction): Generator {
     const hubState = yield* select((s: RootState) => s.hub.runtime);
 
     if (hubState === HubRuntimeState.Loading && action.value.buffer.byteLength === 1) {
@@ -56,31 +35,6 @@ function* receiveUartData(action: BleUartNotifyAction): Generator {
     }
 
     const value = decoder.decode(action.value.buffer);
-
-    if (
-        yield* handleMatch(value.match(/(.*)>>>> IDLE(.*)/), HubRuntimeStatusType.Idle)
-    ) {
-        return;
-    }
-
-    if (
-        yield* handleMatch(
-            value.match(/(.*)>>>> ERROR(.*)/),
-            HubRuntimeStatusType.Error,
-        )
-    ) {
-        return;
-    }
-
-    if (
-        yield* handleMatch(
-            value.match(/(.*)>>>> RUNNING(.*)/),
-            HubRuntimeStatusType.Running,
-        )
-    ) {
-        return;
-    }
-
     yield* put(sendData(value));
 }
 
@@ -123,7 +77,7 @@ function* receiveTerminalData(): Generator {
             );
 
             // wait for echo so tht we don't overrun the hub with messages
-            yield* race([take(BleUartActionType.Notify), delay(100)]);
+            yield* race([take(BleUartActionType.DidNotify), delay(100)]);
         }
     }
 }
@@ -135,7 +89,7 @@ function* sendTerminalData(action: TerminalDataReceiveDataAction): Generator {
 }
 
 export default function* (): Generator {
-    yield* takeEvery(BleUartActionType.Notify, receiveUartData);
+    yield* takeEvery(BleUartActionType.DidNotify, receiveUartData);
     yield* fork(receiveTerminalData);
     yield* takeEvery(TerminalActionType.SendData, sendTerminalData);
 }

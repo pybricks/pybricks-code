@@ -11,19 +11,19 @@ export enum BleUartActionType {
     /**
      * Write data.
      */
-    Write = 'ble.data.action.write',
+    Write = 'bleUart.action.write',
     /**
      * Writing completed successfully.
      */
-    DidWrite = 'ble.data.didWrite',
+    DidWrite = 'bleUart.didWrite',
     /**
      * Writing failed.
      */
-    DidFailToWrite = 'ble.data.action.didFailToWrite',
+    DidFailToWrite = 'bleUart.action.didFailToWrite',
     /**
      * Notify that data was received.
      */
-    Notify = 'ble.data.action.receive',
+    DidNotify = 'bleUart.action.didNotify',
 }
 
 export type BleUartWriteAction = Action<BleUartActionType.Write> & {
@@ -52,12 +52,12 @@ export function didFailToWrite(id: number, err: Error): BleUartDidFailToWriteAct
     return { type: BleUartActionType.DidFailToWrite, id, err };
 }
 
-export type BleUartNotifyAction = Action<BleUartActionType.Notify> & {
+export type BleUartDidNotifyAction = Action<BleUartActionType.DidNotify> & {
     value: DataView;
 };
 
-export function notify(value: DataView): BleUartNotifyAction {
-    return { type: BleUartActionType.Notify, value };
+export function didNotify(value: DataView): BleUartDidNotifyAction {
+    return { type: BleUartActionType.DidNotify, value };
 }
 
 /** Common type for low-level BLE data actions. */
@@ -65,4 +65,4 @@ export type BleUartAction =
     | BleUartWriteAction
     | BleUartDidWriteAction
     | BleUartDidFailToWriteAction
-    | BleUartNotifyAction;
+    | BleUartDidNotifyAction;

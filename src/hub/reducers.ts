@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020 The Pybricks Authors
+// Copyright (c) 2020-2021 The Pybricks Authors
 
 import { Reducer, combineReducers } from 'redux';
 import { Action } from '../actions';
+import { BlePybricksServiceEventActionType } from '../ble-pybricks-service/actions';
+import { Status, statusToFlag } from '../ble-pybricks-service/protocol';
 import { BleDeviceActionType } from '../ble/actions';
 import { HubMessageActionType, HubRuntimeStatusType } from './actions';
 
@@ -65,6 +67,10 @@ const runtime: Reducer<HubRuntimeState, Action> = (
                     console.error(`bad action/state: ${action.newStatus}`);
                     return state;
             }
+        case BlePybricksServiceEventActionType.StatusReport:
+            return action.statusFlags & statusToFlag(Status.UserProgramRunning)
+                ? HubRuntimeState.Running
+                : HubRuntimeState.Idle;
         default:
             return state;
     }

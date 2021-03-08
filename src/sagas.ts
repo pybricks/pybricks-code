@@ -4,6 +4,7 @@
 import { all, put } from 'typed-redux-saga/macro';
 import { didStart } from './app/actions';
 import app from './app/sagas';
+import blePybricksService from './ble-pybricks-service/sagas';
 import bleUart from './ble-uart/sagas';
 import editor from './editor/sagas';
 import errorLog from './error-log/sagas';
@@ -21,6 +22,7 @@ import terminal from './terminal/sagas';
 export default function* (): Generator {
     yield* all([
         app(),
+        blePybricksService(),
         bleUart(),
         lwp3BootloaderBle(),
         lwp3BootloaderProtocol(),
