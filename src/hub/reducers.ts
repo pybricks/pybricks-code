@@ -49,8 +49,6 @@ const runtime: Reducer<HubRuntimeState, Action> = (
     switch (action.type) {
         case BleDeviceActionType.DidDisconnect:
             return HubRuntimeState.Disconnected;
-        case BleDeviceActionType.DidConnect:
-            return HubRuntimeState.Unknown;
         case HubMessageActionType.RuntimeStatus:
             switch (action.newStatus) {
                 case HubRuntimeStatusType.Idle:

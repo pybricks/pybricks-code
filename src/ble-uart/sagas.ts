@@ -190,6 +190,16 @@ function* connect(_action: BleDeviceConnectAction): Generator {
             );
     });
 
+    const pybricksControlChannelTask = yield* takeEvery(
+        pybricksControlChannel,
+        handlePybricksControlValueChanged,
+    );
+    const pybricksControlWriteTask = yield* takeEvery(
+        BlePybricksServiceActionType.WriteCommand,
+        writePybricksCommand,
+        pybricksControlChar,
+    );
+
     try {
         // REVISIT: possible Pybricks firmware bug (or chromium bug on Linux)
         // where 'characteristicvaluechanged' is not called after disconnecting
@@ -199,6 +209,8 @@ function* connect(_action: BleDeviceConnectAction): Generator {
         yield* call([pybricksControlChar, 'stopNotifications']);
         yield* call([pybricksControlChar, 'startNotifications']);
     } catch (err) {
+        yield* cancel(pybricksControlChannelTask);
+        yield* cancel(pybricksControlWriteTask);
         pybricksControlChannel.close();
         server.disconnect();
         yield* takeMaybe(disconnectChannel);
@@ -210,6 +222,8 @@ function* connect(_action: BleDeviceConnectAction): Generator {
     try {
         uartService = yield* call([server, 'getPrimaryService'], uartServiceUUID);
     } catch (err) {
+        yield* cancel(pybricksControlChannelTask);
+        yield* cancel(pybricksControlWriteTask);
         pybricksControlChannel.close();
         server.disconnect();
         yield* takeMaybe(disconnectChannel);
@@ -225,6 +239,8 @@ function* connect(_action: BleDeviceConnectAction): Generator {
     try {
         uartRxChar = yield* call([uartService, 'getCharacteristic'], uartRxCharUUID);
     } catch (err) {
+        yield* cancel(pybricksControlChannelTask);
+        yield* cancel(pybricksControlWriteTask);
         pybricksControlChannel.close();
         server.disconnect();
         yield* takeMaybe(disconnectChannel);
@@ -236,6 +252,8 @@ function* connect(_action: BleDeviceConnectAction): Generator {
     try {
         uartTxChar = yield* call([uartService, 'getCharacteristic'], uartTxCharUUID);
     } catch (err) {
+        yield* cancel(pybricksControlChannelTask);
+        yield* cancel(pybricksControlWriteTask);
         pybricksControlChannel.close();
         server.disconnect();
         yield* takeMaybe(disconnectChannel);
@@ -255,6 +273,13 @@ function* connect(_action: BleDeviceConnectAction): Generator {
             uartTxChar.removeEventListener('characteristicvaluechanged', listener);
     });
 
+    const uartTxChannelTask = yield* takeEvery(uartTxChannel, handleUartValueChanged);
+    const uartTxWriteTask = yield* takeEvery(
+        BleUartActionType.Write,
+        writeUart,
+        uartRxChar,
+    );
+
     try {
         // REVISIT: possible Pybricks firmware bug (or chromium bug on Linux)
         // where 'characteristicvaluechanged' is not called after disconnecting
@@ -264,23 +289,17 @@ function* connect(_action: BleDeviceConnectAction): Generator {
         yield* call([uartTxChar, 'stopNotifications']);
         yield* call([uartTxChar, 'startNotifications']);
     } catch (err) {
+        yield* cancel(uartTxWriteTask);
+        yield* cancel(uartTxChannelTask);
         uartTxChannel.close();
+        yield* cancel(pybricksControlChannelTask);
+        yield* cancel(pybricksControlWriteTask);
         pybricksControlChannel.close();
         server.disconnect();
         yield* takeMaybe(disconnectChannel);
         yield* put(didFailToConnect({ reason: Reason.Unknown, err }));
         return;
     }
-
-    yield* takeEvery(pybricksControlChannel, handlePybricksControlValueChanged);
-    yield* takeEvery(
-        BlePybricksServiceActionType.WriteCommand,
-        writePybricksCommand,
-        pybricksControlChar,
-    );
-
-    yield* takeEvery(uartTxChannel, handleUartValueChanged);
-    yield* takeEvery(BleUartActionType.Write, writeUart, uartRxChar);
 
     yield* put(didConnect());
 
