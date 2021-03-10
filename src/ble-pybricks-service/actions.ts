@@ -113,6 +113,73 @@ export type BlePybricksServiceAction =
     | BlePybricksServiceDidFailToWriteCommandAction
     | BlePybricksServiceDidNotifyEventAction;
 
+/** Action types for commands sent via the Pybricks service control characteristic. */
+export enum BlePybricksServiceCommandActionType {
+    SendStopUserProgram = 'blePybricksServiceCommand.action.sendStopUserProgram',
+    DidSend = 'blePybricksServiceCommand.action.didSend',
+    DidFailToSend = 'blePybricksServiceCommand.action.didFailToSend',
+}
+
+type TransactionId = {
+    /** Unique identifier for the transaction set in the "send" command. */
+    id: number;
+};
+
+/** Action that requests a stop user program to be sent. */
+export type BlePybricksServiceCommandSendStopUserProgram = Action<BlePybricksServiceCommandActionType.SendStopUserProgram> &
+    TransactionId;
+
+/**
+ * Action that requests a stop user program to be sent.
+ * @param id Unique identifier for this transaction.
+ */
+export function sendStopUserProgramCommand(
+    id: number,
+): BlePybricksServiceCommandSendStopUserProgram {
+    return { type: BlePybricksServiceCommandActionType.SendStopUserProgram, id };
+}
+
+/**
+ *  Action that indicates that a command was successfully sent.
+ */
+export type BlePybricksServiceCommandDidSendAction = Action<BlePybricksServiceCommandActionType.DidSend> &
+    TransactionId;
+
+/**
+ *  Action that indicates that a command was successfully sent.
+ * @param id Unique identifier for the transaction from the corresponding "send" command.
+ */
+export function didSendCommand(id: number): BlePybricksServiceCommandDidSendAction {
+    return { type: BlePybricksServiceCommandActionType.DidSend, id };
+}
+
+/**
+ *  Action that indicates that a command was not sent.
+ */
+export type BlePybricksServiceCommandDidFailToSendAction = Action<BlePybricksServiceCommandActionType.DidFailToSend> &
+    TransactionId & {
+        /** The error that was raised. */
+        err: Error;
+    };
+
+/**
+ *  Action that indicates that a command was not sent.
+ * @param id Unique identifier for the transaction from the corresponding "send" command.
+ * @param err The error that was raised.
+ */
+export function didFailToSendCommand(
+    id: number,
+    err: Error,
+): BlePybricksServiceCommandDidFailToSendAction {
+    return { type: BlePybricksServiceCommandActionType.DidFailToSend, id, err };
+}
+
+/** Common type for Pybricks control characteristic send command actions. */
+export type BlePybricksServiceCommandAction =
+    | BlePybricksServiceCommandSendStopUserProgram
+    | BlePybricksServiceCommandDidSendAction
+    | BlePybricksServiceCommandDidFailToSendAction;
+
 /** Action types for events received from the Pybricks service control characteristic. */
 export enum BlePybricksServiceEventActionType {
     /** A status report event. */

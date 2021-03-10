@@ -5,6 +5,7 @@ import { Dispatch as ReduxDispatch } from 'redux';
 import { AppAction } from './app/actions';
 import {
     BlePybricksServiceAction,
+    BlePybricksServiceCommandAction,
     BlePybricksServiceEventAction,
 } from './ble-pybricks-service/actions';
 import { BleUartAction } from './ble-uart/actions';
@@ -34,6 +35,7 @@ export type Action =
     | BLEAction
     | BLEConnectAction
     | BlePybricksServiceAction
+    | BlePybricksServiceCommandAction
     | BlePybricksServiceEventAction
     | BleUartAction
     | BootloaderConnectionAction

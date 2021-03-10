@@ -10,6 +10,21 @@ export const ServiceUUID = 'c5f50001-8280-46da-89f4-6d8051e4aeef';
 /** Pybricks control characteristic UUID. */
 export const ControlCharacteristicUUID = 'c5f50002-8280-46da-89f4-6d8051e4aeef';
 
+/** Commands are instructions sent to the hub. */
+export enum CommandType {
+    /** Request to stop the user program, if it is running. */
+    StopUserProgram = 0,
+}
+
+/**
+ * Creates a stop user program command message.
+ */
+export function createStopUserProgramCommand(): Uint8Array {
+    const msg = new Uint8Array(1);
+    msg[0] = CommandType.StopUserProgram;
+    return msg;
+}
+
 /** Events are notifications received from the hub. */
 export enum EventType {
     /** Status report. Received when notifications are enabled and when status changes. */
