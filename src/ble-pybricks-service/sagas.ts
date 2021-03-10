@@ -41,10 +41,16 @@ import {
 function* encodeRequest(): Generator {
     // Using a while loop to serialize sending data to avoid "busy" errors.
 
+    const sendCommands: readonly BlePybricksServiceCommandActionType[] = Object.values(
+        BlePybricksServiceCommandActionType,
+    ).filter(
+        (x) =>
+            x !== BlePybricksServiceCommandActionType.DidSend &&
+            x != BlePybricksServiceCommandActionType.DidFailToSend,
+    );
+
     const chan = yield* actionChannel<BlePybricksServiceCommandAction>((a: Action) =>
-        Object.values(BlePybricksServiceCommandActionType).includes(
-            a.type as BlePybricksServiceCommandActionType,
-        ),
+        sendCommands.includes(a.type as BlePybricksServiceCommandActionType),
     );
 
     while (true) {
@@ -56,7 +62,7 @@ function* encodeRequest(): Generator {
                 break;
             /* istanbul ignore next: should not be possible to reach */
             default:
-                console.error(`Unknown Pybricks service command ${action}`);
+                console.error(`Unknown Pybricks service command ${action.type}`);
                 continue;
         }
 
