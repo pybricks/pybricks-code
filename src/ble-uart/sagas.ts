@@ -6,7 +6,7 @@
 // TODO: this file needs to be combined with the firmware BLE connection management
 // to reduce duplicated code
 
-import { END, eventChannel } from 'redux-saga';
+import { END, Task, eventChannel } from 'redux-saga';
 import {
     call,
     cancel,
@@ -190,14 +190,11 @@ function* connect(_action: BleDeviceConnectAction): Generator {
             );
     });
 
-    const pybricksControlChannelTask = yield* takeEvery(
-        pybricksControlChannel,
-        handlePybricksControlValueChanged,
-    );
-    const pybricksControlWriteTask = yield* takeEvery(
-        BlePybricksServiceActionType.WriteCommand,
-        writePybricksCommand,
-        pybricksControlChar,
+    // forked tasks that will need to be canceled later
+    const tasks = new Array<Task>();
+
+    tasks.push(
+        yield* takeEvery(pybricksControlChannel, handlePybricksControlValueChanged),
     );
 
     try {
@@ -209,8 +206,7 @@ function* connect(_action: BleDeviceConnectAction): Generator {
         yield* call([pybricksControlChar, 'stopNotifications']);
         yield* call([pybricksControlChar, 'startNotifications']);
     } catch (err) {
-        yield* cancel(pybricksControlChannelTask);
-        yield* cancel(pybricksControlWriteTask);
+        yield* cancel(tasks);
         pybricksControlChannel.close();
         server.disconnect();
         yield* takeMaybe(disconnectChannel);
@@ -218,12 +214,19 @@ function* connect(_action: BleDeviceConnectAction): Generator {
         return;
     }
 
+    tasks.push(
+        yield* takeEvery(
+            BlePybricksServiceActionType.WriteCommand,
+            writePybricksCommand,
+            pybricksControlChar,
+        ),
+    );
+
     let uartService: BluetoothRemoteGATTService;
     try {
         uartService = yield* call([server, 'getPrimaryService'], uartServiceUUID);
     } catch (err) {
-        yield* cancel(pybricksControlChannelTask);
-        yield* cancel(pybricksControlWriteTask);
+        yield* cancel(tasks);
         pybricksControlChannel.close();
         server.disconnect();
         yield* takeMaybe(disconnectChannel);
@@ -239,8 +242,7 @@ function* connect(_action: BleDeviceConnectAction): Generator {
     try {
         uartRxChar = yield* call([uartService, 'getCharacteristic'], uartRxCharUUID);
     } catch (err) {
-        yield* cancel(pybricksControlChannelTask);
-        yield* cancel(pybricksControlWriteTask);
+        yield* cancel(tasks);
         pybricksControlChannel.close();
         server.disconnect();
         yield* takeMaybe(disconnectChannel);
@@ -252,8 +254,7 @@ function* connect(_action: BleDeviceConnectAction): Generator {
     try {
         uartTxChar = yield* call([uartService, 'getCharacteristic'], uartTxCharUUID);
     } catch (err) {
-        yield* cancel(pybricksControlChannelTask);
-        yield* cancel(pybricksControlWriteTask);
+        yield* cancel(tasks);
         pybricksControlChannel.close();
         server.disconnect();
         yield* takeMaybe(disconnectChannel);
@@ -273,12 +274,7 @@ function* connect(_action: BleDeviceConnectAction): Generator {
             uartTxChar.removeEventListener('characteristicvaluechanged', listener);
     });
 
-    const uartTxChannelTask = yield* takeEvery(uartTxChannel, handleUartValueChanged);
-    const uartTxWriteTask = yield* takeEvery(
-        BleUartActionType.Write,
-        writeUart,
-        uartRxChar,
-    );
+    tasks.push(yield* takeEvery(uartTxChannel, handleUartValueChanged));
 
     try {
         // REVISIT: possible Pybricks firmware bug (or chromium bug on Linux)
@@ -289,11 +285,8 @@ function* connect(_action: BleDeviceConnectAction): Generator {
         yield* call([uartTxChar, 'stopNotifications']);
         yield* call([uartTxChar, 'startNotifications']);
     } catch (err) {
-        yield* cancel(uartTxWriteTask);
-        yield* cancel(uartTxChannelTask);
+        yield* cancel(tasks);
         uartTxChannel.close();
-        yield* cancel(pybricksControlChannelTask);
-        yield* cancel(pybricksControlWriteTask);
         pybricksControlChannel.close();
         server.disconnect();
         yield* takeMaybe(disconnectChannel);
@@ -301,17 +294,18 @@ function* connect(_action: BleDeviceConnectAction): Generator {
         return;
     }
 
+    tasks.push(yield* takeEvery(BleUartActionType.Write, writeUart, uartRxChar));
+
     yield* put(didConnect());
 
+    // wait for disconnection
     yield* takeMaybe(disconnectChannel);
+
+    yield* cancel(tasks);
     uartTxChannel.close();
     pybricksControlChannel.close();
 
-    try {
-        yield* cancel(); // have to cancel to stop forked effects
-    } finally {
-        yield* put(didDisconnect());
-    }
+    yield* put(didDisconnect());
 }
 
 function* toggle(_action: BLEToggleAction): Generator {
