@@ -8,7 +8,7 @@
         "url": "https://github.com/pybricks/pybricks-code"
     },
     "dependencies": {
-        "@blueprintjs/core": "^3.40.1",
+        "@blueprintjs/core": "^3.41.0",
         "@craco/craco": "^6.1.1",
         "@pybricks/firmware": "4.6.0",
         "@pybricks/ide-docs": "1.1.1",
