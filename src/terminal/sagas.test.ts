@@ -7,15 +7,10 @@ import {
     BleUartActionType,
     BleUartWriteAction,
     didFailToWrite,
+    didNotify,
     didWrite,
-    notify,
 } from '../ble-uart/actions';
-import {
-    HubChecksumMessageAction,
-    HubMessageActionType,
-    HubRuntimeStatusMessageAction,
-    HubRuntimeStatusType,
-} from '../hub/actions';
+import { HubChecksumMessageAction, HubMessageActionType } from '../hub/actions';
 import { HubRuntimeState } from '../hub/reducers';
 import { createCountFunc } from '../utils/iter';
 import {
@@ -35,7 +30,7 @@ describe('Data receiver filters out hub status', () => {
         );
 
         // sending ASCII space character
-        saga.put(notify(new DataView(new Uint8Array([0x20]).buffer)));
+        saga.put(didNotify(new DataView(new Uint8Array([0x20]).buffer)));
 
         const action = await saga.take();
         expect(action.type).toBe(TerminalActionType.SendData);
@@ -51,265 +46,11 @@ describe('Data receiver filters out hub status', () => {
             { nextMessageId: createCountFunc() },
         );
 
-        saga.put(notify(new DataView(new Uint8Array([0xaa]).buffer)));
+        saga.put(didNotify(new DataView(new Uint8Array([0xaa]).buffer)));
 
         const action = await saga.take();
         expect(action.type).toBe(HubMessageActionType.Checksum);
         expect((action as HubChecksumMessageAction).checksum).toBe(0xaa);
-
-        await saga.end();
-    });
-
-    test('idle message', async () => {
-        const saga = new AsyncSaga(
-            terminal,
-            { hub: { runtime: HubRuntimeState.Unknown } },
-            { nextMessageId: createCountFunc() },
-        );
-
-        // '>>>> IDLE'
-        saga.put(
-            notify(
-                new DataView(
-                    new Uint8Array([
-                        0x3e,
-                        0x3e,
-                        0x3e,
-                        0x3e,
-                        0x20,
-                        0x49,
-                        0x44,
-                        0x4c,
-                        0x45,
-                    ]).buffer,
-                ),
-            ),
-        );
-
-        const action = await saga.take();
-        expect(action.type).toBe(HubMessageActionType.RuntimeStatus);
-        expect((action as HubRuntimeStatusMessageAction).newStatus).toBe(
-            HubRuntimeStatusType.Idle,
-        );
-
-        await saga.end();
-    });
-
-    test('idle message with extra text', async () => {
-        const saga = new AsyncSaga(
-            terminal,
-            { hub: { runtime: HubRuntimeState.Unknown } },
-            { nextMessageId: createCountFunc() },
-        );
-
-        // '0>>>> IDLE1'
-        saga.put(
-            notify(
-                new DataView(
-                    new Uint8Array([
-                        0x30,
-                        0x3e,
-                        0x3e,
-                        0x3e,
-                        0x3e,
-                        0x20,
-                        0x49,
-                        0x44,
-                        0x4c,
-                        0x45,
-                        0x31,
-                    ]).buffer,
-                ),
-            ),
-        );
-
-        // this should get split into '0', idle status, '1'
-
-        const action1 = await saga.take();
-        expect(action1.type).toBe(TerminalActionType.SendData);
-        expect((action1 as TerminalDataSendDataAction).value).toBe('0');
-
-        const action2 = await saga.take();
-        expect(action2.type).toBe(HubMessageActionType.RuntimeStatus);
-        expect((action2 as HubRuntimeStatusMessageAction).newStatus).toBe(
-            HubRuntimeStatusType.Idle,
-        );
-
-        const action3 = await saga.take();
-        expect(action3.type).toBe(TerminalActionType.SendData);
-        expect((action3 as TerminalDataSendDataAction).value).toBe('1');
-
-        await saga.end();
-    });
-
-    test('error message', async () => {
-        const saga = new AsyncSaga(
-            terminal,
-            { hub: { runtime: HubRuntimeState.Unknown } },
-            { nextMessageId: createCountFunc() },
-        );
-
-        // '>>>> ERROR'
-        saga.put(
-            notify(
-                new DataView(
-                    new Uint8Array([
-                        0x3e,
-                        0x3e,
-                        0x3e,
-                        0x3e,
-                        0x20,
-                        0x45,
-                        0x52,
-                        0x52,
-                        0x4f,
-                        0x52,
-                    ]).buffer,
-                ),
-            ),
-        );
-
-        const action = await saga.take();
-        expect(action.type).toBe(HubMessageActionType.RuntimeStatus);
-        expect((action as HubRuntimeStatusMessageAction).newStatus).toBe(
-            HubRuntimeStatusType.Error,
-        );
-
-        await saga.end();
-    });
-
-    test('error message with extra text', async () => {
-        const saga = new AsyncSaga(
-            terminal,
-            { hub: { runtime: HubRuntimeState.Unknown } },
-            { nextMessageId: createCountFunc() },
-        );
-
-        // '0>>>> ERROR1'
-        saga.put(
-            notify(
-                new DataView(
-                    new Uint8Array([
-                        0x30,
-                        0x3e,
-                        0x3e,
-                        0x3e,
-                        0x3e,
-                        0x20,
-                        0x45,
-                        0x52,
-                        0x52,
-                        0x4f,
-                        0x52,
-                        0x31,
-                    ]).buffer,
-                ),
-            ),
-        );
-
-        // this should get split into '0', error status, '1'
-
-        const action1 = await saga.take();
-        expect(action1.type).toBe(TerminalActionType.SendData);
-        expect((action1 as TerminalDataSendDataAction).value).toBe('0');
-
-        const action2 = await saga.take();
-        expect(action2.type).toBe(HubMessageActionType.RuntimeStatus);
-        expect((action2 as HubRuntimeStatusMessageAction).newStatus).toBe(
-            HubRuntimeStatusType.Error,
-        );
-
-        const action3 = await saga.take();
-        expect(action3.type).toBe(TerminalActionType.SendData);
-        expect((action3 as TerminalDataSendDataAction).value).toBe('1');
-
-        await saga.end();
-    });
-
-    test('running message', async () => {
-        const saga = new AsyncSaga(
-            terminal,
-            { hub: { runtime: HubRuntimeState.Unknown } },
-            { nextMessageId: createCountFunc() },
-        );
-
-        // '>>>> ERROR'
-        saga.put(
-            notify(
-                new DataView(
-                    new Uint8Array([
-                        0x3e,
-                        0x3e,
-                        0x3e,
-                        0x3e,
-                        0x20,
-                        0x52,
-                        0x55,
-                        0x4e,
-                        0x4e,
-                        0x49,
-                        0x4e,
-                        0x47,
-                    ]).buffer,
-                ),
-            ),
-        );
-
-        const action = await saga.take();
-        expect(action.type).toBe(HubMessageActionType.RuntimeStatus);
-        expect((action as HubRuntimeStatusMessageAction).newStatus).toBe(
-            HubRuntimeStatusType.Running,
-        );
-
-        await saga.end();
-    });
-
-    test('running message with extra text', async () => {
-        const saga = new AsyncSaga(
-            terminal,
-            { hub: { runtime: HubRuntimeState.Unknown } },
-            { nextMessageId: createCountFunc() },
-        );
-
-        // '0>>>> RUNNING1'
-        saga.put(
-            notify(
-                new DataView(
-                    new Uint8Array([
-                        0x30,
-                        0x3e,
-                        0x3e,
-                        0x3e,
-                        0x3e,
-                        0x20,
-                        0x52,
-                        0x55,
-                        0x4e,
-                        0x4e,
-                        0x49,
-                        0x4e,
-                        0x47,
-                        0x31,
-                    ]).buffer,
-                ),
-            ),
-        );
-
-        // this should get split into '0', running status, '1'
-
-        const action1 = await saga.take();
-        expect(action1.type).toBe(TerminalActionType.SendData);
-        expect((action1 as TerminalDataSendDataAction).value).toBe('0');
-
-        const action2 = await saga.take();
-        expect(action2.type).toBe(HubMessageActionType.RuntimeStatus);
-        expect((action2 as HubRuntimeStatusMessageAction).newStatus).toBe(
-            HubRuntimeStatusType.Running,
-        );
-
-        const action3 = await saga.take();
-        expect(action3.type).toBe(TerminalActionType.SendData);
-        expect((action3 as TerminalDataSendDataAction).value).toBe('1');
 
         await saga.end();
     });

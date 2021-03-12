@@ -2,6 +2,7 @@
 // Copyright (c) 2020 The Pybricks Authors
 
 import { AsyncSaga } from '../../test';
+import { eventProtocolError } from '../ble-pybricks-service/actions';
 import { didFailToWrite } from '../ble-uart/actions';
 import {
     BleDeviceFailToConnectReasonType,
@@ -41,6 +42,16 @@ test('bleDataDidFailToWrite', async () => {
 
     console.error = jest.fn();
     saga.put(didFailToWrite(0, new Error('test error')));
+    expect(console.error).toHaveBeenCalledTimes(1);
+
+    await saga.end();
+});
+
+test('eventProtocolError', async () => {
+    const saga = new AsyncSaga(errorLog);
+
+    console.error = jest.fn();
+    saga.put(eventProtocolError(new Error('test error')));
     expect(console.error).toHaveBeenCalledTimes(1);
 
     await saga.end();

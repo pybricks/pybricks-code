@@ -13,6 +13,12 @@ import {
 } from 'typed-redux-saga/macro';
 import { Action } from '../actions';
 import {
+    BlePybricksServiceCommandActionType,
+    BlePybricksServiceCommandDidFailToSendAction,
+    BlePybricksServiceCommandDidSendAction,
+    sendStopUserProgramCommand,
+} from '../ble-pybricks-service/actions';
+import {
     BleUartActionType,
     BleUartDidFailToWriteAction,
     BleUartDidWriteAction,
@@ -151,12 +157,28 @@ function* startRepl(_action: HubReplAction): Generator {
     yield* put(write(nextMessageId(), startReplCommand));
 }
 
-// CTRL+C, CTRL+C, CTRL+D
-const stopCommand = new Uint8Array([0x03, 0x03, 0x04]);
-
 function* stop(_action: HubStopAction): Generator {
     const nextMessageId = yield* getContext<() => number>('nextMessageId');
-    yield* put(write(nextMessageId(), stopCommand));
+    const id = nextMessageId();
+    yield* put(sendStopUserProgramCommand(id));
+    // REVISIT: may want to disable button while attempting to send command
+    // this would mean didSendStop() and didFailToSendStop() actions here
+    const { failedToSend } = yield* race({
+        sent: take<BlePybricksServiceCommandDidSendAction>(
+            (a: Action) =>
+                a.type === BlePybricksServiceCommandActionType.DidSend && a.id === id,
+        ),
+        failedToSend: take<BlePybricksServiceCommandDidFailToSendAction>(
+            (a: Action) =>
+                a.type === BlePybricksServiceCommandActionType.DidFailToSend &&
+                a.id === id,
+        ),
+    });
+    if (failedToSend) {
+        // TODO: probably want to check error. If hub disconnected, ignore error
+        // otherwise indicate error to user
+        console.error(failedToSend.err);
+    }
 }
 
 export default function* (): Generator {

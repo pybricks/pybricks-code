@@ -4,6 +4,11 @@
 import { Ace } from 'ace-builds';
 import { mock } from 'jest-mock-extended';
 import { AsyncSaga } from '../../test';
+import {
+    BlePybricksServiceCommandActionType,
+    BlePybricksServiceCommandSendStopUserProgram,
+    didSendCommand,
+} from '../ble-pybricks-service/actions';
 import { BleUartActionType, BleUartWriteAction, didWrite } from '../ble-uart/actions';
 import { MpyActionType, didCompile } from '../mpy/actions';
 import { createCountFunc } from '../utils/iter';
@@ -82,8 +87,8 @@ test('repl', async () => {
 
     saga.put(repl());
 
-    const compileAction = await saga.take();
-    expect(compileAction.type).toBe(BleUartActionType.Write);
+    const action = await saga.take();
+    expect(action.type).toBe(BleUartActionType.Write);
 
     await saga.end();
 });
@@ -93,8 +98,16 @@ test('stop', async () => {
 
     saga.put(stop());
 
-    const compileAction = await saga.take();
-    expect(compileAction.type).toBe(BleUartActionType.Write);
+    const pybricksServiceAction = await saga.take();
+    expect(pybricksServiceAction.type).toBe(
+        BlePybricksServiceCommandActionType.SendStopUserProgram,
+    );
+
+    saga.put(
+        didSendCommand(
+            (pybricksServiceAction as BlePybricksServiceCommandSendStopUserProgram).id,
+        ),
+    );
 
     await saga.end();
 });

@@ -59,7 +59,7 @@
         "start": "craco start",
         "build": "craco build",
         "test": "craco test --env=./test/env.js",
-        "coverage": "craco test --env=./test/env.js --coverage --watchAll=false",
+        "coverage": "yarn test --coverage --watchAll=false",
         "coverage:html": "yarn coverage --coverageReporters html",
         "eject": "react-scripts eject",
         "lint": "tsc --noEmit && eslint \"*/**/*.{js,ts,tsx}\" --quiet --fix"
