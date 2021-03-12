@@ -1625,10 +1625,10 @@
   dependencies:
     tslib "^1.14.1"
 
-"@shopify/react-i18n@^5.2.4":
-  version "5.2.4"
-  resolved "https://registry.yarnpkg.com/@shopify/react-i18n/-/react-i18n-5.2.4.tgz#037937c9fa6ffb75b3219a62e4fda9283fed2735"
-  integrity sha512-uhgJmMMrnKeDmpg0W5vW4UcEOadoiwf9HSfrRAskQ+0YagY3569fNf0rcl/fVXTcs4UwD2mkm1Ewze7iMNJg6A==
+"@shopify/react-i18n@^5.3.0":
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/@shopify/react-i18n/-/react-i18n-5.3.0.tgz#79b7a5c6dedc789c8f2fcdaf7c44ee105d25462b"
+  integrity sha512-9xrRTiY555VKK6UX9Y0rZvCCbPHiXHKW74ETjJ68lq3G8OMdJabAjuaxe47xcKZC7e5xp6IYyYbC2XzSYizgbw==
   dependencies:
     "@shopify/dates" "^0.5.3"
     "@shopify/decorators" "^1.2.2"
