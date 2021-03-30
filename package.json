@@ -10,7 +10,7 @@
     "dependencies": {
         "@blueprintjs/core": "^3.41.0",
         "@craco/craco": "^6.1.1",
-        "@pybricks/firmware": "4.6.0",
+        "@pybricks/firmware": "4.7.0",
         "@pybricks/ide-docs": "1.1.1",
         "@pybricks/mpy-cross-v5": "^2.0.0",
         "@shopify/react-i18n": "^5.3.0",
@@ -31,7 +31,7 @@
         "@types/zen-push": "^0.1.1",
         "ace-builds": "^1.4.12",
         "babel-plugin-macros": "^3.0.1",
-        "copy-webpack-plugin": "^6.4.1",
+        "copy-webpack-plugin": "^8.1.0",
         "file-saver": "^2.0.5",
         "jszip": "^3.6.0",
         "license-webpack-plugin": "^2.3.15",
