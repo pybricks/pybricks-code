@@ -316,7 +316,11 @@ function* dismissCompilerError(): Generator {
 
 function* showCompilerError(action: MpyDidFailToCompileAction): Generator {
     yield* showSingleton(Level.Error, MessageId.MpyError, {
-        errorMessage: React.createElement('pre', undefined, action.err.join('\n')),
+        errorMessage: React.createElement(
+            'pre',
+            { style: { whiteSpace: 'pre-wrap', wordBreak: 'keep-all' } },
+            action.err.join('\n'),
+        ),
     });
 }
 
