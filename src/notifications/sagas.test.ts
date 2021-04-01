@@ -31,7 +31,10 @@ test.each([
     bleDidFailToConnect({ reason: BleDeviceFailToConnectReasonType.NoWebBluetooth }),
     bleDidFailToConnect({ reason: BleDeviceFailToConnectReasonType.NoBluetooth }),
     bleDidFailToConnect({ reason: BleDeviceFailToConnectReasonType.NoGatt }),
-    bleDidFailToConnect({ reason: BleDeviceFailToConnectReasonType.NoService }),
+    bleDidFailToConnect({
+        reason: BleDeviceFailToConnectReasonType.NoDeviceInfoService,
+    }),
+    bleDidFailToConnect({ reason: BleDeviceFailToConnectReasonType.NoPybricksService }),
     bleDidFailToConnect({
         reason: BleDeviceFailToConnectReasonType.Unknown,
         err: { name: 'test', message: 'unknown' },

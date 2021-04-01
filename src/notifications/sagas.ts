@@ -168,9 +168,15 @@ function* showBleDeviceDidFailToConnectError(
             yield* showSingleton(Level.Error, MessageId.BleGattPermission);
             break;
 
-        case BleDeviceFailToConnectReasonType.NoService:
+        case BleDeviceFailToConnectReasonType.NoPybricksService:
             yield* showSingleton(Level.Error, MessageId.BleGattServiceNotFound, {
                 serviceName: 'Pybricks',
+                hubName: 'Pybricks Hub',
+            });
+            break;
+        case BleDeviceFailToConnectReasonType.NoDeviceInfoService:
+            yield* showSingleton(Level.Error, MessageId.BleGattServiceNotFound, {
+                serviceName: 'Device Information',
                 hubName: 'Pybricks Hub',
             });
             break;

@@ -16,6 +16,11 @@ import {
     takeMaybe,
 } from 'typed-redux-saga/macro';
 import {
+    serviceUUID as deviceInfoServiceUUID,
+    firmwareRevisionStringUUID,
+    softwareRevisionStringUUID,
+} from '../ble-device-info-service/protocol';
+import {
     BlePybricksServiceActionType,
     didFailToWriteCommand,
     didNotifyEvent,
@@ -52,6 +57,8 @@ import {
     ServiceUUID as uartServiceUUID,
     TxCharUUID as uartTxCharUUID,
 } from './protocol';
+
+const decoder = new TextDecoder();
 
 function disconnect(
     server: BluetoothRemoteGATTServer,
@@ -109,7 +116,11 @@ function* connect(_action: BleDeviceConnectAction): Generator {
         device = yield* call(() =>
             navigator.bluetooth.requestDevice({
                 filters: [{ services: [pybricksServiceUUID] }],
-                optionalServices: [pybricksServiceUUID, uartServiceUUID],
+                optionalServices: [
+                    pybricksServiceUUID,
+                    deviceInfoServiceUUID,
+                    uartServiceUUID,
+                ],
             }),
         );
     } catch (err) {
@@ -145,6 +156,79 @@ function* connect(_action: BleDeviceConnectAction): Generator {
 
     yield* takeEvery(BLEDeviceActionType.Disconnect, disconnect, server);
 
+    let deviceInfoService: BluetoothRemoteGATTService;
+    try {
+        deviceInfoService = yield* call(
+            [server, 'getPrimaryService'],
+            deviceInfoServiceUUID,
+        );
+    } catch (err) {
+        server.disconnect();
+        yield* takeMaybe(disconnectChannel);
+        if (err instanceof DOMException && err.code === DOMException.NOT_FOUND_ERR) {
+            yield* put(didFailToConnect({ reason: Reason.NoDeviceInfoService }));
+        } else {
+            yield* put(didFailToConnect({ reason: Reason.Unknown, err }));
+        }
+        return;
+    }
+
+    let firmwareVersionChar: BluetoothRemoteGATTCharacteristic;
+    try {
+        firmwareVersionChar = yield* call(
+            [deviceInfoService, 'getCharacteristic'],
+            firmwareRevisionStringUUID,
+        );
+    } catch (err) {
+        server.disconnect();
+        yield* takeMaybe(disconnectChannel);
+        yield* put(didFailToConnect({ reason: Reason.Unknown, err }));
+        return;
+    }
+
+    let firmwareVersion: string;
+    try {
+        firmwareVersion = decoder.decode(
+            yield* call([firmwareVersionChar, 'readValue']),
+        );
+    } catch (err) {
+        server.disconnect();
+        yield* takeMaybe(disconnectChannel);
+        yield* put(didFailToConnect({ reason: Reason.Unknown, err }));
+        return;
+    }
+
+    // TODO: save firmware version for later use
+    console.log(`Hub firmware version: ${firmwareVersion}`);
+
+    let softwareVersionChar: BluetoothRemoteGATTCharacteristic;
+    try {
+        softwareVersionChar = yield* call(
+            [deviceInfoService, 'getCharacteristic'],
+            softwareRevisionStringUUID,
+        );
+    } catch (err) {
+        server.disconnect();
+        yield* takeMaybe(disconnectChannel);
+        yield* put(didFailToConnect({ reason: Reason.Unknown, err }));
+        return;
+    }
+
+    let protocolVersion: string;
+    try {
+        protocolVersion = decoder.decode(
+            yield* call([softwareVersionChar, 'readValue']),
+        );
+    } catch (err) {
+        server.disconnect();
+        yield* takeMaybe(disconnectChannel);
+        yield* put(didFailToConnect({ reason: Reason.Unknown, err }));
+        return;
+    }
+
+    // TODO: verify that minimum protocol version is met
+    console.log(`Pybricks protocol version: ${protocolVersion}`);
+
     let pybricksService: BluetoothRemoteGATTService;
     try {
         pybricksService = yield* call(
@@ -155,7 +239,7 @@ function* connect(_action: BleDeviceConnectAction): Generator {
         server.disconnect();
         yield* takeMaybe(disconnectChannel);
         if (err instanceof DOMException && err.code === DOMException.NOT_FOUND_ERR) {
-            yield* put(didFailToConnect({ reason: Reason.NoService }));
+            yield* put(didFailToConnect({ reason: Reason.NoPybricksService }));
         } else {
             yield* put(didFailToConnect({ reason: Reason.Unknown, err }));
         }
@@ -231,7 +315,7 @@ function* connect(_action: BleDeviceConnectAction): Generator {
         server.disconnect();
         yield* takeMaybe(disconnectChannel);
         if (err instanceof DOMException && err.code === DOMException.NOT_FOUND_ERR) {
-            yield* put(didFailToConnect({ reason: Reason.NoService }));
+            yield* put(didFailToConnect({ reason: Reason.NoPybricksService }));
         } else {
             yield* put(didFailToConnect({ reason: Reason.Unknown, err }));
         }
