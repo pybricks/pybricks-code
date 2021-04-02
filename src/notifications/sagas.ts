@@ -168,9 +168,15 @@ function* showBleDeviceDidFailToConnectError(
             yield* showSingleton(Level.Error, MessageId.BleGattPermission);
             break;
 
-        case BleDeviceFailToConnectReasonType.NoService:
+        case BleDeviceFailToConnectReasonType.NoPybricksService:
             yield* showSingleton(Level.Error, MessageId.BleGattServiceNotFound, {
                 serviceName: 'Pybricks',
+                hubName: 'Pybricks Hub',
+            });
+            break;
+        case BleDeviceFailToConnectReasonType.NoDeviceInfoService:
+            yield* showSingleton(Level.Error, MessageId.BleGattServiceNotFound, {
+                serviceName: 'Device Information',
                 hubName: 'Pybricks Hub',
             });
             break;
@@ -310,7 +316,11 @@ function* dismissCompilerError(): Generator {
 
 function* showCompilerError(action: MpyDidFailToCompileAction): Generator {
     yield* showSingleton(Level.Error, MessageId.MpyError, {
-        errorMessage: React.createElement('pre', undefined, action.err.join('\n')),
+        errorMessage: React.createElement(
+            'pre',
+            { style: { whiteSpace: 'pre-wrap', wordBreak: 'keep-all' } },
+            action.err.join('\n'),
+        ),
     });
 }
 

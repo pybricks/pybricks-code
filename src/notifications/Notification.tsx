@@ -20,5 +20,20 @@ export default function Notification(props: OwnProps): JSX.Element {
         fallback: en,
     });
     const { messageId, replacements } = props;
-    return <>{i18n.translate(messageId, replacements)}</>;
+    let message = i18n.translate(messageId, replacements) as
+        | React.ReactElement
+        | string;
+
+    // Use newline characters to create paragraphs
+    if (typeof message === 'string') {
+        message = (
+            <>
+                {message.split('\n').map((x, i) => (
+                    <p key={i}>{x}</p>
+                ))}
+            </>
+        );
+    }
+
+    return message;
 }

@@ -37,6 +37,7 @@ body {
 
 .#{$ns}-toast {
     user-select: text;
+    max-width: 700px;
 }
 
 .#{$ns}-button {

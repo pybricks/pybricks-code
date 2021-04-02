@@ -58,7 +58,8 @@ export enum BleDeviceFailToConnectReasonType {
     NoBluetooth = 'ble.device.didFailToConnect.noBluetooth',
     Canceled = 'ble.device.didFailToConnect.canceled',
     NoGatt = 'ble.device.didFailToConnect.noGatt',
-    NoService = 'ble.device.didFailToConnect.noService',
+    NoDeviceInfoService = 'ble.device.didFailToConnect.noDeviceInfoService',
+    NoPybricksService = 'ble.device.didFailToConnect.noPybricksService',
     Unknown = 'ble.device.didFailToConnect.unknown',
 }
 
@@ -74,7 +75,9 @@ export type BleDeviceFailToConnectCanceledReason = Reason<BleDeviceFailToConnect
 
 export type BleDeviceFailToConnectNoGattReason = Reason<BleDeviceFailToConnectReasonType.NoGatt>;
 
-export type BleDeviceFailToConnectNoServiceReason = Reason<BleDeviceFailToConnectReasonType.NoService>;
+export type BleDeviceFailToConnectNoDeviceInfoServiceReason = Reason<BleDeviceFailToConnectReasonType.NoDeviceInfoService>;
+
+export type BleDeviceFailToConnectNoPybricksServiceReason = Reason<BleDeviceFailToConnectReasonType.NoPybricksService>;
 
 export type BleDeviceFailToConnectUnknownReason = Reason<BleDeviceFailToConnectReasonType.Unknown> & {
     err: Error;
@@ -85,7 +88,8 @@ export type BleDeviceDidFailToConnectReason =
     | BleDeviceFailToConnectNoBluetoothReason
     | BleDeviceFailToConnectCanceledReason
     | BleDeviceFailToConnectNoGattReason
-    | BleDeviceFailToConnectNoServiceReason
+    | BleDeviceFailToConnectNoDeviceInfoServiceReason
+    | BleDeviceFailToConnectNoPybricksServiceReason
     | BleDeviceFailToConnectUnknownReason;
 
 export type BleDeviceDidFailToConnectAction = Action<BleDeviceActionType.DidFailToConnect> &
