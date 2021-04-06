@@ -4,10 +4,8 @@
 import { Action } from 'redux';
 
 export enum HubRuntimeStatusType {
-    Idle = 'idle',
     Loading = 'loading',
     Loaded = 'loaded',
-    Running = 'running',
     Error = 'error',
 }
 
