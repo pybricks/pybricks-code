@@ -51,14 +51,10 @@ const runtime: Reducer<HubRuntimeState, Action> = (
             return HubRuntimeState.Disconnected;
         case HubMessageActionType.RuntimeStatus:
             switch (action.newStatus) {
-                case HubRuntimeStatusType.Idle:
-                    return HubRuntimeState.Idle;
                 case HubRuntimeStatusType.Loading:
                     return HubRuntimeState.Loading;
                 case HubRuntimeStatusType.Loaded:
                     return HubRuntimeState.Loaded;
-                case HubRuntimeStatusType.Running:
-                    return HubRuntimeState.Running;
                 case HubRuntimeStatusType.Error:
                     return HubRuntimeState.Error;
                 default:
