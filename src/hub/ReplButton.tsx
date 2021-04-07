@@ -15,9 +15,7 @@ type OwnProps = Pick<ActionButtonProps, 'id'> &
     Pick<ActionButtonProps, 'keyboardShortcut'>;
 
 const mapStateToProps = (state: RootState): StateProps => ({
-    enabled:
-        state.hub.runtime === HubRuntimeState.Idle ||
-        state.hub.runtime === HubRuntimeState.Error,
+    enabled: state.hub.runtime === HubRuntimeState.Idle,
 });
 
 const mapDispatchToProps: DispatchProps = {

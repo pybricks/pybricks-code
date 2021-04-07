@@ -1,36 +1,13 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020 The Pybricks Authors
+// Copyright (c) 2020-2021 The Pybricks Authors
 
 import { Action } from 'redux';
 
-export enum HubRuntimeStatusType {
-    Loading = 'loading',
-    Loaded = 'loaded',
-    Error = 'error',
-}
-
 export enum HubMessageActionType {
-    /**
-     * The hub has send a message indicating the MicroPython runtime status changed.
-     */
-    RuntimeStatus = 'hub.message.action.runtime.status',
     /**
      * The hub has sent a checksum.
      */
     Checksum = 'hub.message.action.runtime.checksum',
-}
-
-export type HubRuntimeStatusMessageAction = Action<HubMessageActionType.RuntimeStatus> & {
-    readonly newStatus: HubRuntimeStatusType;
-};
-
-export function updateStatus(
-    newStatus: HubRuntimeStatusType,
-): HubRuntimeStatusMessageAction {
-    return {
-        type: HubMessageActionType.RuntimeStatus,
-        newStatus,
-    };
 }
 
 export type HubChecksumMessageAction = Action<HubMessageActionType.Checksum> & {
@@ -47,13 +24,16 @@ export function checksum(checksum: number): HubChecksumMessageAction {
 /**
  * Common type for low-level hub message actions.
  */
-export type HubMessageAction = HubRuntimeStatusMessageAction | HubChecksumMessageAction;
+export type HubMessageAction = HubChecksumMessageAction;
 
 /**
  * High-level hub actions.
  */
 export enum HubActionType {
     DownloadAndRun = 'hub.action.downloadAndRun',
+    DidStartDownload = 'hub.action.didStartDownload',
+    DidFinishDownload = 'hub.action.didFinishDownload',
+    DidFailToFinishDownload = 'hub.action.didFailToFinishDownload',
     Stop = 'hub.action.stop',
     Repl = 'hub.action.repl',
 }
@@ -62,6 +42,24 @@ export type HubDownloadAndRunAction = Action<HubActionType.DownloadAndRun>;
 
 export function downloadAndRun(): HubDownloadAndRunAction {
     return { type: HubActionType.DownloadAndRun };
+}
+
+export type HubDidStartDownloadAction = Action<HubActionType.DidStartDownload>;
+
+export function didStartDownload(): HubDidStartDownloadAction {
+    return { type: HubActionType.DidStartDownload };
+}
+
+export type HubDidFinishDownloadAction = Action<HubActionType.DidFinishDownload>;
+
+export function didFinishDownload(): HubDidFinishDownloadAction {
+    return { type: HubActionType.DidFinishDownload };
+}
+
+export type HubDidFailToFinishDownloadAction = Action<HubActionType.DidFailToFinishDownload>;
+
+export function didFailToFinishDownload(): HubDidFailToFinishDownloadAction {
+    return { type: HubActionType.DidFailToFinishDownload };
 }
 
 export type HubStopAction = Action<HubActionType.Stop>;
@@ -79,4 +77,10 @@ export function repl(): HubReplAction {
 /**
  * Common type for all high-level hub actions.
  */
-export type HubAction = HubDownloadAndRunAction | HubStopAction | HubReplAction;
+export type HubAction =
+    | HubDownloadAndRunAction
+    | HubDidStartDownloadAction
+    | HubDidFinishDownloadAction
+    | HubDidFailToFinishDownloadAction
+    | HubStopAction
+    | HubReplAction;

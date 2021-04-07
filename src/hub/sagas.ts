@@ -41,9 +41,10 @@ import {
     HubDownloadAndRunAction,
     HubMessageActionType,
     HubReplAction,
-    HubRuntimeStatusType,
     HubStopAction,
-    updateStatus,
+    didFailToFinishDownload as didFailToFinishDownload,
+    didFinishDownload,
+    didStartDownload,
 } from './actions';
 
 const downloadChunkSize = 100;
@@ -87,7 +88,7 @@ function* downloadAndRun(_action: HubDownloadAndRunAction): Generator {
     defined(mpy);
 
     // let everyone know the runtime is busy loading the program
-    yield* put(updateStatus(HubRuntimeStatusType.Loading));
+    yield* put(didStartDownload());
 
     const checksumChannel = yield* actionChannel<HubChecksumMessageAction>(
         HubMessageActionType.Checksum,
@@ -103,7 +104,7 @@ function* downloadAndRun(_action: HubDownloadAndRunAction): Generator {
     const { didFailToWrite } = yield* waitForWrite(writeAction.id);
 
     if (didFailToWrite) {
-        yield* put(updateStatus(HubRuntimeStatusType.Error));
+        yield* put(didFailToFinishDownload());
         return;
     }
 
@@ -112,7 +113,7 @@ function* downloadAndRun(_action: HubDownloadAndRunAction): Generator {
         console.error(
             `bad checksum ${checksumAction.checksum} vs ${0xff ^ xor8(sizeBuf)}`,
         );
-        yield* put(updateStatus(HubRuntimeStatusType.Error));
+        yield* put(didFailToFinishDownload());
         return;
     }
 
@@ -130,7 +131,7 @@ function* downloadAndRun(_action: HubDownloadAndRunAction): Generator {
             const { didFailToWrite } = yield* waitForWrite(writeAction.id);
 
             if (didFailToWrite) {
-                yield* put(updateStatus(HubRuntimeStatusType.Error));
+                yield* put(didFailToFinishDownload());
                 return;
             }
             // TODO: dispatch progress
@@ -140,13 +141,13 @@ function* downloadAndRun(_action: HubDownloadAndRunAction): Generator {
             console.error(
                 `bad checksum ${checksumAction.checksum} vs ${0xff ^ xor8(chunk)}`,
             );
-            yield* put(updateStatus(HubRuntimeStatusType.Error));
+            yield* put(didFailToFinishDownload());
             return;
         }
     }
 
     // let everyone know the runtime is done loading the program
-    yield* put(updateStatus(HubRuntimeStatusType.Loaded));
+    yield* put(didFinishDownload());
 }
 
 // SPACE, SPACE, SPACE, SPACE

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020 The Pybricks Authors
+// Copyright (c) 2020-2021 The Pybricks Authors
 
 import { Ace } from 'ace-builds';
 import { mock } from 'jest-mock-extended';
@@ -12,15 +12,7 @@ import {
 import { BleUartActionType, BleUartWriteAction, didWrite } from '../ble-uart/actions';
 import { MpyActionType, didCompile } from '../mpy/actions';
 import { createCountFunc } from '../utils/iter';
-import {
-    HubMessageActionType,
-    HubRuntimeStatusMessageAction,
-    HubRuntimeStatusType,
-    checksum,
-    downloadAndRun,
-    repl,
-    stop,
-} from './actions';
+import { HubActionType, checksum, downloadAndRun, repl, stop } from './actions';
 import hub from './sagas';
 
 jest.mock('ace-builds');
@@ -43,10 +35,7 @@ describe('downloadAndRun', () => {
 
         // then it notifies that loading has begun
         const loadingStatusAction = await saga.take();
-        expect(loadingStatusAction.type).toBe(HubMessageActionType.RuntimeStatus);
-        expect((loadingStatusAction as HubRuntimeStatusMessageAction).newStatus).toBe(
-            HubRuntimeStatusType.Loading,
-        );
+        expect(loadingStatusAction.type).toBe(HubActionType.DidStartDownload);
 
         // first message is the length
         const writeAction = await saga.take();
@@ -71,10 +60,7 @@ describe('downloadAndRun', () => {
 
         // Then a status message saying that we are done
         const loadedStatusAction = await saga.take();
-        expect(loadedStatusAction.type).toBe(HubMessageActionType.RuntimeStatus);
-        expect((loadedStatusAction as HubRuntimeStatusMessageAction).newStatus).toBe(
-            HubRuntimeStatusType.Loaded,
-        );
+        expect(loadedStatusAction.type).toBe(HubActionType.DidFinishDownload);
 
         await saga.end();
     });

@@ -6,7 +6,7 @@ import { Action } from '../actions';
 import { BlePybricksServiceEventActionType } from '../ble-pybricks-service/actions';
 import { Status, statusToFlag } from '../ble-pybricks-service/protocol';
 import { BleDeviceActionType } from '../ble/actions';
-import { HubMessageActionType, HubRuntimeStatusType } from './actions';
+import { HubActionType } from './actions';
 
 /**
  * Describes the state of the MicroPython runtime on the hub.
@@ -36,10 +36,6 @@ export enum HubRuntimeState {
      * A user program is running.
      */
     Running = 'hub.runtime.running',
-    /**
-     * The runtime encountered an error.
-     */
-    Error = 'hub.runtime.error',
 }
 
 const runtime: Reducer<HubRuntimeState, Action> = (
@@ -49,29 +45,19 @@ const runtime: Reducer<HubRuntimeState, Action> = (
     switch (action.type) {
         case BleDeviceActionType.DidDisconnect:
             return HubRuntimeState.Disconnected;
-        case HubMessageActionType.RuntimeStatus:
-            switch (action.newStatus) {
-                case HubRuntimeStatusType.Loading:
-                    return HubRuntimeState.Loading;
-                case HubRuntimeStatusType.Loaded:
-                    return HubRuntimeState.Loaded;
-                case HubRuntimeStatusType.Error:
-                    return HubRuntimeState.Error;
-                default:
-                    console.error(`bad action/state: ${action.newStatus}`);
-                    return state;
-            }
+        case HubActionType.DidStartDownload:
+            return HubRuntimeState.Loading;
+        case HubActionType.DidFinishDownload:
+            return HubRuntimeState.Loaded;
+        case HubActionType.DidFailToFinishDownload:
+            return HubRuntimeState.Idle;
         case BlePybricksServiceEventActionType.StatusReport:
-            // TODO: Status report flags need to be separated from hub runtime state.
-            // For now, we have this hack to ensure status updates don't interfere with
-            // download and run. Loading state should really be actions like didStartLoading,
-            // didLoad and didFailToLoad.
+            // The loading state is determined solely by the IDE, so we can't
+            // let the hub status interfere with it.
             if (state !== HubRuntimeState.Loading) {
                 if (action.statusFlags & statusToFlag(Status.UserProgramRunning)) {
                     return HubRuntimeState.Running;
                 }
-            }
-            if (state !== HubRuntimeState.Loading && state !== HubRuntimeState.Loaded) {
                 return HubRuntimeState.Idle;
             }
             return state;
