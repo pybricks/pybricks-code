@@ -62,12 +62,15 @@ const runtime: Reducer<HubRuntimeState, Action> = (
                     return state;
             }
         case BlePybricksServiceEventActionType.StatusReport:
-            if (action.statusFlags & statusToFlag(Status.UserProgramRunning)) {
-                return HubRuntimeState.Running;
-            }
-            // TODO: Status report flags should probably separated from hub runtime state.
+            // TODO: Status report flags need to be separated from hub runtime state.
             // For now, we have this hack to ensure status updates don't interfere with
-            // download and run
+            // download and run. Loading state should really be actions like didStartLoading,
+            // didLoad and didFailToLoad.
+            if (state !== HubRuntimeState.Loading) {
+                if (action.statusFlags & statusToFlag(Status.UserProgramRunning)) {
+                    return HubRuntimeState.Running;
+                }
+            }
             if (state !== HubRuntimeState.Loading && state !== HubRuntimeState.Loaded) {
                 return HubRuntimeState.Idle;
             }
