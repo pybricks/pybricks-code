@@ -13,7 +13,7 @@ type OwnProps = {
     replacements?: Replacements;
 };
 
-export default function Notification(props: OwnProps): JSX.Element {
+export default function NotificationMessage(props: OwnProps): JSX.Element {
     const [i18n] = useI18n({
         id: 'notification',
         translations: { en },

@@ -37,7 +37,8 @@ import {
     ServiceWorkerAction,
     ServiceWorkerActionType,
 } from '../service-worker/actions';
-import Notification from './Notification';
+import NotificationAction from './NotificationAction';
+import NotificationMessage from './NotificationMessage';
 import UnexpectedErrorNotification from './UnexpectedErrorNotification';
 import { NotificationActionType, NotificationAddAction } from './actions';
 import { MessageId } from './i18n';
@@ -101,7 +102,7 @@ function dispatchAction(
 ): IActionProps {
     return {
         icon: icon,
-        text: React.createElement(Notification, { messageId }),
+        text: React.createElement(NotificationAction, { messageId }),
         onClick,
     };
 }
@@ -140,7 +141,10 @@ function* showSingleton(
         {
             intent: mapIntent(level),
             icon: mapIcon(level),
-            message: React.createElement(Notification, { messageId, replacements }),
+            message: React.createElement(NotificationMessage, {
+                messageId,
+                replacements,
+            }),
             timeout: 0,
             action,
             onDismiss,
@@ -371,7 +375,7 @@ function* showNoUpdateInfo(action: AppDidCheckForUpdateAction): Generator {
     toaster.show({
         intent: mapIntent(Level.Info),
         icon: mapIcon(Level.Info),
-        message: React.createElement(Notification, {
+        message: React.createElement(NotificationMessage, {
             messageId: MessageId.AppNoUpdateFound,
             replacements: { appName },
         }),
