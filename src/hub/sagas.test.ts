@@ -12,7 +12,14 @@ import {
 import { BleUartActionType, BleUartWriteAction, didWrite } from '../ble-uart/actions';
 import { MpyActionType, didCompile } from '../mpy/actions';
 import { createCountFunc } from '../utils/iter';
-import { HubActionType, checksum, downloadAndRun, repl, stop } from './actions';
+import {
+    HubActionType,
+    HubDidProgressDownloadAction,
+    checksum,
+    downloadAndRun,
+    repl,
+    stop,
+} from './actions';
 import hub from './sagas';
 
 jest.mock('ace-builds');
@@ -44,12 +51,24 @@ describe('downloadAndRun', () => {
         saga.put(didWrite((writeAction as BleUartWriteAction).id));
         saga.put(checksum(30));
 
+        // then progress is updated
+        const progressAction = await saga.take();
+        expect(progressAction.type).toBe(HubActionType.DidProgressDownload);
+        expect((progressAction as HubDidProgressDownloadAction).progress).toBe(0);
+
         // then the first chunk of 20 bytes
         const writeAction2 = await saga.take();
         expect(writeAction2.type).toBe(BleUartActionType.Write);
         expect((writeAction2 as BleUartWriteAction).value.length).toBe(20);
         saga.put(didWrite((writeAction2 as BleUartWriteAction).id));
         saga.put(checksum(0));
+
+        // then progress is updated
+        const progress2Action = await saga.take();
+        expect(progress2Action.type).toBe(HubActionType.DidProgressDownload);
+        expect((progress2Action as HubDidProgressDownloadAction).progress).toBe(
+            20 / 30,
+        );
 
         // then last chunk
         const writeAction3 = await saga.take();

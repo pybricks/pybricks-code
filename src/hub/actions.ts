@@ -32,6 +32,7 @@ export type HubMessageAction = HubChecksumMessageAction;
 export enum HubActionType {
     DownloadAndRun = 'hub.action.downloadAndRun',
     DidStartDownload = 'hub.action.didStartDownload',
+    DidProgressDownload = 'hub.action.didProgressDownload',
     DidFinishDownload = 'hub.action.didFinishDownload',
     DidFailToFinishDownload = 'hub.action.didFailToFinishDownload',
     Stop = 'hub.action.stop',
@@ -48,6 +49,14 @@ export type HubDidStartDownloadAction = Action<HubActionType.DidStartDownload>;
 
 export function didStartDownload(): HubDidStartDownloadAction {
     return { type: HubActionType.DidStartDownload };
+}
+
+export type HubDidProgressDownloadAction = Action<HubActionType.DidProgressDownload> & {
+    progress: number;
+};
+
+export function didProgressDownload(progress: number): HubDidProgressDownloadAction {
+    return { type: HubActionType.DidProgressDownload, progress };
 }
 
 export type HubDidFinishDownloadAction = Action<HubActionType.DidFinishDownload>;
@@ -80,6 +89,7 @@ export function repl(): HubReplAction {
 export type HubAction =
     | HubDownloadAndRunAction
     | HubDidStartDownloadAction
+    | HubDidProgressDownloadAction
     | HubDidFinishDownloadAction
     | HubDidFailToFinishDownloadAction
     | HubStopAction

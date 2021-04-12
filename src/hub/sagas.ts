@@ -45,6 +45,7 @@ import {
     HubStopAction,
     didFailToFinishDownload as didFailToFinishDownload,
     didFinishDownload,
+    didProgressDownload,
     didStartDownload,
 } from './actions';
 
@@ -90,6 +91,9 @@ function* downloadAndRun(_action: HubDownloadAndRunAction): Generator {
 
     // let everyone know the runtime is busy loading the program
     yield* put(didStartDownload());
+
+    // TODO: show compiled size in UI?
+    console.log(`Downloading ${mpy.data.byteLength} bytes`);
 
     const checksumChannel = yield* actionChannel<HubChecksumMessageAction>(
         HubMessageActionType.Checksum,
@@ -138,6 +142,7 @@ function* downloadAndRun(_action: HubDownloadAndRunAction): Generator {
 
         // we can actually only write 20 bytes at a time
         for (let j = 0; j < chunk.length; j += SafeTxCharLength) {
+            yield* put(didProgressDownload((i + j) / mpy.data.byteLength));
             const writeAction = yield* put(
                 write(nextMessageId(), chunk.slice(j, j + SafeTxCharLength)),
             );
@@ -147,7 +152,6 @@ function* downloadAndRun(_action: HubDownloadAndRunAction): Generator {
                 yield* put(didFailToFinishDownload());
                 return;
             }
-            // TODO: dispatch progress
         }
 
         const { checksumAction, checksumTimeout } = yield* race({

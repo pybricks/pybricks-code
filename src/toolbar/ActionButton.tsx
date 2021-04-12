@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020 The Pybricks Authors
+// Copyright (c) 2020-2021 The Pybricks Authors
 
 import {
     Button,
@@ -8,6 +8,7 @@ import {
     HotkeysTarget,
     Intent,
     Position,
+    Spinner,
     Tooltip,
 } from '@blueprintjs/core';
 import { WithI18nProps, withI18n } from '@shopify/react-i18n';
@@ -23,10 +24,16 @@ export interface ActionButtonProps {
     readonly keyboardShortcut?: string;
     /** Tooltip text that appears when hovering over the button. */
     readonly tooltip: TooltipId;
+    /** Tooltip text that appears when hovering over the button and @showProgress is true. */
+    readonly progressTooltip?: TooltipId;
     /** Icon shown on the button. */
     readonly icon: string;
     /** When true or undefined, the button is enabled. */
     readonly enabled?: boolean;
+    /** When true, show progress indicator instead of icon. */
+    readonly showProgress?: boolean;
+    /** The progress value (0 to 1) or undefined for indeterminate progress. */
+    readonly progress?: number;
     /** Callback that is called when the button is activated (clicked). */
     readonly onAction: () => void;
 }
@@ -38,10 +45,28 @@ class ActionButton extends React.Component<Props> {
     private buttonRef: React.RefObject<Button> = React.createRef();
 
     render(): JSX.Element {
-        let tooltipText = this.props.i18n.translate(this.props.tooltip);
-        if (this.props.keyboardShortcut) {
-            tooltipText += ` (${this.props.keyboardShortcut})`;
-        }
+        const {
+            i18n,
+            id,
+            icon,
+            keyboardShortcut,
+            enabled,
+            tooltip,
+            progressTooltip,
+            showProgress,
+            progress,
+            onAction,
+        } = this.props;
+
+        const tooltipText =
+            showProgress && progressTooltip
+                ? i18n.translate(progressTooltip, {
+                      percent:
+                          progress === undefined ? '' : i18n.formatPercentage(progress),
+                  })
+                : i18n.translate(tooltip) +
+                  (keyboardShortcut ? ` (${keyboardShortcut})` : '');
+
         return (
             <Tooltip
                 content={tooltipText}
@@ -52,16 +77,16 @@ class ActionButton extends React.Component<Props> {
                     ref={this.buttonRef}
                     intent={Intent.PRIMARY}
                     onMouseDown={(e) => e.preventDefault()} // prevent focus
-                    onClick={(): void => this.props.onAction()}
-                    disabled={this.props.enabled === false}
+                    onClick={(): void => onAction()}
+                    disabled={enabled === false}
                     className="no-box-shadow"
-                    style={
-                        this.props.enabled === false
-                            ? { pointerEvents: 'none' }
-                            : undefined
-                    }
+                    style={enabled === false ? { pointerEvents: 'none' } : undefined}
                 >
-                    <img src={this.props.icon} alt={this.props.id} />
+                    {showProgress ? (
+                        <Spinner value={progress} intent={Intent.PRIMARY} />
+                    ) : (
+                        <img src={icon} alt={id} />
+                    )}
                 </Button>
             </Tooltip>
         );
