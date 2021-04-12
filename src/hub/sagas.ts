@@ -4,6 +4,7 @@
 import {
     SagaGenerator,
     actionChannel,
+    delay,
     getContext,
     put,
     race,
@@ -108,7 +109,19 @@ function* downloadAndRun(_action: HubDownloadAndRunAction): Generator {
         return;
     }
 
-    const checksumAction = yield* take(checksumChannel);
+    const { checksumAction, checksumTimeout } = yield* race({
+        checksumAction: take(checksumChannel),
+        checksumTimeout: delay(1000),
+    });
+
+    if (checksumTimeout) {
+        console.error(`timeout waiting for checksum`);
+        yield* put(didFailToFinishDownload());
+        return;
+    }
+
+    defined(checksumAction);
+
     if (checksumAction.checksum !== (0xff ^ xor8(sizeBuf))) {
         console.error(
             `bad checksum ${checksumAction.checksum} vs ${0xff ^ xor8(sizeBuf)}`,
@@ -136,7 +149,20 @@ function* downloadAndRun(_action: HubDownloadAndRunAction): Generator {
             }
             // TODO: dispatch progress
         }
-        const checksumAction = yield* take(checksumChannel);
+
+        const { checksumAction, checksumTimeout } = yield* race({
+            checksumAction: take(checksumChannel),
+            checksumTimeout: delay(1000),
+        });
+
+        if (checksumTimeout) {
+            console.error(`timeout waiting for checksum`);
+            yield* put(didFailToFinishDownload());
+            return;
+        }
+
+        defined(checksumAction);
+
         if (checksumAction.checksum !== (0xff ^ xor8(chunk))) {
             console.error(
                 `bad checksum ${checksumAction.checksum} vs ${0xff ^ xor8(chunk)}`,
