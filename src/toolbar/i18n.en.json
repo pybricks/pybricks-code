@@ -2,7 +2,10 @@
     "open": { "tooltip": "Open file" },
     "saveAs": { "tooltip": "Download file" },
     "stop": { "tooltip": "Stop everything" },
-    "run": { "tooltip": "Download and run this program" },
+    "run": {
+        "action": { "tooltip": "Download and run this program" },
+        "progress": { "tooltip": "Downloading… {percent}" }
+    },
     "repl": { "tooltip": "Start REPL in terminal" },
     "bluetooth": {
         "connect": { "tooltip": "Connect using Bluetooth" },

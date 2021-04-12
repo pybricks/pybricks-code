@@ -66,4 +66,19 @@ const runtime: Reducer<HubRuntimeState, Action> = (
     }
 };
 
-export default combineReducers({ runtime });
+const downloadProgress: Reducer<number | null, Action> = (state = null, action) => {
+    switch (action.type) {
+        case HubActionType.DidStartDownload:
+            return 0;
+        case HubActionType.DidProgressDownload:
+            return action.progress;
+        case HubActionType.DidFinishDownload:
+            return 1;
+        case HubActionType.DidFailToFinishDownload:
+            return null;
+        default:
+            return state;
+    }
+};
+
+export default combineReducers({ runtime, downloadProgress });

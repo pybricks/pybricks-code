@@ -6,7 +6,8 @@
 export enum TooltipId {
     Open = 'open.tooltip',
     SaveAs = 'saveAs.tooltip',
-    Run = 'run.tooltip',
+    Run = 'run.action.tooltip',
+    RunProgress = 'run.progress.tooltip',
     Stop = 'stop.tooltip',
     Repl = 'repl.tooltip',
     Flash = 'flash.action.tooltip',
