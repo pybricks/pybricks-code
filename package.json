@@ -17,7 +17,7 @@
         "@testing-library/dom": "^7.30.0",
         "@testing-library/jest-dom": "^5.11.9",
         "@testing-library/react": "^11.2.5",
-        "@testing-library/user-event": "^12.8.1",
+        "@testing-library/user-event": "^13.1.6",
         "@types/file-saver": "^2.0.1",
         "@types/jest": "^26.0.20",
         "@types/jszip": "^3.4.1",
