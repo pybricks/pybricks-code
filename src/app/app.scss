@@ -22,6 +22,10 @@
     background-color: $pt-app-background-color;
 }
 
+.splitter-layout .layout-pane {
+    overflow: hidden;
+}
+
 .#{$ns}-dark .pb-app-terminal-padding {
     background-color: black;
 }
