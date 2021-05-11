@@ -67,21 +67,28 @@ type Reason<T extends BleDeviceFailToConnectReasonType> = {
     reason: T;
 };
 
-export type BleDeviceFailToConnectNoWebBluetoothReason = Reason<BleDeviceFailToConnectReasonType.NoWebBluetooth>;
+export type BleDeviceFailToConnectNoWebBluetoothReason =
+    Reason<BleDeviceFailToConnectReasonType.NoWebBluetooth>;
 
-export type BleDeviceFailToConnectNoBluetoothReason = Reason<BleDeviceFailToConnectReasonType.NoBluetooth>;
+export type BleDeviceFailToConnectNoBluetoothReason =
+    Reason<BleDeviceFailToConnectReasonType.NoBluetooth>;
 
-export type BleDeviceFailToConnectCanceledReason = Reason<BleDeviceFailToConnectReasonType.Canceled>;
+export type BleDeviceFailToConnectCanceledReason =
+    Reason<BleDeviceFailToConnectReasonType.Canceled>;
 
-export type BleDeviceFailToConnectNoGattReason = Reason<BleDeviceFailToConnectReasonType.NoGatt>;
+export type BleDeviceFailToConnectNoGattReason =
+    Reason<BleDeviceFailToConnectReasonType.NoGatt>;
 
-export type BleDeviceFailToConnectNoDeviceInfoServiceReason = Reason<BleDeviceFailToConnectReasonType.NoDeviceInfoService>;
+export type BleDeviceFailToConnectNoDeviceInfoServiceReason =
+    Reason<BleDeviceFailToConnectReasonType.NoDeviceInfoService>;
 
-export type BleDeviceFailToConnectNoPybricksServiceReason = Reason<BleDeviceFailToConnectReasonType.NoPybricksService>;
+export type BleDeviceFailToConnectNoPybricksServiceReason =
+    Reason<BleDeviceFailToConnectReasonType.NoPybricksService>;
 
-export type BleDeviceFailToConnectUnknownReason = Reason<BleDeviceFailToConnectReasonType.Unknown> & {
-    err: Error;
-};
+export type BleDeviceFailToConnectUnknownReason =
+    Reason<BleDeviceFailToConnectReasonType.Unknown> & {
+        err: Error;
+    };
 
 export type BleDeviceDidFailToConnectReason =
     | BleDeviceFailToConnectNoWebBluetoothReason
@@ -92,8 +99,8 @@ export type BleDeviceDidFailToConnectReason =
     | BleDeviceFailToConnectNoPybricksServiceReason
     | BleDeviceFailToConnectUnknownReason;
 
-export type BleDeviceDidFailToConnectAction = Action<BleDeviceActionType.DidFailToConnect> &
-    BleDeviceDidFailToConnectReason;
+export type BleDeviceDidFailToConnectAction =
+    Action<BleDeviceActionType.DidFailToConnect> & BleDeviceDidFailToConnectReason;
 
 /**
  * Creates an action that indicates a device failed to connect.
@@ -122,7 +129,8 @@ export function didDisconnect(): BleDeviceDidDisconnectAction {
     return { type: BleDeviceActionType.DidDisconnect };
 }
 
-export type BleDeviceDidFailToDisconnectAction = Action<BleDeviceActionType.DidFailToDisconnect>;
+export type BleDeviceDidFailToDisconnectAction =
+    Action<BleDeviceActionType.DidFailToDisconnect>;
 
 /**
  * Creates an action that indicates a device failed to disconnect.

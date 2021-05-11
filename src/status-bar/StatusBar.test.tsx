@@ -5,11 +5,11 @@ import { Store } from 'redux';
 import StatusBar from './StatusBar';
 
 it('should prevent browser context menu', () => {
-    const store = ({
+    const store = {
         getState: jest.fn(),
         dispatch: jest.fn(),
         subscribe: jest.fn(),
-    } as unknown) as Store;
+    } as unknown as Store;
     render(
         <Provider store={store}>
             <StatusBar />

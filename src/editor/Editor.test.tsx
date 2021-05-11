@@ -21,11 +21,11 @@ function getTextArea(): HTMLTextAreaElement {
 }
 
 it('should focus the text area', () => {
-    const store = ({
+    const store = {
         getState: jest.fn(() => ({ settings: { darkMode: false, showDocs: false } })),
         dispatch: jest.fn(),
         subscribe: jest.fn(),
-    } as unknown) as Store;
+    } as unknown as Store;
     const i18n = new I18nManager({ locale: 'en' });
     render(
         <Provider store={store}>
@@ -40,13 +40,13 @@ it('should focus the text area', () => {
 
 describe('context menu', () => {
     it('should show the context menu', () => {
-        const store = ({
+        const store = {
             getState: jest.fn(() => ({
                 settings: { darkMode: false, showDocs: false },
             })),
             dispatch: jest.fn(),
             subscribe: jest.fn(),
-        } as unknown) as Store;
+        } as unknown as Store;
         const i18n = new I18nManager({ locale: 'en' });
 
         render(
@@ -63,13 +63,13 @@ describe('context menu', () => {
     });
 
     it('should hide the context menu when Escape is pressed', async () => {
-        const store = ({
+        const store = {
             getState: jest.fn(() => ({
                 settings: { darkMode: false, showDocs: false },
             })),
             dispatch: jest.fn(),
             subscribe: jest.fn(),
-        } as unknown) as Store;
+        } as unknown as Store;
         const i18n = new I18nManager({ locale: 'en' });
 
         render(

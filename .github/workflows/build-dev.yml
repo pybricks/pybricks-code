@@ -1,9 +1,10 @@
-name: Build and publish dev version
+name: Build and publish release
 
 on:
   push:
     tags:
       - v1.*-beta.*
+      - v1.*-rc.*
 
 jobs:
   build:

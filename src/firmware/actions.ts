@@ -71,7 +71,8 @@ type Reason<T extends FailToFinishReasonType> = {
     reason: T;
 };
 
-export type FailToFinishReasonFailedToConnect = Reason<FailToFinishReasonType.FailedToConnect>;
+export type FailToFinishReasonFailedToConnect =
+    Reason<FailToFinishReasonType.FailedToConnect>;
 
 export type FailToFinishReasonTimedOut = Reason<FailToFinishReasonType.TimedOut>;
 
@@ -79,7 +80,8 @@ export type FailToFinishReasonBleError = Reason<FailToFinishReasonType.BleError>
     err: Error;
 };
 
-export type FailToFinishReasonDisconnected = Reason<FailToFinishReasonType.Disconnected>;
+export type FailToFinishReasonDisconnected =
+    Reason<FailToFinishReasonType.Disconnected>;
 
 export type FailToFinishReasonHubError = Reason<FailToFinishReasonType.HubError> & {
     hubError: HubError;
@@ -87,24 +89,29 @@ export type FailToFinishReasonHubError = Reason<FailToFinishReasonType.HubError>
 
 export type FailToFinishReasonNoFirmware = Reason<FailToFinishReasonType.NoFirmware>;
 
-export type FailToFinishReasonDeviceMismatch = Reason<FailToFinishReasonType.DeviceMismatch>;
+export type FailToFinishReasonDeviceMismatch =
+    Reason<FailToFinishReasonType.DeviceMismatch>;
 
-export type FailToFinishReasonFailedToFetch = Reason<FailToFinishReasonType.FailedToFetch> & {
-    response: Response;
-};
+export type FailToFinishReasonFailedToFetch =
+    Reason<FailToFinishReasonType.FailedToFetch> & {
+        response: Response;
+    };
 
 export type FailToFinishReasonZipError = Reason<FailToFinishReasonType.ZipError> & {
     err: FirmwareReaderError;
 };
 
-export type FailToFinishReasonBadMetadata = Reason<FailToFinishReasonType.BadMetadata> & {
-    property: keyof FirmwareMetadata;
-    problem: MetadataProblem;
-};
+export type FailToFinishReasonBadMetadata =
+    Reason<FailToFinishReasonType.BadMetadata> & {
+        property: keyof FirmwareMetadata;
+        problem: MetadataProblem;
+    };
 
-export type FailToFinishReasonFirmwareSize = Reason<FailToFinishReasonType.FirmwareSize>;
+export type FailToFinishReasonFirmwareSize =
+    Reason<FailToFinishReasonType.FirmwareSize>;
 
-export type FailToFinishReasonFailedToCompile = Reason<FailToFinishReasonType.FailedToCompile>;
+export type FailToFinishReasonFailedToCompile =
+    Reason<FailToFinishReasonType.FailedToCompile>;
 
 export type FailToFinishReasonUnknown = Reason<FailToFinishReasonType.Unknown> & {
     err: Error;
@@ -153,10 +160,11 @@ export function didStart(): FlashFirmwareDidStartAction {
 }
 
 /** Action that indicates current firmware flashing progress. */
-export type FlashFirmwareDidProgressAction = Action<FlashFirmwareActionType.DidProgress> & {
-    /** The current progress (0 to 1). */
-    value: number;
-};
+export type FlashFirmwareDidProgressAction =
+    Action<FlashFirmwareActionType.DidProgress> & {
+        /** The current progress (0 to 1). */
+        value: number;
+    };
 
 /**
  * Action that indicates current firmware flashing progress.
@@ -176,9 +184,10 @@ export function didFinish(): FlashFirmwareDidFinishAction {
 }
 
 /** Action that indicates that flashing failed. */
-export type FlashFirmwareDidFailToFinishAction = Action<FlashFirmwareActionType.DidFailToFinish> & {
-    reason: FailToFinishReason;
-};
+export type FlashFirmwareDidFailToFinishAction =
+    Action<FlashFirmwareActionType.DidFailToFinish> & {
+        reason: FailToFinishReason;
+    };
 
 export function didFailToFinish(
     reason: FailToFinishReasonType.BleError,

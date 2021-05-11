@@ -25,9 +25,10 @@ export function didFetchList(list: LicenseList): LicenseDidFetchListAction {
     return { type: LicenseActionType.DidFetchList, list };
 }
 
-export type LicenseDidFailToFetchListAction = Action<LicenseActionType.DidFailToFetchList> & {
-    reason: Response;
-};
+export type LicenseDidFailToFetchListAction =
+    Action<LicenseActionType.DidFailToFetchList> & {
+        reason: Response;
+    };
 
 export function didFailToFetchList(reason: Response): LicenseDidFailToFetchListAction {
     return { type: LicenseActionType.DidFailToFetchList, reason };

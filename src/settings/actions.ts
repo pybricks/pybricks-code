@@ -39,10 +39,11 @@ export function toggleBoolean(id: SettingId): SettingsToggleBooleanAction {
 }
 
 /** Action that indicates setting/storing a setting failed. */
-export type SettingsDidFailToSetBooleanAction = Action<SettingsActionType.DidFailToSetBoolean> & {
-    id: SettingId;
-    err: Error;
-};
+export type SettingsDidFailToSetBooleanAction =
+    Action<SettingsActionType.DidFailToSetBoolean> & {
+        id: SettingId;
+        err: Error;
+    };
 
 /** Creates an action indicating that setting/storing a setting failed. */
 export function didFailToSetBoolean(
@@ -53,8 +54,8 @@ export function didFailToSetBoolean(
 }
 
 /** Action that indicates a stored boolean setting value changed. */
-export type SettingsDidBooleanChangeAction = Action<SettingsActionType.DidBooleanChange> &
-    SettingInfo<boolean>;
+export type SettingsDidBooleanChangeAction =
+    Action<SettingsActionType.DidBooleanChange> & SettingInfo<boolean>;
 
 /** Creates an action that indicates a stored boolean setting value changed. */
 export function didBooleanChange(

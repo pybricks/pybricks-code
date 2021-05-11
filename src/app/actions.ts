@@ -59,9 +59,10 @@ export function didCheckForUpdate(updateFound: boolean): AppDidCheckForUpdateAct
 }
 
 /* Action that indicates the browser wants to prompt the use to install the app. */
-export type AppDidBeforeInstallPromptAction = Action<AppActionType.DidBeforeInstallPrompt> & {
-    event: BeforeInstallPromptEvent;
-};
+export type AppDidBeforeInstallPromptAction =
+    Action<AppActionType.DidBeforeInstallPrompt> & {
+        event: BeforeInstallPromptEvent;
+    };
 
 /* Action that indicates the browser wants to prompt the use to install the app. */
 export function didBeforeInstallPrompt(
