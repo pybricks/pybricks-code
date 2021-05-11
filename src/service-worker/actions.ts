@@ -9,7 +9,7 @@ export enum ServiceWorkerActionType {
 }
 
 export type ServiceWorkerAction<
-    T extends ServiceWorkerActionType = ServiceWorkerActionType
+    T extends ServiceWorkerActionType = ServiceWorkerActionType,
 > = Action<T> & {
     registration: ServiceWorkerRegistration;
 };

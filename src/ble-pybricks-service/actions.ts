@@ -29,10 +29,11 @@ export enum BlePybricksServiceActionType {
 /**
  * Action that request to write a command to the Pybricks service control characteristic.
  */
-export type BlePybricksServiceWriteCommandAction = Action<BlePybricksServiceActionType.WriteCommand> & {
-    id: number;
-    value: Uint8Array;
-};
+export type BlePybricksServiceWriteCommandAction =
+    Action<BlePybricksServiceActionType.WriteCommand> & {
+        id: number;
+        value: Uint8Array;
+    };
 
 /**
  * Action that request to write a command to the Pybricks service control characteristic.
@@ -51,9 +52,10 @@ export function writeCommand(
 /**
  * Action that indicates sending a command to the Pybricks service control characteristic was successful.
  */
-export type BlePybricksServiceDidWriteCommandAction = Action<BlePybricksServiceActionType.DidWriteCommand> & {
-    id: number;
-};
+export type BlePybricksServiceDidWriteCommandAction =
+    Action<BlePybricksServiceActionType.DidWriteCommand> & {
+        id: number;
+    };
 
 /**
  * Action that indicates sending a command to the Pybricks service control characteristic was successful.
@@ -68,10 +70,11 @@ export function didWriteCommand(id: number): BlePybricksServiceDidWriteCommandAc
 /**
  * Action that indicates sending a command to the Pybricks service control characteristic failed.
  */
-export type BlePybricksServiceDidFailToWriteCommandAction = Action<BlePybricksServiceActionType.DidFailToWriteCommand> & {
-    id: number;
-    err: Error;
-};
+export type BlePybricksServiceDidFailToWriteCommandAction =
+    Action<BlePybricksServiceActionType.DidFailToWriteCommand> & {
+        id: number;
+        err: Error;
+    };
 
 /**
  * Action that indicates sending a command to the Pybricks service control characteristic failed.
@@ -90,9 +93,10 @@ export function didFailToWriteCommand(
 /**
  * Action that indicates an event notification was received on the Pybricks service control characteristic.
  */
-export type BlePybricksServiceDidNotifyEventAction = Action<BlePybricksServiceActionType.DidNotifyEvent> & {
-    value: DataView;
-};
+export type BlePybricksServiceDidNotifyEventAction =
+    Action<BlePybricksServiceActionType.DidNotifyEvent> & {
+        value: DataView;
+    };
 
 /**
  * Action that indicates an event notification was received on the Pybricks service control characteristic.
@@ -126,8 +130,8 @@ type TransactionId = {
 };
 
 /** Action that requests a stop user program to be sent. */
-export type BlePybricksServiceCommandSendStopUserProgram = Action<BlePybricksServiceCommandActionType.SendStopUserProgram> &
-    TransactionId;
+export type BlePybricksServiceCommandSendStopUserProgram =
+    Action<BlePybricksServiceCommandActionType.SendStopUserProgram> & TransactionId;
 
 /**
  * Action that requests a stop user program to be sent.
@@ -142,8 +146,8 @@ export function sendStopUserProgramCommand(
 /**
  *  Action that indicates that a command was successfully sent.
  */
-export type BlePybricksServiceCommandDidSendAction = Action<BlePybricksServiceCommandActionType.DidSend> &
-    TransactionId;
+export type BlePybricksServiceCommandDidSendAction =
+    Action<BlePybricksServiceCommandActionType.DidSend> & TransactionId;
 
 /**
  *  Action that indicates that a command was successfully sent.
@@ -156,11 +160,12 @@ export function didSendCommand(id: number): BlePybricksServiceCommandDidSendActi
 /**
  *  Action that indicates that a command was not sent.
  */
-export type BlePybricksServiceCommandDidFailToSendAction = Action<BlePybricksServiceCommandActionType.DidFailToSend> &
-    TransactionId & {
-        /** The error that was raised. */
-        err: Error;
-    };
+export type BlePybricksServiceCommandDidFailToSendAction =
+    Action<BlePybricksServiceCommandActionType.DidFailToSend> &
+        TransactionId & {
+            /** The error that was raised. */
+            err: Error;
+        };
 
 /**
  *  Action that indicates that a command was not sent.
@@ -191,9 +196,10 @@ export enum BlePybricksServiceEventActionType {
 /**
  * Action that represents a status report event received from the hub.
  */
-export type BlePybricksServiceEventStatusReportAction = Action<BlePybricksServiceEventActionType.StatusReport> & {
-    statusFlags: number;
-};
+export type BlePybricksServiceEventStatusReportAction =
+    Action<BlePybricksServiceEventActionType.StatusReport> & {
+        statusFlags: number;
+    };
 
 /**
  * Action that represents a status report event received from the hub.
@@ -208,9 +214,10 @@ export function statusReportEvent(
 /**
  * Pseudo-event (not received from hub) indicating that there was a protocol error.
  */
-export type BlePybricksServiceEventProtocolErrorAction = Action<BlePybricksServiceEventActionType.ProtocolError> & {
-    err: Error;
-};
+export type BlePybricksServiceEventProtocolErrorAction =
+    Action<BlePybricksServiceEventActionType.ProtocolError> & {
+        err: Error;
+    };
 
 /**
  * Pseudo-event (not received from hub) indicating that there was a protocol error.

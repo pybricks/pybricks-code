@@ -51,9 +51,7 @@ import {
 
 const downloadChunkSize = 100;
 
-function* waitForWrite(
-    id: number,
-): SagaGenerator<{
+function* waitForWrite(id: number): SagaGenerator<{
     didWrite: BleUartDidWriteAction | undefined;
     didFailToWrite: BleUartDidFailToWriteAction | undefined;
 }> {

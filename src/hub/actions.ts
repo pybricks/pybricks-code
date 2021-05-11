@@ -65,7 +65,8 @@ export function didFinishDownload(): HubDidFinishDownloadAction {
     return { type: HubActionType.DidFinishDownload };
 }
 
-export type HubDidFailToFinishDownloadAction = Action<HubActionType.DidFailToFinishDownload>;
+export type HubDidFailToFinishDownloadAction =
+    Action<HubActionType.DidFailToFinishDownload>;
 
 export function didFailToFinishDownload(): HubDidFailToFinishDownloadAction {
     return { type: HubActionType.DidFailToFinishDownload };
