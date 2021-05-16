@@ -12,6 +12,14 @@ export function isMacOS(): boolean {
 }
 
 /**
+ * Tests if we are running on Windows.
+ * @returns `true` if running on Windows, otherwise `false`.
+ */
+export function isWindows(): boolean {
+    return /win/i.test(navigator.platform);
+}
+
+/**
  * Tests if the OS is set to dark mode.
  * @returns: `true` if dark mode should be preferred, otherwise `false`.
  */

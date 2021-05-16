@@ -33,7 +33,7 @@ describe('message encoder', () => {
     test.each([
         [
             'erase',
-            eraseRequest(0),
+            eraseRequest(0, /* isCityHub */ false),
             [
                 0x11, // erase command
             ],
@@ -116,6 +116,7 @@ describe('message encoder', () => {
         ],
     ])('encode %s request', async (_n, request, expected) => {
         const messageTypesThatShouldBeCalledWithoutResponse = [
+            BootloaderRequestActionType.Erase,
             BootloaderRequestActionType.Program,
             BootloaderRequestActionType.Reboot,
             BootloaderRequestActionType.Disconnect,
@@ -137,10 +138,10 @@ describe('message encoder', () => {
         const saga = new AsyncSaga(bootloader);
 
         // we send 4 requests
-        saga.put(eraseRequest(0));
-        saga.put(eraseRequest(1));
-        saga.put(eraseRequest(2));
-        saga.put(eraseRequest(3));
+        saga.put(checksumRequest(0));
+        saga.put(checksumRequest(1));
+        saga.put(checksumRequest(2));
+        saga.put(checksumRequest(3));
 
         // but only two didSend action meaning only the first two completed
         saga.put(didSend());
@@ -152,7 +153,7 @@ describe('message encoder', () => {
         const numPending = saga.numPending();
         expect(numPending).toEqual(5);
 
-        const message = new Uint8Array([Command.EraseFlash]);
+        const message = new Uint8Array([Command.GetChecksum]);
         const nextId = createCountFunc();
 
         // every other action is the "send" action

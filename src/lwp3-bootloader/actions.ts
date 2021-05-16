@@ -251,13 +251,19 @@ type BaseBootloaderRequestAction<T extends BootloaderRequestActionType> = Action
  * Action that requests to erase the flash memory.
  */
 export type BootloaderEraseRequestAction =
-    BaseBootloaderRequestAction<BootloaderRequestActionType.Erase>;
+    BaseBootloaderRequestAction<BootloaderRequestActionType.Erase> & {
+        /* City hub requires special handling due to buggy bootloader */
+        isCityHub: boolean;
+    };
 
 /**
  * Creates a request to erase the flash memory.
  */
-export function eraseRequest(id: number): BootloaderEraseRequestAction {
-    return { type: BootloaderRequestActionType.Erase, id };
+export function eraseRequest(
+    id: number,
+    isCityHub: boolean,
+): BootloaderEraseRequestAction {
+    return { type: BootloaderRequestActionType.Erase, id, isCityHub };
 }
 
 /**

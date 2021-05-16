@@ -13,6 +13,7 @@ import {
 } from 'typed-redux-saga/macro';
 import { Action } from '../actions';
 import { hex } from '../utils';
+import { isWindows } from '../utils/os';
 import {
     BootloaderConnectionActionType,
     BootloaderConnectionDidFailToSendAction,
@@ -79,7 +80,12 @@ function* encodeRequest(): Generator {
 
         switch (action.type) {
             case BootloaderRequestActionType.Erase:
-                yield* put(send(createEraseFlashRequest()));
+                yield* put(
+                    send(
+                        createEraseFlashRequest(),
+                        /* withResponse */ action.isCityHub && !isWindows(),
+                    ),
+                );
                 break;
             case BootloaderRequestActionType.Program:
                 yield* put(

@@ -38,6 +38,7 @@ import {
     connect,
     disconnect,
     eraseRequest,
+    eraseResponse,
     infoRequest,
     initRequest,
     programRequest,
@@ -126,6 +127,15 @@ function* waitForResponse<T extends BootloaderResponseAction>(
     });
 
     if (timedOut) {
+        // istanbul ignore if: this hacks around a hardware/OS issue
+        if (type === BootloaderResponseActionType.Erase) {
+            // It has been observed that sometimes this response is not received
+            // or gets stuck in the Bluetooth stack until another request is sent.
+            // So, we ignore the timeout and continue. If there really was a
+            // problem, then the next request should fail anyway.
+            console.warn('Timeout waiting for erase response, continuing anyway.');
+            return eraseResponse(Result.OK) as T;
+        }
         yield* put(didFailToFinish(FailToFinishReasonType.TimedOut));
         yield* disconnectAndCancel();
     }
@@ -335,7 +345,9 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
 
         yield* put(didStart());
 
-        const eraseAction = yield* put(eraseRequest(nextMessageId()));
+        const eraseAction = yield* put(
+            eraseRequest(nextMessageId(), deviceId === HubType.CityHub),
+        );
         const { erase } = yield* all({
             sent: waitForDidRequest(eraseAction.id),
             erase: waitForResponse<BootloaderEraseResponseAction>(
