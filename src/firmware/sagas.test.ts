@@ -136,7 +136,7 @@ describe('flashFirmware', () => {
             // erase first
 
             action = await saga.take();
-            expect(action).toEqual(eraseRequest(1));
+            expect(action).toEqual(eraseRequest(1, /* isCityHub */ false));
 
             saga.put(didRequest(1));
             saga.put(eraseResponse(Result.OK));
@@ -857,7 +857,7 @@ describe('flashFirmware', () => {
             // erase first
 
             action = await saga.take();
-            expect(action).toEqual(eraseRequest(1));
+            expect(action).toEqual(eraseRequest(1, /* isCityHub */ false));
 
             saga.put(didRequest(1));
             saga.put(eraseResponse(Result.Error));
@@ -958,7 +958,7 @@ describe('flashFirmware', () => {
             // erase first
 
             action = await saga.take();
-            expect(action).toEqual(eraseRequest(1));
+            expect(action).toEqual(eraseRequest(1, /* isCityHub */ false));
 
             saga.put(didRequest(1));
             saga.put(eraseResponse(Result.OK));
@@ -1068,7 +1068,7 @@ describe('flashFirmware', () => {
             // erase first
 
             action = await saga.take();
-            expect(action).toEqual(eraseRequest(1));
+            expect(action).toEqual(eraseRequest(1, /* isCityHub */ false));
 
             saga.put(didRequest(1));
             saga.put(eraseResponse(Result.OK));
@@ -1218,7 +1218,7 @@ describe('flashFirmware', () => {
             // erase first
 
             action = await saga.take();
-            expect(action).toEqual(eraseRequest(1));
+            expect(action).toEqual(eraseRequest(1, /* isCityHub */ false));
 
             saga.put(didRequest(1));
             saga.put(eraseResponse(Result.OK));
@@ -1370,7 +1370,7 @@ describe('flashFirmware', () => {
             // erase first
 
             action = await saga.take();
-            expect(action).toEqual(eraseRequest(1));
+            expect(action).toEqual(eraseRequest(1, /* isCityHub */ false));
 
             saga.put(didRequest(1));
             saga.put(eraseResponse(Result.OK));
@@ -1900,7 +1900,7 @@ describe('flashFirmware', () => {
         // erase first
 
         action = await saga.take();
-        expect(action).toEqual(eraseRequest(1));
+        expect(action).toEqual(eraseRequest(1, /* isCityHub */ false));
 
         saga.put(didRequest(1));
         saga.put(eraseResponse(Result.OK));
