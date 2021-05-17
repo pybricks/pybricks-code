@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020 The Pybricks Authors
+// Copyright (c) 2020-2021 The Pybricks Authors
 
 import { connect } from 'react-redux';
 import { toggleBluetooth } from '../ble/actions';
@@ -11,7 +11,10 @@ import { TooltipId } from '../toolbar/i18n';
 import btConnectedIcon from './bt-connected.svg';
 import btDisconnectedIcon from './bt-disconnected.svg';
 
-type StateProps = Pick<ActionButtonProps, 'tooltip' | 'icon' | 'enabled'>;
+type StateProps = Pick<
+    ActionButtonProps,
+    'tooltip' | 'icon' | 'enabled' | 'showProgress'
+>;
 type DispatchProps = Pick<ActionButtonProps, 'onAction'>;
 
 const mapStateToProps = (state: RootState): StateProps => {
@@ -29,6 +32,7 @@ const mapStateToProps = (state: RootState): StateProps => {
             tooltip: TooltipId.BluetoothDisconnect,
             icon: btConnectedIcon,
             enabled: state.ble.connection === BleConnectionState.Connected,
+            showProgress: state.ble.connection === BleConnectionState.Connecting,
         };
     }
 };
