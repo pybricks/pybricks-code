@@ -2,7 +2,7 @@
 // Copyright (c) 2020-2021 The Pybricks Authors
 
 import { connect } from 'react-redux';
-import { HubRuntimeState } from '../hub/reducers';
+import { BleConnectionState } from '../ble/reducers';
 import { BootloaderConnectionState } from '../lwp3-bootloader/reducers';
 import * as notification from '../notifications/actions';
 import { RootState } from '../reducers';
@@ -22,7 +22,7 @@ const mapStateToProps = (state: RootState): StateProps => ({
     tooltip: state.firmware.flashing ? TooltipId.FlashProgress : TooltipId.Flash,
     enabled:
         state.bootloader.connection === BootloaderConnectionState.Disconnected &&
-        state.hub.runtime === HubRuntimeState.Disconnected,
+        state.ble.connection === BleConnectionState.Disconnected,
     showProgress: state.firmware.flashing,
     progress: state.firmware.progress === null ? undefined : state.firmware.progress,
 });
