@@ -24,7 +24,7 @@ export const pybricksWebsiteUrl = 'https://pybricks.com';
 export const pybricksSupportUrl = 'https://github.com/pybricks/support/discussions';
 
 /** URL to Pybricks projects site. */
-export const pybricksProjectsUrl = 'https://github.com/pybricks/pybricks-projects';
+export const pybricksProjectsUrl = 'https://pybricks.com/projects/';
 
 /** URL to Pybricks bug report site. */
 export const pybricksBugReportsUrl = 'https://github.com/pybricks/support/issues';

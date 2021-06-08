@@ -2,6 +2,11 @@
 
 # Changelog
 
+## [Unreleased]
+
+### Changed
+- Updated projects URL.
+
 ## [1.0.0] - 2021-06-08
 
 ### Added
