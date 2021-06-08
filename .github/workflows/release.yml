@@ -3,8 +3,9 @@ name: Build and publish release
 on:
   push:
     tags:
-      - v1.*-beta.*
-      - v1.*-rc.*
+      - 'v1.*'
+      - '!v1.*-beta.*'
+      - '!v1.*-rc.*'
 
 jobs:
   build:
@@ -35,4 +36,4 @@ jobs:
         LFTP_PASSWORD: ${{ secrets.lftpPassword }}
         LFTP_SITE: ${{ secrets.lftpSite }}
       run: |
-        lftp -e "set ssl:check-hostname false; open --user $LFTP_USER --env-password $LFTP_SITE && mirror --verbose --reverse --delete --exclude=.htaccess build code; exit"
+        lftp -e "open --user $LFTP_USER --env-password $LFTP_SITE && mirror --verbose --reverse --delete --exclude=.htaccess build code; exit"
