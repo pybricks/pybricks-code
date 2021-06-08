@@ -20,5 +20,5 @@ Prerelease changes are documented at [support#48].
 [support#48]: https://github.com/pybricks/support/issues/48
 [v3.0.0]: https://github.com/pybricks/pybricks-micropython/blob/master/CHANGELOG.md#300---2021-06-08
 
-[Unreleased]: https://github.com/pybricks/pybricks-micropython/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/pybricks/pybricks-micropython/compare/v1.0.0c1...v1.0.0
+[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/pybricks/pybricks-code/compare/v1.0.0-rc.2...v1.0.0
