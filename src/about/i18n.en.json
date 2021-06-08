@@ -1,7 +1,8 @@
 {
     "about": {
         "description": "MicroPython for LEGO® Powered Up smart hubs.",
-        "licenseButton": { "label": "Open Source Licenses" },
+        "licenseButton": { "label": "Software Licenses" },
+        "changelogButton": { "label": "Changelog" },
         "websiteButton": { "label": "Pybricks Website" }
     }
 }

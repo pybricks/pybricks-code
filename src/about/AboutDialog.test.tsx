@@ -50,7 +50,7 @@ it('should manage license dialog open/close', async () => {
         </Provider>,
     );
 
-    userEvent.click(screen.getByText('Open Source Licenses'));
+    userEvent.click(screen.getByText('Software Licenses'));
 
     expect(
         screen.getByText('Pybricks Code is built on open source software.', {

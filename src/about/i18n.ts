@@ -6,5 +6,6 @@
 export enum AboutStringId {
     Description = 'about.description',
     LicenseButtonLabel = 'about.licenseButton.label',
+    ChangelogButtonLabel = 'about.changelogButton.label',
     WebsiteButtonLabel = 'about.websiteButton.label',
 }
