@@ -36,4 +36,4 @@ jobs:
         LFTP_PASSWORD: ${{ secrets.lftpPassword }}
         LFTP_SITE: ${{ secrets.lftpSite }}
       run: |
-        lftp -e "open --user $LFTP_USER --env-password $LFTP_SITE && mirror --verbose --reverse --delete --exclude=.htaccess build code; exit"
+        lftp -e "open --user $LFTP_USER --env-password $LFTP_SITE && mirror --verbose --reverse --delete --exclude=.htaccess --exclude=.well-known build code; exit"
