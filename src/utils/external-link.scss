@@ -3,6 +3,10 @@
 
 @import '../variables.scss';
 
+span.pb-external-link {
+    white-space: nowrap;
+}
+
 // override some button magic in case this is used in a button
 .#{$ns}-button .pb-external-link .#{$ns}-icon:first-child:last-child {
     margin: 0;

@@ -11,9 +11,12 @@ import './external-link.scss';
 class ExternalLinkIcon extends React.Component {
     render(): JSX.Element {
         return (
-            <sup className="pb-external-link">
-                <Icon icon="share" iconSize={12} />
-            </sup>
+            <span className="pb-external-link">
+                {' '}
+                <sup>
+                    <Icon icon="share" iconSize={12} />
+                </sup>
+            </span>
         );
     }
 }

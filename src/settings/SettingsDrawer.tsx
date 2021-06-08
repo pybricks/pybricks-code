@@ -193,7 +193,6 @@ class SettingsDrawer extends React.PureComponent<SettingsProps> {
                                     target="blank_"
                                 >
                                     {i18n.translate(SettingsStringId.HelpProjectsLabel)}
-                                    &nbsp;
                                     <ExternalLinkIcon />
                                 </AnchorButton>
                                 <AnchorButton
@@ -202,7 +201,6 @@ class SettingsDrawer extends React.PureComponent<SettingsProps> {
                                     target="blank_"
                                 >
                                     {i18n.translate(SettingsStringId.HelpSupportLabel)}
-                                    &nbsp;
                                     <ExternalLinkIcon />
                                 </AnchorButton>
                                 <AnchorButton
@@ -211,7 +209,6 @@ class SettingsDrawer extends React.PureComponent<SettingsProps> {
                                     target="blank_"
                                 >
                                     {i18n.translate(SettingsStringId.HelpChatLabel)}
-                                    &nbsp;
                                     <ExternalLinkIcon />
                                 </AnchorButton>
                                 <AnchorButton
@@ -220,7 +217,6 @@ class SettingsDrawer extends React.PureComponent<SettingsProps> {
                                     target="blank_"
                                 >
                                     {i18n.translate(SettingsStringId.HelpBugsLabel)}
-                                    &nbsp;
                                     <ExternalLinkIcon />
                                 </AnchorButton>
                                 <AboutDialog
