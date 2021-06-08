@@ -44,8 +44,17 @@ body {
     user-select: none;
 }
 
+a.#{$ns}-button {
+    text-align: left;
+}
+
 .#{$ns}-button-text > img {
     display: block;
+}
+
+.#{$ns}-dialog-footer-actions {
+    flex-wrap: wrap;
+    row-gap: 10px;
 }
 
 .#{$ns}-form-group > .#{$ns}-label {

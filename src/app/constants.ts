@@ -13,6 +13,10 @@ export const appName = process.env.REACT_APP_NAME || 'REACT_APP_NAME is undefine
 export const appVersion =
     process.env.REACT_APP_VERSION || 'REACT_APP_VERSION is undefined';
 
+/** URL to Pybricks Code changelog. */
+export const changelogUrl =
+    'https://github.com/pybricks/pybricks-code/blob/master/CHANGELOG.md';
+
 /** URL to main Pybricks website. */
 export const pybricksWebsiteUrl = 'https://pybricks.com';
 

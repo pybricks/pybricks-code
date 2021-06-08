@@ -10,6 +10,7 @@ import { connect } from 'react-redux';
 import {
     appName,
     appVersion,
+    changelogUrl,
     legoDisclaimer,
     pybricksCopyright,
     pybricksWebsiteUrl,
@@ -57,6 +58,10 @@ class AboutDialog extends React.Component<AboutDialogProps> {
                         >
                             {i18n.translate(AboutStringId.LicenseButtonLabel)}
                         </Button>
+                        <AnchorButton href={changelogUrl} target="blank_">
+                            {i18n.translate(AboutStringId.ChangelogButtonLabel)}&nbsp;
+                            <ExternalLinkIcon />
+                        </AnchorButton>
                         <AnchorButton href={pybricksWebsiteUrl} target="blank_">
                             {i18n.translate(AboutStringId.WebsiteButtonLabel)}&nbsp;
                             <ExternalLinkIcon />
