@@ -16,8 +16,11 @@ import {
     takeMaybe,
 } from 'typed-redux-saga/macro';
 import {
+    PnpId,
+    decodePnpId,
     serviceUUID as deviceInfoServiceUUID,
     firmwareRevisionStringUUID,
+    pnpIdUUID,
     softwareRevisionStringUUID,
 } from '../ble-device-info-service/protocol';
 import {
@@ -45,6 +48,7 @@ import {
 } from '../ble/actions';
 import { BleConnectionState } from '../ble/reducers';
 import { RootState } from '../reducers';
+import { hex } from '../utils';
 import {
     BleUartActionType,
     BleUartWriteAction,
@@ -228,6 +232,34 @@ function* connect(_action: BleDeviceConnectAction): Generator {
 
     // TODO: verify that minimum protocol version is met
     console.log(`Pybricks protocol version: ${protocolVersion}`);
+
+    let pnpIdChar: BluetoothRemoteGATTCharacteristic | undefined = undefined;
+    try {
+        pnpIdChar = yield* call([deviceInfoService, 'getCharacteristic'], pnpIdUUID);
+    } catch (err) {
+        console.warn(
+            'PnP ID characteristic requires Pybricks firmware v3.1.0a1 or later',
+        );
+    }
+
+    if (pnpIdChar) {
+        let pnpId: PnpId;
+        try {
+            pnpId = decodePnpId(yield* call([pnpIdChar, 'readValue']));
+        } catch (err) {
+            server.disconnect();
+            yield* takeMaybe(disconnectChannel);
+            yield* put(didFailToConnect({ reason: Reason.Unknown, err }));
+            return;
+        }
+
+        console.log(
+            `Vendor: ${hex(pnpId.vendorId, 4)}, Product: ${hex(
+                pnpId.productId,
+                4,
+            )}, Version: ${hex(pnpId.productVersion, 4)}`,
+        );
+    }
 
     let pybricksService: BluetoothRemoteGATTService;
     try {
