@@ -191,6 +191,21 @@ module.exports = {
             new CopyPlugin({
                 patterns: [
                     {
+                        from: 'public/manifest.json',
+                        transform(content, path) {
+                            return content
+                                .toString()
+                                .replace(
+                                    /%\w+%/g,
+                                    (m) => process.env[m.slice(1, m.length - 1)],
+                                );
+                        },
+                    },
+                ],
+            }),
+            new CopyPlugin({
+                patterns: [
+                    {
                         from: 'node_modules/@pybricks/ide-docs/build/html',
                         to: 'static/docs',
                     },
@@ -248,7 +263,8 @@ module.exports = {
                         webpackConfig,
                         loaderByName('babel-loader'),
                     );
-                    babelLoaders.matches[0].loader.test = /\.(esnext|js|mjs|jsx|ts|tsx)$/;
+                    babelLoaders.matches[0].loader.test =
+                        /\.(esnext|js|mjs|jsx|ts|tsx)$/;
                     babelLoaders.matches[1].loader.test = /\.(esnext|js|mjs)$/;
 
                     const fileLoader = getLoader(
