@@ -4,14 +4,16 @@ on:
   push:
     tags:
       - 'v1.*'
-      - '!v1.*-beta.*'
-      - '!v1.*-rc.*'
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Set env to beta
+      if: contains(github.ref, '-beta.') || contains(github.ref, '-rc.')
+      run: |
+        echo "REACT_APP_NAME=Pybricks Code (Beta)" >> $GITHUB_ENV
     - uses: actions/setup-node@v1
       with:
         node-version: '12.x'
@@ -33,4 +35,4 @@ jobs:
         LFTP_PASSWORD: ${{ secrets.lftpPassword }}
         LFTP_SITE: ${{ secrets.lftpSite }}
       run: |
-        lftp -e "open --user $LFTP_USER --env-password $LFTP_SITE && mirror --verbose --reverse --delete --exclude=.htaccess --exclude=.well-known build code; exit"
+        lftp -e "open --user $LFTP_USER --env-password $LFTP_SITE && mirror --verbose --reverse --delete --exclude=.htaccess --exclude=.well-known build beta; exit"
