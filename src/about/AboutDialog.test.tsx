@@ -53,9 +53,12 @@ it('should manage license dialog open/close', async () => {
     userEvent.click(screen.getByText('Software Licenses'));
 
     expect(
-        screen.getByText('Pybricks Code is built on open source software.', {
-            exact: false,
-        }),
+        screen.getByText(
+            `${process.env.REACT_APP_NAME} is built on open source software.`,
+            {
+                exact: false,
+            },
+        ),
     ).toBeInTheDocument();
 
     const licenseDialog = document.querySelector(
@@ -64,8 +67,11 @@ it('should manage license dialog open/close', async () => {
     userEvent.click(getByLabelText(licenseDialog, 'Close'));
 
     await waitForElementToBeRemoved(() =>
-        screen.queryByText('Pybricks Code is built on open source software.', {
-            exact: false,
-        }),
+        screen.queryByText(
+            `${process.env.REACT_APP_NAME} is built on open source software.`,
+            {
+                exact: false,
+            },
+        ),
     );
 });
