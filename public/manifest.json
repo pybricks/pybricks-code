@@ -1,6 +1,6 @@
 {
-    "short_name": "Pybricks Code",
-    "name": "Pybricks Code",
+    "short_name": "%REACT_APP_NAME%",
+    "name": "%REACT_APP_NAME%",
     "icons": [
         {
             "src": "favicon.ico",

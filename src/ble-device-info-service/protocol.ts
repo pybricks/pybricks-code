@@ -13,3 +13,40 @@ export const firmwareRevisionStringUUID = 0x2a26;
 
 /** Software Revision String characteristic UUID. */
 export const softwareRevisionStringUUID = 0x2a28;
+
+/** PnP ID characteristic UUID. */
+export const pnpIdUUID = 0x2a50;
+
+/**
+ * Parameters for the PnP ID characteristic vendor ID source field.
+ */
+export enum PnpIdVendorIdSource {
+    /** The vendor ID was assigned by the Bluetooth SIG. */
+    BluetoothSig = 1,
+    /** The vendor and product IDs were assigned by the USB implementors forum. */
+    UsbImpForum = 2,
+}
+
+/**
+ * Decoded data from the PnP ID characteristic.
+ */
+export type PnpId = {
+    vendorIdSource: PnpIdVendorIdSource;
+    vendorId: number;
+    productId: number;
+    productVersion: number;
+};
+
+/**
+ * Decodes data read from the PnP ID characteristics.
+ * @param data The data read from the characteristic.
+ * @returns The decoded data.
+ */
+export function decodePnpId(data: DataView): PnpId {
+    return {
+        vendorIdSource: data.getUint8(0),
+        vendorId: data.getUint16(1, true),
+        productId: data.getUint16(3, true),
+        productVersion: data.getUint16(5, true),
+    };
+}
