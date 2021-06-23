@@ -6,6 +6,7 @@
 
 ### Changed
 - Updated projects URL.
+- Updated docs.
 
 ## [1.0.0] - 2021-06-08
 
