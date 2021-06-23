@@ -23,13 +23,10 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
     - name: Build
-      if: ${{ success() }}
       run: yarn build
     - name: Install lftp
-      if: ${{ success() }}
       run: sudo apt-get update && sudo apt-get install --yes lftp
     - name: Publish
-      if: ${{ success() }}
       shell: bash
       env:
         LFTP_USER: ${{ secrets.lftpUser }}
