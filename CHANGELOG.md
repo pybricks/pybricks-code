@@ -9,6 +9,9 @@
 - Updated hub firmware to [v3.1.0a1].
 - Updated docs.
 
+### Fixed
+- Fixed run button still enabled after hub disconnects during download [support#378].
+
 ## [1.0.0] - 2021-06-08
 
 ### Added
@@ -25,6 +28,7 @@ Prerelease changes are documented at [support#48].
 
 <!-- let's try to keep this list sorted -->
 [support#48]: https://github.com/pybricks/support/issues/48
+[support#378]: https://github.com/pybricks/support/issues/378
 [v3.0.0]: https://github.com/pybricks/pybricks-micropython/blob/master/CHANGELOG.md#300---2021-06-08
 [v3.1.0a1]: https://github.com/pybricks/pybricks-micropython/blob/master/CHANGELOG.md#310a1---2021-06-23
 
