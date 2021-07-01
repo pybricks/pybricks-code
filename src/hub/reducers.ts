@@ -46,21 +46,38 @@ const runtime: Reducer<HubRuntimeState, Action> = (
         case BleDeviceActionType.DidDisconnect:
             return HubRuntimeState.Disconnected;
         case HubActionType.DidStartDownload:
+            // disconnected overrides download
+            if (state === HubRuntimeState.Disconnected) {
+                return state;
+            }
             return HubRuntimeState.Loading;
         case HubActionType.DidFinishDownload:
+            // disconnected overrides download
+            if (state === HubRuntimeState.Disconnected) {
+                return state;
+            }
             return HubRuntimeState.Loaded;
         case HubActionType.DidFailToFinishDownload:
+            // disconnected overrides download
+            if (state === HubRuntimeState.Disconnected) {
+                return state;
+            }
             return HubRuntimeState.Idle;
         case BlePybricksServiceEventActionType.StatusReport:
             // The loading state is determined solely by the IDE, so we can't
             // let the hub status interfere with it.
-            if (state !== HubRuntimeState.Loading) {
-                if (action.statusFlags & statusToFlag(Status.UserProgramRunning)) {
-                    return HubRuntimeState.Running;
-                }
-                return HubRuntimeState.Idle;
+            if (
+                state === HubRuntimeState.Disconnected ||
+                state === HubRuntimeState.Loading
+            ) {
+                return state;
             }
-            return state;
+
+            if (action.statusFlags & statusToFlag(Status.UserProgramRunning)) {
+                return HubRuntimeState.Running;
+            }
+
+            return HubRuntimeState.Idle;
         default:
             return state;
     }
