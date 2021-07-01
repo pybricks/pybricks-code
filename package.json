@@ -11,7 +11,7 @@
         "@blueprintjs/core": "^3.41.0",
         "@craco/craco": "^6.1.1",
         "@pybricks/firmware": "4.13.0-alpha.1",
-        "@pybricks/ide-docs": "1.4.0",
+        "@pybricks/ide-docs": "1.5.0",
         "@pybricks/mpy-cross-v5": "^2.0.0",
         "@shopify/react-i18n": "^6.0.4",
         "@testing-library/dom": "^8.1.0",
