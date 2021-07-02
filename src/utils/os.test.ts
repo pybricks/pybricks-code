@@ -3,6 +3,10 @@
 
 import { isMacOS, isWindows, prefersDarkMode } from './os';
 
+afterEach(() => {
+    jest.resetAllMocks();
+});
+
 describe('isMacOS', () => {
     test('is true', () => {
         jest.spyOn(navigator, 'platform', 'get').mockReturnValue('MacIntel');
@@ -27,17 +31,13 @@ describe('isWindows', () => {
 
 describe('prefersDarkMode', () => {
     test('is true', () => {
-        window.matchMedia = jest.fn().mockReturnValue({
+        jest.spyOn(window, 'matchMedia').mockReturnValue({
             matches: true,
         } as MediaQueryList);
         expect(prefersDarkMode()).toBeTruthy();
     });
     test('is false', () => {
-        // @ts-expect-error 2790
-        delete window.matchMedia;
-        expect(prefersDarkMode()).toBeFalsy();
-
-        window.matchMedia = jest.fn().mockReturnValue({
+        jest.spyOn(window, 'matchMedia').mockReturnValue({
             matches: false,
         } as MediaQueryList);
         expect(prefersDarkMode()).toBeFalsy();
