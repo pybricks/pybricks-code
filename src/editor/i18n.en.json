@@ -1,6 +1,8 @@
 {
     "editor": {
         "placeholder": "Write your program here...",
+        "check": "Check Syntax",
+        "toggleDocs": "Toggle Documentation",
         "copy": "Copy",
         "paste": "Paste",
         "selectAll": "Select All",

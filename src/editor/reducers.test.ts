@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2021 The Pybricks Authors
 
-import { Ace } from 'ace-builds';
+import { monaco } from 'react-monaco-editor';
 import { Action } from '../actions';
 import { setEditSession } from './actions';
 import reducers from './reducers';
@@ -17,7 +17,7 @@ test('initial state', () => {
 });
 
 test('current', () => {
-    const session = {} as Ace.EditSession;
+    const session = {} as monaco.editor.ICodeEditor;
     expect(reducers({ current: null } as State, setEditSession(session)).current).toBe(
         session,
     );

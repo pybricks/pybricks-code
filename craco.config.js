@@ -10,6 +10,7 @@ const {
 } = require('@craco/craco');
 const CopyPlugin = require('copy-webpack-plugin');
 const LicensePlugin = require('license-webpack-plugin').LicenseWebpackPlugin;
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 const satisfies = require('spdx-satisfies');
 
 // Permissive licenses can be added here. We would like to avoid copyleft.
@@ -234,6 +235,10 @@ module.exports = {
                 unacceptableLicenseTest: (licenseType) =>
                     !satisfies(licenseType, `(${approvedLicenses.join(' OR ')})`),
             }),
+            new MonacoWebpackPlugin({
+                languages: ['python'],
+                filename: '[name].worker.[contenthash].js',
+            }),
         ],
         configure: {
             resolve: {
@@ -289,6 +294,20 @@ module.exports = {
                     });
 
                     return webpackConfig;
+                },
+                overrideJestConfig: ({
+                    jestConfig,
+                    cracoConfig,
+                    pluginOptions,
+                    context: { env, paths, resolve, rootDir },
+                }) => {
+                    const index = jestConfig.transformIgnorePatterns.indexOf(
+                        '[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs|cjs|ts|tsx)$',
+                    );
+                    // https://github.com/react-monaco-editor/react-monaco-editor/issues/306#issuecomment-701025628
+                    jestConfig.transformIgnorePatterns[index] =
+                        '[/\\\\]node_modules[/\\\\](?!(monaco-editor|react-monaco-editor)[/\\\\]).+\\.(js|jsx|mjs|cjs|ts|tsx)$';
+                    return jestConfig;
                 },
             },
             options: {},
