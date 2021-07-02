@@ -24,9 +24,5 @@ export function isWindows(): boolean {
  * @returns: `true` if dark mode should be preferred, otherwise `false`.
  */
 export function prefersDarkMode(): boolean {
-    if (!window.matchMedia) {
-        return false;
-    }
-
     return window.matchMedia('(prefers-color-scheme: dark)').matches;
 }
