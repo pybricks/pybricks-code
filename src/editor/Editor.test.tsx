@@ -84,7 +84,7 @@ describe('context menu', () => {
 
         expect(screen.getByText('Copy')).toBeInTheDocument();
 
-        userEvent.type(document.activeElement || document.body, '{esc}');
+        userEvent.type(screen.getByText('Copy'), '{esc}');
 
         await waitForElementToBeRemoved(() => screen.queryByText('Copy'));
 

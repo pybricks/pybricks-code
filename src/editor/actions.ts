@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020 The Pybricks Authors
+// Copyright (c) 2020-2021 The Pybricks Authors
 
-import { Ace } from 'ace-builds';
+import { monaco } from 'react-monaco-editor';
 import { Action } from 'redux';
 
 export enum EditorActionType {
@@ -28,7 +28,7 @@ export enum EditorActionType {
 }
 
 export type CurrentEditorAction = Action<EditorActionType.Current> & {
-    editSession: Ace.EditSession | undefined;
+    editSession: monaco.editor.ICodeEditor | undefined;
 };
 
 /**
@@ -36,7 +36,7 @@ export type CurrentEditorAction = Action<EditorActionType.Current> & {
  * @param editSession The new edit session.
  */
 export function setEditSession(
-    editSession: Ace.EditSession | undefined,
+    editSession: monaco.editor.ICodeEditor | undefined,
 ): CurrentEditorAction {
     return { type: EditorActionType.Current, editSession };
 }

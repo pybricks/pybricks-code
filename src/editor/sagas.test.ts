@@ -1,17 +1,17 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020 The Pybricks Authors
+// Copyright (c) 2020-2021 The Pybricks Authors
 
-import { Ace } from 'ace-builds';
 import { mock } from 'jest-mock-extended';
+import { monaco } from 'react-monaco-editor';
 import { AsyncSaga } from '../../test';
 import { open, reloadProgram, saveAs } from './actions';
 import editor from './sagas';
 
-jest.mock('ace-builds');
+jest.mock('react-monaco-editor');
 jest.mock('file-saver');
 
 test('open', async () => {
-    const mockEditor = mock<Ace.EditSession>();
+    const mockEditor = mock<monaco.editor.ICodeEditor>();
     const saga = new AsyncSaga(editor, { editor: { current: mockEditor } });
 
     const data = new Uint8Array().buffer;
@@ -23,7 +23,7 @@ test('open', async () => {
 });
 
 test('saveAs', async () => {
-    const mockEditor = mock<Ace.EditSession>();
+    const mockEditor = mock<monaco.editor.ICodeEditor>();
     const saga = new AsyncSaga(editor, { editor: { current: mockEditor } });
 
     saga.put(saveAs());
@@ -34,7 +34,7 @@ test('saveAs', async () => {
 });
 
 test('reloadProgram', async () => {
-    const mockEditor = mock<Ace.EditSession>();
+    const mockEditor = mock<monaco.editor.ICodeEditor>();
     const saga = new AsyncSaga(editor, { editor: { current: mockEditor } });
 
     saga.put(reloadProgram());

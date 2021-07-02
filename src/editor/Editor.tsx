@@ -3,11 +3,12 @@
 
 import { Menu, MenuDivider, MenuItem, ResizeSensor } from '@blueprintjs/core';
 import { WithI18nProps, withI18n } from '@shopify/react-i18n';
-import { Ace, config } from 'ace-builds';
+import tomorrowNightEightiesTheme from 'monaco-themes/themes/Tomorrow-Night-Eighties.json';
+import xcodeTheme from 'monaco-themes/themes/Xcode_default.json';
 import React from 'react';
-import AceEditor from 'react-ace';
-import { IAceEditor } from 'react-ace/lib/types';
+import MonacoEditor, { monaco } from 'react-monaco-editor';
 import { connect } from 'react-redux';
+import { IDisposable } from 'xterm';
 import { compile } from '../mpy/actions';
 import { RootState } from '../reducers';
 import { toggleBoolean } from '../settings/actions';
@@ -17,15 +18,9 @@ import { isMacOS } from '../utils/os';
 import { setEditSession, storageChanged } from './actions';
 import { EditorStringId } from './i18n';
 import en from './i18n.en.json';
+import * as pybricksMicroPython from './pybricksMicroPython';
+import { UntitledHintContribution } from './untitledHint';
 
-import 'ace-builds/src-noconflict/mode-python';
-import 'ace-builds/src-noconflict/theme-tomorrow_night_eighties';
-import 'ace-builds/src-noconflict/theme-xcode';
-import 'ace-builds/src-noconflict/ext-searchbox';
-import 'ace-builds/src-noconflict/ext-keybinding_menu';
-import 'ace-builds/src-noconflict/ext-language_tools';
-
-import './snippets';
 import './editor.scss';
 
 type StateProps = {
@@ -34,7 +29,7 @@ type StateProps = {
 };
 
 type DispatchProps = {
-    onSessionChanged: (session?: Ace.EditSession) => void;
+    onSessionChanged: (session?: monaco.editor.ICodeEditor) => void;
     onProgramStorageChanged: (newValue: string) => void;
     onCheck: (script: string) => void;
     onToggleDocs: () => void;
@@ -42,17 +37,49 @@ type DispatchProps = {
 
 type EditorProps = StateProps & DispatchProps & WithI18nProps;
 
+const pybricksMicroPythonId = 'pybricks-micropython';
+monaco.languages.register({ id: pybricksMicroPythonId });
+
+const toDispose = new Array<IDisposable>();
+toDispose.push(
+    monaco.languages.setMonarchTokensProvider(
+        pybricksMicroPythonId,
+        pybricksMicroPython.language,
+    ),
+);
+toDispose.push(
+    monaco.languages.registerCompletionItemProvider(
+        pybricksMicroPythonId,
+        pybricksMicroPython.completions,
+    ),
+);
+
+// https://webpack.js.org/api/hot-module-replacement/
+if (module.hot) {
+    module.hot.dispose(() => {
+        toDispose.forEach((s) => s.dispose());
+    });
+}
+
+const tomorrowNightEightiesId = 'tomorrow-night-eighties';
+monaco.editor.defineTheme(
+    tomorrowNightEightiesId,
+    tomorrowNightEightiesTheme as monaco.editor.IStandaloneThemeData,
+);
+
+const xcodeId = 'xcode';
+monaco.editor.defineTheme(xcodeId, xcodeTheme as monaco.editor.IStandaloneThemeData);
+
 class Editor extends React.Component<EditorProps> implements IContextMenuTarget {
-    private editorRef: React.RefObject<AceEditor>;
-    private keyBindings?: Array<{ key: string; command: string }>;
+    private editorRef: React.RefObject<MonacoEditor>;
 
     constructor(props: EditorProps) {
         super(props);
         this.editorRef = React.createRef();
     }
 
-    /** convenience property for getting Ace editor object */
-    private get editor(): IAceEditor | undefined {
+    /** convenience property for getting editor object */
+    private get editor(): monaco.editor.IStandaloneCodeEditor | undefined {
         return this.editorRef.current?.editor;
     }
 
@@ -78,77 +105,61 @@ class Editor extends React.Component<EditorProps> implements IContextMenuTarget 
         const { i18n, darkMode, onSessionChanged, onCheck, onToggleDocs } = this.props;
         return (
             <div className="h-100" onContextMenu={(e) => handleContextMenu(e, this)}>
-                <ResizeSensor onResize={(): void => this.editor?.resize()}>
-                    <AceEditor
+                <ResizeSensor onResize={(): void => this.editor?.layout()}>
+                    <MonacoEditor
                         ref={this.editorRef}
-                        mode="python"
-                        theme={darkMode ? 'tomorrow_night_eighties' : 'xcode'}
-                        fontSize="16pt"
+                        language={pybricksMicroPythonId}
+                        theme={darkMode ? tomorrowNightEightiesId : xcodeId}
                         width="100%"
                         height="100%"
-                        focus={true}
-                        placeholder={i18n.translate(EditorStringId.Placeholder)}
-                        defaultValue={localStorage.getItem('program') || undefined}
-                        editorProps={{ $blockScrolling: true }}
-                        setOptions={{
-                            enableBasicAutocompletion: true,
-                            enableLiveAutocompletion: true,
-                            enableSnippets: true,
+                        options={{
+                            fontSize: 18,
+                            minimap: { enabled: false },
+                            contextmenu: false,
+                            rulers: [80],
                         }}
-                        onLoad={(e): void => {
-                            // default binding is F2 which conflicts with 'check'
-                            e.commands.byName['toggleFoldWidget'].bindKey = {
-                                win: 'Shift-F2',
-                                mac: 'Shift-F2',
-                            };
-
-                            // we want to use Ctrl-D for docs toggle, so change
-                            // delete line to VSCode default
-                            e.commands.byName['removeline'].bindKey = {
-                                win: 'Ctrl-Shift-K',
-                                mac: 'Cmd-Shift-K',
-                            };
-
-                            config.loadModule(
-                                'ace/ext/menu_tools/get_editor_keyboard_shortcuts',
-                                (m) => {
-                                    this.keyBindings = m.getEditorKeybordShortcuts(e);
+                        value={localStorage.getItem('program')}
+                        editorDidMount={(e, _m): void => {
+                            // FIXME: editor does not respond to changes in i18n
+                            const untitledHintContribution =
+                                new UntitledHintContribution(
+                                    e,
+                                    i18n.translate(EditorStringId.Placeholder),
+                                );
+                            e.onDidDispose(() => untitledHintContribution.dispose());
+                            e.addAction({
+                                id: 'pybricks.action.toggleDocs',
+                                label: i18n.translate(EditorStringId.ToggleDocs),
+                                run: () => onToggleDocs(),
+                                keybindings: [
+                                    monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_D,
+                                ],
+                            });
+                            e.addAction({
+                                id: 'pybricks.action.check',
+                                label: i18n.translate(EditorStringId.Check),
+                                run: () => onCheck(e.getValue()),
+                                keybindings: [monaco.KeyCode.F2],
+                            });
+                            e.addAction({
+                                id: 'pybricks.action.save',
+                                label: 'Unused',
+                                run: () => {
+                                    // We already automatically save the file
+                                    // to local storage after every change, so
+                                    // CTRL+S is ignored
+                                    console.debug('Ctrl-S ignored');
                                 },
-                            );
-
-                            config.loadModule('ace/ext/keybinding_menu', (m) =>
-                                m.init(e),
-                            );
-                        }}
-                        onFocus={(_, e): void => {
-                            onSessionChanged(e?.session);
+                                keybindings: [
+                                    monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S,
+                                ],
+                            });
+                            e.focus();
+                            onSessionChanged(e);
                         }}
                         onChange={(v): void => {
                             localStorage.setItem('program', v);
                         }}
-                        commands={[
-                            {
-                                // command to check current program for errors
-                                name: 'check',
-                                bindKey: { win: 'F2', mac: 'F2' },
-                                exec: (editor) => onCheck(editor.getValue()),
-                            },
-                            {
-                                name: 'toggleDocs',
-                                bindKey: { win: 'Ctrl-D', mac: 'Cmd-D' },
-                                exec: () => onToggleDocs(),
-                            },
-                            {
-                                name: 'save',
-                                bindKey: { win: 'Ctrl-S', mac: 'Cmd-S' },
-                                exec: (): void => {
-                                    // We already automatically save the file
-                                    // to local storage after every change, so
-                                    // CTRL+S is ignored
-                                    console.debug('CTRL+S ignored');
-                                },
-                            },
-                        ]}
                     />
                 </ResizeSensor>
             </div>
@@ -161,21 +172,28 @@ class Editor extends React.Component<EditorProps> implements IContextMenuTarget 
             <Menu>
                 <MenuItem
                     onClick={(): void => {
-                        const selected = this.editor?.getSelectedText();
-                        if (selected) {
-                            navigator.clipboard.writeText(selected);
-                        }
+                        this.editor?.focus();
+                        this.editor?.trigger(
+                            null,
+                            'editor.action.clipboardCopyAction',
+                            null,
+                        );
                     }}
                     text={i18n.translate(EditorStringId.Copy)}
                     icon="duplicate"
                     label={isMacOS() ? 'Cmd-C' : 'Ctrl-C'}
-                    disabled={this.editor?.getSelection().isEmpty()}
+                    disabled={
+                        !this.editor?.getSelection() ||
+                        this.editor?.getSelection()?.isEmpty()
+                    }
                 />
                 <MenuItem
                     onClick={async (): Promise<void> => {
-                        this.editor?.execCommand(
-                            'paste',
-                            await navigator.clipboard.readText(),
+                        this.editor?.focus();
+                        this.editor?.trigger(
+                            null,
+                            'editor.action.clipboardPasteAction',
+                            null,
                         );
                     }}
                     text={i18n.translate(EditorStringId.Paste)}
@@ -183,33 +201,43 @@ class Editor extends React.Component<EditorProps> implements IContextMenuTarget 
                     label={isMacOS() ? 'Cmd-V' : 'Ctrl-V'}
                 />
                 <MenuItem
-                    onClick={() => this.editor?.selectAll()}
+                    onClick={() => {
+                        this.editor?.focus();
+                        this.editor?.trigger(null, 'editor.action.selectAll', null);
+                    }}
                     text={i18n.translate(EditorStringId.SelectAll)}
                     icon="blank"
                     label={isMacOS() ? 'Cmd-A' : 'Ctrl-A'}
                 />
                 <MenuDivider />
                 <MenuItem
-                    onClick={(): void => this.editor?.undo()}
+                    onClick={(): void => {
+                        this.editor?.focus();
+                        this.editor?.trigger(null, 'undo', null);
+                    }}
                     text={i18n.translate(EditorStringId.Undo)}
                     icon="undo"
-                    label={this.keyBindings?.find((x) => x.command === 'undo')?.key}
-                    disabled={!this.editor?.session.getUndoManager().canUndo()}
+                    label={isMacOS() ? 'Cmd-Z' : 'Ctrl-Z'}
+                    // @ts-expect-error internal method canUndo()
+                    disabled={!this.editor?.getModel()?.canUndo()}
                 />
                 <MenuItem
-                    onClick={(): void => this.editor?.redo()}
+                    onClick={(): void => {
+                        this.editor?.focus();
+                        this.editor?.trigger(null, 'redo', null);
+                    }}
                     text={i18n.translate(EditorStringId.Redo)}
                     icon="redo"
-                    label={this.keyBindings?.find((x) => x.command === 'redo')?.key}
-                    active
-                    disabled={!this.editor?.session.getUndoManager().canRedo()}
+                    label={isMacOS() ? 'Cmd-Shift-Z' : 'Ctrl-Shift-Z'}
+                    // @ts-expect-error internal method canUndo()
+                    disabled={!this.editor?.getModel()?.canRedo()}
                 />
             </Menu>
         );
     }
 
     onContextMenuClose = () => {
-        this.editorRef.current?.editor.focus();
+        this.editor?.focus();
     };
 }
 

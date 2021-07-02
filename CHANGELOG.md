@@ -4,6 +4,9 @@
 
 ## [Unreleased]
 
+## Changed
+- Changed from Ace editor to Monaco editor.
+
 ### Fixed
 - Fixed run button still enabled after hub disconnects during download [support#378].
 

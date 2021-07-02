@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2021 The Pybricks Authors
 
-import { Ace } from 'ace-builds';
 import { mock } from 'jest-mock-extended';
+import { monaco } from 'react-monaco-editor';
 import { AsyncSaga } from '../../test';
 import {
     BlePybricksServiceCommandActionType,
@@ -22,11 +22,11 @@ import {
 } from './actions';
 import hub from './sagas';
 
-jest.mock('ace-builds');
+jest.mock('react-monaco-editor');
 
 describe('downloadAndRun', () => {
     test('no errors', async () => {
-        const mockEditor = mock<Ace.EditSession>();
+        const mockEditor = mock<monaco.editor.ICodeEditor>();
         const saga = new AsyncSaga(
             hub,
             { editor: { current: mockEditor } },

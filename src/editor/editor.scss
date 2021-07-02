@@ -5,25 +5,19 @@
 
 @import '../variables.scss';
 
-// make ace editor match app backgound color
+// make editor match app backgound color
 
-.#{$ns}-dark .ace_gutter {
+.#{$ns}-dark .margin-view-overlays {
     background-color: $pt-dark-app-background-color;
 }
 
-.ace_gutter {
+.margin-view-overlays {
     background-color: $pt-app-background-color;
-}
-
-// higher contrast
-
-.ace-tomorrow-night-eighties .ace_print-margin {
-    background: $dark-gray4;
 }
 
 // add "BETA" watermark
 
-.pb-beta .ace_scroller::after {
+.pb-beta .editor-scrollable::after {
     content: '';
     background: url('./beta.svg');
     opacity: 1;
@@ -33,4 +27,16 @@
     right: 0;
     position: absolute;
     pointer-events: none;
+}
+
+.#{$ns}-dark .pb-editor-placeholder {
+    color: $pt-dark-text-color-muted;
+}
+
+.pb-editor-placeholder {
+    pointer-events: none;
+    width: max-content;
+    color: $pt-text-color-muted;
+    font-style: italic;
+    padding-left: 4px;
 }
