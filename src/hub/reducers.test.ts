@@ -4,7 +4,7 @@
 import { Action } from '../actions';
 import { statusReportEvent } from '../ble-pybricks-service/actions';
 import { Status, statusToFlag } from '../ble-pybricks-service/protocol';
-import { didDisconnect } from '../ble/actions';
+import { didConnect, didDisconnect } from '../ble/actions';
 import {
     didFailToFinishDownload,
     didFinishDownload,
@@ -25,6 +25,13 @@ test('initial state', () => {
 });
 
 describe('runtime', () => {
+    test('', () => {
+        expect(
+            reducers({ runtime: HubRuntimeState.Disconnected } as State, didConnect())
+                .runtime,
+        ).toBe(HubRuntimeState.Unknown);
+    });
+
     test.each(Object.values(HubRuntimeState))('didDisconnect', (startingState) => {
         // all states are overridden by disconnect
         expect(
