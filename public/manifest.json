@@ -3,24 +3,19 @@
     "name": "%REACT_APP_NAME%",
     "icons": [
         {
-            "src": "favicon.ico",
-            "sizes": "64x64 32x32 24x24 16x16",
-            "type": "image/x-icon"
-        },
-        {
-            "src": "logo192.png",
+            "src": "logo192%REACT_APP_SUFFIX%.png",
             "type": "image/png",
             "sizes": "192x192",
             "purpose": "any"
         },
         {
-            "src": "logo192m.png",
+            "src": "logo192m%REACT_APP_SUFFIX%.png",
             "type": "image/png",
             "sizes": "192x192",
             "purpose": "maskable"
         },
         {
-            "src": "logo512.png",
+            "src": "logo512%REACT_APP_SUFFIX%.png",
             "type": "image/png",
             "sizes": "512x512"
         }

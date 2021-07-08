@@ -1,4 +1,4 @@
-// Copied from https://github.com/microsoft/monaco-languages/blob/main/src/python/python.ts
+// Copied from https://github.com/microsoft/monaco-languages/blob/d7cc098c481059f63d51ce3753975c8ca8ab6030/src/python/python.ts
 
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
@@ -7,23 +7,61 @@
 
 import { monaco } from 'react-monaco-editor';
 
+export const conf: monaco.languages.LanguageConfiguration = {
+    comments: {
+        lineComment: '#',
+        blockComment: ["'''", "'''"],
+    },
+    brackets: [
+        ['{', '}'],
+        ['[', ']'],
+        ['(', ')'],
+    ],
+    autoClosingPairs: [
+        { open: '{', close: '}' },
+        { open: '[', close: ']' },
+        { open: '(', close: ')' },
+        { open: '"', close: '"', notIn: ['string'] },
+        { open: "'", close: "'", notIn: ['string', 'comment'] },
+    ],
+    surroundingPairs: [
+        { open: '{', close: '}' },
+        { open: '[', close: ']' },
+        { open: '(', close: ')' },
+        { open: '"', close: '"' },
+        { open: "'", close: "'" },
+    ],
+    onEnterRules: [
+        {
+            beforeText: new RegExp(
+                '^\\s*(?:def|class|for|if|elif|else|while|try|with|finally|except|async).*?:\\s*$',
+            ),
+            action: { indentAction: monaco.languages.IndentAction.Indent },
+        },
+    ],
+    folding: {
+        offSide: true,
+        markers: {
+            start: new RegExp('^\\s*#region\\b'),
+            end: new RegExp('^\\s*#endregion\\b'),
+        },
+    },
+};
+
 export const language = <monaco.languages.IMonarchLanguage>{
     defaultToken: '',
     tokenPostfix: '.python',
 
-    keywords: [
-        // This section is the result of running
-        // `for k in keyword.kwlist: print('  "' + k + '",')` in a Python REPL,
-        // though note that the output from Python 3 is not a strict superset of the
-        // output from Python 2.
-        'False', // promoted to keyword.kwlist in Python 3
-        'None', // promoted to keyword.kwlist in Python 3
-        'True', // promoted to keyword.kwlist in Python 3
+    // https://docs.python.org/3/reference/lexical_analysis.html#keywords
+    keywords: <ReadonlyArray<string>>[
+        'False',
+        'None',
+        'True',
         'and',
         'as',
         'assert',
-        'async', // new in Python 3
-        'await', // new in Python 3
+        'async',
+        'await',
         'break',
         'class',
         'continue',
@@ -32,7 +70,6 @@ export const language = <monaco.languages.IMonarchLanguage>{
         'elif',
         'else',
         'except',
-        'exec', // Python 2, but not 3.
         'finally',
         'for',
         'from',
@@ -42,38 +79,32 @@ export const language = <monaco.languages.IMonarchLanguage>{
         'in',
         'is',
         'lambda',
-        'nonlocal', // new in Python 3
+        'nonlocal',
         'not',
         'or',
         'pass',
-        'print', // Python 2, but not 3.
         'raise',
         'return',
         'try',
         'while',
         'with',
         'yield',
+    ],
 
-        'int',
-        'float',
-        'long',
-        'complex',
-        'hex',
-
+    // https://docs.python.org/3/library/functions.html#built-in-funcs
+    builtins: <ReadonlyArray<string>>[
         'abs',
         'all',
         'any',
-        'apply',
-        'basestring',
+        'ascii',
         'bin',
         'bool',
-        'buffer',
+        'breakpoint',
         'bytearray',
+        'bytes',
         'callable',
         'chr',
         'classmethod',
-        'cmp',
-        'coerce',
         'compile',
         'complex',
         'delattr',
@@ -82,9 +113,9 @@ export const language = <monaco.languages.IMonarchLanguage>{
         'divmod',
         'enumerate',
         'eval',
-        'execfile',
-        'file',
+        'exec',
         'filter',
+        'float',
         'format',
         'frozenset',
         'getattr',
@@ -92,15 +123,16 @@ export const language = <monaco.languages.IMonarchLanguage>{
         'hasattr',
         'hash',
         'help',
+        'hex',
         'id',
         'input',
-        'intern',
+        'int',
         'isinstance',
         'issubclass',
         'iter',
         'len',
-        'locals',
         'list',
+        'locals',
         'map',
         'max',
         'memoryview',
@@ -115,9 +147,6 @@ export const language = <monaco.languages.IMonarchLanguage>{
         'property',
         'reversed',
         'range',
-        'raw_input',
-        'reduce',
-        'reload',
         'repr',
         'reversed',
         'round',
@@ -132,21 +161,8 @@ export const language = <monaco.languages.IMonarchLanguage>{
         'super',
         'tuple',
         'type',
-        'unichr',
-        'unicode',
         'vars',
-        'xrange',
         'zip',
-
-        '__dict__',
-        '__methods__',
-        '__members__',
-        '__class__',
-        '__bases__',
-        '__name__',
-        '__mro__',
-        '__subclasses__',
-        '__init__',
         '__import__',
     ],
 
@@ -173,6 +189,7 @@ export const language = <monaco.languages.IMonarchLanguage>{
                 {
                     cases: {
                         '@keywords': 'keyword',
+                        '@builtins': 'support.function',
                         '@default': 'identifier',
                     },
                 },
@@ -236,67 +253,87 @@ export const language = <monaco.languages.IMonarchLanguage>{
     },
 };
 
-export const completions = <monaco.languages.CompletionItemProvider>{
-    provideCompletionItems: (_model, position, _context, _token) => {
-        return {
-            suggestions: [
-                {
-                    label: 'technichub',
-                    kind: monaco.languages.CompletionItemKind.Snippet,
-                    insertText: `from pybricks.hubs import TechnicHub
-from pybricks.pupdevices import Motor
-from pybricks.parameters import Port, Stop, Color
-from pybricks.tools import wait
+function template(hubName: string, devices: string[]): string {
+    return `from pybricks.hubs import ${hubName}
+from pybricks.pupdevices import ${devices.join(', ')}
+from pybricks.parameters import Button, Color, Direction, Port, Stop
+from pybricks.robotics import DriveBase
+from pybricks.tools import wait, StopWatch
 
-hub = TechnicHub()`,
-                    range: monaco.Range.fromPositions(position),
-                },
-                {
-                    label: 'cityhub',
-                    kind: monaco.languages.CompletionItemKind.Snippet,
-                    insertText: `from pybricks.hubs import CityHub
-from pybricks.pupdevices import Motor
-from pybricks.parameters import Port, Stop, Color
-from pybricks.tools import wait
+hub = ${hubName}()`;
+}
 
-hub = CityHub()`,
-                    range: monaco.Range.fromPositions(position),
-                },
-                {
-                    label: 'movehub',
-                    kind: monaco.languages.CompletionItemKind.Snippet,
-                    insertText: `from pybricks.hubs import MoveHub
-from pybricks.pupdevices import Motor
-from pybricks.parameters import Port, Stop, Color
-from pybricks.tools import wait
+const templateSnippets: Array<
+    Required<
+        Pick<monaco.languages.CompletionItem, 'label' | 'documentation' | 'insertText'>
+    > & { label: string }
+> = [
+    {
+        label: 'technichub',
+        documentation: 'Template for Technic hub program.',
+        insertText: template('TechnicHub', ['Motor']),
+    },
+    {
+        label: 'cityhub',
+        documentation: 'Template for City hub program.',
+        insertText: template('CityHub', ['DCMotor', 'Light']),
+    },
+    {
+        label: 'movehub',
+        documentation: 'Template for BOOST Move hub program.',
+        insertText: template('MoveHub', ['Motor', 'ColorDistanceSensor']),
+    },
+    {
+        label: 'primehub',
+        documentation: 'Template for SPIKE Prime program.',
+        insertText: template('PrimeHub', [
+            'Motor',
+            'ColorSensor',
+            'UltrasonicSensor',
+            'ForceSensor',
+        ]),
+    },
+    {
+        label: 'inventorhub',
+        documentation: 'Template for MINDSTORMS Robot Inventor hub program.',
+        insertText: template('InventorHub', [
+            'Motor',
+            'ColorSensor',
+            'UltrasonicSensor',
+        ]),
+    },
+];
 
-hub = MoveHub()`,
-                    range: monaco.Range.fromPositions(position),
-                },
-                {
-                    label: 'primehub',
-                    kind: monaco.languages.CompletionItemKind.Snippet,
-                    insertText: `from pybricks.hubs import PrimeHub
-from pybricks.pupdevices import Motor, ColorSensor, ForceSensor, UltrasonicSensor
-from pybricks.parameters import Port, Stop, Color, Button
-from pybricks.tools import wait
+export const templateSnippetCompletions = <monaco.languages.CompletionItemProvider>{
+    provideCompletionItems: (model, position, _context, _token) => {
+        // templates snippets are only available on the first line
+        if (position.lineNumber !== 1) {
+            return undefined;
+        }
 
-hub = PrimeHub()`,
-                    range: monaco.Range.fromPositions(position),
-                },
-                {
-                    label: 'inventorhub',
-                    kind: monaco.languages.CompletionItemKind.Snippet,
-                    insertText: `from pybricks.hubs import InventorHub
-from pybricks.pupdevices import Motor, ColorSensor, UltrasonicSensor
-from pybricks.parameters import Port, Stop, Color, Button
-from pybricks.tools import wait
-
-hub = InventorHub()`,
-                    range: monaco.Range.fromPositions(position),
-                },
-            ],
+        const range = {
+            startLineNumber: position.lineNumber,
+            startColumn: 1,
+            endLineNumber: position.lineNumber,
+            endColumn: position.column,
         };
+
+        const textUntilPosition = model.getValueInRange(range);
+
+        const items = templateSnippets
+            .filter((x) => x.label.startsWith(textUntilPosition))
+            .map<monaco.languages.CompletionItem>((x) => ({
+                detail: x.insertText,
+                kind: monaco.languages.CompletionItemKind.Snippet,
+                range,
+                ...x,
+            }));
+
+        if (!items) {
+            return undefined;
+        }
+
+        return { suggestions: items };
     },
 };
 

@@ -42,15 +42,17 @@ monaco.languages.register({ id: pybricksMicroPythonId });
 
 const toDispose = new Array<IDisposable>();
 toDispose.push(
+    monaco.languages.setLanguageConfiguration(
+        pybricksMicroPythonId,
+        pybricksMicroPython.conf,
+    ),
     monaco.languages.setMonarchTokensProvider(
         pybricksMicroPythonId,
         pybricksMicroPython.language,
     ),
-);
-toDispose.push(
     monaco.languages.registerCompletionItemProvider(
         pybricksMicroPythonId,
-        pybricksMicroPython.completions,
+        pybricksMicroPython.templateSnippetCompletions,
     ),
 );
 
