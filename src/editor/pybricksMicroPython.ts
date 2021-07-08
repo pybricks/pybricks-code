@@ -52,19 +52,16 @@ export const language = <monaco.languages.IMonarchLanguage>{
     defaultToken: '',
     tokenPostfix: '.python',
 
-    keywords: [
-        // This section is the result of running
-        // `for k in keyword.kwlist: print('  "' + k + '",')` in a Python REPL,
-        // though note that the output from Python 3 is not a strict superset of the
-        // output from Python 2.
-        'False', // promoted to keyword.kwlist in Python 3
-        'None', // promoted to keyword.kwlist in Python 3
-        'True', // promoted to keyword.kwlist in Python 3
+    // https://docs.python.org/3/reference/lexical_analysis.html#keywords
+    keywords: <ReadonlyArray<string>>[
+        'False',
+        'None',
+        'True',
         'and',
         'as',
         'assert',
-        'async', // new in Python 3
-        'await', // new in Python 3
+        'async',
+        'await',
         'break',
         'class',
         'continue',
@@ -73,7 +70,6 @@ export const language = <monaco.languages.IMonarchLanguage>{
         'elif',
         'else',
         'except',
-        'exec', // Python 2, but not 3.
         'finally',
         'for',
         'from',
@@ -83,38 +79,32 @@ export const language = <monaco.languages.IMonarchLanguage>{
         'in',
         'is',
         'lambda',
-        'nonlocal', // new in Python 3
+        'nonlocal',
         'not',
         'or',
         'pass',
-        'print', // Python 2, but not 3.
         'raise',
         'return',
         'try',
         'while',
         'with',
         'yield',
+    ],
 
-        'int',
-        'float',
-        'long',
-        'complex',
-        'hex',
-
+    // https://docs.python.org/3/library/functions.html#built-in-funcs
+    builtins: <ReadonlyArray<string>>[
         'abs',
         'all',
         'any',
-        'apply',
-        'basestring',
+        'ascii',
         'bin',
         'bool',
-        'buffer',
+        'breakpoint',
         'bytearray',
+        'bytes',
         'callable',
         'chr',
         'classmethod',
-        'cmp',
-        'coerce',
         'compile',
         'complex',
         'delattr',
@@ -123,9 +113,9 @@ export const language = <monaco.languages.IMonarchLanguage>{
         'divmod',
         'enumerate',
         'eval',
-        'execfile',
-        'file',
+        'exec',
         'filter',
+        'float',
         'format',
         'frozenset',
         'getattr',
@@ -133,15 +123,16 @@ export const language = <monaco.languages.IMonarchLanguage>{
         'hasattr',
         'hash',
         'help',
+        'hex',
         'id',
         'input',
-        'intern',
+        'int',
         'isinstance',
         'issubclass',
         'iter',
         'len',
-        'locals',
         'list',
+        'locals',
         'map',
         'max',
         'memoryview',
@@ -156,9 +147,6 @@ export const language = <monaco.languages.IMonarchLanguage>{
         'property',
         'reversed',
         'range',
-        'raw_input',
-        'reduce',
-        'reload',
         'repr',
         'reversed',
         'round',
@@ -173,21 +161,8 @@ export const language = <monaco.languages.IMonarchLanguage>{
         'super',
         'tuple',
         'type',
-        'unichr',
-        'unicode',
         'vars',
-        'xrange',
         'zip',
-
-        '__dict__',
-        '__methods__',
-        '__members__',
-        '__class__',
-        '__bases__',
-        '__name__',
-        '__mro__',
-        '__subclasses__',
-        '__init__',
         '__import__',
     ],
 
@@ -214,6 +189,7 @@ export const language = <monaco.languages.IMonarchLanguage>{
                 {
                     cases: {
                         '@keywords': 'keyword',
+                        '@builtins': 'support.function',
                         '@default': 'identifier',
                     },
                 },
