@@ -46,11 +46,9 @@ toDispose.push(
         pybricksMicroPythonId,
         pybricksMicroPython.language,
     ),
-);
-toDispose.push(
     monaco.languages.registerCompletionItemProvider(
         pybricksMicroPythonId,
-        pybricksMicroPython.completions,
+        pybricksMicroPython.templateSnippetCompletions,
     ),
 );
 

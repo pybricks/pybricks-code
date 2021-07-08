@@ -236,67 +236,87 @@ export const language = <monaco.languages.IMonarchLanguage>{
     },
 };
 
-export const completions = <monaco.languages.CompletionItemProvider>{
-    provideCompletionItems: (_model, position, _context, _token) => {
-        return {
-            suggestions: [
-                {
-                    label: 'technichub',
-                    kind: monaco.languages.CompletionItemKind.Snippet,
-                    insertText: `from pybricks.hubs import TechnicHub
-from pybricks.pupdevices import Motor
-from pybricks.parameters import Port, Stop, Color
-from pybricks.tools import wait
+function template(hubName: string, devices: string[]): string {
+    return `from pybricks.hubs import ${hubName}
+from pybricks.pupdevices import ${devices.join(', ')}
+from pybricks.parameters import Button, Color, Direction, Port, Stop
+from pybricks.robotics import DriveBase
+from pybricks.tools import wait, StopWatch
 
-hub = TechnicHub()`,
-                    range: monaco.Range.fromPositions(position),
-                },
-                {
-                    label: 'cityhub',
-                    kind: monaco.languages.CompletionItemKind.Snippet,
-                    insertText: `from pybricks.hubs import CityHub
-from pybricks.pupdevices import Motor
-from pybricks.parameters import Port, Stop, Color
-from pybricks.tools import wait
+hub = ${hubName}()`;
+}
 
-hub = CityHub()`,
-                    range: monaco.Range.fromPositions(position),
-                },
-                {
-                    label: 'movehub',
-                    kind: monaco.languages.CompletionItemKind.Snippet,
-                    insertText: `from pybricks.hubs import MoveHub
-from pybricks.pupdevices import Motor
-from pybricks.parameters import Port, Stop, Color
-from pybricks.tools import wait
+const templateSnippets: Array<
+    Required<
+        Pick<monaco.languages.CompletionItem, 'label' | 'documentation' | 'insertText'>
+    > & { label: string }
+> = [
+    {
+        label: 'technichub',
+        documentation: 'Template for Technic hub program.',
+        insertText: template('TechnicHub', ['Motor']),
+    },
+    {
+        label: 'cityhub',
+        documentation: 'Template for City hub program.',
+        insertText: template('CityHub', ['DCMotor', 'Light']),
+    },
+    {
+        label: 'movehub',
+        documentation: 'Template for BOOST Move hub program.',
+        insertText: template('MoveHub', ['Motor', 'ColorDistanceSensor']),
+    },
+    {
+        label: 'primehub',
+        documentation: 'Template for SPIKE Prime program.',
+        insertText: template('PrimeHub', [
+            'Motor',
+            'ColorSensor',
+            'UltrasonicSensor',
+            'ForceSensor',
+        ]),
+    },
+    {
+        label: 'inventorhub',
+        documentation: 'Template for MINDSTORMS Robot Inventor hub program.',
+        insertText: template('InventorHub', [
+            'Motor',
+            'ColorSensor',
+            'UltrasonicSensor',
+        ]),
+    },
+];
 
-hub = MoveHub()`,
-                    range: monaco.Range.fromPositions(position),
-                },
-                {
-                    label: 'primehub',
-                    kind: monaco.languages.CompletionItemKind.Snippet,
-                    insertText: `from pybricks.hubs import PrimeHub
-from pybricks.pupdevices import Motor, ColorSensor, ForceSensor, UltrasonicSensor
-from pybricks.parameters import Port, Stop, Color, Button
-from pybricks.tools import wait
+export const templateSnippetCompletions = <monaco.languages.CompletionItemProvider>{
+    provideCompletionItems: (model, position, _context, _token) => {
+        // templates snippets are only available on the first line
+        if (position.lineNumber !== 1) {
+            return undefined;
+        }
 
-hub = PrimeHub()`,
-                    range: monaco.Range.fromPositions(position),
-                },
-                {
-                    label: 'inventorhub',
-                    kind: monaco.languages.CompletionItemKind.Snippet,
-                    insertText: `from pybricks.hubs import InventorHub
-from pybricks.pupdevices import Motor, ColorSensor, UltrasonicSensor
-from pybricks.parameters import Port, Stop, Color, Button
-from pybricks.tools import wait
-
-hub = InventorHub()`,
-                    range: monaco.Range.fromPositions(position),
-                },
-            ],
+        const range = {
+            startLineNumber: position.lineNumber,
+            startColumn: 1,
+            endLineNumber: position.lineNumber,
+            endColumn: position.column,
         };
+
+        const textUntilPosition = model.getValueInRange(range);
+
+        const items = templateSnippets
+            .filter((x) => x.label.startsWith(textUntilPosition))
+            .map<monaco.languages.CompletionItem>((x) => ({
+                detail: x.insertText,
+                kind: monaco.languages.CompletionItemKind.Snippet,
+                range,
+                ...x,
+            }));
+
+        if (!items) {
+            return undefined;
+        }
+
+        return { suggestions: items };
     },
 };
 
