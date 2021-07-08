@@ -1,4 +1,4 @@
-// Copied from https://github.com/microsoft/monaco-languages/blob/main/src/python/python.ts
+// Copied from https://github.com/microsoft/monaco-languages/blob/d7cc098c481059f63d51ce3753975c8ca8ab6030/src/python/python.ts
 
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
@@ -6,6 +6,47 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { monaco } from 'react-monaco-editor';
+
+export const conf: monaco.languages.LanguageConfiguration = {
+    comments: {
+        lineComment: '#',
+        blockComment: ["'''", "'''"],
+    },
+    brackets: [
+        ['{', '}'],
+        ['[', ']'],
+        ['(', ')'],
+    ],
+    autoClosingPairs: [
+        { open: '{', close: '}' },
+        { open: '[', close: ']' },
+        { open: '(', close: ')' },
+        { open: '"', close: '"', notIn: ['string'] },
+        { open: "'", close: "'", notIn: ['string', 'comment'] },
+    ],
+    surroundingPairs: [
+        { open: '{', close: '}' },
+        { open: '[', close: ']' },
+        { open: '(', close: ')' },
+        { open: '"', close: '"' },
+        { open: "'", close: "'" },
+    ],
+    onEnterRules: [
+        {
+            beforeText: new RegExp(
+                '^\\s*(?:def|class|for|if|elif|else|while|try|with|finally|except|async).*?:\\s*$',
+            ),
+            action: { indentAction: monaco.languages.IndentAction.Indent },
+        },
+    ],
+    folding: {
+        offSide: true,
+        markers: {
+            start: new RegExp('^\\s*#region\\b'),
+            end: new RegExp('^\\s*#endregion\\b'),
+        },
+    },
+};
 
 export const language = <monaco.languages.IMonarchLanguage>{
     defaultToken: '',

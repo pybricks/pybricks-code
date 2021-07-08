@@ -7,6 +7,9 @@
 ### Changed
 - Changed snippet (autocomplete) content and behavior [issue#471].
 
+### Fixed
+- Fixed auto-indent not working [issue#470].
+
 ## [1.1.0-beta.2] - 2021-07-06
 
 ## Changed
@@ -38,6 +41,7 @@ Prerelease changes are documented at [support#48].
 
 
 <!-- let's try to keep this list sorted -->
+[issue#470]: https://github.com/pybricks/pybricks-code/issues/470
 [issue#471]: https://github.com/pybricks/pybricks-code/issues/471
 [support#48]: https://github.com/pybricks/support/issues/48
 [support#378]: https://github.com/pybricks/support/issues/378
