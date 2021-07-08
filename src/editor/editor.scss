@@ -5,16 +5,6 @@
 
 @import '../variables.scss';
 
-// make editor match app backgound color
-
-.#{$ns}-dark .margin-view-overlays {
-    background-color: $pt-dark-app-background-color;
-}
-
-.margin-view-overlays {
-    background-color: $pt-app-background-color;
-}
-
 // add "BETA" watermark
 
 .pb-beta .editor-scrollable::after {
