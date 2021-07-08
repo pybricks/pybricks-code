@@ -6,6 +6,7 @@
 
 ### Changed
 - Changed snippet (autocomplete) content and behavior [issue#471].
+- Changed gutter background color [issue#472].
 
 ### Fixed
 - Fixed auto-indent not working [issue#470].
@@ -43,6 +44,7 @@ Prerelease changes are documented at [support#48].
 <!-- let's try to keep this list sorted -->
 [issue#470]: https://github.com/pybricks/pybricks-code/issues/470
 [issue#471]: https://github.com/pybricks/pybricks-code/issues/471
+[issue#472]: https://github.com/pybricks/pybricks-code/issues/472
 [support#48]: https://github.com/pybricks/support/issues/48
 [support#378]: https://github.com/pybricks/support/issues/378
 [v3.0.0]: https://github.com/pybricks/pybricks-micropython/blob/master/CHANGELOG.md#300---2021-06-08
