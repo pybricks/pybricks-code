@@ -39,7 +39,7 @@
         "mq-polyfill": "^1.1.8",
         "node-sass": "^6.0.1",
         "prop-types": "^15.7.2",
-        "react": "^16.13.1",
+        "react": "^17.0.2",
         "react-dom": "^16.13.1",
         "react-dropzone": "^11.3.4",
         "react-monaco-editor": "^0.43.0",
