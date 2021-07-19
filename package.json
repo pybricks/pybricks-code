@@ -13,7 +13,7 @@
         "@pybricks/firmware": "4.13.0-alpha.3",
         "@pybricks/ide-docs": "1.5.0",
         "@pybricks/mpy-cross-v5": "^2.0.0",
-        "@shopify/react-i18n": "^6.0.4",
+        "@shopify/react-i18n": "^6.1.0",
         "@testing-library/dom": "^8.1.0",
         "@testing-library/jest-dom": "^5.11.9",
         "@testing-library/react": "^12.0.0",
