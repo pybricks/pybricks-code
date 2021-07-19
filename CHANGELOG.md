@@ -8,6 +8,7 @@
 - Changed snippet (autocomplete) content and behavior [issue#471].
 - Changed gutter background color [issue#472].
 - Added *BETA` badge to application icon [support#375].
+- Updated hub firmware to [v3.1.0a3].
 
 ### Fixed
 - Fixed auto-indent not working [issue#470].
@@ -52,6 +53,7 @@ Prerelease changes are documented at [support#48].
 [v3.0.0]: https://github.com/pybricks/pybricks-micropython/blob/master/CHANGELOG.md#300---2021-06-08
 [v3.1.0a1]: https://github.com/pybricks/pybricks-micropython/blob/master/CHANGELOG.md#310a1---2021-06-23
 [v3.1.0a2]: https://github.com/pybricks/pybricks-micropython/blob/master/CHANGELOG.md#310a2---2021-07-06
+[v3.1.0a3]: https://github.com/pybricks/pybricks-micropython/blob/master/CHANGELOG.md#310a3---2021-07-19
 
 [Unreleased]: https://github.com/pybricks/pybricks-code/compare/v1.1.0-beta.2...HEAD
 [1.1.0-beta.2]: https://github.com/pybricks/pybricks-code/compare/v1.1.0-beta.1...v1.1.0-beta.2
