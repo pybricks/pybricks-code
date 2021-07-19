@@ -1690,27 +1690,27 @@
   resolved "https://registry.yarnpkg.com/@shopify/i18n/-/i18n-1.0.1.tgz#fddb5e9188fc8364ddf6e2a9fe03c8325fa00c43"
   integrity sha512-nZulYLi3agPguee/dUuUg/bv8JGef3YZDvqKbgAmAW6kZn6h8ct6Q9hlLHr2O+x1WO+e6stlHDr993oONopeoA==
 
-"@shopify/react-effect@^4.0.1":
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/@shopify/react-effect/-/react-effect-4.0.1.tgz#1466b581d7a6c763f39d31305bccbcb0e0b2aaaa"
-  integrity sha512-Z7kgHvMBzRahJz6OXngqH6CgwzKk7u46oJ1vvLYEB3gWeysLGgp/dupWbikQhtxnm/gu4M0UiQcljude2v0fTg==
+"@shopify/react-effect@^4.1.0":
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/@shopify/react-effect/-/react-effect-4.1.0.tgz#963978799d82c2e0dfdeb6dc83472d9b9c431979"
+  integrity sha512-pLavZA0w2S2+fdDEA/NI9Qkva1T8Mgc2/RFIz6fTkO144Fi/jdI1GMcIfrgI5Z2Z0UZKEGoUbiYcg/U0EP1mgQ==
 
-"@shopify/react-hooks@^2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@shopify/react-hooks/-/react-hooks-2.0.1.tgz#d3c380e401261997c91c85c9ea813f9dedff7ba9"
-  integrity sha512-qrzYM0H+nbcxsIJwJ8QsBVhreGylRy++KTpjGO2Cz+8mfBQUtbfHhtj0ANQbVzKpzcwPuYSC3bgpspryXdXVxQ==
+"@shopify/react-hooks@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@shopify/react-hooks/-/react-hooks-2.1.0.tgz#f5f973756b5c8d650df0abd4cd88b5bc279c8a4b"
+  integrity sha512-2PKHdDGPhTtG+pZaATssK5l8qWeQUcrf1v90jZriDsGHfiNTY1SozzmdhY2HZ8Ylt2x9BGtpyOa/jOKc/SO4IQ==
 
-"@shopify/react-i18n@^6.0.4":
-  version "6.0.4"
-  resolved "https://registry.yarnpkg.com/@shopify/react-i18n/-/react-i18n-6.0.4.tgz#b3e8a1bd21e9709c0087f4b3ae33f9084b38159b"
-  integrity sha512-VrxYR0XAPjprSx4RTL1J1uNLMqDyGlIrKw8sfybuDgxqLmF+KvF71w8hFNkkZCK+bWG3ypjheoK36XeZxIfqNA==
+"@shopify/react-i18n@^6.1.0":
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/@shopify/react-i18n/-/react-i18n-6.1.0.tgz#f85f58702927c416116d748051e4f77d85213518"
+  integrity sha512-86Z/kC+mmHvvZO9ggSFXW1gzKTFrpYal1SeLsRRL+5fJEUN1rjTfbKf/6cMcJPuy3zkoqEVJQ4qpvWo75OysAQ==
   dependencies:
     "@shopify/dates" "^1.0.2"
     "@shopify/decorators" "^2.0.0"
     "@shopify/function-enhancers" "^2.0.0"
     "@shopify/i18n" "^1.0.1"
-    "@shopify/react-effect" "^4.0.1"
-    "@shopify/react-hooks" "^2.0.1"
+    "@shopify/react-effect" "^4.1.0"
+    "@shopify/react-hooks" "^2.1.0"
     "@shopify/useful-types" "^3.0.1"
     "@types/hoist-non-react-statics" "^3.0.1"
     change-case "^3.1.0"
