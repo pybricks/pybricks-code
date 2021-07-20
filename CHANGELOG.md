@@ -2,7 +2,7 @@
 
 # Changelog
 
-## [Unreleased]
+## [1.1.0-beta.3] - 2021-07-20
 
 ### Changed
 - Changed snippet (autocomplete) content and behavior [issue#471].
@@ -55,7 +55,8 @@ Prerelease changes are documented at [support#48].
 [v3.1.0a2]: https://github.com/pybricks/pybricks-micropython/blob/master/CHANGELOG.md#310a2---2021-07-06
 [v3.1.0a3]: https://github.com/pybricks/pybricks-micropython/blob/master/CHANGELOG.md#310a3---2021-07-19
 
-[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v1.1.0-beta.2...HEAD
+[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v1.1.0-beta.3...HEAD
+[1.1.0-beta.3]: https://github.com/pybricks/pybricks-code/compare/v1.1.0-beta.2...v1.1.0-beta.3
 [1.1.0-beta.2]: https://github.com/pybricks/pybricks-code/compare/v1.1.0-beta.1...v1.1.0-beta.2
 [1.1.0-beta.1]: https://github.com/pybricks/pybricks-code/compare/v1.0.0...v1.1.0-beta.1
 [1.0.0]: https://github.com/pybricks/pybricks-code/compare/v1.0.0-rc.2...v1.0.0
