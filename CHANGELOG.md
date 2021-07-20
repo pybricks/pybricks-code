@@ -7,7 +7,7 @@
 ### Changed
 - Changed snippet (autocomplete) content and behavior [issue#471].
 - Changed gutter background color [issue#472].
-- Added *BETA` badge to application icon [support#375].
+- Added *BETA* badge to application icon [support#375].
 - Updated hub firmware to [v3.1.0a3].
 
 ### Fixed
