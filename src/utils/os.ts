@@ -3,6 +3,17 @@
 
 // Utility functions for dealing with operating systems.
 
+// TODO: replace with navigator.userAgentData when it is more widely available
+// https://developer.mozilla.org/en-US/docs/Web/API/User-Agent_Client_Hints_API
+
+/**
+ * Tests if we are running on Android.
+ * @returns `true` if running on Android, otherwise `false`.
+ */
+export function isAndroid(): boolean {
+    return /android/i.test(navigator.userAgent);
+}
+
 /**
  * Tests if we are running on macOS.
  * @returns `true` if running on macOS, otherwise `false`.
