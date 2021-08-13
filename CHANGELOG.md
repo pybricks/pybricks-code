@@ -10,6 +10,7 @@
 ### Changed
 - Checksum is now validated as firmware flash progresses instead of just at the
   end [support#433].
+- About menu now shows firmware version as main version [support#412].
 
 ## [1.1.0-beta.3] - 2021-07-20
 
@@ -60,6 +61,7 @@ Prerelease changes are documented at [support#48].
 [support#375]: https://github.com/pybricks/support/issues/375
 [support#378]: https://github.com/pybricks/support/issues/378
 [support#403]: https://github.com/pybricks/support/issues/403
+[support#412]: https://github.com/pybricks/support/issues/412
 [support#433]: https://github.com/pybricks/support/issues/433
 [v3.0.0]: https://github.com/pybricks/pybricks-micropython/blob/master/CHANGELOG.md#300---2021-06-08
 [v3.1.0a1]: https://github.com/pybricks/pybricks-micropython/blob/master/CHANGELOG.md#310a1---2021-06-23
