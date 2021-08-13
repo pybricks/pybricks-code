@@ -55,6 +55,7 @@ import {
 import { RootState } from '../reducers';
 import { defined, hex, maybe } from '../utils';
 import { fmod, sumComplement32 } from '../utils/math';
+import { isAndroid } from '../utils/os';
 import {
     FailToFinishReasonType,
     FlashFirmwareActionType,
@@ -376,8 +377,9 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
             yield* disconnectAndCancel();
         }
 
-        // 14 is "safe" size for all hubs
-        const maxDataSize = MaxProgramFlashSize.get(info.hubType) || 14;
+        // 14 is "safe" size for all hubs and Android
+        const maxDataSize =
+            (!isAndroid() && MaxProgramFlashSize.get(info.hubType)) || 14;
 
         let runningChecksum = 0xff;
 

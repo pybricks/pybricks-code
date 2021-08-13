@@ -4,6 +4,12 @@
 
 ## [Unreleased]
 
+### Fixed
+- Fix flashing firmware on Android [support#403].
+
+### Changed
+- Checksum is now validated as firmware flash progresses instead of just at the
+  end [support#433].
 
 ## [1.1.0-beta.3] - 2021-07-20
 
@@ -46,13 +52,15 @@
 Prerelease changes are documented at [support#48].
 
 
-<!-- let's try to keep this list sorted -->
+<!-- let's try to keep this list sorted alphabetically -->
 [issue#470]: https://github.com/pybricks/pybricks-code/issues/470
 [issue#471]: https://github.com/pybricks/pybricks-code/issues/471
 [issue#472]: https://github.com/pybricks/pybricks-code/issues/472
 [support#48]: https://github.com/pybricks/support/issues/48
 [support#375]: https://github.com/pybricks/support/issues/375
 [support#378]: https://github.com/pybricks/support/issues/378
+[support#403]: https://github.com/pybricks/support/issues/403
+[support#433]: https://github.com/pybricks/support/issues/433
 [v3.0.0]: https://github.com/pybricks/pybricks-micropython/blob/master/CHANGELOG.md#300---2021-06-08
 [v3.1.0a1]: https://github.com/pybricks/pybricks-micropython/blob/master/CHANGELOG.md#310a1---2021-06-23
 [v3.1.0a2]: https://github.com/pybricks/pybricks-micropython/blob/master/CHANGELOG.md#310a2---2021-07-06
