@@ -5,7 +5,7 @@
 ## [Unreleased]
 
 ### Fixed
-- Fix flashing firmware on Android [support#403].
+- Fixed flashing firmware on Android [support#403].
 
 ### Changed
 - Checksum is now validated as firmware flash progresses instead of just at the
