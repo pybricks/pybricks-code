@@ -53,7 +53,7 @@ import {
     compile,
 } from '../mpy/actions';
 import { RootState } from '../reducers';
-import { defined, maybe } from '../utils';
+import { defined, hex, maybe } from '../utils';
 import { fmod, sumComplement32 } from '../utils/math';
 import {
     FailToFinishReasonType,
@@ -379,8 +379,16 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
         // 14 is "safe" size for all hubs
         const maxDataSize = MaxProgramFlashSize.get(info.hubType) || 14;
 
+        let runningChecksum = 0xff;
+
         for (let count = 1, offset = 0; ; count++) {
             const payload = firmware.slice(offset, offset + maxDataSize);
+
+            runningChecksum = payload.reduce(
+                (prev, curr) => prev ^ curr,
+                runningChecksum,
+            );
+
             const programAction = yield* put(
                 programRequest(
                     nextMessageId(),
@@ -405,13 +413,33 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
             // the hub is not known and could vary by device.
             if (count % 10 === 0) {
                 const checksumAction = yield* put(checksumRequest(nextMessageId()));
-                yield* all({
+
+                const { response } = yield* all({
                     sent: waitForDidRequest(checksumAction.id),
-                    checksum: waitForResponse<BootloaderChecksumResponseAction>(
+                    response: waitForResponse<BootloaderChecksumResponseAction>(
                         BootloaderResponseActionType.Checksum,
                         5000,
                     ),
                 });
+
+                if (response.checksum !== runningChecksum) {
+                    // istanbul ignore next
+                    if (process.env.NODE_ENV !== 'test') {
+                        console.error(
+                            `checksum: got ${hex(response.checksum, 2)} expected ${hex(
+                                runningChecksum,
+                                2,
+                            )}`,
+                        );
+                    }
+                    yield* put(
+                        didFailToFinish(
+                            FailToFinishReasonType.HubError,
+                            HubError.ChecksumMismatch,
+                        ),
+                    );
+                    yield* disconnectAndCancel();
+                }
             }
         }
 
@@ -430,14 +458,14 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
             yield* disconnectAndCancel();
         }
 
-        const checksum = firmware.reduce((prev, curr) => prev ^ curr, 0xff);
-        if (flash.checksum !== checksum) {
+        if (flash.checksum !== runningChecksum) {
             // istanbul ignore next
             if (process.env.NODE_ENV !== 'test') {
                 console.error(
-                    'checksum:',
-                    flash.checksum.toString(16).padStart(2, '0').padStart(4, '0x'),
-                    checksum.toString(16).padStart(2, '0').padStart(4, '0x'),
+                    `final checksum: got ${hex(flash.checksum, 2)} expected ${hex(
+                        runningChecksum,
+                        2,
+                    )}`,
                 );
             }
             yield* put(
