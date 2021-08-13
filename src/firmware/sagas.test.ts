@@ -1386,6 +1386,7 @@ describe('flashFirmware', () => {
 
             const dummyPayload = new ArrayBuffer(0);
             let id = 2;
+
             for (let count = 1, offset = 0; ; count++, offset += 14) {
                 action = await saga.take();
                 expect(action).toEqual(
@@ -1413,7 +1414,7 @@ describe('flashFirmware', () => {
                     expect(action).toEqual(checksumRequest(++id));
 
                     saga.put(didRequest(id));
-                    saga.put(checksumResponse(0));
+                    saga.put(checksumResponse(0x9b));
                 }
             }
 
