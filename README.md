@@ -5,7 +5,7 @@ pybricks-code
 
 A Web App for programming LEGO® Powered Up smart hubs using Pybricks MicroPython.
 
-**Try it at <https://code.pybricks.com>.**
+**Try it at <https://code.pybricks.com> or the latest updates <https://beta.pybricks.com>.**
 
 ![screenshot](.README/screenshot.png)
 
