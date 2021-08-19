@@ -26,7 +26,7 @@
         "@types/react-redux": "^7.1.18",
         "@types/react-splitter-layout": "^3.0.2",
         "@types/redux-logger": "^3.0.9",
-        "@types/web-bluetooth": "^0.0.10",
+        "@types/web-bluetooth": "^0.0.11",
         "@types/zen-push": "^0.1.1",
         "babel-plugin-macros": "^3.0.1",
         "canvas": "^2.8.0",
