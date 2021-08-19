@@ -2107,10 +2107,10 @@
     "@types/scheduler" "*"
     csstype "^3.0.2"
 
-"@types/react@^16", "@types/react@^16.14.11":
-  version "16.14.11"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.14.11.tgz#992a0cd4b66b9f27315042b5d96e976717368f04"
-  integrity sha512-Don0MtsZZ3fjwTJ2BsoqkyOy7e176KplEAKOpr/4XDdzinlyJBn9yfsKn5mcSgn4kh1B22+3tBnzBC1z63ybtQ==
+"@types/react@^16", "@types/react@^16.14.14":
+  version "16.14.14"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.14.14.tgz#853de95a32a6a0e719192e222eacad024add2b8e"
+  integrity sha512-uwIWDYW8LznHzEMJl7ag9St1RsK0gw/xaFZ5+uI1ZM1HndwUgmPH3/wQkSb87GkOVg7shUxnpNW8DcN0AzvG5Q==
   dependencies:
     "@types/prop-types" "*"
     "@types/scheduler" "*"
