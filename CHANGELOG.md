@@ -2,6 +2,51 @@
 
 # Changelog
 
+## [Unreleased]
+
+## [1.1.0-beta.5] - 2021-08-30
+
+### Changed
+- Updated to Pybricks firmware v3.1.0a4:
+
+  ### Added
+  - Enabled builtin `bytearray` ([pull#60]).
+  - Enabled `ustruct` module ([pull#60]).
+  - Added alpha support for dual boot installation on the SPIKE Prime Hub.
+  - Added `pybricks.experimental.hello_world` function to make it easier for
+    new contributors to experiment with Pybricks using C code.
+  - Added ability to import the `main.mpy` that is embedded in the firmware from
+    a download and run program ([support#408]).
+  - Added `pybricks.iodevices.LWP3Device` to communicate with a device that supports
+    the LEGO Wireless Protocol 3.0.00 ([pull#68])
+
+  ### Changed
+  - Move Hub Bluetooth optimizations to reduce firmware size ([issue#49]).
+  - Disabled `pybricks.iodevices` module on Move Hub to reduce firmware size.
+  - Improvements to `pybricks.pupdevices.Remote`:
+    - Check if a remote is already connected before attempting to create a new
+      connection.
+    - Rename first argument from `address` to `name` to match documentation.
+    - Implement connecting by name.
+    - Add `name()` method.
+    - Add `light` attribute.
+
+  [issue#49]: https://github.com/pybricks/pybricks-micropython/issues/49
+  [pull#60]: https://github.com/pybricks/pybricks-micropython/pull/60
+  [pull#68]: https://github.com/pybricks/pybricks-micropython/pull/68
+  [support#408]: https://github.com/pybricks/support/issues/408
+
+- Updated documentation:
+
+  ### Added
+  - MicroPython module documentation.
+  - Examples for hub system functions including stop button and shutdown.
+
+  ### Changed
+  - Build IDE docs as main docs with minor changes, instead of a completely
+    separate build.
+  - Moved motor control documentation to the motor page.
+
 ## [1.1.0-beta.4] - 2021-08-13
 
 ### Fixed
@@ -68,7 +113,8 @@ Prerelease changes are documented at [support#48].
 [v3.1.0a2]: https://github.com/pybricks/pybricks-micropython/blob/master/CHANGELOG.md#310a2---2021-07-06
 [v3.1.0a3]: https://github.com/pybricks/pybricks-micropython/blob/master/CHANGELOG.md#310a3---2021-07-19
 
-[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v1.1.0-beta.4...HEAD
+[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v1.1.0-beta.5...HEAD
+[1.1.0-beta.5]: https://github.com/pybricks/pybricks-code/compare/v1.1.0-beta.4...v1.1.0-beta.5
 [1.1.0-beta.4]: https://github.com/pybricks/pybricks-code/compare/v1.1.0-beta.3...v1.1.0-beta.4
 [1.1.0-beta.3]: https://github.com/pybricks/pybricks-code/compare/v1.1.0-beta.2...v1.1.0-beta.3
 [1.1.0-beta.2]: https://github.com/pybricks/pybricks-code/compare/v1.1.0-beta.1...v1.1.0-beta.2
