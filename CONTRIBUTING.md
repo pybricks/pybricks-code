@@ -33,7 +33,7 @@ We are using [Yarn][yarn] 1.x for package management.
 
 ### Python
 
-One of the node depedencies needs Python 2 in order to build!
+One of the node dependencies needs Python 2 in order to build!
 
 If you see [this error](https://github.com/palantir/blueprint/issues/4273),
 that is what is going on.
