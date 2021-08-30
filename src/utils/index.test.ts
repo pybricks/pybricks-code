@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020 The Pybricks Authors
 
-import { assert, defined, hex, maybe } from '.';
+import { assert, defined, ensureError, hex, maybe } from '.';
 
 test('assert', () => {
     const assertTrue = jest.fn(() => assert(true, 'should not throw'));
@@ -33,4 +33,14 @@ test('hex', () => {
     expect(hex(0, 2)).toBe('0x00');
     expect(hex(1, 4)).toBe('0x0001');
     expect(hex(2, 8)).toBe('0x00000002');
+});
+
+test('ensureError', () => {
+    const err = new Error('test error');
+    expect(ensureError(err)).toBe(err);
+
+    const stringToErrorMessage = 'not an Error';
+    const stringToError = expect(ensureError(stringToErrorMessage));
+    stringToError.toHaveProperty('name', 'Error');
+    stringToError.toHaveProperty('message', stringToErrorMessage);
 });

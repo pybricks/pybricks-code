@@ -5,6 +5,7 @@
 
 import { END, eventChannel } from 'redux-saga';
 import { call, cancel, put, spawn, takeEvery, takeMaybe } from 'typed-redux-saga/macro';
+import { ensureError } from '../utils';
 import {
     BootloaderConnectionAction,
     BootloaderConnectionActionType,
@@ -35,7 +36,7 @@ function* write(
         }
         yield* put(didSend());
     } catch (err) {
-        yield* put(didFailToSend(err));
+        yield* put(didFailToSend(ensureError(err)));
     }
 }
 
@@ -64,7 +65,7 @@ function* connect(_action: BootloaderConnectionAction): Generator {
             // this can happen if the use cancels the dialog
             yield* put(didFailToConnect(Reason.Canceled));
         } else {
-            yield* put(didFailToConnect(Reason.Unknown, err));
+            yield* put(didFailToConnect(Reason.Unknown, ensureError(err)));
         }
         return;
     }
@@ -88,7 +89,7 @@ function* connect(_action: BootloaderConnectionAction): Generator {
         server = yield* call([device.gatt, 'connect']);
     } catch (err) {
         disconnectChannel.close();
-        yield* put(didFailToConnect(Reason.Unknown, err));
+        yield* put(didFailToConnect(Reason.Unknown, ensureError(err)));
         return;
     }
 
@@ -103,7 +104,7 @@ function* connect(_action: BootloaderConnectionAction): Generator {
             // https://chromium-review.googlesource.com/c/chromium/src/+/2214098
             yield* put(didFailToConnect(Reason.GattServiceNotFound));
         } else {
-            yield* put(didFailToConnect(Reason.Unknown, err));
+            yield* put(didFailToConnect(Reason.Unknown, ensureError(err)));
         }
         return;
     }
@@ -117,7 +118,7 @@ function* connect(_action: BootloaderConnectionAction): Generator {
     } catch (err) {
         server.disconnect();
         yield* takeMaybe(disconnectChannel);
-        yield* put(didFailToConnect(Reason.Unknown, err));
+        yield* put(didFailToConnect(Reason.Unknown, ensureError(err)));
         return;
     }
 
@@ -147,7 +148,7 @@ function* connect(_action: BootloaderConnectionAction): Generator {
         notificationChannel.close();
         server.disconnect();
         yield* takeMaybe(disconnectChannel);
-        yield* put(didFailToConnect(Reason.Unknown, err));
+        yield* put(didFailToConnect(Reason.Unknown, ensureError(err)));
         return;
     }
 

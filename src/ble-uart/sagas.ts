@@ -48,7 +48,7 @@ import {
 } from '../ble/actions';
 import { BleConnectionState } from '../ble/reducers';
 import { RootState } from '../reducers';
-import { hex } from '../utils';
+import { ensureError, hex } from '../utils';
 import {
     BleUartActionType,
     BleUartWriteAction,
@@ -83,7 +83,7 @@ function* writePybricksCommand(
         yield* call(() => char.writeValueWithoutResponse(action.value.buffer));
         yield* put(didWriteCommand(action.id));
     } catch (err) {
-        yield* put(didFailToWriteCommand(action.id, err));
+        yield* put(didFailToWriteCommand(action.id, ensureError(err)));
     }
 }
 
@@ -99,7 +99,7 @@ function* writeUart(
         yield* call(() => char.writeValueWithoutResponse(action.value.buffer));
         yield* put(didWriteUart(action.id));
     } catch (err) {
-        yield* put(didFailToWriteUart(action.id, err));
+        yield* put(didFailToWriteUart(action.id, ensureError(err)));
     }
 }
 
@@ -132,7 +132,9 @@ function* connect(_action: BleDeviceConnectAction): Generator {
             // this can happen if the use cancels the dialog
             yield* put(didFailToConnect({ reason: Reason.Canceled }));
         } else {
-            yield* put(didFailToConnect({ reason: Reason.Unknown, err }));
+            yield* put(
+                didFailToConnect({ reason: Reason.Unknown, err: ensureError(err) }),
+            );
         }
         return;
     }
@@ -154,7 +156,7 @@ function* connect(_action: BleDeviceConnectAction): Generator {
         server = yield* call([device.gatt, 'connect']);
     } catch (err) {
         disconnectChannel.close();
-        yield* put(didFailToConnect({ reason: Reason.Unknown, err }));
+        yield* put(didFailToConnect({ reason: Reason.Unknown, err: ensureError(err) }));
         return;
     }
 
@@ -172,7 +174,9 @@ function* connect(_action: BleDeviceConnectAction): Generator {
         if (err instanceof DOMException && err.code === DOMException.NOT_FOUND_ERR) {
             yield* put(didFailToConnect({ reason: Reason.NoDeviceInfoService }));
         } else {
-            yield* put(didFailToConnect({ reason: Reason.Unknown, err }));
+            yield* put(
+                didFailToConnect({ reason: Reason.Unknown, err: ensureError(err) }),
+            );
         }
         return;
     }
@@ -186,7 +190,7 @@ function* connect(_action: BleDeviceConnectAction): Generator {
     } catch (err) {
         server.disconnect();
         yield* takeMaybe(disconnectChannel);
-        yield* put(didFailToConnect({ reason: Reason.Unknown, err }));
+        yield* put(didFailToConnect({ reason: Reason.Unknown, err: ensureError(err) }));
         return;
     }
 
@@ -198,7 +202,7 @@ function* connect(_action: BleDeviceConnectAction): Generator {
     } catch (err) {
         server.disconnect();
         yield* takeMaybe(disconnectChannel);
-        yield* put(didFailToConnect({ reason: Reason.Unknown, err }));
+        yield* put(didFailToConnect({ reason: Reason.Unknown, err: ensureError(err) }));
         return;
     }
 
@@ -214,7 +218,7 @@ function* connect(_action: BleDeviceConnectAction): Generator {
     } catch (err) {
         server.disconnect();
         yield* takeMaybe(disconnectChannel);
-        yield* put(didFailToConnect({ reason: Reason.Unknown, err }));
+        yield* put(didFailToConnect({ reason: Reason.Unknown, err: ensureError(err) }));
         return;
     }
 
@@ -226,7 +230,7 @@ function* connect(_action: BleDeviceConnectAction): Generator {
     } catch (err) {
         server.disconnect();
         yield* takeMaybe(disconnectChannel);
-        yield* put(didFailToConnect({ reason: Reason.Unknown, err }));
+        yield* put(didFailToConnect({ reason: Reason.Unknown, err: ensureError(err) }));
         return;
     }
 
@@ -249,7 +253,9 @@ function* connect(_action: BleDeviceConnectAction): Generator {
         } catch (err) {
             server.disconnect();
             yield* takeMaybe(disconnectChannel);
-            yield* put(didFailToConnect({ reason: Reason.Unknown, err }));
+            yield* put(
+                didFailToConnect({ reason: Reason.Unknown, err: ensureError(err) }),
+            );
             return;
         }
 
@@ -273,7 +279,9 @@ function* connect(_action: BleDeviceConnectAction): Generator {
         if (err instanceof DOMException && err.code === DOMException.NOT_FOUND_ERR) {
             yield* put(didFailToConnect({ reason: Reason.NoPybricksService }));
         } else {
-            yield* put(didFailToConnect({ reason: Reason.Unknown, err }));
+            yield* put(
+                didFailToConnect({ reason: Reason.Unknown, err: ensureError(err) }),
+            );
         }
         return;
     }
@@ -287,7 +295,7 @@ function* connect(_action: BleDeviceConnectAction): Generator {
     } catch (err) {
         server.disconnect();
         yield* takeMaybe(disconnectChannel);
-        yield* put(didFailToConnect({ reason: Reason.Unknown, err }));
+        yield* put(didFailToConnect({ reason: Reason.Unknown, err: ensureError(err) }));
         return;
     }
 
@@ -326,7 +334,7 @@ function* connect(_action: BleDeviceConnectAction): Generator {
         pybricksControlChannel.close();
         server.disconnect();
         yield* takeMaybe(disconnectChannel);
-        yield* put(didFailToConnect({ reason: Reason.Unknown, err }));
+        yield* put(didFailToConnect({ reason: Reason.Unknown, err: ensureError(err) }));
         return;
     }
 
@@ -349,7 +357,9 @@ function* connect(_action: BleDeviceConnectAction): Generator {
         if (err instanceof DOMException && err.code === DOMException.NOT_FOUND_ERR) {
             yield* put(didFailToConnect({ reason: Reason.NoPybricksService }));
         } else {
-            yield* put(didFailToConnect({ reason: Reason.Unknown, err }));
+            yield* put(
+                didFailToConnect({ reason: Reason.Unknown, err: ensureError(err) }),
+            );
         }
         return;
     }
@@ -362,7 +372,7 @@ function* connect(_action: BleDeviceConnectAction): Generator {
         pybricksControlChannel.close();
         server.disconnect();
         yield* takeMaybe(disconnectChannel);
-        yield* put(didFailToConnect({ reason: Reason.Unknown, err }));
+        yield* put(didFailToConnect({ reason: Reason.Unknown, err: ensureError(err) }));
         return;
     }
 
@@ -374,7 +384,7 @@ function* connect(_action: BleDeviceConnectAction): Generator {
         pybricksControlChannel.close();
         server.disconnect();
         yield* takeMaybe(disconnectChannel);
-        yield* put(didFailToConnect({ reason: Reason.Unknown, err }));
+        yield* put(didFailToConnect({ reason: Reason.Unknown, err: ensureError(err) }));
         return;
     }
 
@@ -406,7 +416,7 @@ function* connect(_action: BleDeviceConnectAction): Generator {
         pybricksControlChannel.close();
         server.disconnect();
         yield* takeMaybe(disconnectChannel);
-        yield* put(didFailToConnect({ reason: Reason.Unknown, err }));
+        yield* put(didFailToConnect({ reason: Reason.Unknown, err: ensureError(err) }));
         return;
     }
 

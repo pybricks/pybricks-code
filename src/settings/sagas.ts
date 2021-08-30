@@ -9,6 +9,7 @@ import { EventChannel, eventChannel } from 'redux-saga';
 import { call, fork, put, select, take, takeEvery } from 'typed-redux-saga/macro';
 import { AppActionType } from '../app/actions';
 import { RootState } from '../reducers';
+import { ensureError } from '../utils';
 import {
     SettingsActionType,
     SettingsSetBooleanAction,
@@ -80,7 +81,7 @@ function* storeSetting(action: SettingsSetBooleanAction): Generator {
     try {
         localStorage.setItem(key, newValue);
     } catch (err) {
-        yield* put(didFailToSetBoolean(action.id, err));
+        yield* put(didFailToSetBoolean(action.id, ensureError(err)));
     }
 
     // storage event is only raised when a value is changed externally, so we
