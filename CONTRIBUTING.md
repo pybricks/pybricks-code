@@ -103,6 +103,21 @@ See the section about [deployment][deployment] for more information.
 
 [deployment]: https://facebook.github.io/create-react-app/docs/deployment
 
+### `./tools/serve.py`
+
+WebBluetooth requires https. So to locally test the result of `yarn build`,
+run `./tools/serve.py` then point a web browser to <https://localhost:8443>
+(don't leave out https!).
+
+Usually using `yarn start` is more convenient for local development, but this is
+particularly useful for testing changes on an Android device, for example. On
+remote devices, replace `localhost` with the hostname or IP address of the
+computer running the `./tools/serve.py` script.
+
+This server uses a self-signed certificate, so the browser will complain that
+the site is not secure. This warning can be ignored by clicking the *Advanced*
+button and then click the link to proceed to the site.
+
 ## Learn More
 
 You can learn more in the [Create React App documentation][create-react-app-doc].
