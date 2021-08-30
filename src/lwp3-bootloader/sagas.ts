@@ -12,7 +12,7 @@ import {
     takeEvery,
 } from 'typed-redux-saga/macro';
 import { Action } from '../actions';
-import { hex } from '../utils';
+import { ensureError, hex } from '../utils';
 import { isWindows } from '../utils/os';
 import {
     BootloaderConnectionActionType,
@@ -172,7 +172,7 @@ function* decodeResponse(action: BootloaderConnectionDidReceiveAction): Generato
                 );
         }
     } catch (err) {
-        yield* put(didError(err));
+        yield* put(didError(ensureError(err)));
     }
 }
 

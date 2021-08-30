@@ -53,7 +53,7 @@ import {
     compile,
 } from '../mpy/actions';
 import { RootState } from '../reducers';
-import { defined, hex, maybe } from '../utils';
+import { defined, ensureError, hex, maybe } from '../utils';
 import { fmod, sumComplement32 } from '../utils/math';
 import { isAndroid } from '../utils/os';
 import {
@@ -487,7 +487,7 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
 
         yield* put(didFinish());
     } catch (err) {
-        yield* put(didFailToFinish(FailToFinishReasonType.Unknown, err));
+        yield* put(didFailToFinish(FailToFinishReasonType.Unknown, ensureError(err)));
         yield* disconnectAndCancel();
     }
 }

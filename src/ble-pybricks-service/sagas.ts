@@ -12,7 +12,7 @@ import {
     takeEvery,
 } from 'typed-redux-saga/macro';
 import { Action } from '../actions';
-import { hex } from '../utils';
+import { ensureError, hex } from '../utils';
 import {
     BlePybricksServiceActionType,
     BlePybricksServiceCommandAction,
@@ -101,7 +101,7 @@ function* decodeResponse(action: BlePybricksServiceDidNotifyEventAction): Genera
                 );
         }
     } catch (err) {
-        yield* put(eventProtocolError(err));
+        yield* put(eventProtocolError(ensureError(err)));
     }
 }
 

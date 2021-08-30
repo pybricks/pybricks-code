@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020 The Pybricks Authors
+// Copyright (c) 2020-2021 The Pybricks Authors
 
 /**
  * Asserts that an assumption is true. This is used to detect programmer errors
@@ -29,7 +29,7 @@ export async function maybe<T>(promise: Promise<T>): Promise<Maybe<T>> {
     try {
         return [await promise];
     } catch (err) {
-        return [undefined, err];
+        return [undefined, ensureError(err)];
     }
 }
 
@@ -40,4 +40,26 @@ export async function maybe<T>(promise: Promise<T>): Promise<Maybe<T>> {
  */
 export function hex(n: number, pad: number): string {
     return `0x${n.toString(16).padStart(pad, '0')}`;
+}
+
+function isError(err: unknown): err is Error {
+    const maybeError = err as Error;
+
+    return (
+        maybeError !== undefined &&
+        typeof maybeError.name === 'string' &&
+        typeof maybeError.message === 'string'
+    );
+}
+
+export function ensureError(err: unknown): Error {
+    if (isError(err)) {
+        return err;
+    }
+
+    if (typeof err === 'string') {
+        return new Error(err);
+    }
+
+    return Error(String(err));
 }
