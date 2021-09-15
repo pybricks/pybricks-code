@@ -1701,22 +1701,22 @@
   resolved "https://registry.yarnpkg.com/@shopify/react-effect/-/react-effect-4.1.4.tgz#dbebf82533ff36694ea738362a7668610641464e"
   integrity sha512-d9Z3gp5TX2K728E3lfABxw6PhCJAIRWbDmHjdzJrVBHwe09AgZUklEqADHD6NhjXo35iFwnbiPwR7QKdN54HdA==
 
-"@shopify/react-hooks@^2.1.3":
-  version "2.1.3"
-  resolved "https://registry.yarnpkg.com/@shopify/react-hooks/-/react-hooks-2.1.3.tgz#cc555705dd9d652af8f9425b889c14e14ab75946"
-  integrity sha512-LR4jUh3cNUjTVwfyDtmYmZI7El4Xu4qKMOaz2wiJ3+Z6aJa5CwIm2zPVNq/qxHhdgc/TVOIuQ1JCSYw5h4/hVw==
+"@shopify/react-hooks@^2.1.5":
+  version "2.1.5"
+  resolved "https://registry.yarnpkg.com/@shopify/react-hooks/-/react-hooks-2.1.5.tgz#81f26ada20e27e9aa01e75fc76bed4c421d3b0cc"
+  integrity sha512-HyOUuqf9+D4oWUxIQ0q7E+F6/NKrYJJAt5G6Eyt22Ej2F380yXNBHlfK4f+QERhuKE0FMF1Qqe0OjttP6QaysQ==
 
-"@shopify/react-i18n@^6.2.0":
-  version "6.2.0"
-  resolved "https://registry.yarnpkg.com/@shopify/react-i18n/-/react-i18n-6.2.0.tgz#dfde82a40896bcb5dc78532e4ff89617328d1c1d"
-  integrity sha512-/qpqnUX1L9OoGctZVycOYsO4D+RWFVrqAScOoKf/SEjI+vNW+MLDFmZij1SHDrOc6ZJBCW7w611agF1nVqw/Ww==
+"@shopify/react-i18n@^6.2.2":
+  version "6.2.2"
+  resolved "https://registry.yarnpkg.com/@shopify/react-i18n/-/react-i18n-6.2.2.tgz#b0a4a82ede174022e9bfaa24084415b0f68ff044"
+  integrity sha512-KETAfsm8b/LmQnn5F9i6ao2EFMU93I3Rk1MUVlKq2/e2/41mV1YgtHkTagG+W4djPhHASTs9MD5qQVcwabB+9w==
   dependencies:
     "@shopify/dates" "^1.0.7"
     "@shopify/decorators" "^2.0.3"
     "@shopify/function-enhancers" "^2.0.3"
     "@shopify/i18n" "^1.0.4"
     "@shopify/react-effect" "^4.1.4"
-    "@shopify/react-hooks" "^2.1.3"
+    "@shopify/react-hooks" "^2.1.5"
     "@shopify/useful-types" "^3.0.4"
     "@types/hoist-non-react-statics" "^3.0.1"
     change-case "^4.1.2"
