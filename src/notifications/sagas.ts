@@ -10,14 +10,17 @@ import {
     IconName,
     Intent,
 } from '@blueprintjs/core';
+import { firmwareVersion } from '@pybricks/firmware';
 import { Replacements } from '@shopify/react-i18n';
 import React from 'react';
 import { channel } from 'redux-saga';
+import * as semver from 'semver';
 import { delay, getContext, put, take, takeEvery } from 'typed-redux-saga/macro';
 import { AppActionType, AppDidCheckForUpdateAction, reload } from '../app/actions';
 import { appName } from '../app/constants';
 import {
     BleDeviceActionType,
+    BleDeviceDidConnectAction,
     BleDeviceDidFailToConnectAction,
     BleDeviceFailToConnectReasonType,
 } from '../ble/actions';
@@ -37,6 +40,7 @@ import {
     ServiceWorkerAction,
     ServiceWorkerActionType,
 } from '../service-worker/actions';
+import { pythonVersionToSemver } from '../utils/version';
 import NotificationAction from './NotificationAction';
 import NotificationMessage from './NotificationMessage';
 import UnexpectedErrorNotification from './UnexpectedErrorNotification';
@@ -382,6 +386,19 @@ function* showNoUpdateInfo(action: AppDidCheckForUpdateAction): Generator {
     });
 }
 
+function* checkVersion(action: BleDeviceDidConnectAction): Generator {
+    // ensure the actual hub firmware version is the same as the shipped
+    // firmware version or newer
+    if (
+        !semver.satisfies(
+            pythonVersionToSemver(action.firmwareVersion),
+            `>=${pythonVersionToSemver(firmwareVersion)}`,
+        )
+    ) {
+        yield* showSingleton(Level.Error, MessageId.CheckFirmwareTooOld);
+    }
+}
+
 export default function* (): Generator {
     yield* takeEvery(
         BleDeviceActionType.DidFailToConnect,
@@ -398,4 +415,5 @@ export default function* (): Generator {
     yield* takeEvery(NotificationActionType.Add, addNotification);
     yield* takeEvery(ServiceWorkerActionType.DidUpdate, showServiceWorkerUpdate);
     yield* takeEvery(AppActionType.DidCheckForUpdate, showNoUpdateInfo);
+    yield* takeEvery(BleDeviceActionType.DidConnect, checkVersion);
 }

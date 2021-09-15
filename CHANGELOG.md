@@ -4,6 +4,11 @@
 
 ## [Unreleased]
 
+### Added
+- Show error message if connected hub is running old firmware ([support#482]).
+
+[support#482]: https://github.com/pybricks/support/issues/482
+
 ## [1.1.0-beta.5] - 2021-08-30
 
 ### Changed

@@ -206,9 +206,6 @@ function* connect(_action: BleDeviceConnectAction): Generator {
         return;
     }
 
-    // TODO: save firmware version for later use
-    console.log(`Hub firmware version: ${firmwareVersion}`);
-
     let softwareVersionChar: BluetoothRemoteGATTCharacteristic;
     try {
         softwareVersionChar = yield* call(
@@ -422,7 +419,7 @@ function* connect(_action: BleDeviceConnectAction): Generator {
 
     tasks.push(yield* takeEvery(BleUartActionType.Write, writeUart, uartRxChar));
 
-    yield* put(didConnect());
+    yield* put(didConnect(firmwareVersion));
 
     // wait for disconnection
     yield* takeMaybe(disconnectChannel);
