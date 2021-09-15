@@ -39,5 +39,8 @@
             "message": "A new version of {appName} is available. Click {action} to start using the new version.",
             "action": "Restart"
         }
+    },
+    "check": {
+        "firmwareTooOld": "A new firmware version is available for this hub. Please install the latest version to use all new features."
     }
 }

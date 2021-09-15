@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020 The Pybricks Authors
+// Copyright (c) 2020-2021 The Pybricks Authors
 //
 // Actions for managing Bluetooth Low Energy connections.
 
@@ -44,13 +44,16 @@ export function connect(): BleDeviceConnectAction {
     return { type: BleDeviceActionType.Connect };
 }
 
-export type BleDeviceDidConnectAction = Action<BleDeviceActionType.DidConnect>;
+export type BleDeviceDidConnectAction = Action<BleDeviceActionType.DidConnect> & {
+    firmwareVersion: string;
+};
 
 /**
  * Creates an action that indicates a device was connected.
+ * @param firmwareVersion The firmware version of the hub (e.g. 3.0.0a1)
  */
-export function didConnect(): BleDeviceDidConnectAction {
-    return { type: BleDeviceActionType.DidConnect };
+export function didConnect(firmwareVersion: string): BleDeviceDidConnectAction {
+    return { type: BleDeviceActionType.DidConnect, firmwareVersion };
 }
 
 export enum BleDeviceFailToConnectReasonType {

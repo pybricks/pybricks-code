@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2021 The Pybricks Authors
 
+import { firmwareVersion } from '@pybricks/firmware';
 import { Action } from '../actions';
 import {
     BleDeviceDidFailToConnectReason,
@@ -29,8 +30,10 @@ test('connection', () => {
             .connection,
     ).toBe(BleConnectionState.Connecting);
     expect(
-        reducers({ connection: BleConnectionState.Connecting } as State, didConnect())
-            .connection,
+        reducers(
+            { connection: BleConnectionState.Connecting } as State,
+            didConnect(firmwareVersion),
+        ).connection,
     ).toBe(BleConnectionState.Connected);
     expect(
         reducers(

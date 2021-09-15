@@ -2,13 +2,18 @@
 // Copyright (c) 2021 The Pybricks Authors
 
 import { IToaster } from '@blueprintjs/core';
-import { FirmwareReaderError, FirmwareReaderErrorCode } from '@pybricks/firmware';
+import {
+    FirmwareReaderError,
+    FirmwareReaderErrorCode,
+    firmwareVersion,
+} from '@pybricks/firmware';
 import { AsyncSaga } from '../../test';
 import { Action } from '../actions';
 import { didCheckForUpdate } from '../app/actions';
 import {
     BleDeviceFailToConnectReasonType,
     didFailToConnect as bleDidFailToConnect,
+    didConnect,
 } from '../ble/actions';
 import { storageChanged } from '../editor/actions';
 import {
@@ -76,6 +81,7 @@ test.each([
     didFailToFinish(FailToFinishReasonType.FirmwareSize),
     didFailToFinish(FailToFinishReasonType.Unknown, new Error('test error')),
     didCheckForUpdate(false),
+    didConnect('3.0.0'),
 ])('actions that should show notification: %o', async (action: Action) => {
     const getToasts = jest.fn().mockReturnValue([]);
     const show = jest.fn();
@@ -106,6 +112,7 @@ test.each([
     didFailToFinish(FailToFinishReasonType.FailedToConnect),
     didSucceed({} as ServiceWorkerRegistration),
     didCheckForUpdate(true),
+    didConnect(firmwareVersion),
 ])('actions that should not show a notification: %o', async (action: Action) => {
     const getToasts = jest.fn().mockReturnValue([]);
     const show = jest.fn();

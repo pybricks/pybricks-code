@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020 The Pybricks Authors
+// Copyright (c) 2020-2021 The Pybricks Authors
 //
 // Notification translation keys.
 
@@ -29,4 +29,5 @@ export enum MessageId {
     ServiceWorkerUpdateMessage = 'serviceWorker.update.message',
     ServiceWorkerUpdateAction = 'serviceWorker.update.action',
     MpyError = 'mpy.error',
+    CheckFirmwareTooOld = 'check.firmwareTooOld',
 }

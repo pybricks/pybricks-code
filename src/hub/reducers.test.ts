@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2021 The Pybricks Authors
 
+import { firmwareVersion } from '@pybricks/firmware';
 import { Action } from '../actions';
 import { statusReportEvent } from '../ble-pybricks-service/actions';
 import { Status, statusToFlag } from '../ble-pybricks-service/protocol';
@@ -27,8 +28,10 @@ test('initial state', () => {
 describe('runtime', () => {
     test('', () => {
         expect(
-            reducers({ runtime: HubRuntimeState.Disconnected } as State, didConnect())
-                .runtime,
+            reducers(
+                { runtime: HubRuntimeState.Disconnected } as State,
+                didConnect(firmwareVersion),
+            ).runtime,
         ).toBe(HubRuntimeState.Unknown);
     });
 
