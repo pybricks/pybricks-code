@@ -8,6 +8,7 @@ import xcodeTheme from 'monaco-themes/themes/Xcode_default.json';
 import React from 'react';
 import MonacoEditor, { monaco } from 'react-monaco-editor';
 import { connect } from 'react-redux';
+import SplitterLayout from 'react-splitter-layout';
 import { IDisposable } from 'xterm';
 import { compile } from '../mpy/actions';
 import { RootState } from '../reducers';
@@ -72,12 +73,36 @@ monaco.editor.defineTheme(
 const xcodeId = 'xcode';
 monaco.editor.defineTheme(xcodeId, xcodeTheme as monaco.editor.IStandaloneThemeData);
 
-class Editor extends React.Component<EditorProps> implements IContextMenuTarget {
+class Editor
+    extends React.Component<EditorProps, { activeFile: string; fileList: string[] }>
+    implements IContextMenuTarget
+{
     private editorRef: React.RefObject<MonacoEditor>;
+    private ignoreChangeEventBecauseTabChange = false;
+    private FILE_PREFIX = 'file:';
 
     constructor(props: EditorProps) {
         super(props);
         this.editorRef = React.createRef();
+        //[this.tab, this.setTab] = useState('tab1');
+        //[this.tab] = useState('tab1');
+
+        //const filelist = ['program', 'file:file1', 'file:file2', 'file:xxxxxxxxxx'];
+        //this.state.filelist
+        let afilelist: string[] = Object.keys(localStorage).filter((key) =>
+            key.startsWith('file:'),
+        );
+        if (!afilelist.length) {
+            afilelist = ['program'];
+        }
+        const activeFile = localStorage.getItem('active-file') || afilelist[0];
+
+        this.state = {
+            activeFile: activeFile,
+            fileList: afilelist,
+        };
+
+        //this.handleTabChange = this.handleTabChange.bind(this);
     }
 
     /** convenience property for getting editor object */
@@ -86,8 +111,9 @@ class Editor extends React.Component<EditorProps> implements IContextMenuTarget 
     }
 
     onStorage = (e: StorageEvent): void => {
+        //!!! key
         if (
-            e.key === 'program' &&
+            e.key === this.state.activeFile &&
             e.newValue &&
             e.newValue !== this.editor?.getValue()
         ) {
@@ -105,65 +131,103 @@ class Editor extends React.Component<EditorProps> implements IContextMenuTarget 
 
     render(): JSX.Element {
         const { i18n, darkMode, onSessionChanged, onCheck, onToggleDocs } = this.props;
+
         return (
             <div className="h-100" onContextMenu={(e) => handleContextMenu(e, this)}>
-                <ResizeSensor onResize={(): void => this.editor?.layout()}>
-                    <MonacoEditor
-                        ref={this.editorRef}
-                        language={pybricksMicroPythonId}
-                        theme={darkMode ? tomorrowNightEightiesId : xcodeId}
-                        width="100%"
-                        height="100%"
-                        options={{
-                            fontSize: 18,
-                            minimap: { enabled: false },
-                            contextmenu: false,
-                            rulers: [80],
-                        }}
-                        value={localStorage.getItem('program')}
-                        editorDidMount={(e, _m): void => {
-                            // FIXME: editor does not respond to changes in i18n
-                            const untitledHintContribution =
-                                new UntitledHintContribution(
-                                    e,
-                                    i18n.translate(EditorStringId.Placeholder),
+                <SplitterLayout
+                    percentage={false}
+                    primaryIndex={1}
+                    secondaryInitialSize={150}
+                    secondaryMinSize={150}
+                >
+                    <Menu>
+                        {this.state.fileList.map((elem) => (
+                            <MenuItem
+                                key={elem}
+                                text={elem.slice(this.FILE_PREFIX.length)}
+                                active={this.state.activeFile == elem}
+                                onClick={() => {
+                                    const filename = elem;
+                                    const contents: string =
+                                        localStorage.getItem(filename) || '';
+                                    try {
+                                        this.ignoreChangeEventBecauseTabChange = true;
+
+                                        this.setState({ activeFile: filename });
+                                        localStorage.setItem('active-file', filename);
+
+                                        this.editorRef.current?.editor?.setValue(
+                                            contents,
+                                        );
+                                    } finally {
+                                        this.ignoreChangeEventBecauseTabChange = false;
+                                    }
+                                }}
+                            />
+                        ))}
+                    </Menu>
+                    <ResizeSensor onResize={(): void => this.editor?.layout()}>
+                        <MonacoEditor
+                            ref={this.editorRef}
+                            language={pybricksMicroPythonId}
+                            theme={darkMode ? tomorrowNightEightiesId : xcodeId}
+                            width="100%"
+                            height="100%"
+                            options={{
+                                fontSize: 18,
+                                minimap: { enabled: false },
+                                contextmenu: false,
+                                rulers: [80],
+                            }}
+                            value={localStorage.getItem(this.state.activeFile)}
+                            editorDidMount={(e, _m): void => {
+                                // FIXME: editor does not respond to changes in i18n
+                                const untitledHintContribution =
+                                    new UntitledHintContribution(
+                                        e,
+                                        i18n.translate(EditorStringId.Placeholder),
+                                    );
+                                e.onDidDispose(() =>
+                                    untitledHintContribution.dispose(),
                                 );
-                            e.onDidDispose(() => untitledHintContribution.dispose());
-                            e.addAction({
-                                id: 'pybricks.action.toggleDocs',
-                                label: i18n.translate(EditorStringId.ToggleDocs),
-                                run: () => onToggleDocs(),
-                                keybindings: [
-                                    monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_D,
-                                ],
-                            });
-                            e.addAction({
-                                id: 'pybricks.action.check',
-                                label: i18n.translate(EditorStringId.Check),
-                                run: () => onCheck(e.getValue()),
-                                keybindings: [monaco.KeyCode.F2],
-                            });
-                            e.addAction({
-                                id: 'pybricks.action.save',
-                                label: 'Unused',
-                                run: () => {
-                                    // We already automatically save the file
-                                    // to local storage after every change, so
-                                    // CTRL+S is ignored
-                                    console.debug('Ctrl-S ignored');
-                                },
-                                keybindings: [
-                                    monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S,
-                                ],
-                            });
-                            e.focus();
-                            onSessionChanged(e);
-                        }}
-                        onChange={(v): void => {
-                            localStorage.setItem('program', v);
-                        }}
-                    />
-                </ResizeSensor>
+                                e.addAction({
+                                    id: 'pybricks.action.toggleDocs',
+                                    label: i18n.translate(EditorStringId.ToggleDocs),
+                                    run: () => onToggleDocs(),
+                                    keybindings: [
+                                        monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_D,
+                                    ],
+                                });
+                                e.addAction({
+                                    id: 'pybricks.action.check',
+                                    label: i18n.translate(EditorStringId.Check),
+                                    run: () => onCheck(e.getValue()),
+                                    keybindings: [monaco.KeyCode.F2],
+                                });
+                                e.addAction({
+                                    id: 'pybricks.action.save',
+                                    label: 'Unused',
+                                    run: () => {
+                                        // We already automatically save the file
+                                        // to local storage after every change, so
+                                        // CTRL+S is ignored
+                                        console.debug('Ctrl-S ignored');
+                                    },
+                                    keybindings: [
+                                        monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S,
+                                    ],
+                                });
+                                e.focus();
+                                onSessionChanged(e);
+                            }}
+                            onChange={(v): void => {
+                                if (!this.ignoreChangeEventBecauseTabChange) {
+                                    localStorage.setItem(this.state.activeFile, v);
+                                }
+                            }}
+                        />
+                    </ResizeSensor>
+                </SplitterLayout>
             </div>
         );
     }

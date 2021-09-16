@@ -21,10 +21,16 @@ module.exports = {
         'no-multi-spaces': 'error',
         'no-trailing-spaces': 'error',
         'no-multiple-empty-lines': 'error',
-        '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
-        'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+        '@typescript-eslint/no-unused-vars': ['off', { argsIgnorePattern: '^_' }],
+        'no-unused-vars': ['off', { argsIgnorePattern: '^_' }],
         'sort-imports': ['error', { ignoreDeclarationSort: true }],
         'import/order': ['error', { alphabetize: { order: 'asc' } }],
+        'prettier/prettier': [
+            'error',
+            {
+                endOfLine: 'auto',
+            },
+        ],
     },
     settings: {
         react: { version: 'detect' },

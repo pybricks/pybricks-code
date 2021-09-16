@@ -23,7 +23,10 @@ function* open(action: EditorOpenAction): Generator {
     }
 
     const text = decoder.decode(action.data);
-    editor.setValue(text);
+    console.log('open');
+    console.log(text);
+    console.log(editor);
+    //editor.setValue(text);
 }
 
 function* saveAs(_action: EditorSaveAsAction): Generator {

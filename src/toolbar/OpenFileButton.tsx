@@ -25,7 +25,7 @@ export interface OpenFileButtonProps {
     /** The progress value (0 to 1) for the progress spinner. */
     readonly progress?: number;
     /** Callback that is called when a file has been selected and opened for reading. */
-    readonly onFile: (data: ArrayBuffer) => void;
+    readonly onFile: (data: ArrayBuffer, filename: string) => void;
     /** Callback that is called when a file has been rejected (e.g. bad file extension). */
     readonly onReject: (file: File) => void;
     /** If defined, will call custom function instead of opening file browser. */
@@ -52,6 +52,7 @@ class OpenFileButton extends React.Component<Props> {
             reader.onabort = (): void => console.error('file reading was aborted');
             reader.onerror = (): void => console.error('file reading has failed');
             reader.onload = (): void => {
+                const filename = f.name;
                 const binaryStr = reader.result;
                 if (binaryStr === null) {
                     throw Error('Unexpected null binaryStr');
@@ -59,7 +60,7 @@ class OpenFileButton extends React.Component<Props> {
                 if (typeof binaryStr === 'string') {
                     throw Error('Unexpected string binaryStr');
                 }
-                this.props.onFile(binaryStr);
+                this.props.onFile(binaryStr, filename);
             };
             reader.readAsArrayBuffer(f);
         });

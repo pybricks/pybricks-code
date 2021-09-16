@@ -59,14 +59,16 @@ export function saveAs(): EditorSaveAsAction {
 export type EditorOpenAction = Action<EditorActionType.Open> & {
     /** The data to save */
     data: ArrayBuffer;
+    /** name of the file opened */
+    filename: string;
 };
 
 /**
  * Creates an action to save a file
  * @param data The file data
  */
-export function open(data: ArrayBuffer): EditorOpenAction {
-    return { type: EditorActionType.Open, data };
+export function open(data: ArrayBuffer, filename: string): EditorOpenAction {
+    return { type: EditorActionType.Open, data, filename };
 }
 
 /**Action that indicates the local storage has changed. */
