@@ -7,6 +7,33 @@
 ### Added
 - Show error message if connected hub is running old firmware ([support#482]).
 
+### Changed
+- Updated dependencies.
+- Updated to Pybricks firmware v3.1.0b1:
+
+  ### Added
+  - Support for LEGO Technic Color Light Matrix ([support#440]).
+  - Support for LEGO UART devices with a new battery power flag. This is
+    required to support the new LEGO Technic Color Light Matrix ([support#440]).
+  - Support for the SPIKE Essential hub/Technic Small hub ([support#439]).
+
+  ### Fixed
+  - Fixed Ultrasonic Sensor and Color Sensor turning off when a
+    user script ends ([support#456]).
+  - Hub reset due to watchdog timer when writing data to UART I/O device
+    ([support#304]).
+  - City/Technic hubs not connecting via Bluetooth on macOS 12 ([support#489]).
+
+  ### Changed:
+  - Updated to MicroPython v1.17.
+
+  [support#304]: https://github.com/pybricks/support/issues/304
+  [support#439]: https://github.com/pybricks/support/issues/439
+  [support#440]: https://github.com/pybricks/support/issues/440
+  [support#456]: https://github.com/pybricks/support/issues/456
+  [support#489]: https://github.com/pybricks/support/issues/489
+
+
 [support#482]: https://github.com/pybricks/support/issues/482
 
 ## [1.1.0-beta.5] - 2021-08-30
