@@ -88,6 +88,10 @@
   end [support#433].
 - About menu now shows firmware version as main version [support#412].
 
+[support#403]: https://github.com/pybricks/support/issues/403
+[support#412]: https://github.com/pybricks/support/issues/412
+[support#433]: https://github.com/pybricks/support/issues/433
+
 ## [1.1.0-beta.3] - 2021-07-20
 
 ### Changed
@@ -99,6 +103,12 @@
 ### Fixed
 - Fixed auto-indent not working [pybricks-code#470].
 
+[support#375]: https://github.com/pybricks/support/issues/375
+[pybricks-code#470]: https://github.com/pybricks/pybricks-code/issues/470
+[pybricks-code#471]: https://github.com/pybricks/pybricks-code/issues/471
+[pybricks-code#472]: https://github.com/pybricks/pybricks-code/issues/472
+[v3.1.0a3]: https://github.com/pybricks/pybricks-micropython/blob/master/CHANGELOG.md#310a3---2021-07-19
+
 ## [1.1.0-beta.2] - 2021-07-06
 
 ## Changed
@@ -108,12 +118,17 @@
 ### Fixed
 - Fixed run button still enabled after hub disconnects during download [support#378].
 
+[support#378]: https://github.com/pybricks/support/issues/378
+[v3.1.0a2]: https://github.com/pybricks/pybricks-micropython/blob/master/CHANGELOG.md#310a2---2021-07-06
+
 ## [1.1.0-beta.1] - 2021-06-23
 
 ### Changed
 - Updated projects URL.
 - Updated hub firmware to [v3.1.0a1].
 - Updated docs.
+- 
+[v3.1.0a1]: https://github.com/pybricks/pybricks-micropython/blob/master/CHANGELOG.md#310a1---2021-06-23
 
 ## [1.0.0] - 2021-06-08
 
@@ -128,21 +143,10 @@
 
 Prerelease changes are documented at [support#48].
 
-
-<!-- let's try to keep this list sorted alphabetically -->
-[pybricks-code#470]: https://github.com/pybricks/pybricks-code/issues/470
-[pybricks-code#471]: https://github.com/pybricks/pybricks-code/issues/471
-[pybricks-code#472]: https://github.com/pybricks/pybricks-code/issues/472
 [support#48]: https://github.com/pybricks/support/issues/48
-[support#375]: https://github.com/pybricks/support/issues/375
-[support#378]: https://github.com/pybricks/support/issues/378
-[support#403]: https://github.com/pybricks/support/issues/403
-[support#412]: https://github.com/pybricks/support/issues/412
-[support#433]: https://github.com/pybricks/support/issues/433
 [v3.0.0]: https://github.com/pybricks/pybricks-micropython/blob/master/CHANGELOG.md#300---2021-06-08
-[v3.1.0a1]: https://github.com/pybricks/pybricks-micropython/blob/master/CHANGELOG.md#310a1---2021-06-23
-[v3.1.0a2]: https://github.com/pybricks/pybricks-micropython/blob/master/CHANGELOG.md#310a2---2021-07-06
-[v3.1.0a3]: https://github.com/pybricks/pybricks-micropython/blob/master/CHANGELOG.md#310a3---2021-07-19
+
+<!-- links for version headings -->
 
 [Unreleased]: https://github.com/pybricks/pybricks-code/compare/v1.1.0-beta.5...HEAD
 [1.1.0-beta.5]: https://github.com/pybricks/pybricks-code/compare/v1.1.0-beta.4...v1.1.0-beta.5
