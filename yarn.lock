@@ -1583,12 +1583,12 @@
     schema-utils "^2.6.5"
     source-map "^0.7.3"
 
-"@pybricks/firmware@4.13.0-alpha.5":
-  version "4.13.0-alpha.5"
-  resolved "https://registry.yarnpkg.com/@pybricks/firmware/-/firmware-4.13.0-alpha.5.tgz#2f87fab54b4e86348f2df46d786edbda265408c3"
-  integrity sha512-sr8OQ16U30/l7lHaG3G/jtA/bL+p3MfSMB1dbDMgb5y5TzKO8nfAInKsEJ3jsw28bRhvsVIVptfkD+fBoXlXOQ==
+"@pybricks/firmware@4.13.0-beta.1":
+  version "4.13.0-beta.1"
+  resolved "https://registry.yarnpkg.com/@pybricks/firmware/-/firmware-4.13.0-beta.1.tgz#d8f0b66c639ef7137e01045277a54bafe7dfef77"
+  integrity sha512-dbkWPmQAavY2TRHHD/0PLcI5x1+EaA4IOLcjZVPutSmltUFPA0316blM1rz6dOBIKoFj+5vgu6nA8ZYQH1jnRg==
   dependencies:
-    jszip "^3.5.0"
+    jszip "^3.7.1"
 
 "@pybricks/ide-docs@1.6.0":
   version "1.6.0"
@@ -7640,7 +7640,7 @@ jsprim@^1.2.2:
     array-includes "^3.1.2"
     object.assign "^4.1.2"
 
-jszip@^3.5.0, jszip@^3.7.1:
+jszip@^3.7.1:
   version "3.7.1"
   resolved "https://registry.yarnpkg.com/jszip/-/jszip-3.7.1.tgz#bd63401221c15625a1228c556ca8a68da6fda3d9"
   integrity sha512-ghL0tz1XG9ZEmRMcEN2vt7xabrDdqHHeykgARpmZ0BiIctWxM47Vt63ZO2dnp4QYt/xJVLLy5Zv1l/xRdh2byg==

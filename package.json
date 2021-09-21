@@ -10,7 +10,7 @@
     "dependencies": {
         "@blueprintjs/core": "^3.50.1",
         "@craco/craco": "^6.3.0",
-        "@pybricks/firmware": "4.13.0-alpha.5",
+        "@pybricks/firmware": "4.13.0-beta.1",
         "@pybricks/ide-docs": "1.6.0",
         "@pybricks/mpy-cross-v5": "^2.0.0",
         "@shopify/react-i18n": "^6.2.2",
