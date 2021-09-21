@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [1.1.0-beta.6] - 2021-09-21
+
 ### Added
 - Show error message if connected hub is running old firmware ([support#482]).
 
@@ -148,7 +150,8 @@ Prerelease changes are documented at [support#48].
 
 <!-- links for version headings -->
 
-[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v1.1.0-beta.5...HEAD
+[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v1.1.0-beta.6...HEAD
+[1.1.0-beta.6]: https://github.com/pybricks/pybricks-code/compare/v1.1.0-beta.5...v1.1.0-beta.6
 [1.1.0-beta.5]: https://github.com/pybricks/pybricks-code/compare/v1.1.0-beta.4...v1.1.0-beta.5
 [1.1.0-beta.4]: https://github.com/pybricks/pybricks-code/compare/v1.1.0-beta.3...v1.1.0-beta.4
 [1.1.0-beta.3]: https://github.com/pybricks/pybricks-code/compare/v1.1.0-beta.2...v1.1.0-beta.3
