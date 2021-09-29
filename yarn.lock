@@ -5083,10 +5083,10 @@ eslint-config-react-app@^6.0.0:
   dependencies:
     confusing-browser-globals "^1.0.10"
 
-eslint-config-typed-fp@^1.5.0:
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/eslint-config-typed-fp/-/eslint-config-typed-fp-1.5.0.tgz#5f8e7540b742db3e491b75243de25cd0d6c318b7"
-  integrity sha512-ETR7y+BFqyhie8NjX68+Bidx8bbOoXZyultJbboD/IieASLh6l/sWNNM3Mwvi5OJKdqtllfEEqlyq1jG4x8vQQ==
+eslint-config-typed-fp@^1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/eslint-config-typed-fp/-/eslint-config-typed-fp-1.6.0.tgz#b5f69831018915ba3012180d87495aa96f61fcfa"
+  integrity sha512-g7mSWzYJ7L6Ub80vSpm1naJNCIjDHwjKziPsM30rTXg5CEuQ+bkZZhVLNdt2iQ6hh6GRzZc06YDy6okefrW0hA==
 
 eslint-import-resolver-node@^0.3.6:
   version "0.3.6"
