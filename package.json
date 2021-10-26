@@ -21,7 +21,7 @@
         "@types/file-saver": "^2.0.3",
         "@types/jest": "^27.0.2",
         "@types/node": "^12.20.28",
-        "@types/react": "^16.14.16",
+        "@types/react": "^16.14.20",
         "@types/react-dom": "^16.9.14",
         "@types/react-redux": "^7.1.19",
         "@types/react-splitter-layout": "^3.0.2",
