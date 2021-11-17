@@ -36,7 +36,7 @@
         "jszip": "^3.7.1",
         "license-webpack-plugin": "^3.0.0",
         "monaco-editor-webpack-plugin": "^6.0.0",
-        "monaco-themes": "^0.3.3",
+        "monaco-themes": "^0.4.0",
         "mq-polyfill": "^1.1.8",
         "node-sass": "^6.0.1",
         "prop-types": "^15.7.2",

@@ -8293,10 +8293,10 @@ monaco-editor@^0.27.0:
   resolved "https://registry.yarnpkg.com/monaco-editor/-/monaco-editor-0.27.0.tgz#4b69108bb1dc1f60174c5dcdf51bc5306ab5ba26"
   integrity sha512-UhwP78Wb8w0ZSYoKXQNTV/0CHObp6NS3nCt51QfKE6sKyBo5PBsvuDOHoI2ooBakc6uIwByRLHVeT7+yXQe2fQ==
 
-monaco-themes@^0.3.3:
-  version "0.3.3"
-  resolved "https://registry.yarnpkg.com/monaco-themes/-/monaco-themes-0.3.3.tgz#86d9b7cde4d90acb128ec07b3d5d10f757a32224"
-  integrity sha512-0yygYHg3hZhMhlYkP2eMAMurLSyVDqA7ZOjHJSz0LNxra2hxuAGjKFdoBGXnG+VykT6u8bc5uZWF8G35NMC3Gw==
+monaco-themes@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/monaco-themes/-/monaco-themes-0.4.0.tgz#4bcb0584efdf6586a5edb76287e7e51457f591cd"
+  integrity sha512-AJL7Sk3j1DrQo94RqaYBr+IrGNP/2f5drFkKXKyjNZHYY/j+2Pv+O4+WETYkrTj9m1Zm2K3YRuGP/I3+5rHPxw==
   dependencies:
     fast-plist "^0.1.2"
 
