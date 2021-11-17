@@ -34,7 +34,7 @@
         "copy-webpack-plugin": "^6.4.1",
         "file-saver": "^2.0.5",
         "jszip": "^3.7.1",
-        "license-webpack-plugin": "^3.0.0",
+        "license-webpack-plugin": "^4.0.0",
         "monaco-editor-webpack-plugin": "^6.0.0",
         "monaco-themes": "^0.4.0",
         "mq-polyfill": "^1.1.8",
