@@ -8,7 +8,7 @@
         "url": "https://github.com/pybricks/pybricks-code"
     },
     "dependencies": {
-        "@blueprintjs/core": "^3.51.0",
+        "@blueprintjs/core": "^3.51.3",
         "@craco/craco": "^6.4.0",
         "@pybricks/firmware": "4.13.0-beta.1",
         "@pybricks/ide-docs": "1.6.0",
@@ -36,7 +36,7 @@
         "jszip": "^3.7.1",
         "license-webpack-plugin": "^3.0.0",
         "monaco-editor-webpack-plugin": "^6.0.0",
-        "monaco-themes": "^0.3.3",
+        "monaco-themes": "^0.4.0",
         "mq-polyfill": "^1.1.8",
         "node-sass": "^6.0.1",
         "prop-types": "^15.7.2",
@@ -92,7 +92,7 @@
         "eslint-plugin-functional": "^3.7.2",
         "eslint-plugin-import": "^2.25.3",
         "eslint-plugin-prettier": "^4.0.0",
-        "eslint-plugin-react": "^7.26.1",
+        "eslint-plugin-react": "^7.27.0",
         "eslint-plugin-total-functions": "^4.10.1",
         "jest-mock-extended": "^2.0.4",
         "prettier": "^2.4.1"
