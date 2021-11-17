@@ -134,7 +134,7 @@ class Editor extends React.Component<EditorProps> implements IContextMenuTarget 
                                 label: i18n.translate(EditorStringId.ToggleDocs),
                                 run: () => onToggleDocs(),
                                 keybindings: [
-                                    monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_D,
+                                    monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyD,
                                 ],
                             });
                             e.addAction({
@@ -153,7 +153,7 @@ class Editor extends React.Component<EditorProps> implements IContextMenuTarget 
                                     console.debug('Ctrl-S ignored');
                                 },
                                 keybindings: [
-                                    monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S,
+                                    monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS,
                                 ],
                             });
                             e.focus();
