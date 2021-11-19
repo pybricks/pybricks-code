@@ -1595,10 +1595,10 @@
     schema-utils "^2.6.5"
     source-map "^0.7.3"
 
-"@pybricks/firmware@4.13.0-beta.1":
-  version "4.13.0-beta.1"
-  resolved "https://registry.yarnpkg.com/@pybricks/firmware/-/firmware-4.13.0-beta.1.tgz#d8f0b66c639ef7137e01045277a54bafe7dfef77"
-  integrity sha512-dbkWPmQAavY2TRHHD/0PLcI5x1+EaA4IOLcjZVPutSmltUFPA0316blM1rz6dOBIKoFj+5vgu6nA8ZYQH1jnRg==
+"@pybricks/firmware@4.13.0":
+  version "4.13.0"
+  resolved "https://registry.yarnpkg.com/@pybricks/firmware/-/firmware-4.13.0.tgz#9c515371d808a25081744ad7f5d5cc8a528a5af8"
+  integrity sha512-P0dhcFd5uAM2ytE/g9Y3kGD/nLXF5wL7g5wmvpqwVjvs5h+2pimHehWgoM0MZ+N+myjNicwvHKUQWE/gizNlyA==
   dependencies:
     jszip "^3.7.1"
 
