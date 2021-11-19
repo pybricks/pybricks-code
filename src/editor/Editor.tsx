@@ -12,7 +12,7 @@ import { IDisposable } from 'xterm';
 import { compile } from '../mpy/actions';
 import { RootState } from '../reducers';
 import { toggleBoolean } from '../settings/actions';
-import { SettingId } from '../settings/defaults';
+import { BooleanSettingId } from '../settings/defaults';
 import { IContextMenuTarget, handleContextMenu } from '../utils/IContextMenuTarget';
 import { isMacOS } from '../utils/os';
 import { setEditSession, storageChanged } from './actions';
@@ -254,7 +254,7 @@ const mapDispatchToProps: DispatchProps = {
     // REVISIT: the options here might need to be changed - hopefully there is
     // one setting that works for all hub types for cases where we aren't connected.
     onCheck: (script) => compile(script, []),
-    onToggleDocs: () => toggleBoolean(SettingId.ShowDocs),
+    onToggleDocs: () => toggleBoolean(BooleanSettingId.ShowDocs),
 };
 
 export default connect(

@@ -20,6 +20,12 @@
             "flash-current-program": {
                 "label": "Include current program",
                 "tooltip": "Select to include your program when installing the firmware."
+            },
+            "hub-name": {
+                "label": "Hub name",
+                "error": {
+                    "tooltip": "The name is too long."
+                }
             }
         },
         "help": {

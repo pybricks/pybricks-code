@@ -1,0 +1,10 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2021 The Pybricks Authors
+
+// Custom styling for the settings controls.
+
+@import '../variables.scss';
+
+.pb-hub-name-input .#{$ns}-input {
+    width: 200px;
+}

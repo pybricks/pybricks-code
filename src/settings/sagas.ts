@@ -13,12 +13,20 @@ import { ensureError } from '../utils';
 import {
     SettingsActionType,
     SettingsSetBooleanAction,
+    SettingsSetStringAction,
     SettingsToggleBooleanAction,
     didBooleanChange,
     didFailToSetBoolean,
+    didFailToSetString,
+    didStringChange,
     setBoolean,
 } from './actions';
-import { SettingId, getDefaultBooleanValue } from './defaults';
+import {
+    BooleanSettingId,
+    StringSettingId,
+    getDefaultBooleanValue,
+    getDefaultStringValue,
+} from './defaults';
 
 function stringToBoolean(value: string): boolean {
     return value.toLowerCase().match(/(true|yes|1)/) !== null;
@@ -49,20 +57,30 @@ function* monitorLocalStorage(): Generator {
             continue;
         }
 
-        const id = event.key.replace(/^setting\./, '') as SettingId;
+        const id = event.key.replace(/^setting\./, '');
 
-        // istanbul ignore if: should not happen normally
-        if (!Object.values(SettingId).includes(id)) {
-            console.error(`Bad setting id: ${id}`);
+        if (Object.values(BooleanSettingId).includes(id as BooleanSettingId)) {
+            yield* put(
+                didBooleanChange(
+                    id as BooleanSettingId,
+                    stringToBoolean(event.newValue || 'false'),
+                ),
+            );
             continue;
         }
 
-        yield* put(didBooleanChange(id, stringToBoolean(event.newValue || 'false')));
+        if (Object.values(StringSettingId).includes(id as StringSettingId)) {
+            yield* put(didStringChange(id as StringSettingId, event.newValue || ''));
+            continue;
+        }
+
+        // istanbul ignore next: should not happen normally
+        console.error(`Bad setting id: ${id}`);
     }
 }
 
 function* loadSettings(): Generator {
-    for (const id of Object.values(SettingId)) {
+    for (const id of Object.values(BooleanSettingId)) {
         const storageValue = localStorage.getItem(`setting.${id}`);
         const defaultValue = getDefaultBooleanValue(id);
         const value =
@@ -72,9 +90,19 @@ function* loadSettings(): Generator {
             yield* put(didBooleanChange(id, value));
         }
     }
+
+    for (const id of Object.values(StringSettingId)) {
+        const storageValue = localStorage.getItem(`setting.${id}`);
+        const defaultValue = getDefaultStringValue(id);
+        const value = storageValue === null ? defaultValue : storageValue;
+
+        if (value !== defaultValue) {
+            yield* put(didStringChange(id, value));
+        }
+    }
 }
 
-function* storeSetting(action: SettingsSetBooleanAction): Generator {
+function* storeBooleanSetting(action: SettingsSetBooleanAction): Generator {
     const key = `setting.${action.id}`;
     const newValue = String(action.newState);
 
@@ -100,14 +128,41 @@ function* storeSetting(action: SettingsSetBooleanAction): Generator {
     }
 }
 
-function* toggleSetting(action: SettingsToggleBooleanAction): Generator {
+function* toggleBooleanSetting(action: SettingsToggleBooleanAction): Generator {
     const oldValue = yield* select((s: RootState) => s.settings[action.id]);
-    yield* storeSetting(setBoolean(action.id, !oldValue));
+    yield* storeBooleanSetting(setBoolean(action.id, !oldValue));
+}
+
+function* storeStringSetting(action: SettingsSetStringAction): Generator {
+    const key = `setting.${action.id}`;
+    const newValue = action.newState;
+
+    try {
+        localStorage.setItem(key, newValue);
+    } catch (err) {
+        yield* put(didFailToSetString(action.id, ensureError(err)));
+    }
+
+    // storage event is only raised when a value is changed externally, so we
+    // mimic the event when we call setItem(), whether it actually succeeded
+    // or not.
+    const oldValue = yield* select((s: RootState) => s.settings[action.id]);
+    if (action.newState !== oldValue) {
+        window.dispatchEvent(
+            new StorageEvent('storage', {
+                key,
+                newValue,
+                oldValue,
+                storageArea: localStorage,
+            }),
+        );
+    }
 }
 
 export default function* (): Generator {
     yield* fork(monitorLocalStorage);
     yield* takeEvery(AppActionType.DidStart, loadSettings);
-    yield* takeEvery(SettingsActionType.SetBoolean, storeSetting);
-    yield* takeEvery(SettingsActionType.ToggleBoolean, toggleSetting);
+    yield* takeEvery(SettingsActionType.SetBoolean, storeBooleanSetting);
+    yield* takeEvery(SettingsActionType.ToggleBoolean, toggleBooleanSetting);
+    yield* takeEvery(SettingsActionType.SetString, storeStringSetting);
 }

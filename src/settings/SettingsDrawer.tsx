@@ -6,11 +6,16 @@ import {
     Button,
     ButtonGroup,
     Classes,
+    ControlGroup,
     Drawer,
     FormGroup,
     Hotkey,
     Hotkeys,
     HotkeysTarget,
+    Icon,
+    InputGroup,
+    Intent,
+    Label,
     Position,
     Switch,
     Tooltip,
@@ -32,10 +37,11 @@ import { RootState } from '../reducers';
 import ExternalLinkIcon from '../utils/ExternalLinkIcon';
 import { BeforeInstallPromptEvent } from '../utils/dom';
 import { isMacOS } from '../utils/os';
-import { setBoolean, toggleBoolean } from './actions';
-import { SettingId } from './defaults';
+import { setBoolean, setString, toggleBoolean } from './actions';
+import { BooleanSettingId, StringSettingId } from './defaults';
 import { SettingsStringId } from './i18n';
 import en from './i18n.en.json';
+import './settings.scss';
 
 type StateProps = {
     showDocs: boolean;
@@ -47,6 +53,8 @@ type StateProps = {
     beforeInstallPrompt: BeforeInstallPromptEvent | null;
     promptingInstall: boolean;
     readyForOfflineUse: boolean;
+    hubName: string;
+    isHubNameValid: boolean;
 };
 
 type DispatchProps = {
@@ -57,6 +65,7 @@ type DispatchProps = {
     onCheckForUpdate: (registration: ServiceWorkerRegistration) => void;
     onReload: (registration: ServiceWorkerRegistration) => void;
     onInstallPrompt: (event: BeforeInstallPromptEvent) => void;
+    onHubNameChange: React.FormEventHandler<HTMLInputElement>;
 };
 
 type OwnProps = {
@@ -92,6 +101,9 @@ class SettingsDrawer extends React.PureComponent<SettingsProps> {
             isOpen,
             onClose,
             i18n,
+            hubName,
+            isHubNameValid,
+            onHubNameChange,
         } = this.props;
         return (
             <Drawer
@@ -180,6 +192,40 @@ class SettingsDrawer extends React.PureComponent<SettingsProps> {
                                     }
                                 />
                             </Tooltip>
+                            <ControlGroup>
+                                <Label className={Classes.INLINE}>
+                                    {i18n.translate(
+                                        SettingsStringId.FirmwareHubNameLabel,
+                                    )}
+                                    <InputGroup
+                                        value={hubName}
+                                        onChange={onHubNameChange}
+                                        className="pb-hub-name-input"
+                                        intent={
+                                            isHubNameValid ? Intent.NONE : Intent.DANGER
+                                        }
+                                        placeholder="Pybricks Hub"
+                                        rightElement={
+                                            isHubNameValid ? undefined : (
+                                                <Tooltip
+                                                    content={i18n.translate(
+                                                        SettingsStringId.FirmwareHubNameErrorTooltip,
+                                                    )}
+                                                    boundary="window"
+                                                    position={Position.BOTTOM}
+                                                    targetTagName="div"
+                                                >
+                                                    <Icon
+                                                        icon="error"
+                                                        intent={Intent.DANGER}
+                                                        itemType="div"
+                                                    />
+                                                </Tooltip>
+                                            )
+                                        }
+                                    />
+                                </Label>
+                            </ControlGroup>
                         </FormGroup>
                         <FormGroup label={i18n.translate(SettingsStringId.HelpTitle)}>
                             <ButtonGroup
@@ -328,17 +374,21 @@ const mapStateToProps = (state: RootState): StateProps => ({
     beforeInstallPrompt: state.app.beforeInstallPrompt,
     promptingInstall: state.app.promptingInstall,
     readyForOfflineUse: state.app.readyForOfflineUse,
+    hubName: state.settings.hubName,
+    isHubNameValid: state.settings.isHubNameValid,
 });
 
 const mapDispatchToProps: DispatchProps = {
-    onShowDocsChanged: (checked) => setBoolean(SettingId.ShowDocs, checked),
-    onDarkModeChanged: (checked) => setBoolean(SettingId.DarkMode, checked),
+    onShowDocsChanged: (checked) => setBoolean(BooleanSettingId.ShowDocs, checked),
+    onDarkModeChanged: (checked) => setBoolean(BooleanSettingId.DarkMode, checked),
     onFlashCurrentProgramChanged: (checked) =>
-        setBoolean(SettingId.FlashCurrentProgram, checked),
-    onToggleDocs: () => toggleBoolean(SettingId.ShowDocs),
+        setBoolean(BooleanSettingId.FlashCurrentProgram, checked),
+    onToggleDocs: () => toggleBoolean(BooleanSettingId.ShowDocs),
     onCheckForUpdate: checkForUpdate,
     onReload: reload,
     onInstallPrompt: installPrompt,
+    onHubNameChange: (event) =>
+        setString(StringSettingId.HubName, event.currentTarget.value),
 };
 
 export default connect(

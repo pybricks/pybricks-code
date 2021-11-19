@@ -8,7 +8,7 @@ import SplitterLayout from 'react-splitter-layout';
 import Editor from '../editor/Editor';
 import { RootState } from '../reducers';
 import { toggleBoolean } from '../settings/actions';
-import { SettingId } from '../settings/defaults';
+import { BooleanSettingId } from '../settings/defaults';
 import StatusBar from '../status-bar/StatusBar';
 import Terminal from '../terminal/Terminal';
 import Toolbar from '../toolbar/Toolbar';
@@ -142,7 +142,7 @@ function App(): JSX.Element {
                                     e.key == 'd'
                                 ) {
                                     e.preventDefault();
-                                    dispatch(toggleBoolean(SettingId.ShowDocs));
+                                    dispatch(toggleBoolean(BooleanSettingId.ShowDocs));
                                 }
                             });
 
