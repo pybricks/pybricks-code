@@ -193,38 +193,53 @@ class SettingsDrawer extends React.PureComponent<SettingsProps> {
                                 />
                             </Tooltip>
                             <ControlGroup>
-                                <Label className={Classes.INLINE}>
-                                    {i18n.translate(
-                                        SettingsStringId.FirmwareHubNameLabel,
+                                <Tooltip
+                                    content={i18n.translate(
+                                        SettingsStringId.FirmwareHubNameTooltip,
                                     )}
-                                    <InputGroup
-                                        value={hubName}
-                                        onChange={onHubNameChange}
-                                        className="pb-hub-name-input"
-                                        intent={
-                                            isHubNameValid ? Intent.NONE : Intent.DANGER
-                                        }
-                                        placeholder="Pybricks Hub"
-                                        rightElement={
-                                            isHubNameValid ? undefined : (
-                                                <Tooltip
-                                                    content={i18n.translate(
-                                                        SettingsStringId.FirmwareHubNameErrorTooltip,
-                                                    )}
-                                                    boundary="window"
-                                                    position={Position.BOTTOM}
-                                                    targetTagName="div"
-                                                >
-                                                    <Icon
-                                                        icon="error"
-                                                        intent={Intent.DANGER}
-                                                        itemType="div"
-                                                    />
-                                                </Tooltip>
-                                            )
-                                        }
-                                    />
-                                </Label>
+                                    boundary="window"
+                                    position={Position.LEFT}
+                                    targetTagName="div"
+                                    hoverOpenDelay={tooltipDelay}
+                                >
+                                    <Label
+                                        className={Classes.INLINE}
+                                        htmlFor="hub-name-input"
+                                    >
+                                        {i18n.translate(
+                                            SettingsStringId.FirmwareHubNameLabel,
+                                        )}
+                                    </Label>
+                                </Tooltip>
+                                <InputGroup
+                                    id="hub-name-input"
+                                    value={hubName}
+                                    onChange={onHubNameChange}
+                                    onMouseOver={(e) => e.preventDefault()}
+                                    className="pb-hub-name-input"
+                                    intent={
+                                        isHubNameValid ? Intent.NONE : Intent.DANGER
+                                    }
+                                    placeholder="Pybricks Hub"
+                                    rightElement={
+                                        isHubNameValid ? undefined : (
+                                            <Tooltip
+                                                content={i18n.translate(
+                                                    SettingsStringId.FirmwareHubNameErrorTooltip,
+                                                )}
+                                                boundary="window"
+                                                position={Position.BOTTOM}
+                                                targetTagName="div"
+                                            >
+                                                <Icon
+                                                    icon="error"
+                                                    intent={Intent.DANGER}
+                                                    itemType="div"
+                                                />
+                                            </Tooltip>
+                                        )
+                                    }
+                                />
                             </ControlGroup>
                         </FormGroup>
                         <FormGroup label={i18n.translate(SettingsStringId.HelpTitle)}>

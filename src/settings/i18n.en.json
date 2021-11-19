@@ -23,6 +23,7 @@
             },
             "hub-name": {
                 "label": "Hub name",
+                "tooltip": "Hub name to use when flashing the firmware.",
                 "error": {
                     "tooltip": "The name is too long."
                 }
