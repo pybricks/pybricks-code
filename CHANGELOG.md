@@ -4,6 +4,11 @@
 
 ## [Unreleased]
 
+### Added
+- Hub name setting for selecting hub name when flashing firmware ([support#52]).
+
+[support#52]: https://github.com/pybricks/support/issues/52
+
 ## [1.1.0-beta.6] - 2021-09-21
 
 ### Added
