@@ -38,6 +38,11 @@
   [support#500]: https://github.com/pybricks/support/issues/500
   [support#501]: https://github.com/pybricks/support/issues/501
 
+- Updated docs:
+
+  ### Added
+  - Added `ColorLightMatrix` class.
+  - Added `LWP3Device` class.
 
 [support#52]: https://github.com/pybricks/support/issues/52
 
