@@ -1602,10 +1602,10 @@
   dependencies:
     jszip "^3.7.1"
 
-"@pybricks/ide-docs@2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@pybricks/ide-docs/-/ide-docs-2.0.0.tgz#1a561f47c944b79cf527144adf1f98da258fb767"
-  integrity sha512-FIA0QdF0Qa6FVFGkMAg4bfGAoqo7gPX4CckOWF2Qr7ZE7Yaxr1W2pY6DgngiWXzVuQmnZINeI0i5iNiSj5IW0g==
+"@pybricks/ide-docs@2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@pybricks/ide-docs/-/ide-docs-2.0.1.tgz#b416e2426f8577df11fc04829515760bceba692c"
+  integrity sha512-JIalKJvZgvsEgjxZV8igOWNahR2ON3wODOUGPd3g+LE8h2BEuzVSZ4f+ZuD0Bn531//ysb/TVxTdK9mEK+aFaQ==
 
 "@pybricks/mpy-cross-v5@^2.0.0":
   version "2.0.0"
