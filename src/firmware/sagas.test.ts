@@ -63,6 +63,8 @@ describe('flashFirmware', () => {
                 'mpy-abi-version': 5,
                 'mpy-cross-options': ['-mno-unicode'],
                 'user-mpy-offset': 100,
+                'hub-name-offset': 90,
+                'max-hub-name-size': 10,
             };
 
             const zip = new JSZip();
@@ -79,7 +81,7 @@ describe('flashFirmware', () => {
                 flashFirmware,
                 {
                     bootloader: { connection: BootloaderConnectionState.Disconnected },
-                    settings: { flashCurrentProgram: false },
+                    settings: { flashCurrentProgram: false, hubName: 'test name' },
                 },
                 {
                     nextMessageId: createCountFunc(),
@@ -185,7 +187,7 @@ describe('flashFirmware', () => {
 
             // hub indicates success
 
-            saga.put(programResponse(0x62, totalFirmwareSize));
+            saga.put(programResponse(0x33, totalFirmwareSize));
 
             action = await saga.take();
             expect(action).toEqual(didProgress(1));

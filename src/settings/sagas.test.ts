@@ -8,10 +8,13 @@ import { didStart } from '../app/actions';
 import {
     didBooleanChange,
     didFailToSetBoolean,
+    didFailToSetString,
+    didStringChange,
     setBoolean,
+    setString,
     toggleBoolean,
 } from './actions';
-import { SettingId } from './defaults';
+import { BooleanSettingId, StringSettingId } from './defaults';
 import settings from './sagas';
 
 afterAll(() => {
@@ -95,7 +98,7 @@ describe('startup', () => {
 
             // requests documentation to be shown
             const action = await saga.take();
-            expect(action).toEqual(didBooleanChange(SettingId.ShowDocs, true));
+            expect(action).toEqual(didBooleanChange(BooleanSettingId.ShowDocs, true));
 
             await saga.end();
         });
@@ -120,7 +123,7 @@ describe('startup', () => {
 
             // requests documentation to be hidden
             const action = await saga.take();
-            expect(action).toEqual(didBooleanChange(SettingId.ShowDocs, false));
+            expect(action).toEqual(didBooleanChange(BooleanSettingId.ShowDocs, false));
 
             await saga.end();
         });
@@ -184,7 +187,7 @@ describe('startup', () => {
 
             // requests to enable dark mode
             const action = await saga.take();
-            expect(action).toEqual(didBooleanChange(SettingId.DarkMode, true));
+            expect(action).toEqual(didBooleanChange(BooleanSettingId.DarkMode, true));
 
             await saga.end();
         });
@@ -215,7 +218,9 @@ describe('startup', () => {
 
 describe('store settings to local storage', () => {
     test('failed storage', async () => {
-        const saga = new AsyncSaga(settings, { settings: { showDocs: false } });
+        const saga = new AsyncSaga(settings, {
+            settings: { showDocs: false, hubName: '' },
+        });
 
         const testError = new Error('local storage is disabled');
 
@@ -225,16 +230,31 @@ describe('store settings to local storage', () => {
                 throw testError;
             });
 
-        saga.put(setBoolean(SettingId.ShowDocs, true));
+        saga.put(setBoolean(BooleanSettingId.ShowDocs, true));
         expect(mockSetItem).toHaveBeenCalled();
 
         // raises error that storing setting didn't work
         const action1 = await saga.take();
-        expect(action1).toEqual(didFailToSetBoolean(SettingId.ShowDocs, testError));
+        expect(action1).toEqual(
+            didFailToSetBoolean(BooleanSettingId.ShowDocs, testError),
+        );
 
         // but the setting is still applied anyway
         const action2 = await saga.take();
-        expect(action2).toEqual(didBooleanChange(SettingId.ShowDocs, true));
+        expect(action2).toEqual(didBooleanChange(BooleanSettingId.ShowDocs, true));
+
+        mockSetItem.mockClear();
+
+        saga.put(setString(StringSettingId.HubName, 'test name'));
+        expect(mockSetItem).toHaveBeenCalled();
+
+        // raises error that storing setting didn't work
+        const action3 = await saga.take();
+        expect(action3).toEqual(didFailToSetString(StringSettingId.HubName, testError));
+
+        // but the setting is still applied anyway
+        const action4 = await saga.take();
+        expect(action4).toEqual(didStringChange(StringSettingId.HubName, 'test name'));
 
         await saga.end();
     });
@@ -249,11 +269,11 @@ describe('store settings to local storage', () => {
                 expect(value).toBe('true');
             });
 
-        saga.put(setBoolean(SettingId.ShowDocs, true));
+        saga.put(setBoolean(BooleanSettingId.ShowDocs, true));
         expect(mockSetItem).toHaveBeenCalled();
 
         const action = await saga.take();
-        expect(action).toEqual(didBooleanChange(SettingId.ShowDocs, true));
+        expect(action).toEqual(didBooleanChange(BooleanSettingId.ShowDocs, true));
 
         await saga.end();
     });
@@ -268,11 +288,11 @@ describe('store settings to local storage', () => {
                 expect(value).toBe('false');
             });
 
-        saga.put(setBoolean(SettingId.DarkMode, false));
+        saga.put(setBoolean(BooleanSettingId.DarkMode, false));
         expect(mockSetItem).toHaveBeenCalled();
 
         const action = await saga.take();
-        expect(action).toEqual(didBooleanChange(SettingId.DarkMode, false));
+        expect(action).toEqual(didBooleanChange(BooleanSettingId.DarkMode, false));
 
         await saga.end();
     });
@@ -289,11 +309,13 @@ describe('store settings to local storage', () => {
                 expect(value).toBe('false');
             });
 
-        saga.put(setBoolean(SettingId.FlashCurrentProgram, false));
+        saga.put(setBoolean(BooleanSettingId.FlashCurrentProgram, false));
         expect(mockSetItem).toHaveBeenCalled();
 
         const action = await saga.take();
-        expect(action).toEqual(didBooleanChange(SettingId.FlashCurrentProgram, false));
+        expect(action).toEqual(
+            didBooleanChange(BooleanSettingId.FlashCurrentProgram, false),
+        );
 
         await saga.end();
     });
@@ -328,7 +350,7 @@ describe('storage monitor', () => {
         );
 
         const action = await saga.take();
-        expect(action).toEqual(didBooleanChange(SettingId.ShowDocs, true));
+        expect(action).toEqual(didBooleanChange(BooleanSettingId.ShowDocs, true));
 
         await saga.end();
     });
@@ -362,11 +384,11 @@ describe('toggle', () => {
                 expect(value).toBe('true');
             });
 
-        saga.put(toggleBoolean(SettingId.ShowDocs));
+        saga.put(toggleBoolean(BooleanSettingId.ShowDocs));
         expect(mockSetItem).toHaveBeenCalled();
 
         const action = await saga.take();
-        expect(action).toEqual(didBooleanChange(SettingId.ShowDocs, true));
+        expect(action).toEqual(didBooleanChange(BooleanSettingId.ShowDocs, true));
 
         await saga.end();
     });

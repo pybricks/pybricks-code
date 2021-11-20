@@ -4,6 +4,50 @@
 
 ## [Unreleased]
 
+## [1.1.0-rc.1] - 2021-11-19
+
+### Added
+- Hub name setting for selecting hub name when flashing firmware ([support#52]).
+
+### Changed
+- Updated to Pybricks firmware v3.1.0c1:
+
+  ### Added
+  - Added `DriveBase.curve()` method to drive an arc segment.
+  - Added `then` and `wait` arguments to `DriveBase` methods ([support#57]).
+
+  ### Changed
+  - Dropped `integral_range` argument from `Control.pid()`. This setting was
+    ineffective and never used. When set incorrectly, the motor could get stuck
+    for certain combinations of `kp` and `ki`.
+  - Improved motor behavior for cases with low-speed, low-load, but high
+    inertia ([support#366]).
+  - Changed how the duty cycle limit is set for `Motor` and `DCMotor`. It is now
+    set as a voltage limit via a dedicated method, instead of `Motor.control`.
+
+  ### Fixed
+  - Fixed `then=Stop.COAST` being ignored in most motor commands.
+  - Fixed `brake()`/`light.off()` not working on Move hub I/O port C ([support#501]).
+  - Fixed `Remote()` failing to connect when hub is connected to 2019 or newer
+    MacBooks ([support#397]).
+  - Fixed intermittent improper detection of hot-plugged I/O devices ([support#500]).
+  - A program now stops when a `Motor` is unplugged while it is running, instead
+    of getting in a bad state.
+
+  [support#57]: https://github.com/pybricks/support/issues/57
+  [support#366]: https://github.com/pybricks/support/issues/366
+  [support#397]: https://github.com/pybricks/support/issues/397
+  [support#500]: https://github.com/pybricks/support/issues/500
+  [support#501]: https://github.com/pybricks/support/issues/501
+
+- Updated docs:
+
+  ### Added
+  - Added `ColorLightMatrix` class.
+  - Added `LWP3Device` class.
+
+[support#52]: https://github.com/pybricks/support/issues/52
+
 ## [1.1.0-beta.6] - 2021-09-21
 
 ### Added
@@ -129,7 +173,7 @@
 - Updated projects URL.
 - Updated hub firmware to [v3.1.0a1].
 - Updated docs.
-- 
+-
 [v3.1.0a1]: https://github.com/pybricks/pybricks-micropython/blob/master/CHANGELOG.md#310a1---2021-06-23
 
 ## [1.0.0] - 2021-06-08
@@ -150,7 +194,8 @@ Prerelease changes are documented at [support#48].
 
 <!-- links for version headings -->
 
-[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v1.1.0-beta.6...HEAD
+[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v1.1.0-rc.1...HEAD
+[1.1.0-rc.1]: https://github.com/pybricks/pybricks-code/compare/v1.1.0-beta.6...v1.1.0-rc.1
 [1.1.0-beta.6]: https://github.com/pybricks/pybricks-code/compare/v1.1.0-beta.5...v1.1.0-beta.6
 [1.1.0-beta.5]: https://github.com/pybricks/pybricks-code/compare/v1.1.0-beta.4...v1.1.0-beta.5
 [1.1.0-beta.4]: https://github.com/pybricks/pybricks-code/compare/v1.1.0-beta.3...v1.1.0-beta.4

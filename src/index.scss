@@ -93,3 +93,7 @@ a.#{$ns}-button {
 ::-webkit-scrollbar-thumb:hover {
     background: $pt-icon-color-hover;
 }
+
+.#{$ns}-input-group .#{$ns}-icon {
+    margin: 7px;
+}

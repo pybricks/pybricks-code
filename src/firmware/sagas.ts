@@ -1,7 +1,12 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2021 The Pybricks Authors
 
-import { FirmwareReader, FirmwareReaderError, HubType } from '@pybricks/firmware';
+import {
+    FirmwareReader,
+    FirmwareReaderError,
+    HubType,
+    encodeHubName,
+} from '@pybricks/firmware';
 import cityHubZip from '@pybricks/firmware/build/cityhub.zip';
 import moveHubZip from '@pybricks/firmware/build/movehub.zip';
 import technicHubZip from '@pybricks/firmware/build/technichub.zip';
@@ -240,6 +245,16 @@ function* loadFirmware(
     firmware.set(firmwareBase);
     firmwareView.setUint32(metadata['user-mpy-offset'], mpy.data.length, true);
     firmware.set(mpy.data, metadata['user-mpy-offset'] + 4);
+
+    // if the firmware supports it, we can set a custom hub name
+    if (metadata['max-hub-name-size']) {
+        const hubName = yield* select((s: RootState) => s.settings.hubName);
+
+        // empty string means use default name (don't write over firmware)
+        if (hubName) {
+            firmware.set(encodeHubName(hubName, metadata), metadata['hub-name-offset']);
+        }
+    }
 
     if (metadata['checksum-type'] !== 'sum') {
         yield* put(
