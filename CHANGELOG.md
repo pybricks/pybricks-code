@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [1.1.0-rc.1] - 2021-11-19
+
 ### Added
 - Hub name setting for selecting hub name when flashing firmware ([support#52]).
 
@@ -192,7 +194,8 @@ Prerelease changes are documented at [support#48].
 
 <!-- links for version headings -->
 
-[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v1.1.0-beta.6...HEAD
+[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v1.1.0-rc.1...HEAD
+[1.1.0-rc.1]: https://github.com/pybricks/pybricks-code/compare/v1.1.0-beta.6...v1.1.0-rc.1
 [1.1.0-beta.6]: https://github.com/pybricks/pybricks-code/compare/v1.1.0-beta.5...v1.1.0-beta.6
 [1.1.0-beta.5]: https://github.com/pybricks/pybricks-code/compare/v1.1.0-beta.4...v1.1.0-beta.5
 [1.1.0-beta.4]: https://github.com/pybricks/pybricks-code/compare/v1.1.0-beta.3...v1.1.0-beta.4
