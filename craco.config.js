@@ -207,7 +207,7 @@ module.exports = {
             new CopyPlugin({
                 patterns: [
                     {
-                        from: 'node_modules/@pybricks/ide-docs/build/html',
+                        from: 'node_modules/@pybricks/ide-docs/html',
                         to: 'static/docs',
                     },
                 ],
