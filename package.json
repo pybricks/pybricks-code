@@ -96,6 +96,6 @@
         "eslint-plugin-react": "^7.27.1",
         "eslint-plugin-total-functions": "^4.10.1",
         "jest-mock-extended": "^2.0.4",
-        "prettier": "^2.4.1"
+        "prettier": "^2.5.0"
     }
 }
