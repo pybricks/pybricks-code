@@ -1673,10 +1673,10 @@
     estree-walker "^1.0.1"
     picomatch "^2.2.2"
 
-"@shopify/dates@^1.0.10":
-  version "1.0.10"
-  resolved "https://registry.yarnpkg.com/@shopify/dates/-/dates-1.0.10.tgz#a71dbd043c325eccfcfecf74664478ab67a9ac25"
-  integrity sha512-+vFJePqOLF/kK6VHZ0bIrk28WnxwSZ3IFDnGVdlW5m9gTZNkcIwaK6iAGwjrXoQytBaR8qsMkm590ck3uF251w==
+"@shopify/dates@^1.0.11":
+  version "1.0.11"
+  resolved "https://registry.yarnpkg.com/@shopify/dates/-/dates-1.0.11.tgz#1701a2e6e38f275a08f82cf2d55117c30c45f22f"
+  integrity sha512-iO/gOhR18mU5qe5sm/6oOo0k4i1RE8YgLq4GFHHTVtH3/xr0PywMVOnOXGlzv/KZFX9VALYj8C+nmvOK1vKLQw==
   dependencies:
     "@shopify/decorators" "^2.0.4"
 
@@ -1707,12 +1707,12 @@
   resolved "https://registry.yarnpkg.com/@shopify/react-hooks/-/react-hooks-2.1.8.tgz#5c2115670002642caedf4d8dde9b1d33a847ecde"
   integrity sha512-NGP7nwl57sQioRv8uIsdWICwsuj5P8Eskfexg76trEuK5chlQ7svCEQQf8onMxndDE91iGiTC7PM0kGxM7g8bg==
 
-"@shopify/react-i18n@^6.2.6":
-  version "6.2.6"
-  resolved "https://registry.yarnpkg.com/@shopify/react-i18n/-/react-i18n-6.2.6.tgz#6f2cfbd070fcec9472308dcf2c82f8006718aed4"
-  integrity sha512-BxAVWwzbxX2FAm6vCfCLJ5WsZ0YHS+2PTs9/GzhghxadAJxKo3apmTzef2Suh2hFYjrR7WhuSieb1wZ8RwWi5w==
+"@shopify/react-i18n@^6.2.7":
+  version "6.2.7"
+  resolved "https://registry.yarnpkg.com/@shopify/react-i18n/-/react-i18n-6.2.7.tgz#d70c3c2946159e3d17d02e8f4eb2b5693a5ba707"
+  integrity sha512-w3hiElEqE7PIofUx0M8fZOHLAIEdjQMn7z1SxHpae3YWpAgOmCseC+fpF4JSCOiqlt2DfNcnt64AEv6eh+Y8Jg==
   dependencies:
-    "@shopify/dates" "^1.0.10"
+    "@shopify/dates" "^1.0.11"
     "@shopify/decorators" "^2.0.4"
     "@shopify/function-enhancers" "^2.0.4"
     "@shopify/i18n" "^1.0.5"
