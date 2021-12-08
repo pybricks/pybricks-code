@@ -1673,10 +1673,10 @@
     estree-walker "^1.0.1"
     picomatch "^2.2.2"
 
-"@shopify/dates@^1.0.11":
-  version "1.0.11"
-  resolved "https://registry.yarnpkg.com/@shopify/dates/-/dates-1.0.11.tgz#1701a2e6e38f275a08f82cf2d55117c30c45f22f"
-  integrity sha512-iO/gOhR18mU5qe5sm/6oOo0k4i1RE8YgLq4GFHHTVtH3/xr0PywMVOnOXGlzv/KZFX9VALYj8C+nmvOK1vKLQw==
+"@shopify/dates@^1.0.12":
+  version "1.0.12"
+  resolved "https://registry.yarnpkg.com/@shopify/dates/-/dates-1.0.12.tgz#5d8db9ac7df289245b2ad3d0f9aeaa5393918684"
+  integrity sha512-4tFJiBnTGMsJT9cxTbZW+mZ5O9c6nF4z7hrePnElTw8RZs1eH//mRQgRcIo3V/98ATRUYEJ8vBGYpx2NkdezAQ==
   dependencies:
     "@shopify/decorators" "^2.0.4"
 
@@ -1702,22 +1702,22 @@
   resolved "https://registry.yarnpkg.com/@shopify/react-effect/-/react-effect-4.1.7.tgz#919ee3522ec76ea84879af6ac7fd6055be221181"
   integrity sha512-sIlNP3mB+EvxjPgHXI70sNUimDZkkTWmzb+Suyn2ew1ohfMpfpSQaK92a/pduHW1LdElvxFFy4f7f7Bm4CDxfg==
 
-"@shopify/react-hooks@^2.1.8":
-  version "2.1.8"
-  resolved "https://registry.yarnpkg.com/@shopify/react-hooks/-/react-hooks-2.1.8.tgz#5c2115670002642caedf4d8dde9b1d33a847ecde"
-  integrity sha512-NGP7nwl57sQioRv8uIsdWICwsuj5P8Eskfexg76trEuK5chlQ7svCEQQf8onMxndDE91iGiTC7PM0kGxM7g8bg==
+"@shopify/react-hooks@^2.1.9":
+  version "2.1.9"
+  resolved "https://registry.yarnpkg.com/@shopify/react-hooks/-/react-hooks-2.1.9.tgz#b3b4a408d6f9e59d6489f05b25ddb4bd18259e49"
+  integrity sha512-aRD/PVTgeqhFmH7u8gXJRmJ4zjblquDN192tEUcwToMaW4ILgcmarU0/VRytAFMVoDtCP+KI9IDjbxdwZCRsfg==
 
-"@shopify/react-i18n@^6.2.7":
-  version "6.2.7"
-  resolved "https://registry.yarnpkg.com/@shopify/react-i18n/-/react-i18n-6.2.7.tgz#d70c3c2946159e3d17d02e8f4eb2b5693a5ba707"
-  integrity sha512-w3hiElEqE7PIofUx0M8fZOHLAIEdjQMn7z1SxHpae3YWpAgOmCseC+fpF4JSCOiqlt2DfNcnt64AEv6eh+Y8Jg==
+"@shopify/react-i18n@^6.2.8":
+  version "6.2.8"
+  resolved "https://registry.yarnpkg.com/@shopify/react-i18n/-/react-i18n-6.2.8.tgz#9cee7127bd03854e4312f60ad6277c87109242d2"
+  integrity sha512-UoDCw/NtUaeH9s6txJqcHIvYJt9+SCdDrwrlH4A1MKm3/XQueGXJcGcgAHEwHIKCaX4y2YA7rBAXlL4ibKx8bw==
   dependencies:
-    "@shopify/dates" "^1.0.11"
+    "@shopify/dates" "^1.0.12"
     "@shopify/decorators" "^2.0.4"
     "@shopify/function-enhancers" "^2.0.4"
     "@shopify/i18n" "^1.0.5"
     "@shopify/react-effect" "^4.1.7"
-    "@shopify/react-hooks" "^2.1.8"
+    "@shopify/react-hooks" "^2.1.9"
     "@shopify/useful-types" "^3.0.5"
     "@types/hoist-non-react-statics" "^3.0.1"
     change-case "^4.1.2"
