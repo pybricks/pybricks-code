@@ -4,6 +4,31 @@
 
 ## [Unreleased]
 
+### Changed
+- Updated dependencies.
+- Updated to Pybricks Firmware v3.1.0:
+
+  ### Changed
+  - Renamed new `DCMotor.dc_settings()` method to `DCMotor.settings()` ([support#536]).
+
+  ### Fixed
+  - Fixed direction for `DriveBase.turn()` and `Drivebase.curve()` for some
+    arguments ([support#535]).
+  - Fixed `then=Stop.COAST` not working in `DriveBase` methods ([support#535]).
+
+  [support#535]: https://github.com/pybricks/support/issues/535
+  [support#536]: https://github.com/pybricks/support/issues/536
+
+- Updated docs:
+
+  ### Added
+  - Added maximum voltage setter for `DCMotor` and `Motor`.
+  - Documented `DriveBase.curve()` method.
+
+  ### Changed
+  - Removed `duty` setting from `Control.limits` method.
+  - Removed `integral_range` setting from `Control.pid` method.
+
 ## [1.1.0-rc.1] - 2021-11-19
 
 ### Added
