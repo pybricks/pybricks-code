@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [1.1.0] - 2021-12-16
+
 ### Changed
 - Updated dependencies.
 - Updated to Pybricks Firmware v3.1.0:
@@ -219,7 +221,8 @@ Prerelease changes are documented at [support#48].
 
 <!-- links for version headings -->
 
-[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v1.1.0-rc.1...HEAD
+[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/pybricks/pybricks-code/compare/v1.1.0-rc.1...v1.1.0
 [1.1.0-rc.1]: https://github.com/pybricks/pybricks-code/compare/v1.1.0-beta.6...v1.1.0-rc.1
 [1.1.0-beta.6]: https://github.com/pybricks/pybricks-code/compare/v1.1.0-beta.5...v1.1.0-beta.6
 [1.1.0-beta.5]: https://github.com/pybricks/pybricks-code/compare/v1.1.0-beta.4...v1.1.0-beta.5
