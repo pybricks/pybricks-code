@@ -4,6 +4,33 @@
 
 ## [Unreleased]
 
+## [1.1.0] - 2021-12-16
+
+### Changed
+- Updated dependencies.
+- Updated to Pybricks Firmware v3.1.0:
+
+  ### Changed
+  - Renamed new `DCMotor.dc_settings()` method to `DCMotor.settings()` ([support#536]).
+
+  ### Fixed
+  - Fixed direction for `DriveBase.turn()` and `Drivebase.curve()` for some
+    arguments ([support#535]).
+  - Fixed `then=Stop.COAST` not working in `DriveBase` methods ([support#535]).
+
+  [support#535]: https://github.com/pybricks/support/issues/535
+  [support#536]: https://github.com/pybricks/support/issues/536
+
+- Updated docs:
+
+  ### Added
+  - Added maximum voltage setter for `DCMotor` and `Motor`.
+  - Documented `DriveBase.curve()` method.
+
+  ### Changed
+  - Removed `duty` setting from `Control.limits` method.
+  - Removed `integral_range` setting from `Control.pid` method.
+
 ## [1.1.0-rc.1] - 2021-11-19
 
 ### Added
@@ -194,7 +221,8 @@ Prerelease changes are documented at [support#48].
 
 <!-- links for version headings -->
 
-[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v1.1.0-rc.1...HEAD
+[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/pybricks/pybricks-code/compare/v1.1.0-rc.1...v1.1.0
 [1.1.0-rc.1]: https://github.com/pybricks/pybricks-code/compare/v1.1.0-beta.6...v1.1.0-rc.1
 [1.1.0-beta.6]: https://github.com/pybricks/pybricks-code/compare/v1.1.0-beta.5...v1.1.0-beta.6
 [1.1.0-beta.5]: https://github.com/pybricks/pybricks-code/compare/v1.1.0-beta.4...v1.1.0-beta.5
