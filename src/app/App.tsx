@@ -17,7 +17,7 @@ import { isMacOS } from '../utils/os';
 import 'react-splitter-layout/lib/index.css';
 import './app.scss';
 
-function App(): JSX.Element {
+const App: React.FunctionComponent = (_props) => {
     const showDocs = useSelector((s: RootState): boolean => s.settings.showDocs);
     const [dragging, setDragging] = useState(false);
     const dispatch = useDispatch();
@@ -164,6 +164,6 @@ function App(): JSX.Element {
             <StatusBar />
         </div>
     );
-}
+};
 
 export default App;
