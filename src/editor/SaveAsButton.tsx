@@ -1,36 +1,31 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020 The Pybricks Authors
+// Copyright (c) 2020-2021 The Pybricks Authors
 
-import { connect } from 'react-redux';
-import * as editor from '../editor/actions';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import * as editorActions from '../editor/actions';
 import { RootState } from '../reducers';
 import ActionButton, { ActionButtonProps } from '../toolbar/ActionButton';
 import { TooltipId } from '../toolbar/i18n';
 import downloadIcon from './save.svg';
 
-type StateProps = Pick<ActionButtonProps, 'enabled'>;
-type DispatchProps = Pick<ActionButtonProps, 'onAction'>;
-type OwnProps = Pick<ActionButtonProps, 'id'> &
+type SaveAsButtonProps = Pick<ActionButtonProps, 'id'> &
     Pick<ActionButtonProps, 'keyboardShortcut'>;
 
-const mapStateToProps = (state: RootState): StateProps => ({
-    enabled: state.editor.current !== null,
-});
+const SaveAsButton: React.FunctionComponent<SaveAsButtonProps> = (props) => {
+    const editor = useSelector((state: RootState) => state.editor.current);
 
-const mapDispatchToProps: DispatchProps = {
-    onAction: editor.saveAs,
+    const dispatch = useDispatch();
+
+    return (
+        <ActionButton
+            tooltip={TooltipId.SaveAs}
+            icon={downloadIcon}
+            enabled={editor !== null}
+            onAction={() => dispatch(editorActions.saveAs())}
+            {...props}
+        />
+    );
 };
 
-const mergeProps = (
-    stateProps: StateProps,
-    dispatchProps: DispatchProps,
-    ownProps: OwnProps,
-): ActionButtonProps => ({
-    tooltip: TooltipId.SaveAs,
-    icon: downloadIcon,
-    ...ownProps,
-    ...stateProps,
-    ...dispatchProps,
-});
-
-export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(ActionButton);
+export default SaveAsButton;
