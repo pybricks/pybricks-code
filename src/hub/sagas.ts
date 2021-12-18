@@ -91,7 +91,9 @@ function* downloadAndRun(_action: HubDownloadAndRunAction): Generator {
     yield* put(didStartDownload());
 
     // TODO: show compiled size in UI?
-    console.log(`Downloading ${mpy.data.byteLength} bytes`);
+    if (process.env.NODE_ENV !== 'test') {
+        console.log(`Downloading ${mpy.data.byteLength} bytes`);
+    }
 
     const checksumChannel = yield* actionChannel<HubChecksumMessageAction>(
         HubMessageActionType.Checksum,
