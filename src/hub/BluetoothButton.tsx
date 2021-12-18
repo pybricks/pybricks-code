@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2021 The Pybricks Authors
 
-import { connect } from 'react-redux';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { toggleBluetooth } from '../ble/actions';
 import { BleConnectionState } from '../ble/reducers';
 import { BootloaderConnectionState } from '../lwp3-bootloader/reducers';
@@ -11,34 +12,34 @@ import { TooltipId } from '../toolbar/i18n';
 import btConnectedIcon from './bt-connected.svg';
 import btDisconnectedIcon from './bt-disconnected.svg';
 
-type StateProps = Pick<
-    ActionButtonProps,
-    'tooltip' | 'icon' | 'enabled' | 'showProgress'
->;
-type DispatchProps = Pick<ActionButtonProps, 'onAction'>;
+type BluetoothButtonProps = Pick<ActionButtonProps, 'id'>;
 
-const mapStateToProps = (state: RootState): StateProps => {
-    if (
-        state.ble.connection === BleConnectionState.Disconnected &&
-        state.bootloader.connection === BootloaderConnectionState.Disconnected
-    ) {
-        return {
-            tooltip: TooltipId.BluetoothConnect,
-            icon: btDisconnectedIcon,
-            enabled: true,
-        };
-    } else {
-        return {
-            tooltip: TooltipId.BluetoothDisconnect,
-            icon: btConnectedIcon,
-            enabled: state.ble.connection === BleConnectionState.Connected,
-            showProgress: state.ble.connection === BleConnectionState.Connecting,
-        };
-    }
+const BluetoothButton: React.FunctionComponent<BluetoothButtonProps> = (props) => {
+    const bootloaderConnection = useSelector(
+        (state: RootState) => state.bootloader.connection,
+    );
+    const bleConnection = useSelector((state: RootState) => state.ble.connection);
+
+    const isDisconnected =
+        bootloaderConnection === BootloaderConnectionState.Disconnected &&
+        bleConnection === BleConnectionState.Disconnected;
+
+    const dispatch = useDispatch();
+
+    return (
+        <ActionButton
+            tooltip={
+                isDisconnected
+                    ? TooltipId.BluetoothConnect
+                    : TooltipId.BluetoothDisconnect
+            }
+            icon={isDisconnected ? btDisconnectedIcon : btConnectedIcon}
+            enabled={isDisconnected || bleConnection === BleConnectionState.Connected}
+            showProgress={bleConnection === BleConnectionState.Connecting}
+            onAction={() => dispatch(toggleBluetooth())}
+            {...props}
+        />
+    );
 };
 
-const mapDispatchToProps: DispatchProps = {
-    onAction: toggleBluetooth,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(ActionButton);
+export default BluetoothButton;
