@@ -6,6 +6,7 @@ import {
     fireEvent,
     render,
     screen,
+    waitFor,
     waitForElementToBeRemoved,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -22,7 +23,10 @@ function getTextArea(): HTMLTextAreaElement {
 
 it('should focus the text area', () => {
     const store = {
-        getState: jest.fn(() => ({ settings: { darkMode: false, showDocs: false } })),
+        getState: jest.fn(() => ({
+            editor: { current: null },
+            settings: { darkMode: false, showDocs: false },
+        })),
         dispatch: jest.fn(),
         subscribe: jest.fn(),
     } as unknown as Store;
@@ -39,9 +43,10 @@ it('should focus the text area', () => {
 });
 
 describe('context menu', () => {
-    it('should show the context menu', () => {
+    it('should show the context menu', async () => {
         const store = {
             getState: jest.fn(() => ({
+                editor: { current: null },
                 settings: { darkMode: false, showDocs: false },
             })),
             dispatch: jest.fn(),
@@ -59,12 +64,15 @@ describe('context menu', () => {
 
         fireEvent.contextMenu(screen.getByText('Write your program here...'));
 
-        expect(screen.getByText('Copy')).toBeInTheDocument();
+        await waitFor(() => {
+            expect(screen.getByText('Copy')).toBeInTheDocument();
+        });
     });
 
     it('should hide the context menu when Escape is pressed', async () => {
         const store = {
             getState: jest.fn(() => ({
+                editor: { current: null },
                 settings: { darkMode: false, showDocs: false },
             })),
             dispatch: jest.fn(),
