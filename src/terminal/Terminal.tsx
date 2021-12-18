@@ -2,14 +2,13 @@
 // Copyright (c) 2020-2021 The Pybricks Authors
 
 import { Menu, MenuDivider, MenuItem, ResizeSensor } from '@blueprintjs/core';
-import { WithI18nProps, withI18n } from '@shopify/react-i18n';
-import React from 'react';
-import { connect } from 'react-redux';
-import { Unsubscribe } from 'redux';
+import { ContextMenu2, ContextMenu2ContentProps } from '@blueprintjs/popover2';
+import { useI18n } from '@shopify/react-i18n';
+import React, { useContext, useEffect, useMemo, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Terminal as XTerm } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
 import { RootState } from '../reducers';
-import { IContextMenuTarget, handleContextMenu } from '../utils/IContextMenuTarget';
 import { isMacOS } from '../utils/os';
 import { TerminalContext } from './TerminalContext';
 import { receiveData } from './actions';
@@ -17,53 +16,119 @@ import { TerminalStringId } from './i18n';
 import en from './i18n.en.json';
 
 import 'xterm/css/xterm.css';
-interface StateProps {
-    darkMode: boolean;
-}
 
-interface DispatchProps {
-    onData: (data: string) => void;
-}
-
-type TerminalProps = StateProps & DispatchProps & WithI18nProps;
-
-class Terminal extends React.Component<TerminalProps> implements IContextMenuTarget {
-    private xterm: XTerm;
-    private fitAddon: FitAddon;
-    private terminalRef: React.RefObject<HTMLDivElement>;
-    private subscription?: { unsubscribe: Unsubscribe };
-
-    constructor(props: TerminalProps) {
-        super(props);
-        this.xterm = new XTerm({
-            cursorBlink: true,
-            cursorStyle: 'underline',
-            fontSize: 18,
-        });
-        this.fitAddon = new FitAddon();
-        this.xterm.loadAddon(this.fitAddon);
-        this.xterm.onData((d) => this.props.onData(d));
-        this.xterm.attachCustomKeyEventHandler(this.handleKeyEvent);
-        this.terminalRef = React.createRef();
+function handleKeyEvent(event: KeyboardEvent): boolean {
+    if (
+        event.key === 'v' &&
+        event.ctrlKey &&
+        !event.shiftKey &&
+        !event.altKey &&
+        !event.metaKey
+    ) {
+        // this allows CTRL+V to be handled by the browser instead of sending
+        // a control character to the terminal.
+        return false;
     }
 
-    static contextType = TerminalContext;
-    context!: React.ContextType<typeof TerminalContext>;
+    if (event.key === 'F5' || event.key === 'F6') {
+        // allow global handler for these keys
+        return false;
+    }
 
-    private handleKeyEvent = (e: KeyboardEvent): boolean => {
-        if (e.key === 'v' && e.ctrlKey && !e.shiftKey && !e.altKey && !e.metaKey) {
-            // this allows CTRL+V to be handled by the browser instead of sending
-            // a control character to the terminal.
-            return false;
-        }
-        if (e.key === 'F5' || e.key === 'F6') {
-            // allow global handler for these keys
-            return false;
-        }
-        return true;
+    return true;
+}
+
+function createXTerm(): { xterm: XTerm; fitAddon: FitAddon } {
+    const xterm = new XTerm({
+        cursorBlink: true,
+        cursorStyle: 'underline',
+        fontSize: 18,
+    });
+    const fitAddon = new FitAddon();
+    xterm.loadAddon(fitAddon);
+    xterm.attachCustomKeyEventHandler(handleKeyEvent);
+
+    return { xterm, fitAddon };
+}
+
+function createContextMenu(
+    xterm: XTerm,
+): (props: ContextMenu2ContentProps) => JSX.Element {
+    const contextMenu = (_props: ContextMenu2ContentProps): JSX.Element => {
+        const [i18n] = useI18n({ id: 'terminal', translations: { en }, fallback: en });
+
+        return (
+            <Menu>
+                <MenuItem
+                    onClick={(): void => {
+                        const selected = xterm.getSelection();
+                        if (selected) {
+                            navigator.clipboard.writeText(selected);
+                        }
+                    }}
+                    text={i18n.translate(TerminalStringId.Copy)}
+                    icon="duplicate"
+                    label={isMacOS() ? 'Cmd-C' : 'Ctrl-Shift-C'}
+                    disabled={!xterm.hasSelection()}
+                />
+                <MenuItem
+                    onClick={async (): Promise<void> => {
+                        xterm.paste(await navigator.clipboard.readText());
+                    }}
+                    text={i18n.translate(TerminalStringId.Paste)}
+                    icon="clipboard"
+                    label={isMacOS() ? 'Cmd-V' : 'Ctrl-V'}
+                />
+                <MenuItem
+                    onClick={() => xterm.selectAll()}
+                    text={i18n.translate(TerminalStringId.SelectAll)}
+                    icon="blank"
+                />
+                <MenuDivider />
+                <MenuItem
+                    onClick={(): void => xterm.clear()}
+                    text={i18n.translate(TerminalStringId.Clear)}
+                    icon="trash"
+                />
+            </Menu>
+        );
     };
 
-    private handleKeyDownEvent = (e: KeyboardEvent): void => {
+    return contextMenu;
+}
+
+const Terminal: React.FC = (_props) => {
+    const { xterm, fitAddon } = useMemo(createXTerm, [createXTerm]);
+    const terminalRef = useRef<HTMLDivElement>(null);
+    const darkMode = useSelector((state: RootState) => state.settings.darkMode);
+    const dispatch = useDispatch();
+    const terminalStream = useContext(TerminalContext);
+
+    // xterm.open() has to be called after terminalRef has been rendered
+    useEffect(() => {
+        if (!terminalRef.current) {
+            console.error('Missing terminal reference');
+            return;
+        }
+
+        xterm.open(terminalRef.current);
+        fitAddon.fit();
+
+        return () => xterm.dispose();
+    }, [xterm]);
+
+    // wire up darkMode to terminal
+    useEffect(() => {
+        xterm.options.theme = {
+            background: darkMode ? 'black' : 'white',
+            foreground: darkMode ? 'white' : 'black',
+            cursor: darkMode ? 'white' : 'black',
+            // transparency is needed to work around https://github.com/xtermjs/xterm.js/issues/2808
+            selection: darkMode ? 'rgb(81,81,81,0.5)' : 'rgba(181,213,255,0.5)', // this should match AceEditor theme
+        };
+    }, [darkMode]);
+
+    const handleKeyDownEvent = (e: KeyboardEvent): void => {
         // implement CTRL+SHIFT+C keyboard shortcut for copying text from terminal
         if (e.key === 'C' && e.ctrlKey && e.shiftKey && !e.altKey && !e.metaKey) {
             // this would otherwise open up debug console in web browser
@@ -72,108 +137,52 @@ class Terminal extends React.Component<TerminalProps> implements IContextMenuTar
             if (
                 document.hasFocus() &&
                 document.activeElement ===
-                    this.terminalRef.current?.getElementsByClassName(
+                    terminalRef.current?.getElementsByClassName(
                         'xterm-helper-textarea',
                     )[0] &&
-                this.xterm.hasSelection()
+                xterm.hasSelection()
             ) {
-                navigator.clipboard.writeText(this.xterm.getSelection());
+                navigator.clipboard.writeText(xterm.getSelection());
             }
         }
     };
 
-    componentDidMount(): void {
-        if (!this.terminalRef.current) {
-            console.error('Missing terminal reference');
-            return;
-        }
-        this.xterm.open(this.terminalRef.current);
-        this.fitAddon.fit();
-        this.subscription = this.context.dataSource.observable.subscribe({
-            next: (d) => this.xterm.write(d),
+    useEffect(() => {
+        window.addEventListener('keydown', handleKeyDownEvent);
+        return () => window.removeEventListener('keydown', handleKeyDownEvent);
+    }, [handleKeyDownEvent]);
+
+    // wire shared context to terminal output
+    useEffect(() => {
+        const subscription = terminalStream.dataSource.observable.subscribe({
+            next: (d) => xterm.write(d),
         });
-        window.addEventListener('keydown', this.handleKeyDownEvent);
-    }
 
-    componentWillUnmount(): void {
-        window.removeEventListener('keydown', this.handleKeyDownEvent);
-        this.subscription?.unsubscribe();
-        this.xterm.dispose();
-    }
+        return () => subscription.unsubscribe();
+    }, [terminalStream]);
 
-    render(): JSX.Element {
-        this.xterm.setOption('theme', {
-            background: this.props.darkMode ? 'black' : 'white',
-            foreground: this.props.darkMode ? 'white' : 'black',
-            cursor: this.props.darkMode ? 'white' : 'black',
-            // transparency is needed to work around https://github.com/xtermjs/xterm.js/issues/2808
-            selection: this.props.darkMode
-                ? 'rgb(81,81,81,0.5)'
-                : 'rgba(181,213,255,0.5)', // this should match AceEditor theme
-        });
-        return (
-            <div className="h-100" onContextMenu={(e) => handleContextMenu(e, this)}>
-                <ResizeSensor onResize={(): void => this.fitAddon.fit()}>
-                    <div ref={this.terminalRef} className="h-100" />
-                </ResizeSensor>
-            </div>
-        );
-    }
+    // wire terminal input to actions
+    useEffect(() => {
+        const onDataHandle = xterm.onData((d) => dispatch(receiveData(d)));
+        return () => onDataHandle.dispose();
+    }, [dispatch]);
 
-    renderContextMenu(): JSX.Element {
-        const { i18n } = this.props;
-        return (
-            <Menu>
-                <MenuItem
-                    onClick={(): void => {
-                        const selected = this.xterm.getSelection();
-                        if (selected) {
-                            navigator.clipboard.writeText(selected);
-                        }
-                    }}
-                    text={i18n.translate(TerminalStringId.Copy)}
-                    icon="duplicate"
-                    label={isMacOS() ? 'Cmd-C' : 'Ctrl-Shift-C'}
-                    disabled={!this.xterm.hasSelection()}
-                />
-                <MenuItem
-                    onClick={async (): Promise<void> => {
-                        this.xterm.paste(await navigator.clipboard.readText());
-                    }}
-                    text={i18n.translate(TerminalStringId.Paste)}
-                    icon="clipboard"
-                    label={isMacOS() ? 'Cmd-V' : 'Ctrl-V'}
-                />
-                <MenuItem
-                    onClick={() => this.xterm.selectAll()}
-                    text={i18n.translate(TerminalStringId.SelectAll)}
-                    icon="blank"
-                />
-                <MenuDivider />
-                <MenuItem
-                    onClick={(): void => this.xterm.clear()}
-                    text={i18n.translate(TerminalStringId.Clear)}
-                    icon="trash"
-                />
-            </Menu>
-        );
-    }
+    const contextMenu = useMemo(
+        () => createContextMenu(xterm),
+        [createContextMenu, xterm],
+    );
 
-    onContextMenuClose = () => {
-        // without this, the terminal looses focus
-        this.xterm.focus();
-    };
-}
-
-const mapStateToProps = (state: RootState): StateProps => ({
-    darkMode: state.settings.darkMode,
-});
-
-const mapDispatchToProps: DispatchProps = {
-    onData: receiveData,
+    return (
+        <ContextMenu2
+            className="h-100"
+            content={contextMenu}
+            popoverProps={{ onClosed: () => xterm.focus() }}
+        >
+            <ResizeSensor onResize={(): void => fitAddon.fit()}>
+                <div ref={terminalRef} className="h-100" />
+            </ResizeSensor>
+        </ContextMenu2>
+    );
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(withI18n({ id: 'terminal', fallback: en, translations: { en } })(Terminal));
+export default Terminal;
