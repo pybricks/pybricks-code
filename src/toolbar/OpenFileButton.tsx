@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2021 The Pybricks Authors
 
-import { Button, IRef, Intent, Spinner } from '@blueprintjs/core';
+import { Button, IRef, Intent, Spinner, SpinnerSize } from '@blueprintjs/core';
 import { Tooltip2 } from '@blueprintjs/popover2';
 import { useI18n } from '@shopify/react-i18n';
 import React from 'react';
@@ -116,6 +116,8 @@ const OpenFileButton: React.FC<OpenFileButtonProps> = (props) => {
                         <Spinner value={props.progress} intent={Intent.PRIMARY} />
                     ) : (
                         <img
+                            width={`${SpinnerSize.STANDARD}px`}
+                            height={`${SpinnerSize.STANDARD}px`}
                             src={props.icon}
                             alt={props.id}
                             style={{ pointerEvents: 'none' }}

@@ -4,6 +4,11 @@
 
 ## [Unreleased]
 
+### Fixed
+- Fixed buttons wrong size while image is downloading ([support#369]).
+
+[support#369]: https://github.com/pybricks/support/issues/369
+
 ## [1.1.0] - 2021-12-16
 
 ### Changed
