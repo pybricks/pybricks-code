@@ -15,7 +15,7 @@ import {
     didFailToConnect as bleDidFailToConnect,
     didConnect,
 } from '../ble/actions';
-import { storageChanged } from '../editor/actions';
+import { didFailToSaveAs, storageChanged } from '../editor/actions';
 import {
     FailToFinishReasonType,
     HubError,
@@ -82,6 +82,7 @@ test.each([
     didFailToFinish(FailToFinishReasonType.Unknown, new Error('test error')),
     didCheckForUpdate(false),
     didConnect('3.0.0'),
+    didFailToSaveAs(new DOMException('test message', 'NotAllowedError')),
 ])('actions that should show notification: %o', async (action: Action) => {
     const getToasts = jest.fn().mockReturnValue([]);
     const show = jest.fn();
@@ -113,6 +114,7 @@ test.each([
     didSucceed({} as ServiceWorkerRegistration),
     didCheckForUpdate(true),
     didConnect(firmwareVersion),
+    didFailToSaveAs(new DOMException('test message', 'AbortError')),
 ])('actions that should not show a notification: %o', async (action: Action) => {
     const getToasts = jest.fn().mockReturnValue([]);
     const show = jest.fn();

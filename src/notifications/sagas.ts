@@ -24,7 +24,11 @@ import {
     BleDeviceDidFailToConnectAction,
     BleDeviceFailToConnectReasonType,
 } from '../ble/actions';
-import { EditorActionType, reloadProgram } from '../editor/actions';
+import {
+    EditorActionType,
+    EditorDidFailToSaveAsAction,
+    reloadProgram,
+} from '../editor/actions';
 import {
     FailToFinishReasonType,
     FlashFirmwareActionType,
@@ -236,6 +240,15 @@ function* showBootloaderDidFailToConnectError(
     }
 }
 
+function* showEditorFailToSaveFile(action: EditorDidFailToSaveAsAction): Generator {
+    if (action.err.name === 'AbortError') {
+        // user clicked cancel button - not an error
+        return;
+    }
+
+    yield* showUnexpectedError(MessageId.EditorFailedToSaveFile, action.err);
+}
+
 function* showEditorStorageChanged(): Generator {
     const ch = channel<React.MouseEvent<HTMLElement>>();
 
@@ -408,6 +421,7 @@ export default function* (): Generator {
         BootloaderConnectionActionType.DidFailToConnect,
         showBootloaderDidFailToConnectError,
     );
+    yield* takeEvery(EditorActionType.DidFailToSaveAs, showEditorFailToSaveFile);
     yield* takeEvery(EditorActionType.StorageChanged, showEditorStorageChanged);
     yield* takeEvery(FlashFirmwareActionType.DidFailToFinish, showFlashFirmwareError);
     yield* takeEvery(MpyActionType.DidCompile, dismissCompilerError);

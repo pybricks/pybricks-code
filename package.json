@@ -29,6 +29,7 @@
         "@types/redux-logger": "^3.0.9",
         "@types/semver": "^7.3.9",
         "@types/web-bluetooth": "^0.0.12",
+        "@types/wicg-file-system-access": "^2020.9.4",
         "@types/zen-push": "^0.1.1",
         "babel-plugin-macros": "^3.0.1",
         "canvas": "^2.8.0",
