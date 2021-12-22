@@ -198,7 +198,7 @@ module.exports = {
                                 .toString()
                                 .replace(
                                     /%\w+%/g,
-                                    (m) => process.env[m.slice(1, m.length - 1)],
+                                    (m) => process.env[m.slice(1, m.length - 1)] || '',
                                 );
                         },
                     },
