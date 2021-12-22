@@ -5,13 +5,8 @@
 
 @import '../variables.scss';
 
-.#{$ns}-dark .pb-toolbar {
-    background-color: $pt-dark-app-background-color;
-}
-
 .pb-toolbar {
     height: $pb-toolbar-height;
-    background-color: $pt-app-background-color;
     padding: 0 $pt-grid-size * 1.5;
     position: relative;
     width: 100%;

@@ -126,7 +126,7 @@ const App: React.FunctionComponent = (_props) => {
     const [isDragging, setIsDragging] = useState(false);
 
     return (
-        <div className="pb-app">
+        <div className="pb-app h-100 w-100 p-absolute">
             <Toolbar />
             <SplitterLayout
                 customClassName={`pb-app-body ${
