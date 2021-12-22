@@ -4,7 +4,7 @@
 import { Button, IRef, Intent, Spinner, useHotkeys } from '@blueprintjs/core';
 import { Tooltip2 } from '@blueprintjs/popover2';
 import { useI18n } from '@shopify/react-i18n';
-import React, { useMemo, useRef } from 'react';
+import React, { useMemo } from 'react';
 import { tooltipDelay } from '../app/constants';
 import { TooltipId } from './i18n';
 import en from './i18n.en.json';
@@ -31,8 +31,6 @@ export interface ActionButtonProps {
 }
 
 const ActionButton: React.FC<ActionButtonProps> = (props) => {
-    const buttonRef = useRef<Button>(null);
-
     const [i18n] = useI18n({ id: 'actionButton', translations: { en }, fallback: en });
 
     const tooltipText =
@@ -82,7 +80,6 @@ const ActionButton: React.FC<ActionButtonProps> = (props) => {
                 <Button
                     elementRef={tooltipRef as IRef<HTMLButtonElement>}
                     {...tooltipProps}
-                    ref={buttonRef}
                     intent={Intent.PRIMARY}
                     // prevent focus from mouse click
                     onMouseDown={(e) => e.preventDefault()}
