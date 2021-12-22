@@ -1,14 +1,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2021 The Pybricks Authors
 
-import {
-    Button,
-    Intent,
-    Position,
-    Spinner,
-    Tooltip,
-    useHotkeys,
-} from '@blueprintjs/core';
+import { Button, IRef, Intent, Spinner, useHotkeys } from '@blueprintjs/core';
+import { Tooltip2 } from '@blueprintjs/popover2';
 import { useI18n } from '@shopify/react-i18n';
 import React, { useMemo, useRef } from 'react';
 import { tooltipDelay } from '../app/constants';
@@ -76,27 +70,40 @@ const ActionButton: React.FC<ActionButtonProps> = (props) => {
     useHotkeys(hotkeys);
 
     return (
-        <Tooltip
+        <Tooltip2
             content={tooltipText}
-            position={Position.BOTTOM}
+            placement="bottom"
             hoverOpenDelay={tooltipDelay}
-        >
-            <Button
-                ref={buttonRef}
-                intent={Intent.PRIMARY}
-                onMouseDown={(e) => e.preventDefault()} // prevent focus
-                onClick={(): void => props.onAction()}
-                disabled={props.enabled === false}
-                className="no-box-shadow"
-                style={props.enabled === false ? { pointerEvents: 'none' } : undefined}
-            >
-                {props.showProgress ? (
-                    <Spinner value={props.progress} intent={Intent.PRIMARY} />
-                ) : (
-                    <img src={props.icon} alt={props.id} />
-                )}
-            </Button>
-        </Tooltip>
+            renderTarget={({
+                ref: tooltipRef,
+                isOpen: _tooltipIsOpen,
+                ...tooltipProps
+            }) => (
+                <Button
+                    elementRef={tooltipRef as IRef<HTMLButtonElement>}
+                    {...tooltipProps}
+                    ref={buttonRef}
+                    intent={Intent.PRIMARY}
+                    // prevent focus from mouse click
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => props.onAction()}
+                    disabled={props.enabled === false}
+                    style={
+                        props.enabled === false ? { pointerEvents: 'none' } : undefined
+                    }
+                >
+                    {props.showProgress ? (
+                        <Spinner value={props.progress} intent={Intent.PRIMARY} />
+                    ) : (
+                        <img
+                            src={props.icon}
+                            alt={props.id}
+                            style={{ pointerEvents: 'none' }}
+                        />
+                    )}
+                </Button>
+            )}
+        />
     );
 };
 

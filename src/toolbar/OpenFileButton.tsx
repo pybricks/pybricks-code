@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2021 The Pybricks Authors
 
-import { Button, Intent, Position, Spinner, Tooltip } from '@blueprintjs/core';
+import { Button, IRef, Intent, Spinner } from '@blueprintjs/core';
+import { Tooltip2 } from '@blueprintjs/popover2';
 import { useI18n } from '@shopify/react-i18n';
 import React from 'react';
 import Dropzone from 'react-dropzone';
@@ -47,7 +48,6 @@ const OpenFileButton: React.FC<OpenFileButtonProps> = (props) => {
             accept={props.fileExtension}
             multiple={false}
             noClick={props.onClick !== undefined}
-            noKeyboard={props.onClick !== undefined}
             onDropAccepted={(acceptedFiles) => {
                 // should only be one file since multiple={false}
                 acceptedFiles.forEach((f) => {
@@ -78,7 +78,7 @@ const OpenFileButton: React.FC<OpenFileButtonProps> = (props) => {
             }}
         >
             {({ getRootProps, getInputProps }): JSX.Element => (
-                <Tooltip
+                <Tooltip2
                     content={i18n.translate(
                         props.tooltip,
                         props.tooltip === TooltipId.FlashProgress
@@ -90,28 +90,28 @@ const OpenFileButton: React.FC<OpenFileButtonProps> = (props) => {
                               }
                             : undefined,
                     )}
-                    position={Position.BOTTOM}
+                    placement="bottom"
                     hoverOpenDelay={tooltipDelay}
-                >
-                    <div
-                        {...getRootProps()}
-                        tabIndex={-1}
-                        className="pb-open-file-button-root"
-                    >
+                    renderTarget={({
+                        ref: tooltipRef,
+                        isOpen: _tooltipIsOpen,
+                        ...tooltipProps
+                    }) => (
                         <Button
-                            intent={Intent.PRIMARY}
-                            disabled={props.enabled === false}
-                            className="no-box-shadow"
-                            style={
-                                props.enabled === false
-                                    ? { pointerEvents: 'none' }
-                                    : undefined
-                            }
-                            onMouseDown={(e) => e.preventDefault()} // prevent focus
-                            // onClick={this.props.onClick}
-                            // breaks Dropzone when this.props.onClick is undefined
-                            // so we have to do it the long way
-                            {...(props.onClick ? { onClick: props.onClick } : {})}
+                            {...getRootProps({
+                                refKey: 'elementRef',
+                                elementRef: tooltipRef as IRef<HTMLButtonElement>,
+                                ...tooltipProps,
+                                intent: Intent.PRIMARY,
+                                disabled: props.enabled === false,
+                                style:
+                                    props.enabled === false
+                                        ? { pointerEvents: 'none' }
+                                        : undefined,
+                                // prevent focus from mouse click
+                                onMouseDown: (e) => e.preventDefault(),
+                                onClick: props.onClick,
+                            })}
                         >
                             <input {...getInputProps()} />
                             {props.showProgress ? (
@@ -120,11 +120,15 @@ const OpenFileButton: React.FC<OpenFileButtonProps> = (props) => {
                                     intent={Intent.PRIMARY}
                                 />
                             ) : (
-                                <img src={props.icon} alt={props.id} />
+                                <img
+                                    src={props.icon}
+                                    alt={props.id}
+                                    style={{ pointerEvents: 'none' }}
+                                />
                             )}
                         </Button>
-                    </div>
-                </Tooltip>
+                    )}
+                />
             )}
         </Dropzone>
     );

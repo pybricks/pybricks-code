@@ -13,11 +13,10 @@ import {
     InputGroup,
     Intent,
     Label,
-    Position,
     Switch,
-    Tooltip,
     useHotkeys,
 } from '@blueprintjs/core';
+import { Tooltip2 } from '@blueprintjs/popover2';
 import { useI18n } from '@shopify/react-i18n';
 import React, { useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -117,12 +116,12 @@ const SettingsDrawer: React.FunctionComponent<SettingsProps> = (props) => {
                             },
                         )}
                     >
-                        <Tooltip
+                        <Tooltip2
                             content={i18n.translate(
                                 SettingsStringId.AppearanceDocumentationTooltip,
                             )}
-                            boundary="window"
-                            position={Position.LEFT}
+                            rootBoundary="document"
+                            placement="left"
                             targetTagName="div"
                             hoverOpenDelay={tooltipDelay}
                         >
@@ -140,13 +139,13 @@ const SettingsDrawer: React.FunctionComponent<SettingsProps> = (props) => {
                                     )
                                 }
                             />
-                        </Tooltip>
-                        <Tooltip
+                        </Tooltip2>
+                        <Tooltip2
                             content={i18n.translate(
                                 SettingsStringId.AppearanceDarkModeTooltip,
                             )}
-                            boundary="window"
-                            position={Position.LEFT}
+                            rootBoundary="document"
+                            placement="left"
                             targetTagName="div"
                             hoverOpenDelay={tooltipDelay}
                         >
@@ -164,15 +163,15 @@ const SettingsDrawer: React.FunctionComponent<SettingsProps> = (props) => {
                                     )
                                 }
                             />
-                        </Tooltip>
+                        </Tooltip2>
                     </FormGroup>
                     <FormGroup label={i18n.translate(SettingsStringId.FirmwareTitle)}>
-                        <Tooltip
+                        <Tooltip2
                             content={i18n.translate(
                                 SettingsStringId.FirmwareCurrentProgramTooltip,
                             )}
-                            boundary="window"
-                            position={Position.LEFT}
+                            rootBoundary="document"
+                            placement="left"
                             targetTagName="div"
                             hoverOpenDelay={tooltipDelay}
                         >
@@ -190,14 +189,14 @@ const SettingsDrawer: React.FunctionComponent<SettingsProps> = (props) => {
                                     )
                                 }
                             />
-                        </Tooltip>
+                        </Tooltip2>
                         <ControlGroup>
-                            <Tooltip
+                            <Tooltip2
                                 content={i18n.translate(
                                     SettingsStringId.FirmwareHubNameTooltip,
                                 )}
-                                boundary="window"
-                                position={Position.LEFT}
+                                rootBoundary="document"
+                                placement="left"
                                 targetTagName="div"
                                 hoverOpenDelay={tooltipDelay}
                             >
@@ -209,7 +208,7 @@ const SettingsDrawer: React.FunctionComponent<SettingsProps> = (props) => {
                                         SettingsStringId.FirmwareHubNameLabel,
                                     )}
                                 </Label>
-                            </Tooltip>
+                            </Tooltip2>
                             <InputGroup
                                 id="hub-name-input"
                                 value={hubName}
@@ -227,12 +226,12 @@ const SettingsDrawer: React.FunctionComponent<SettingsProps> = (props) => {
                                 placeholder="Pybricks Hub"
                                 rightElement={
                                     isHubNameValid ? undefined : (
-                                        <Tooltip
+                                        <Tooltip2
                                             content={i18n.translate(
                                                 SettingsStringId.FirmwareHubNameErrorTooltip,
                                             )}
-                                            boundary="window"
-                                            position={Position.BOTTOM}
+                                            rootBoundary="document"
+                                            placement="bottom"
                                             targetTagName="div"
                                         >
                                             <Icon
@@ -240,7 +239,7 @@ const SettingsDrawer: React.FunctionComponent<SettingsProps> = (props) => {
                                                 intent={Intent.DANGER}
                                                 itemType="div"
                                             />
-                                        </Tooltip>
+                                        </Tooltip2>
                                     )
                                 }
                             />
