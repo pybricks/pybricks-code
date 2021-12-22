@@ -3,13 +3,7 @@
 
 // Saga for managing notifications (toasts)
 
-import {
-    IActionProps,
-    ILinkProps,
-    IToaster,
-    IconName,
-    Intent,
-} from '@blueprintjs/core';
+import { ActionProps, IToaster, IconName, Intent, LinkProps } from '@blueprintjs/core';
 import { firmwareVersion } from '@pybricks/firmware';
 import { Replacements } from '@shopify/react-i18n';
 import React from 'react';
@@ -95,7 +89,7 @@ function mapIcon(level: Level): IconName | undefined {
  * Converts a URL to an action that can be passed to `IToaster.show()`.
  * @param helpUrl A URL.
  */
-function helpAction(helpUrl: string): IActionProps & ILinkProps {
+function helpAction(helpUrl: string): ActionProps & LinkProps {
     return {
         icon: 'help',
         href: helpUrl,
@@ -107,7 +101,7 @@ function dispatchAction(
     messageId: MessageId,
     onClick: (event: React.MouseEvent<HTMLElement>) => void,
     icon?: IconName,
-): IActionProps {
+): ActionProps {
     return {
         icon: icon,
         text: React.createElement(NotificationAction, { messageId }),
@@ -128,7 +122,7 @@ function* showSingleton(
     level: Level,
     messageId: MessageId,
     replacements?: Replacements,
-    action?: IActionProps & ILinkProps,
+    action?: ActionProps & LinkProps,
     onDismiss?: (didTimeoutExpire: boolean) => void,
 ): Generator {
     const { toaster } = yield* getContext<NotificationContext>('notification');
