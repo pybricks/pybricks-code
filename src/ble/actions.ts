@@ -44,16 +44,13 @@ export function connect(): BleDeviceConnectAction {
     return { type: BleDeviceActionType.Connect };
 }
 
-export type BleDeviceDidConnectAction = Action<BleDeviceActionType.DidConnect> & {
-    firmwareVersion: string;
-};
+export type BleDeviceDidConnectAction = Action<BleDeviceActionType.DidConnect>;
 
 /**
  * Creates an action that indicates a device was connected.
- * @param firmwareVersion The firmware version of the hub (e.g. 3.0.0a1)
  */
-export function didConnect(firmwareVersion: string): BleDeviceDidConnectAction {
-    return { type: BleDeviceActionType.DidConnect, firmwareVersion };
+export function didConnect(): BleDeviceDidConnectAction {
+    return { type: BleDeviceActionType.DidConnect };
 }
 
 export enum BleDeviceFailToConnectReasonType {

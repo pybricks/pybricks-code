@@ -28,10 +28,8 @@ test('initial state', () => {
 describe('runtime', () => {
     test('', () => {
         expect(
-            reducers(
-                { runtime: HubRuntimeState.Disconnected } as State,
-                didConnect(firmwareVersion),
-            ).runtime,
+            reducers({ runtime: HubRuntimeState.Disconnected } as State, didConnect())
+                .runtime,
         ).toBe(HubRuntimeState.Unknown);
     });
 

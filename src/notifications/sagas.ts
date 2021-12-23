@@ -13,8 +13,11 @@ import { delay, getContext, put, take, takeEvery } from 'typed-redux-saga/macro'
 import { AppActionType, AppDidCheckForUpdateAction, reload } from '../app/actions';
 import { appName } from '../app/constants';
 import {
+    BleDIServiceActionType,
+    BleDIServiceDidReceiveFirmwareRevisionAction,
+} from '../ble-device-info-service/actions';
+import {
     BleDeviceActionType,
-    BleDeviceDidConnectAction,
     BleDeviceDidFailToConnectAction,
     BleDeviceFailToConnectReasonType,
 } from '../ble/actions';
@@ -393,12 +396,14 @@ function* showNoUpdateInfo(action: AppDidCheckForUpdateAction): Generator {
     });
 }
 
-function* checkVersion(action: BleDeviceDidConnectAction): Generator {
+function* checkVersion(
+    action: BleDIServiceDidReceiveFirmwareRevisionAction,
+): Generator {
     // ensure the actual hub firmware version is the same as the shipped
     // firmware version or newer
     if (
         !semver.satisfies(
-            pythonVersionToSemver(action.firmwareVersion),
+            pythonVersionToSemver(action.version),
             `>=${pythonVersionToSemver(firmwareVersion)}`,
         )
     ) {
@@ -423,5 +428,5 @@ export default function* (): Generator {
     yield* takeEvery(NotificationActionType.Add, addNotification);
     yield* takeEvery(ServiceWorkerActionType.DidUpdate, showServiceWorkerUpdate);
     yield* takeEvery(AppActionType.DidCheckForUpdate, showNoUpdateInfo);
-    yield* takeEvery(BleDeviceActionType.DidConnect, checkVersion);
+    yield* takeEvery(BleDIServiceActionType.DidReceiveFirmwareRevision, checkVersion);
 }
