@@ -6,11 +6,13 @@
 
 ### Changed
 - Saving file now uses proper save dialog in Chromium browser ([support#84]).
+- Toolbar buttons now scale with screen size ([support#300]).
 
 ### Fixed
 - Fixed buttons wrong size while image is downloading ([support#369]).
 
 [support#84]: https://github.com/pybricks/support/issues/84
+[support#300]: https://github.com/pybricks/support/issues/300
 [support#369]: https://github.com/pybricks/support/issues/369
 
 ## [1.1.0] - 2021-12-16

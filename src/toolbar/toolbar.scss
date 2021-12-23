@@ -19,7 +19,7 @@
 
 .pb-toolbar-group {
     align-items: center;
-    height: $pb-toolbar-height;
+    height: 100%;
 
     &.pb-align-left {
         float: left;
@@ -29,5 +29,20 @@
     &.pb-align-right {
         float: right;
         margin-left: $pt-grid-size * 2;
+    }
+}
+
+// make small buttons more square and slightly smaller
+@media screen and (max-width: 700px) {
+    .pb-toolbar .#{$ns}-button {
+        padding: 5px;
+    }
+}
+
+// this is the point where the buttons start wrapping to 2 rows so we need to
+// adjust the height so that they stay in the toolbar
+@media screen and (max-width: 350px) {
+    .pb-toolbar-group {
+        height: 50%;
     }
 }

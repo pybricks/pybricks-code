@@ -11,10 +11,12 @@ import {
 } from '@blueprintjs/core';
 import { Tooltip2 } from '@blueprintjs/popover2';
 import { useI18n } from '@shopify/react-i18n';
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { tooltipDelay } from '../app/constants';
 import { TooltipId } from './i18n';
 import en from './i18n.en.json';
+
+const smallScreenThreshold = 700;
 
 export interface ActionButtonProps {
     /** A unique id for each instance. */
@@ -39,6 +41,20 @@ export interface ActionButtonProps {
 
 const ActionButton: React.FC<ActionButtonProps> = (props) => {
     const [i18n] = useI18n({ id: 'actionButton', translations: { en }, fallback: en });
+
+    const [isSmallScreen, setIsSmallScreen] = useState(
+        window.innerWidth <= smallScreenThreshold,
+    );
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsSmallScreen(window.innerWidth <= smallScreenThreshold);
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    });
+
+    const buttonSize = isSmallScreen ? SpinnerSize.SMALL : SpinnerSize.STANDARD;
 
     const tooltipText =
         props.showProgress && props.progressTooltip
@@ -97,11 +113,15 @@ const ActionButton: React.FC<ActionButtonProps> = (props) => {
                     }
                 >
                     {props.showProgress ? (
-                        <Spinner value={props.progress} intent={Intent.PRIMARY} />
+                        <Spinner
+                            value={props.progress}
+                            intent={Intent.PRIMARY}
+                            size={buttonSize}
+                        />
                     ) : (
                         <img
-                            width={`${SpinnerSize.STANDARD}px`}
-                            height={`${SpinnerSize.STANDARD}px`}
+                            width={`${buttonSize}px`}
+                            height={`${buttonSize}px`}
                             src={props.icon}
                             alt={props.id}
                             style={{ pointerEvents: 'none' }}
