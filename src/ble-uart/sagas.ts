@@ -409,7 +409,7 @@ function* connect(_action: BleDeviceConnectAction): Generator {
 
     tasks.push(yield* takeEvery(BleUartActionType.Write, writeUart, uartRxChar));
 
-    yield* put(didConnect());
+    yield* put(didConnect(device.id, device.name || ''));
 
     // wait for disconnection
     yield* takeMaybe(disconnectChannel);

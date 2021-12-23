@@ -29,8 +29,10 @@ test('connection', () => {
             .connection,
     ).toBe(BleConnectionState.Connecting);
     expect(
-        reducers({ connection: BleConnectionState.Connecting } as State, didConnect())
-            .connection,
+        reducers(
+            { connection: BleConnectionState.Connecting } as State,
+            didConnect('test-id', 'Test Name'),
+        ).connection,
     ).toBe(BleConnectionState.Connected);
     expect(
         reducers(

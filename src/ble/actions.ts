@@ -44,13 +44,18 @@ export function connect(): BleDeviceConnectAction {
     return { type: BleDeviceActionType.Connect };
 }
 
-export type BleDeviceDidConnectAction = Action<BleDeviceActionType.DidConnect>;
+export type BleDeviceDidConnectAction = Action<BleDeviceActionType.DidConnect> & {
+    /** A unique identifier for the connected hub. */
+    id: string;
+    /** A user-displayable name for the connected hub. */
+    name: string;
+};
 
 /**
  * Creates an action that indicates a device was connected.
  */
-export function didConnect(): BleDeviceDidConnectAction {
-    return { type: BleDeviceActionType.DidConnect };
+export function didConnect(id: string, name: string): BleDeviceDidConnectAction {
+    return { type: BleDeviceActionType.DidConnect, id, name };
 }
 
 export enum BleDeviceFailToConnectReasonType {
