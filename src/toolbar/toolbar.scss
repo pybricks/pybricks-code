@@ -13,9 +13,12 @@
     z-index: $pt-z-index-content;
 }
 
+.pb-toolbar * {
+    box-shadow: unset !important;
+}
+
 .pb-toolbar-group {
     align-items: center;
-    display: flex;
     height: $pb-toolbar-height;
 
     &.pb-align-left {

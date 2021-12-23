@@ -22,7 +22,7 @@ const Toolbar: React.VFC = (_props) => {
         <div
             role="toolbar"
             onContextMenu={(e): void => e.preventDefault()}
-            className="pb-toolbar no-box-shadow"
+            className="pb-toolbar"
         >
             <ButtonGroup className="pb-toolbar-group pb-align-left">
                 <OpenButton id="open" />

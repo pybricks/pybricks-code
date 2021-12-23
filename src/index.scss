@@ -30,10 +30,6 @@ body {
     position: absolute;
 }
 
-.no-box-shadow {
-    box-shadow: unset !important;
-}
-
 // global style tweaks
 
 .#{$ns}-toast {
