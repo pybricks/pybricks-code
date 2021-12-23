@@ -65,7 +65,7 @@ const runtime: Reducer<HubRuntimeState, Action> = (
                 return state;
             }
             return HubRuntimeState.Idle;
-        case BlePybricksServiceEventActionType.StatusReport:
+        case BlePybricksServiceEventActionType.DidReceiveStatusReport:
             // The loading state is determined solely by the IDE, so we can't
             // let the hub status interfere with it.
             if (

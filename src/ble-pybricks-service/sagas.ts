@@ -21,9 +21,9 @@ import {
     BlePybricksServiceDidNotifyEventAction,
     BlePybricksServiceDidWriteCommandAction,
     didFailToSendCommand,
+    didReceiveStatusReport,
     didSendCommand,
     eventProtocolError,
-    statusReportEvent,
     writeCommand,
 } from './actions';
 import {
@@ -92,7 +92,7 @@ function* decodeResponse(action: BlePybricksServiceDidNotifyEventAction): Genera
         const responseType = getEventType(action.value);
         switch (responseType) {
             case EventType.StatusReport:
-                yield* put(statusReportEvent(parseStatusReport(action.value)));
+                yield* put(didReceiveStatusReport(parseStatusReport(action.value)));
                 break;
             default:
                 throw new ProtocolError(

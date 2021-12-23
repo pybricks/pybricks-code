@@ -187,8 +187,8 @@ export type BlePybricksServiceCommandAction =
 
 /** Action types for events received from the Pybricks service control characteristic. */
 export enum BlePybricksServiceEventActionType {
-    /** A status report event. */
-    StatusReport = 'blePybricksServiceEvent.action.statusReport',
+    /** A status report event was received. */
+    DidReceiveStatusReport = 'blePybricksServiceEvent.action.didReceiveStatusReport',
     /** A pseudo-event indicating there was a protocol error (not directly received from the hub). */
     ProtocolError = 'blePybricksServiceEvent.action.protocolError',
 }
@@ -197,7 +197,7 @@ export enum BlePybricksServiceEventActionType {
  * Action that represents a status report event received from the hub.
  */
 export type BlePybricksServiceEventStatusReportAction =
-    Action<BlePybricksServiceEventActionType.StatusReport> & {
+    Action<BlePybricksServiceEventActionType.DidReceiveStatusReport> & {
         statusFlags: number;
     };
 
@@ -205,10 +205,13 @@ export type BlePybricksServiceEventStatusReportAction =
  * Action that represents a status report event received from the hub.
  * @param statusFlags The status flags.
  */
-export function statusReportEvent(
+export function didReceiveStatusReport(
     statusFlags: number,
 ): BlePybricksServiceEventStatusReportAction {
-    return { type: BlePybricksServiceEventActionType.StatusReport, statusFlags };
+    return {
+        type: BlePybricksServiceEventActionType.DidReceiveStatusReport,
+        statusFlags,
+    };
 }
 
 /**
