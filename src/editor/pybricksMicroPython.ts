@@ -260,7 +260,9 @@ from pybricks.parameters import Button, Color, Direction, Port, Stop
 from pybricks.robotics import DriveBase
 from pybricks.tools import wait, StopWatch
 
-hub = ${hubName}()`;
+hub = ${hubName}()
+
+`;
 }
 
 const templateSnippets: Array<
