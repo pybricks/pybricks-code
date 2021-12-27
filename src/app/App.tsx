@@ -2,7 +2,7 @@
 // Copyright (c) 2020-2021 The Pybricks Authors
 
 import { Classes } from '@blueprintjs/core';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import SplitterLayout from 'react-splitter-layout';
 import Editor from '../editor/Editor';
@@ -122,8 +122,21 @@ const Docs: React.FunctionComponent = (_props) => {
 };
 
 const App: React.FunctionComponent = (_props) => {
+    const darkMode = useSelector((s: RootState): boolean => s.settings.darkMode);
     const showDocs = useSelector((s: RootState): boolean => s.settings.showDocs);
     const [isDragging, setIsDragging] = useState(false);
+
+    // darkMode class has to be applied to body element, otherwise it won't
+    // affect portals
+    useEffect(() => {
+        if (!darkMode) {
+            // no class for light mode, so nothing to do
+            return;
+        }
+
+        document.body.classList.add(Classes.DARK);
+        return () => document.body.classList.remove(Classes.DARK);
+    }, [darkMode]);
 
     return (
         <div className="pb-app h-100 w-100 p-absolute">
