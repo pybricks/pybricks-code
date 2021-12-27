@@ -6,6 +6,7 @@
 
 ### Added
 - Status bar indicator for connected hub.
+- Basic battery OK/low indicator ([support#559]).
 
 ### Changed
 - Saving file now uses proper save dialog in Chromium browser ([support#84]).
@@ -17,6 +18,7 @@
 [support#84]: https://github.com/pybricks/support/issues/84
 [support#300]: https://github.com/pybricks/support/issues/300
 [support#369]: https://github.com/pybricks/support/issues/369
+[support#559]: https://github.com/pybricks/support/issues/559
 
 ## [1.1.0] - 2021-12-16
 

@@ -11,6 +11,7 @@
     background-color: $pb-pybricks-blue;
     height: $pb-status-bar-height;
     width: 100vw;
+    padding-inline: 5px;
     display: flex;
     align-items: center;
 }
@@ -18,4 +19,42 @@
 // make status bar items right-aligned
 .pb-status-bar :first-child {
     margin-left: auto;
+}
+
+.pb-battery-indicator {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 5px;
+}
+
+.pb-battery-indicator-body {
+    border-radius: 3px;
+    border: 2px solid $pt-text-color;
+    background-color: $pt-text-color;
+    width: 30px;
+}
+
+.pb-battery-indicator-body .#{$ns}-progress-bar {
+    height: 12px;
+}
+
+.pb-battery-indicator-body .#{$ns}-progress-bar,
+.pb-battery-indicator-body .#{$ns}-progress-meter {
+    border-radius: 3px;
+}
+
+.pb-battery-indicator-tip {
+    border-top-right-radius: 1px;
+    border-bottom-right-radius: 1px;
+    border: 1px solid $pt-text-color;
+    background-color: $pt-text-color;
+    width: 3px;
+    height: 8px;
+}
+
+.#{$ns}-dark .pb-battery-indicator-body,
+.#{$ns}-dark .pb-battery-indicator-tip {
+    border-color: $pt-dark-text-color;
+    background-color: $pt-dark-text-color;
 }

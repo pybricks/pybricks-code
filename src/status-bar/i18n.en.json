@@ -3,5 +3,9 @@
         "connectedTo": "Connected to:",
         "hubType": "Hub type:",
         "firmware": "Firmware:"
+    },
+    "battery": {
+        "low": "Battery is low. Hub will turn off soon.",
+        "ok": "Battery level is OK."
     }
 }
