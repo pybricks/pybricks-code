@@ -9,21 +9,25 @@ import React from 'react';
 import { MessageId } from './i18n';
 import en from './i18n.en.json';
 
-type OwnProps = {
+type UnexpectedErrorNotificationProps = {
     messageId: MessageId;
     err: Error;
 };
 
-export default function UnexpectedErrorNotification(props: OwnProps): JSX.Element {
+const UnexpectedErrorNotification: React.FC<UnexpectedErrorNotificationProps> = (
+    props,
+) => {
     const [i18n] = useI18n({
         id: 'notification',
         translations: { en },
         fallback: en,
     });
-    const { messageId, err } = props;
+
     return (
         <>
-            <p>{i18n.translate(messageId, { errorMessage: err.message })}</p>
+            <p>
+                {i18n.translate(props.messageId, { errorMessage: props.err.message })}
+            </p>
             <div>
                 <ButtonGroup minimal={true} fill={true}>
                     <Button
@@ -31,7 +35,9 @@ export default function UnexpectedErrorNotification(props: OwnProps): JSX.Elemen
                         icon="duplicate"
                         onClick={() =>
                             navigator.clipboard.writeText(
-                                `\`\`\`\n${err.stack || err.message}\n\`\`\``,
+                                `\`\`\`\n${
+                                    props.err.stack || props.err.message
+                                }\n\`\`\``,
                             )
                         }
                     >
@@ -42,7 +48,7 @@ export default function UnexpectedErrorNotification(props: OwnProps): JSX.Elemen
                         icon="virus"
                         href={`https://github.com/pybricks/support/issues?q=${encodeURIComponent(
                             'is:issue',
-                        )}+${encodeURIComponent(err.message)}`}
+                        )}+${encodeURIComponent(props.err.message)}`}
                         target="_blank"
                     >
                         {i18n.translate(MessageId.ReportBug)}
@@ -51,4 +57,6 @@ export default function UnexpectedErrorNotification(props: OwnProps): JSX.Elemen
             </div>
         </>
     );
-}
+};
+
+export default UnexpectedErrorNotification;

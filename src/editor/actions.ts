@@ -5,25 +5,19 @@ import { monaco } from 'react-monaco-editor';
 import { Action } from 'redux';
 
 export enum EditorActionType {
-    /**
-     * The current (active) editor changed.
-     */
+    /** The current (active) editor changed. */
     Current = 'editor.action.current',
-    /**
-     * Save the current file to disk.
-     */
+    /** Save the current file to disk. */
     SaveAs = 'editor.action.saveAs',
-    /**
-     * Open a file.
-     */
+    /** Saving the file succeeded. */
+    DidSaveAs = 'editor.action.didSaveAs',
+    /** Saving the file failed. */
+    DidFailToSaveAs = 'editor.action.didFailToSaveAs',
+    /** Open a file. */
     Open = 'editor.action.open',
-    /**
-     * Storage was changed outside of the app.
-     */
+    /** Storage was changed outside of the app. */
     StorageChanged = 'editor.action.storageChanged',
-    /**
-     * Reload program from local storage.
-     */
+    /** Reload program from local storage. */
     ReloadProgram = 'editor.action.reloadProgram',
 }
 
@@ -51,6 +45,24 @@ export type EditorSaveAsAction = Action<EditorActionType.SaveAs>;
  */
 export function saveAs(): EditorSaveAsAction {
     return { type: EditorActionType.SaveAs };
+}
+
+/** Action that indicates saving a file succeeded. */
+export type EditorDidSaveAsAction = Action<EditorActionType.DidSaveAs>;
+
+/** Action that indicates saving a file succeeded. */
+export function didSaveAs(): EditorDidSaveAsAction {
+    return { type: EditorActionType.DidSaveAs };
+}
+
+/** Action that indicates saving a file failed. */
+export type EditorDidFailToSaveAsAction = Action<EditorActionType.DidFailToSaveAs> & {
+    err: Error;
+};
+
+/** Action that indicates saving a file failed. */
+export function didFailToSaveAs(err: Error): EditorDidFailToSaveAsAction {
+    return { type: EditorActionType.DidFailToSaveAs, err };
 }
 
 /**
@@ -97,5 +109,7 @@ export type EditorAction =
     | CurrentEditorAction
     | EditorOpenAction
     | EditorSaveAsAction
+    | EditorDidSaveAsAction
+    | EditorDidFailToSaveAsAction
     | EditorStorageChangedAction
     | EditorReloadProgramAction;

@@ -3,6 +3,7 @@
 
 import { Dispatch as ReduxDispatch } from 'redux';
 import { AppAction } from './app/actions';
+import { BleDIServiceAction } from './ble-device-info-service/actions';
 import {
     BlePybricksServiceAction,
     BlePybricksServiceCommandAction,
@@ -34,6 +35,7 @@ export type Action =
     | AppAction
     | BLEAction
     | BLEConnectAction
+    | BleDIServiceAction
     | BlePybricksServiceAction
     | BlePybricksServiceCommandAction
     | BlePybricksServiceEventAction

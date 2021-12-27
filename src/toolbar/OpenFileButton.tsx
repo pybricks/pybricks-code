@@ -1,13 +1,16 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2021 The Pybricks Authors
 
-import { Button, Intent, Position, Spinner, Tooltip } from '@blueprintjs/core';
-import { WithI18nProps, withI18n } from '@shopify/react-i18n';
-import React from 'react';
-import Dropzone, { FileRejection } from 'react-dropzone';
+import { Button, IRef, Intent, Spinner, SpinnerSize } from '@blueprintjs/core';
+import { Tooltip2 } from '@blueprintjs/popover2';
+import { useI18n } from '@shopify/react-i18n';
+import React, { useEffect, useState } from 'react';
+import { useDropzone } from 'react-dropzone';
 import { tooltipDelay } from '../app/constants';
 import { TooltipId } from './i18n';
 import en from './i18n.en.json';
+
+const smallScreenThreshold = 700;
 
 export interface OpenFileButtonProps {
     /** A unique id for each instance. */
@@ -32,114 +35,118 @@ export interface OpenFileButtonProps {
     readonly onClick?: () => void;
 }
 
-type Props = OpenFileButtonProps & WithI18nProps;
-
 /**
  * Button that opens a file chooser dialog or accepts files dropped on it.
  */
-class OpenFileButton extends React.Component<Props> {
-    constructor(props: Props) {
-        super(props);
-        this.onDropAccepted = this.onDropAccepted.bind(this);
-        this.onDropRejected = this.onDropRejected.bind(this);
-    }
+const OpenFileButton: React.FC<OpenFileButtonProps> = (props) => {
+    const [i18n] = useI18n({
+        id: 'openFileButton',
+        translations: { en },
+        fallback: en,
+    });
 
-    private onDropAccepted(acceptedFiles: File[]): void {
-        // should only be one file since multiple={false}
-        acceptedFiles.forEach((f) => {
-            const reader = new FileReader();
+    const [isSmallScreen, setIsSmallScreen] = useState(
+        window.innerWidth <= smallScreenThreshold,
+    );
 
-            reader.onabort = (): void => console.error('file reading was aborted');
-            reader.onerror = (): void => console.error('file reading has failed');
-            reader.onload = (): void => {
-                const binaryStr = reader.result;
-                if (binaryStr === null) {
-                    throw Error('Unexpected null binaryStr');
-                }
-                if (typeof binaryStr === 'string') {
-                    throw Error('Unexpected string binaryStr');
-                }
-                this.props.onFile(binaryStr);
-            };
-            reader.readAsArrayBuffer(f);
-        });
-    }
+    useEffect(() => {
+        const handleResize = () => {
+            setIsSmallScreen(window.innerWidth <= smallScreenThreshold);
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    });
 
-    private onDropRejected(fileRejections: FileRejection[]): void {
-        // should only be one file since multiple={false}
-        fileRejections.forEach((r) => {
-            this.props.onReject(r.file);
-        });
-    }
+    const buttonSize = isSmallScreen ? SpinnerSize.SMALL : SpinnerSize.STANDARD;
 
-    render(): JSX.Element {
-        return (
-            <Dropzone
-                onDropAccepted={this.onDropAccepted}
-                onDropRejected={this.onDropRejected}
-                accept={this.props.fileExtension}
-                multiple={false}
-                noClick={this.props.onClick !== undefined}
-                noKeyboard={this.props.onClick !== undefined}
-            >
-                {({ getRootProps, getInputProps }): JSX.Element => (
-                    <Tooltip
-                        content={this.props.i18n.translate(
-                            this.props.tooltip,
-                            this.props.tooltip === TooltipId.FlashProgress
-                                ? {
-                                      percent:
-                                          this.props.progress === undefined
-                                              ? ''
-                                              : this.props.i18n.formatPercentage(
-                                                    this.props.progress,
-                                                ),
-                                  }
+    const { getRootProps, getInputProps } = useDropzone({
+        accept: props.fileExtension,
+        multiple: false,
+        noClick: props.onClick !== undefined,
+        onDropAccepted: (acceptedFiles) => {
+            // should only be one file since multiple={false}
+            acceptedFiles.forEach((f) => {
+                const reader = new FileReader();
+
+                reader.onabort = (): void => console.error('file reading was aborted');
+                reader.onerror = (): void => console.error('file reading has failed');
+                reader.onload = (): void => {
+                    const binaryStr = reader.result;
+                    if (binaryStr === null) {
+                        throw Error('Unexpected null binaryStr');
+                    }
+                    if (typeof binaryStr === 'string') {
+                        throw Error('Unexpected string binaryStr');
+                    }
+                    props.onFile(binaryStr);
+                };
+                reader.readAsArrayBuffer(f);
+            });
+        },
+        onDropRejected: (fileRejections) => {
+            // should only be one file since multiple={false}
+            fileRejections.forEach((r) => {
+                props.onReject(r.file);
+            });
+        },
+    });
+
+    return (
+        <Tooltip2
+            content={i18n.translate(
+                props.tooltip,
+                props.tooltip === TooltipId.FlashProgress
+                    ? {
+                          percent:
+                              props.progress === undefined
+                                  ? ''
+                                  : i18n.formatPercentage(props.progress),
+                      }
+                    : undefined,
+            )}
+            placement="bottom"
+            hoverOpenDelay={tooltipDelay}
+            renderTarget={({
+                ref: tooltipRef,
+                isOpen: _tooltipIsOpen,
+                ...tooltipProps
+            }) => (
+                <Button
+                    {...getRootProps({
+                        refKey: 'elementRef',
+                        elementRef: tooltipRef as IRef<HTMLButtonElement>,
+                        ...tooltipProps,
+                        intent: Intent.PRIMARY,
+                        disabled: props.enabled === false,
+                        style:
+                            props.enabled === false
+                                ? { pointerEvents: 'none' }
                                 : undefined,
-                        )}
-                        position={Position.BOTTOM}
-                        hoverOpenDelay={tooltipDelay}
-                    >
-                        <div
-                            {...getRootProps()}
-                            tabIndex={-1}
-                            className="pb-open-file-button-root"
-                        >
-                            <Button
-                                intent={Intent.PRIMARY}
-                                disabled={this.props.enabled === false}
-                                className="no-box-shadow"
-                                style={
-                                    this.props.enabled === false
-                                        ? { pointerEvents: 'none' }
-                                        : undefined
-                                }
-                                onMouseDown={(e) => e.preventDefault()} // prevent focus
-                                // onClick={this.props.onClick}
-                                // breaks Dropzone when this.props.onClick is undefined
-                                // so we have to do it the long way
-                                {...(this.props.onClick
-                                    ? { onClick: this.props.onClick }
-                                    : {})}
-                            >
-                                <input {...getInputProps()} />
-                                {this.props.showProgress ? (
-                                    <Spinner
-                                        value={this.props.progress}
-                                        intent={Intent.PRIMARY}
-                                    />
-                                ) : (
-                                    <img src={this.props.icon} alt={this.props.id} />
-                                )}
-                            </Button>
-                        </div>
-                    </Tooltip>
-                )}
-            </Dropzone>
-        );
-    }
-}
+                        // prevent focus from mouse click
+                        onMouseDown: (e) => e.preventDefault(),
+                        onClick: props.onClick,
+                    })}
+                >
+                    <input {...getInputProps()} />
+                    {props.showProgress ? (
+                        <Spinner
+                            value={props.progress}
+                            intent={Intent.PRIMARY}
+                            size={buttonSize}
+                        />
+                    ) : (
+                        <img
+                            width={`${buttonSize}px`}
+                            height={`${buttonSize}px`}
+                            src={props.icon}
+                            alt={props.id}
+                            style={{ pointerEvents: 'none' }}
+                        />
+                    )}
+                </Button>
+            )}
+        />
+    );
+};
 
-export default withI18n({ id: 'openFileButton', fallback: en, translations: { en } })(
-    OpenFileButton,
-);
+export default OpenFileButton;

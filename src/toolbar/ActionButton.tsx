@@ -3,19 +3,20 @@
 
 import {
     Button,
-    Hotkey,
-    Hotkeys,
-    HotkeysTarget,
+    IRef,
     Intent,
-    Position,
     Spinner,
-    Tooltip,
+    SpinnerSize,
+    useHotkeys,
 } from '@blueprintjs/core';
-import { WithI18nProps, withI18n } from '@shopify/react-i18n';
-import React from 'react';
+import { Tooltip2 } from '@blueprintjs/popover2';
+import { useI18n } from '@shopify/react-i18n';
+import React, { useEffect, useMemo, useState } from 'react';
 import { tooltipDelay } from '../app/constants';
 import { TooltipId } from './i18n';
 import en from './i18n.en.json';
+
+const smallScreenThreshold = 700;
 
 export interface ActionButtonProps {
     /** A unique id for each instance. */
@@ -38,84 +39,98 @@ export interface ActionButtonProps {
     readonly onAction: () => void;
 }
 
-type Props = ActionButtonProps & WithI18nProps;
+const ActionButton: React.FC<ActionButtonProps> = (props) => {
+    const [i18n] = useI18n({ id: 'actionButton', translations: { en }, fallback: en });
 
-@HotkeysTarget
-class ActionButton extends React.Component<Props> {
-    private buttonRef: React.RefObject<Button> = React.createRef();
+    const [isSmallScreen, setIsSmallScreen] = useState(
+        window.innerWidth <= smallScreenThreshold,
+    );
 
-    render(): JSX.Element {
-        const {
-            i18n,
-            id,
-            icon,
-            keyboardShortcut,
-            enabled,
-            tooltip,
-            progressTooltip,
-            showProgress,
-            progress,
-            onAction,
-        } = this.props;
+    useEffect(() => {
+        const handleResize = () => {
+            setIsSmallScreen(window.innerWidth <= smallScreenThreshold);
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    });
 
-        const tooltipText =
-            showProgress && progressTooltip
-                ? i18n.translate(progressTooltip, {
-                      percent:
-                          progress === undefined ? '' : i18n.formatPercentage(progress),
-                  })
-                : i18n.translate(tooltip) +
-                  (keyboardShortcut ? ` (${keyboardShortcut})` : '');
+    const buttonSize = isSmallScreen ? SpinnerSize.SMALL : SpinnerSize.STANDARD;
 
-        return (
-            <Tooltip
-                content={tooltipText}
-                position={Position.BOTTOM}
-                hoverOpenDelay={tooltipDelay}
-            >
-                <Button
-                    ref={this.buttonRef}
-                    intent={Intent.PRIMARY}
-                    onMouseDown={(e) => e.preventDefault()} // prevent focus
-                    onClick={(): void => onAction()}
-                    disabled={enabled === false}
-                    className="no-box-shadow"
-                    style={enabled === false ? { pointerEvents: 'none' } : undefined}
-                >
-                    {showProgress ? (
-                        <Spinner value={progress} intent={Intent.PRIMARY} />
-                    ) : (
-                        <img src={icon} alt={id} />
-                    )}
-                </Button>
-            </Tooltip>
-        );
-    }
+    const tooltipText =
+        props.showProgress && props.progressTooltip
+            ? i18n.translate(props.progressTooltip, {
+                  percent:
+                      props.progress === undefined
+                          ? ''
+                          : i18n.formatPercentage(props.progress),
+              })
+            : i18n.translate(props.tooltip) +
+              (props.keyboardShortcut ? ` (${props.keyboardShortcut})` : '');
 
-    renderHotkeys(): React.ReactElement {
-        if (!this.props.keyboardShortcut) {
-            return <Hotkeys />;
+    const hotkeys = useMemo(() => {
+        if (!props.keyboardShortcut) {
+            return [];
         }
 
-        return (
-            <Hotkeys>
-                <Hotkey
-                    global={true}
-                    allowInInput={true}
-                    preventDefault={true}
-                    combo={this.props.keyboardShortcut.replaceAll('-', '+')}
-                    label={this.props.i18n.translate(this.props.tooltip)}
-                    onKeyDown={(): void => {
-                        if (this.props.enabled) {
-                            this.props.onAction();
-                        }
-                    }}
-                />
-            </Hotkeys>
-        );
-    }
-}
+        return [
+            {
+                global: true,
+                allowInInput: true,
+                preventDefault: true,
+                combo: props.keyboardShortcut.replaceAll('-', '+'),
+                label: i18n.translate(props.tooltip),
+                onKeyDown: () => {
+                    if (props.enabled) {
+                        props.onAction();
+                    }
+                },
+            },
+        ];
+    }, [props, i18n]);
 
-export default withI18n({ id: 'actionButton', fallback: en, translations: { en } })(
-    ActionButton,
-);
+    useHotkeys(hotkeys);
+
+    return (
+        <Tooltip2
+            content={tooltipText}
+            placement="bottom"
+            hoverOpenDelay={tooltipDelay}
+            renderTarget={({
+                ref: tooltipRef,
+                isOpen: _tooltipIsOpen,
+                ...tooltipProps
+            }) => (
+                <Button
+                    elementRef={tooltipRef as IRef<HTMLButtonElement>}
+                    {...tooltipProps}
+                    intent={Intent.PRIMARY}
+                    // prevent focus from mouse click
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => props.onAction()}
+                    disabled={props.enabled === false}
+                    style={
+                        props.enabled === false ? { pointerEvents: 'none' } : undefined
+                    }
+                >
+                    {props.showProgress ? (
+                        <Spinner
+                            value={props.progress}
+                            intent={Intent.PRIMARY}
+                            size={buttonSize}
+                        />
+                    ) : (
+                        <img
+                            width={`${buttonSize}px`}
+                            height={`${buttonSize}px`}
+                            src={props.icon}
+                            alt={props.id}
+                            style={{ pointerEvents: 'none' }}
+                        />
+                    )}
+                </Button>
+            )}
+        />
+    );
+};
+
+export default ActionButton;

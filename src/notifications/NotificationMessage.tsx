@@ -8,19 +8,19 @@ import React from 'react';
 import { MessageId } from './i18n';
 import en from './i18n.en.json';
 
-type OwnProps = {
+type NotificationMessageProps = {
     messageId: MessageId;
     replacements?: Replacements;
 };
 
-export default function NotificationMessage(props: OwnProps): JSX.Element {
+const NotificationMessage: React.FC<NotificationMessageProps> = (props) => {
     const [i18n] = useI18n({
         id: 'notification',
         translations: { en },
         fallback: en,
     });
-    const { messageId, replacements } = props;
-    let message = i18n.translate(messageId, replacements) as
+
+    let message = i18n.translate(props.messageId, props.replacements) as
         | React.ReactElement
         | string;
 
@@ -36,4 +36,6 @@ export default function NotificationMessage(props: OwnProps): JSX.Element {
     }
 
     return message;
-}
+};
+
+export default NotificationMessage;

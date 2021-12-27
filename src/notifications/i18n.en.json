@@ -15,7 +15,8 @@
         "programChanged": {
             "message": "The program was changed in another window.\nDo you want to delete this program and replace it with the new program?",
             "action": "Reload"
-        }
+        },
+        "failedToSaveFile": "Failed to save the program."
     },
     "flashFirmware": {
         "timedOut": "The hub took too long to respond. Restart the hub and try again.",

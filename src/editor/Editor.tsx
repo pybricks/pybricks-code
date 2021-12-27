@@ -1,19 +1,23 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2021 The Pybricks Authors
 
-import { Menu, MenuDivider, MenuItem, ResizeSensor } from '@blueprintjs/core';
-import { WithI18nProps, withI18n } from '@shopify/react-i18n';
+import { Menu, MenuDivider, MenuItem } from '@blueprintjs/core';
+import {
+    ContextMenu2,
+    ContextMenu2ContentProps,
+    ResizeSensor2,
+} from '@blueprintjs/popover2';
+import { useI18n } from '@shopify/react-i18n';
 import tomorrowNightEightiesTheme from 'monaco-themes/themes/Tomorrow-Night-Eighties.json';
 import xcodeTheme from 'monaco-themes/themes/Xcode_default.json';
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import MonacoEditor, { monaco } from 'react-monaco-editor';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { IDisposable } from 'xterm';
 import { compile } from '../mpy/actions';
 import { RootState } from '../reducers';
 import { toggleBoolean } from '../settings/actions';
 import { BooleanSettingId } from '../settings/defaults';
-import { IContextMenuTarget, handleContextMenu } from '../utils/IContextMenuTarget';
 import { isMacOS } from '../utils/os';
 import { setEditSession, storageChanged } from './actions';
 import { EditorStringId } from './i18n';
@@ -22,20 +26,6 @@ import * as pybricksMicroPython from './pybricksMicroPython';
 import { UntitledHintContribution } from './untitledHint';
 
 import './editor.scss';
-
-type StateProps = {
-    darkMode: boolean;
-    showDocs: boolean;
-};
-
-type DispatchProps = {
-    onSessionChanged: (session?: monaco.editor.ICodeEditor) => void;
-    onProgramStorageChanged: (newValue: string) => void;
-    onCheck: (script: string) => void;
-    onToggleDocs: () => void;
-};
-
-type EditorProps = StateProps & DispatchProps & WithI18nProps;
 
 const pybricksMicroPythonId = 'pybricks-micropython';
 monaco.languages.register({ id: pybricksMicroPythonId });
@@ -72,78 +62,146 @@ monaco.editor.defineTheme(
 const xcodeId = 'xcode';
 monaco.editor.defineTheme(xcodeId, xcodeTheme as monaco.editor.IStandaloneThemeData);
 
-class Editor extends React.Component<EditorProps> implements IContextMenuTarget {
-    private editorRef: React.RefObject<MonacoEditor>;
+const contextMenu = (_props: ContextMenu2ContentProps): JSX.Element => {
+    const editor = useSelector((state: RootState) => state.editor.current);
 
-    constructor(props: EditorProps) {
-        super(props);
-        this.editorRef = React.createRef();
-    }
+    const [i18n] = useI18n({ id: 'editor', translations: { en }, fallback: en });
 
-    /** convenience property for getting editor object */
-    private get editor(): monaco.editor.IStandaloneCodeEditor | undefined {
-        return this.editorRef.current?.editor;
-    }
+    return (
+        <Menu>
+            <MenuItem
+                onClick={() => {
+                    editor?.focus();
+                    editor?.trigger(null, 'editor.action.clipboardCopyAction', null);
+                }}
+                text={i18n.translate(EditorStringId.Copy)}
+                icon="duplicate"
+                label={isMacOS() ? 'Cmd-C' : 'Ctrl-C'}
+                disabled={!editor?.getSelection() || editor?.getSelection()?.isEmpty()}
+            />
+            <MenuItem
+                onClick={() => {
+                    editor?.focus();
+                    editor?.trigger(null, 'editor.action.clipboardPasteAction', null);
+                }}
+                text={i18n.translate(EditorStringId.Paste)}
+                icon="clipboard"
+                label={isMacOS() ? 'Cmd-V' : 'Ctrl-V'}
+            />
+            <MenuItem
+                onClick={() => {
+                    editor?.focus();
+                    editor?.trigger(null, 'editor.action.selectAll', null);
+                }}
+                text={i18n.translate(EditorStringId.SelectAll)}
+                icon="blank"
+                label={isMacOS() ? 'Cmd-A' : 'Ctrl-A'}
+            />
+            <MenuDivider />
+            <MenuItem
+                onClick={() => {
+                    editor?.focus();
+                    editor?.trigger(null, 'undo', null);
+                }}
+                text={i18n.translate(EditorStringId.Undo)}
+                icon="undo"
+                label={isMacOS() ? 'Cmd-Z' : 'Ctrl-Z'}
+                // @ts-expect-error internal method canUndo()
+                disabled={!editor?.getModel()?.canUndo()}
+            />
+            <MenuItem
+                onClick={() => {
+                    editor?.focus();
+                    editor?.trigger(null, 'redo', null);
+                }}
+                text={i18n.translate(EditorStringId.Redo)}
+                icon="redo"
+                label={isMacOS() ? 'Cmd-Shift-Z' : 'Ctrl-Shift-Z'}
+                // @ts-expect-error internal method canUndo()
+                disabled={!editor?.getModel()?.canRedo()}
+            />
+        </Menu>
+    );
+};
 
-    onStorage = (e: StorageEvent): void => {
+const Editor: React.FunctionComponent = (_props) => {
+    const editorRef = useRef<MonacoEditor>(null);
+    const dispatch = useDispatch();
+
+    const onStorage = (e: StorageEvent): void => {
         if (
             e.key === 'program' &&
             e.newValue &&
-            e.newValue !== this.editor?.getValue()
+            e.newValue !== editorRef.current?.editor?.getValue()
         ) {
-            this.props.onProgramStorageChanged(e.newValue);
+            dispatch(storageChanged(e.newValue));
         }
     };
 
-    componentDidMount(): void {
-        window.addEventListener('storage', this.onStorage);
-    }
+    useEffect(() => {
+        window.addEventListener('storage', onStorage);
+        return () => window.removeEventListener('storage', onStorage);
+    });
 
-    componentWillUnmount(): void {
-        window.removeEventListener('storage', this.onStorage);
-    }
+    const darkMode = useSelector((state: RootState) => state.settings.darkMode);
 
-    render(): JSX.Element {
-        const { i18n, darkMode, onSessionChanged, onCheck, onToggleDocs } = this.props;
-        return (
-            <div className="h-100" onContextMenu={(e) => handleContextMenu(e, this)}>
-                <ResizeSensor onResize={(): void => this.editor?.layout()}>
-                    <MonacoEditor
-                        ref={this.editorRef}
-                        language={pybricksMicroPythonId}
-                        theme={darkMode ? tomorrowNightEightiesId : xcodeId}
-                        width="100%"
-                        height="100%"
-                        options={{
-                            fontSize: 18,
-                            minimap: { enabled: false },
-                            contextmenu: false,
-                            rulers: [80],
-                        }}
-                        value={localStorage.getItem('program')}
-                        editorDidMount={(e, _m): void => {
-                            // FIXME: editor does not respond to changes in i18n
-                            const untitledHintContribution =
-                                new UntitledHintContribution(
-                                    e,
-                                    i18n.translate(EditorStringId.Placeholder),
-                                );
-                            e.onDidDispose(() => untitledHintContribution.dispose());
-                            e.addAction({
+    const [i18n] = useI18n({ id: 'editor', translations: { en }, fallback: en });
+
+    return (
+        <ResizeSensor2 onResize={() => editorRef?.current?.editor?.layout()}>
+            <ContextMenu2
+                className="h-100"
+                content={contextMenu}
+                popoverProps={{ onClosed: () => editorRef.current?.editor?.focus() }}
+            >
+                <MonacoEditor
+                    ref={editorRef}
+                    language={pybricksMicroPythonId}
+                    theme={darkMode ? tomorrowNightEightiesId : xcodeId}
+                    width="100%"
+                    height="100%"
+                    options={{
+                        fontSize: 18,
+                        minimap: { enabled: false },
+                        contextmenu: false,
+                        rulers: [80],
+                    }}
+                    value={localStorage.getItem('program')}
+                    editorDidMount={(editor, _monaco) => {
+                        const subscriptions = new Array<IDisposable>();
+                        // FIXME: editor does not respond to changes in i18n
+                        subscriptions.push(
+                            new UntitledHintContribution(
+                                editor,
+                                i18n.translate(EditorStringId.Placeholder),
+                            ),
+                        );
+                        subscriptions.push(
+                            editor.addAction({
                                 id: 'pybricks.action.toggleDocs',
                                 label: i18n.translate(EditorStringId.ToggleDocs),
-                                run: () => onToggleDocs(),
+                                run: () => {
+                                    dispatch(toggleBoolean(BooleanSettingId.ShowDocs));
+                                },
                                 keybindings: [
                                     monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyD,
                                 ],
-                            });
-                            e.addAction({
+                            }),
+                        );
+                        subscriptions.push(
+                            editor.addAction({
                                 id: 'pybricks.action.check',
                                 label: i18n.translate(EditorStringId.Check),
-                                run: () => onCheck(e.getValue()),
+                                // REVISIT: the compile options here might need to be changed - hopefully there is
+                                // one setting that works for all hub types for cases where we aren't connected.
+                                run: (e) => {
+                                    dispatch(compile(e.getValue(), []));
+                                },
                                 keybindings: [monaco.KeyCode.F2],
-                            });
-                            e.addAction({
+                            }),
+                        );
+                        subscriptions.push(
+                            editor.addAction({
                                 id: 'pybricks.action.save',
                                 label: 'Unused',
                                 run: () => {
@@ -155,109 +213,19 @@ class Editor extends React.Component<EditorProps> implements IContextMenuTarget 
                                 keybindings: [
                                     monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS,
                                 ],
-                            });
-                            e.focus();
-                            onSessionChanged(e);
-                        }}
-                        onChange={(v): void => {
-                            localStorage.setItem('program', v);
-                        }}
-                    />
-                </ResizeSensor>
-            </div>
-        );
-    }
-
-    renderContextMenu(): JSX.Element {
-        const { i18n } = this.props;
-        return (
-            <Menu>
-                <MenuItem
-                    onClick={(): void => {
-                        this.editor?.focus();
-                        this.editor?.trigger(
-                            null,
-                            'editor.action.clipboardCopyAction',
-                            null,
+                            }),
                         );
-                    }}
-                    text={i18n.translate(EditorStringId.Copy)}
-                    icon="duplicate"
-                    label={isMacOS() ? 'Cmd-C' : 'Ctrl-C'}
-                    disabled={
-                        !this.editor?.getSelection() ||
-                        this.editor?.getSelection()?.isEmpty()
-                    }
-                />
-                <MenuItem
-                    onClick={async (): Promise<void> => {
-                        this.editor?.focus();
-                        this.editor?.trigger(
-                            null,
-                            'editor.action.clipboardPasteAction',
-                            null,
+                        editor.onDidDispose(() =>
+                            subscriptions.forEach((s) => s.dispose()),
                         );
+                        editor.focus();
+                        dispatch(setEditSession(editor));
                     }}
-                    text={i18n.translate(EditorStringId.Paste)}
-                    icon="clipboard"
-                    label={isMacOS() ? 'Cmd-V' : 'Ctrl-V'}
+                    onChange={(v) => localStorage.setItem('program', v)}
                 />
-                <MenuItem
-                    onClick={() => {
-                        this.editor?.focus();
-                        this.editor?.trigger(null, 'editor.action.selectAll', null);
-                    }}
-                    text={i18n.translate(EditorStringId.SelectAll)}
-                    icon="blank"
-                    label={isMacOS() ? 'Cmd-A' : 'Ctrl-A'}
-                />
-                <MenuDivider />
-                <MenuItem
-                    onClick={(): void => {
-                        this.editor?.focus();
-                        this.editor?.trigger(null, 'undo', null);
-                    }}
-                    text={i18n.translate(EditorStringId.Undo)}
-                    icon="undo"
-                    label={isMacOS() ? 'Cmd-Z' : 'Ctrl-Z'}
-                    // @ts-expect-error internal method canUndo()
-                    disabled={!this.editor?.getModel()?.canUndo()}
-                />
-                <MenuItem
-                    onClick={(): void => {
-                        this.editor?.focus();
-                        this.editor?.trigger(null, 'redo', null);
-                    }}
-                    text={i18n.translate(EditorStringId.Redo)}
-                    icon="redo"
-                    label={isMacOS() ? 'Cmd-Shift-Z' : 'Ctrl-Shift-Z'}
-                    // @ts-expect-error internal method canUndo()
-                    disabled={!this.editor?.getModel()?.canRedo()}
-                />
-            </Menu>
-        );
-    }
-
-    onContextMenuClose = () => {
-        this.editor?.focus();
-    };
-}
-
-const mapStateToProps = (state: RootState): StateProps => ({
-    darkMode: state.settings.darkMode,
-    showDocs: state.settings.showDocs,
-});
-
-const mapDispatchToProps: DispatchProps = {
-    onSessionChanged: setEditSession,
-    onProgramStorageChanged: storageChanged,
-    // REVISIT: the options here might need to be changed - hopefully there is
-    // one setting that works for all hub types for cases where we aren't connected.
-    onCheck: (script) => compile(script, []),
-    onToggleDocs: () => toggleBoolean(BooleanSettingId.ShowDocs),
+            </ContextMenu2>
+        </ResizeSensor2>
+    );
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(withI18n({ id: 'editor', fallback: en, translations: { en } })(Editor));
+export default Editor;

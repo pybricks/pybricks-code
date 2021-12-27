@@ -5,6 +5,14 @@
 
 @import '../variables.scss';
 
+.pb-app {
+    background-color: $pt-app-background-color;
+}
+
+.#{$ns}-dark .pb-app {
+    background-color: $pt-dark-app-background-color;
+}
+
 .pb-app-body {
     // height makes everything fit without scrolling
     height: calc(

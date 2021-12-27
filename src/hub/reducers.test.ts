@@ -1,9 +1,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2021 The Pybricks Authors
 
-import { firmwareVersion } from '@pybricks/firmware';
 import { Action } from '../actions';
-import { statusReportEvent } from '../ble-pybricks-service/actions';
+import { didReceiveStatusReport } from '../ble-pybricks-service/actions';
 import { Status, statusToFlag } from '../ble-pybricks-service/protocol';
 import { didConnect, didDisconnect } from '../ble/actions';
 import {
@@ -30,7 +29,7 @@ describe('runtime', () => {
         expect(
             reducers(
                 { runtime: HubRuntimeState.Disconnected } as State,
-                didConnect(firmwareVersion),
+                didConnect('test-id', 'Test Name'),
             ).runtime,
         ).toBe(HubRuntimeState.Unknown);
     });
@@ -108,13 +107,13 @@ describe('runtime', () => {
         ).toBe(HubRuntimeState.Idle);
     });
 
-    test('statusReportEvent', () => {
+    test('didReceiveStatusReport', () => {
         // don't ever expect this to happen in practice since we can't receive
         // updates while disconnected
         expect(
             reducers(
                 { runtime: HubRuntimeState.Disconnected } as State,
-                statusReportEvent(statusToFlag(Status.UserProgramRunning)),
+                didReceiveStatusReport(statusToFlag(Status.UserProgramRunning)),
             ).runtime,
         ).toBe(HubRuntimeState.Disconnected);
 
@@ -122,7 +121,7 @@ describe('runtime', () => {
         expect(
             reducers(
                 { runtime: HubRuntimeState.Loading } as State,
-                statusReportEvent(statusToFlag(Status.UserProgramRunning)),
+                didReceiveStatusReport(statusToFlag(Status.UserProgramRunning)),
             ).runtime,
         ).toBe(HubRuntimeState.Loading);
 
@@ -130,21 +129,23 @@ describe('runtime', () => {
         expect(
             reducers(
                 { runtime: HubRuntimeState.Loaded } as State,
-                statusReportEvent(statusToFlag(Status.UserProgramRunning)),
+                didReceiveStatusReport(statusToFlag(Status.UserProgramRunning)),
             ).runtime,
         ).toBe(HubRuntimeState.Running);
 
         // really short program run finished before receiving download finished
         expect(
-            reducers({ runtime: HubRuntimeState.Loaded } as State, statusReportEvent(0))
-                .runtime,
+            reducers(
+                { runtime: HubRuntimeState.Loaded } as State,
+                didReceiveStatusReport(0),
+            ).runtime,
         ).toBe(HubRuntimeState.Idle);
 
         // normal operation - user program stopped
         expect(
             reducers(
                 { runtime: HubRuntimeState.Running } as State,
-                statusReportEvent(0),
+                didReceiveStatusReport(0),
             ).runtime,
         ).toBe(HubRuntimeState.Idle);
     });

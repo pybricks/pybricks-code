@@ -10,12 +10,12 @@ import {
 import { AsyncSaga } from '../../test';
 import { Action } from '../actions';
 import { didCheckForUpdate } from '../app/actions';
+import { bleDIServiceDidReceiveFirmwareRevision } from '../ble-device-info-service/actions';
 import {
     BleDeviceFailToConnectReasonType,
     didFailToConnect as bleDidFailToConnect,
-    didConnect,
 } from '../ble/actions';
-import { storageChanged } from '../editor/actions';
+import { didFailToSaveAs, storageChanged } from '../editor/actions';
 import {
     FailToFinishReasonType,
     HubError,
@@ -81,7 +81,8 @@ test.each([
     didFailToFinish(FailToFinishReasonType.FirmwareSize),
     didFailToFinish(FailToFinishReasonType.Unknown, new Error('test error')),
     didCheckForUpdate(false),
-    didConnect('3.0.0'),
+    bleDIServiceDidReceiveFirmwareRevision('3.0.0'),
+    didFailToSaveAs(new DOMException('test message', 'NotAllowedError')),
 ])('actions that should show notification: %o', async (action: Action) => {
     const getToasts = jest.fn().mockReturnValue([]);
     const show = jest.fn();
@@ -112,7 +113,8 @@ test.each([
     didFailToFinish(FailToFinishReasonType.FailedToConnect),
     didSucceed({} as ServiceWorkerRegistration),
     didCheckForUpdate(true),
-    didConnect(firmwareVersion),
+    bleDIServiceDidReceiveFirmwareRevision(firmwareVersion),
+    didFailToSaveAs(new DOMException('test message', 'AbortError')),
 ])('actions that should not show a notification: %o', async (action: Action) => {
     const getToasts = jest.fn().mockReturnValue([]);
     const show = jest.fn();

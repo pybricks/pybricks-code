@@ -4,6 +4,7 @@
 @import './variables.scss';
 @import '~normalize.css';
 @import '~@blueprintjs/core/src/blueprint.scss';
+@import '~@blueprintjs/popover2/src/blueprint-popover2.scss';
 
 :root {
     --pb-vh: 100vh;
@@ -29,8 +30,8 @@ body {
     position: absolute;
 }
 
-.no-box-shadow {
-    box-shadow: unset !important;
+.no-wrap {
+    white-space: nowrap;
 }
 
 // global style tweaks

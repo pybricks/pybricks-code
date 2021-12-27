@@ -5,6 +5,13 @@
 // Refer to Device Information Service (DIS) at https://www.bluetooth.com/specifications/specs/
 // and assigned numbers at https://www.bluetooth.com/specifications/assigned-numbers/
 
+import {
+    HubType,
+    LegoCompanyId,
+    TechnicLargeHubVariant,
+    TechnicSmallHubVariant,
+} from '../ble-lwp3-service/protocol';
+
 /** Device Information service UUID. */
 export const serviceUUID = 0x180a;
 
@@ -31,9 +38,13 @@ export enum PnpIdVendorIdSource {
  * Decoded data from the PnP ID characteristic.
  */
 export type PnpId = {
+    /** For Pybricks hubs, this should be PnpIdVendorIdSource.BluetoothSig */
     vendorIdSource: PnpIdVendorIdSource;
+    /** For Pybricks hubs, this should be LegoCompanyId (from ble-lwp3-service/protocol). */
     vendorId: number;
+    /** For Pybricks hubs, this should be one of HubType (from ble-lwp3-service/protocol). */
     productId: number;
+    /** For Pybricks hubs, this should be hub variant if applicable (from ble-lwp3-service/protocol). */
     productVersion: number;
 };
 
@@ -49,4 +60,43 @@ export function decodePnpId(data: DataView): PnpId {
         productId: data.getUint16(3, true),
         productVersion: data.getUint16(5, true),
     };
+}
+
+/**
+ * Returns hub type as a string suitable for display to users.
+ * @param pnpId The PnP ID
+ */
+export function getHubTypeName(pnpId: PnpId): string {
+    if (pnpId.vendorIdSource !== PnpIdVendorIdSource.BluetoothSig) {
+        return 'USB';
+    }
+
+    if (pnpId.vendorId !== LegoCompanyId) {
+        return 'non-LEGO';
+    }
+
+    switch (pnpId.productId) {
+        case HubType.MoveHub:
+            return 'Move hub';
+        case HubType.CityHub:
+            return 'City hub';
+        case HubType.TechnicHub:
+            return 'Technic hub';
+        case HubType.TechnicLargeHub:
+            switch (pnpId.productVersion) {
+                case TechnicLargeHubVariant.SpikePrimeHub:
+                    return 'Prime hub';
+                case TechnicLargeHubVariant.MindstormsInventorHub:
+                    return 'Inventor hub';
+            }
+            break;
+        case HubType.TechnicSmallHub:
+            switch (pnpId.productVersion) {
+                case TechnicSmallHubVariant.SpikeEssentialHub:
+                    return 'Essential hub';
+            }
+            break;
+    }
+
+    return 'Unsupported';
 }

@@ -6,11 +6,11 @@ import {
     didFailToSendCommand,
     didFailToWriteCommand,
     didNotifyEvent,
+    didReceiveStatusReport,
     didSendCommand,
     didWriteCommand,
     eventProtocolError,
     sendStopUserProgramCommand,
-    statusReportEvent,
     writeCommand,
 } from './actions';
 import { CommandType, ProtocolError } from './protocol';
@@ -101,7 +101,7 @@ describe('event decoder', () => {
                 0x00, // .
                 0x00, // flags count MSB
             ],
-            statusReportEvent(0x00000001),
+            didReceiveStatusReport(0x00000001),
         ],
     ])('decode %s event', async (_n, message, expected) => {
         const saga = new AsyncSaga(blePybricksService);

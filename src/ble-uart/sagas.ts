@@ -16,7 +16,11 @@ import {
     takeMaybe,
 } from 'typed-redux-saga/macro';
 import {
-    PnpId,
+    bleDIServiceDidReceiveFirmwareRevision,
+    bleDIServiceDidReceivePnPId,
+    bleDIServiceDidReceiveSoftwareRevision,
+} from '../ble-device-info-service/actions';
+import {
     decodePnpId,
     serviceUUID as deviceInfoServiceUUID,
     firmwareRevisionStringUUID,
@@ -48,7 +52,7 @@ import {
 } from '../ble/actions';
 import { BleConnectionState } from '../ble/reducers';
 import { RootState } from '../reducers';
-import { ensureError, hex } from '../utils';
+import { ensureError } from '../utils';
 import {
     BleUartActionType,
     BleUartWriteAction,
@@ -194,11 +198,9 @@ function* connect(_action: BleDeviceConnectAction): Generator {
         return;
     }
 
-    let firmwareVersion: string;
     try {
-        firmwareVersion = decoder.decode(
-            yield* call([firmwareVersionChar, 'readValue']),
-        );
+        const version = decoder.decode(yield* call([firmwareVersionChar, 'readValue']));
+        yield* put(bleDIServiceDidReceiveFirmwareRevision(version));
     } catch (err) {
         server.disconnect();
         yield* takeMaybe(disconnectChannel);
@@ -219,20 +221,15 @@ function* connect(_action: BleDeviceConnectAction): Generator {
         return;
     }
 
-    let protocolVersion: string;
     try {
-        protocolVersion = decoder.decode(
-            yield* call([softwareVersionChar, 'readValue']),
-        );
+        const version = decoder.decode(yield* call([softwareVersionChar, 'readValue']));
+        yield* put(bleDIServiceDidReceiveSoftwareRevision(version));
     } catch (err) {
         server.disconnect();
         yield* takeMaybe(disconnectChannel);
         yield* put(didFailToConnect({ reason: Reason.Unknown, err: ensureError(err) }));
         return;
     }
-
-    // TODO: verify that minimum protocol version is met
-    console.log(`Pybricks protocol version: ${protocolVersion}`);
 
     let pnpIdChar: BluetoothRemoteGATTCharacteristic | undefined = undefined;
     try {
@@ -244,9 +241,9 @@ function* connect(_action: BleDeviceConnectAction): Generator {
     }
 
     if (pnpIdChar) {
-        let pnpId: PnpId;
         try {
-            pnpId = decodePnpId(yield* call([pnpIdChar, 'readValue']));
+            const pnpId = decodePnpId(yield* call([pnpIdChar, 'readValue']));
+            yield* put(bleDIServiceDidReceivePnPId(pnpId));
         } catch (err) {
             server.disconnect();
             yield* takeMaybe(disconnectChannel);
@@ -255,13 +252,6 @@ function* connect(_action: BleDeviceConnectAction): Generator {
             );
             return;
         }
-
-        console.log(
-            `Vendor: ${hex(pnpId.vendorId, 4)}, Product: ${hex(
-                pnpId.productId,
-                4,
-            )}, Version: ${hex(pnpId.productVersion, 4)}`,
-        );
     }
 
     let pybricksService: BluetoothRemoteGATTService;
@@ -419,7 +409,7 @@ function* connect(_action: BleDeviceConnectAction): Generator {
 
     tasks.push(yield* takeEvery(BleUartActionType.Write, writeUart, uartRxChar));
 
-    yield* put(didConnect(firmwareVersion));
+    yield* put(didConnect(device.id, device.name || ''));
 
     // wait for disconnection
     yield* takeMaybe(disconnectChannel);

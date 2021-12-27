@@ -5,9 +5,8 @@
 
 import { AnchorButton, Button, Classes, Dialog } from '@blueprintjs/core';
 import { firmwareVersion } from '@pybricks/firmware';
-import { WithI18nProps, withI18n } from '@shopify/react-i18n';
-import React from 'react';
-import { connect } from 'react-redux';
+import { useI18n } from '@shopify/react-i18n';
+import React, { useState } from 'react';
 import {
     appName,
     appVersion,
@@ -23,61 +22,52 @@ import en from './i18n.en.json';
 
 import './about.scss';
 
-type OwnProps = { isOpen: boolean; onClose: () => void };
+type AboutDialogProps = { isOpen: boolean; onClose: () => void };
 
-type AboutDialogProps = OwnProps & WithI18nProps;
+const AboutDialog: React.FunctionComponent<AboutDialogProps> = (props) => {
+    const [isLicenseDialogOpen, setIsLicenseDialogOpen] = useState(false);
 
-class AboutDialog extends React.Component<AboutDialogProps> {
-    public state = {
-        licenseDialogIsOpen: false,
-    };
+    const [i18n] = useI18n({ id: 'about', translations: { en }, fallback: en });
 
-    render(): JSX.Element {
-        const { isOpen, onClose, i18n } = this.props;
-        return (
-            <Dialog
-                title={`Pybricks v${firmwareVersion} (${appName} v${appVersion})`}
-                isOpen={isOpen}
-                onClose={() => onClose()}
-            >
-                <div className={Classes.DIALOG_BODY}>
-                    <div className="pb-about-icon">
-                        <img src="favicon.ico" />
-                    </div>
-                    <p>
-                        <strong>{i18n.translate(AboutStringId.Description)}</strong>
-                    </p>
-                    <p>{pybricksCopyright}</p>
+    return (
+        <Dialog
+            title={`Pybricks v${firmwareVersion} (${appName} v${appVersion})`}
+            isOpen={props.isOpen}
+            onClose={() => props.onClose()}
+        >
+            <div className={Classes.DIALOG_BODY}>
+                <div className="pb-about-icon">
+                    <img src="favicon.ico" />
                 </div>
-                <div className={Classes.DIALOG_FOOTER}>
-                    <p>
-                        <small>{legoDisclaimer}</small>
-                    </p>
-                    <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-                        <Button
-                            onClick={() => this.setState({ licenseDialogIsOpen: true })}
-                        >
-                            {i18n.translate(AboutStringId.LicenseButtonLabel)}
-                        </Button>
-                        <AnchorButton href={changelogUrl} target="blank_">
-                            {i18n.translate(AboutStringId.ChangelogButtonLabel)}
-                            <ExternalLinkIcon />
-                        </AnchorButton>
-                        <AnchorButton href={pybricksWebsiteUrl} target="blank_">
-                            {i18n.translate(AboutStringId.WebsiteButtonLabel)}
-                            <ExternalLinkIcon />
-                        </AnchorButton>
-                    </div>
+                <p>
+                    <strong>{i18n.translate(AboutStringId.Description)}</strong>
+                </p>
+                <p>{pybricksCopyright}</p>
+            </div>
+            <div className={Classes.DIALOG_FOOTER}>
+                <p>
+                    <small>{legoDisclaimer}</small>
+                </p>
+                <div className={Classes.DIALOG_FOOTER_ACTIONS}>
+                    <Button onClick={() => setIsLicenseDialogOpen(true)}>
+                        {i18n.translate(AboutStringId.LicenseButtonLabel)}
+                    </Button>
+                    <AnchorButton href={changelogUrl} target="blank_">
+                        {i18n.translate(AboutStringId.ChangelogButtonLabel)}
+                        <ExternalLinkIcon />
+                    </AnchorButton>
+                    <AnchorButton href={pybricksWebsiteUrl} target="blank_">
+                        {i18n.translate(AboutStringId.WebsiteButtonLabel)}
+                        <ExternalLinkIcon />
+                    </AnchorButton>
                 </div>
-                <LicenseDialog
-                    isOpen={this.state.licenseDialogIsOpen}
-                    onClose={() => this.setState({ licenseDialogIsOpen: false })}
-                />
-            </Dialog>
-        );
-    }
-}
+            </div>
+            <LicenseDialog
+                isOpen={isLicenseDialogOpen}
+                onClose={() => setIsLicenseDialogOpen(false)}
+            />
+        </Dialog>
+    );
+};
 
-export default connect()(
-    withI18n({ id: 'about', fallback: en, translations: { en } })(AboutDialog),
-);
+export default AboutDialog;

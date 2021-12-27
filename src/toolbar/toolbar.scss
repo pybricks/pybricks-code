@@ -5,23 +5,21 @@
 
 @import '../variables.scss';
 
-.#{$ns}-dark .pb-toolbar {
-    background-color: $pt-dark-app-background-color;
-}
-
 .pb-toolbar {
     height: $pb-toolbar-height;
-    background-color: $pt-app-background-color;
     padding: 0 $pt-grid-size * 1.5;
     position: relative;
     width: 100%;
     z-index: $pt-z-index-content;
 }
 
+.pb-toolbar * {
+    box-shadow: unset !important;
+}
+
 .pb-toolbar-group {
     align-items: center;
-    display: flex;
-    height: $pb-toolbar-height;
+    height: 100%;
 
     &.pb-align-left {
         float: left;
@@ -31,5 +29,20 @@
     &.pb-align-right {
         float: right;
         margin-left: $pt-grid-size * 2;
+    }
+}
+
+// make small buttons more square and slightly smaller
+@media screen and (max-width: 700px) {
+    .pb-toolbar .#{$ns}-button {
+        padding: 5px;
+    }
+}
+
+// this is the point where the buttons start wrapping to 2 rows so we need to
+// adjust the height so that they stay in the toolbar
+@media screen and (max-width: 350px) {
+    .pb-toolbar-group {
+        height: 50%;
     }
 }

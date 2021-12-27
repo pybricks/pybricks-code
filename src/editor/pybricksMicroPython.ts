@@ -260,7 +260,9 @@ from pybricks.parameters import Button, Color, Direction, Port, Stop
 from pybricks.robotics import DriveBase
 from pybricks.tools import wait, StopWatch
 
-hub = ${hubName}()`;
+hub = ${hubName}()
+
+`;
 }
 
 const templateSnippets: Array<
@@ -284,6 +286,15 @@ const templateSnippets: Array<
         insertText: template('MoveHub', ['Motor', 'ColorDistanceSensor']),
     },
     {
+        label: 'inventorhub',
+        documentation: 'Template for MINDSTORMS Robot Inventor hub program.',
+        insertText: template('InventorHub', [
+            'Motor',
+            'ColorSensor',
+            'UltrasonicSensor',
+        ]),
+    },
+    {
         label: 'primehub',
         documentation: 'Template for SPIKE Prime program.',
         insertText: template('PrimeHub', [
@@ -294,12 +305,12 @@ const templateSnippets: Array<
         ]),
     },
     {
-        label: 'inventorhub',
-        documentation: 'Template for MINDSTORMS Robot Inventor hub program.',
-        insertText: template('InventorHub', [
+        label: 'essentialhub',
+        documentation: 'Template for SPIKE Essential program.',
+        insertText: template('EssentialHub', [
             'Motor',
             'ColorSensor',
-            'UltrasonicSensor',
+            'ColorLightMatrix',
         ]),
     },
 ];

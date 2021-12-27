@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020 The Pybricks Authors
+// Copyright (c) 2020-2021 The Pybricks Authors
 
 // Ref: https://lego.github.io/lego-ble-wireless-protocol-docs/index.html#lego-hub-boot-loader-service
 
@@ -22,6 +22,8 @@ export const MaxMessageSize = 20;
 
 /**
  * LEGO Powered Up Hub IDs
+ *
+ * This is the subset of hubs that actually support this bootloader protocol.
  */
 export enum HubType {
     MoveHub = 0x40,

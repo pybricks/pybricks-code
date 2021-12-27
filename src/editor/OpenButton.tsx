@@ -1,39 +1,39 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020 The Pybricks Authors
+// Copyright (c) 2020-2021 The Pybricks Authors
 
-import { connect } from 'react-redux';
-import * as notification from '../notifications/actions';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import * as notificationActions from '../notifications/actions';
 import { RootState } from '../reducers';
 import OpenFileButton, { OpenFileButtonProps } from '../toolbar/OpenFileButton';
 import { TooltipId } from '../toolbar/i18n';
-import * as editor from './actions';
+import * as editorActions from './actions';
 import openIcon from './open.svg';
 
-type StateProps = Pick<OpenFileButtonProps, 'enabled'>;
-type DispatchProps = Pick<OpenFileButtonProps, 'onFile' | 'onReject'>;
-type OwnProps = Pick<OpenFileButtonProps, 'id'>;
+type OpenButtonProps = Pick<OpenFileButtonProps, 'id'>;
 
-const mapStateToProps = (state: RootState): StateProps => ({
-    enabled: state.editor.current !== null,
-});
+const OpenButton: React.FunctionComponent<OpenButtonProps> = (props) => {
+    const editor = useSelector((state: RootState) => state.editor.current);
+    const dispatch = useDispatch();
 
-const mapDispatchToProps: DispatchProps = {
-    onFile: editor.open,
-    onReject: (file) =>
-        notification.add('error', `'${file.name}' is not a valid python file.`),
+    return (
+        <OpenFileButton
+            fileExtension=".py"
+            tooltip={TooltipId.Open}
+            icon={openIcon}
+            enabled={editor !== null}
+            onFile={(data) => dispatch(editorActions.open(data))}
+            onReject={(file) =>
+                dispatch(
+                    notificationActions.add(
+                        'error',
+                        `'${file.name}' is not a valid python file.`,
+                    ),
+                )
+            }
+            {...props}
+        />
+    );
 };
 
-const mergeProps = (
-    stateProps: StateProps,
-    dispatchProps: DispatchProps,
-    ownProps: OwnProps,
-): OpenFileButtonProps => ({
-    fileExtension: '.py',
-    tooltip: TooltipId.Open,
-    icon: openIcon,
-    ...ownProps,
-    ...stateProps,
-    ...dispatchProps,
-});
-
-export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(OpenFileButton);
+export default OpenButton;

@@ -3,13 +3,7 @@
 
 // Saga for managing notifications (toasts)
 
-import {
-    IActionProps,
-    ILinkProps,
-    IToaster,
-    IconName,
-    Intent,
-} from '@blueprintjs/core';
+import { ActionProps, IToaster, IconName, Intent, LinkProps } from '@blueprintjs/core';
 import { firmwareVersion } from '@pybricks/firmware';
 import { Replacements } from '@shopify/react-i18n';
 import React from 'react';
@@ -19,12 +13,19 @@ import { delay, getContext, put, take, takeEvery } from 'typed-redux-saga/macro'
 import { AppActionType, AppDidCheckForUpdateAction, reload } from '../app/actions';
 import { appName } from '../app/constants';
 import {
+    BleDIServiceActionType,
+    BleDIServiceDidReceiveFirmwareRevisionAction,
+} from '../ble-device-info-service/actions';
+import {
     BleDeviceActionType,
-    BleDeviceDidConnectAction,
     BleDeviceDidFailToConnectAction,
     BleDeviceFailToConnectReasonType,
 } from '../ble/actions';
-import { EditorActionType, reloadProgram } from '../editor/actions';
+import {
+    EditorActionType,
+    EditorDidFailToSaveAsAction,
+    reloadProgram,
+} from '../editor/actions';
 import {
     FailToFinishReasonType,
     FlashFirmwareActionType,
@@ -91,7 +92,7 @@ function mapIcon(level: Level): IconName | undefined {
  * Converts a URL to an action that can be passed to `IToaster.show()`.
  * @param helpUrl A URL.
  */
-function helpAction(helpUrl: string): IActionProps & ILinkProps {
+function helpAction(helpUrl: string): ActionProps & LinkProps {
     return {
         icon: 'help',
         href: helpUrl,
@@ -103,7 +104,7 @@ function dispatchAction(
     messageId: MessageId,
     onClick: (event: React.MouseEvent<HTMLElement>) => void,
     icon?: IconName,
-): IActionProps {
+): ActionProps {
     return {
         icon: icon,
         text: React.createElement(NotificationAction, { messageId }),
@@ -124,7 +125,7 @@ function* showSingleton(
     level: Level,
     messageId: MessageId,
     replacements?: Replacements,
-    action?: IActionProps & ILinkProps,
+    action?: ActionProps & LinkProps,
     onDismiss?: (didTimeoutExpire: boolean) => void,
 ): Generator {
     const { toaster } = yield* getContext<NotificationContext>('notification');
@@ -234,6 +235,15 @@ function* showBootloaderDidFailToConnectError(
             yield* showUnexpectedError(MessageId.BleUnexpectedError, action.err);
             break;
     }
+}
+
+function* showEditorFailToSaveFile(action: EditorDidFailToSaveAsAction): Generator {
+    if (action.err.name === 'AbortError') {
+        // user clicked cancel button - not an error
+        return;
+    }
+
+    yield* showUnexpectedError(MessageId.EditorFailedToSaveFile, action.err);
 }
 
 function* showEditorStorageChanged(): Generator {
@@ -386,12 +396,14 @@ function* showNoUpdateInfo(action: AppDidCheckForUpdateAction): Generator {
     });
 }
 
-function* checkVersion(action: BleDeviceDidConnectAction): Generator {
+function* checkVersion(
+    action: BleDIServiceDidReceiveFirmwareRevisionAction,
+): Generator {
     // ensure the actual hub firmware version is the same as the shipped
     // firmware version or newer
     if (
         !semver.satisfies(
-            pythonVersionToSemver(action.firmwareVersion),
+            pythonVersionToSemver(action.version),
             `>=${pythonVersionToSemver(firmwareVersion)}`,
         )
     ) {
@@ -408,6 +420,7 @@ export default function* (): Generator {
         BootloaderConnectionActionType.DidFailToConnect,
         showBootloaderDidFailToConnectError,
     );
+    yield* takeEvery(EditorActionType.DidFailToSaveAs, showEditorFailToSaveFile);
     yield* takeEvery(EditorActionType.StorageChanged, showEditorStorageChanged);
     yield* takeEvery(FlashFirmwareActionType.DidFailToFinish, showFlashFirmwareError);
     yield* takeEvery(MpyActionType.DidCompile, dismissCompilerError);
@@ -415,5 +428,5 @@ export default function* (): Generator {
     yield* takeEvery(NotificationActionType.Add, addNotification);
     yield* takeEvery(ServiceWorkerActionType.DidUpdate, showServiceWorkerUpdate);
     yield* takeEvery(AppActionType.DidCheckForUpdate, showNoUpdateInfo);
-    yield* takeEvery(BleDeviceActionType.DidConnect, checkVersion);
+    yield* takeEvery(BleDIServiceActionType.DidReceiveFirmwareRevision, checkVersion);
 }
