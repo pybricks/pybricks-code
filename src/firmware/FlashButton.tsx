@@ -2,11 +2,11 @@
 // Copyright (c) 2020-2021 The Pybricks Authors
 
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { BleConnectionState } from '../ble/reducers';
 import { BootloaderConnectionState } from '../lwp3-bootloader/reducers';
 import * as notificationActions from '../notifications/actions';
-import { RootState } from '../reducers';
+import { useSelector } from '../reducers';
 import OpenFileButton, { OpenFileButtonProps } from '../toolbar/OpenFileButton';
 import { TooltipId } from '../toolbar/i18n';
 import { flashFirmware } from './actions';
@@ -15,12 +15,10 @@ import firmwareIcon from './firmware.svg';
 type FlashButtonProps = Pick<OpenFileButtonProps, 'id'>;
 
 const FlashButton: React.FunctionComponent<FlashButtonProps> = (props) => {
-    const bootloaderConnection = useSelector(
-        (state: RootState) => state.bootloader.connection,
-    );
-    const bleConnection = useSelector((state: RootState) => state.ble.connection);
-    const flashing = useSelector((state: RootState) => state.firmware.flashing);
-    const progress = useSelector((state: RootState) => state.firmware.progress);
+    const bootloaderConnection = useSelector((s) => s.bootloader.connection);
+    const bleConnection = useSelector((s) => s.ble.connection);
+    const flashing = useSelector((s) => s.firmware.flashing);
+    const progress = useSelector((s) => s.firmware.progress);
 
     const dispatch = useDispatch();
 

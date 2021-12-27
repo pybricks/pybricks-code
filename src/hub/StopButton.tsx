@@ -2,8 +2,8 @@
 // Copyright (c) 2020-2021 The Pybricks Authors
 
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../reducers';
+import { useDispatch } from 'react-redux';
+import { useSelector } from '../reducers';
 import ActionButton, { ActionButtonProps } from '../toolbar/ActionButton';
 import { TooltipId } from '../toolbar/i18n';
 import { stop } from './actions';
@@ -14,7 +14,7 @@ type StopButtonProps = Pick<ActionButtonProps, 'id'> &
     Pick<ActionButtonProps, 'keyboardShortcut'>;
 
 const StopButton: React.FunctionComponent<StopButtonProps> = (props) => {
-    const runtime = useSelector((state: RootState) => state.hub.runtime);
+    const runtime = useSelector((s) => s.hub.runtime);
 
     const dispatch = useDispatch();
 

@@ -5,10 +5,10 @@ import { Menu, MenuDivider, MenuItem, ResizeSensor } from '@blueprintjs/core';
 import { ContextMenu2, ContextMenu2ContentProps } from '@blueprintjs/popover2';
 import { useI18n } from '@shopify/react-i18n';
 import React, { useContext, useEffect, useMemo, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Terminal as XTerm } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
-import { RootState } from '../reducers';
+import { useSelector } from '../reducers';
 import { isMacOS } from '../utils/os';
 import { TerminalContext } from './TerminalContext';
 import { receiveData } from './actions';
@@ -100,7 +100,7 @@ function createContextMenu(
 const Terminal: React.FC = (_props) => {
     const { xterm, fitAddon } = useMemo(createXTerm, [createXTerm]);
     const terminalRef = useRef<HTMLDivElement>(null);
-    const darkMode = useSelector((state: RootState) => state.settings.darkMode);
+    const darkMode = useSelector((s) => s.settings.darkMode);
     const dispatch = useDispatch();
     const terminalStream = useContext(TerminalContext);
 

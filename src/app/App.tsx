@@ -3,10 +3,10 @@
 
 import { Classes } from '@blueprintjs/core';
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import SplitterLayout from 'react-splitter-layout';
 import Editor from '../editor/Editor';
-import { RootState } from '../reducers';
+import { useSelector } from '../reducers';
 import { toggleBoolean } from '../settings/actions';
 import { BooleanSettingId } from '../settings/defaults';
 import StatusBar from '../status-bar/StatusBar';
@@ -122,8 +122,8 @@ const Docs: React.FunctionComponent = (_props) => {
 };
 
 const App: React.FunctionComponent = (_props) => {
-    const darkMode = useSelector((s: RootState): boolean => s.settings.darkMode);
-    const showDocs = useSelector((s: RootState): boolean => s.settings.showDocs);
+    const darkMode = useSelector((s): boolean => s.settings.darkMode);
+    const showDocs = useSelector((s): boolean => s.settings.showDocs);
     const [isDragging, setIsDragging] = useState(false);
 
     // darkMode class has to be applied to body element, otherwise it won't

@@ -2,8 +2,8 @@
 // Copyright (c) 2020-2021 The Pybricks Authors
 
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../reducers';
+import { useDispatch } from 'react-redux';
+import { useSelector } from '../reducers';
 import ActionButton, { ActionButtonProps } from '../toolbar/ActionButton';
 import { TooltipId } from '../toolbar/i18n';
 import { downloadAndRun } from './actions';
@@ -14,11 +14,9 @@ type RunButtonProps = Pick<ActionButtonProps, 'id'> &
     Pick<ActionButtonProps, 'keyboardShortcut'>;
 
 const RunButton: React.FunctionComponent<RunButtonProps> = (props) => {
-    const editor = useSelector((state: RootState) => state.editor.current);
-    const downloadProgress = useSelector(
-        (state: RootState) => state.hub.downloadProgress,
-    );
-    const runtime = useSelector((state: RootState) => state.hub.runtime);
+    const editor = useSelector((s) => s.editor.current);
+    const downloadProgress = useSelector((s) => s.hub.downloadProgress);
+    const runtime = useSelector((s) => s.hub.runtime);
 
     const dispatch = useDispatch();
 

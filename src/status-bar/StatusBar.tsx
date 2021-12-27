@@ -5,9 +5,8 @@ import { Button, Intent, ProgressBar } from '@blueprintjs/core';
 import { Classes as Classes2, Popover2, Popover2Props } from '@blueprintjs/popover2';
 import { useI18n } from '@shopify/react-i18n';
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { BleConnectionState } from '../ble/reducers';
-import { RootState } from '../reducers';
+import { useSelector } from '../reducers';
 import { MessageId } from './i18n';
 import en from './i18n.en.json';
 
@@ -19,11 +18,9 @@ const commonPopoverProps: Partial<Popover2Props> = {
 };
 
 const HubInfoButton: React.VFC = (_props) => {
-    const deviceName = useSelector((state: RootState) => state.ble.deviceName);
-    const deviceType = useSelector((state: RootState) => state.ble.deviceType);
-    const deviceFirmwareVersion = useSelector(
-        (state: RootState) => state.ble.deviceFirmwareVersion,
-    );
+    const deviceName = useSelector((s) => s.ble.deviceName);
+    const deviceType = useSelector((s) => s.ble.deviceType);
+    const deviceFirmwareVersion = useSelector((s) => s.ble.deviceFirmwareVersion);
 
     const [i18n] = useI18n({ id: 'statusBar', translations: { en }, fallback: en });
 
@@ -69,10 +66,8 @@ const HubInfoButton: React.VFC = (_props) => {
 };
 
 const BatteryIndicator: React.VFC = (_props) => {
-    const charging = useSelector((state: RootState) => state.ble.deviceBatteryCharging);
-    const lowBatteryWarning = useSelector(
-        (state: RootState) => state.ble.deviceLowBatteryWarning,
-    );
+    const charging = useSelector((s) => s.ble.deviceBatteryCharging);
+    const lowBatteryWarning = useSelector((s) => s.ble.deviceLowBatteryWarning);
 
     const [i18n] = useI18n({ id: 'statusBar', translations: { en }, fallback: en });
 
@@ -102,7 +97,7 @@ const BatteryIndicator: React.VFC = (_props) => {
 };
 
 const StatusBar: React.VFC = (_props) => {
-    const connection = useSelector((state: RootState) => state.ble.connection);
+    const connection = useSelector((s) => s.ble.connection);
 
     return (
         <div

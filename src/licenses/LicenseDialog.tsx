@@ -14,9 +14,9 @@ import {
 } from '@blueprintjs/core';
 import { useI18n } from '@shopify/react-i18n';
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { appName } from '../app/constants';
-import { RootState } from '../reducers';
+import { useSelector } from '../reducers';
 import { fetchList, select } from './actions';
 import { LicenseStringId } from './i18n';
 import en from './i18n.en.json';
@@ -31,7 +31,7 @@ type LicenseListPanelProps = {
 const LicenseListPanel: React.VoidFunctionComponent<LicenseListPanelProps> = (
     props,
 ) => {
-    const licenseList = useSelector((state: RootState) => state.licenses.list);
+    const licenseList = useSelector((s) => s.licenses.list);
 
     return (
         <div className="pb-license-list">
@@ -54,7 +54,7 @@ const LicenseListPanel: React.VoidFunctionComponent<LicenseListPanelProps> = (
 };
 
 const LicenseInfoPanel = React.forwardRef<HTMLDivElement>((_props, ref) => {
-    const licenseInfo = useSelector((state: RootState) => state.licenses.selected);
+    const licenseInfo = useSelector((s) => s.licenses.selected);
 
     const [i18n] = useI18n({ id: 'license', translations: { en }, fallback: en });
 

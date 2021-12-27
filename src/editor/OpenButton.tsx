@@ -2,9 +2,9 @@
 // Copyright (c) 2020-2021 The Pybricks Authors
 
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import * as notificationActions from '../notifications/actions';
-import { RootState } from '../reducers';
+import { useSelector } from '../reducers';
 import OpenFileButton, { OpenFileButtonProps } from '../toolbar/OpenFileButton';
 import { TooltipId } from '../toolbar/i18n';
 import * as editorActions from './actions';
@@ -13,7 +13,7 @@ import openIcon from './open.svg';
 type OpenButtonProps = Pick<OpenFileButtonProps, 'id'>;
 
 const OpenButton: React.FunctionComponent<OpenButtonProps> = (props) => {
-    const editor = useSelector((state: RootState) => state.editor.current);
+    const editor = useSelector((s) => s.editor.current);
     const dispatch = useDispatch();
 
     return (
