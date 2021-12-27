@@ -38,6 +38,20 @@ import {
     ServiceUUID as pybricksServiceUUID,
 } from '../ble-pybricks-service/protocol';
 import {
+    BleUartActionType,
+    BleUartWriteAction,
+    didFailToWrite as didFailToWriteUart,
+    didNotify as didNotifyUart,
+    didWrite as didWriteUart,
+} from '../ble-uart/actions';
+import {
+    RxCharUUID as uartRxCharUUID,
+    ServiceUUID as uartServiceUUID,
+    TxCharUUID as uartTxCharUUID,
+} from '../ble-uart/protocol';
+import { RootState } from '../reducers';
+import { ensureError } from '../utils';
+import {
     BLEActionType,
     BleDeviceActionType as BLEDeviceActionType,
     BLEToggleAction,
@@ -49,22 +63,8 @@ import {
     didDisconnect,
     didFailToConnect,
     disconnect as disconnectAction,
-} from '../ble/actions';
-import { BleConnectionState } from '../ble/reducers';
-import { RootState } from '../reducers';
-import { ensureError } from '../utils';
-import {
-    BleUartActionType,
-    BleUartWriteAction,
-    didFailToWrite as didFailToWriteUart,
-    didNotify as didNotifyUart,
-    didWrite as didWriteUart,
 } from './actions';
-import {
-    RxCharUUID as uartRxCharUUID,
-    ServiceUUID as uartServiceUUID,
-    TxCharUUID as uartTxCharUUID,
-} from './protocol';
+import { BleConnectionState } from './reducers';
 
 const decoder = new TextDecoder();
 
