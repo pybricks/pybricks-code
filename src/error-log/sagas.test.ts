@@ -2,8 +2,8 @@
 // Copyright (c) 2020 The Pybricks Authors
 
 import { AsyncSaga } from '../../test';
+import { didFailToWrite } from '../ble-nordic-uart-service/actions';
 import { eventProtocolError } from '../ble-pybricks-service/actions';
-import { didFailToWrite } from '../ble-uart/actions';
 import {
     BleDeviceFailToConnectReasonType,
     didFailToConnect as bleDidFailToConnect,

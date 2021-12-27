@@ -13,8 +13,12 @@ import {
     takeEvery,
 } from 'typed-redux-saga/macro';
 import { Action } from '../actions';
-import { BleUartActionType, BleUartDidNotifyAction, write } from '../ble-uart/actions';
-import { SafeTxCharLength } from '../ble-uart/protocol';
+import {
+    BleUartActionType,
+    BleUartDidNotifyAction,
+    write,
+} from '../ble-nordic-uart-service/actions';
+import { SafeTxCharLength } from '../ble-nordic-uart-service/protocol';
 import { checksum } from '../hub/actions';
 import { HubRuntimeState } from '../hub/reducers';
 import { RootState } from '../reducers';

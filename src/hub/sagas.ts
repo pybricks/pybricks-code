@@ -14,18 +14,18 @@ import {
 } from 'typed-redux-saga/macro';
 import { Action } from '../actions';
 import {
+    BleUartActionType,
+    BleUartDidFailToWriteAction,
+    BleUartDidWriteAction,
+    write,
+} from '../ble-nordic-uart-service/actions';
+import { SafeTxCharLength } from '../ble-nordic-uart-service/protocol';
+import {
     BlePybricksServiceCommandActionType,
     BlePybricksServiceCommandDidFailToSendAction,
     BlePybricksServiceCommandDidSendAction,
     sendStopUserProgramCommand,
 } from '../ble-pybricks-service/actions';
-import {
-    BleUartActionType,
-    BleUartDidFailToWriteAction,
-    BleUartDidWriteAction,
-    write,
-} from '../ble-uart/actions';
-import { SafeTxCharLength } from '../ble-uart/protocol';
 import { BleDeviceActionType } from '../ble/actions';
 import {
     MpyActionType,

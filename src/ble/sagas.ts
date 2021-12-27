@@ -28,6 +28,18 @@ import {
     softwareRevisionStringUUID,
 } from '../ble-device-info-service/protocol';
 import {
+    BleUartActionType,
+    BleUartWriteAction,
+    didFailToWrite as didFailToWriteUart,
+    didNotify as didNotifyUart,
+    didWrite as didWriteUart,
+} from '../ble-nordic-uart-service/actions';
+import {
+    RxCharUUID as uartRxCharUUID,
+    ServiceUUID as uartServiceUUID,
+    TxCharUUID as uartTxCharUUID,
+} from '../ble-nordic-uart-service/protocol';
+import {
     BlePybricksServiceActionType,
     didFailToWriteCommand,
     didNotifyEvent,
@@ -37,18 +49,6 @@ import {
     ControlCharacteristicUUID as pybricksCommandCharacteristicUUID,
     ServiceUUID as pybricksServiceUUID,
 } from '../ble-pybricks-service/protocol';
-import {
-    BleUartActionType,
-    BleUartWriteAction,
-    didFailToWrite as didFailToWriteUart,
-    didNotify as didNotifyUart,
-    didWrite as didWriteUart,
-} from '../ble-uart/actions';
-import {
-    RxCharUUID as uartRxCharUUID,
-    ServiceUUID as uartServiceUUID,
-    TxCharUUID as uartTxCharUUID,
-} from '../ble-uart/protocol';
 import { RootState } from '../reducers';
 import { ensureError } from '../utils';
 import {

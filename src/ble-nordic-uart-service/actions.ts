@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2021 The Pybricks Authors
-// actions/ble-uart.ts: Actions for Bluetooth Low Energy nRF UART service
+//
+// Actions for Bluetooth Low Energy Nordic UART service
 
 import { Action } from 'redux';
 
