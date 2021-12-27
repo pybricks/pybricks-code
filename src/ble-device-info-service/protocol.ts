@@ -31,9 +31,13 @@ export enum PnpIdVendorIdSource {
  * Decoded data from the PnP ID characteristic.
  */
 export type PnpId = {
+    /** For Pybricks hubs, this should be PnpIdVendorIdSource.BluetoothSig */
     vendorIdSource: PnpIdVendorIdSource;
+    /** For Pybricks hubs, this should be LegoCompanyId (from ble-lwp3-service/protocol). */
     vendorId: number;
+    /** For Pybricks hubs, this should be one of HubType (from ble-lwp3-service/protocol). */
     productId: number;
+    /** For Pybricks hubs, this should be hub variant if applicable (from ble-lwp3-service/protocol). */
     productVersion: number;
 };
 

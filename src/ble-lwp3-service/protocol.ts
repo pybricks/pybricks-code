@@ -6,6 +6,13 @@
 // https://lego.github.io/lego-ble-wireless-protocol-docs/
 
 /**
+ * LEGO's Bluetooth SIG company identifier.
+ *
+ * https://www.bluetooth.com/specifications/assigned-numbers/company-identifiers/
+ */
+export const LegoCompanyId = 0x0397;
+
+/**
  * LEGO Powered Up Hub type IDs
  *
  * https://github.com/pybricks/technical-info/blob/master/assigned-numbers.md#hub-type-ids
