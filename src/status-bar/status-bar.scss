@@ -14,3 +14,8 @@
     display: flex;
     align-items: center;
 }
+
+// make status bar items right-aligned
+.pb-status-bar :first-child {
+    margin-left: auto;
+}

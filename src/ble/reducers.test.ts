@@ -3,6 +3,12 @@
 
 import { Action } from '../actions';
 import {
+    bleDIServiceDidReceiveFirmwareRevision,
+    bleDIServiceDidReceivePnPId,
+} from '../ble-device-info-service/actions';
+import { PnpIdVendorIdSource } from '../ble-device-info-service/protocol';
+import { HubType, LegoCompanyId } from '../ble-lwp3-service/protocol';
+import {
     BleDeviceDidFailToConnectReason,
     connect,
     didConnect,
@@ -19,6 +25,9 @@ test('initial state', () => {
     expect(reducers(undefined, {} as Action)).toMatchInlineSnapshot(`
         Object {
           "connection": "ble.connection.state.disconnected",
+          "deviceFirmwareVersion": "",
+          "deviceName": "",
+          "deviceType": "",
         }
     `);
 });
@@ -56,4 +65,51 @@ test('connection', () => {
             didFailToDisconnect(),
         ).connection,
     ).toBe(BleConnectionState.Connected);
+});
+
+test('deviceName', () => {
+    const testId = 'test-id';
+    const testName = 'Test Name';
+
+    expect(
+        reducers({ deviceName: '' } as State, didConnect(testId, testName)).deviceName,
+    ).toBe(testName);
+
+    expect(
+        reducers({ deviceName: testName } as State, didDisconnect()).deviceName,
+    ).toBe('');
+});
+
+test('deviceType', () => {
+    expect(
+        reducers(
+            { deviceType: '' } as State,
+            bleDIServiceDidReceivePnPId({
+                vendorIdSource: PnpIdVendorIdSource.BluetoothSig,
+                vendorId: LegoCompanyId,
+                productId: HubType.MoveHub,
+                productVersion: 0,
+            }),
+        ).deviceType,
+    ).toBe('Move hub');
+
+    expect(
+        reducers({ deviceType: 'Move hub' } as State, didDisconnect()).deviceType,
+    ).toBe('');
+});
+
+test('deviceFirmwareVersion', () => {
+    const testVersion = '3.0.0';
+
+    expect(
+        reducers(
+            { deviceFirmwareVersion: '' } as State,
+            bleDIServiceDidReceiveFirmwareRevision(testVersion),
+        ).deviceFirmwareVersion,
+    ).toBe(testVersion);
+
+    expect(
+        reducers({ deviceFirmwareVersion: testVersion } as State, didDisconnect())
+            .deviceFirmwareVersion,
+    ).toBe('');
 });

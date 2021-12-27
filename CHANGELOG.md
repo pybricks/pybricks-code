@@ -4,6 +4,9 @@
 
 ## [Unreleased]
 
+### Added
+- Status bar indicator for connected hub.
+
 ### Changed
 - Saving file now uses proper save dialog in Chromium browser ([support#84]).
 - Toolbar buttons now scale with screen size ([support#300]).

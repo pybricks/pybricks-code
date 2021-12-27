@@ -30,6 +30,10 @@ body {
     position: absolute;
 }
 
+.no-wrap {
+    white-space: nowrap;
+}
+
 // global style tweaks
 
 .#{$ns}-toast {
