@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020 The Pybricks Authors
+// Copyright (c) 2020-2021 The Pybricks Authors
 
+import { useDispatch as useReduxDispatch } from 'react-redux';
 import { Dispatch as ReduxDispatch } from 'redux';
 import { AppAction } from './app/actions';
 import { BleDIServiceAction } from './ble-device-info-service/actions';
@@ -60,3 +61,8 @@ export type Action =
  * Dispatch function.
  */
 export type Dispatch = ReduxDispatch<Action>;
+
+/**
+ * Typed version of Redux useDispatch() hook.
+ */
+export const useDispatch = (): Dispatch => useReduxDispatch<Dispatch>();

@@ -2,7 +2,7 @@
 // Copyright (c) 2020-2021 The Pybricks Authors
 
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch } from '../actions';
 import * as editorActions from '../editor/actions';
 import { useSelector } from '../reducers';
 import ActionButton, { ActionButtonProps } from '../toolbar/ActionButton';

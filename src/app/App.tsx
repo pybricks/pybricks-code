@@ -3,8 +3,8 @@
 
 import { Classes } from '@blueprintjs/core';
 import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import SplitterLayout from 'react-splitter-layout';
+import { useDispatch } from '../actions';
 import Editor from '../editor/Editor';
 import { useSelector } from '../reducers';
 import { toggleBoolean } from '../settings/actions';

@@ -2,7 +2,7 @@
 // Copyright (c) 2020-2021 The Pybricks Authors
 
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch } from '../actions';
 import { BleConnectionState } from '../ble/reducers';
 import { BootloaderConnectionState } from '../lwp3-bootloader/reducers';
 import * as notificationActions from '../notifications/actions';
