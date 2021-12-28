@@ -3,10 +3,13 @@
 
 import { takeEvery } from 'typed-redux-saga/macro';
 import {
+    BleUartActionType,
+    BleUartDidFailToWriteAction,
+} from '../ble-nordic-uart-service/actions';
+import {
     BlePybricksServiceEventActionType,
     BlePybricksServiceEventProtocolErrorAction,
 } from '../ble-pybricks-service/actions';
-import { BleUartActionType, BleUartDidFailToWriteAction } from '../ble-uart/actions';
 import {
     BleDeviceActionType,
     BleDeviceDidFailToConnectAction,

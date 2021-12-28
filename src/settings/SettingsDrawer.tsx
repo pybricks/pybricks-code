@@ -19,8 +19,8 @@ import {
 import { Tooltip2 } from '@blueprintjs/popover2';
 import { useI18n } from '@shopify/react-i18n';
 import React, { useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import AboutDialog from '../about/AboutDialog';
+import { useDispatch } from '../actions';
 import { checkForUpdate, installPrompt, reload } from '../app/actions';
 import {
     pybricksBugReportsUrl,
@@ -30,7 +30,7 @@ import {
     tooltipDelay,
 } from '../app/constants';
 import { pseudolocalize } from '../i18n';
-import { RootState } from '../reducers';
+import { useSelector } from '../reducers';
 import ExternalLinkIcon from '../utils/ExternalLinkIcon';
 import { isMacOS } from '../utils/os';
 import { setBoolean, setString, toggleBoolean } from './actions';
@@ -47,31 +47,17 @@ type SettingsProps = {
 const SettingsDrawer: React.FunctionComponent<SettingsProps> = (props) => {
     const [isAboutDialogOpen, setIsAboutDialogOpen] = useState(false);
 
-    const showDocs = useSelector((state: RootState) => state.settings.showDocs);
-    const darkMode = useSelector((state: RootState) => state.settings.darkMode);
-    const flashCurrentProgram = useSelector(
-        (state: RootState) => state.settings.flashCurrentProgram,
-    );
-    const serviceWorker = useSelector((state: RootState) => state.app.serviceWorker);
-    const checkingForUpdate = useSelector(
-        (state: RootState) => state.app.checkingForUpdate,
-    );
-    const updateAvailable = useSelector(
-        (state: RootState) => state.app.updateAvailable,
-    );
-    const beforeInstallPrompt = useSelector(
-        (state: RootState) => state.app.beforeInstallPrompt,
-    );
-    const promptingInstall = useSelector(
-        (state: RootState) => state.app.promptingInstall,
-    );
-    const readyForOfflineUse = useSelector(
-        (state: RootState) => state.app.readyForOfflineUse,
-    );
-    const hubName = useSelector((state: RootState) => state.settings.hubName);
-    const isHubNameValid = useSelector(
-        (state: RootState) => state.settings.isHubNameValid,
-    );
+    const showDocs = useSelector((s) => s.settings.showDocs);
+    const darkMode = useSelector((s) => s.settings.darkMode);
+    const flashCurrentProgram = useSelector((s) => s.settings.flashCurrentProgram);
+    const serviceWorker = useSelector((s) => s.app.serviceWorker);
+    const checkingForUpdate = useSelector((s) => s.app.checkingForUpdate);
+    const updateAvailable = useSelector((s) => s.app.updateAvailable);
+    const beforeInstallPrompt = useSelector((s) => s.app.beforeInstallPrompt);
+    const promptingInstall = useSelector((s) => s.app.promptingInstall);
+    const readyForOfflineUse = useSelector((s) => s.app.readyForOfflineUse);
+    const hubName = useSelector((s) => s.settings.hubName);
+    const isHubNameValid = useSelector((s) => s.settings.isHubNameValid);
 
     const dispatch = useDispatch();
 

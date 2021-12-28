@@ -9,7 +9,7 @@ import {
     didFailToWrite,
     didNotify,
     didWrite,
-} from '../ble-uart/actions';
+} from '../ble-nordic-uart-service/actions';
 import { HubChecksumMessageAction, HubMessageActionType } from '../hub/actions';
 import { HubRuntimeState } from '../hub/reducers';
 import { createCountFunc } from '../utils/iter';

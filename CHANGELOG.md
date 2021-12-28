@@ -2,10 +2,11 @@
 
 # Changelog
 
-## [Unreleased]
+## [1.2.0-beta.1] - 2021-12-27
 
 ### Added
 - Status bar indicator for connected hub.
+- Basic battery OK/low indicator ([support#559]).
 
 ### Changed
 - Saving file now uses proper save dialog in Chromium browser ([support#84]).
@@ -17,6 +18,7 @@
 [support#84]: https://github.com/pybricks/support/issues/84
 [support#300]: https://github.com/pybricks/support/issues/300
 [support#369]: https://github.com/pybricks/support/issues/369
+[support#559]: https://github.com/pybricks/support/issues/559
 
 ## [1.1.0] - 2021-12-16
 
@@ -235,7 +237,8 @@ Prerelease changes are documented at [support#48].
 
 <!-- links for version headings -->
 
-[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v1.2.0-beta.1...HEAD
+[1.2.0-beta.1]: https://github.com/pybricks/pybricks-code/compare/v1.1.0...v1.2.0-beta.1
 [1.1.0]: https://github.com/pybricks/pybricks-code/compare/v1.1.0-rc.1...v1.1.0
 [1.1.0-rc.1]: https://github.com/pybricks/pybricks-code/compare/v1.1.0-beta.6...v1.1.0-rc.1
 [1.1.0-beta.6]: https://github.com/pybricks/pybricks-code/compare/v1.1.0-beta.5...v1.1.0-beta.6

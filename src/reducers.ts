@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2021 The Pybricks Authors
 
+import { TypedUseSelectorHook, useSelector as useReduxSelector } from 'react-redux';
 import { Reducer, combineReducers } from 'redux';
 import app from './app/reducers';
 import ble from './ble/reducers';
@@ -31,3 +32,8 @@ export const rootReducer = combineReducers({
 type StateFromReducer<R> = R extends Reducer<infer S> ? S : never;
 
 export type RootState = StateFromReducer<typeof rootReducer>;
+
+/**
+ * Typed version of react-redux useSelector() hook.
+ */
+export const useSelector: TypedUseSelectorHook<RootState> = useReduxSelector;

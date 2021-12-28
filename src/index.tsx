@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2021 The Pybricks Authors
 
-import { Classes } from '@blueprintjs/core';
 import { I18nContext } from '@shopify/react-i18n';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -40,30 +39,6 @@ const store = createStore(
     rootReducer,
     applyMiddleware(sagaMiddleware, loggerMiddleware),
 );
-
-// Hook in blueprints dark mode class to setting
-let oldDarkMode = false;
-store.subscribe(() => {
-    const newDarkMode = store.getState().settings.darkMode;
-    if (newDarkMode !== oldDarkMode) {
-        if (newDarkMode) {
-            document.body.classList.add(Classes.DARK);
-            for (const frame of document.getElementsByTagName('iframe')) {
-                frame.contentWindow?.document.documentElement.classList.add(
-                    Classes.DARK,
-                );
-            }
-        } else {
-            document.body.classList.remove(Classes.DARK);
-            for (const frame of document.getElementsByTagName('iframe')) {
-                frame.contentWindow?.document.documentElement.classList.remove(
-                    Classes.DARK,
-                );
-            }
-        }
-        oldDarkMode = newDarkMode;
-    }
-});
 
 // special styling for beta versions
 if (appVersion.match(/beta/)) {

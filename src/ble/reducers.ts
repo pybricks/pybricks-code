@@ -8,6 +8,8 @@ import { Reducer, combineReducers } from 'redux';
 import { Action } from '../actions';
 import { BleDIServiceActionType } from '../ble-device-info-service/actions';
 import { getHubTypeName } from '../ble-device-info-service/protocol';
+import { BlePybricksServiceEventActionType } from '../ble-pybricks-service/actions';
+import { Status, statusToFlag } from '../ble-pybricks-service/protocol';
 import { BleDeviceActionType } from './actions';
 
 /**
@@ -85,9 +87,34 @@ const deviceFirmwareVersion: Reducer<string, Action> = (state = '', action) => {
     }
 };
 
+const deviceLowBatteryWarning: Reducer<boolean, Action> = (state = false, action) => {
+    switch (action.type) {
+        case BleDeviceActionType.DidDisconnect:
+            return false;
+        case BlePybricksServiceEventActionType.DidReceiveStatusReport:
+            return Boolean(
+                action.statusFlags & statusToFlag(Status.BatteryLowVoltageWarning),
+            );
+        default:
+            return state;
+    }
+};
+
+const deviceBatteryCharging: Reducer<boolean, Action> = (state = false, action) => {
+    switch (action.type) {
+        case BleDeviceActionType.DidDisconnect:
+            return false;
+        // TODO: hub does not currently have a status flag for this
+        default:
+            return state;
+    }
+};
+
 export default combineReducers({
     connection,
     deviceName,
     deviceType,
     deviceFirmwareVersion,
+    deviceLowBatteryWarning,
+    deviceBatteryCharging,
 });

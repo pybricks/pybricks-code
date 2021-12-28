@@ -5,11 +5,15 @@ import { mock } from 'jest-mock-extended';
 import { monaco } from 'react-monaco-editor';
 import { AsyncSaga } from '../../test';
 import {
+    BleUartActionType,
+    BleUartWriteAction,
+    didWrite,
+} from '../ble-nordic-uart-service/actions';
+import {
     BlePybricksServiceCommandActionType,
     BlePybricksServiceCommandSendStopUserProgram,
     didSendCommand,
 } from '../ble-pybricks-service/actions';
-import { BleUartActionType, BleUartWriteAction, didWrite } from '../ble-uart/actions';
 import { MpyActionType, didCompile } from '../mpy/actions';
 import { createCountFunc } from '../utils/iter';
 import {

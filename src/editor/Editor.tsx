@@ -12,10 +12,10 @@ import tomorrowNightEightiesTheme from 'monaco-themes/themes/Tomorrow-Night-Eigh
 import xcodeTheme from 'monaco-themes/themes/Xcode_default.json';
 import React, { useEffect, useRef } from 'react';
 import MonacoEditor, { monaco } from 'react-monaco-editor';
-import { useDispatch, useSelector } from 'react-redux';
 import { IDisposable } from 'xterm';
+import { useDispatch } from '../actions';
 import { compile } from '../mpy/actions';
-import { RootState } from '../reducers';
+import { useSelector } from '../reducers';
 import { toggleBoolean } from '../settings/actions';
 import { BooleanSettingId } from '../settings/defaults';
 import { isMacOS } from '../utils/os';
@@ -63,7 +63,7 @@ const xcodeId = 'xcode';
 monaco.editor.defineTheme(xcodeId, xcodeTheme as monaco.editor.IStandaloneThemeData);
 
 const contextMenu = (_props: ContextMenu2ContentProps): JSX.Element => {
-    const editor = useSelector((state: RootState) => state.editor.current);
+    const editor = useSelector((s) => s.editor.current);
 
     const [i18n] = useI18n({ id: 'editor', translations: { en }, fallback: en });
 
@@ -143,7 +143,7 @@ const Editor: React.FunctionComponent = (_props) => {
         return () => window.removeEventListener('storage', onStorage);
     });
 
-    const darkMode = useSelector((state: RootState) => state.settings.darkMode);
+    const darkMode = useSelector((s) => s.settings.darkMode);
 
     const [i18n] = useI18n({ id: 'editor', translations: { en }, fallback: en });
 

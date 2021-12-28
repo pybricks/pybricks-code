@@ -8,6 +8,8 @@ import {
 } from '../ble-device-info-service/actions';
 import { PnpIdVendorIdSource } from '../ble-device-info-service/protocol';
 import { HubType, LegoCompanyId } from '../ble-lwp3-service/protocol';
+import { didReceiveStatusReport } from '../ble-pybricks-service/actions';
+import { Status, statusToFlag } from '../ble-pybricks-service/protocol';
 import {
     BleDeviceDidFailToConnectReason,
     connect,
@@ -25,7 +27,9 @@ test('initial state', () => {
     expect(reducers(undefined, {} as Action)).toMatchInlineSnapshot(`
         Object {
           "connection": "ble.connection.state.disconnected",
+          "deviceBatteryCharging": false,
           "deviceFirmwareVersion": "",
+          "deviceLowBatteryWarning": false,
           "deviceName": "",
           "deviceType": "",
         }
@@ -112,4 +116,32 @@ test('deviceFirmwareVersion', () => {
         reducers({ deviceFirmwareVersion: testVersion } as State, didDisconnect())
             .deviceFirmwareVersion,
     ).toBe('');
+});
+
+test('deviceLowBatteryWarning', () => {
+    expect(
+        reducers(
+            { deviceLowBatteryWarning: false } as State,
+            didReceiveStatusReport(statusToFlag(Status.BatteryLowVoltageWarning)),
+        ).deviceLowBatteryWarning,
+    ).toBeTruthy();
+
+    expect(
+        reducers(
+            { deviceLowBatteryWarning: true } as State,
+            didReceiveStatusReport(~statusToFlag(Status.BatteryLowVoltageWarning)),
+        ).deviceLowBatteryWarning,
+    ).toBeFalsy();
+
+    expect(
+        reducers({ deviceLowBatteryWarning: true } as State, didDisconnect())
+            .deviceLowBatteryWarning,
+    ).toBeFalsy();
+});
+
+test('deviceBatteryCharging', () => {
+    expect(
+        reducers({ deviceBatteryCharging: true } as State, didDisconnect())
+            .deviceBatteryCharging,
+    ).toBeFalsy();
 });
