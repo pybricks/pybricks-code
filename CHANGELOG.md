@@ -2,6 +2,13 @@
 
 # Changelog
 
+## [Unreleased]
+
+### Fixed
+- Fix tooltips not closing when expected ([pybricks-code#275]).
+
+[pybricks-code#275]: https://github.com/pybricks/pybricks-code/issues/275
+
 ## [1.2.0-beta.1] - 2021-12-27
 
 ### Added
