@@ -26,6 +26,7 @@ export function useTooltip2MonkeyPatch<T>(): React.RefObject<Tooltip2<T>> {
     const tooltipRef = useRef<Tooltip2<T>>(null);
 
     useEffect(() => {
+        // istanbul ignore if: should not happen ever
         if (!tooltipRef.current) {
             return;
         }
@@ -55,6 +56,7 @@ export function useTooltip2MonkeyPatch<T>(): React.RefObject<Tooltip2<T>> {
  * @param tooltipRef The reference returned from useTooltip2MonkeyPatch()
  */
 export function closeTooltip2<T>(tooltipRef: React.RefObject<Tooltip2<T>>): void {
+    // istanbul ignore if: should not happen ever
     if (!tooltipRef.current) {
         return;
     }

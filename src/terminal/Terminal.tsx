@@ -106,6 +106,7 @@ const Terminal: React.FC = (_props) => {
 
     // xterm.open() has to be called after terminalRef has been rendered
     useEffect(() => {
+        // istanbul ignore if: should not happen ever
         if (!terminalRef.current) {
             console.error('Missing terminal reference');
             return;
