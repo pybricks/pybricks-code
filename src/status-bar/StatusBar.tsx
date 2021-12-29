@@ -58,7 +58,11 @@ const HubInfoButton: React.VFC = (_props) => {
                 </table>
             }
         >
-            <Button minimal={true} onMouseDown={(e) => e.preventDefault()}>
+            <Button
+                title={i18n.translate(MessageId.HubInfoTitle)}
+                minimal={true}
+                onMouseDown={(e) => e.preventDefault()}
+            >
                 {deviceName}
             </Button>
         </Popover2>
@@ -82,7 +86,11 @@ const BatteryIndicator: React.VFC = (_props) => {
                 </span>
             }
         >
-            <div className="pb-battery-indicator" style={{ cursor: 'pointer' }}>
+            <div
+                title={i18n.translate(MessageId.BatteryTitle)}
+                className="pb-battery-indicator"
+                style={{ cursor: 'pointer' }}
+            >
                 <div className="pb-battery-indicator-body">
                     <ProgressBar
                         animate={charging}
