@@ -7,11 +7,11 @@ import { useI18n } from '@shopify/react-i18n';
 import React, { useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { tooltipDelay } from '../app/constants';
+import { closeTooltip2, useTooltip2MonkeyPatch } from '../utils/monkey-patch';
 import { TooltipId } from './i18n';
 import en from './i18n.en.json';
 
 const smallScreenThreshold = 700;
-
 export interface OpenFileButtonProps {
     /** A unique id for each instance. */
     readonly id: string;
@@ -91,8 +91,11 @@ const OpenFileButton: React.FC<OpenFileButtonProps> = (props) => {
         },
     });
 
+    const tooltipRef = useTooltip2MonkeyPatch();
+
     return (
         <Tooltip2
+            ref={tooltipRef}
             content={i18n.translate(
                 props.tooltip,
                 props.tooltip === TooltipId.FlashProgress
@@ -107,23 +110,27 @@ const OpenFileButton: React.FC<OpenFileButtonProps> = (props) => {
             placement="bottom"
             hoverOpenDelay={tooltipDelay}
             renderTarget={({
-                ref: tooltipRef,
+                ref: tooltipTargetRef,
                 isOpen: _tooltipIsOpen,
-                ...tooltipProps
+                ...tooltipTargetProps
             }) => (
                 <Button
                     {...getRootProps({
                         refKey: 'elementRef',
-                        elementRef: tooltipRef as IRef<HTMLButtonElement>,
-                        ...tooltipProps,
+                        elementRef: tooltipTargetRef as IRef<HTMLButtonElement>,
+                        ...tooltipTargetProps,
                         intent: Intent.PRIMARY,
                         disabled: props.enabled === false,
                         style:
                             props.enabled === false
                                 ? { pointerEvents: 'none' }
                                 : undefined,
-                        // prevent focus from mouse click
-                        onMouseDown: (e) => e.preventDefault(),
+                        onMouseDown: (e) => {
+                            // prevent focus from mouse click
+                            e.preventDefault();
+                            // close/prevent tooltip
+                            closeTooltip2(tooltipRef);
+                        },
                         onClick: props.onClick,
                     })}
                 >
