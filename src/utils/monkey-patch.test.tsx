@@ -65,12 +65,9 @@ it.each([false, true])(
             await waitForElementToBeRemoved(screen.getByText(testTooltipText));
         } else {
             // if the patch was not applied, the bug should be triggered
-            try {
-                await waitForElementToBeRemoved(screen.getByText(testTooltipText));
-                fail('bug was not triggered');
-            } catch (err) {
-                // error was expected
-            }
+            await expect(
+                waitForElementToBeRemoved(screen.getByText(testTooltipText)),
+            ).rejects.toBeInstanceOf(Error);
         }
     },
 );
