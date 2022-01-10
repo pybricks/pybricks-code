@@ -45,7 +45,7 @@
         "prop-types": "^15.8.1",
         "react": "^16.13.1",
         "react-dom": "^16.13.1",
-        "react-dropzone": "^11.4.2",
+        "react-dropzone": "^11.5.1",
         "react-monaco-editor": "^0.46.0",
         "react-redux": "^7.2.6",
         "react-scripts": "^4.0.3",
