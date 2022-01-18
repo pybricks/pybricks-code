@@ -32,7 +32,7 @@
         "@types/wicg-file-system-access": "^2020.9.4",
         "@types/zen-push": "^0.1.1",
         "babel-plugin-macros": "^3.0.1",
-        "canvas": "^2.8.0",
+        "canvas": "^2.9.0",
         "copy-webpack-plugin": "^6.4.1",
         "file-saver": "^2.0.5",
         "jszip": "^3.7.1",
