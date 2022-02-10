@@ -1733,23 +1733,23 @@
   resolved "https://registry.yarnpkg.com/@shopify/react-effect/-/react-effect-4.1.9.tgz#0d6e431cd6aef16f75882ff963e6b8e4d07a319d"
   integrity sha512-Y09HwHRCkjpvbY8noDUb+eZq/JJgV3kjRzzXECkmx9CB2ui0b2+BGOIWHkmdH9pIyEMwBs4uV/etn16XsfO2lA==
 
-"@shopify/react-hooks@^2.1.12":
-  version "2.1.12"
-  resolved "https://registry.yarnpkg.com/@shopify/react-hooks/-/react-hooks-2.1.12.tgz#7ec1ed015f563c406c56a168c6a02c9ac4d659d0"
-  integrity sha512-6fOKhGQsH+9b4OT4BgAypGh1G3tBGgABnEmBSeReWdb+r47GcgjL8RQax/TSfMBpXzX/BpMWT6F0JkSYTZ1DjQ==
+"@shopify/react-hooks@^2.1.13":
+  version "2.1.13"
+  resolved "https://registry.yarnpkg.com/@shopify/react-hooks/-/react-hooks-2.1.13.tgz#d5770c6248d744d17fa9e5601c7c4dc928848af5"
+  integrity sha512-i0BxIv7AtN2Ae1owSdfzvwS2i6M7oRSf+p5bZS26b1ZH3zcj0zK67Pl4OjDPkxs3L3Uqzxc48AGcSYuCK3Hr4Q==
 
-"@shopify/react-i18n@^6.3.6":
-  version "6.3.6"
-  resolved "https://registry.yarnpkg.com/@shopify/react-i18n/-/react-i18n-6.3.6.tgz#6362876f8094fccdec97f1df88680d14eaf86ea2"
-  integrity sha512-iqC3F32nwA4+JU7YpCfKWYyP0vExgMBOLX7qyrSPUUWTO6l9FxWVC91VL7hixTRwOHhzdtfoyhHHELncuB9pAA==
+"@shopify/react-i18n@^6.3.7":
+  version "6.3.7"
+  resolved "https://registry.yarnpkg.com/@shopify/react-i18n/-/react-i18n-6.3.7.tgz#5dcb36ae7d766e11dec8f2be136331939d3bcb30"
+  integrity sha512-7154a2sKdMrc3yfjy2NkqAcrRDTA0OtbHhp0epyF3Can1yyJVN6KpDCFbbSlOcqOwx4qY++zhzEtkunsdhJXow==
   dependencies:
     "@shopify/dates" "^1.1.2"
     "@shopify/decorators" "^2.0.6"
     "@shopify/function-enhancers" "^2.0.6"
     "@shopify/i18n" "^1.0.7"
     "@shopify/react-effect" "^4.1.9"
-    "@shopify/react-hooks" "^2.1.12"
-    "@shopify/useful-types" "^3.0.7"
+    "@shopify/react-hooks" "^2.1.13"
+    "@shopify/useful-types" "^3.1.0"
     "@types/hoist-non-react-statics" "^3.0.1"
     change-case "^4.1.2"
     glob "^7.1.4"
@@ -1762,10 +1762,10 @@
     "@babel/traverse" "^7.0.0"
     fs-extra "^9.1.0"
 
-"@shopify/useful-types@^3.0.7":
-  version "3.0.7"
-  resolved "https://registry.yarnpkg.com/@shopify/useful-types/-/useful-types-3.0.7.tgz#4806456fbff3ecfc461065e8883f73340b808d4a"
-  integrity sha512-iBrpNFq22zZw+/qU763CgCVH9tGEVrnJK+y5Jg4OeuDHyiD0ALypv1Rd5u4aofQyn8Q+PPKjV0NsWgW1pIsSww==
+"@shopify/useful-types@^3.1.0":
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/@shopify/useful-types/-/useful-types-3.1.0.tgz#e8ffb4ac730c7d92870247971ec1e82735629369"
+  integrity sha512-p9K2zRjrU75mz4wWN3tb1GURZCgM1pdxovT5J7jakk7qjGPzacmHlAK4xZqrnY/7LndmOKnZ7fyT+l668MyFNA==
 
 "@sinonjs/commons@^1.7.0":
   version "1.8.3"
