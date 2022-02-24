@@ -19,8 +19,8 @@ import {
 import { Tooltip2 } from '@blueprintjs/popover2';
 import { useI18n } from '@shopify/react-i18n';
 import React, { useMemo, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import AboutDialog from '../about/AboutDialog';
-import { useDispatch } from '../actions';
 import { checkForUpdate, installPrompt, reload } from '../app/actions';
 import {
     pybricksBugReportsUrl,

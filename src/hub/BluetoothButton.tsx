@@ -2,7 +2,7 @@
 // Copyright (c) 2020-2021 The Pybricks Authors
 
 import React from 'react';
-import { useDispatch } from '../actions';
+import { useDispatch } from 'react-redux';
 import { toggleBluetooth } from '../ble/actions';
 import { BleConnectionState } from '../ble/reducers';
 import { BootloaderConnectionState } from '../lwp3-bootloader/reducers';

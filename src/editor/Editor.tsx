@@ -12,8 +12,8 @@ import tomorrowNightEightiesTheme from 'monaco-themes/themes/Tomorrow-Night-Eigh
 import xcodeTheme from 'monaco-themes/themes/Xcode_default.json';
 import React, { useRef } from 'react';
 import MonacoEditor, { monaco } from 'react-monaco-editor';
+import { useDispatch } from 'react-redux';
 import { IDisposable } from 'xterm';
-import { useDispatch } from '../actions';
 import { fileStorageWriteFile } from '../fileStorage/actions';
 import { compile } from '../mpy/actions';
 import { useSelector } from '../reducers';
