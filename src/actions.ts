@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2021 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 
 import { useDispatch as useReduxDispatch } from 'react-redux';
 import { Dispatch as ReduxDispatch } from 'redux';
@@ -13,6 +13,7 @@ import {
 } from './ble-pybricks-service/actions';
 import { BLEAction, BLEConnectAction } from './ble/actions';
 import { EditorAction } from './editor/actions';
+import { FileStorageAction } from './fileStorage/actions';
 import { FlashFirmwareAction } from './firmware/actions';
 import { HubAction, HubMessageAction } from './hub/actions';
 import { LicenseAction } from './licenses/actions';
@@ -46,6 +47,7 @@ export type Action =
     | BootloaderDidFailToRequestAction
     | BootloaderRequestAction
     | BootloaderResponseAction
+    | FileStorageAction
     | EditorAction
     | FlashFirmwareAction
     | HubAction

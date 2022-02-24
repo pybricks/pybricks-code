@@ -15,10 +15,6 @@ export enum EditorActionType {
     DidFailToSaveAs = 'editor.action.didFailToSaveAs',
     /** Open a file. */
     Open = 'editor.action.open',
-    /** Storage was changed outside of the app. */
-    StorageChanged = 'editor.action.storageChanged',
-    /** Reload program from local storage. */
-    ReloadProgram = 'editor.action.reloadProgram',
 }
 
 export type CurrentEditorAction = Action<EditorActionType.Current> & {
@@ -81,27 +77,6 @@ export function open(data: ArrayBuffer): EditorOpenAction {
     return { type: EditorActionType.Open, data };
 }
 
-/**Action that indicates the local storage has changed. */
-export type EditorStorageChangedAction = Action<EditorActionType.StorageChanged> & {
-    newValue: string;
-};
-
-/**
- * Creates an action that indicates the local storage has changed.
- * @param newValue The new program.
- */
-export function storageChanged(newValue: string): EditorStorageChangedAction {
-    return { type: EditorActionType.StorageChanged, newValue };
-}
-
-/** Action to request reloading the program from local storage. */
-export type EditorReloadProgramAction = Action<EditorActionType.ReloadProgram>;
-
-/** Creates and action to request reloading the program from local storage. */
-export function reloadProgram(): EditorReloadProgramAction {
-    return { type: EditorActionType.ReloadProgram };
-}
-
 /**
  * Common type for all editor actions.
  */
@@ -110,6 +85,4 @@ export type EditorAction =
     | EditorOpenAction
     | EditorSaveAsAction
     | EditorDidSaveAsAction
-    | EditorDidFailToSaveAsAction
-    | EditorStorageChangedAction
-    | EditorReloadProgramAction;
+    | EditorDidFailToSaveAsAction;

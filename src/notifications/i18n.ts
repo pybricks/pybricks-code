@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2021 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 //
 // Notification translation keys.
 
@@ -13,6 +13,9 @@ export enum MessageId {
     BleNoWebBluetooth = 'ble.noWebBluetooth',
     BleNoBluetooth = 'ble.noBluetooth',
     EditorFailedToSaveFile = 'editor.failedToSaveFile',
+    FileStorageFailedToInitialize = 'fileStorage.failedToInitialize',
+    FileStorageFailedToRead = 'fileStorage.failedToRead',
+    FileStorageFailedToWrite = 'fileStorage.failedToWrite',
     FlashFirmwareTimedOut = 'flashFirmware.timedOut',
     FlashFirmwareBleError = 'flashFirmware.bleError',
     FlashFirmwareDisconnected = 'flashFirmware.disconnected',
@@ -25,8 +28,6 @@ export enum MessageId {
     FlashFirmwareCompileError = 'flashFirmware.compileError',
     FlashFirmwareSizeTooBig = 'flashFirmware.sizeTooBig',
     FlashFirmwareUnexpectedError = 'flashFirmware.unexpectedError',
-    ProgramChangedMessage = 'editor.programChanged.message',
-    ProgramChangedAction = 'editor.programChanged.action',
     ServiceWorkerUpdateMessage = 'serviceWorker.update.message',
     ServiceWorkerUpdateAction = 'serviceWorker.update.action',
     MpyError = 'mpy.error',

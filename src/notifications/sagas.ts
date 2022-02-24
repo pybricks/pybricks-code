@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2021 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 
 // Saga for managing notifications (toasts)
 
@@ -21,11 +21,13 @@ import {
     BleDeviceDidFailToConnectAction,
     BleDeviceFailToConnectReasonType,
 } from '../ble/actions';
+import { EditorActionType, EditorDidFailToSaveAsAction } from '../editor/actions';
 import {
-    EditorActionType,
-    EditorDidFailToSaveAsAction,
-    reloadProgram,
-} from '../editor/actions';
+    FileStorageActionType,
+    FileStorageDidFailToInitializeAction,
+    FileStorageDidFailToReadFileAction,
+    FileStorageDidFailToWriteFileAction,
+} from '../fileStorage/actions';
 import {
     FailToFinishReasonType,
     FlashFirmwareActionType,
@@ -246,24 +248,6 @@ function* showEditorFailToSaveFile(action: EditorDidFailToSaveAsAction): Generat
     yield* showUnexpectedError(MessageId.EditorFailedToSaveFile, action.err);
 }
 
-function* showEditorStorageChanged(): Generator {
-    const ch = channel<React.MouseEvent<HTMLElement>>();
-
-    yield* showSingleton(
-        Level.Info,
-        MessageId.ProgramChangedMessage,
-        undefined,
-        dispatchAction(MessageId.ProgramChangedAction, ch.put, 'tick'),
-        ch.close,
-    );
-
-    // if the notification is dismissed without clicking on the action, the
-    // saga will be cancelled here
-    yield* take(ch);
-
-    yield* put(reloadProgram());
-}
-
 function* showFlashFirmwareError(
     action: FlashFirmwareDidFailToFinishAction,
 ): Generator {
@@ -411,6 +395,24 @@ function* checkVersion(
     }
 }
 
+function* showFileStorageFailToInitialize(
+    action: FileStorageDidFailToInitializeAction,
+): Generator {
+    yield* showUnexpectedError(MessageId.FileStorageFailedToInitialize, action.error);
+}
+
+function* showFileStorageFailToRead(
+    action: FileStorageDidFailToReadFileAction,
+): Generator {
+    yield* showUnexpectedError(MessageId.FileStorageFailedToRead, action.error);
+}
+
+function* showFileStorageFailToWrite(
+    action: FileStorageDidFailToWriteFileAction,
+): Generator {
+    yield* showUnexpectedError(MessageId.FileStorageFailedToWrite, action.error);
+}
+
 export default function* (): Generator {
     yield* takeEvery(
         BleDeviceActionType.DidFailToConnect,
@@ -421,7 +423,6 @@ export default function* (): Generator {
         showBootloaderDidFailToConnectError,
     );
     yield* takeEvery(EditorActionType.DidFailToSaveAs, showEditorFailToSaveFile);
-    yield* takeEvery(EditorActionType.StorageChanged, showEditorStorageChanged);
     yield* takeEvery(FlashFirmwareActionType.DidFailToFinish, showFlashFirmwareError);
     yield* takeEvery(MpyActionType.DidCompile, dismissCompilerError);
     yield* takeEvery(MpyActionType.DidFailToCompile, showCompilerError);
@@ -429,4 +430,16 @@ export default function* (): Generator {
     yield* takeEvery(ServiceWorkerActionType.DidUpdate, showServiceWorkerUpdate);
     yield* takeEvery(AppActionType.DidCheckForUpdate, showNoUpdateInfo);
     yield* takeEvery(BleDIServiceActionType.DidReceiveFirmwareRevision, checkVersion);
+    yield* takeEvery(
+        FileStorageActionType.DidFailToInitialize,
+        showFileStorageFailToInitialize,
+    );
+    yield* takeEvery(
+        FileStorageActionType.DidFailToReadFile,
+        showFileStorageFailToRead,
+    );
+    yield* takeEvery(
+        FileStorageActionType.DidFailToWriteFile,
+        showFileStorageFailToWrite,
+    );
 }

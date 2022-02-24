@@ -4,6 +4,9 @@
 
 ## [Unreleased]
 
+### Changed
+- Changed file storage backend.
+
 ### Fixed
 - Fix tooltips not closing when expected ([pybricks-code#275]).
 

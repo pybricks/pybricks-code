@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021 The Pybricks Authors
+// Copyright (c) 2021-2022 The Pybricks Authors
 
 import { IToaster } from '@blueprintjs/core';
 import {
@@ -15,7 +15,12 @@ import {
     BleDeviceFailToConnectReasonType,
     didFailToConnect as bleDidFailToConnect,
 } from '../ble/actions';
-import { didFailToSaveAs, storageChanged } from '../editor/actions';
+import { didFailToSaveAs } from '../editor/actions';
+import {
+    fileStorageDidFailToInitialize,
+    fileStorageDidFailToReadFile,
+    fileStorageDidFailToWriteFile,
+} from '../fileStorage/actions';
 import {
     FailToFinishReasonType,
     HubError,
@@ -50,7 +55,6 @@ test.each([
     bootloaderDidFailToConnect(BootloaderConnectionFailureReason.NoWebBluetooth),
     bootloaderDidFailToConnect(BootloaderConnectionFailureReason.NoBluetooth),
     bootloaderDidFailToConnect(BootloaderConnectionFailureReason.GattServiceNotFound),
-    storageChanged('test'),
     didFailToCompile(['reason']),
     add('warning', 'message'),
     add('error', 'message', 'url'),
@@ -83,6 +87,9 @@ test.each([
     didCheckForUpdate(false),
     bleDIServiceDidReceiveFirmwareRevision('3.0.0'),
     didFailToSaveAs(new DOMException('test message', 'NotAllowedError')),
+    fileStorageDidFailToInitialize(new Error('test error')),
+    fileStorageDidFailToReadFile('test.file', new Error('test error')),
+    fileStorageDidFailToWriteFile('test.file', new Error('test error')),
 ])('actions that should show notification: %o', async (action: Action) => {
     const getToasts = jest.fn().mockReturnValue([]);
     const show = jest.fn();

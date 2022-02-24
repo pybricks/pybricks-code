@@ -5,7 +5,7 @@ import FileSaver from 'file-saver';
 import { mock } from 'jest-mock-extended';
 import { monaco } from 'react-monaco-editor';
 import { AsyncSaga } from '../../test';
-import { didFailToSaveAs, didSaveAs, open, reloadProgram, saveAs } from './actions';
+import { didFailToSaveAs, didSaveAs, open, saveAs } from './actions';
 import editor from './sagas';
 
 jest.mock('react-monaco-editor');
@@ -122,15 +122,4 @@ describe('saveAs', () => {
 
         mockFileSaverSaveAs.mockRestore();
     });
-});
-
-test('reloadProgram', async () => {
-    const mockEditor = mock<monaco.editor.ICodeEditor>();
-    const saga = new AsyncSaga(editor, { editor: { current: mockEditor } });
-
-    saga.put(reloadProgram());
-
-    expect(mockEditor.setValue).toHaveBeenCalled();
-
-    await saga.end();
 });
