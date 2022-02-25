@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2021 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 
+import { AnyAction } from 'redux';
 import {
     SagaGenerator,
     actionChannel,
@@ -12,60 +13,46 @@ import {
     take,
     takeEvery,
 } from 'typed-redux-saga/macro';
-import { Action } from '../actions';
-import {
-    BleUartActionType,
-    BleUartDidFailToWriteAction,
-    BleUartDidWriteAction,
-    write,
-} from '../ble-nordic-uart-service/actions';
+import { didFailToWrite, didWrite, write } from '../ble-nordic-uart-service/actions';
 import { SafeTxCharLength } from '../ble-nordic-uart-service/protocol';
 import {
-    BlePybricksServiceCommandActionType,
-    BlePybricksServiceCommandDidFailToSendAction,
-    BlePybricksServiceCommandDidSendAction,
+    didFailToSendCommand,
+    didSendCommand,
     sendStopUserProgramCommand,
 } from '../ble-pybricks-service/actions';
-import { BleDeviceActionType } from '../ble/actions';
-import {
-    MpyActionType,
-    MpyDidCompileAction,
-    MpyDidFailToCompileAction,
-    compile,
-} from '../mpy/actions';
+import { didConnect } from '../ble/actions';
+import { compile, didCompile, didFailToCompile } from '../mpy/actions';
 import { RootState } from '../reducers';
 import { defined } from '../utils';
 import { xor8 } from '../utils/math';
 import {
-    HubActionType,
-    HubChecksumMessageAction,
-    HubDownloadAndRunAction,
-    HubMessageActionType,
-    HubReplAction,
-    HubStopAction,
-    didFailToFinishDownload as didFailToFinishDownload,
+    checksum,
+    didFailToFinishDownload,
     didFinishDownload,
     didProgressDownload,
     didStartDownload,
+    downloadAndRun,
+    repl,
+    stop,
 } from './actions';
 
 const downloadChunkSize = 100;
 
 function* waitForWrite(id: number): SagaGenerator<{
-    didWrite: BleUartDidWriteAction | undefined;
-    didFailToWrite: BleUartDidFailToWriteAction | undefined;
+    didWrite: ReturnType<typeof didWrite> | undefined;
+    didFailToWrite: ReturnType<typeof didFailToWrite> | undefined;
 }> {
     return yield* race({
-        didWrite: take<BleUartDidWriteAction>(
-            (a: Action) => a.type === BleUartActionType.DidWrite && a.id === id,
+        didWrite: take<ReturnType<typeof didWrite>>(
+            (a: AnyAction) => didWrite.matches(a) && a.id === id,
         ),
-        didFailToWrite: take<BleUartDidFailToWriteAction>(
-            (a: Action) => a.type === BleUartActionType.DidFailToWrite && a.id === id,
+        didFailToWrite: take<ReturnType<typeof didFailToWrite>>(
+            (a: AnyAction) => didFailToWrite.matches(a) && a.id === id,
         ),
     });
 }
 
-function* downloadAndRun(_action: HubDownloadAndRunAction): Generator {
+function* handleDownloadAndRun(): Generator {
     const editor = yield* select((s: RootState) => s.editor.current);
 
     // istanbul ignore next: it is a bug to dispatch this action with no current editor
@@ -77,8 +64,8 @@ function* downloadAndRun(_action: HubDownloadAndRunAction): Generator {
     const script = editor.getValue();
     yield* put(compile(script, ['-mno-unicode']));
     const { mpy, mpyFail } = yield* race({
-        mpy: take<MpyDidCompileAction>(MpyActionType.DidCompile),
-        mpyFail: take<MpyDidFailToCompileAction>(MpyActionType.DidFailToCompile),
+        mpy: take<ReturnType<typeof didCompile>>(didCompile),
+        mpyFail: take<ReturnType<typeof didFailToCompile>>(didFailToCompile),
     });
 
     if (mpyFail) {
@@ -95,9 +82,7 @@ function* downloadAndRun(_action: HubDownloadAndRunAction): Generator {
         console.log(`Downloading ${mpy.data.byteLength} bytes`);
     }
 
-    const checksumChannel = yield* actionChannel<HubChecksumMessageAction>(
-        HubMessageActionType.Checksum,
-    );
+    const checksumChannel = yield* actionChannel<ReturnType<typeof checksum>>(checksum);
 
     const nextMessageId = yield* getContext<() => number>('nextMessageId');
 
@@ -183,26 +168,23 @@ function* downloadAndRun(_action: HubDownloadAndRunAction): Generator {
 // SPACE, SPACE, SPACE, SPACE
 const startReplCommand = new Uint8Array([0x20, 0x20, 0x20, 0x20]);
 
-function* startRepl(_action: HubReplAction): Generator {
+function* handleRepl(): Generator {
     const nextMessageId = yield* getContext<() => number>('nextMessageId');
     yield* put(write(nextMessageId(), startReplCommand));
 }
 
-function* stop(_action: HubStopAction): Generator {
+function* handleStop(): Generator {
     const nextMessageId = yield* getContext<() => number>('nextMessageId');
     const id = nextMessageId();
     yield* put(sendStopUserProgramCommand(id));
     // REVISIT: may want to disable button while attempting to send command
     // this would mean didSendStop() and didFailToSendStop() actions here
     const { failedToSend } = yield* race({
-        sent: take<BlePybricksServiceCommandDidSendAction>(
-            (a: Action) =>
-                a.type === BlePybricksServiceCommandActionType.DidSend && a.id === id,
+        sent: take<ReturnType<typeof didSendCommand>>(
+            (a: AnyAction) => didSendCommand.matches(a) && a.id === id,
         ),
-        failedToSend: take<BlePybricksServiceCommandDidFailToSendAction>(
-            (a: Action) =>
-                a.type === BlePybricksServiceCommandActionType.DidFailToSend &&
-                a.id === id,
+        failedToSend: take<ReturnType<typeof didFailToSendCommand>>(
+            (a: AnyAction) => didFailToSendCommand.matches(a) && a.id === id,
         ),
     });
     if (failedToSend) {
@@ -213,9 +195,9 @@ function* stop(_action: HubStopAction): Generator {
 }
 
 export default function* (): Generator {
-    yield* takeEvery(HubActionType.DownloadAndRun, downloadAndRun);
-    yield* takeEvery(HubActionType.Repl, startRepl);
-    yield* takeEvery(HubActionType.Stop, stop);
+    yield* takeEvery(downloadAndRun, handleDownloadAndRun);
+    yield* takeEvery(repl, handleRepl);
+    yield* takeEvery(stop, handleStop);
     // calling stop right after connecting should get the hub into a known state
-    yield* takeEvery(BleDeviceActionType.DidConnect, stop);
+    yield* takeEvery(didConnect, handleStop);
 }

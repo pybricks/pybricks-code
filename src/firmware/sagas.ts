@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2021 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 
 import {
     FirmwareReader,
@@ -10,6 +10,7 @@ import {
 import cityHubZip from '@pybricks/firmware/build/cityhub.zip';
 import moveHubZip from '@pybricks/firmware/build/movehub.zip';
 import technicHubZip from '@pybricks/firmware/build/technichub.zip';
+import { AnyAction } from 'redux';
 import {
     SagaGenerator,
     all,
@@ -23,54 +24,43 @@ import {
     take,
     takeEvery,
 } from 'typed-redux-saga/macro';
-import { Action } from '../actions';
 import {
-    BootloaderChecksumResponseAction,
-    BootloaderConnectionAction,
-    BootloaderConnectionActionType,
-    BootloaderDidFailToRequestAction,
-    BootloaderDidFailToRequestType,
-    BootloaderDidRequestAction,
-    BootloaderDidRequestType,
-    BootloaderEraseResponseAction,
-    BootloaderErrorResponseAction,
-    BootloaderInfoResponseAction,
-    BootloaderInitResponseAction,
-    BootloaderProgramResponseAction,
-    BootloaderResponseAction,
-    BootloaderResponseActionType,
     checksumRequest,
+    checksumResponse,
     connect,
+    didConnect,
+    didDisconnect,
+    didFailToConnect,
+    didFailToRequest,
+    didRequest,
     disconnect,
     eraseRequest,
     eraseResponse,
+    errorResponse,
     infoRequest,
+    infoResponse,
     initRequest,
+    initResponse,
     programRequest,
+    programResponse,
     rebootRequest,
 } from '../lwp3-bootloader/actions';
 import { MaxProgramFlashSize, Result } from '../lwp3-bootloader/protocol';
 import { BootloaderConnectionState } from '../lwp3-bootloader/reducers';
-import {
-    MpyActionType,
-    MpyDidCompileAction,
-    MpyDidFailToCompileAction,
-    compile,
-} from '../mpy/actions';
+import { compile, didCompile, didFailToCompile } from '../mpy/actions';
 import { RootState } from '../reducers';
 import { defined, ensureError, hex, maybe } from '../utils';
 import { fmod, sumComplement32 } from '../utils/math';
 import { isAndroid } from '../utils/os';
 import {
     FailToFinishReasonType,
-    FlashFirmwareActionType,
-    FlashFirmwareFlashAction,
     HubError,
     MetadataProblem,
     didFailToFinish,
     didFinish,
     didProgress,
     didStart,
+    flashFirmware,
 } from './actions';
 
 const firmwareZipMap = new Map<HubType, string>([
@@ -93,13 +83,13 @@ function* disconnectAndCancel(): SagaGenerator<void> {
     yield* cancel();
 }
 
-function* waitForDidRequest(id: number): SagaGenerator<BootloaderDidRequestAction> {
+function* waitForDidRequest(id: number): SagaGenerator<ReturnType<typeof didRequest>> {
     const { requested, failedToRequest } = yield* race({
-        requested: take<BootloaderDidRequestAction>(
-            (a: Action) => a.type === BootloaderDidRequestType && a.id === id,
+        requested: take<ReturnType<typeof didRequest>>(
+            (a: AnyAction) => didRequest.matches(a) && a.id === id,
         ),
-        failedToRequest: take<BootloaderDidFailToRequestAction>(
-            (a: Action) => a.type === BootloaderDidFailToRequestType && a.id === id,
+        failedToRequest: take<ReturnType<typeof didFailToRequest>>(
+            (a: AnyAction) => didFailToRequest.matches(a) && a.id === id,
         ),
     });
 
@@ -121,26 +111,26 @@ function* waitForDidRequest(id: number): SagaGenerator<BootloaderDidRequestActio
  * @param type The action type to wait for.
  * @param timeout The timeout in milliseconds.
  */
-function* waitForResponse<T extends BootloaderResponseAction>(
-    type: BootloaderResponseActionType,
+function* waitForResponse<T extends AnyAction>(
+    type: string,
     timeout = 500,
 ): SagaGenerator<T> {
     const { response, error, disconnected, timedOut } = yield* race({
         response: take<T>(type),
-        error: take<BootloaderErrorResponseAction>(BootloaderResponseActionType.Error),
-        disconnected: take(BootloaderConnectionActionType.DidDisconnect),
+        error: take<ReturnType<typeof errorResponse>>(errorResponse),
+        disconnected: take(didDisconnect),
         timedOut: delay(timeout),
     });
 
     if (timedOut) {
         // istanbul ignore if: this hacks around a hardware/OS issue
-        if (type === BootloaderResponseActionType.Erase) {
+        if (type === errorResponse.toString()) {
             // It has been observed that sometimes this response is not received
             // or gets stuck in the Bluetooth stack until another request is sent.
             // So, we ignore the timeout and continue. If there really was a
             // problem, then the next request should fail anyway.
             console.warn('Timeout waiting for erase response, continuing anyway.');
-            return eraseResponse(Result.OK) as T;
+            return eraseResponse(Result.OK) as unknown as T;
         }
         yield* put(didFailToFinish(FailToFinishReasonType.TimedOut));
         yield* disconnectAndCancel();
@@ -219,8 +209,8 @@ function* loadFirmware(
 
     yield* put(compile(program, metadata['mpy-cross-options']));
     const { mpy, mpyFail } = yield* race({
-        mpy: take<MpyDidCompileAction>(MpyActionType.DidCompile),
-        mpyFail: take<MpyDidFailToCompileAction>(MpyActionType.DidFailToCompile),
+        mpy: take<ReturnType<typeof didCompile>>(didCompile),
+        mpyFail: take<ReturnType<typeof didFailToCompile>>(didFailToCompile),
     });
 
     if (mpyFail) {
@@ -280,7 +270,7 @@ function* loadFirmware(
  * Flashes firmware to a Powered Up device.
  * @param action The action that triggered this saga.
  */
-function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
+function* handleFlashFirmware(action: ReturnType<typeof flashFirmware>): Generator {
     try {
         let firmware: Uint8Array | undefined = undefined;
         let deviceId: HubType | undefined = undefined;
@@ -308,12 +298,9 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
         }
 
         yield* put(connect());
-        const connectResult = yield* take<BootloaderConnectionAction>([
-            BootloaderConnectionActionType.DidConnect,
-            BootloaderConnectionActionType.DidFailToConnect,
-        ]);
+        const connectResult = yield* take([didConnect, didFailToConnect]);
 
-        if (connectResult.type === BootloaderConnectionActionType.DidFailToConnect) {
+        if (didFailToConnect.matches(connectResult)) {
             yield* put(didFailToFinish(FailToFinishReasonType.FailedToConnect));
             return;
         }
@@ -323,8 +310,8 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
         const infoAction = yield* put(infoRequest(nextMessageId()));
         const { info } = yield* all({
             sent: waitForDidRequest(infoAction.id),
-            info: waitForResponse<BootloaderInfoResponseAction>(
-                BootloaderResponseActionType.Info,
+            info: waitForResponse<ReturnType<typeof infoResponse>>(
+                infoResponse.toString(),
             ),
         });
 
@@ -366,8 +353,8 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
         );
         const { erase } = yield* all({
             sent: waitForDidRequest(eraseAction.id),
-            erase: waitForResponse<BootloaderEraseResponseAction>(
-                BootloaderResponseActionType.Erase,
+            erase: waitForResponse<ReturnType<typeof eraseResponse>>(
+                eraseResponse.toString(),
                 5000,
             ),
         });
@@ -381,8 +368,8 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
         const initAction = yield* put(initRequest(nextMessageId(), firmware.length));
         const { init } = yield* all({
             sent: waitForDidRequest(initAction.id),
-            init: waitForResponse<BootloaderInitResponseAction>(
-                BootloaderResponseActionType.Init,
+            init: waitForResponse<ReturnType<typeof initResponse>>(
+                initResponse.toString(),
             ),
         });
         if (init.result) {
@@ -433,8 +420,8 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
 
                 const { response } = yield* all({
                     sent: waitForDidRequest(checksumAction.id),
-                    response: waitForResponse<BootloaderChecksumResponseAction>(
-                        BootloaderResponseActionType.Checksum,
+                    response: waitForResponse<ReturnType<typeof checksumResponse>>(
+                        checksumResponse.toString(),
                         5000,
                     ),
                 });
@@ -460,8 +447,8 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
             }
         }
 
-        const flash = yield* waitForResponse<BootloaderProgramResponseAction>(
-            BootloaderResponseActionType.Program,
+        const flash = yield* waitForResponse<ReturnType<typeof programResponse>>(
+            programResponse.toString(),
             5000,
         );
 
@@ -508,5 +495,5 @@ function* flashFirmware(action: FlashFirmwareFlashAction): Generator {
 }
 
 export default function* (): Generator {
-    yield* takeEvery(FlashFirmwareActionType.FlashFirmware, flashFirmware);
+    yield* takeEvery(flashFirmware, handleFlashFirmware);
 }

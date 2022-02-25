@@ -10,44 +10,31 @@ import React from 'react';
 import { channel } from 'redux-saga';
 import * as semver from 'semver';
 import { delay, getContext, put, take, takeEvery } from 'typed-redux-saga/macro';
-import { AppActionType, AppDidCheckForUpdateAction, reload } from '../app/actions';
+import { didCheckForUpdate, reload } from '../app/actions';
 import { appName } from '../app/constants';
+import { bleDIServiceDidReceiveFirmwareRevision } from '../ble-device-info-service/actions';
 import {
-    BleDIServiceActionType,
-    BleDIServiceDidReceiveFirmwareRevisionAction,
-} from '../ble-device-info-service/actions';
-import {
-    BleDeviceActionType,
-    BleDeviceDidFailToConnectAction,
     BleDeviceFailToConnectReasonType,
+    didFailToConnect as bleDeviceDidFailToConnect,
 } from '../ble/actions';
-import { EditorActionType, EditorDidFailToSaveAsAction } from '../editor/actions';
+import { didFailToSaveAs } from '../editor/actions';
 import {
-    FileStorageActionType,
-    FileStorageDidFailToInitializeAction,
-    FileStorageDidFailToReadFileAction,
-    FileStorageDidFailToWriteFileAction,
+    fileStorageDidFailToInitialize,
+    fileStorageDidFailToReadFile,
+    fileStorageDidFailToWriteFile,
 } from '../fileStorage/actions';
+import { FailToFinishReasonType, didFailToFinish } from '../firmware/actions';
 import {
-    FailToFinishReasonType,
-    FlashFirmwareActionType,
-    FlashFirmwareDidFailToFinishAction,
-} from '../firmware/actions';
-import {
-    BootloaderConnectionActionType,
-    BootloaderConnectionDidFailToConnectAction,
     BootloaderConnectionFailureReason,
+    didFailToConnect as bootloaderDidFailToConnect,
 } from '../lwp3-bootloader/actions';
-import { MpyActionType, MpyDidFailToCompileAction } from '../mpy/actions';
-import {
-    ServiceWorkerAction,
-    ServiceWorkerActionType,
-} from '../service-worker/actions';
+import { didCompile, didFailToCompile } from '../mpy/actions';
+import { didUpdate as serviceWorkerDidUpdate } from '../service-worker/actions';
 import { pythonVersionToSemver } from '../utils/version';
 import NotificationAction from './NotificationAction';
 import NotificationMessage from './NotificationMessage';
 import UnexpectedErrorNotification from './UnexpectedErrorNotification';
-import { NotificationActionType, NotificationAddAction } from './actions';
+import { add as addNotification } from './actions';
 import { MessageId } from './i18n';
 
 type NotificationContext = {
@@ -172,7 +159,7 @@ function* showUnexpectedError(messageId: MessageId, err: Error): Generator {
 }
 
 function* showBleDeviceDidFailToConnectError(
-    action: BleDeviceDidFailToConnectAction,
+    action: ReturnType<typeof bleDeviceDidFailToConnect>,
 ): Generator {
     switch (action.reason) {
         case BleDeviceFailToConnectReasonType.NoGatt:
@@ -211,7 +198,7 @@ function* showBleDeviceDidFailToConnectError(
 }
 
 function* showBootloaderDidFailToConnectError(
-    action: BootloaderConnectionDidFailToConnectAction,
+    action: ReturnType<typeof bootloaderDidFailToConnect>,
 ): Generator {
     switch (action.reason) {
         case BootloaderConnectionFailureReason.GattServiceNotFound:
@@ -239,7 +226,9 @@ function* showBootloaderDidFailToConnectError(
     }
 }
 
-function* showEditorFailToSaveFile(action: EditorDidFailToSaveAsAction): Generator {
+function* showEditorFailToSaveFile(
+    action: ReturnType<typeof didFailToSaveAs>,
+): Generator {
     if (action.err.name === 'AbortError') {
         // user clicked cancel button - not an error
         return;
@@ -249,7 +238,7 @@ function* showEditorFailToSaveFile(action: EditorDidFailToSaveAsAction): Generat
 }
 
 function* showFlashFirmwareError(
-    action: FlashFirmwareDidFailToFinishAction,
+    action: ReturnType<typeof didFailToFinish>,
 ): Generator {
     switch (action.reason.reason) {
         case FailToFinishReasonType.TimedOut:
@@ -316,7 +305,7 @@ function* dismissCompilerError(): Generator {
     toaster.dismiss(MessageId.MpyError);
 }
 
-function* showCompilerError(action: MpyDidFailToCompileAction): Generator {
+function* showCompilerError(action: ReturnType<typeof didFailToCompile>): Generator {
     yield* showSingleton(Level.Error, MessageId.MpyError, {
         errorMessage: React.createElement(
             'pre',
@@ -326,7 +315,7 @@ function* showCompilerError(action: MpyDidFailToCompileAction): Generator {
     });
 }
 
-function* addNotification(action: NotificationAddAction): Generator {
+function* handleAddNotification(action: ReturnType<typeof addNotification>): Generator {
     const { toaster } = yield* getContext<NotificationContext>('notification');
 
     toaster.show({
@@ -339,10 +328,10 @@ function* addNotification(action: NotificationAddAction): Generator {
 }
 
 function* showServiceWorkerUpdate(
-    updateAction: ServiceWorkerAction<ServiceWorkerActionType.DidUpdate>,
+    action: ReturnType<typeof serviceWorkerDidUpdate>,
 ): Generator {
     const ch = channel<React.MouseEvent<HTMLElement>>();
-    const action = dispatchAction(
+    const userAction = dispatchAction(
         MessageId.ServiceWorkerUpdateAction,
         ch.put,
         'refresh',
@@ -352,18 +341,18 @@ function* showServiceWorkerUpdate(
         MessageId.ServiceWorkerUpdateMessage,
         {
             appName,
-            action: React.createElement('strong', undefined, action.text),
+            action: React.createElement('strong', undefined, userAction.text),
         },
-        action,
+        userAction,
         ch.close,
     );
 
     yield* take(ch);
 
-    yield* put(reload(updateAction.registration));
+    yield* put(reload(action.registration));
 }
 
-function* showNoUpdateInfo(action: AppDidCheckForUpdateAction): Generator {
+function* showNoUpdateInfo(action: ReturnType<typeof didCheckForUpdate>): Generator {
     if (action.updateFound) {
         // this will be handled by ServiceWorkerActionType.DidUpdate action
         return;
@@ -381,7 +370,7 @@ function* showNoUpdateInfo(action: AppDidCheckForUpdateAction): Generator {
 }
 
 function* checkVersion(
-    action: BleDIServiceDidReceiveFirmwareRevisionAction,
+    action: ReturnType<typeof bleDIServiceDidReceiveFirmwareRevision>,
 ): Generator {
     // ensure the actual hub firmware version is the same as the shipped
     // firmware version or newer
@@ -396,50 +385,35 @@ function* checkVersion(
 }
 
 function* showFileStorageFailToInitialize(
-    action: FileStorageDidFailToInitializeAction,
+    action: ReturnType<typeof fileStorageDidFailToInitialize>,
 ): Generator {
     yield* showUnexpectedError(MessageId.FileStorageFailedToInitialize, action.error);
 }
 
 function* showFileStorageFailToRead(
-    action: FileStorageDidFailToReadFileAction,
+    action: ReturnType<typeof fileStorageDidFailToReadFile>,
 ): Generator {
     yield* showUnexpectedError(MessageId.FileStorageFailedToRead, action.error);
 }
 
 function* showFileStorageFailToWrite(
-    action: FileStorageDidFailToWriteFileAction,
+    action: ReturnType<typeof fileStorageDidFailToWriteFile>,
 ): Generator {
     yield* showUnexpectedError(MessageId.FileStorageFailedToWrite, action.error);
 }
 
 export default function* (): Generator {
-    yield* takeEvery(
-        BleDeviceActionType.DidFailToConnect,
-        showBleDeviceDidFailToConnectError,
-    );
-    yield* takeEvery(
-        BootloaderConnectionActionType.DidFailToConnect,
-        showBootloaderDidFailToConnectError,
-    );
-    yield* takeEvery(EditorActionType.DidFailToSaveAs, showEditorFailToSaveFile);
-    yield* takeEvery(FlashFirmwareActionType.DidFailToFinish, showFlashFirmwareError);
-    yield* takeEvery(MpyActionType.DidCompile, dismissCompilerError);
-    yield* takeEvery(MpyActionType.DidFailToCompile, showCompilerError);
-    yield* takeEvery(NotificationActionType.Add, addNotification);
-    yield* takeEvery(ServiceWorkerActionType.DidUpdate, showServiceWorkerUpdate);
-    yield* takeEvery(AppActionType.DidCheckForUpdate, showNoUpdateInfo);
-    yield* takeEvery(BleDIServiceActionType.DidReceiveFirmwareRevision, checkVersion);
-    yield* takeEvery(
-        FileStorageActionType.DidFailToInitialize,
-        showFileStorageFailToInitialize,
-    );
-    yield* takeEvery(
-        FileStorageActionType.DidFailToReadFile,
-        showFileStorageFailToRead,
-    );
-    yield* takeEvery(
-        FileStorageActionType.DidFailToWriteFile,
-        showFileStorageFailToWrite,
-    );
+    yield* takeEvery(bleDeviceDidFailToConnect, showBleDeviceDidFailToConnectError);
+    yield* takeEvery(bootloaderDidFailToConnect, showBootloaderDidFailToConnectError);
+    yield* takeEvery(didFailToSaveAs, showEditorFailToSaveFile);
+    yield* takeEvery(didFailToFinish, showFlashFirmwareError);
+    yield* takeEvery(didCompile, dismissCompilerError);
+    yield* takeEvery(didFailToCompile, showCompilerError);
+    yield* takeEvery(addNotification, handleAddNotification);
+    yield* takeEvery(serviceWorkerDidUpdate, showServiceWorkerUpdate);
+    yield* takeEvery(didCheckForUpdate, showNoUpdateInfo);
+    yield* takeEvery(bleDIServiceDidReceiveFirmwareRevision, checkVersion);
+    yield* takeEvery(fileStorageDidFailToInitialize, showFileStorageFailToInitialize);
+    yield* takeEvery(fileStorageDidFailToReadFile, showFileStorageFailToRead);
+    yield* takeEvery(fileStorageDidFailToWriteFile, showFileStorageFailToWrite);
 }

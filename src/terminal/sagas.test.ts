@@ -1,24 +1,18 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2021 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 
 import PushStream from 'zen-push';
 import { AsyncSaga, delay } from '../../test';
 import {
-    BleUartActionType,
-    BleUartWriteAction,
     didFailToWrite,
     didNotify,
     didWrite,
+    write,
 } from '../ble-nordic-uart-service/actions';
-import { HubChecksumMessageAction, HubMessageActionType } from '../hub/actions';
+import { checksum } from '../hub/actions';
 import { HubRuntimeState } from '../hub/reducers';
 import { createCountFunc } from '../utils/iter';
-import {
-    TerminalActionType,
-    TerminalDataSendDataAction,
-    receiveData,
-    sendData,
-} from './actions';
+import { receiveData, sendData } from './actions';
 import terminal from './sagas';
 
 describe('Data receiver filters out hub status', () => {
@@ -33,8 +27,8 @@ describe('Data receiver filters out hub status', () => {
         saga.put(didNotify(new DataView(new Uint8Array([0x20]).buffer)));
 
         const action = await saga.take();
-        expect(action.type).toBe(TerminalActionType.SendData);
-        expect((action as TerminalDataSendDataAction).value).toBe(' ');
+        expect(action.type).toBe(sendData.toString());
+        expect((action as ReturnType<typeof sendData>).value).toBe(' ');
 
         await saga.end();
     });
@@ -49,8 +43,8 @@ describe('Data receiver filters out hub status', () => {
         saga.put(didNotify(new DataView(new Uint8Array([0xaa]).buffer)));
 
         const action = await saga.take();
-        expect(action.type).toBe(HubMessageActionType.Checksum);
-        expect((action as HubChecksumMessageAction).checksum).toBe(0xaa);
+        expect(action.type).toBe(checksum.toString());
+        expect((action as ReturnType<typeof checksum>).checksum).toBe(0xaa);
 
         await saga.end();
     });
@@ -89,8 +83,8 @@ describe('Terminal data source responds to receive data actions', () => {
         saga.put(receiveData('test1234'));
 
         const action = await saga.take();
-        expect(action.type).toBe(BleUartActionType.Write);
-        expect((action as BleUartWriteAction).value).toEqual(expected);
+        expect(action.type).toBe(write.toString());
+        expect((action as ReturnType<typeof write>).value).toEqual(expected);
 
         await saga.end();
     });
@@ -106,19 +100,19 @@ describe('Terminal data source responds to receive data actions', () => {
         expect(saga.numPending()).toBe(1);
 
         const action = await saga.take();
-        expect(action.type).toBe(BleUartActionType.Write);
-        expect((action as BleUartWriteAction).value).toEqual(expected);
+        expect(action.type).toBe(write.toString());
+        expect((action as ReturnType<typeof write>).value).toEqual(expected);
 
         // second message is queued until didWrite or didFailToWrite
         expect(saga.numPending()).toBe(0);
 
-        saga.put(didWrite((action as BleUartWriteAction).id));
+        saga.put(didWrite((action as ReturnType<typeof write>).id));
 
         const action2 = await saga.take();
-        expect(action2.type).toBe(BleUartActionType.Write);
-        expect((action2 as BleUartWriteAction).value).toEqual(expected);
+        expect(action2.type).toBe(write.toString());
+        expect((action2 as ReturnType<typeof write>).value).toEqual(expected);
 
-        saga.put(didWrite((action2 as BleUartWriteAction).id));
+        saga.put(didWrite((action2 as ReturnType<typeof write>).id));
 
         await saga.end();
     });
@@ -134,21 +128,24 @@ describe('Terminal data source responds to receive data actions', () => {
         expect(saga.numPending()).toBe(1);
 
         const action = await saga.take();
-        expect(action.type).toBe(BleUartActionType.Write);
-        expect((action as BleUartWriteAction).value).toEqual(expected);
+        expect(action.type).toBe(write.toString());
+        expect((action as ReturnType<typeof write>).value).toEqual(expected);
 
         // second message is queued until didWrite or didFailToWrite
         expect(saga.numPending()).toBe(0);
 
         saga.put(
-            didFailToWrite((action as BleUartWriteAction).id, new Error('test error')),
+            didFailToWrite(
+                (action as ReturnType<typeof write>).id,
+                new Error('test error'),
+            ),
         );
 
         const action2 = await saga.take();
-        expect(action2.type).toBe(BleUartActionType.Write);
-        expect((action2 as BleUartWriteAction).value).toEqual(expected);
+        expect(action2.type).toBe(write.toString());
+        expect((action2 as ReturnType<typeof write>).value).toEqual(expected);
 
-        saga.put(didWrite((action2 as BleUartWriteAction).id));
+        saga.put(didWrite((action2 as ReturnType<typeof write>).id));
 
         await saga.end();
     });
@@ -160,8 +157,8 @@ describe('Terminal data source responds to receive data actions', () => {
         saga.put(receiveData('test1234'));
 
         const action = await saga.take();
-        expect(action.type).toBe(BleUartActionType.Write);
-        expect((action as BleUartWriteAction).value).toEqual(
+        expect(action.type).toBe(write.toString());
+        expect((action as ReturnType<typeof write>).value).toEqual(
             new Uint8Array([...expected, ...expected]),
         );
 
@@ -174,16 +171,16 @@ describe('Terminal data source responds to receive data actions', () => {
         saga.put(receiveData('012345678901234567890123456789'));
 
         const action = await saga.take();
-        expect(action.type).toBe(BleUartActionType.Write);
-        expect((action as BleUartWriteAction).value.length).toEqual(20);
+        expect(action.type).toBe(write.toString());
+        expect((action as ReturnType<typeof write>).value.length).toEqual(20);
 
-        saga.put(didWrite((action as BleUartWriteAction).id));
+        saga.put(didWrite((action as ReturnType<typeof write>).id));
 
         const action2 = await saga.take();
-        expect(action2.type).toBe(BleUartActionType.Write);
-        expect((action2 as BleUartWriteAction).value.length).toEqual(10);
+        expect(action2.type).toBe(write.toString());
+        expect((action2 as ReturnType<typeof write>).value.length).toEqual(10);
 
-        saga.put(didWrite((action2 as BleUartWriteAction).id));
+        saga.put(didWrite((action2 as ReturnType<typeof write>).id));
 
         await saga.end();
     });

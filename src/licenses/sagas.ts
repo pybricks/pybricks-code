@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021 The Pybricks Authors
+// Copyright (c) 2021-2022 The Pybricks Authors
 
 import { call, put, select, takeEvery } from 'typed-redux-saga/macro';
 import { RootState } from '../reducers';
-import { LicenseActionType, didFailToFetchList, didFetchList } from './actions';
+import { didFailToFetchList, didFetchList, fetchList } from './actions';
 
 function* fetchLicenses(): Generator {
     const licenses = yield* select((s: RootState) => s.licenses.list);
@@ -24,5 +24,5 @@ function* fetchLicenses(): Generator {
 }
 
 export default function* (): Generator {
-    yield* takeEvery(LicenseActionType.FetchList, fetchLicenses);
+    yield* takeEvery(fetchList, fetchLicenses);
 }

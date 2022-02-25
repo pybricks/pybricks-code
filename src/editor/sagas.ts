@@ -2,6 +2,7 @@
 // Copyright (c) 2020-2022 The Pybricks Authors
 
 import FileSaver from 'file-saver';
+import { AnyAction } from 'redux';
 import {
     call,
     put,
@@ -11,27 +12,19 @@ import {
     takeEvery,
     takeLatest,
 } from 'typed-redux-saga/macro';
-import { Action } from '../actions';
 import {
-    FileStorageActionType,
-    FileStorageDidFailToReadFileAction,
-    FileStorageDidReadFileAction,
+    fileStorageDidFailToReadFile,
+    fileStorageDidInitialize,
+    fileStorageDidReadFile,
     fileStorageReadFile,
 } from '../fileStorage/actions';
 import { RootState } from '../reducers';
 import { ensureError } from '../utils';
-import {
-    CurrentEditorAction,
-    EditorActionType,
-    EditorOpenAction,
-    EditorSaveAsAction,
-    didFailToSaveAs,
-    didSaveAs,
-} from './actions';
+import { didFailToSaveAs, didSaveAs, open, saveAs, setEditSession } from './actions';
 
 const decoder = new TextDecoder();
 
-function* open(action: EditorOpenAction): Generator {
+function* handleOpen(action: ReturnType<typeof open>): Generator {
     const editor = yield* select((s: RootState) => s.editor.current);
 
     // istanbul ignore next: it is a bug to dispatch this action with no current editor
@@ -44,7 +37,7 @@ function* open(action: EditorOpenAction): Generator {
     editor.setValue(text);
 }
 
-function* saveAs(_action: EditorSaveAsAction): Generator {
+function* handleSaveAs(): Generator {
     const editor = yield* select((s: RootState) => s.editor.current);
 
     // istanbul ignore next: it is a bug to dispatch this action with no current editor
@@ -93,7 +86,7 @@ function* saveAs(_action: EditorSaveAsAction): Generator {
     yield* put(didSaveAs());
 }
 
-function* handleEditSession(action: CurrentEditorAction): Generator {
+function* handleSetEditSession(action: ReturnType<typeof setEditSession>): Generator {
     if (action.editSession === null) {
         // there is not current edit session, nothing to do
         return;
@@ -106,7 +99,7 @@ function* handleEditSession(action: CurrentEditorAction): Generator {
     );
 
     if (!isStorageInitialized) {
-        yield* take(FileStorageActionType.DidInitialize);
+        yield* take(fileStorageDidInitialize);
     }
 
     // TODO: get current file from state
@@ -116,14 +109,13 @@ function* handleEditSession(action: CurrentEditorAction): Generator {
 
     yield* put(fileStorageReadFile(currentFileName));
     const { result } = yield* race({
-        result: take<FileStorageDidReadFileAction>(
-            (a: Action) =>
-                a.type === FileStorageActionType.DidReadFile &&
-                a.fileName === currentFileName,
+        result: take<ReturnType<typeof fileStorageDidReadFile>>(
+            (a: AnyAction) =>
+                fileStorageDidReadFile.matches(a) && a.fileName === currentFileName,
         ),
-        error: take<FileStorageDidFailToReadFileAction>(
-            (a: Action) =>
-                a.type === FileStorageActionType.DidFailToReadFile &&
+        error: take<ReturnType<typeof fileStorageDidFailToReadFile>>(
+            (a: AnyAction) =>
+                fileStorageDidFailToReadFile.matches(a) &&
                 a.fileName === currentFileName,
         ),
     });
@@ -134,7 +126,7 @@ function* handleEditSession(action: CurrentEditorAction): Generator {
 }
 
 export default function* (): Generator {
-    yield* takeEvery(EditorActionType.Open, open);
-    yield* takeEvery(EditorActionType.SaveAs, saveAs);
-    yield* takeLatest(EditorActionType.Current, handleEditSession);
+    yield* takeEvery(open, handleOpen);
+    yield* takeEvery(saveAs, handleSaveAs);
+    yield* takeLatest(setEditSession, handleSetEditSession);
 }

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2022 The Pybricks Authors
 
-import { Action } from '../actions';
+import { AnyAction } from 'redux';
 import {
     fileStorageDidChangeItem,
     fileStorageDidInitialize,
@@ -12,7 +12,7 @@ import reducers from './reducers';
 type State = ReturnType<typeof reducers>;
 
 test('initial state', () => {
-    expect(reducers(undefined, {} as Action)).toMatchInlineSnapshot(`
+    expect(reducers(undefined, {} as AnyAction)).toMatchInlineSnapshot(`
         Object {
           "fileNames": Set {},
           "isInitialized": false,

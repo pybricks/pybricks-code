@@ -1,18 +1,17 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021 The Pybricks Authors
+// Copyright (c) 2021-2022 The Pybricks Authors
 
 import { eventChannel } from 'redux-saga';
 import { call, fork, put, take, takeEvery } from 'typed-redux-saga/macro';
 import { BeforeInstallPromptEvent } from '../utils/dom';
 import {
-    AppActionType,
-    AppCheckForUpdatesAction,
-    AppInstallPromptAction,
-    AppReloadAction,
+    checkForUpdate,
     didBeforeInstallPrompt,
     didCheckForUpdate,
     didInstall,
     didInstallPrompt,
+    installPrompt,
+    reload,
 } from './actions';
 
 function* monitorAppInstalled(): Generator {
@@ -50,18 +49,18 @@ function* monitorBeforeInstallPrompt(): Generator {
     }
 }
 
-function* reload(action: AppReloadAction): Generator {
+function* handleReload(action: ReturnType<typeof reload>): Generator {
     yield* call(() => action.registration.unregister());
     location.reload();
 }
 
-function* checkForUpdate(action: AppCheckForUpdatesAction): Generator {
+function* handleCheckForUpdate(action: ReturnType<typeof checkForUpdate>): Generator {
     yield* call(() => action.registration.update());
     const updateFound = action.registration.installing !== null;
     yield* put(didCheckForUpdate(updateFound));
 }
 
-function* installPrompt(action: AppInstallPromptAction): Generator {
+function* handleInstallPrompt(action: ReturnType<typeof installPrompt>): Generator {
     yield* call(() => action.event.prompt());
     yield* call(() => action.event.userChoice);
     yield* put(didInstallPrompt());
@@ -70,7 +69,7 @@ function* installPrompt(action: AppInstallPromptAction): Generator {
 export default function* app(): Generator {
     yield* fork(monitorAppInstalled);
     yield* fork(monitorBeforeInstallPrompt);
-    yield* takeEvery(AppActionType.Reload, reload);
-    yield* takeEvery(AppActionType.CheckForUpdate, checkForUpdate);
-    yield* takeEvery(AppActionType.InstallPrompt, installPrompt);
+    yield* takeEvery(reload, handleReload);
+    yield* takeEvery(checkForUpdate, handleCheckForUpdate);
+    yield* takeEvery(installPrompt, handleInstallPrompt);
 }

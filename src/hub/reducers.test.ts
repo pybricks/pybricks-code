@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2021 The Pybricks Authors
 
-import { Action } from '../actions';
+import { AnyAction } from 'redux';
 import { didReceiveStatusReport } from '../ble-pybricks-service/actions';
 import { Status, statusToFlag } from '../ble-pybricks-service/protocol';
 import { didConnect, didDisconnect } from '../ble/actions';
@@ -16,7 +16,7 @@ import reducers, { HubRuntimeState } from './reducers';
 type State = ReturnType<typeof reducers>;
 
 test('initial state', () => {
-    expect(reducers(undefined, {} as Action)).toMatchInlineSnapshot(`
+    expect(reducers(undefined, {} as AnyAction)).toMatchInlineSnapshot(`
         Object {
           "downloadProgress": null,
           "runtime": "hub.runtime.disconnected",

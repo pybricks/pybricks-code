@@ -1,9 +1,8 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021 The Pybricks Authors
+// Copyright (c) 2021-2022 The Pybricks Authors
 
 import { Reducer, combineReducers } from 'redux';
-import { Action } from '../actions';
-import { LicenseActionType } from './actions';
+import { didFetchList, select } from './actions';
 
 export interface LicenseInfo {
     readonly name: string;
@@ -15,22 +14,20 @@ export interface LicenseInfo {
 
 export type LicenseList = LicenseInfo[];
 
-const list: Reducer<LicenseList | null, Action> = (state = null, action) => {
-    switch (action.type) {
-        case LicenseActionType.DidFetchList:
-            return action.list;
-        default:
-            return state;
+const list: Reducer<LicenseList | null> = (state = null, action) => {
+    if (didFetchList.matches(action)) {
+        return action.list;
     }
+
+    return state;
 };
 
-const selected: Reducer<LicenseInfo | null, Action> = (state = null, action) => {
-    switch (action.type) {
-        case LicenseActionType.Select:
-            return action.info;
-        default:
-            return state;
+const selected: Reducer<LicenseInfo | null> = (state = null, action) => {
+    if (select.matches(action)) {
+        return action.info;
     }
+
+    return state;
 };
 
 export default combineReducers({ list, selected });

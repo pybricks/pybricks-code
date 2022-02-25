@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2021 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 //
 // Handles Bluetooth Low Energy connection to LEGO Wireless Protocol v3 Bootloader service.
 
@@ -7,16 +7,16 @@ import { END, eventChannel } from 'redux-saga';
 import { call, cancel, put, spawn, takeEvery, takeMaybe } from 'typed-redux-saga/macro';
 import { ensureError } from '../utils';
 import {
-    BootloaderConnectionAction,
-    BootloaderConnectionActionType,
-    BootloaderConnectionSendAction,
     BootloaderConnectionFailureReason as Reason,
+    connect,
     didConnect,
     didDisconnect,
     didFailToConnect,
     didFailToSend,
     didReceive,
     didSend,
+    disconnect,
+    send,
 } from './actions';
 import { CharacteristicUUID, ServiceUUID } from './protocol';
 
@@ -26,7 +26,7 @@ function* handleNotify(data: DataView): Generator {
 
 function* write(
     characteristic: BluetoothRemoteGATTCharacteristic,
-    action: BootloaderConnectionSendAction,
+    action: ReturnType<typeof send>,
 ): Generator {
     try {
         if (action.withResponse) {
@@ -40,7 +40,7 @@ function* write(
     }
 }
 
-function* connect(_action: BootloaderConnectionAction): Generator {
+function* handleConnect(): Generator {
     if (navigator.bluetooth === undefined) {
         yield* put(didFailToConnect(Reason.NoWebBluetooth));
         return;
@@ -155,16 +155,13 @@ function* connect(_action: BootloaderConnectionAction): Generator {
     // Spawning write so that it can't be canceled. This is important because
     // other sagas always expect it to complete with success action or error
     // action.
-    function* spawnWrite(action: BootloaderConnectionSendAction): Generator {
+    function* spawnWrite(action: ReturnType<typeof send>): Generator {
         yield* spawn(write, characteristic, action);
     }
 
     yield* takeEvery(notificationChannel, handleNotify);
-    yield* takeEvery(BootloaderConnectionActionType.Send, spawnWrite);
-    yield* takeEvery(
-        BootloaderConnectionActionType.Disconnect,
-        server.disconnect.bind(server),
-    );
+    yield* takeEvery(send, spawnWrite);
+    yield* takeEvery(disconnect, server.disconnect.bind(server));
 
     yield* put(didConnect());
 
@@ -178,5 +175,5 @@ function* connect(_action: BootloaderConnectionAction): Generator {
 }
 
 export default function* (): Generator {
-    yield* takeEvery(BootloaderConnectionActionType.Connect, connect);
+    yield* takeEvery(connect, handleConnect);
 }

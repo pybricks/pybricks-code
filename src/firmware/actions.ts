@@ -1,25 +1,8 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2021 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 
 import { FirmwareMetadata, FirmwareReaderError } from '@pybricks/firmware';
-import { Action } from 'redux';
-import { assert } from '../utils';
-
-/**
- * High-level bootloader actions.
- */
-export enum FlashFirmwareActionType {
-    /** Request to flash new firmware to the device. */
-    FlashFirmware = 'flashFirmware.action.flashFirmware',
-    /** Actual modification of the flash memory on the device started. */
-    DidStart = 'flashFirmware.action.didStart',
-    /** Firmware flash progress. */
-    DidProgress = 'flashFirmware.action.didProgress',
-    /** Flashing finished successfully. */
-    DidFinish = 'flashFirmware.action.didFinish',
-    /** Flashing firmware failed. */
-    DidFailToFinish = 'flashFirmware.action.didFailToFinish',
-}
+import { createAction } from '../actions';
 
 export enum MetadataProblem {
     Missing = 'metadata.missing',
@@ -132,122 +115,149 @@ export type FailToFinishReason =
     | FailToFinishReasonFailedToCompile
     | FailToFinishReasonUnknown;
 
-/**
- * Action that flashes firmware to a hub.
- */
-export type FlashFirmwareFlashAction = Action<FlashFirmwareActionType.FlashFirmware> & {
-    /** The firmware zip file data or `null` to get firmware later. */
-    data: ArrayBuffer | null;
-};
+// High-level bootloader actions.
 
 /**
  * Creates a new action to flash firmware to a hub.
  * @param data The firmware zip file data or `null` to get firmware later.
  */
-export function flashFirmware(data: ArrayBuffer | null): FlashFirmwareFlashAction {
-    return { type: FlashFirmwareActionType.FlashFirmware, data };
-}
-
-/** Action that indicates flashing firmware started. */
-export type FlashFirmwareDidStartAction = Action<FlashFirmwareActionType.DidStart>;
+export const flashFirmware = createAction((data: ArrayBuffer | null) => ({
+    type: 'flashFirmware.action.flashFirmware',
+    data,
+}));
 
 /**
  * Action that indicates flashing firmware started.
  * @param total The total number of bytes to be flashed.
  */
-export function didStart(): FlashFirmwareDidStartAction {
-    return { type: FlashFirmwareActionType.DidStart };
-}
-
-/** Action that indicates current firmware flashing progress. */
-export type FlashFirmwareDidProgressAction =
-    Action<FlashFirmwareActionType.DidProgress> & {
-        /** The current progress (0 to 1). */
-        value: number;
-    };
+export const didStart = createAction(() => ({
+    type: 'flashFirmware.action.didStart',
+}));
 
 /**
  * Action that indicates current firmware flashing progress.
  * @param value The current progress (0 to 1).
  */
-export function didProgress(value: number): FlashFirmwareDidProgressAction {
-    assert(value >= 0 && value <= 1, 'value out of range');
-    return { type: FlashFirmwareActionType.DidProgress, value };
-}
+export const didProgress = createAction((value: number) => {
+    // assert(value >= 0 && value <= 1, 'value out of range');
+    return { type: 'flashFirmware.action.didProgress', value };
+});
 
 /** Action that indicates that flashing firmware completed successfully. */
-export type FlashFirmwareDidFinishAction = Action<FlashFirmwareActionType.DidFinish>;
+export const didFinish = createAction(() => ({
+    type: 'flashFirmware.action.didFinish',
+}));
 
-/** Action that indicates that flashing firmware completed successfully. */
-export function didFinish(): FlashFirmwareDidFinishAction {
-    return { type: FlashFirmwareActionType.DidFinish };
-}
+const didFailToFinishType = 'flashFirmware.action.didFailToFinish';
 
-/** Action that indicates that flashing failed. */
-export type FlashFirmwareDidFailToFinishAction =
-    Action<FlashFirmwareActionType.DidFailToFinish> & {
-        reason: FailToFinishReason;
-    };
+function didFailToFinishCreator(reason: FailToFinishReasonType.FailedToConnect): {
+    type: typeof didFailToFinishType;
+    reason: FailToFinishReasonFailedToConnect;
+};
 
-export function didFailToFinish(
+function didFailToFinishCreator(reason: FailToFinishReasonType.TimedOut): {
+    type: typeof didFailToFinishType;
+    reason: FailToFinishReasonTimedOut;
+};
+
+function didFailToFinishCreator(
     reason: FailToFinishReasonType.BleError,
     err: Error,
-): FlashFirmwareDidFailToFinishAction;
+): {
+    type: typeof didFailToFinishType;
+    reason: FailToFinishReasonBleError;
+};
 
-export function didFailToFinish(
+function didFailToFinishCreator(reason: FailToFinishReasonType.Disconnected): {
+    type: typeof didFailToFinishType;
+    reason: FailToFinishReasonDisconnected;
+};
+
+function didFailToFinishCreator(
     reason: FailToFinishReasonType.HubError,
     hubError: HubError,
-): FlashFirmwareDidFailToFinishAction;
+): {
+    type: typeof didFailToFinishType;
+    reason: FailToFinishReasonHubError;
+};
 
-export function didFailToFinish(
+function didFailToFinishCreator(reason: FailToFinishReasonType.NoFirmware): {
+    type: typeof didFailToFinishType;
+    reason: FailToFinishReasonNoFirmware;
+};
+
+function didFailToFinishCreator(reason: FailToFinishReasonType.DeviceMismatch): {
+    type: typeof didFailToFinishType;
+    reason: FailToFinishReasonDeviceMismatch;
+};
+
+function didFailToFinishCreator(
     reason: FailToFinishReasonType.FailedToFetch,
     response: Response,
-): FlashFirmwareDidFailToFinishAction;
+): {
+    type: typeof didFailToFinishType;
+    reason: FailToFinishReasonFailedToFetch;
+};
 
-export function didFailToFinish(
+function didFailToFinishCreator(
     reason: FailToFinishReasonType.ZipError,
     err: FirmwareReaderError,
-): FlashFirmwareDidFailToFinishAction;
+): {
+    type: typeof didFailToFinishType;
+    reason: FailToFinishReasonZipError;
+};
 
-export function didFailToFinish(
+function didFailToFinishCreator(
     reason: FailToFinishReasonType.BadMetadata,
     property: keyof FirmwareMetadata,
     problem: MetadataProblem,
-): FlashFirmwareDidFailToFinishAction;
+): {
+    type: typeof didFailToFinishType;
+    reason: FailToFinishReasonBadMetadata;
+};
 
-export function didFailToFinish(
+function didFailToFinishCreator(reason: FailToFinishReasonType.FirmwareSize): {
+    type: typeof didFailToFinishType;
+    reason: FailToFinishReasonFirmwareSize;
+};
+
+function didFailToFinishCreator(reason: FailToFinishReasonType.FailedToCompile): {
+    type: typeof didFailToFinishType;
+    reason: FailToFinishReasonFailedToCompile;
+};
+
+function didFailToFinishCreator(
     reason: FailToFinishReasonType.Unknown,
     err: Error,
-): FlashFirmwareDidFailToFinishAction;
+): {
+    type: typeof didFailToFinishType;
+    reason: FailToFinishReasonUnknown;
+};
 
-export function didFailToFinish(
-    reason: Exclude<
-        FailToFinishReasonType,
-        | FailToFinishReasonType.BleError
-        | FailToFinishReasonType.HubError
-        | FailToFinishReasonType.FailedToFetch
-        | FailToFinishReasonType.ZipError
-        | FailToFinishReasonType.BadMetadata
-        | FailToFinishReasonType.Unknown
-    >,
-): FlashFirmwareDidFailToFinishAction;
+function didFailToFinishCreator<T extends FailToFinishReasonType>(
+    reason: T,
+    arg1?: string | HubError | Error | Response,
+    arg2?: MetadataProblem,
+): {
+    type: typeof didFailToFinishType;
+    reason: FailToFinishReason;
+};
 
-/**
- * Action that indicates flashing did not start because of an error.
- * @param total The total number of bytes to be flashed.
- */
-export function didFailToFinish(
+function didFailToFinishCreator(
     reason: FailToFinishReasonType,
     arg1?: string | HubError | Error | Response,
     arg2?: MetadataProblem,
-): FlashFirmwareDidFailToFinishAction {
+): {
+    type: typeof didFailToFinishType;
+    reason: FailToFinishReason;
+} {
     if (reason === FailToFinishReasonType.BleError) {
         // istanbul ignore if: programmer error give wrong arg
         if (!(arg1 instanceof Error)) {
             throw new Error('missing or invalid err');
         }
         return {
-            type: FlashFirmwareActionType.DidFailToFinish,
+            type: didFailToFinishType,
             reason: { reason, err: arg1 },
         };
     }
@@ -258,7 +268,7 @@ export function didFailToFinish(
             throw new Error('missing or invalid hubError');
         }
         return {
-            type: FlashFirmwareActionType.DidFailToFinish,
+            type: didFailToFinishType,
             reason: { reason, hubError: arg1 },
         };
     }
@@ -269,7 +279,7 @@ export function didFailToFinish(
             throw new Error('missing or invalid response');
         }
         return {
-            type: FlashFirmwareActionType.DidFailToFinish,
+            type: didFailToFinishType,
             reason: { reason, response: arg1 },
         };
     }
@@ -280,7 +290,7 @@ export function didFailToFinish(
             throw new Error('missing or invalid err');
         }
         return {
-            type: FlashFirmwareActionType.DidFailToFinish,
+            type: didFailToFinishType,
             reason: { reason, err: arg1 },
         };
     }
@@ -304,7 +314,7 @@ export function didFailToFinish(
             throw new Error('missing or invalid problem');
         }
         return {
-            type: FlashFirmwareActionType.DidFailToFinish,
+            type: didFailToFinishType,
             reason: { reason, property: arg1, problem: arg2 },
         };
     }
@@ -315,20 +325,16 @@ export function didFailToFinish(
             throw new Error('missing or invalid err');
         }
         return {
-            type: FlashFirmwareActionType.DidFailToFinish,
+            type: didFailToFinishType,
             reason: { reason, err: arg1 },
         };
     }
 
-    return { type: FlashFirmwareActionType.DidFailToFinish, reason: { reason } };
+    return { type: didFailToFinishType, reason: { reason } };
 }
 
 /**
- * Common type for all high-level bootloader actions.
+ * Action that indicates flashing did not start because of an error.
+ * @param total The total number of bytes to be flashed.
  */
-export type FlashFirmwareAction =
-    | FlashFirmwareFlashAction
-    | FlashFirmwareDidStartAction
-    | FlashFirmwareDidProgressAction
-    | FlashFirmwareDidFinishAction
-    | FlashFirmwareDidFailToFinishAction;
+export const didFailToFinish = createAction(didFailToFinishCreator);

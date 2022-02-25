@@ -2,27 +2,30 @@
 // Copyright (c) 2022 The Pybricks Authors
 
 import { Reducer, combineReducers } from 'redux';
-import { Action } from '../actions';
-import { FileStorageActionType } from './actions';
+import {
+    fileStorageDidChangeItem,
+    fileStorageDidInitialize,
+    fileStorageDidRemoveItem,
+} from './actions';
 
-const isInitialized: Reducer<boolean, Action> = (state = false, action) => {
-    switch (action.type) {
-        case FileStorageActionType.DidInitialize:
-            return true;
-        default:
-            return state;
+const isInitialized: Reducer<boolean> = (state = false, action) => {
+    if (fileStorageDidInitialize.matches(action)) {
+        return true;
     }
+
+    return state;
 };
 
-const fileNames: Reducer<Set<string>, Action> = (state = new Set(), action) => {
-    switch (action.type) {
-        case FileStorageActionType.DidChangeItem:
-            return new Set([...state, action.fileName]);
-        case FileStorageActionType.DidRemoveItem:
-            return new Set([...state].filter((value) => value !== action.fileName));
-        default:
-            return state;
+const fileNames: Reducer<Set<string>> = (state = new Set(), action) => {
+    if (fileStorageDidChangeItem.matches(action)) {
+        return new Set([...state, action.fileName]);
     }
+
+    if (fileStorageDidRemoveItem.matches(action)) {
+        return new Set([...state].filter((value) => value !== action.fileName));
+    }
+
+    return state;
 };
 
 export default combineReducers({ isInitialized, fileNames });

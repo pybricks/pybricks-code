@@ -1,31 +1,31 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021 The Pybricks Authors
+// Copyright (c) 2021-2022 The Pybricks Authors
 
 import { Reducer, combineReducers } from 'redux';
-import { Action } from '../actions';
-import { FlashFirmwareActionType } from './actions';
+import { didFailToFinish, didFinish, didProgress, didStart } from './actions';
 
-const flashing: Reducer<boolean, Action> = (state = false, action) => {
-    switch (action.type) {
-        case FlashFirmwareActionType.DidStart:
-            return true;
-        case FlashFirmwareActionType.DidFinish:
-        case FlashFirmwareActionType.DidFailToFinish:
-            return false;
-        default:
-            return state;
+const flashing: Reducer<boolean> = (state = false, action) => {
+    if (didStart.matches(action)) {
+        return true;
     }
+
+    if (didFinish.matches(action) || didFailToFinish.matches(action)) {
+        return false;
+    }
+
+    return state;
 };
 
-const progress: Reducer<number | null, Action> = (state = null, action) => {
-    switch (action.type) {
-        case FlashFirmwareActionType.DidStart:
-            return null;
-        case FlashFirmwareActionType.DidProgress:
-            return action.value;
-        default:
-            return state;
+const progress: Reducer<number | null> = (state = null, action) => {
+    if (didStart.matches(action)) {
+        return null;
     }
+
+    if (didProgress.matches(action)) {
+        return action.value;
+    }
+
+    return state;
 };
 
 export default combineReducers({ flashing, progress });

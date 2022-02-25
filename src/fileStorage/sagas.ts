@@ -8,9 +8,6 @@ import { call, fork, put, takeEvery } from 'typed-redux-saga/macro';
 import Observable from 'zen-observable';
 import { ensureError } from '../utils';
 import {
-    FileStorageActionType,
-    FileStorageReadFileAction,
-    FileStorageWriteFileAction,
     fileStorageDidChangeItem,
     fileStorageDidFailToInitialize,
     fileStorageDidFailToReadFile,
@@ -19,6 +16,8 @@ import {
     fileStorageDidReadFile,
     fileStorageDidRemoveItem,
     fileStorageDidWriteFile,
+    fileStorageReadFile,
+    fileStorageWriteFile,
 } from './actions';
 
 /**
@@ -47,7 +46,7 @@ function* handleFileStorageDidChange(change: LocalForageObservableChange): Gener
  */
 function* handleReadFile(
     files: LocalForage,
-    action: FileStorageReadFileAction,
+    action: ReturnType<typeof fileStorageReadFile>,
 ): Generator {
     try {
         const value = yield* call(() => files.getItem<string>(action.fileName));
@@ -67,7 +66,10 @@ function* handleReadFile(
  * @param files The localForage instance.
  * @param action The action that triggered this saga.
  */
-function* handleWriteFile(files: LocalForage, action: FileStorageWriteFileAction) {
+function* handleWriteFile(
+    files: LocalForage,
+    action: ReturnType<typeof fileStorageWriteFile>,
+) {
     try {
         yield* call(() => files.setItem(action.fileName, action.fileContents));
         yield* put(fileStorageDidWriteFile(action.fileName));
@@ -116,8 +118,8 @@ function* initialize(): Generator {
         // subscribe to events
 
         yield* takeEvery(localForageChannel, handleFileStorageDidChange);
-        yield* takeEvery(FileStorageActionType.ReadFile, handleReadFile, files);
-        yield* takeEvery(FileStorageActionType.WriteFile, handleWriteFile, files);
+        yield* takeEvery(fileStorageReadFile, handleReadFile, files);
+        yield* takeEvery(fileStorageWriteFile, handleWriteFile, files);
 
         // migrate from old storage
 

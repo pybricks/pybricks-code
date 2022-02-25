@@ -1,74 +1,63 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2021 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 
 import { takeEvery } from 'typed-redux-saga/macro';
+import { didFailToWrite as bleUartDidFailToWrite } from '../ble-nordic-uart-service/actions';
+import { eventProtocolError as pybricksEventProtocolError } from '../ble-pybricks-service/actions';
 import {
-    BleUartActionType,
-    BleUartDidFailToWriteAction,
-} from '../ble-nordic-uart-service/actions';
-import {
-    BlePybricksServiceEventActionType,
-    BlePybricksServiceEventProtocolErrorAction,
-} from '../ble-pybricks-service/actions';
-import {
-    BleDeviceActionType,
-    BleDeviceDidFailToConnectAction,
     BleDeviceFailToConnectReasonType,
+    didFailToConnect as bleDeviceDidFailToConnect,
 } from '../ble/actions';
+import { didFailToFetchList } from '../licenses/actions';
 import {
-    LicenseActionType,
-    LicenseDidFailToFetchListAction,
-} from '../licenses/actions';
-import {
-    BootloaderConnectionActionType,
-    BootloaderConnectionDidErrorAction,
-    BootloaderConnectionDidFailToConnectAction,
     BootloaderConnectionFailureReason,
+    didError as bootloaderDidError,
+    didFailToConnect as bootloaderDidFailToConnect,
 } from '../lwp3-bootloader/actions';
 
-function bleDeviceDidFailToConnect(action: BleDeviceDidFailToConnectAction): void {
+function handleBleDeviceDidFailToConnect(
+    action: ReturnType<typeof bleDeviceDidFailToConnect>,
+): void {
     if (action.reason === BleDeviceFailToConnectReasonType.Unknown) {
         console.error(action.err);
     }
 }
 
-function pybricksProtocolError(
-    action: BlePybricksServiceEventProtocolErrorAction,
+function handlePybricksEventProtocolError(
+    action: ReturnType<typeof pybricksEventProtocolError>,
 ): void {
     console.error(action.err);
 }
 
-function bleDataDidFailToWrite(action: BleUartDidFailToWriteAction): void {
+function handleBleUartDidFailToWrite(
+    action: ReturnType<typeof bleUartDidFailToWrite>,
+): void {
     console.error(action.err);
 }
 
-function bootloaderDidFailToConnect(
-    action: BootloaderConnectionDidFailToConnectAction,
+function handleBootloaderDidFailToConnect(
+    action: ReturnType<typeof bootloaderDidFailToConnect>,
 ): void {
     if (action.reason === BootloaderConnectionFailureReason.Unknown) {
         console.error(action.err);
     }
 }
 
-function bootloaderDidError(action: BootloaderConnectionDidErrorAction): void {
+function handleBootloaderDidError(action: ReturnType<typeof bootloaderDidError>): void {
     console.error(action.err);
 }
 
-function licenseDidFailToFetch(action: LicenseDidFailToFetchListAction): void {
+function handleLicenseDidFailToFetch(
+    action: ReturnType<typeof didFailToFetchList>,
+): void {
     console.error(`Failed to fetch licenses: ${action.reason.statusText}`);
 }
 
 export default function* (): Generator {
-    yield* takeEvery(BleDeviceActionType.DidFailToConnect, bleDeviceDidFailToConnect);
-    yield* takeEvery(
-        BlePybricksServiceEventActionType.ProtocolError,
-        pybricksProtocolError,
-    );
-    yield* takeEvery(BleUartActionType.DidFailToWrite, bleDataDidFailToWrite);
-    yield* takeEvery(
-        BootloaderConnectionActionType.DidFailToConnect,
-        bootloaderDidFailToConnect,
-    );
-    yield* takeEvery(BootloaderConnectionActionType.DidError, bootloaderDidError);
-    yield* takeEvery(LicenseActionType.DidFailToFetchList, licenseDidFailToFetch);
+    yield* takeEvery(bleDeviceDidFailToConnect, handleBleDeviceDidFailToConnect);
+    yield* takeEvery(pybricksEventProtocolError, handlePybricksEventProtocolError);
+    yield* takeEvery(bleUartDidFailToWrite, handleBleUartDidFailToWrite);
+    yield* takeEvery(bootloaderDidFailToConnect, handleBootloaderDidFailToConnect);
+    yield* takeEvery(bootloaderDidError, handleBootloaderDidError);
+    yield* takeEvery(didFailToFetchList, handleLicenseDidFailToFetch);
 }

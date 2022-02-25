@@ -1,58 +1,39 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2022 The Pybricks Authors
+// Copyright (c) 2022 The Pybricks Authors
 
-import { AppAction } from './app/actions';
-import { BleDIServiceAction } from './ble-device-info-service/actions';
-import { BleUartAction } from './ble-nordic-uart-service/actions';
-import {
-    BlePybricksServiceAction,
-    BlePybricksServiceCommandAction,
-    BlePybricksServiceEventAction,
-} from './ble-pybricks-service/actions';
-import { BLEAction, BLEConnectAction } from './ble/actions';
-import { EditorAction } from './editor/actions';
-import { FileStorageAction } from './fileStorage/actions';
-import { FlashFirmwareAction } from './firmware/actions';
-import { HubAction, HubMessageAction } from './hub/actions';
-import { LicenseAction } from './licenses/actions';
-import {
-    BootloaderConnectionAction,
-    BootloaderDidFailToRequestAction,
-    BootloaderDidRequestAction,
-    BootloaderRequestAction,
-    BootloaderResponseAction,
-} from './lwp3-bootloader/actions';
-import { MpyAction } from './mpy/actions';
-import { NotificationAction } from './notifications/actions';
-import { ServiceWorkerAction } from './service-worker/actions';
-import { SettingsAction } from './settings/actions';
-import { TerminalDataAction } from './terminal/actions';
+import { AnyAction } from 'redux';
+
+/** A function that creates action objects. */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type ActionCreationFunction<A extends AnyAction> = (...args: any[]) => A;
+
+/** A function that performs type discrimination on an action. */
+type MatchFunction<A extends AnyAction> = (action: AnyAction) => action is A;
+
+/** The extra members that are attached to a function by createAction(). */
+type MatchableExtensions<F extends ActionCreationFunction<A>, A extends AnyAction> = {
+    toString(): ReturnType<F>['type'];
+    matches: MatchFunction<ReturnType<F>>;
+};
+
+/** An action creation function that includes MatchableExtensions. */
+type Matchable<F extends ActionCreationFunction<A>, A extends AnyAction> = F &
+    MatchableExtensions<F, A>;
 
 /**
- * Common type for all actions.
+ * Adds additional members to an action creation function.
+ *
+ * @param actionCreator The action creation function.
+ * @returns actionCreator with type property and match method added.
  */
-export type Action =
-    | AppAction
-    | BLEAction
-    | BLEConnectAction
-    | BleDIServiceAction
-    | BlePybricksServiceAction
-    | BlePybricksServiceCommandAction
-    | BlePybricksServiceEventAction
-    | BleUartAction
-    | BootloaderConnectionAction
-    | BootloaderDidRequestAction
-    | BootloaderDidFailToRequestAction
-    | BootloaderRequestAction
-    | BootloaderResponseAction
-    | FileStorageAction
-    | EditorAction
-    | FlashFirmwareAction
-    | HubAction
-    | HubMessageAction
-    | LicenseAction
-    | MpyAction
-    | NotificationAction
-    | ServiceWorkerAction
-    | SettingsAction
-    | TerminalDataAction;
+export function createAction<T extends ActionCreationFunction<A>, A extends AnyAction>(
+    actionCreator: T,
+): Matchable<T, A> {
+    // create a default action so we can get the type string.
+    const type = actionCreator().type;
+
+    return Object.assign(actionCreator, <MatchableExtensions<T, A>>{
+        toString: () => type,
+        matches: (action) => action.type === type,
+    });
+}

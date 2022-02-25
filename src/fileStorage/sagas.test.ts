@@ -1,7 +1,10 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2022 The Pybricks Authors
+
 import { AsyncSaga } from '../../test';
 import {
-    FileStorageActionType,
     fileStorageDidChangeItem,
+    fileStorageDidFailToReadFile,
     fileStorageDidInitialize,
     fileStorageDidReadFile,
     fileStorageDidWriteFile,
@@ -79,7 +82,7 @@ it('should dispatch fail action if file does not exist', async () => {
     saga.put(fileStorageReadFile(testFileName));
 
     action = await saga.take();
-    expect(action).toHaveProperty('type', FileStorageActionType.DidFailToReadFile);
+    expect(action).toHaveProperty('type', fileStorageDidFailToReadFile.toString());
 
     await saga.end();
 });
