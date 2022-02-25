@@ -21,7 +21,7 @@ export enum AppActionType {
     /* Indicates that the user responded to the install prompt. */
     DidInstallPrompt = 'app.action.didInstallPrompt',
     /* Indicates that the app was installed. */
-    DidInstall = 'app.action.didInstallPrompt',
+    DidInstall = 'app.action.didInstall',
     /** The app has just ben started. */
     DidStart = 'app.action.didStart',
 }
