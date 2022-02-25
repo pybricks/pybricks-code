@@ -95,7 +95,7 @@
         "eslint-plugin-functional": "^3.7.2",
         "eslint-plugin-import": "^2.25.4",
         "eslint-plugin-prettier": "^4.0.0",
-        "eslint-plugin-react": "^7.28.0",
+        "eslint-plugin-react": "^7.29.0",
         "eslint-plugin-total-functions": "^4.10.1",
         "jest-mock-extended": "^2.0.4",
         "prettier": "^2.5.1"
