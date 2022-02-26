@@ -17,7 +17,7 @@ jobs:
         echo "REACT_APP_SUFFIX=-beta" >> $GITHUB_ENV
     - uses: actions/setup-node@v1
       with:
-        node-version: '14.x'
+        node-version: '16.x'
     - uses: actions/checkout@v2
     - run: yarn install
     - run: yarn coverage

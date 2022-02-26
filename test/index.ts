@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020 The Pybricks Authors
 
+import { AnyAction } from 'redux';
 import { END, MulticastChannel, Saga, Task, runSaga, stdChannel } from 'redux-saga';
-import { Action } from '../src/actions';
 import { RootState } from '../src/reducers';
 
 type RecursivePartial<T> = {
@@ -10,9 +10,9 @@ type RecursivePartial<T> = {
 };
 
 export class AsyncSaga {
-    private channel: MulticastChannel<Action>;
-    private dispatches: (Action | END)[];
-    private takers: { put: (action: Action | END) => void }[];
+    private channel: MulticastChannel<AnyAction>;
+    private dispatches: (AnyAction | END)[];
+    private takers: { put: (action: AnyAction | END) => void }[];
     private state: RecursivePartial<RootState>;
     private task: Task;
 
@@ -43,18 +43,18 @@ export class AsyncSaga {
         return this.dispatches.length;
     }
 
-    public put(action: Action): void {
+    public put(action: AnyAction): void {
         this.channel.put(action);
     }
 
-    public take(): Promise<Action> {
+    public take(): Promise<AnyAction> {
         const next = this.dispatches.shift();
         if (next === undefined) {
             // if there are no dispatches queued, then queue the taker to be
             // completed later
             return new Promise((resolve, reject) => {
                 this.takers.push({
-                    put: (a: Action | END): void => {
+                    put: (a: AnyAction | END): void => {
                         if (a.type === END.type) {
                             reject();
                         } else {
@@ -88,7 +88,7 @@ export class AsyncSaga {
         }
     }
 
-    private dispatch(action: Action | END): Action | END {
+    private dispatch(action: AnyAction | END): AnyAction | END {
         const taker = this.takers.shift();
         if (taker === undefined) {
             // if there are no takers waiting, the queue the action

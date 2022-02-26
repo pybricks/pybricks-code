@@ -1,22 +1,17 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020 The Pybricks Authors
+// Copyright (c) 2020,2022 The Pybricks Authors
 
 import { compile as mpyCrossCompile } from '@pybricks/mpy-cross-v5';
 import wasm from '@pybricks/mpy-cross-v5/build/mpy-cross.wasm';
 import { call, put, takeEvery } from 'typed-redux-saga/macro';
-import {
-    MpyActionType,
-    MpyCompileAction,
-    didCompile,
-    didFailToCompile,
-} from './actions';
+import { compile, didCompile, didFailToCompile } from './actions';
 
 /**
  * Compiles a script to .mpy and dispatches either didCompile on success or
  * didFailToCompile on error.
  * @param action A mpy compile action.
  */
-function* compile(action: MpyCompileAction): Generator {
+function* handleCompile(action: ReturnType<typeof compile>): Generator {
     const result = yield* call(() =>
         mpyCrossCompile(
             'main.py',
@@ -34,5 +29,5 @@ function* compile(action: MpyCompileAction): Generator {
 }
 
 export default function* (): Generator {
-    yield* takeEvery(MpyActionType.Compile, compile);
+    yield* takeEvery(compile, handleCompile);
 }

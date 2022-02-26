@@ -1,79 +1,23 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2021 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 
 import { Action } from 'redux';
+import { createAction } from '../actions';
 import { Command, HubType, ProtectionLevel, Result } from './protocol';
 
 /**
- * Bootloader BLE connection actions.
+ * Initiate a connection.
  */
-export enum BootloaderConnectionActionType {
-    /**
-     * Initiate a connection.
-     */
-    Connect = 'bootloader.action.connection.connect',
-    /**
-     * The connection has been made.
-     */
-    DidConnect = 'bootloader.action.connection.did.connect',
-    /**
-     * The connection was not successful.
-     */
-    DidFailToConnect = 'bootloader.action.connection.did.connect.fail',
-    /**
-     * There was a connection error.
-     */
-    DidError = 'bootloader.action.connection.did.error',
-    /**
-     * Send a message using the connection.
-     */
-    Send = 'bootloader.action.connection.send',
-    /**
-     * Finished sending a message.
-     */
-    DidSend = 'bootloader.action.connection.did.send',
-    /**
-     * Sending a message failed with error.
-     */
-    DidFailToSend = 'bootloader.action.connection.did.failToSend',
-    /**
-     * The connection received a message.
-     */
-    DidReceive = 'bootloader.action.connection.did.receive',
-    /**
-     * Initiate disconnection/
-     */
-    Disconnect = 'bootloader.action.connection.disconnect',
-    /**
-     * The connection has been closed.
-     */
-    DidDisconnect = 'bootloader.action.connection.did.disconnect',
-    /**
-     * Disconnecting failed.
-     */
-    DidFailToDisconnect = 'bootloader.action.connection.did.failToDisconnect',
-}
+export const connect = createAction(() => ({
+    type: 'bootloader.action.connection.connect',
+}));
 
-export type BootloaderConnectionConnectAction =
-    Action<BootloaderConnectionActionType.Connect>;
-
-export function connect(): BootloaderConnectionConnectAction {
-    return { type: BootloaderConnectionActionType.Connect };
-}
-
-export type BootloaderConnectionDidConnectAction =
-    Action<BootloaderConnectionActionType.DidConnect>;
-
-export function didConnect(): BootloaderConnectionDidConnectAction {
-    return { type: BootloaderConnectionActionType.DidConnect };
-}
-
-export type BootloaderConnectionDisconnectAction =
-    Action<BootloaderConnectionActionType.Disconnect>;
-
-export function disconnect(): BootloaderConnectionDisconnectAction {
-    return { type: BootloaderConnectionActionType.Disconnect };
-}
+/**
+ * The connection has been made.
+ */
+export const didConnect = createAction(() => ({
+    type: 'bootloader.action.connection.didConnect',
+}));
 
 /**
  * Possible reasons a device could fail to connect.
@@ -91,476 +35,267 @@ export enum BootloaderConnectionFailureReason {
     Unknown = 'unknown',
 }
 
-type Reason<T extends BootloaderConnectionFailureReason> = {
-    reason: T;
+const didFailToConnectType = 'bootloader.action.connection.didFailToConnect';
+
+function didFailToConnectCreator(
+    reason: BootloaderConnectionFailureReason.NoWebBluetooth,
+): Action<typeof didFailToConnectType> & {
+    reason: BootloaderConnectionFailureReason.NoWebBluetooth;
 };
 
-export type BootloaderConnectionFailToConnectNoWebBluetoothReason =
-    Reason<BootloaderConnectionFailureReason.NoWebBluetooth>;
+function didFailToConnectCreator(
+    reason: BootloaderConnectionFailureReason.NoBluetooth,
+): Action<typeof didFailToConnectType> & {
+    reason: BootloaderConnectionFailureReason.NoBluetooth;
+};
 
-export type BootloaderConnectionFailToConnectNoBluetoothReason =
-    Reason<BootloaderConnectionFailureReason.NoBluetooth>;
+function didFailToConnectCreator(
+    reason: BootloaderConnectionFailureReason.GattServiceNotFound,
+): Action<typeof didFailToConnectType> & {
+    reason: BootloaderConnectionFailureReason.GattServiceNotFound;
+};
 
-export type BootloaderConnectionFailToConnectGattServiceNotFoundReason =
-    Reason<BootloaderConnectionFailureReason.GattServiceNotFound>;
+function didFailToConnectCreator(
+    reason: BootloaderConnectionFailureReason.Canceled,
+): Action<typeof didFailToConnectType> & {
+    reason: BootloaderConnectionFailureReason.Canceled;
+};
 
-export type BootloaderConnectionFailToConnectCanceledReason =
-    Reason<BootloaderConnectionFailureReason.Canceled>;
-
-export type BootloaderConnectionFailToConnectUnknownReason =
-    Reason<BootloaderConnectionFailureReason.Unknown> & {
-        err: Error;
-    };
-
-export type BootloaderConnectionDidFailToConnectReason =
-    | BootloaderConnectionFailToConnectNoWebBluetoothReason
-    | BootloaderConnectionFailToConnectNoBluetoothReason
-    | BootloaderConnectionFailToConnectGattServiceNotFoundReason
-    | BootloaderConnectionFailToConnectCanceledReason
-    | BootloaderConnectionFailToConnectUnknownReason;
-
-export type BootloaderConnectionDidFailToConnectAction =
-    Action<BootloaderConnectionActionType.DidFailToConnect> &
-        BootloaderConnectionDidFailToConnectReason;
-
-export function didFailToConnect(
-    reason: Exclude<
-        BootloaderConnectionFailureReason,
-        BootloaderConnectionFailureReason.Unknown
-    >,
-): BootloaderConnectionDidFailToConnectAction;
-
-export function didFailToConnect(
+function didFailToConnectCreator(
     reason: BootloaderConnectionFailureReason.Unknown,
     err: Error,
-): BootloaderConnectionDidFailToConnectAction;
+): Action<typeof didFailToConnectType> & {
+    reason: BootloaderConnectionFailureReason.Unknown;
+    err: Error;
+};
 
-export function didFailToConnect(
+function didFailToConnectCreator<T extends BootloaderConnectionFailureReason>(
+    reason: T,
+    arg1?: Error,
+): Action<typeof didFailToConnectType> & {
+    reason: T;
+    err: T extends BootloaderConnectionFailureReason.Unknown ? Error : never;
+};
+
+function didFailToConnectCreator(
     reason: BootloaderConnectionFailureReason,
     arg1?: Error,
-): BootloaderConnectionDidFailToConnectAction {
+): Action<typeof didFailToConnectType> & {
+    reason: BootloaderConnectionFailureReason;
+    err?: Error;
+} {
     if (reason === BootloaderConnectionFailureReason.Unknown) {
-        return <BootloaderConnectionDidFailToConnectAction>{
-            type: BootloaderConnectionActionType.DidFailToConnect,
+        return {
+            type: didFailToConnectType,
             reason,
             err: arg1,
         };
     }
-    return { type: BootloaderConnectionActionType.DidFailToConnect, reason };
-}
 
-export type BootloaderConnectionDidErrorAction =
-    Action<BootloaderConnectionActionType.DidError> & {
-        err: Error;
-    };
-
-export function didError(err: Error): BootloaderConnectionDidErrorAction {
-    return { type: BootloaderConnectionActionType.DidError, err };
-}
-
-export type BootloaderConnectionSendAction =
-    Action<BootloaderConnectionActionType.Send> & {
-        readonly data: ArrayBuffer;
-        readonly withResponse: boolean;
-    };
-
-export function send(
-    data: ArrayBuffer,
-    withResponse = true,
-): BootloaderConnectionSendAction {
-    return { type: BootloaderConnectionActionType.Send, data, withResponse };
-}
-
-export type BootloaderConnectionDidSendAction =
-    Action<BootloaderConnectionActionType.DidSend>;
-
-export function didSend(): BootloaderConnectionDidSendAction {
-    return { type: BootloaderConnectionActionType.DidSend };
-}
-
-export type BootloaderConnectionDidFailToSendAction =
-    Action<BootloaderConnectionActionType.DidFailToSend> & {
-        err: Error;
-    };
-
-export function didFailToSend(err: Error): BootloaderConnectionDidFailToSendAction {
-    return { type: BootloaderConnectionActionType.DidFailToSend, err };
-}
-
-export type BootloaderConnectionDidReceiveAction =
-    Action<BootloaderConnectionActionType.DidReceive> & {
-        data: DataView;
-    };
-
-export function didReceive(data: DataView): BootloaderConnectionDidReceiveAction {
-    return { type: BootloaderConnectionActionType.DidReceive, data };
-}
-
-export type BootloaderConnectionDidDisconnectAction =
-    Action<BootloaderConnectionActionType.DidDisconnect>;
-
-export function didDisconnect(): BootloaderConnectionDidDisconnectAction {
-    return { type: BootloaderConnectionActionType.DidDisconnect };
-}
-
-export type BootloaderConnectionDidFailToDisconnectAction =
-    Action<BootloaderConnectionActionType.DidFailToDisconnect>;
-
-export function didFailToDisconnect(): BootloaderConnectionDidFailToDisconnectAction {
-    return { type: BootloaderConnectionActionType.DidFailToDisconnect };
+    return { type: didFailToConnectType, reason };
 }
 
 /**
- * Common type for all bootloader connection actions.
+ * The connection was not successful.
  */
-export type BootloaderConnectionAction =
-    | BootloaderConnectionConnectAction
-    | BootloaderConnectionDidConnectAction
-    | BootloaderConnectionDidFailToConnectAction
-    | BootloaderConnectionDidErrorAction
-    | BootloaderConnectionSendAction
-    | BootloaderConnectionDidSendAction
-    | BootloaderConnectionDidFailToSendAction
-    | BootloaderConnectionDidReceiveAction
-    | BootloaderConnectionDisconnectAction
-    | BootloaderConnectionDidDisconnectAction
-    | BootloaderConnectionDidFailToDisconnectAction;
+export const didFailToConnect = createAction(didFailToConnectCreator);
 
 /**
- * Bootloader request actions for sending commands over the connection.
+ * There was a connection error.
  */
-export enum BootloaderRequestActionType {
-    Erase = 'bootloader.action.request.erase',
-    Program = 'bootloader.action.request.program',
-    Reboot = 'bootloader.action.request.reboot',
-    Init = 'bootloader.action.request.init',
-    Info = 'bootloader.action.request.info',
-    Checksum = 'bootloader.action.request.checksum',
-    State = 'bootloader.action.request.state',
-    Disconnect = 'bootloader.action.request.disconnect',
-}
-
-type BaseBootloaderRequestAction<T extends BootloaderRequestActionType> = Action<T> & {
-    /**
-     * Unique identifier for this action.
-     */
-    id: number;
-};
+export const didError = createAction((err: Error) => ({
+    type: 'bootloader.action.connection.didError',
+    err,
+}));
 
 /**
- * Action that requests to erase the flash memory.
+ * Send a message using the connection.
  */
-export type BootloaderEraseRequestAction =
-    BaseBootloaderRequestAction<BootloaderRequestActionType.Erase> & {
-        /* City hub requires special handling due to buggy bootloader */
-        isCityHub: boolean;
-    };
+export const send = createAction((data: ArrayBuffer, withResponse = true) => ({
+    type: 'bootloader.action.connection.send',
+    data,
+    withResponse,
+}));
+
+/**
+ * Finished sending a message.
+ */
+export const didSend = createAction(() => ({
+    type: 'bootloader.action.connection.didSend',
+}));
+
+/**
+ * Sending a message failed with error.
+ */
+export const didFailToSend = createAction((err: Error) => ({
+    type: 'bootloader.action.connection.didFailToSend',
+    err,
+}));
+
+/**
+ * The connection received a message.
+ */
+export const didReceive = createAction((data: DataView) => ({
+    type: 'bootloader.action.connection.didReceive',
+    data,
+}));
+
+/**
+ * Initiate disconnection.
+ */
+export const disconnect = createAction(() => ({
+    type: 'bootloader.action.connection.disconnect',
+}));
+
+/**
+ * The connection has been closed.
+ */
+export const didDisconnect = createAction(() => ({
+    type: 'bootloader.action.connection.didDisconnect',
+}));
+
+/**
+ * Disconnecting failed.
+ */
+export const didFailToDisconnect = createAction(() => ({
+    type: 'bootloader.action.connection.didFailToDisconnect',
+}));
+
+// LWP3 bootloader request message actions
 
 /**
  * Creates a request to erase the flash memory.
  */
-export function eraseRequest(
-    id: number,
-    isCityHub: boolean,
-): BootloaderEraseRequestAction {
-    return { type: BootloaderRequestActionType.Erase, id, isCityHub };
-}
-
-/**
- * Action that requests to program the flash memory.
- */
-export type BootloaderProgramRequestAction =
-    BaseBootloaderRequestAction<BootloaderRequestActionType.Program> & {
-        address: number;
-        payload: ArrayBuffer;
-    };
+export const eraseRequest = createAction((id: number, isCityHub: boolean) => ({
+    type: 'bootloader.action.request.eraseRequest',
+    id,
+    isCityHub,
+}));
 
 /**
  * Creates a request to program the flash memory.
  * @param address The starting address in the flash memory.
  * @param payload The bytes to write (max 14 bytes!)
  */
-export function programRequest(
-    id: number,
-    address: number,
-    payload: ArrayBuffer,
-): BootloaderProgramRequestAction {
-    return {
-        type: BootloaderRequestActionType.Program,
+export const programRequest = createAction(
+    (id: number, address: number, payload: ArrayBuffer) => ({
+        type: 'bootloader.action.request.programRequest',
         id,
         address,
         payload,
-    };
-}
-
-/**
- * Action that requests to reboot the hub.
- */
-export type BootloaderRebootRequestAction =
-    BaseBootloaderRequestAction<BootloaderRequestActionType.Reboot>;
+    }),
+);
 
 /**
  * Creates a request to reboot the hub.
  */
-export function rebootRequest(id: number): BootloaderRebootRequestAction {
-    return { type: BootloaderRequestActionType.Reboot, id };
-}
-
-/**
- * Action that requests to initialize the firmware flashing process.
- */
-export type BootloaderInitRequestAction =
-    BaseBootloaderRequestAction<BootloaderRequestActionType.Init> & {
-        firmwareSize: number;
-    };
+export const rebootRequest = createAction((id: number) => ({
+    type: 'bootloader.action.request.rebootRequest',
+    id,
+}));
 
 /**
  * Creates a request to initialize the firmware flashing process.
  * @param firmwareSize The size of the firmware to written to flash memory.
  */
-export function initRequest(
-    id: number,
-    firmwareSize: number,
-): BootloaderInitRequestAction {
-    return {
-        type: BootloaderRequestActionType.Init,
-        id,
-        firmwareSize,
-    };
-}
-
-/**
- * Action that requests information about the hub.
- */
-export type BootloaderInfoRequestAction =
-    BaseBootloaderRequestAction<BootloaderRequestActionType.Info>;
+export const initRequest = createAction((id: number, firmwareSize: number) => ({
+    type: 'bootloader.action.request.initRequest',
+    id,
+    firmwareSize,
+}));
 
 /**
  * Creates a request to get information about the hub.
  */
-export function infoRequest(id: number): BootloaderInfoRequestAction {
-    return { type: BootloaderRequestActionType.Info, id };
-}
-
-/**
- * Action to get the checksum of the bytes that have been written to flash
- * so far.
- */
-export type BootloaderChecksumRequestAction =
-    BaseBootloaderRequestAction<BootloaderRequestActionType.Checksum>;
+export const infoRequest = createAction((id: number) => ({
+    type: 'bootloader.action.request.infoRequest',
+    id,
+}));
 
 /**
  * Creates a request to get the checksum of the bytes that have been written
  * to flash so far.
  */
-export function checksumRequest(id: number): BootloaderChecksumRequestAction {
-    return { type: BootloaderRequestActionType.Checksum, id };
-}
-
-/**
- * Action that requests the bootloader flash memory protection state.
- */
-export type BootloaderStateRequestAction =
-    BaseBootloaderRequestAction<BootloaderRequestActionType.State>;
+export const checksumRequest = createAction((id: number) => ({
+    type: 'bootloader.action.request.checksumRequest',
+    id,
+}));
 
 /**
  * Creates a request to get the bootloader flash memory protection state.
  */
-export function stateRequest(id: number): BootloaderStateRequestAction {
-    return { type: BootloaderRequestActionType.State, id };
-}
-
-/**
- * Action that requests to disconnect the hub.
- */
-export type BootloaderDisconnectRequestAction =
-    BaseBootloaderRequestAction<BootloaderRequestActionType.Disconnect>;
+export const stateRequest = createAction((id: number) => ({
+    type: 'bootloader.action.request.stateRequest',
+    id,
+}));
 
 /**
  * Creates a request to disconnect the hub.
  */
-export function disconnectRequest(id: number): BootloaderDisconnectRequestAction {
-    return { type: BootloaderRequestActionType.Disconnect, id };
-}
-
-/**
- * Common type for all bootloader requests.
- */
-export type BootloaderRequestAction =
-    | BootloaderEraseRequestAction
-    | BootloaderProgramRequestAction
-    | BootloaderRebootRequestAction
-    | BootloaderInitRequestAction
-    | BootloaderInfoRequestAction
-    | BootloaderChecksumRequestAction
-    | BootloaderStateRequestAction
-    | BootloaderDisconnectRequestAction;
-
-/**
- * Action type for bootloader did request action.
- */
-export type BootloaderDidRequestType = 'bootloader.action.did.request';
-
-/**
- * Action type for bootloader did request action.
- */
-export const BootloaderDidRequestType = 'bootloader.action.did.request';
-
-/**
- * Action that indicates a request was sent.
- */
-export type BootloaderDidRequestAction = Action<BootloaderDidRequestType> & {
-    /**
-     * The unique identifier of the action.
-     */
-    id: number;
-};
+export const disconnectRequest = createAction((id: number) => ({
+    type: 'bootloader.action.request.disconnectRequest',
+    id,
+}));
 
 /**
  * Creates an action that indicates a request was sent.
  * @param id The unique identifier of the action.
  */
-export function didRequest(id: number): BootloaderDidRequestAction {
-    return { type: BootloaderDidRequestType, id };
-}
-
-/**
- * Action type for bootloader did fail to request action.
- */
-export type BootloaderDidFailToRequestType = 'bootloader.action.did.failToRequest';
-
-/**
- * Action type for bootloader did fail to request action.
- */
-export const BootloaderDidFailToRequestType = 'bootloader.action.did.failToRequest';
-
-/**
- * Action that indicates a request failed to send.
- */
-export type BootloaderDidFailToRequestAction =
-    Action<BootloaderDidFailToRequestType> & {
-        /**
-         * The unique identifier of the action.
-         */
-        id: number;
-        /**
-         * The error.
-         */
-        err: Error;
-    };
+export const didRequest = createAction((id: number) => ({
+    type: 'bootloader.action.didRequest',
+    id,
+}));
 
 /**
  * Creates an action that indicates a request failed to send.
  * @param id The unique identifier of the action.
  * @param err The error message.
  */
-export function didFailToRequest(
-    id: number,
-    err: Error,
-): BootloaderDidFailToRequestAction {
-    return { type: BootloaderDidFailToRequestType, id, err };
-}
+export const didFailToRequest = createAction((id: number, err: Error) => ({
+    type: 'bootloader.action.didFailToRequest',
+    id,
+    err,
+}));
 
-/**
- * Bootloader response actions for receiving responses from the connection.
- */
-export enum BootloaderResponseActionType {
-    Erase = 'bootloader.action.response.erase',
-    Program = 'bootloader.action.response.program',
-    Init = 'bootloader.action.response.init',
-    Info = 'bootloader.action.response.info',
-    Checksum = 'bootloader.action.response.checksum',
-    State = 'bootloader.action.response.state',
-    Error = 'bootloader.action.response.error',
-}
+// Bootloader response actions for receiving responses from the connection.
 
-export type BootloaderEraseResponseAction =
-    Action<BootloaderResponseActionType.Erase> & {
-        result: Result;
-    };
+export const eraseResponse = createAction((result: Result) => ({
+    type: 'bootloader.action.response.eraseResponse',
+    result,
+}));
 
-export function eraseResponse(result: Result): BootloaderEraseResponseAction {
-    return { type: BootloaderResponseActionType.Erase, result };
-}
+export const programResponse = createAction((checksum: number, count: number) => ({
+    type: 'bootloader.action.response.programResponse',
+    checksum,
+    count,
+}));
 
-export type BootloaderProgramResponseAction =
-    Action<BootloaderResponseActionType.Program> & {
-        checksum: number;
-        count: number;
-    };
+export const initResponse = createAction((result: Result) => ({
+    type: 'bootloader.action.response.initResponse',
+    result,
+}));
 
-export function programResponse(
-    checksum: number,
-    count: number,
-): BootloaderProgramResponseAction {
-    return { type: BootloaderResponseActionType.Program, checksum, count };
-}
-
-export type BootloaderInitResponseAction = Action<BootloaderResponseActionType.Init> & {
-    result: Result;
-};
-
-export function initResponse(result: Result): BootloaderInitResponseAction {
-    return { type: BootloaderResponseActionType.Init, result };
-}
-
-export type BootloaderInfoResponseAction = Action<BootloaderResponseActionType.Info> & {
-    version: number;
-    startAddress: number;
-    endAddress: number;
-    hubType: HubType;
-};
-
-export function infoResponse(
-    version: number,
-    startAddress: number,
-    endAddress: number,
-    hubType: HubType,
-): BootloaderInfoResponseAction {
-    return {
-        type: BootloaderResponseActionType.Info,
+export const infoResponse = createAction(
+    (version: number, startAddress: number, endAddress: number, hubType: HubType) => ({
+        type: 'bootloader.action.response.infoResponse',
         version,
         startAddress,
         endAddress,
         hubType,
-    };
-}
+    }),
+);
 
-export type BootloaderChecksumResponseAction =
-    Action<BootloaderResponseActionType.Checksum> & {
-        checksum: number;
-    };
+export const checksumResponse = createAction((checksum: number) => ({
+    type: 'bootloader.action.response.checksumResponse',
+    checksum,
+}));
 
-export function checksumResponse(checksum: number): BootloaderChecksumResponseAction {
-    return { type: BootloaderResponseActionType.Checksum, checksum };
-}
+export const stateResponse = createAction((level: ProtectionLevel) => ({
+    type: 'bootloader.action.response.stateResponse',
+    level,
+}));
 
-export type BootloaderStateResponseAction =
-    Action<BootloaderResponseActionType.State> & {
-        level: ProtectionLevel;
-    };
-
-export function stateResponse(level: ProtectionLevel): BootloaderStateResponseAction {
-    return { type: BootloaderResponseActionType.State, level };
-}
-
-export type BootloaderErrorResponseAction =
-    Action<BootloaderResponseActionType.Error> & {
-        command: Command;
-    };
-
-export function errorResponse(command: Command): BootloaderErrorResponseAction {
-    return { type: BootloaderResponseActionType.Error, command };
-}
-
-/**
- * Common type for all bootloader response actions.
- */
-export type BootloaderResponseAction =
-    | BootloaderEraseResponseAction
-    | BootloaderProgramResponseAction
-    | BootloaderInitResponseAction
-    | BootloaderInfoResponseAction
-    | BootloaderChecksumResponseAction
-    | BootloaderStateResponseAction
-    | BootloaderErrorResponseAction;
+export const errorResponse = createAction((command: Command) => ({
+    type: 'bootloader.action.response.errorResponse',
+    command,
+}));

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2021 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 
 import { all, put } from 'typed-redux-saga/macro';
 import { didStart } from './app/actions';
@@ -8,6 +8,7 @@ import blePybricksService from './ble-pybricks-service/sagas';
 import ble from './ble/sagas';
 import editor from './editor/sagas';
 import errorLog from './error-log/sagas';
+import fileStorage from './fileStorage/sagas';
 import flashFirmware from './firmware/sagas';
 import hub from './hub/sagas';
 import licenses from './licenses/sagas';
@@ -24,6 +25,7 @@ export default function* (): Generator {
         app(),
         blePybricksService(),
         ble(),
+        fileStorage(),
         lwp3BootloaderBle(),
         lwp3BootloaderProtocol(),
         editor(),

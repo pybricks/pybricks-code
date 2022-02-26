@@ -1,97 +1,43 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2021 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 
-import { Action } from 'redux';
-
-export enum HubMessageActionType {
-    /**
-     * The hub has sent a checksum.
-     */
-    Checksum = 'hub.message.action.runtime.checksum',
-}
-
-export type HubChecksumMessageAction = Action<HubMessageActionType.Checksum> & {
-    readonly checksum: number;
-};
-
-export function checksum(checksum: number): HubChecksumMessageAction {
-    return {
-        type: HubMessageActionType.Checksum,
-        checksum,
-    };
-}
+import { createAction } from '../actions';
 
 /**
- * Common type for low-level hub message actions.
+ * Action that indicates the hub has sent a checksum.
  */
-export type HubMessageAction = HubChecksumMessageAction;
+export const checksum = createAction((checksum: number) => ({
+    type: 'hub.message.action.runtime.checksum',
+    checksum,
+}));
 
-/**
- * High-level hub actions.
- */
-export enum HubActionType {
-    DownloadAndRun = 'hub.action.downloadAndRun',
-    DidStartDownload = 'hub.action.didStartDownload',
-    DidProgressDownload = 'hub.action.didProgressDownload',
-    DidFinishDownload = 'hub.action.didFinishDownload',
-    DidFailToFinishDownload = 'hub.action.didFailToFinishDownload',
-    Stop = 'hub.action.stop',
-    Repl = 'hub.action.repl',
-}
+// High-level hub actions.
 
-export type HubDownloadAndRunAction = Action<HubActionType.DownloadAndRun>;
+export const downloadAndRun = createAction(() => ({
+    type: 'hub.action.downloadAndRun',
+}));
 
-export function downloadAndRun(): HubDownloadAndRunAction {
-    return { type: HubActionType.DownloadAndRun };
-}
+export const didStartDownload = createAction(() => ({
+    type: 'hub.action.didStartDownload',
+}));
 
-export type HubDidStartDownloadAction = Action<HubActionType.DidStartDownload>;
+export const didProgressDownload = createAction((progress: number) => ({
+    type: 'hub.action.didProgressDownload',
+    progress,
+}));
 
-export function didStartDownload(): HubDidStartDownloadAction {
-    return { type: HubActionType.DidStartDownload };
-}
+export const didFinishDownload = createAction(() => ({
+    type: 'hub.action.didFinishDownload',
+}));
 
-export type HubDidProgressDownloadAction = Action<HubActionType.DidProgressDownload> & {
-    progress: number;
-};
+export const didFailToFinishDownload = createAction(() => ({
+    type: 'hub.action.didFailToFinishDownload',
+}));
 
-export function didProgressDownload(progress: number): HubDidProgressDownloadAction {
-    return { type: HubActionType.DidProgressDownload, progress };
-}
+export const stop = createAction(() => ({
+    type: 'hub.action.stop',
+}));
 
-export type HubDidFinishDownloadAction = Action<HubActionType.DidFinishDownload>;
-
-export function didFinishDownload(): HubDidFinishDownloadAction {
-    return { type: HubActionType.DidFinishDownload };
-}
-
-export type HubDidFailToFinishDownloadAction =
-    Action<HubActionType.DidFailToFinishDownload>;
-
-export function didFailToFinishDownload(): HubDidFailToFinishDownloadAction {
-    return { type: HubActionType.DidFailToFinishDownload };
-}
-
-export type HubStopAction = Action<HubActionType.Stop>;
-
-export function stop(): HubStopAction {
-    return { type: HubActionType.Stop };
-}
-
-export type HubReplAction = Action<HubActionType.Repl>;
-
-export function repl(): HubReplAction {
-    return { type: HubActionType.Repl };
-}
-
-/**
- * Common type for all high-level hub actions.
- */
-export type HubAction =
-    | HubDownloadAndRunAction
-    | HubDidStartDownloadAction
-    | HubDidProgressDownloadAction
-    | HubDidFinishDownloadAction
-    | HubDidFailToFinishDownloadAction
-    | HubStopAction
-    | HubReplAction;
+export const repl = createAction(() => ({
+    type: 'hub.action.repl',
+}));

@@ -1,62 +1,24 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2021 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 //
 // Actions for managing Bluetooth Low Energy connections.
 
-import { Action } from 'redux';
-
-/**
- * Bluetooth low energy device action types.
- */
-export enum BleDeviceActionType {
-    /**
-     * Connecting to a device has been requested.
-     */
-    Connect = 'ble.device.action.connect',
-    /**
-     * The connection completed successfully.
-     */
-    DidConnect = 'ble.device.action.didConnect',
-    /**
-     * The connection did not complete successfully.
-     */
-    DidFailToConnect = 'ble.device.action.didFailToConnect',
-    /**
-     * Disconnecting from a device has been requested.
-     */
-    Disconnect = 'ble.device.action.disconnect',
-    /**
-     * The device was disconnected.
-     */
-    DidDisconnect = 'ble.device.action.didDisconnect',
-    /**
-     * The device fail to disconnect.
-     */
-    DidFailToDisconnect = 'ble.device.action.didFailToDisconnect',
-}
-
-export type BleDeviceConnectAction = Action<BleDeviceActionType.Connect>;
-
+import { createAction } from '../actions';
 /**
  * Creates an action that indicates connecting has been requested.
  */
-export function connect(): BleDeviceConnectAction {
-    return { type: BleDeviceActionType.Connect };
-}
-
-export type BleDeviceDidConnectAction = Action<BleDeviceActionType.DidConnect> & {
-    /** A unique identifier for the connected hub. */
-    id: string;
-    /** A user-displayable name for the connected hub. */
-    name: string;
-};
+export const connect = createAction(() => ({
+    type: 'ble.device.action.connect',
+}));
 
 /**
  * Creates an action that indicates a device was connected.
  */
-export function didConnect(id: string, name: string): BleDeviceDidConnectAction {
-    return { type: BleDeviceActionType.DidConnect, id, name };
-}
+export const didConnect = createAction((id: string, name: string) => ({
+    type: 'ble.device.action.didConnect',
+    id,
+    name,
+}));
 
 export enum BleDeviceFailToConnectReasonType {
     NoWebBluetooth = 'ble.device.didFailToConnect.noWebBluetooth',
@@ -104,69 +66,41 @@ export type BleDeviceDidFailToConnectReason =
     | BleDeviceFailToConnectNoPybricksServiceReason
     | BleDeviceFailToConnectUnknownReason;
 
-export type BleDeviceDidFailToConnectAction =
-    Action<BleDeviceActionType.DidFailToConnect> & BleDeviceDidFailToConnectReason;
-
 /**
  * Creates an action that indicates a device failed to connect.
  */
-export function didFailToConnect(
-    reason: BleDeviceDidFailToConnectReason,
-): BleDeviceDidFailToConnectAction {
-    return { type: BleDeviceActionType.DidFailToConnect, ...reason };
-}
-
-export type BleDeviceDisconnectAction = Action<BleDeviceActionType.Disconnect>;
+export const didFailToConnect = createAction(
+    (reason: BleDeviceDidFailToConnectReason) => ({
+        type: 'ble.device.action.didFailToConnect',
+        ...reason,
+    }),
+);
 
 /**
  * Creates an action that indicates disconnecting was requested.
  */
-export function disconnect(): BleDeviceDisconnectAction {
-    return { type: BleDeviceActionType.Disconnect };
-}
-
-export type BleDeviceDidDisconnectAction = Action<BleDeviceActionType.DidDisconnect>;
+export const disconnect = createAction(() => ({
+    type: 'ble.device.action.disconnect',
+}));
 
 /**
  * Creates an action that indicates a device was disconnected.
  */
-export function didDisconnect(): BleDeviceDidDisconnectAction {
-    return { type: BleDeviceActionType.DidDisconnect };
-}
-
-export type BleDeviceDidFailToDisconnectAction =
-    Action<BleDeviceActionType.DidFailToDisconnect>;
+export const didDisconnect = createAction(() => ({
+    type: 'ble.device.action.didDisconnect',
+}));
 
 /**
  * Creates an action that indicates a device failed to disconnect.
  */
-export function didFailToDisconnect(): BleDeviceDidFailToDisconnectAction {
-    return { type: BleDeviceActionType.DidFailToDisconnect };
-}
-
-/**
- * Common type for all BLE connection actions.
- */
-export type BLEConnectAction =
-    | BleDeviceConnectAction
-    | BleDeviceDidConnectAction
-    | BleDeviceDidFailToConnectAction
-    | BleDeviceDisconnectAction
-    | BleDeviceDidDisconnectAction
-    | BleDeviceDidFailToDisconnectAction;
+export const didFailToDisconnect = createAction(() => ({
+    type: 'ble.device.action.didFailToDisconnect',
+}));
 
 /**
  * High-level BLE actions.
  */
-export enum BLEActionType {
-    Toggle = 'ble.action.toggle',
-}
 
-export type BLEToggleAction = Action<BLEActionType.Toggle>;
-
-export function toggleBluetooth(): BLEToggleAction {
-    return { type: BLEActionType.Toggle };
-}
-
-/** Common type for high-level BLE actions */
-export type BLEAction = BLEToggleAction;
+export const toggleBluetooth = createAction(() => ({
+    type: 'ble.action.toggle',
+}));

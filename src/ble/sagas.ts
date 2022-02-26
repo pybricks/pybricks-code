@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2021 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 //
 // Manages connection to a Bluetooth Low Energy device running Pybricks firmware.
 
@@ -28,11 +28,10 @@ import {
     softwareRevisionStringUUID,
 } from '../ble-device-info-service/protocol';
 import {
-    BleUartActionType,
-    BleUartWriteAction,
     didFailToWrite as didFailToWriteUart,
     didNotify as didNotifyUart,
     didWrite as didWriteUart,
+    write as writeUart,
 } from '../ble-nordic-uart-service/actions';
 import {
     RxCharUUID as uartRxCharUUID,
@@ -40,10 +39,10 @@ import {
     TxCharUUID as uartTxCharUUID,
 } from '../ble-nordic-uart-service/protocol';
 import {
-    BlePybricksServiceActionType,
     didFailToWriteCommand,
     didNotifyEvent,
     didWriteCommand,
+    writeCommand,
 } from '../ble-pybricks-service/actions';
 import {
     ControlCharacteristicUUID as pybricksCommandCharacteristicUUID,
@@ -52,26 +51,19 @@ import {
 import { RootState } from '../reducers';
 import { ensureError } from '../utils';
 import {
-    BLEActionType,
-    BleDeviceActionType as BLEDeviceActionType,
-    BLEToggleAction,
-    BleDeviceConnectAction,
-    BleDeviceDisconnectAction,
     BleDeviceFailToConnectReasonType as Reason,
-    connect as connectAction,
+    connect,
     didConnect,
     didDisconnect,
     didFailToConnect,
-    disconnect as disconnectAction,
+    disconnect,
+    toggleBluetooth,
 } from './actions';
 import { BleConnectionState } from './reducers';
 
 const decoder = new TextDecoder();
 
-function disconnect(
-    server: BluetoothRemoteGATTServer,
-    _action: BleDeviceDisconnectAction,
-): void {
+function handleDisconnect(server: BluetoothRemoteGATTServer): void {
     server.disconnect();
 }
 
@@ -79,9 +71,9 @@ function* handlePybricksControlValueChanged(data: DataView): Generator {
     yield* put(didNotifyEvent(data));
 }
 
-function* writePybricksCommand(
+function* handleWriteCommand(
     char: BluetoothRemoteGATTCharacteristic,
-    action: BleUartWriteAction,
+    action: ReturnType<typeof writeCommand>,
 ): Generator {
     try {
         yield* call(() => char.writeValueWithoutResponse(action.value.buffer));
@@ -95,9 +87,9 @@ function* handleUartValueChanged(data: DataView): Generator {
     yield* put(didNotifyUart(data));
 }
 
-function* writeUart(
+function* handleWriteUart(
     char: BluetoothRemoteGATTCharacteristic,
-    action: BleUartWriteAction,
+    action: ReturnType<typeof writeUart>,
 ): Generator {
     try {
         yield* call(() => char.writeValueWithoutResponse(action.value.buffer));
@@ -107,7 +99,7 @@ function* writeUart(
     }
 }
 
-function* connect(_action: BleDeviceConnectAction): Generator {
+function* handleConnect(): Generator {
     if (navigator.bluetooth === undefined) {
         yield* put(didFailToConnect({ reason: Reason.NoWebBluetooth }));
         return;
@@ -164,7 +156,7 @@ function* connect(_action: BleDeviceConnectAction): Generator {
         return;
     }
 
-    yield* takeEvery(BLEDeviceActionType.Disconnect, disconnect, server);
+    yield* takeEvery(disconnect, handleDisconnect, server);
 
     let deviceInfoService: BluetoothRemoteGATTService;
     try {
@@ -325,13 +317,7 @@ function* connect(_action: BleDeviceConnectAction): Generator {
         return;
     }
 
-    tasks.push(
-        yield* takeEvery(
-            BlePybricksServiceActionType.WriteCommand,
-            writePybricksCommand,
-            pybricksControlChar,
-        ),
-    );
+    tasks.push(yield* takeEvery(writeCommand, handleWriteCommand, pybricksControlChar));
 
     let uartService: BluetoothRemoteGATTService;
     try {
@@ -407,7 +393,7 @@ function* connect(_action: BleDeviceConnectAction): Generator {
         return;
     }
 
-    tasks.push(yield* takeEvery(BleUartActionType.Write, writeUart, uartRxChar));
+    tasks.push(yield* takeEvery(writeUart, handleWriteUart, uartRxChar));
 
     yield* put(didConnect(device.id, device.name || ''));
 
@@ -421,22 +407,22 @@ function* connect(_action: BleDeviceConnectAction): Generator {
     yield* put(didDisconnect());
 }
 
-function* toggle(_action: BLEToggleAction): Generator {
+function* handleToggleBluetooth(): Generator {
     const connectionState = (yield select(
         (s: RootState) => s.ble.connection,
     )) as BleConnectionState;
 
     switch (connectionState) {
         case BleConnectionState.Connected:
-            yield* put(disconnectAction());
+            yield* put(disconnect());
             break;
         case BleConnectionState.Disconnected:
-            yield* put(connectAction());
+            yield* put(connect());
             break;
     }
 }
 
 export default function* (): Generator {
-    yield* takeEvery(BLEDeviceActionType.Connect, connect);
-    yield* takeEvery(BLEActionType.Toggle, toggle);
+    yield* takeEvery(connect, handleConnect);
+    yield* takeEvery(toggleBluetooth, handleToggleBluetooth);
 }

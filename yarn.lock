@@ -1206,7 +1206,7 @@
   resolved "https://registry.yarnpkg.com/@blueprintjs/colors/-/colors-4.0.0-alpha.2.tgz#ce8e7450ae542fcddb72b372b49669adf13c0173"
   integrity sha512-B8NX2oKVTPGVJd7ZCbm9FMPoEdQiLKceo0/UxsJ+gwqNiuo45RzdmrXACI6oFO4hGHL2WiLU0oysLNj2zpHDkA==
 
-"@blueprintjs/core@^3.52.0", "@blueprintjs/core@^3.53.0":
+"@blueprintjs/core@^3.53.0":
   version "3.53.0"
   resolved "https://registry.yarnpkg.com/@blueprintjs/core/-/core-3.53.0.tgz#ad9ac906107baf07a3a84f2c705e70032a053fb5"
   integrity sha512-cvoJJtnPrBgaVvWhfHoFi/zH+Bk4VPDqbG4DdBl+BPK5MyvvkcBP/oX/iVG1qgwdvQ9FqUsHpuCLLgF6j8bItA==
@@ -7859,6 +7859,13 @@ license-webpack-plugin@^3.0.0:
   resolved "https://registry.yarnpkg.com/license-webpack-plugin/-/license-webpack-plugin-3.0.0.tgz#530fb297cee402cdf19a80f59e1c1ec1720dbc7e"
   integrity sha512-Owp0mXaJu/09h9hvZTazMni/Ni7bjh4R4xIfLhWP1O2wrhhKtezAA8U42TTeNDpyDMUD2ljeGC8Jh9xSFnyq4Q==
 
+lie@3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/lie/-/lie-3.1.1.tgz#9a436b2cc7746ca59de7a41fa469b3efb76bd87e"
+  integrity sha1-mkNrLMd0bKWd56QfpGmz77dr2H4=
+  dependencies:
+    immediate "~3.0.5"
+
 lie@~3.3.0:
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/lie/-/lie-3.3.0.tgz#dcf82dee545f46074daf200c7c1c5a08e0f40f6a"
@@ -7902,6 +7909,21 @@ loader-utils@^1.1.0, loader-utils@^1.2.3, loader-utils@^1.4.0:
     big.js "^5.2.2"
     emojis-list "^3.0.0"
     json5 "^1.0.1"
+
+localforage-observable@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/localforage-observable/-/localforage-observable-2.1.1.tgz#a30c8a8aec72d59a1b138238f3c4b9356264fc99"
+  integrity sha512-p4E9FtopJlOa2ENk9Pw5puVOaOJ7tnLCJ+54iJXlG76wrmDAifDdbIcQc6QNAHJNIGLr+YKg0O3PeA77dEgD/w==
+  dependencies:
+    localforage "^1.5.0"
+    zen-observable "^0.2.1"
+
+localforage@^1.10.0, localforage@^1.5.0:
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/localforage/-/localforage-1.10.0.tgz#5c465dc5f62b2807c3a84c0c6a1b1b3212781dd4"
+  integrity sha512-14/H1aX7hzBBmmh7sGPd+AOMkkIrHM3Z1PAyGgZigA1H1p5O5ANnMyWzvpAETtG68/dC4pC0ncy3+PPGzXZHPg==
+  dependencies:
+    lie "3.1.1"
 
 locate-path@^2.0.0:
   version "2.0.0"
@@ -13034,6 +13056,11 @@ yocto-queue@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/yocto-queue/-/yocto-queue-0.1.0.tgz#0294eb3dee05028d31ee1a5fa2c556a6aaf10a1b"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
+
+zen-observable@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/zen-observable/-/zen-observable-0.2.1.tgz#c47676a64132b8475a61aa49e514755b5b9663f3"
+  integrity sha1-xHZ2pkEyuEdaYapJ5RR1W1uWY/M=
 
 zen-observable@^0.7.0:
   version "0.7.1"

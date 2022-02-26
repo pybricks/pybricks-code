@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2021 The Pybricks Authors
 
-import { Action } from '../actions';
+import { AnyAction } from 'redux';
 import { didSucceed, didUpdate } from '../service-worker/actions';
 import { BeforeInstallPromptEvent } from '../utils/dom';
 import {
@@ -17,7 +17,7 @@ import reducers from './reducers';
 type State = ReturnType<typeof reducers>;
 
 test('initial state', () => {
-    expect(reducers(undefined, {} as Action)).toMatchInlineSnapshot(`
+    expect(reducers(undefined, {} as AnyAction)).toMatchInlineSnapshot(`
         Object {
           "beforeInstallPrompt": null,
           "checkingForUpdate": false,

@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020 The Pybricks Authors
+// Copyright (c) 2020,2022 The Pybricks Authors
 //
 // Handles LEGO Wireless Protocol v3 Bootloader protocol.
 
+import { AnyAction } from 'redux';
 import {
     actionChannel,
     fork,
@@ -11,26 +12,30 @@ import {
     take,
     takeEvery,
 } from 'typed-redux-saga/macro';
-import { Action } from '../actions';
 import { ensureError, hex } from '../utils';
 import { isWindows } from '../utils/os';
 import {
-    BootloaderConnectionActionType,
-    BootloaderConnectionDidFailToSendAction,
-    BootloaderConnectionDidReceiveAction,
-    BootloaderConnectionDidSendAction,
-    BootloaderRequestAction,
-    BootloaderRequestActionType,
+    checksumRequest,
     checksumResponse,
     didError,
     didFailToRequest,
+    didFailToSend,
+    didReceive,
     didRequest,
+    didSend,
+    disconnectRequest,
+    eraseRequest,
     eraseResponse,
     errorResponse,
+    infoRequest,
     infoResponse,
+    initRequest,
     initResponse,
+    programRequest,
     programResponse,
+    rebootRequest,
     send,
+    stateRequest,
     stateResponse,
 } from './actions';
 import {
@@ -62,10 +67,10 @@ import {
 function* encodeRequest(): Generator {
     // Using a while loop to serialize sending data to avoid "busy" errors.
 
-    const chan = yield* actionChannel<BootloaderRequestAction>((a: Action) =>
-        Object.values(BootloaderRequestActionType).includes(
-            a.type as BootloaderRequestActionType,
-        ),
+    const chan = yield* actionChannel(
+        (a: AnyAction) =>
+            typeof a.type === 'string' &&
+            a.type.startsWith('bootloader.action.request.'),
     );
 
     while (true) {
@@ -78,54 +83,41 @@ function* encodeRequest(): Generator {
         // reasons (and also the city hub will disconnect if write with response
         // is used on this command).
 
-        switch (action.type) {
-            case BootloaderRequestActionType.Erase:
-                yield* put(
-                    send(
-                        createEraseFlashRequest(),
-                        /* withResponse */ action.isCityHub && !isWindows(),
-                    ),
-                );
-                break;
-            case BootloaderRequestActionType.Program:
-                yield* put(
-                    send(
-                        createProgramFlashRequest(action.address, action.payload),
-                        /* withResponse */ false,
-                    ),
-                );
-                break;
-            case BootloaderRequestActionType.Reboot:
-                yield* put(send(createStartAppRequest(), /* withResponse */ false));
-                break;
-            case BootloaderRequestActionType.Init:
-                yield* put(send(createInitLoaderRequest(action.firmwareSize)));
-                break;
-            case BootloaderRequestActionType.Info:
-                yield* put(send(createGetInfoRequest()));
-                break;
-            case BootloaderRequestActionType.Checksum:
-                yield* put(send(createGetChecksumRequest()));
-                break;
-            case BootloaderRequestActionType.State:
-                yield* put(send(createGetFlashStateRequest()));
-                break;
-            case BootloaderRequestActionType.Disconnect:
-                yield* put(send(createDisconnectRequest(), /* withResponse */ false));
-                break;
-            /* istanbul ignore next: should not be possible to reach */
-            default:
-                console.error(`Unknown bootloader request action ${action}`);
-                continue;
+        /* istanbul ignore else: should not be possible to reach */
+        if (eraseRequest.matches(action)) {
+            yield* put(
+                send(
+                    createEraseFlashRequest(),
+                    /* withResponse */ action.isCityHub && !isWindows(),
+                ),
+            );
+        } else if (programRequest.matches(action)) {
+            yield* put(
+                send(
+                    createProgramFlashRequest(action.address, action.payload),
+                    /* withResponse */ false,
+                ),
+            );
+        } else if (rebootRequest.matches(action)) {
+            yield* put(send(createStartAppRequest(), /* withResponse */ false));
+        } else if (initRequest.matches(action)) {
+            yield* put(send(createInitLoaderRequest(action.firmwareSize)));
+        } else if (infoRequest.matches(action)) {
+            yield* put(send(createGetInfoRequest()));
+        } else if (checksumRequest.matches(action)) {
+            yield* put(send(createGetChecksumRequest()));
+        } else if (stateRequest.matches(action)) {
+            yield* put(send(createGetFlashStateRequest()));
+        } else if (disconnectRequest.matches(action)) {
+            yield* put(send(createDisconnectRequest(), /* withResponse */ false));
+        } else {
+            console.error(`Unknown bootloader request action ${action}`);
+            continue;
         }
 
         const { failedToSend } = yield* race({
-            sent: take<BootloaderConnectionDidSendAction>(
-                BootloaderConnectionActionType.DidSend,
-            ),
-            failedToSend: take<BootloaderConnectionDidFailToSendAction>(
-                BootloaderConnectionActionType.DidFailToSend,
-            ),
+            sent: take(didSend),
+            failedToSend: take(didFailToSend),
         });
 
         if (failedToSend) {
@@ -140,7 +132,7 @@ function* encodeRequest(): Generator {
  * Converts an incoming connection message to a response action.
  * @param action The received response action.
  */
-function* decodeResponse(action: BootloaderConnectionDidReceiveAction): Generator {
+function* decodeResponse(action: ReturnType<typeof didReceive>): Generator {
     try {
         const responseType = getMessageType(action.data);
         switch (responseType) {
@@ -178,5 +170,5 @@ function* decodeResponse(action: BootloaderConnectionDidReceiveAction): Generato
 
 export default function* (): Generator {
     yield* fork(encodeRequest);
-    yield* takeEvery(BootloaderConnectionActionType.DidReceive, decodeResponse);
+    yield* takeEvery(didReceive, decodeResponse);
 }

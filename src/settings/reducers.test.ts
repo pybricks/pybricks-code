@@ -1,4 +1,4 @@
-import { Action } from '../actions';
+import { AnyAction } from 'redux';
 import { didBooleanChange, didStringChange } from './actions';
 import { BooleanSettingId, StringSettingId } from './defaults';
 import reducers from './reducers';
@@ -6,7 +6,7 @@ import reducers from './reducers';
 type State = ReturnType<typeof reducers>;
 
 test('initial state', () => {
-    expect(reducers(undefined, {} as Action)).toMatchInlineSnapshot(`
+    expect(reducers(undefined, {} as AnyAction)).toMatchInlineSnapshot(`
         Object {
           "darkMode": false,
           "flashCurrentProgram": false,

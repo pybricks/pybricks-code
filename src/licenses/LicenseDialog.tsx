@@ -14,7 +14,7 @@ import {
 } from '@blueprintjs/core';
 import { useI18n } from '@shopify/react-i18n';
 import React from 'react';
-import { useDispatch } from '../actions';
+import { useDispatch } from 'react-redux';
 import { appName } from '../app/constants';
 import { useSelector } from '../reducers';
 import { fetchList, select } from './actions';

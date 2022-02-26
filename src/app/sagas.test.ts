@@ -7,6 +7,7 @@ import {
     checkForUpdate,
     didBeforeInstallPrompt,
     didCheckForUpdate,
+    didInstall,
     didInstallPrompt,
     installPrompt,
     reload,
@@ -19,7 +20,7 @@ test('monitorAppInstalled', async () => {
     window.dispatchEvent(new Event('appinstalled'));
 
     const action = await saga.take();
-    expect(action).toStrictEqual(didInstallPrompt());
+    expect(action).toStrictEqual(didInstall());
 
     await saga.end();
 });

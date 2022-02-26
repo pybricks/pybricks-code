@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021 The Pybricks Authors
+// Copyright (c) 2021-2022 The Pybricks Authors
 
 // This manages settings by storing them in local storage whenever the app
 // request to set a setting. When local storage changes, it triggers a did
@@ -7,19 +7,17 @@
 
 import { EventChannel, eventChannel } from 'redux-saga';
 import { call, fork, put, select, take, takeEvery } from 'typed-redux-saga/macro';
-import { AppActionType } from '../app/actions';
+import { didStart } from '../app/actions';
 import { RootState } from '../reducers';
 import { ensureError } from '../utils';
 import {
-    SettingsActionType,
-    SettingsSetBooleanAction,
-    SettingsSetStringAction,
-    SettingsToggleBooleanAction,
     didBooleanChange,
     didFailToSetBoolean,
     didFailToSetString,
     didStringChange,
     setBoolean,
+    setString,
+    toggleBoolean,
 } from './actions';
 import {
     BooleanSettingId,
@@ -102,7 +100,7 @@ function* loadSettings(): Generator {
     }
 }
 
-function* storeBooleanSetting(action: SettingsSetBooleanAction): Generator {
+function* storeBooleanSetting(action: ReturnType<typeof setBoolean>): Generator {
     const key = `setting.${action.id}`;
     const newValue = String(action.newState);
 
@@ -128,12 +126,12 @@ function* storeBooleanSetting(action: SettingsSetBooleanAction): Generator {
     }
 }
 
-function* toggleBooleanSetting(action: SettingsToggleBooleanAction): Generator {
+function* toggleBooleanSetting(action: ReturnType<typeof toggleBoolean>): Generator {
     const oldValue = yield* select((s: RootState) => s.settings[action.id]);
     yield* storeBooleanSetting(setBoolean(action.id, !oldValue));
 }
 
-function* storeStringSetting(action: SettingsSetStringAction): Generator {
+function* storeStringSetting(action: ReturnType<typeof setString>): Generator {
     const key = `setting.${action.id}`;
     const newValue = action.newState;
 
@@ -161,8 +159,8 @@ function* storeStringSetting(action: SettingsSetStringAction): Generator {
 
 export default function* (): Generator {
     yield* fork(monitorLocalStorage);
-    yield* takeEvery(AppActionType.DidStart, loadSettings);
-    yield* takeEvery(SettingsActionType.SetBoolean, storeBooleanSetting);
-    yield* takeEvery(SettingsActionType.ToggleBoolean, toggleBooleanSetting);
-    yield* takeEvery(SettingsActionType.SetString, storeStringSetting);
+    yield* takeEvery(didStart, loadSettings);
+    yield* takeEvery(setBoolean, storeBooleanSetting);
+    yield* takeEvery(toggleBoolean, toggleBooleanSetting);
+    yield* takeEvery(setString, storeStringSetting);
 }

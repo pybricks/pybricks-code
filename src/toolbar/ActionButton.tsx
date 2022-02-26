@@ -13,7 +13,6 @@ import { Tooltip2 } from '@blueprintjs/popover2';
 import { useI18n } from '@shopify/react-i18n';
 import React, { useEffect, useMemo, useState } from 'react';
 import { tooltipDelay } from '../app/constants';
-import { closeTooltip2, useTooltip2MonkeyPatch } from '../utils/monkey-patch';
 import { TooltipId } from './i18n';
 import en from './i18n.en.json';
 
@@ -91,11 +90,8 @@ const ActionButton: React.FC<ActionButtonProps> = (props) => {
 
     useHotkeys(hotkeys);
 
-    const tooltipRef = useTooltip2MonkeyPatch();
-
     return (
         <Tooltip2
-            ref={tooltipRef}
             content={tooltipText}
             placement="bottom"
             hoverOpenDelay={tooltipDelay}
@@ -111,8 +107,6 @@ const ActionButton: React.FC<ActionButtonProps> = (props) => {
                     onMouseDown={(e) => {
                         // prevent focus from mouse click
                         e.preventDefault();
-                        // close/prevent tooltip
-                        closeTooltip2(tooltipRef);
                     }}
                     onClick={() => props.onAction()}
                     disabled={props.enabled === false}

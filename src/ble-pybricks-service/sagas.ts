@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021 The Pybricks Authors
+// Copyright (c) 2021-2022 The Pybricks Authors
 //
 // Handles Pybricks protocol.
 
+import { AnyAction } from 'redux';
 import {
     actionChannel,
     fork,
@@ -11,19 +12,16 @@ import {
     take,
     takeEvery,
 } from 'typed-redux-saga/macro';
-import { Action } from '../actions';
 import { ensureError, hex } from '../utils';
 import {
-    BlePybricksServiceActionType,
-    BlePybricksServiceCommandAction,
-    BlePybricksServiceCommandActionType,
-    BlePybricksServiceDidFailToWriteCommandAction,
-    BlePybricksServiceDidNotifyEventAction,
-    BlePybricksServiceDidWriteCommandAction,
     didFailToSendCommand,
+    didFailToWriteCommand,
+    didNotifyEvent,
     didReceiveStatusReport,
     didSendCommand,
+    didWriteCommand,
     eventProtocolError,
+    sendStopUserProgramCommand,
     writeCommand,
 } from './actions';
 import {
@@ -41,38 +39,26 @@ import {
 function* encodeRequest(): Generator {
     // Using a while loop to serialize sending data to avoid "busy" errors.
 
-    const sendCommands: readonly BlePybricksServiceCommandActionType[] = Object.values(
-        BlePybricksServiceCommandActionType,
-    ).filter(
-        (x) =>
-            x !== BlePybricksServiceCommandActionType.DidSend &&
-            x != BlePybricksServiceCommandActionType.DidFailToSend,
-    );
-
-    const chan = yield* actionChannel<BlePybricksServiceCommandAction>((a: Action) =>
-        sendCommands.includes(a.type as BlePybricksServiceCommandActionType),
+    const chan = yield* actionChannel(
+        (a: AnyAction) =>
+            typeof a.type === 'string' &&
+            a.type.startsWith('blePybricksServiceCommand.action.send'),
     );
 
     while (true) {
         const action = yield* take(chan);
 
-        switch (action.type) {
-            case BlePybricksServiceCommandActionType.SendStopUserProgram:
-                yield* put(writeCommand(action.id, createStopUserProgramCommand()));
-                break;
-            /* istanbul ignore next: should not be possible to reach */
-            default:
-                console.error(`Unknown Pybricks service command ${action.type}`);
-                continue;
+        /* istanbul ignore else: should not be possible to reach */
+        if (sendStopUserProgramCommand.matches(action)) {
+            yield* put(writeCommand(action.id, createStopUserProgramCommand()));
+        } else {
+            console.error(`Unknown Pybricks service command ${action.type}`);
+            continue;
         }
 
         const { failedToSend } = yield* race({
-            sent: take<BlePybricksServiceDidWriteCommandAction>(
-                BlePybricksServiceActionType.DidWriteCommand,
-            ),
-            failedToSend: take<BlePybricksServiceDidFailToWriteCommandAction>(
-                BlePybricksServiceActionType.DidFailToWriteCommand,
-            ),
+            sent: take(didWriteCommand),
+            failedToSend: take(didFailToWriteCommand),
         });
 
         if (failedToSend) {
@@ -87,7 +73,7 @@ function* encodeRequest(): Generator {
  * Converts an incoming connection message to a response action.
  * @param action The received response action.
  */
-function* decodeResponse(action: BlePybricksServiceDidNotifyEventAction): Generator {
+function* decodeResponse(action: ReturnType<typeof didNotifyEvent>): Generator {
     try {
         const responseType = getEventType(action.value);
         switch (responseType) {
@@ -107,5 +93,5 @@ function* decodeResponse(action: BlePybricksServiceDidNotifyEventAction): Genera
 
 export default function* (): Generator {
     yield* fork(encodeRequest);
-    yield* takeEvery(BlePybricksServiceActionType.DidNotifyEvent, decodeResponse);
+    yield* takeEvery(didNotifyEvent, decodeResponse);
 }

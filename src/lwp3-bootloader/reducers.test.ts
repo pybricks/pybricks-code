@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2021 The Pybricks Authors
 
-import { Action } from '../actions';
+import { AnyAction } from 'redux';
 import {
     BootloaderConnectionFailureReason,
     connect,
@@ -18,7 +18,7 @@ import reducers, { BootloaderConnectionState } from './reducers';
 type State = ReturnType<typeof reducers>;
 
 test('initial state', () => {
-    expect(reducers(undefined, {} as Action)).toMatchInlineSnapshot(`
+    expect(reducers(undefined, {} as AnyAction)).toMatchInlineSnapshot(`
         Object {
           "connection": "bootloader.connection.disconnected",
         }

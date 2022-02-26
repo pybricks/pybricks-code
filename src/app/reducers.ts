@@ -1,84 +1,92 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2021 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 //
 // Manages state the app in general.
 
 import { Reducer, combineReducers } from 'redux';
-import { Action } from '../actions';
-import { ServiceWorkerActionType } from '../service-worker/actions';
+import { didSucceed, didUpdate } from '../service-worker/actions';
 import { BeforeInstallPromptEvent } from '../utils/dom';
-import { AppActionType } from './actions';
+import {
+    checkForUpdate,
+    didBeforeInstallPrompt,
+    didCheckForUpdate,
+    didInstall,
+    didInstallPrompt,
+    installPrompt,
+} from './actions';
 
-const serviceWorker: Reducer<ServiceWorkerRegistration | null, Action> = (
+const serviceWorker: Reducer<ServiceWorkerRegistration | null> = (
     state = null,
     action,
 ) => {
-    switch (action.type) {
-        case ServiceWorkerActionType.DidSucceed:
-            return action.registration;
-        default:
-            return state;
+    if (didSucceed.matches(action)) {
+        return action.registration;
     }
+
+    return state;
 };
 
-const checkingForUpdate: Reducer<boolean, Action> = (state = false, action) => {
-    switch (action.type) {
-        case AppActionType.CheckForUpdate:
-            return true;
-        case AppActionType.DidCheckForUpdate:
-            if (!action.updateFound) {
-                return false;
-            }
-            // otherwise we wait for service worker to download everything
-            return state;
-        case ServiceWorkerActionType.DidUpdate:
+const checkingForUpdate: Reducer<boolean> = (state = false, action) => {
+    if (checkForUpdate.matches(action)) {
+        return true;
+    }
+
+    if (didCheckForUpdate.matches(action)) {
+        if (!action.updateFound) {
             return false;
-        default:
-            return state;
+        }
+        // otherwise we wait for service worker to download everything
+        return state;
     }
+
+    if (didUpdate.matches(action)) {
+        return false;
+    }
+
+    return state;
 };
 
-const updateAvailable: Reducer<boolean, Action> = (state = false, action) => {
-    switch (action.type) {
-        case ServiceWorkerActionType.DidUpdate:
-            return true;
-        default:
-            return state;
+const updateAvailable: Reducer<boolean> = (state = false, action) => {
+    if (didUpdate.matches(action)) {
+        return true;
     }
+
+    return state;
 };
 
-const beforeInstallPrompt: Reducer<BeforeInstallPromptEvent | null, Action> = (
+const beforeInstallPrompt: Reducer<BeforeInstallPromptEvent | null> = (
     state = null,
     action,
 ) => {
-    switch (action.type) {
-        case AppActionType.DidBeforeInstallPrompt:
-            return action.event;
-        case AppActionType.DidInstall:
-            return null;
-        default:
-            return state;
+    if (didBeforeInstallPrompt.matches(action)) {
+        return action.event;
     }
+
+    if (didInstall.matches(action)) {
+        return null;
+    }
+
+    return state;
 };
 
-const promptingInstall: Reducer<boolean, Action> = (state = false, action) => {
-    switch (action.type) {
-        case AppActionType.InstallPrompt:
-            return true;
-        case AppActionType.DidInstallPrompt:
-            return false;
-        default:
-            return state;
+const promptingInstall: Reducer<boolean> = (state = false, action) => {
+    if (installPrompt.matches(action)) {
+        return true;
     }
+
+    if (didInstallPrompt.matches(action)) {
+        return false;
+    }
+
+    return state;
 };
 
-const readyForOfflineUse: Reducer<boolean, Action> = (state = false, action) => {
-    switch (action.type) {
-        case ServiceWorkerActionType.DidSucceed:
-            return true;
-        default:
-            return state;
+const readyForOfflineUse: Reducer<boolean> = (state = false, action) => {
+    if (didSucceed.matches(action)) {
+        return true;
     }
+
+    return state;
 };
 
 export default combineReducers({

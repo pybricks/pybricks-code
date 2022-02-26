@@ -2,14 +2,14 @@
 // Copyright (c) 2021 The Pybricks Authors
 
 import { monaco } from 'react-monaco-editor';
-import { Action } from '../actions';
+import { AnyAction } from 'redux';
 import { setEditSession } from './actions';
 import reducers from './reducers';
 
 type State = ReturnType<typeof reducers>;
 
 test('initial state', () => {
-    expect(reducers(undefined, {} as Action)).toMatchInlineSnapshot(`
+    expect(reducers(undefined, {} as AnyAction)).toMatchInlineSnapshot(`
         Object {
           "current": null,
         }

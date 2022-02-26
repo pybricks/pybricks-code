@@ -1,22 +1,29 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2021 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 
 import FileSaver from 'file-saver';
-import { call, put, select, takeEvery } from 'typed-redux-saga/macro';
+import {
+    call,
+    put,
+    race,
+    select,
+    take,
+    takeEvery,
+    takeLatest,
+} from 'typed-redux-saga/macro';
+import {
+    fileStorageDidFailToReadFile,
+    fileStorageDidInitialize,
+    fileStorageDidReadFile,
+    fileStorageReadFile,
+} from '../fileStorage/actions';
 import { RootState } from '../reducers';
 import { ensureError } from '../utils';
-import {
-    EditorActionType,
-    EditorOpenAction,
-    EditorReloadProgramAction,
-    EditorSaveAsAction,
-    didFailToSaveAs,
-    didSaveAs,
-} from './actions';
+import { didFailToSaveAs, didSaveAs, open, saveAs, setEditSession } from './actions';
 
 const decoder = new TextDecoder();
 
-function* open(action: EditorOpenAction): Generator {
+function* handleOpen(action: ReturnType<typeof open>): Generator {
     const editor = yield* select((s: RootState) => s.editor.current);
 
     // istanbul ignore next: it is a bug to dispatch this action with no current editor
@@ -29,7 +36,7 @@ function* open(action: EditorOpenAction): Generator {
     editor.setValue(text);
 }
 
-function* saveAs(_action: EditorSaveAsAction): Generator {
+function* handleSaveAs(): Generator {
     const editor = yield* select((s: RootState) => s.editor.current);
 
     // istanbul ignore next: it is a bug to dispatch this action with no current editor
@@ -78,20 +85,44 @@ function* saveAs(_action: EditorSaveAsAction): Generator {
     yield* put(didSaveAs());
 }
 
-function* reloadProgram(_action: EditorReloadProgramAction): Generator {
-    const editor = yield* select((s: RootState) => s.editor.current);
-
-    // istanbul ignore next: it is a bug to dispatch this action with no current editor
-    if (editor === null) {
-        console.error('reloadProgram: No current editor');
+function* handleSetEditSession(action: ReturnType<typeof setEditSession>): Generator {
+    if (action.editSession === null) {
+        // there is not current edit session, nothing to do
         return;
     }
 
-    editor.setValue(localStorage.getItem('program') || '');
+    // ensure storage has been initialized
+
+    const isStorageInitialized = yield* select(
+        (s: RootState) => s.fileStorage.isInitialized,
+    );
+
+    if (!isStorageInitialized) {
+        yield* take(fileStorageDidInitialize);
+    }
+
+    // TODO: get current file from state
+    const currentFileName = 'main.py';
+
+    // TODO: implement locking to ensure exclusive access to file
+
+    yield* put(fileStorageReadFile(currentFileName));
+    const { result } = yield* race({
+        result: take(
+            fileStorageDidReadFile.when((a) => a.fileName === currentFileName),
+        ),
+        error: take(
+            fileStorageDidFailToReadFile.when((a) => a.fileName === currentFileName),
+        ),
+    });
+
+    if (result) {
+        action.editSession?.setValue(result.fileContents);
+    }
 }
 
 export default function* (): Generator {
-    yield* takeEvery(EditorActionType.Open, open);
-    yield* takeEvery(EditorActionType.SaveAs, saveAs);
-    yield* takeEvery(EditorActionType.ReloadProgram, reloadProgram);
+    yield* takeEvery(open, handleOpen);
+    yield* takeEvery(saveAs, handleSaveAs);
+    yield* takeLatest(setEditSession, handleSetEditSession);
 }

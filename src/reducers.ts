@@ -1,11 +1,12 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2021 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 
 import { TypedUseSelectorHook, useSelector as useReduxSelector } from 'react-redux';
 import { Reducer, combineReducers } from 'redux';
 import app from './app/reducers';
 import ble from './ble/reducers';
 import editor from './editor/reducers';
+import fileStorage from './fileStorage/reducers';
 import firmware from './firmware/reducers';
 import hub from './hub/reducers';
 import licenses from './licenses/reducers';
@@ -20,6 +21,7 @@ export const rootReducer = combineReducers({
     bootloader,
     ble,
     editor,
+    fileStorage,
     firmware,
     hub,
     licenses,

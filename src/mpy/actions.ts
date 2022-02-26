@@ -1,46 +1,21 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020 The Pybricks Authors
+// Copyright (c) 2020,2022 The Pybricks Authors
 
-import { Action } from 'redux';
-
-export enum MpyActionType {
-    Compile = 'mpy.action.compile',
-    DidCompile = 'mpy.action.didCompile',
-    DidFailToCompile = 'mpy.action.didFailToCompile',
-}
+import { createAction } from '../actions';
 
 /** Action that requests that a script is compiled. */
-export type MpyCompileAction = Action<MpyActionType.Compile> & {
-    /** The script to compile. */
-    readonly script: string;
-    /** The compiler command line options */
-    options: string[];
-};
+export const compile = createAction((script: string, options: string[]) => ({
+    type: 'mpy.action.compile',
+    script,
+    options,
+}));
 
-export function compile(script: string, options: string[]): MpyCompileAction {
-    return { type: MpyActionType.Compile, script, options };
-}
+export const didCompile = createAction((data: Uint8Array) => ({
+    type: 'mpy.action.didCompile',
+    data,
+}));
 
-export type MpyDidCompileAction = Action<MpyActionType.DidCompile> & {
-    /** The compiled .mpy file. */
-    readonly data: Uint8Array;
-};
-
-export function didCompile(data: Uint8Array): MpyDidCompileAction {
-    return { type: MpyActionType.DidCompile, data };
-}
-
-export type MpyDidFailToCompileAction = Action<MpyActionType.DidFailToCompile> & {
-    /** Error output. */
-    readonly err: string[];
-};
-
-export function didFailToCompile(err: string[]): MpyDidFailToCompileAction {
-    return { type: MpyActionType.DidFailToCompile, err };
-}
-
-/** Common type for all mpy actions. */
-export type MpyAction =
-    | MpyCompileAction
-    | MpyDidCompileAction
-    | MpyDidFailToCompileAction;
+export const didFailToCompile = createAction((err: string[]) => ({
+    type: 'mpy.action.didFailToCompile',
+    err,
+}));

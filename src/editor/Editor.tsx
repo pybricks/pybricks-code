@@ -10,16 +10,17 @@ import {
 import { useI18n } from '@shopify/react-i18n';
 import tomorrowNightEightiesTheme from 'monaco-themes/themes/Tomorrow-Night-Eighties.json';
 import xcodeTheme from 'monaco-themes/themes/Xcode_default.json';
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import MonacoEditor, { monaco } from 'react-monaco-editor';
+import { useDispatch } from 'react-redux';
 import { IDisposable } from 'xterm';
-import { useDispatch } from '../actions';
+import { fileStorageWriteFile } from '../fileStorage/actions';
 import { compile } from '../mpy/actions';
 import { useSelector } from '../reducers';
 import { toggleBoolean } from '../settings/actions';
 import { BooleanSettingId } from '../settings/defaults';
 import { isMacOS } from '../utils/os';
-import { setEditSession, storageChanged } from './actions';
+import { setEditSession } from './actions';
 import { EditorStringId } from './i18n';
 import en from './i18n.en.json';
 import * as pybricksMicroPython from './pybricksMicroPython';
@@ -128,21 +129,6 @@ const Editor: React.FunctionComponent = (_props) => {
     const editorRef = useRef<MonacoEditor>(null);
     const dispatch = useDispatch();
 
-    const onStorage = (e: StorageEvent): void => {
-        if (
-            e.key === 'program' &&
-            e.newValue &&
-            e.newValue !== editorRef.current?.editor?.getValue()
-        ) {
-            dispatch(storageChanged(e.newValue));
-        }
-    };
-
-    useEffect(() => {
-        window.addEventListener('storage', onStorage);
-        return () => window.removeEventListener('storage', onStorage);
-    });
-
     const darkMode = useSelector((s) => s.settings.darkMode);
 
     const [i18n] = useI18n({ id: 'editor', translations: { en }, fallback: en });
@@ -166,7 +152,6 @@ const Editor: React.FunctionComponent = (_props) => {
                         contextmenu: false,
                         rulers: [80],
                     }}
-                    value={localStorage.getItem('program')}
                     editorDidMount={(editor, _monaco) => {
                         const subscriptions = new Array<IDisposable>();
                         // FIXME: editor does not respond to changes in i18n
@@ -221,7 +206,8 @@ const Editor: React.FunctionComponent = (_props) => {
                         editor.focus();
                         dispatch(setEditSession(editor));
                     }}
-                    onChange={(v) => localStorage.setItem('program', v)}
+                    // REVIST: need to ensure we have exclusive access to file
+                    onChange={(v) => dispatch(fileStorageWriteFile('main.py', v))}
                 />
             </ContextMenu2>
         </ResizeSensor2>

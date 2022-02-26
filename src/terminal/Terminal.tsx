@@ -5,9 +5,9 @@ import { Menu, MenuDivider, MenuItem, ResizeSensor } from '@blueprintjs/core';
 import { ContextMenu2, ContextMenu2ContentProps } from '@blueprintjs/popover2';
 import { useI18n } from '@shopify/react-i18n';
 import React, { useContext, useEffect, useMemo, useRef } from 'react';
+import { useDispatch } from 'react-redux';
 import { Terminal as XTerm } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
-import { useDispatch } from '../actions';
 import { useSelector } from '../reducers';
 import { isMacOS } from '../utils/os';
 import { TerminalContext } from './TerminalContext';
@@ -106,6 +106,7 @@ const Terminal: React.FC = (_props) => {
 
     // xterm.open() has to be called after terminalRef has been rendered
     useEffect(() => {
+        // istanbul ignore if: should not happen ever
         if (!terminalRef.current) {
             console.error('Missing terminal reference');
             return;

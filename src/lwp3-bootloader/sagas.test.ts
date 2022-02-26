@@ -1,10 +1,9 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2021 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 
 import { AsyncSaga } from '../../test';
 import { createCountFunc } from '../utils/iter';
 import {
-    BootloaderRequestActionType,
     checksumRequest,
     checksumResponse,
     didError,
@@ -115,20 +114,24 @@ describe('message encoder', () => {
             ],
         ],
     ])('encode %s request', async (_n, request, expected) => {
-        const messageTypesThatShouldBeCalledWithoutResponse = [
-            BootloaderRequestActionType.Erase,
-            BootloaderRequestActionType.Program,
-            BootloaderRequestActionType.Reboot,
-            BootloaderRequestActionType.Disconnect,
+        const requestsThatShouldBeCalledWithoutResponse = [
+            eraseRequest,
+            programRequest,
+            rebootRequest,
+            disconnectRequest,
         ];
+
         const saga = new AsyncSaga(bootloader);
         saga.put(request);
         const message = new Uint8Array(expected);
         const action = await saga.take();
+
         expect(action).toEqual(
             send(
                 message,
-                !messageTypesThatShouldBeCalledWithoutResponse.includes(request.type),
+                !requestsThatShouldBeCalledWithoutResponse.find((r) =>
+                    r.matches(request),
+                ),
             ),
         );
         await saga.end();

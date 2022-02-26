@@ -1,27 +1,14 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020 The Pybricks Authors
+// Copyright (c) 2020,2022 The Pybricks Authors
 
-import { Action } from 'redux';
+import { createAction } from '../actions';
 
-export enum ServiceWorkerActionType {
-    DidUpdate = 'serviceWorker.didUpdate',
-    DidSucceed = 'serviceWorker.didSucceed',
-}
+export const didUpdate = createAction((registration: ServiceWorkerRegistration) => ({
+    type: 'serviceWorker.action.didUpdate',
+    registration,
+}));
 
-export type ServiceWorkerAction<
-    T extends ServiceWorkerActionType = ServiceWorkerActionType,
-> = Action<T> & {
-    registration: ServiceWorkerRegistration;
-};
-
-export function didUpdate(
-    registration: ServiceWorkerRegistration,
-): ServiceWorkerAction<ServiceWorkerActionType.DidUpdate> {
-    return { type: ServiceWorkerActionType.DidUpdate, registration };
-}
-
-export function didSucceed(
-    registration: ServiceWorkerRegistration,
-): ServiceWorkerAction<ServiceWorkerActionType.DidSucceed> {
-    return { type: ServiceWorkerActionType.DidSucceed, registration };
-}
+export const didSucceed = createAction((registration: ServiceWorkerRegistration) => ({
+    type: 'serviceWorker.action.didSucceed',
+    registration,
+}));

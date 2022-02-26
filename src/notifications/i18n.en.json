@@ -12,11 +12,12 @@
         "unexpectedError": "Unexpected error while trying to connect: {errorMessage}"
     },
     "editor": {
-        "programChanged": {
-            "message": "The program was changed in another window.\nDo you want to delete this program and replace it with the new program?",
-            "action": "Reload"
-        },
         "failedToSaveFile": "Failed to save the program."
+    },
+    "fileStorage": {
+        "failedToInitialize": "Failed to initial file storage. Changes will not be automatically saved.",
+        "failedToRead": "Failed to read file.",
+        "failedToWrite": "Failed to write file."
     },
     "flashFirmware": {
         "timedOut": "The hub took too long to respond. Restart the hub and try again.",

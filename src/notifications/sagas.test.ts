@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021 The Pybricks Authors
+// Copyright (c) 2021-2022 The Pybricks Authors
 
 import { IToaster } from '@blueprintjs/core';
 import {
@@ -7,15 +7,20 @@ import {
     FirmwareReaderErrorCode,
     firmwareVersion,
 } from '@pybricks/firmware';
+import { AnyAction } from 'redux';
 import { AsyncSaga } from '../../test';
-import { Action } from '../actions';
 import { didCheckForUpdate } from '../app/actions';
 import { bleDIServiceDidReceiveFirmwareRevision } from '../ble-device-info-service/actions';
 import {
     BleDeviceFailToConnectReasonType,
     didFailToConnect as bleDidFailToConnect,
 } from '../ble/actions';
-import { didFailToSaveAs, storageChanged } from '../editor/actions';
+import { didFailToSaveAs } from '../editor/actions';
+import {
+    fileStorageDidFailToInitialize,
+    fileStorageDidFailToReadFile,
+    fileStorageDidFailToWriteFile,
+} from '../fileStorage/actions';
 import {
     FailToFinishReasonType,
     HubError,
@@ -50,7 +55,6 @@ test.each([
     bootloaderDidFailToConnect(BootloaderConnectionFailureReason.NoWebBluetooth),
     bootloaderDidFailToConnect(BootloaderConnectionFailureReason.NoBluetooth),
     bootloaderDidFailToConnect(BootloaderConnectionFailureReason.GattServiceNotFound),
-    storageChanged('test'),
     didFailToCompile(['reason']),
     add('warning', 'message'),
     add('error', 'message', 'url'),
@@ -83,7 +87,10 @@ test.each([
     didCheckForUpdate(false),
     bleDIServiceDidReceiveFirmwareRevision('3.0.0'),
     didFailToSaveAs(new DOMException('test message', 'NotAllowedError')),
-])('actions that should show notification: %o', async (action: Action) => {
+    fileStorageDidFailToInitialize(new Error('test error')),
+    fileStorageDidFailToReadFile('test.file', new Error('test error')),
+    fileStorageDidFailToWriteFile('test.file', new Error('test error')),
+])('actions that should show notification: %o', async (action: AnyAction) => {
     const getToasts = jest.fn().mockReturnValue([]);
     const show = jest.fn();
     const dismiss = jest.fn();
@@ -115,7 +122,7 @@ test.each([
     didCheckForUpdate(true),
     bleDIServiceDidReceiveFirmwareRevision(firmwareVersion),
     didFailToSaveAs(new DOMException('test message', 'AbortError')),
-])('actions that should not show a notification: %o', async (action: Action) => {
+])('actions that should not show a notification: %o', async (action: AnyAction) => {
     const getToasts = jest.fn().mockReturnValue([]);
     const show = jest.fn();
     const dismiss = jest.fn();
@@ -142,7 +149,7 @@ test.each([
 
 test.each([[didCompile(new Uint8Array()), MessageId.MpyError]])(
     'actions that should close a notification: %o',
-    async (action: Action, key: string) => {
+    async (action: AnyAction, key: string) => {
         const getToasts = jest.fn().mockReturnValue([]);
         const show = jest.fn();
         const dismiss = jest.fn();

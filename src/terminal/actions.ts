@@ -1,35 +1,14 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020 The Pybricks Authors
+// Copyright (c) 2020,2022 The Pybricks Authors
 
-import { Action } from 'redux';
+import { createAction } from '../actions';
 
-export enum TerminalActionType {
-    /**
-     * Send data.
-     */
-    SendData = 'terminal.action.sendData',
-    /**
-     * Data was received.
-     */
-    ReceivedData = 'terminal.action.receiveData',
-}
+export const sendData = createAction((data: string) => ({
+    type: 'terminal.action.sendData',
+    value: data,
+}));
 
-export type TerminalDataSendDataAction = Action<TerminalActionType.SendData> & {
-    value: string;
-};
-
-export function sendData(data: string): TerminalDataSendDataAction {
-    return { type: TerminalActionType.SendData, value: data };
-}
-
-export type TerminalDataReceiveDataAction = Action<TerminalActionType.ReceivedData> & {
-    value: string;
-};
-
-export function receiveData(data: string): TerminalDataReceiveDataAction {
-    return { type: TerminalActionType.ReceivedData, value: data };
-}
-
-export type TerminalDataAction =
-    | TerminalDataSendDataAction
-    | TerminalDataReceiveDataAction;
+export const receiveData = createAction((data: string) => ({
+    type: 'terminal.action.receiveData',
+    value: data,
+}));
