@@ -10,7 +10,6 @@ import JSZip from 'jszip';
 import { AsyncSaga } from '../../test';
 import {
     BootloaderConnectionFailureReason,
-    BootloaderProgramRequestAction,
     checksumRequest,
     checksumResponse,
     connect,
@@ -160,7 +159,7 @@ describe('flashFirmware', () => {
                     programRequest(++id, 0x08005000 + offset, dummyPayload),
                 );
                 expect(
-                    (action as BootloaderProgramRequestAction).payload.byteLength,
+                    (action as ReturnType<typeof programRequest>).payload.byteLength,
                 ).toBe(Math.min(14, totalFirmwareSize - offset));
 
                 saga.put(didRequest(id));
@@ -1092,7 +1091,7 @@ describe('flashFirmware', () => {
                     programRequest(++id, 0x08005000 + offset, dummyPayload),
                 );
                 expect(
-                    (action as BootloaderProgramRequestAction).payload.byteLength,
+                    (action as ReturnType<typeof programRequest>).payload.byteLength,
                 ).toBe(Math.min(14, totalFirmwareSize - offset));
 
                 saga.put(didRequest(id));
@@ -1242,7 +1241,7 @@ describe('flashFirmware', () => {
                     programRequest(++id, 0x08005000 + offset, dummyPayload),
                 );
                 expect(
-                    (action as BootloaderProgramRequestAction).payload.byteLength,
+                    (action as ReturnType<typeof programRequest>).payload.byteLength,
                 ).toBe(Math.min(14, totalFirmwareSize - offset));
 
                 saga.put(didRequest(id));
@@ -1395,7 +1394,7 @@ describe('flashFirmware', () => {
                     programRequest(++id, 0x08005000 + offset, dummyPayload),
                 );
                 expect(
-                    (action as BootloaderProgramRequestAction).payload.byteLength,
+                    (action as ReturnType<typeof programRequest>).payload.byteLength,
                 ).toBe(Math.min(14, totalFirmwareSize - offset));
 
                 saga.put(didRequest(id));
@@ -1924,9 +1923,9 @@ describe('flashFirmware', () => {
             expect(action).toEqual(
                 programRequest(++id, 0x08005000 + offset, dummyPayload),
             );
-            expect((action as BootloaderProgramRequestAction).payload.byteLength).toBe(
-                Math.min(14, totalFirmwareSize - offset),
-            );
+            expect(
+                (action as ReturnType<typeof programRequest>).payload.byteLength,
+            ).toBe(Math.min(14, totalFirmwareSize - offset));
 
             saga.put(didRequest(id));
 

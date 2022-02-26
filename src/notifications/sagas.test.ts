@@ -7,8 +7,8 @@ import {
     FirmwareReaderErrorCode,
     firmwareVersion,
 } from '@pybricks/firmware';
+import { AnyAction } from 'redux';
 import { AsyncSaga } from '../../test';
-import { Action } from '../actions';
 import { didCheckForUpdate } from '../app/actions';
 import { bleDIServiceDidReceiveFirmwareRevision } from '../ble-device-info-service/actions';
 import {
@@ -90,7 +90,7 @@ test.each([
     fileStorageDidFailToInitialize(new Error('test error')),
     fileStorageDidFailToReadFile('test.file', new Error('test error')),
     fileStorageDidFailToWriteFile('test.file', new Error('test error')),
-])('actions that should show notification: %o', async (action: Action) => {
+])('actions that should show notification: %o', async (action: AnyAction) => {
     const getToasts = jest.fn().mockReturnValue([]);
     const show = jest.fn();
     const dismiss = jest.fn();
@@ -122,7 +122,7 @@ test.each([
     didCheckForUpdate(true),
     bleDIServiceDidReceiveFirmwareRevision(firmwareVersion),
     didFailToSaveAs(new DOMException('test message', 'AbortError')),
-])('actions that should not show a notification: %o', async (action: Action) => {
+])('actions that should not show a notification: %o', async (action: AnyAction) => {
     const getToasts = jest.fn().mockReturnValue([]);
     const show = jest.fn();
     const dismiss = jest.fn();
@@ -149,7 +149,7 @@ test.each([
 
 test.each([[didCompile(new Uint8Array()), MessageId.MpyError]])(
     'actions that should close a notification: %o',
-    async (action: Action, key: string) => {
+    async (action: AnyAction, key: string) => {
         const getToasts = jest.fn().mockReturnValue([]);
         const show = jest.fn();
         const dismiss = jest.fn();
