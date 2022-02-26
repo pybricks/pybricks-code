@@ -44,7 +44,7 @@ function* receiveUartData(action: ReturnType<typeof didNotify>): Generator {
 }
 
 function* receiveTerminalData(): Generator {
-    const channel = yield* actionChannel<ReturnType<typeof receiveData>>(receiveData);
+    const channel = yield* actionChannel(receiveData);
     while (true) {
         // wait for input from terminal
         const action = yield* take(channel);

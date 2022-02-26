@@ -16,7 +16,7 @@ test('compiler works', async () => {
     saga.put(compile('print("hello!")', []));
 
     const action = await saga.take();
-    expect(action.type).toBe(didCompile.toString());
+    expect(didCompile.matches(action)).toBeTruthy();
     const { data } = action as ReturnType<typeof didCompile>;
     expect(data[0]).toBe('M'.charCodeAt(0));
     expect(data[1]).toBe(5); // ABI version
@@ -30,7 +30,7 @@ test('compiler error works', async () => {
     saga.put(compile('syntax error!', []));
 
     const action = await saga.take();
-    expect(action.type).toBe(didFailToCompile.toString());
+    expect(didFailToCompile.matches(action)).toBeTruthy();
     const { err } = action as ReturnType<typeof didFailToCompile>;
     expect(err).toMatchInlineSnapshot(`
         Array [

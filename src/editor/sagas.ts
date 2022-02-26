@@ -2,7 +2,6 @@
 // Copyright (c) 2020-2022 The Pybricks Authors
 
 import FileSaver from 'file-saver';
-import { AnyAction } from 'redux';
 import {
     call,
     put,
@@ -109,14 +108,11 @@ function* handleSetEditSession(action: ReturnType<typeof setEditSession>): Gener
 
     yield* put(fileStorageReadFile(currentFileName));
     const { result } = yield* race({
-        result: take<ReturnType<typeof fileStorageDidReadFile>>(
-            (a: AnyAction) =>
-                fileStorageDidReadFile.matches(a) && a.fileName === currentFileName,
+        result: take(
+            fileStorageDidReadFile.when((a) => a.fileName === currentFileName),
         ),
-        error: take<ReturnType<typeof fileStorageDidFailToReadFile>>(
-            (a: AnyAction) =>
-                fileStorageDidFailToReadFile.matches(a) &&
-                a.fileName === currentFileName,
+        error: take(
+            fileStorageDidFailToReadFile.when((a) => a.fileName === currentFileName),
         ),
     });
 

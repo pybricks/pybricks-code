@@ -37,51 +37,45 @@ describe('downloadAndRun', () => {
 
         // first, it tries to compile the program in the current editor
         const compileAction = await saga.take();
-        expect(compileAction.type).toBe(compile.toString());
+        expect(compile.matches(compileAction)).toBeTruthy();
         saga.put(didCompile(new Uint8Array(30)));
 
         // then it notifies that loading has begun
         const loadingStatusAction = await saga.take();
-        expect(loadingStatusAction.type).toBe(didStartDownload.toString());
+        expect(loadingStatusAction).toEqual(didStartDownload());
 
         // first message is the length
         const writeAction = await saga.take();
-        expect(writeAction.type).toBe(write.toString());
+        expect(writeAction).toBeTruthy();
         expect((writeAction as ReturnType<typeof write>).value.length).toBe(4);
-        saga.put(didWrite((writeAction as ReturnType<typeof write>).id));
+        saga.put(didWrite(0));
         saga.put(checksum(30));
 
         // then progress is updated
         const progressAction = await saga.take();
-        expect(progressAction.type).toBe(didProgressDownload.toString());
-        expect(
-            (progressAction as ReturnType<typeof didProgressDownload>).progress,
-        ).toBe(0);
+        expect(progressAction).toEqual(didProgressDownload(0));
 
         // then the first chunk of 20 bytes
         const writeAction2 = await saga.take();
-        expect(writeAction2.type).toBe(write.toString());
+        expect(write.matches(writeAction2)).toBeTruthy();
         expect((writeAction2 as ReturnType<typeof write>).value.length).toBe(20);
-        saga.put(didWrite((writeAction2 as ReturnType<typeof write>).id));
+        saga.put(didWrite(1));
         saga.put(checksum(0));
 
         // then progress is updated
         const progress2Action = await saga.take();
-        expect(progress2Action.type).toBe(didProgressDownload.toString());
-        expect(
-            (progress2Action as ReturnType<typeof didProgressDownload>).progress,
-        ).toBe(20 / 30);
+        expect(progress2Action).toEqual(didProgressDownload(20 / 30));
 
         // then last chunk
         const writeAction3 = await saga.take();
-        expect(writeAction3.type).toBe(write.toString());
+        expect(write.matches(writeAction3)).toBeTruthy();
         expect((writeAction3 as ReturnType<typeof write>).value.length).toBe(10);
-        saga.put(didWrite((writeAction3 as ReturnType<typeof write>).id));
+        saga.put(didWrite(2));
         saga.put(checksum(0));
 
         // Then a status message saying that we are done
         const loadedStatusAction = await saga.take();
-        expect(loadedStatusAction.type).toBe(didFinishDownload.toString());
+        expect(loadedStatusAction).toEqual(didFinishDownload());
 
         await saga.end();
     });
@@ -95,7 +89,7 @@ test('repl', async () => {
     saga.put(repl());
 
     const action = await saga.take();
-    expect(action.type).toBe(write.toString());
+    expect(action).toEqual(write(0, new Uint8Array([32, 32, 32, 32])));
 
     await saga.end();
 });
@@ -106,13 +100,9 @@ test('stop', async () => {
     saga.put(stop());
 
     const pybricksServiceAction = await saga.take();
-    expect(pybricksServiceAction.type).toBe(sendStopUserProgramCommand.toString());
+    expect(pybricksServiceAction).toEqual(sendStopUserProgramCommand(0));
 
-    saga.put(
-        didSendCommand(
-            (pybricksServiceAction as ReturnType<typeof sendStopUserProgramCommand>).id,
-        ),
-    );
+    saga.put(didSendCommand(0));
 
     await saga.end();
 });

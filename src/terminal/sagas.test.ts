@@ -15,6 +15,8 @@ import { createCountFunc } from '../utils/iter';
 import { receiveData, sendData } from './actions';
 import terminal from './sagas';
 
+const encoder = new TextEncoder();
+
 describe('Data receiver filters out hub status', () => {
     test('normal message - no status', async () => {
         const saga = new AsyncSaga(
@@ -27,8 +29,7 @@ describe('Data receiver filters out hub status', () => {
         saga.put(didNotify(new DataView(new Uint8Array([0x20]).buffer)));
 
         const action = await saga.take();
-        expect(action.type).toBe(sendData.toString());
-        expect((action as ReturnType<typeof sendData>).value).toBe(' ');
+        expect(action).toEqual(sendData(' '));
 
         await saga.end();
     });
@@ -43,8 +44,7 @@ describe('Data receiver filters out hub status', () => {
         saga.put(didNotify(new DataView(new Uint8Array([0xaa]).buffer)));
 
         const action = await saga.take();
-        expect(action.type).toBe(checksum.toString());
-        expect((action as ReturnType<typeof checksum>).checksum).toBe(0xaa);
+        expect(action).toEqual(checksum(0xaa));
 
         await saga.end();
     });
@@ -74,8 +74,7 @@ test('Terminal data source responds to send data actions', async () => {
 });
 
 describe('Terminal data source responds to receive data actions', () => {
-    // ASCII/UTF-8 encoding of 'test1234'
-    const expected = new Uint8Array([0x74, 0x65, 0x73, 0x74, 0x31, 0x32, 0x33, 0x34]);
+    const expected = encoder.encode('test1234');
 
     test('basic function works', async () => {
         const saga = new AsyncSaga(terminal, {}, { nextMessageId: createCountFunc() });
@@ -83,8 +82,7 @@ describe('Terminal data source responds to receive data actions', () => {
         saga.put(receiveData('test1234'));
 
         const action = await saga.take();
-        expect(action.type).toBe(write.toString());
-        expect((action as ReturnType<typeof write>).value).toEqual(expected);
+        expect(action).toEqual(write(0, expected));
 
         await saga.end();
     });
@@ -100,19 +98,17 @@ describe('Terminal data source responds to receive data actions', () => {
         expect(saga.numPending()).toBe(1);
 
         const action = await saga.take();
-        expect(action.type).toBe(write.toString());
-        expect((action as ReturnType<typeof write>).value).toEqual(expected);
+        expect(action).toEqual(write(0, expected));
 
         // second message is queued until didWrite or didFailToWrite
         expect(saga.numPending()).toBe(0);
 
-        saga.put(didWrite((action as ReturnType<typeof write>).id));
+        saga.put(didWrite(0));
 
         const action2 = await saga.take();
-        expect(action2.type).toBe(write.toString());
-        expect((action2 as ReturnType<typeof write>).value).toEqual(expected);
+        expect(action2).toEqual(write(1, expected));
 
-        saga.put(didWrite((action2 as ReturnType<typeof write>).id));
+        saga.put(didWrite(1));
 
         await saga.end();
     });
@@ -128,24 +124,17 @@ describe('Terminal data source responds to receive data actions', () => {
         expect(saga.numPending()).toBe(1);
 
         const action = await saga.take();
-        expect(action.type).toBe(write.toString());
-        expect((action as ReturnType<typeof write>).value).toEqual(expected);
+        expect(action).toEqual(write(0, expected));
 
         // second message is queued until didWrite or didFailToWrite
         expect(saga.numPending()).toBe(0);
 
-        saga.put(
-            didFailToWrite(
-                (action as ReturnType<typeof write>).id,
-                new Error('test error'),
-            ),
-        );
+        saga.put(didFailToWrite(0, new Error('test error')));
 
         const action2 = await saga.take();
-        expect(action2.type).toBe(write.toString());
-        expect((action2 as ReturnType<typeof write>).value).toEqual(expected);
+        expect(action2).toEqual(write(1, expected));
 
-        saga.put(didWrite((action2 as ReturnType<typeof write>).id));
+        saga.put(didWrite(1));
 
         await saga.end();
     });
@@ -157,30 +146,27 @@ describe('Terminal data source responds to receive data actions', () => {
         saga.put(receiveData('test1234'));
 
         const action = await saga.take();
-        expect(action.type).toBe(write.toString());
-        expect((action as ReturnType<typeof write>).value).toEqual(
-            new Uint8Array([...expected, ...expected]),
-        );
+        expect(action).toEqual(write(0, new Uint8Array([...expected, ...expected])));
 
         await saga.end();
     });
 
     test('long messages are split', async () => {
+        const testData = '012345678901234567890123456789';
+
         const saga = new AsyncSaga(terminal, {}, { nextMessageId: createCountFunc() });
 
-        saga.put(receiveData('012345678901234567890123456789'));
+        saga.put(receiveData(testData));
 
         const action = await saga.take();
-        expect(action.type).toBe(write.toString());
-        expect((action as ReturnType<typeof write>).value.length).toEqual(20);
+        expect(action).toEqual(write(0, encoder.encode(testData.slice(0, 20))));
 
-        saga.put(didWrite((action as ReturnType<typeof write>).id));
+        saga.put(didWrite(0));
 
         const action2 = await saga.take();
-        expect(action2.type).toBe(write.toString());
-        expect((action2 as ReturnType<typeof write>).value.length).toEqual(10);
+        expect(action2).toEqual(write(1, encoder.encode(testData.slice(20, 40))));
 
-        saga.put(didWrite((action2 as ReturnType<typeof write>).id));
+        saga.put(didWrite(1));
 
         await saga.end();
     });

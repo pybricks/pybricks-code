@@ -63,10 +63,7 @@ import { BleConnectionState } from './reducers';
 
 const decoder = new TextDecoder();
 
-function handleDisconnect(
-    server: BluetoothRemoteGATTServer,
-    _action: ReturnType<typeof disconnect>,
-): void {
+function handleDisconnect(server: BluetoothRemoteGATTServer): void {
     server.disconnect();
 }
 

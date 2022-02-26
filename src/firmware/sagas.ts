@@ -11,6 +11,7 @@ import cityHubZip from '@pybricks/firmware/build/cityhub.zip';
 import moveHubZip from '@pybricks/firmware/build/movehub.zip';
 import technicHubZip from '@pybricks/firmware/build/technichub.zip';
 import { AnyAction } from 'redux';
+import { ActionPattern } from 'redux-saga/effects';
 import {
     SagaGenerator,
     all,
@@ -85,12 +86,8 @@ function* disconnectAndCancel(): SagaGenerator<void> {
 
 function* waitForDidRequest(id: number): SagaGenerator<ReturnType<typeof didRequest>> {
     const { requested, failedToRequest } = yield* race({
-        requested: take<ReturnType<typeof didRequest>>(
-            (a: AnyAction) => didRequest.matches(a) && a.id === id,
-        ),
-        failedToRequest: take<ReturnType<typeof didFailToRequest>>(
-            (a: AnyAction) => didFailToRequest.matches(a) && a.id === id,
-        ),
+        requested: take(didRequest.when((a) => a.id === id)),
+        failedToRequest: take(didFailToRequest.when((a) => a.id === id)),
     });
 
     if (failedToRequest) {
@@ -108,30 +105,31 @@ function* waitForDidRequest(id: number): SagaGenerator<ReturnType<typeof didRequ
 /**
  * Waits for a response action, an error response or timeout, whichever comes
  * first.
- * @param type The action type to wait for.
+ * @param pattern The action type to wait for.
  * @param timeout The timeout in milliseconds.
  */
-function* waitForResponse<T extends AnyAction>(
-    type: string,
+function* waitForResponse<A extends AnyAction>(
+    pattern: ActionPattern<A>,
     timeout = 500,
-): SagaGenerator<T> {
+): SagaGenerator<A> {
     const { response, error, disconnected, timedOut } = yield* race({
-        response: take<T>(type),
-        error: take<ReturnType<typeof errorResponse>>(errorResponse),
+        response: take(pattern),
+        error: take(errorResponse),
         disconnected: take(didDisconnect),
         timedOut: delay(timeout),
     });
 
     if (timedOut) {
         // istanbul ignore if: this hacks around a hardware/OS issue
-        if (type === errorResponse.toString()) {
+        if (pattern === (errorResponse as unknown)) {
             // It has been observed that sometimes this response is not received
             // or gets stuck in the Bluetooth stack until another request is sent.
             // So, we ignore the timeout and continue. If there really was a
             // problem, then the next request should fail anyway.
             console.warn('Timeout waiting for erase response, continuing anyway.');
-            return eraseResponse(Result.OK) as unknown as T;
+            return eraseResponse(Result.OK) as unknown as A;
         }
+
         yield* put(didFailToFinish(FailToFinishReasonType.TimedOut));
         yield* disconnectAndCancel();
     }
@@ -209,8 +207,8 @@ function* loadFirmware(
 
     yield* put(compile(program, metadata['mpy-cross-options']));
     const { mpy, mpyFail } = yield* race({
-        mpy: take<ReturnType<typeof didCompile>>(didCompile),
-        mpyFail: take<ReturnType<typeof didFailToCompile>>(didFailToCompile),
+        mpy: take(didCompile),
+        mpyFail: take(didFailToCompile),
     });
 
     if (mpyFail) {
@@ -310,9 +308,7 @@ function* handleFlashFirmware(action: ReturnType<typeof flashFirmware>): Generat
         const infoAction = yield* put(infoRequest(nextMessageId()));
         const { info } = yield* all({
             sent: waitForDidRequest(infoAction.id),
-            info: waitForResponse<ReturnType<typeof infoResponse>>(
-                infoResponse.toString(),
-            ),
+            info: waitForResponse(infoResponse),
         });
 
         if (deviceId !== undefined && info.hubType !== deviceId) {
@@ -353,10 +349,7 @@ function* handleFlashFirmware(action: ReturnType<typeof flashFirmware>): Generat
         );
         const { erase } = yield* all({
             sent: waitForDidRequest(eraseAction.id),
-            erase: waitForResponse<ReturnType<typeof eraseResponse>>(
-                eraseResponse.toString(),
-                5000,
-            ),
+            erase: waitForResponse(eraseResponse, 5000),
         });
         if (erase.result !== Result.OK) {
             yield* put(
@@ -368,9 +361,7 @@ function* handleFlashFirmware(action: ReturnType<typeof flashFirmware>): Generat
         const initAction = yield* put(initRequest(nextMessageId(), firmware.length));
         const { init } = yield* all({
             sent: waitForDidRequest(initAction.id),
-            init: waitForResponse<ReturnType<typeof initResponse>>(
-                initResponse.toString(),
-            ),
+            init: waitForResponse(initResponse),
         });
         if (init.result) {
             yield* put(
@@ -420,10 +411,7 @@ function* handleFlashFirmware(action: ReturnType<typeof flashFirmware>): Generat
 
                 const { response } = yield* all({
                     sent: waitForDidRequest(checksumAction.id),
-                    response: waitForResponse<ReturnType<typeof checksumResponse>>(
-                        checksumResponse.toString(),
-                        5000,
-                    ),
+                    response: waitForResponse(checksumResponse, 5000),
                 });
 
                 if (response.checksum !== runningChecksum) {
@@ -447,10 +435,7 @@ function* handleFlashFirmware(action: ReturnType<typeof flashFirmware>): Generat
             }
         }
 
-        const flash = yield* waitForResponse<ReturnType<typeof programResponse>>(
-            programResponse.toString(),
-            5000,
-        );
+        const flash = yield* waitForResponse(programResponse, 5000);
 
         if (flash.count !== firmware.length) {
             yield* put(

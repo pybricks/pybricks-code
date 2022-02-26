@@ -114,20 +114,24 @@ describe('message encoder', () => {
             ],
         ],
     ])('encode %s request', async (_n, request, expected) => {
-        const messageTypesThatShouldBeCalledWithoutResponse = [
-            eraseRequest.toString(),
-            programRequest.toString(),
-            rebootRequest.toString(),
-            disconnectRequest.toString(),
+        const requestsThatShouldBeCalledWithoutResponse = [
+            eraseRequest,
+            programRequest,
+            rebootRequest,
+            disconnectRequest,
         ];
+
         const saga = new AsyncSaga(bootloader);
         saga.put(request);
         const message = new Uint8Array(expected);
         const action = await saga.take();
+
         expect(action).toEqual(
             send(
                 message,
-                !messageTypesThatShouldBeCalledWithoutResponse.includes(request.type),
+                !requestsThatShouldBeCalledWithoutResponse.find((r) =>
+                    r.matches(request),
+                ),
             ),
         );
         await saga.end();

@@ -116,8 +116,8 @@ function* encodeRequest(): Generator {
         }
 
         const { failedToSend } = yield* race({
-            sent: take<ReturnType<typeof didSend>>(didSend),
-            failedToSend: take<ReturnType<typeof didFailToSend>>(didFailToSend),
+            sent: take(didSend),
+            failedToSend: take(didFailToSend),
         });
 
         if (failedToSend) {

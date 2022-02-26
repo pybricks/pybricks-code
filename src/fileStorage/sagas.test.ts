@@ -82,7 +82,7 @@ it('should dispatch fail action if file does not exist', async () => {
     saga.put(fileStorageReadFile(testFileName));
 
     action = await saga.take();
-    expect(action).toHaveProperty('type', fileStorageDidFailToReadFile.toString());
+    expect(fileStorageDidFailToReadFile.matches(action)).toBeTruthy();
 
     await saga.end();
 });

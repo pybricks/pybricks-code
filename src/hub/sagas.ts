@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2022 The Pybricks Authors
 
-import { AnyAction } from 'redux';
 import {
     SagaGenerator,
     actionChannel,
@@ -43,12 +42,8 @@ function* waitForWrite(id: number): SagaGenerator<{
     didFailToWrite: ReturnType<typeof didFailToWrite> | undefined;
 }> {
     return yield* race({
-        didWrite: take<ReturnType<typeof didWrite>>(
-            (a: AnyAction) => didWrite.matches(a) && a.id === id,
-        ),
-        didFailToWrite: take<ReturnType<typeof didFailToWrite>>(
-            (a: AnyAction) => didFailToWrite.matches(a) && a.id === id,
-        ),
+        didWrite: take(didWrite.when((a) => a.id === id)),
+        didFailToWrite: take(didFailToWrite.when((a) => a.id === id)),
     });
 }
 
@@ -64,8 +59,8 @@ function* handleDownloadAndRun(): Generator {
     const script = editor.getValue();
     yield* put(compile(script, ['-mno-unicode']));
     const { mpy, mpyFail } = yield* race({
-        mpy: take<ReturnType<typeof didCompile>>(didCompile),
-        mpyFail: take<ReturnType<typeof didFailToCompile>>(didFailToCompile),
+        mpy: take(didCompile),
+        mpyFail: take(didFailToCompile),
     });
 
     if (mpyFail) {
@@ -82,7 +77,7 @@ function* handleDownloadAndRun(): Generator {
         console.log(`Downloading ${mpy.data.byteLength} bytes`);
     }
 
-    const checksumChannel = yield* actionChannel<ReturnType<typeof checksum>>(checksum);
+    const checksumChannel = yield* actionChannel(checksum);
 
     const nextMessageId = yield* getContext<() => number>('nextMessageId');
 
@@ -180,12 +175,8 @@ function* handleStop(): Generator {
     // REVISIT: may want to disable button while attempting to send command
     // this would mean didSendStop() and didFailToSendStop() actions here
     const { failedToSend } = yield* race({
-        sent: take<ReturnType<typeof didSendCommand>>(
-            (a: AnyAction) => didSendCommand.matches(a) && a.id === id,
-        ),
-        failedToSend: take<ReturnType<typeof didFailToSendCommand>>(
-            (a: AnyAction) => didFailToSendCommand.matches(a) && a.id === id,
-        ),
+        sent: take(didSendCommand.when((a) => a.id === id)),
+        failedToSend: take(didFailToSendCommand.when((a) => a.id === id)),
     });
     if (failedToSend) {
         // TODO: probably want to check error. If hub disconnected, ignore error
