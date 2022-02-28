@@ -17,6 +17,10 @@ const isInitialized: Reducer<boolean> = (state = false, action) => {
 };
 
 const fileNames: Reducer<Set<string>> = (state = new Set(), action) => {
+    if (fileStorageDidInitialize.matches(action)) {
+        return new Set(action.fileNames);
+    }
+
     if (fileStorageDidChangeItem.matches(action)) {
         return new Set([...state, action.fileName]);
     }

@@ -3,9 +3,13 @@
 
 import { createAction } from '../actions';
 
-/** Action that indicates that the storage backend is ready to use. */
-export const fileStorageDidInitialize = createAction(() => ({
+/**
+ * Action that indicates that the storage backend is ready to use.
+ * @param fileNames List of all files currently in storage.
+ */
+export const fileStorageDidInitialize = createAction((fileNames: string[]) => ({
     type: 'fileStorage.action.didInitialize',
+    fileNames,
 }));
 
 /** Action that indicates that the storage backend failed to initialize. */

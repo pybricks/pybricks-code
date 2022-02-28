@@ -29,14 +29,11 @@ it('should migrate old program from local storage during initialization', async 
 
     const saga = new AsyncSaga(fileStorage);
 
-    // initialization should remove the localStorage entry
-    let action = await saga.take();
-    expect(action).toEqual(fileStorageDidInitialize());
+    // initialization should remove the localStorage entry and add add it to
+    // new storage backend
+    const action = await saga.take();
+    expect(action).toEqual(fileStorageDidInitialize(['main.py']));
     expect(localStorage.getItem(oldProgramKey)).toBeNull();
-
-    // and add it to the new storage backend
-    action = await saga.take();
-    expect(action).toEqual(fileStorageDidChangeItem('main.py'));
 
     await saga.end();
 });
@@ -46,7 +43,7 @@ it('should read and write files', async () => {
 
     let action = await saga.take();
 
-    expect(action).toEqual(fileStorageDidInitialize());
+    expect(action).toEqual(fileStorageDidInitialize([]));
 
     const testFileName = 'test.file';
     const testFileContents = 'test file contents';
@@ -75,7 +72,7 @@ it('should dispatch fail action if file does not exist', async () => {
     const saga = new AsyncSaga(fileStorage);
 
     let action = await saga.take();
-    expect(action).toEqual(fileStorageDidInitialize());
+    expect(action).toEqual(fileStorageDidInitialize([]));
 
     const testFileName = 'test.file';
 

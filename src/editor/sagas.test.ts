@@ -1,11 +1,23 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2021 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 
 import FileSaver from 'file-saver';
 import { mock } from 'jest-mock-extended';
 import { monaco } from 'react-monaco-editor';
 import { AsyncSaga } from '../../test';
-import { didFailToSaveAs, didSaveAs, open, saveAs } from './actions';
+import {
+    fileStorageDidInitialize,
+    fileStorageDidReadFile,
+    fileStorageReadFile,
+} from '../fileStorage/actions';
+import {
+    didFailToSaveAs,
+    didSaveAs,
+    didSetEditSession,
+    open,
+    saveAs,
+    setEditSession,
+} from './actions';
 import editor from './sagas';
 
 jest.mock('react-monaco-editor');
@@ -121,5 +133,56 @@ describe('saveAs', () => {
         await saga.end();
 
         mockFileSaverSaveAs.mockRestore();
+    });
+});
+
+describe('setEditSession', () => {
+    it('should wait for storage to be initialized', async () => {
+        const mockEditor = mock<monaco.editor.ICodeEditor>();
+        const saga = new AsyncSaga(editor, {
+            fileStorage: { isInitialized: false, fileNames: new Set() },
+        });
+
+        saga.put(setEditSession(mockEditor));
+        saga.put(fileStorageDidInitialize([]));
+
+        const action = await saga.take();
+        expect(action).toEqual(didSetEditSession(mockEditor));
+
+        await saga.end();
+    });
+
+    it('should load main.py', async () => {
+        const mockEditor = mock<monaco.editor.ICodeEditor>();
+        const saga = new AsyncSaga(editor, {
+            fileStorage: { isInitialized: true, fileNames: new Set(['main.py']) },
+        });
+
+        saga.put(setEditSession(mockEditor));
+
+        const action = await saga.take();
+        expect(action).toEqual(fileStorageReadFile('main.py'));
+
+        saga.put(fileStorageDidReadFile('main.py', '# test file'));
+
+        const action2 = await saga.take();
+        expect(action2).toEqual(didSetEditSession(mockEditor));
+        expect(mockEditor.setValue).toHaveBeenCalled();
+
+        await saga.end();
+    });
+
+    it('should not raise error if main.py does not exist', async () => {
+        const mockEditor = mock<monaco.editor.ICodeEditor>();
+        const saga = new AsyncSaga(editor, {
+            fileStorage: { isInitialized: true, fileNames: new Set() },
+        });
+
+        saga.put(setEditSession(mockEditor));
+
+        const action = await saga.take();
+        expect(action).toEqual(didSetEditSession(mockEditor));
+
+        await saga.end();
     });
 });

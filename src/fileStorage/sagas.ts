@@ -96,12 +96,22 @@ function* initialize(): Generator {
 
         yield* call(() => files.ready());
 
+        // migrate from old storage
+
+        // Previous versions of pybricks code used local storage to save a single program.
+        const oldProgram = localStorage.getItem('program');
+
+        if (oldProgram !== null) {
+            yield* call(() => files.setItem('main.py', oldProgram));
+            localStorage.removeItem('program');
+        }
+
+        // wire storage observable to redux-sagas
+
         files.configObservables({
             crossTabNotification: true,
             crossTabChangeDetection: true,
         });
-
-        // wire storage observable to redux-sagas
 
         const localForageChannel = eventChannel<LocalForageObservableChange>((emit) => {
             const filesObservable = files.newObservable({
@@ -121,17 +131,9 @@ function* initialize(): Generator {
         yield* takeEvery(fileStorageReadFile, handleReadFile, files);
         yield* takeEvery(fileStorageWriteFile, handleWriteFile, files);
 
-        // migrate from old storage
+        const fileNames = yield* call(() => files.keys());
 
-        // Previous versions of pybricks code used local storage to save a single program.
-        const oldProgram = localStorage.getItem('program');
-
-        if (oldProgram !== null) {
-            yield* call(() => files.setItem('main.py', oldProgram));
-            localStorage.removeItem('program');
-        }
-
-        yield* put(fileStorageDidInitialize());
+        yield* put(fileStorageDidInitialize(fileNames));
     } catch (err) {
         yield* put(fileStorageDidFailToInitialize(ensureError(err)));
     }

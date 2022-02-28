@@ -5,12 +5,23 @@ import { monaco } from 'react-monaco-editor';
 import { createAction } from '../actions';
 
 /**
- * Sets the current (active) edit session.
+ * Requests to set the current (active) edit session.
  * @param editSession The new edit session.
  */
 export const setEditSession = createAction(
     (editSession: monaco.editor.ICodeEditor | undefined) => ({
         type: 'editor.action.setEditSession',
+        editSession,
+    }),
+);
+
+/**
+ * Indicates that setting the edit session has completed.
+ * @param editSession The new edit session.
+ */
+export const didSetEditSession = createAction(
+    (editSession: monaco.editor.ICodeEditor | undefined) => ({
+        type: 'editor.action.didSetEditSession',
         editSession,
     }),
 );

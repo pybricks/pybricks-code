@@ -3,10 +3,10 @@
 
 import { monaco } from 'react-monaco-editor';
 import { Reducer, combineReducers } from 'redux';
-import { setEditSession } from './actions';
+import { didSetEditSession } from './actions';
 
 const current: Reducer<monaco.editor.ICodeEditor | null> = (state = null, action) => {
-    if (setEditSession.matches(action)) {
+    if (didSetEditSession.matches(action)) {
         return action.editSession || null;
     }
 

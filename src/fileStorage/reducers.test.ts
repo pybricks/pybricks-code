@@ -22,13 +22,21 @@ test('initial state', () => {
 
 test('isInitialized', () => {
     expect(
-        reducers({ isInitialized: false } as State, fileStorageDidInitialize())
+        reducers({ isInitialized: false } as State, fileStorageDidInitialize([]))
             .isInitialized,
     ).toBeTruthy();
 });
 
 test('fileNames', () => {
     const testFileName = 'test.file';
+
+    // initialization populates file list
+    expect(
+        reducers(
+            { fileNames: new Set() } as State,
+            fileStorageDidInitialize([testFileName]),
+        ).fileNames,
+    ).toEqual(new Set([testFileName]));
 
     // if item is not in set, add it
     expect(

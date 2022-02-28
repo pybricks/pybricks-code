@@ -19,7 +19,14 @@ import {
 } from '../fileStorage/actions';
 import { RootState } from '../reducers';
 import { ensureError } from '../utils';
-import { didFailToSaveAs, didSaveAs, open, saveAs, setEditSession } from './actions';
+import {
+    didFailToSaveAs,
+    didSaveAs,
+    didSetEditSession,
+    open,
+    saveAs,
+    setEditSession,
+} from './actions';
 
 const decoder = new TextDecoder();
 
@@ -86,8 +93,10 @@ function* handleSaveAs(): Generator {
 }
 
 function* handleSetEditSession(action: ReturnType<typeof setEditSession>): Generator {
-    if (action.editSession === null) {
-        // there is not current edit session, nothing to do
+    if (action.editSession === undefined) {
+        // REVISIT: this should probably do something, but currently we don't
+        // expect this to happen
+        yield* put(didSetEditSession(action.editSession));
         return;
     }
 
@@ -104,6 +113,14 @@ function* handleSetEditSession(action: ReturnType<typeof setEditSession>): Gener
     // TODO: get current file from state
     const currentFileName = 'main.py';
 
+    const fileList = yield* select((s: RootState) => s.fileStorage.fileNames);
+
+    if (!fileList.has(currentFileName)) {
+        // The file doesn't exist in storage, so don't try to open it.
+        yield* put(didSetEditSession(action.editSession));
+        return;
+    }
+
     // TODO: implement locking to ensure exclusive access to file
 
     yield* put(fileStorageReadFile(currentFileName));
@@ -117,8 +134,10 @@ function* handleSetEditSession(action: ReturnType<typeof setEditSession>): Gener
     });
 
     if (result) {
-        action.editSession?.setValue(result.fileContents);
+        action.editSession.setValue(result.fileContents);
     }
+
+    yield* put(didSetEditSession(action.editSession));
 }
 
 export default function* (): Generator {
