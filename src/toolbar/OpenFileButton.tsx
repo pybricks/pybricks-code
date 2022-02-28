@@ -60,6 +60,8 @@ const OpenFileButton: React.FC<OpenFileButtonProps> = (props) => {
 
     const { getRootProps, getInputProps } = useDropzone({
         accept: props.fileExtension,
+        // using File System Access API is blocked by https://github.com/react-dropzone/react-dropzone/issues/1141
+        useFsAccessApi: false,
         multiple: false,
         noClick: props.onClick !== undefined,
         onDropAccepted: (acceptedFiles) => {
