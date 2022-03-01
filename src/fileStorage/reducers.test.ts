@@ -14,7 +14,7 @@ type State = ReturnType<typeof reducers>;
 test('initial state', () => {
     expect(reducers(undefined, {} as AnyAction)).toMatchInlineSnapshot(`
         Object {
-          "fileNames": Set {},
+          "fileNames": Array [],
           "isInitialized": false,
         }
     `);
@@ -33,31 +33,31 @@ test('fileNames', () => {
     // initialization populates file list
     expect(
         reducers(
-            { fileNames: new Set() } as State,
+            { fileNames: [] as ReadonlyArray<string> } as State,
             fileStorageDidInitialize([testFileName]),
         ).fileNames,
-    ).toEqual(new Set([testFileName]));
+    ).toEqual([testFileName]);
 
     // if item is not in set, add it
     expect(
         reducers(
-            { fileNames: new Set() } as State,
+            { fileNames: [] as ReadonlyArray<string> } as State,
             fileStorageDidChangeItem(testFileName),
         ).fileNames,
-    ).toEqual(new Set([testFileName]));
+    ).toEqual([testFileName]);
 
     // if item is already in set, there should not be duplicates
     expect(
         reducers(
-            { fileNames: new Set([testFileName]) } as State,
+            { fileNames: [testFileName] as ReadonlyArray<string> } as State,
             fileStorageDidChangeItem(testFileName),
         ).fileNames,
-    ).toEqual(new Set([testFileName]));
+    ).toEqual([testFileName]);
 
     // if item is in set, it should be removed
     expect(
         reducers(
-            { fileNames: new Set([testFileName]) } as State,
+            { fileNames: [testFileName] as ReadonlyArray<string> } as State,
             fileStorageDidRemoveItem(testFileName),
         ).fileNames,
     ).not.toContain(testFileName);

@@ -140,7 +140,7 @@ describe('setEditSession', () => {
     it('should wait for storage to be initialized', async () => {
         const mockEditor = mock<monaco.editor.ICodeEditor>();
         const saga = new AsyncSaga(editor, {
-            fileStorage: { isInitialized: false, fileNames: new Set() },
+            fileStorage: { isInitialized: false, fileNames: [] },
         });
 
         saga.put(setEditSession(mockEditor));
@@ -155,7 +155,7 @@ describe('setEditSession', () => {
     it('should load main.py', async () => {
         const mockEditor = mock<monaco.editor.ICodeEditor>();
         const saga = new AsyncSaga(editor, {
-            fileStorage: { isInitialized: true, fileNames: new Set(['main.py']) },
+            fileStorage: { isInitialized: true, fileNames: ['main.py'] },
         });
 
         saga.put(setEditSession(mockEditor));
@@ -175,7 +175,7 @@ describe('setEditSession', () => {
     it('should not raise error if main.py does not exist', async () => {
         const mockEditor = mock<monaco.editor.ICodeEditor>();
         const saga = new AsyncSaga(editor, {
-            fileStorage: { isInitialized: true, fileNames: new Set() },
+            fileStorage: { isInitialized: true, fileNames: [] },
         });
 
         saga.put(setEditSession(mockEditor));

@@ -115,7 +115,7 @@ function* handleSetEditSession(action: ReturnType<typeof setEditSession>): Gener
 
     const fileList = yield* select((s: RootState) => s.fileStorage.fileNames);
 
-    if (!fileList.has(currentFileName)) {
+    if (!fileList.includes(currentFileName)) {
         // The file doesn't exist in storage, so don't try to open it.
         yield* put(didSetEditSession(action.editSession));
         return;

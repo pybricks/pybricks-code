@@ -16,17 +16,21 @@ const isInitialized: Reducer<boolean> = (state = false, action) => {
     return state;
 };
 
-const fileNames: Reducer<Set<string>> = (state = new Set(), action) => {
+const fileNames: Reducer<ReadonlyArray<string>> = (state = [], action) => {
     if (fileStorageDidInitialize.matches(action)) {
-        return new Set(action.fileNames);
+        return [...action.fileNames];
     }
 
     if (fileStorageDidChangeItem.matches(action)) {
-        return new Set([...state, action.fileName]);
+        if (state.includes(action.fileName)) {
+            return state;
+        }
+
+        return [...state, action.fileName];
     }
 
     if (fileStorageDidRemoveItem.matches(action)) {
-        return new Set([...state].filter((value) => value !== action.fileName));
+        return [...state].filter((value) => value !== action.fileName);
     }
 
     return state;
