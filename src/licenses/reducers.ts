@@ -12,7 +12,7 @@ export interface LicenseInfo {
     readonly licenseText: string;
 }
 
-export type LicenseList = LicenseInfo[];
+export type LicenseList = ReadonlyArray<LicenseInfo>;
 
 const list: Reducer<LicenseList | null> = (state = null, action) => {
     if (didFetchList.matches(action)) {
