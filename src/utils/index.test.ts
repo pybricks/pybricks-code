@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020 The Pybricks Authors
 
-import { assert, defined, ensureError, hex, maybe } from '.';
+import { assert, defined, ensureError, hex, maybe, timestamp } from '.';
 
 test('assert', () => {
     const assertTrue = jest.fn(() => assert(true, 'should not throw'));
@@ -43,4 +43,22 @@ test('ensureError', () => {
     const stringToError = expect(ensureError(stringToErrorMessage));
     stringToError.toHaveProperty('name', 'Error');
     stringToError.toHaveProperty('message', stringToErrorMessage);
+});
+
+describe('timestamp', () => {
+    it('should not contain spaces', () => {
+        expect(timestamp()).not.toContain(' ');
+    });
+
+    it('should not contain colons', () => {
+        expect(timestamp()).not.toContain(':');
+    });
+
+    it('should not contain periods', () => {
+        expect(timestamp()).not.toContain('.');
+    });
+
+    it('should not contain letters', () => {
+        expect(timestamp()).not.toMatch(/[A-Za-z]/);
+    });
 });

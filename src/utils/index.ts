@@ -63,3 +63,14 @@ export function ensureError(err: unknown): Error {
 
     return Error(String(err));
 }
+
+/**
+ * Gets a timestamp with second resolution suitable for use in a filename.
+ */
+export function timestamp(): string {
+    return new Date()
+        .toISOString()
+        .replace('T', '_')
+        .replaceAll(':', '-')
+        .replace(/\..*$/, '');
+}
