@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2022 The Pybricks Authors
 
+import FileSaver from 'file-saver';
 import localForage from 'localforage';
 import { extendPrototype } from 'localforage-observable';
 import { eventChannel } from 'redux-saga';
@@ -9,6 +10,8 @@ import Observable from 'zen-observable';
 import { ensureError } from '../utils';
 import {
     fileStorageDidChangeItem,
+    fileStorageDidExportFile,
+    fileStorageDidFailToExportFile,
     fileStorageDidFailToInitialize,
     fileStorageDidFailToReadFile,
     fileStorageDidFailToWriteFile,
@@ -16,6 +19,7 @@ import {
     fileStorageDidReadFile,
     fileStorageDidRemoveItem,
     fileStorageDidWriteFile,
+    fileStorageExportFile,
     fileStorageReadFile,
     fileStorageWriteFile,
 } from './actions';
@@ -78,6 +82,65 @@ function* handleWriteFile(
     }
 }
 
+function* handleExportFile(
+    files: LocalForage,
+    action: ReturnType<typeof fileStorageExportFile>,
+): Generator {
+    const data = yield* call(() => files.getItem<string>(action.fileName));
+
+    if (data === null) {
+        yield* put(
+            fileStorageDidFailToExportFile(
+                action.fileName,
+                new Error('file does not exist'),
+            ),
+        );
+        return;
+    }
+
+    const blob = new Blob([data], { type: 'text/x-python;charset=utf-8' });
+
+    if (window.showSaveFilePicker) {
+        // This uses https://wicg.github.io/file-system-access which is not
+        // available in all browsers
+        try {
+            const handle = yield* call(() =>
+                window.showSaveFilePicker({
+                    suggestedName: 'main.py',
+                    types: [
+                        {
+                            accept: { 'text/x-python': '.py' },
+                            // TODO: translate description
+                            description: 'Python Files',
+                        },
+                    ],
+                }),
+            );
+
+            const writeable = yield* call(() => handle.createWritable());
+            yield* call(() => writeable.write(blob));
+            yield* call(() => writeable.close());
+        } catch (err) {
+            yield* put(
+                fileStorageDidFailToExportFile(action.fileName, ensureError(err)),
+            );
+            return;
+        }
+    } else {
+        // this is a fallback to use the standard browser download mechanism
+        try {
+            FileSaver.saveAs(blob, 'main.py');
+        } catch (err) {
+            yield* put(
+                fileStorageDidFailToExportFile(action.fileName, ensureError(err)),
+            );
+            return;
+        }
+    }
+
+    yield* put(fileStorageDidExportFile(action.fileName));
+}
+
 /**
  * Initializes the storage backend.
  */
@@ -130,6 +193,7 @@ function* initialize(): Generator {
         yield* takeEvery(localForageChannel, handleFileStorageDidChange);
         yield* takeEvery(fileStorageReadFile, handleReadFile, files);
         yield* takeEvery(fileStorageWriteFile, handleWriteFile, files);
+        yield* takeEvery(fileStorageExportFile, handleExportFile, files);
 
         const fileNames = yield* call(() => files.keys());
 

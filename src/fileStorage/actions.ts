@@ -77,3 +77,34 @@ export const fileStorageDidFailToWriteFile = createAction(
         error,
     }),
 );
+
+/**
+ * Request to export (download) a file.
+ * @param fileName The name of the file.
+ */
+export const fileStorageExportFile = createAction((fileName: string) => ({
+    type: 'fileStorage.action.exportFile',
+    fileName,
+}));
+
+/**
+ * Indicates that fileStorageExportFile(fileName) succeeded.
+ * @param fileName The name of the file.
+ */
+export const fileStorageDidExportFile = createAction((fileName: string) => ({
+    type: 'fileStorage.action.didExportFile',
+    fileName,
+}));
+
+/**
+ * Indicates that fileStorageExportFile(fileName) failed.
+ * @param fileName The name of the file.
+ * @param error The error that was raised.
+ */
+export const fileStorageDidFailToExportFile = createAction(
+    (fileName: string, error: Error) => ({
+        type: 'fileStorage.action.didFailToExportFile',
+        fileName,
+        error,
+    }),
+);

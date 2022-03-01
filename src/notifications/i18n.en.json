@@ -17,7 +17,8 @@
     "fileStorage": {
         "failedToInitialize": "Failed to initial file storage. Changes will not be automatically saved.",
         "failedToRead": "Failed to read file.",
-        "failedToWrite": "Failed to write file."
+        "failedToWrite": "Failed to write file.",
+        "failedToExport": "Failed to export file.'"
     },
     "flashFirmware": {
         "timedOut": "The hub took too long to respond. Restart the hub and try again.",

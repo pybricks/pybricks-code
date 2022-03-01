@@ -17,6 +17,7 @@ import {
 } from '../ble/actions';
 import { didFailToSaveAs } from '../editor/actions';
 import {
+    fileStorageDidFailToExportFile,
     fileStorageDidFailToInitialize,
     fileStorageDidFailToReadFile,
     fileStorageDidFailToWriteFile,
@@ -90,6 +91,7 @@ test.each([
     fileStorageDidFailToInitialize(new Error('test error')),
     fileStorageDidFailToReadFile('test.file', new Error('test error')),
     fileStorageDidFailToWriteFile('test.file', new Error('test error')),
+    fileStorageDidFailToExportFile('test.file', new Error('test error')),
 ])('actions that should show notification: %o', async (action: AnyAction) => {
     const getToasts = jest.fn().mockReturnValue([]);
     const show = jest.fn();
@@ -122,6 +124,10 @@ test.each([
     didCheckForUpdate(true),
     bleDIServiceDidReceiveFirmwareRevision(firmwareVersion),
     didFailToSaveAs(new DOMException('test message', 'AbortError')),
+    fileStorageDidFailToExportFile(
+        'test.file',
+        new DOMException('test message', 'AbortError'),
+    ),
 ])('actions that should not show a notification: %o', async (action: AnyAction) => {
     const getToasts = jest.fn().mockReturnValue([]);
     const show = jest.fn();
