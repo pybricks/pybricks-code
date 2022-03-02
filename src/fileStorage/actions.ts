@@ -108,3 +108,26 @@ export const fileStorageDidFailToExportFile = createAction(
         error,
     }),
 );
+
+/**
+ * Request to archive (download) all files in the store.
+ */
+export const fileStorageArchiveAllFiles = createAction(() => ({
+    type: 'fileStorage.action.archiveAllFiles',
+}));
+
+/**
+ * Indicates that fileStorageArchiveAllFiles() succeeded.
+ */
+export const fileStorageDidArchiveAllFiles = createAction(() => ({
+    type: 'fileStorage.action.didArchiveAllFiles',
+}));
+
+/**
+ * Indicates that fileStorageArchiveAllFiles() failed.
+ * @param error The error that was raised.
+ */
+export const fileStorageDidFailToArchiveAllFiles = createAction((error: Error) => ({
+    type: 'fileStorage.action.didFailToArchiveAllFiles',
+    error,
+}));

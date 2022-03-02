@@ -19,6 +19,7 @@ import {
 } from '../ble/actions';
 import { didFailToSaveAs } from '../editor/actions';
 import {
+    fileStorageDidFailToArchiveAllFiles,
     fileStorageDidFailToExportFile,
     fileStorageDidFailToInitialize,
     fileStorageDidFailToReadFile,
@@ -414,6 +415,17 @@ function* showFileStorageFailToExport(
     yield* showUnexpectedError(MessageId.FileStorageFailedToExport, action.error);
 }
 
+function* showFileStorageFailToArchive(
+    action: ReturnType<typeof fileStorageDidFailToArchiveAllFiles>,
+): Generator {
+    if (action.error.name === 'AbortError') {
+        // user clicked cancel button - not an error
+        return;
+    }
+
+    yield* showUnexpectedError(MessageId.FileStorageFailedToExport, action.error);
+}
+
 export default function* (): Generator {
     yield* takeEvery(bleDeviceDidFailToConnect, showBleDeviceDidFailToConnectError);
     yield* takeEvery(bootloaderDidFailToConnect, showBootloaderDidFailToConnectError);
@@ -429,4 +441,5 @@ export default function* (): Generator {
     yield* takeEvery(fileStorageDidFailToReadFile, showFileStorageFailToRead);
     yield* takeEvery(fileStorageDidFailToWriteFile, showFileStorageFailToWrite);
     yield* takeEvery(fileStorageDidFailToExportFile, showFileStorageFailToExport);
+    yield* takeEvery(fileStorageDidFailToArchiveAllFiles, showFileStorageFailToArchive);
 }

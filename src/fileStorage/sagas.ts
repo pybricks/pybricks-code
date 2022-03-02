@@ -2,15 +2,19 @@
 // Copyright (c) 2022 The Pybricks Authors
 
 import FileSaver from 'file-saver';
+import JSZip from 'jszip';
 import localForage from 'localforage';
 import { extendPrototype } from 'localforage-observable';
 import { eventChannel } from 'redux-saga';
 import { call, fork, put, takeEvery } from 'typed-redux-saga/macro';
 import Observable from 'zen-observable';
-import { ensureError } from '../utils';
+import { ensureError, timestamp } from '../utils';
 import {
+    fileStorageArchiveAllFiles,
+    fileStorageDidArchiveAllFiles,
     fileStorageDidChangeItem,
     fileStorageDidExportFile,
+    fileStorageDidFailToArchiveAllFiles,
     fileStorageDidFailToExportFile,
     fileStorageDidFailToInitialize,
     fileStorageDidFailToReadFile,
@@ -141,6 +145,50 @@ function* handleExportFile(
     yield* put(fileStorageDidExportFile(action.fileName));
 }
 
+function* handleArchiveAllFiles(files: LocalForage): Generator {
+    try {
+        const zip = new JSZip();
+
+        yield* call(() =>
+            files.iterate<string, void>((value, key) => {
+                zip.file(key, value);
+            }),
+        );
+
+        const zipData = yield* call(() => zip.generateAsync({ type: 'blob' }));
+
+        const suggestedName = `pybricks-backup-${timestamp()}.zip`;
+
+        if (window.showSaveFilePicker) {
+            // This uses https://wicg.github.io/file-system-access which is not
+            // available in all browsers
+            const handle = yield* call(() =>
+                window.showSaveFilePicker({
+                    suggestedName,
+                    types: [
+                        {
+                            accept: { 'application/zip': '.zip' },
+                            // TODO: translate description
+                            description: 'Zip Files',
+                        },
+                    ],
+                }),
+            );
+
+            const writeable = yield* call(() => handle.createWritable());
+            yield* call(() => writeable.write(zipData));
+            yield* call(() => writeable.close());
+        } else {
+            // this is a fallback to use the standard browser download mechanism
+            FileSaver.saveAs(zipData, suggestedName);
+        }
+
+        yield* put(fileStorageDidArchiveAllFiles());
+    } catch (err) {
+        yield* put(fileStorageDidFailToArchiveAllFiles(ensureError(err)));
+    }
+}
+
 /**
  * Initializes the storage backend.
  */
@@ -194,6 +242,7 @@ function* initialize(): Generator {
         yield* takeEvery(fileStorageReadFile, handleReadFile, files);
         yield* takeEvery(fileStorageWriteFile, handleWriteFile, files);
         yield* takeEvery(fileStorageExportFile, handleExportFile, files);
+        yield* takeEvery(fileStorageArchiveAllFiles, handleArchiveAllFiles, files);
 
         const fileNames = yield* call(() => files.keys());
 
