@@ -1722,22 +1722,22 @@
   resolved "https://registry.yarnpkg.com/@shopify/react-effect/-/react-effect-4.1.10.tgz#8bd1b9e1be64f7a6de17b3ea51bad4af2aee4305"
   integrity sha512-xzJoG7IWA8Ow/FPYlhbRt/BhXK7Zm949qmXwk7sHX+jWpUG2sHbp8ZJtHG8Eb629oJtQaBx4uE7xlphJVTrJrA==
 
-"@shopify/react-hooks@^2.1.15":
-  version "2.1.15"
-  resolved "https://registry.yarnpkg.com/@shopify/react-hooks/-/react-hooks-2.1.15.tgz#3fec72a25c7d55b2e0226b810e0c976013b44ebf"
-  integrity sha512-v+NVCoaJPqDon6linYXBu6kMXZQH3hwyDxrc8yb6vCv0tVMRGRTQA+XIOwHwPSO8KYKpUv+ZUcZk9NzNMiCFGQ==
+"@shopify/react-hooks@^2.1.16":
+  version "2.1.16"
+  resolved "https://registry.yarnpkg.com/@shopify/react-hooks/-/react-hooks-2.1.16.tgz#a8fd2fd46f3e6cba81ef163e7feef8a0b84976b8"
+  integrity sha512-aEKU/rb3GwZoybb7HtZLYhAX4OBg94NuKLuOUhS3I9TiCkkQ4ryZ4s+pXILPefSec+ajVk2OMQAA5kyfENQcHw==
 
-"@shopify/react-i18n@^6.3.9":
-  version "6.3.9"
-  resolved "https://registry.yarnpkg.com/@shopify/react-i18n/-/react-i18n-6.3.9.tgz#0a05ff80d968d052ced505a14e344b7f5e6bdae9"
-  integrity sha512-rKbbSK4+XBHP+5T4Qzd97BTowuRdAGwEpE2J7GMGJ33wIOxuP5Z/XzvpY6XRiTHppvU5eARldvbS5QrerbZwmQ==
+"@shopify/react-i18n@^6.3.10":
+  version "6.3.10"
+  resolved "https://registry.yarnpkg.com/@shopify/react-i18n/-/react-i18n-6.3.10.tgz#2476d48dbc827e8192ed966e352b0bee15274677"
+  integrity sha512-uSI1ea4A20WNEpGjqzNSLm8JLlyfeD87RkNtfGdW8DUNE49sTgcFLdyr9raWe5oOd8I4GVZpAbkm2Cj/bf7LmQ==
   dependencies:
     "@shopify/dates" "^1.1.3"
     "@shopify/decorators" "^2.0.7"
     "@shopify/function-enhancers" "^2.0.7"
     "@shopify/i18n" "^1.0.8"
     "@shopify/react-effect" "^4.1.10"
-    "@shopify/react-hooks" "^2.1.15"
+    "@shopify/react-hooks" "^2.1.16"
     "@shopify/useful-types" "^4.0.0"
     "@types/hoist-non-react-statics" "^3.0.1"
     change-case "^4.1.2"
@@ -2141,10 +2141,10 @@
   dependencies:
     "@types/react" "^16"
 
-"@types/react-redux@^7.1.20", "@types/react-redux@^7.1.22":
-  version "7.1.22"
-  resolved "https://registry.yarnpkg.com/@types/react-redux/-/react-redux-7.1.22.tgz#0eab76a37ef477cc4b53665aeaf29cb60631b72a"
-  integrity sha512-GxIA1kM7ClU73I6wg9IRTVwSO9GS+SAKZKe0Enj+82HMU6aoESFU2HNAdNi3+J53IaOHPiUfT3kSG4L828joDQ==
+"@types/react-redux@^7.1.20", "@types/react-redux@^7.1.23":
+  version "7.1.23"
+  resolved "https://registry.yarnpkg.com/@types/react-redux/-/react-redux-7.1.23.tgz#3c2bb1bcc698ae69d70735f33c5a8e95f41ac528"
+  integrity sha512-D02o3FPfqQlfu2WeEYwh3x2otYd2Dk1o8wAfsA0B1C2AJEFxE663Ozu7JzuWbznGgW248NaOF6wsqCGNq9d3qw==
   dependencies:
     "@types/hoist-non-react-statics" "^3.3.0"
     "@types/react" "*"
@@ -12197,10 +12197,10 @@ typescript-tuple@^2.2.1:
   dependencies:
     typescript-compare "^0.0.2"
 
-typescript@~4.5.5:
-  version "4.5.5"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.5.5.tgz#d8c953832d28924a9e3d37c73d729c846c5896f3"
-  integrity sha512-TCTIul70LyWe6IJWT8QSYeA54WQe8EjQFU4wY52Fasj5UKx88LNYKCgBEHcOMOrFF1rKGbD8v/xcNWVUq9SymA==
+typescript@~4.6.2:
+  version "4.6.2"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.6.2.tgz#fe12d2727b708f4eef40f51598b3398baa9611d4"
+  integrity sha512-HM/hFigTBHZhLXshn9sN37H085+hQGeJHJ/X7LpBWLID/fbc2acUMfU+lGD98X81sKP+pFa9f0DZmCwB9GnbAg==
 
 unbox-primitive@^1.0.1:
   version "1.0.1"
@@ -12975,10 +12975,10 @@ xterm-addon-fit@^0.5.0:
   resolved "https://registry.yarnpkg.com/xterm-addon-fit/-/xterm-addon-fit-0.5.0.tgz#2d51b983b786a97dcd6cde805e700c7f913bc596"
   integrity sha512-DsS9fqhXHacEmsPxBJZvfj2la30Iz9xk+UKjhQgnYNkrUIN5CYLbw7WEfz117c7+S86S/tpHPfvNxJsF5/G8wQ==
 
-xterm@^4.17.0:
-  version "4.17.0"
-  resolved "https://registry.yarnpkg.com/xterm/-/xterm-4.17.0.tgz#e48ba6eeb83e118ec163f5512c3cfe9dbbf3f838"
-  integrity sha512-WGXlIHvLvZKtwMdFaL6kUwp+c9abd2Pcakp/GmuefBuOtGCu9fP9tBDPKyL/A17N+5tt44EYk3YsBbvkPBubMw==
+xterm@^4.18.0:
+  version "4.18.0"
+  resolved "https://registry.yarnpkg.com/xterm/-/xterm-4.18.0.tgz#a1f6ab2c330c3918fb094ae5f4c2562987398ea1"
+  integrity sha512-JQoc1S0dti6SQfI0bK1AZvGnAxH4MVw45ZPFSO6FHTInAiau3Ix77fSxNx3mX4eh9OL4AYa8+4C8f5UvnSfppQ==
 
 y18n@^4.0.0:
   version "4.0.3"
