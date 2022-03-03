@@ -8,7 +8,6 @@ import {
     getContext,
     put,
     race,
-    select,
     take,
     takeEvery,
 } from 'typed-redux-saga/macro';
@@ -20,8 +19,8 @@ import {
     sendStopUserProgramCommand,
 } from '../ble-pybricks-service/actions';
 import { didConnect } from '../ble/actions';
+import { EditorType } from '../editor/Editor';
 import { compile, didCompile, didFailToCompile } from '../mpy/actions';
-import { RootState } from '../reducers';
 import { defined } from '../utils';
 import { xor8 } from '../utils/math';
 import {
@@ -48,7 +47,7 @@ function* waitForWrite(id: number): SagaGenerator<{
 }
 
 function* handleDownloadAndRun(): Generator {
-    const editor = yield* select((s: RootState) => s.editor.current);
+    const editor = yield* getContext<EditorType>('editor');
 
     // istanbul ignore next: it is a bug to dispatch this action with no current editor
     if (editor === null) {

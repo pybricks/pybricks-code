@@ -29,8 +29,11 @@ describe('downloadAndRun', () => {
         const mockEditor = mock<monaco.editor.ICodeEditor>();
         const saga = new AsyncSaga(
             hub,
-            { editor: { current: mockEditor } },
-            { nextMessageId: createCountFunc() },
+            {},
+            {
+                editor: mockEditor,
+                nextMessageId: createCountFunc(),
+            },
         );
 
         saga.put(downloadAndRun());

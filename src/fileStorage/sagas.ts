@@ -6,8 +6,9 @@ import JSZip from 'jszip';
 import localForage from 'localforage';
 import { extendPrototype } from 'localforage-observable';
 import { eventChannel } from 'redux-saga';
-import { call, fork, put, takeEvery } from 'typed-redux-saga/macro';
+import { call, fork, getContext, put, takeEvery } from 'typed-redux-saga/macro';
 import Observable from 'zen-observable';
+import { EditorType } from '../editor/Editor';
 import { ensureError, timestamp } from '../utils';
 import {
     fileStorageArchiveAllFiles,
@@ -245,6 +246,20 @@ function* initialize(): Generator {
         yield* takeEvery(fileStorageArchiveAllFiles, handleArchiveAllFiles, files);
 
         const fileNames = yield* call(() => files.keys());
+
+        // TODO: we should not be loading main.py here
+        // HACK: This assumes that editor is loaded before storage!
+        const editor = yield* getContext<EditorType>('editor');
+
+        if (editor) {
+            const main = yield* call(() => files.getItem<string>('main.py'));
+
+            if (main) {
+                editor.setValue(main);
+            }
+        } else if (process.env.NODE_ENV !== 'test') {
+            console.error('editor was not loaded, so main.py was not loaded');
+        }
 
         yield* put(fileStorageDidInitialize(fileNames));
     } catch (err) {

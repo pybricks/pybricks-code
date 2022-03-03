@@ -2,36 +2,20 @@
 // Copyright (c) 2020-2022 The Pybricks Authors
 
 import FileSaver from 'file-saver';
-import {
-    call,
-    put,
-    race,
-    select,
-    take,
-    takeEvery,
-    takeLatest,
-} from 'typed-redux-saga/macro';
-import {
-    fileStorageDidFailToReadFile,
-    fileStorageDidInitialize,
-    fileStorageDidReadFile,
-    fileStorageReadFile,
-} from '../fileStorage/actions';
-import { RootState } from '../reducers';
+import { call, getContext, put, takeEvery } from 'typed-redux-saga/macro';
 import { ensureError } from '../utils';
-import {
-    didFailToSaveAs,
-    didSaveAs,
-    didSetEditSession,
-    open,
-    saveAs,
-    setEditSession,
-} from './actions';
+import { EditorType } from './Editor';
+import { didFailToSaveAs, didSaveAs, open, saveAs } from './actions';
+
+/**
+ * Partial saga context type for context used in the editor sagas.
+ */
+export type EditorSagaContext = { editor: EditorType };
 
 const decoder = new TextDecoder();
 
 function* handleOpen(action: ReturnType<typeof open>): Generator {
-    const editor = yield* select((s: RootState) => s.editor.current);
+    const editor = yield* getContext<EditorType>('editor');
 
     // istanbul ignore next: it is a bug to dispatch this action with no current editor
     if (editor === null) {
@@ -44,7 +28,7 @@ function* handleOpen(action: ReturnType<typeof open>): Generator {
 }
 
 function* handleSaveAs(): Generator {
-    const editor = yield* select((s: RootState) => s.editor.current);
+    const editor = yield* getContext<EditorType>('editor');
 
     // istanbul ignore next: it is a bug to dispatch this action with no current editor
     if (editor === null) {
@@ -92,56 +76,7 @@ function* handleSaveAs(): Generator {
     yield* put(didSaveAs());
 }
 
-function* handleSetEditSession(action: ReturnType<typeof setEditSession>): Generator {
-    if (action.editSession === undefined) {
-        // REVISIT: this should probably do something, but currently we don't
-        // expect this to happen
-        yield* put(didSetEditSession(action.editSession));
-        return;
-    }
-
-    // ensure storage has been initialized
-
-    const isStorageInitialized = yield* select(
-        (s: RootState) => s.fileStorage.isInitialized,
-    );
-
-    if (!isStorageInitialized) {
-        yield* take(fileStorageDidInitialize);
-    }
-
-    // TODO: get current file from state
-    const currentFileName = 'main.py';
-
-    const fileList = yield* select((s: RootState) => s.fileStorage.fileNames);
-
-    if (!fileList.includes(currentFileName)) {
-        // The file doesn't exist in storage, so don't try to open it.
-        yield* put(didSetEditSession(action.editSession));
-        return;
-    }
-
-    // TODO: implement locking to ensure exclusive access to file
-
-    yield* put(fileStorageReadFile(currentFileName));
-    const { result } = yield* race({
-        result: take(
-            fileStorageDidReadFile.when((a) => a.fileName === currentFileName),
-        ),
-        error: take(
-            fileStorageDidFailToReadFile.when((a) => a.fileName === currentFileName),
-        ),
-    });
-
-    if (result) {
-        action.editSession.setValue(result.fileContents);
-    }
-
-    yield* put(didSetEditSession(action.editSession));
-}
-
 export default function* (): Generator {
     yield* takeEvery(open, handleOpen);
     yield* takeEvery(saveAs, handleSaveAs);
-    yield* takeLatest(setEditSession, handleSetEditSession);
 }

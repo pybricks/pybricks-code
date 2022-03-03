@@ -25,6 +25,7 @@ import {
     take,
     takeEvery,
 } from 'typed-redux-saga/macro';
+import { EditorType } from '../editor/Editor';
 import {
     checksumRequest,
     checksumResponse,
@@ -63,6 +64,16 @@ import {
     didStart,
     flashFirmware,
 } from './actions';
+
+/**
+ * Function that returns the next unused message ID.
+ */
+type NextMessageIdFunc = () => number;
+
+/**
+ * Partial saga context type for context used in the firmware sagas.
+ */
+export type FirmwareSagaContext = { nextMessageId: NextMessageIdFunc };
 
 const firmwareZipMap = new Map<HubType, string>([
     [HubType.CityHub, cityHubZip],
@@ -280,7 +291,7 @@ function* handleFlashFirmware(action: ReturnType<typeof flashFirmware>): Generat
         );
 
         if (flashCurrentProgram) {
-            const editor = yield* select((s: RootState) => s.editor.current);
+            const editor = yield* getContext<EditorType>('editor');
 
             // istanbul ignore if: it is a bug to dispatch this action with no current editor
             if (editor === null) {
@@ -303,7 +314,7 @@ function* handleFlashFirmware(action: ReturnType<typeof flashFirmware>): Generat
             return;
         }
 
-        const nextMessageId = yield* getContext<() => number>('nextMessageId');
+        const nextMessageId = yield* getContext<NextMessageIdFunc>('nextMessageId');
 
         const infoAction = yield* put(infoRequest(nextMessageId()));
         const { info } = yield* all({

@@ -5,19 +5,7 @@ import FileSaver from 'file-saver';
 import { mock } from 'jest-mock-extended';
 import { monaco } from 'react-monaco-editor';
 import { AsyncSaga } from '../../test';
-import {
-    fileStorageDidInitialize,
-    fileStorageDidReadFile,
-    fileStorageReadFile,
-} from '../fileStorage/actions';
-import {
-    didFailToSaveAs,
-    didSaveAs,
-    didSetEditSession,
-    open,
-    saveAs,
-    setEditSession,
-} from './actions';
+import { didFailToSaveAs, didSaveAs, open, saveAs } from './actions';
 import editor from './sagas';
 
 jest.mock('react-monaco-editor');
@@ -25,7 +13,7 @@ jest.mock('file-saver');
 
 test('open', async () => {
     const mockEditor = mock<monaco.editor.ICodeEditor>();
-    const saga = new AsyncSaga(editor, { editor: { current: mockEditor } });
+    const saga = new AsyncSaga(editor, {}, { editor: mockEditor });
 
     const data = new Uint8Array().buffer;
     saga.put(open(data));
@@ -38,7 +26,7 @@ test('open', async () => {
 describe('saveAs', () => {
     test('web file system api can succeed', async () => {
         const mockEditor = mock<monaco.editor.ICodeEditor>();
-        const saga = new AsyncSaga(editor, { editor: { current: mockEditor } });
+        const saga = new AsyncSaga(editor, {}, { editor: mockEditor });
 
         // window.showSaveFilePicker is not defined in the test environment
         // so we can't use spyOn().
@@ -67,7 +55,7 @@ describe('saveAs', () => {
 
     test('web file system api can fail', async () => {
         const mockEditor = mock<monaco.editor.ICodeEditor>();
-        const saga = new AsyncSaga(editor, { editor: { current: mockEditor } });
+        const saga = new AsyncSaga(editor, {}, { editor: mockEditor });
 
         // window.showSaveFilePicker is not defined in the test environment
         // so we can't use spyOn().
@@ -94,7 +82,7 @@ describe('saveAs', () => {
 
     test('fallback can succeed', async () => {
         const mockEditor = mock<monaco.editor.ICodeEditor>();
-        const saga = new AsyncSaga(editor, { editor: { current: mockEditor } });
+        const saga = new AsyncSaga(editor, {}, { editor: mockEditor });
 
         const mockFileSaverSaveAs = jest.spyOn(FileSaver, 'saveAs');
 
@@ -113,7 +101,7 @@ describe('saveAs', () => {
 
     test('fallback can fail', async () => {
         const mockEditor = mock<monaco.editor.ICodeEditor>();
-        const saga = new AsyncSaga(editor, { editor: { current: mockEditor } });
+        const saga = new AsyncSaga(editor, {}, { editor: mockEditor });
 
         const testError = new Error('test error');
         const mockFileSaverSaveAs = jest
@@ -133,56 +121,5 @@ describe('saveAs', () => {
         await saga.end();
 
         mockFileSaverSaveAs.mockRestore();
-    });
-});
-
-describe('setEditSession', () => {
-    it('should wait for storage to be initialized', async () => {
-        const mockEditor = mock<monaco.editor.ICodeEditor>();
-        const saga = new AsyncSaga(editor, {
-            fileStorage: { isInitialized: false, fileNames: [] },
-        });
-
-        saga.put(setEditSession(mockEditor));
-        saga.put(fileStorageDidInitialize([]));
-
-        const action = await saga.take();
-        expect(action).toEqual(didSetEditSession(mockEditor));
-
-        await saga.end();
-    });
-
-    it('should load main.py', async () => {
-        const mockEditor = mock<monaco.editor.ICodeEditor>();
-        const saga = new AsyncSaga(editor, {
-            fileStorage: { isInitialized: true, fileNames: ['main.py'] },
-        });
-
-        saga.put(setEditSession(mockEditor));
-
-        const action = await saga.take();
-        expect(action).toEqual(fileStorageReadFile('main.py'));
-
-        saga.put(fileStorageDidReadFile('main.py', '# test file'));
-
-        const action2 = await saga.take();
-        expect(action2).toEqual(didSetEditSession(mockEditor));
-        expect(mockEditor.setValue).toHaveBeenCalled();
-
-        await saga.end();
-    });
-
-    it('should not raise error if main.py does not exist', async () => {
-        const mockEditor = mock<monaco.editor.ICodeEditor>();
-        const saga = new AsyncSaga(editor, {
-            fileStorage: { isInitialized: true, fileNames: [] },
-        });
-
-        saga.put(setEditSession(mockEditor));
-
-        const action = await saga.take();
-        expect(action).toEqual(didSetEditSession(mockEditor));
-
-        await saga.end();
     });
 });

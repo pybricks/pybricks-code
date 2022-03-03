@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2021 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 
 import { I18nContext } from '@shopify/react-i18n';
 import React from 'react';
@@ -15,7 +15,7 @@ import { i18nManager } from './i18n';
 import * as I18nToaster from './notifications/I18nToaster';
 import { rootReducer } from './reducers';
 import reportWebVitals from './reportWebVitals';
-import rootSaga from './sagas';
+import rootSaga, { RootSagaContext } from './sagas';
 import { didSucceed, didUpdate } from './service-worker/actions';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import { defaultTerminalContext } from './terminal/TerminalContext';
@@ -24,8 +24,9 @@ import { createCountFunc } from './utils/iter';
 
 const toaster = I18nToaster.create(i18nManager);
 
-const sagaMiddleware = createSagaMiddleware({
+const sagaMiddleware = createSagaMiddleware<RootSagaContext>({
     context: {
+        editor: null,
         nextMessageId: createCountFunc(),
         notification: { toaster },
         terminal: defaultTerminalContext,
@@ -52,7 +53,9 @@ ReactDOM.render(
         <Provider store={store}>
             <I18nContext.Provider value={i18nManager}>
                 <ViewHeightSensor />
-                <App />
+                <App
+                    onEditorChanged={(editor) => sagaMiddleware.setContext({ editor })}
+                />
             </I18nContext.Provider>
         </Provider>
     </React.StrictMode>,

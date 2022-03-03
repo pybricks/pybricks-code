@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 
 import { AnyAction } from 'redux';
 import { END, MulticastChannel, Saga, Task, runSaga, stdChannel } from 'redux-saga';
 import { RootState } from '../src/reducers';
+import { RootSagaContext } from '../src/sagas';
 
 type RecursivePartial<T> = {
     [P in keyof T]?: RecursivePartial<T[P]>;
@@ -19,7 +20,7 @@ export class AsyncSaga {
     public constructor(
         saga: Saga,
         state: RecursivePartial<RootState> = {},
-        context?: Record<string, unknown>,
+        context?: Partial<RootSagaContext>,
     ) {
         this.channel = stdChannel();
         this.dispatches = [];

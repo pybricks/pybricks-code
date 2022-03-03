@@ -27,6 +27,11 @@ import { defined } from '../utils';
 import { TerminalContextValue } from './TerminalContext';
 import { receiveData, sendData } from './actions';
 
+/**
+ * Partial saga context type for context used in the terminal sagas.
+ */
+export type TerminalSagaContext = { terminal: TerminalContextValue };
+
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
 

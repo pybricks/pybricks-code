@@ -1,13 +1,15 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021 The Pybricks Authors
+// Copyright (c) 2021-2022 The Pybricks Authors
 
 import {
     FirmwareMetadata,
     FirmwareReaderError,
     FirmwareReaderErrorCode,
 } from '@pybricks/firmware';
+import { mock } from 'jest-mock-extended';
 import JSZip from 'jszip';
 import { AsyncSaga } from '../../test';
+import { EditorType } from '../editor/Editor';
 import {
     BootloaderConnectionFailureReason,
     checksumRequest,
@@ -1840,18 +1842,17 @@ describe('flashFirmware', () => {
             new Response(await zip.generateAsync({ type: 'blob' })),
         );
 
-        const editor = {
+        const editor = mock<EditorType>({
             getValue: () => 'print("test")',
-        };
+        });
 
         const saga = new AsyncSaga(
             flashFirmware,
             {
                 bootloader: { connection: BootloaderConnectionState.Disconnected },
-                editor: { current: editor },
                 settings: { flashCurrentProgram: true },
             },
-            { nextMessageId: createCountFunc() },
+            { editor, nextMessageId: createCountFunc() },
         );
 
         // saga is triggered by this action

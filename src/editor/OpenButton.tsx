@@ -1,19 +1,19 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2021 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 
-import React from 'react';
+import React, { useContext } from 'react';
 import { useDispatch } from 'react-redux';
 import * as notificationActions from '../notifications/actions';
-import { useSelector } from '../reducers';
 import OpenFileButton, { OpenFileButtonProps } from '../toolbar/OpenFileButton';
 import { TooltipId } from '../toolbar/i18n';
+import { EditorContext } from './Editor';
 import * as editorActions from './actions';
 import openIcon from './open.svg';
 
 type OpenButtonProps = Pick<OpenFileButtonProps, 'id'>;
 
 const OpenButton: React.FunctionComponent<OpenButtonProps> = (props) => {
-    const editor = useSelector((s) => s.editor.current);
+    const { editor } = useContext(EditorContext);
     const dispatch = useDispatch();
 
     return (

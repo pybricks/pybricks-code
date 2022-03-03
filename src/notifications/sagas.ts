@@ -43,6 +43,13 @@ type NotificationContext = {
     toaster: IToaster;
 };
 
+/**
+ * Partial saga context type for context used in the notification sagas.
+ */
+export type NotificationSagaContext = {
+    notification: NotificationContext;
+};
+
 /** Severity level of notification. */
 enum Level {
     /** This is an error (requires user action to resolve). */

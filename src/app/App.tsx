@@ -2,10 +2,10 @@
 // Copyright (c) 2020-2021 The Pybricks Authors
 
 import { Classes } from '@blueprintjs/core';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import SplitterLayout from 'react-splitter-layout';
-import Editor from '../editor/Editor';
+import Editor, { EditorContext, EditorContextType, EditorType } from '../editor/Editor';
 import { useSelector } from '../reducers';
 import { toggleBoolean } from '../settings/actions';
 import { BooleanSettingId } from '../settings/defaults';
@@ -121,10 +121,30 @@ const Docs: React.FunctionComponent = (_props) => {
     );
 };
 
-const App: React.FunctionComponent = (_props) => {
+type AppProps = {
+    /** Called when the editor is initialized. */
+    onEditorChanged?: (editor: EditorType) => void;
+};
+
+const App: React.VoidFunctionComponent<AppProps> = (props) => {
     const darkMode = useSelector((s): boolean => s.settings.darkMode);
     const showDocs = useSelector((s): boolean => s.settings.showDocs);
     const [isDragging, setIsDragging] = useState(false);
+    const [editor, setEditor] = useState<EditorType>(null);
+
+    const editorContext = useMemo<EditorContextType>(
+        () => ({
+            editor,
+            setEditor: (editor) => {
+                setEditor(editor);
+
+                if (props.onEditorChanged) {
+                    props.onEditorChanged(editor);
+                }
+            },
+        }),
+        [editor],
+    );
 
     // darkMode class has to be applied to body element, otherwise it won't
     // affect portals
@@ -139,44 +159,46 @@ const App: React.FunctionComponent = (_props) => {
     }, [darkMode]);
 
     return (
-        <div className="pb-app h-100 w-100 p-absolute">
-            <Toolbar />
-            <SplitterLayout
-                customClassName={`pb-app-body ${
-                    showDocs ? 'pb-show-docs' : 'pb-hide-docs'
-                }`}
-                onDragStart={(): void => setIsDragging(true)}
-                onDragEnd={(): void => setIsDragging(false)}
-                percentage={true}
-                secondaryInitialSize={Number(
-                    localStorage.getItem('app-docs-split') || 30,
-                )}
-                onSecondaryPaneSizeChange={(value): void =>
-                    localStorage.setItem('app-docs-split', String(value))
-                }
-            >
+        <EditorContext.Provider value={editorContext}>
+            <div className="pb-app h-100 w-100 p-absolute">
+                <Toolbar />
                 <SplitterLayout
-                    vertical={true}
+                    customClassName={`pb-app-body ${
+                        showDocs ? 'pb-show-docs' : 'pb-hide-docs'
+                    }`}
+                    onDragStart={(): void => setIsDragging(true)}
+                    onDragEnd={(): void => setIsDragging(false)}
                     percentage={true}
                     secondaryInitialSize={Number(
-                        localStorage.getItem('app-terminal-split') || 30,
+                        localStorage.getItem('app-docs-split') || 30,
                     )}
                     onSecondaryPaneSizeChange={(value): void =>
-                        localStorage.setItem('app-terminal-split', String(value))
+                        localStorage.setItem('app-docs-split', String(value))
                     }
                 >
-                    <Editor />
-                    <div className="pb-app-terminal-padding h-100">
-                        <Terminal />
+                    <SplitterLayout
+                        vertical={true}
+                        percentage={true}
+                        secondaryInitialSize={Number(
+                            localStorage.getItem('app-terminal-split') || 30,
+                        )}
+                        onSecondaryPaneSizeChange={(value): void =>
+                            localStorage.setItem('app-terminal-split', String(value))
+                        }
+                    >
+                        <Editor />
+                        <div className="pb-app-terminal-padding h-100">
+                            <Terminal />
+                        </div>
+                    </SplitterLayout>
+                    <div className="h-100 w-100">
+                        {isDragging && <div className="h-100 w-100 p-absolute" />}
+                        <Docs />
                     </div>
                 </SplitterLayout>
-                <div className="h-100 w-100">
-                    {isDragging && <div className="h-100 w-100 p-absolute" />}
-                    <Docs />
-                </div>
-            </SplitterLayout>
-            <StatusBar />
-        </div>
+                <StatusBar />
+            </div>
+        </EditorContext.Provider>
     );
 };
 

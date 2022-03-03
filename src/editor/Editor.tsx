@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2021 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 
 import { Menu, MenuDivider, MenuItem } from '@blueprintjs/core';
 import {
@@ -10,7 +10,7 @@ import {
 import { useI18n } from '@shopify/react-i18n';
 import tomorrowNightEightiesTheme from 'monaco-themes/themes/Tomorrow-Night-Eighties.json';
 import xcodeTheme from 'monaco-themes/themes/Xcode_default.json';
-import React, { useRef } from 'react';
+import React, { createContext, useContext, useRef } from 'react';
 import MonacoEditor, { monaco } from 'react-monaco-editor';
 import { useDispatch } from 'react-redux';
 import { IDisposable } from 'xterm';
@@ -20,13 +20,33 @@ import { useSelector } from '../reducers';
 import { toggleBoolean } from '../settings/actions';
 import { BooleanSettingId } from '../settings/defaults';
 import { isMacOS } from '../utils/os';
-import { setEditSession } from './actions';
 import { EditorStringId } from './i18n';
 import en from './i18n.en.json';
 import * as pybricksMicroPython from './pybricksMicroPython';
 import { UntitledHintContribution } from './untitledHint';
 
 import './editor.scss';
+
+/**
+ * The editor type. Null indicates no current editor.
+ */
+export type EditorType = monaco.editor.ICodeEditor | null;
+
+/**
+ * The type for the value of EditorContext.
+ */
+export type EditorContextType = {
+    editor: EditorType;
+    setEditor: (editor: EditorType) => void;
+};
+
+/**
+ * Editor context for getting access to the current editor.
+ */
+export const EditorContext = createContext<EditorContextType>({
+    editor: null,
+    setEditor: () => undefined,
+});
 
 const pybricksMicroPythonId = 'pybricks-micropython';
 monaco.languages.register({ id: pybricksMicroPythonId });
@@ -64,7 +84,7 @@ const xcodeId = 'xcode';
 monaco.editor.defineTheme(xcodeId, xcodeTheme as monaco.editor.IStandaloneThemeData);
 
 const contextMenu = (_props: ContextMenu2ContentProps): JSX.Element => {
-    const editor = useSelector((s) => s.editor.current);
+    const { editor } = useContext(EditorContext);
 
     const [i18n] = useI18n({ id: 'editor', translations: { en }, fallback: en });
 
@@ -128,6 +148,7 @@ const contextMenu = (_props: ContextMenu2ContentProps): JSX.Element => {
 const Editor: React.FunctionComponent = (_props) => {
     const editorRef = useRef<MonacoEditor>(null);
     const dispatch = useDispatch();
+    const { setEditor } = useContext(EditorContext);
 
     const darkMode = useSelector((s) => s.settings.darkMode);
 
@@ -204,7 +225,7 @@ const Editor: React.FunctionComponent = (_props) => {
                             subscriptions.forEach((s) => s.dispose()),
                         );
                         editor.focus();
-                        dispatch(setEditSession(editor));
+                        setEditor(editor);
                     }}
                     // REVIST: need to ensure we have exclusive access to file
                     onChange={(v) => dispatch(fileStorageWriteFile('main.py', v))}
