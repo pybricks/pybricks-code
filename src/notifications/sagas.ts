@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2022 The Pybricks Authors
+// Copyright (c) 2020 - 2022 The Pybricks Authors
 
 // Saga for managing notifications (toasts)
 
@@ -363,7 +363,7 @@ function* showServiceWorkerUpdate(
 
 function* showNoUpdateInfo(action: ReturnType<typeof didCheckForUpdate>): Generator {
     if (action.updateFound) {
-        // this will be handled by ServiceWorkerActionType.DidUpdate action
+        // this will be handled by didUpdate action
         return;
     }
 
