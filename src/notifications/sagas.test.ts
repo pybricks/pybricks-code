@@ -34,7 +34,10 @@ import {
     didFailToConnect as bootloaderDidFailToConnect,
 } from '../lwp3-bootloader/actions';
 import { didCompile, didFailToCompile } from '../mpy/actions';
-import { didSucceed, didUpdate } from '../service-worker/actions';
+import {
+    serviceWorkerDidSucceed,
+    serviceWorkerDidUpdate,
+} from '../service-worker/actions';
 import { add } from './actions';
 import { MessageId } from './i18n';
 import notification from './sagas';
@@ -60,7 +63,7 @@ test.each([
     didFailToCompile(['reason']),
     add('warning', 'message'),
     add('error', 'message', 'url'),
-    didUpdate({} as ServiceWorkerRegistration),
+    serviceWorkerDidUpdate({} as ServiceWorkerRegistration),
     didFailToFinish(FailToFinishReasonType.TimedOut),
     didFailToFinish(
         FailToFinishReasonType.BleError,
@@ -122,7 +125,7 @@ test.each([
     bleDidFailToConnect({ reason: BleDeviceFailToConnectReasonType.Canceled }),
     bootloaderDidFailToConnect(BootloaderConnectionFailureReason.Canceled),
     didFailToFinish(FailToFinishReasonType.FailedToConnect),
-    didSucceed({} as ServiceWorkerRegistration),
+    serviceWorkerDidSucceed({} as ServiceWorkerRegistration),
     didCheckForUpdate(true),
     bleDIServiceDidReceiveFirmwareRevision(firmwareVersion),
     didFailToSaveAs(new DOMException('test message', 'AbortError')),

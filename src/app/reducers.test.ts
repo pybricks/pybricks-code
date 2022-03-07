@@ -1,8 +1,11 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021 The Pybricks Authors
+// Copyright (c) 2021-2022 The Pybricks Authors
 
 import { AnyAction } from 'redux';
-import { didSucceed, didUpdate } from '../service-worker/actions';
+import {
+    serviceWorkerDidSucceed,
+    serviceWorkerDidUpdate,
+} from '../service-worker/actions';
 import { BeforeInstallPromptEvent } from '../utils/dom';
 import {
     checkForUpdate,
@@ -32,8 +35,10 @@ test('initial state', () => {
 test('serviceWorker', () => {
     const registration = {} as ServiceWorkerRegistration;
     expect(
-        reducers({ serviceWorker: null } as State, didSucceed(registration))
-            .serviceWorker,
+        reducers(
+            { serviceWorker: null } as State,
+            serviceWorkerDidSucceed(registration),
+        ).serviceWorker,
     ).toBe(registration);
 });
 
@@ -59,7 +64,7 @@ test('checkingForUpdate', () => {
     expect(
         reducers(
             { checkingForUpdate: true } as State,
-            didUpdate({} as ServiceWorkerRegistration),
+            serviceWorkerDidUpdate({} as ServiceWorkerRegistration),
         ).checkingForUpdate,
     ).toBe(false);
 });
@@ -68,7 +73,7 @@ test('updateAvailable', () => {
     expect(
         reducers(
             { updateAvailable: false } as State,
-            didUpdate({} as ServiceWorkerRegistration),
+            serviceWorkerDidUpdate({} as ServiceWorkerRegistration),
         ).updateAvailable,
     ).toBe(true);
 });
@@ -102,7 +107,7 @@ test('readyForOfflineUse', () => {
     expect(
         reducers(
             { readyForOfflineUse: false } as State,
-            didSucceed({} as ServiceWorkerRegistration),
+            serviceWorkerDidSucceed({} as ServiceWorkerRegistration),
         ).readyForOfflineUse,
     ).toBe(true);
 });

@@ -4,7 +4,10 @@
 // Manages state the app in general.
 
 import { Reducer, combineReducers } from 'redux';
-import { didSucceed, didUpdate } from '../service-worker/actions';
+import {
+    serviceWorkerDidSucceed,
+    serviceWorkerDidUpdate,
+} from '../service-worker/actions';
 import { BeforeInstallPromptEvent } from '../utils/dom';
 import {
     checkForUpdate,
@@ -19,7 +22,7 @@ const serviceWorker: Reducer<ServiceWorkerRegistration | null> = (
     state = null,
     action,
 ) => {
-    if (didSucceed.matches(action)) {
+    if (serviceWorkerDidSucceed.matches(action)) {
         return action.registration;
     }
 
@@ -39,7 +42,7 @@ const checkingForUpdate: Reducer<boolean> = (state = false, action) => {
         return state;
     }
 
-    if (didUpdate.matches(action)) {
+    if (serviceWorkerDidUpdate.matches(action)) {
         return false;
     }
 
@@ -47,7 +50,7 @@ const checkingForUpdate: Reducer<boolean> = (state = false, action) => {
 };
 
 const updateAvailable: Reducer<boolean> = (state = false, action) => {
-    if (didUpdate.matches(action)) {
+    if (serviceWorkerDidUpdate.matches(action)) {
         return true;
     }
 
@@ -82,7 +85,7 @@ const promptingInstall: Reducer<boolean> = (state = false, action) => {
 };
 
 const readyForOfflineUse: Reducer<boolean> = (state = false, action) => {
-    if (didSucceed.matches(action)) {
+    if (serviceWorkerDidSucceed.matches(action)) {
         return true;
     }
 

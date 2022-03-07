@@ -16,7 +16,10 @@ import * as I18nToaster from './notifications/I18nToaster';
 import { rootReducer } from './reducers';
 import reportWebVitals from './reportWebVitals';
 import rootSaga, { RootSagaContext } from './sagas';
-import { didSucceed, didUpdate } from './service-worker/actions';
+import {
+    serviceWorkerDidSucceed,
+    serviceWorkerDidUpdate,
+} from './service-worker/actions';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import { defaultTerminalContext } from './terminal/TerminalContext';
 import ViewHeightSensor from './utils/ViewHeightSensor';
@@ -66,8 +69,8 @@ ReactDOM.render(
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://cra.link/PWA
 serviceWorkerRegistration.register({
-    onUpdate: (r) => store.dispatch(didUpdate(r)),
-    onSuccess: (r) => store.dispatch(didSucceed(r)),
+    onUpdate: (r) => store.dispatch(serviceWorkerDidUpdate(r)),
+    onSuccess: (r) => store.dispatch(serviceWorkerDidSucceed(r)),
 });
 
 // If you want to start measuring performance in your app, pass a function

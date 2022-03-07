@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020 - 2022 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 
 // Saga for managing notifications (toasts)
 
@@ -31,7 +31,7 @@ import {
     didFailToConnect as bootloaderDidFailToConnect,
 } from '../lwp3-bootloader/actions';
 import { didCompile, didFailToCompile } from '../mpy/actions';
-import { didUpdate as serviceWorkerDidUpdate } from '../service-worker/actions';
+import { serviceWorkerDidUpdate as serviceWorkerDidUpdate } from '../service-worker/actions';
 import { pythonVersionToSemver } from '../utils/version';
 import NotificationAction from './NotificationAction';
 import NotificationMessage from './NotificationMessage';
@@ -363,7 +363,7 @@ function* showServiceWorkerUpdate(
 
 function* showNoUpdateInfo(action: ReturnType<typeof didCheckForUpdate>): Generator {
     if (action.updateFound) {
-        // this will be handled by didUpdate action
+        // this will be handled by serviceWorkerDidUpdate action
         return;
     }
 
