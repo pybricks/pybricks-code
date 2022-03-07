@@ -2,12 +2,7 @@
 //
 // https://github.com/gsoft-inc/craco/blob/master/packages/craco/README.md#configuration
 
-const {
-    addBeforeLoader,
-    getLoader,
-    getLoaders,
-    loaderByName,
-} = require('@craco/craco');
+const { addBeforeLoader, loaderByName } = require('@craco/craco');
 const CopyPlugin = require('copy-webpack-plugin');
 const LicensePlugin = require('license-webpack-plugin').LicenseWebpackPlugin;
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
@@ -240,12 +235,6 @@ module.exports = {
                 filename: '[name].worker.[contenthash].js',
             }),
         ],
-        configure: {
-            resolve: {
-                // need 'esnext' first to avoid compile errors
-                mainFields: ['esnext', 'browser', 'module', 'main'],
-            },
-        },
     },
     plugins: [
         {
@@ -256,31 +245,13 @@ module.exports = {
                     pluginOptions,
                     context: { env, paths },
                 }) => {
-                    // add .esnext file extension for @shopify/*
-
-                    webpackConfig.resolve.extensions = [
-                        '.web.esnext',
-                        '.esnext',
-                        ...webpackConfig.resolve.extensions,
-                    ];
-
-                    const babelLoaders = getLoaders(
-                        webpackConfig,
-                        loaderByName('babel-loader'),
-                    );
-                    babelLoaders.matches[0].loader.test =
-                        /\.(esnext|js|mjs|jsx|ts|tsx)$/;
-                    babelLoaders.matches[1].loader.test = /\.(esnext|js|mjs)$/;
-
-                    const fileLoader = getLoader(
-                        webpackConfig,
-                        loaderByName('file-loader'),
-                    );
-                    fileLoader.match.loader.exclude = [
-                        /\.(esnext|js|mjs|jsx|ts|tsx)$/,
-                        /\.html$/,
-                        /\.json$/,
-                    ];
+                    // work around @shopify/* webpack compatibility
+                    // https://github.com/Shopify/quilt/issues/1722#issuecomment-789883471
+                    webpackConfig.module.rules.push({
+                        test: /\.mjs$/,
+                        include: /node_modules/,
+                        type: 'javascript/auto',
+                    });
 
                     // work around default handling of .wasm files
                     // https://github.com/webpack/webpack/issues/7352
