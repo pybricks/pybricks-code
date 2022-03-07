@@ -1693,10 +1693,10 @@
     estree-walker "^1.0.1"
     picomatch "^2.2.2"
 
-"@shopify/dates@^1.1.3":
-  version "1.1.3"
-  resolved "https://registry.yarnpkg.com/@shopify/dates/-/dates-1.1.3.tgz#6c8e82facb0ccb4c9547adc2b0e098db68414af2"
-  integrity sha512-V4PlYN79b6jB+BFvoZGk+POSmhFLBQpzBpkvZirnEUSWgJ/v/iCKYQwdA3vXpKPmSKo11TsC4SpcmyB77pU6wg==
+"@shopify/dates@^1.1.4":
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/@shopify/dates/-/dates-1.1.4.tgz#9bf3fa1ac8d7a9c000630edd1de9cf862aa7b99b"
+  integrity sha512-LrLfS3yBR7Os5iRE/JcwGlWayX8XvoQ9M4GaEwwj/kYNMuK+Eixwxfp/+r69ACcAD0RfER6vt++OE7m1BIaChw==
   dependencies:
     "@shopify/decorators" "^2.0.7"
 
@@ -1722,23 +1722,23 @@
   resolved "https://registry.yarnpkg.com/@shopify/react-effect/-/react-effect-4.1.10.tgz#8bd1b9e1be64f7a6de17b3ea51bad4af2aee4305"
   integrity sha512-xzJoG7IWA8Ow/FPYlhbRt/BhXK7Zm949qmXwk7sHX+jWpUG2sHbp8ZJtHG8Eb629oJtQaBx4uE7xlphJVTrJrA==
 
-"@shopify/react-hooks@^2.1.16":
-  version "2.1.16"
-  resolved "https://registry.yarnpkg.com/@shopify/react-hooks/-/react-hooks-2.1.16.tgz#a8fd2fd46f3e6cba81ef163e7feef8a0b84976b8"
-  integrity sha512-aEKU/rb3GwZoybb7HtZLYhAX4OBg94NuKLuOUhS3I9TiCkkQ4ryZ4s+pXILPefSec+ajVk2OMQAA5kyfENQcHw==
+"@shopify/react-hooks@^2.1.17":
+  version "2.1.17"
+  resolved "https://registry.yarnpkg.com/@shopify/react-hooks/-/react-hooks-2.1.17.tgz#af75b8d2479f2bffc9afb3fbf76c202e5a0e0256"
+  integrity sha512-D+TvL95aD9OmYXXy9LcY19KJD7TsihEv6w+iG1WLuFA0pDYCWZpE2gSl2AUgEJpYYDGc+O0yxnxpvc/UuCoclw==
 
-"@shopify/react-i18n@^6.3.10":
-  version "6.3.10"
-  resolved "https://registry.yarnpkg.com/@shopify/react-i18n/-/react-i18n-6.3.10.tgz#2476d48dbc827e8192ed966e352b0bee15274677"
-  integrity sha512-uSI1ea4A20WNEpGjqzNSLm8JLlyfeD87RkNtfGdW8DUNE49sTgcFLdyr9raWe5oOd8I4GVZpAbkm2Cj/bf7LmQ==
+"@shopify/react-i18n@^6.3.11":
+  version "6.3.11"
+  resolved "https://registry.yarnpkg.com/@shopify/react-i18n/-/react-i18n-6.3.11.tgz#504bbe14b22cc5afdff46cd80d227f53bc74a4fd"
+  integrity sha512-ChQVRZZJOCgtnu4OnmPhPKk0m5xWYYUogDjEL5ss9d9ihcoeq2srnwizQNZIZtHWMFjdjqhEMq7iwdSsc59/YA==
   dependencies:
-    "@shopify/dates" "^1.1.3"
+    "@shopify/dates" "^1.1.4"
     "@shopify/decorators" "^2.0.7"
     "@shopify/function-enhancers" "^2.0.7"
     "@shopify/i18n" "^1.0.8"
     "@shopify/react-effect" "^4.1.10"
-    "@shopify/react-hooks" "^2.1.16"
-    "@shopify/useful-types" "^4.0.0"
+    "@shopify/react-hooks" "^2.1.17"
+    "@shopify/useful-types" "^4.0.1"
     "@types/hoist-non-react-statics" "^3.0.1"
     change-case "^4.1.2"
     glob "^7.1.4"
@@ -1751,10 +1751,10 @@
     "@babel/traverse" "^7.0.0"
     fs-extra "^9.1.0"
 
-"@shopify/useful-types@^4.0.0":
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/@shopify/useful-types/-/useful-types-4.0.0.tgz#6672b18173e018749dd74b64aafcf7b1532eb25f"
-  integrity sha512-sk37gzBQceXmYLcFU0P1dHsWgovVdPNHYSr3Hh2BwWD23GnRnu0IEXL5Z5R0IHcz1nUw++4mY+Sx3Wq5dIUPZw==
+"@shopify/useful-types@^4.0.1":
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/@shopify/useful-types/-/useful-types-4.0.1.tgz#02f02b1931be19c6c5b713b5ff7b08fb0931f850"
+  integrity sha512-zuCStF/ixl6VDurujc/itIkixrzGS7rkCA0ctAfCWOQbniWvGbBRsCe4hpR8XZuyC5NoG5pLHiGNzWZgGf2LoA==
 
 "@sinonjs/commons@^1.7.0":
   version "1.8.3"
@@ -5260,10 +5260,10 @@ eslint-plugin-react-hooks@^4.2.0:
   resolved "https://registry.yarnpkg.com/eslint-plugin-react-hooks/-/eslint-plugin-react-hooks-4.2.0.tgz#8c229c268d468956334c943bb45fc860280f5556"
   integrity sha512-623WEiZJqxR7VdxFCKLI6d6LLpwJkGPYKODnkH3D7WpOG5KM8yWueBd8TLsNAetEJNF5iJmolaAKO3F8yzyVBQ==
 
-eslint-plugin-react@^7.21.5, eslint-plugin-react@^7.29.2:
-  version "7.29.2"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-react/-/eslint-plugin-react-7.29.2.tgz#2d4da69d30d0a736efd30890dc6826f3e91f3f7c"
-  integrity sha512-ypEBTKOy5liFQXZWMchJ3LN0JX1uPI6n7MN7OPHKacqXAxq5gYC30TdO7wqGYQyxD1OrzpobdHC3hDmlRWDg9w==
+eslint-plugin-react@^7.21.5, eslint-plugin-react@^7.29.3:
+  version "7.29.3"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-react/-/eslint-plugin-react-7.29.3.tgz#f4eab757f2756d25d6d4c2a58a9e20b004791f05"
+  integrity sha512-MzW6TuCnDOcta67CkpDyRfRsEVx9FNMDV8wZsDqe1luHPdGTrQIUaUXD27Ja3gHsdOIs/cXzNchWGlqm+qRVRg==
   dependencies:
     array-includes "^3.1.4"
     array.prototype.flatmap "^1.2.5"
