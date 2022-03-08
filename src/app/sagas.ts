@@ -5,12 +5,12 @@ import { eventChannel } from 'redux-saga';
 import { call, fork, put, take, takeEvery } from 'typed-redux-saga/macro';
 import { BeforeInstallPromptEvent } from '../utils/dom';
 import {
+    appDidReceiveBeforeInstallPrompt,
+    appDidResolveInstallPrompt,
+    appShowInstallPrompt,
     checkForUpdate,
-    didBeforeInstallPrompt,
     didCheckForUpdate,
     didInstall,
-    didInstallPrompt,
-    installPrompt,
     reload,
 } from './actions';
 
@@ -31,6 +31,15 @@ function* monitorAppInstalled(): Generator {
     }
 }
 
+function* handleBeforeInstallPromptEvent(event: BeforeInstallPromptEvent): Generator {
+    // wait for user to request to install the app - may never happen
+    yield* take(appShowInstallPrompt);
+
+    yield* call(() => event.prompt());
+    const choice = yield* call(() => event.userChoice);
+    yield* put(appDidResolveInstallPrompt(choice));
+}
+
 function* monitorBeforeInstallPrompt(): Generator {
     const chan = eventChannel<BeforeInstallPromptEvent>((emit) => {
         const listener = (e: BeforeInstallPromptEvent) => {
@@ -43,9 +52,12 @@ function* monitorBeforeInstallPrompt(): Generator {
         return () => window.removeEventListener('beforeinstallprompt', listener);
     });
 
+    // in theory, the before install prompt event should only happen once, so
+    // we don't bother canceling the forked task when another event is received
     while (true) {
         const event = yield* take(chan);
-        yield* put(didBeforeInstallPrompt(event));
+        yield* fork(handleBeforeInstallPromptEvent, event);
+        yield* put(appDidReceiveBeforeInstallPrompt());
     }
 }
 
@@ -60,16 +72,9 @@ function* handleCheckForUpdate(action: ReturnType<typeof checkForUpdate>): Gener
     yield* put(didCheckForUpdate(updateFound));
 }
 
-function* handleInstallPrompt(action: ReturnType<typeof installPrompt>): Generator {
-    yield* call(() => action.event.prompt());
-    yield* call(() => action.event.userChoice);
-    yield* put(didInstallPrompt());
-}
-
 export default function* app(): Generator {
     yield* fork(monitorAppInstalled);
     yield* fork(monitorBeforeInstallPrompt);
     yield* takeEvery(reload, handleReload);
     yield* takeEvery(checkForUpdate, handleCheckForUpdate);
-    yield* takeEvery(installPrompt, handleInstallPrompt);
 }

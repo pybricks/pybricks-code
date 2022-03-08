@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021 The Pybricks Authors
+// Copyright (c) 2021-2022 The Pybricks Authors
 
 import {
     AnchorButton,
@@ -21,7 +21,7 @@ import { useI18n } from '@shopify/react-i18n';
 import React, { useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import AboutDialog from '../about/AboutDialog';
-import { checkForUpdate, installPrompt, reload } from '../app/actions';
+import { appShowInstallPrompt, checkForUpdate, reload } from '../app/actions';
 import {
     pybricksBugReportsUrl,
     pybricksGitterUrl,
@@ -53,7 +53,9 @@ const SettingsDrawer: React.FunctionComponent<SettingsProps> = (props) => {
     const serviceWorker = useSelector((s) => s.app.serviceWorker);
     const checkingForUpdate = useSelector((s) => s.app.checkingForUpdate);
     const updateAvailable = useSelector((s) => s.app.updateAvailable);
-    const beforeInstallPrompt = useSelector((s) => s.app.beforeInstallPrompt);
+    const hasUnresolvedInstallPrompt = useSelector(
+        (s) => s.app.hasUnresolvedInstallPrompt,
+    );
     const promptingInstall = useSelector((s) => s.app.promptingInstall);
     const readyForOfflineUse = useSelector((s) => s.app.readyForOfflineUse);
     const hubName = useSelector((s) => s.settings.hubName);
@@ -279,12 +281,10 @@ const SettingsDrawer: React.FunctionComponent<SettingsProps> = (props) => {
                         }
                     >
                         <ButtonGroup minimal={true} vertical={true} alignText="left">
-                            {beforeInstallPrompt && (
+                            {hasUnresolvedInstallPrompt && (
                                 <Button
                                     icon="add"
-                                    onClick={() =>
-                                        dispatch(installPrompt(beforeInstallPrompt))
-                                    }
+                                    onClick={() => dispatch(appShowInstallPrompt())}
                                     loading={promptingInstall}
                                 >
                                     {i18n.translate(SettingsStringId.AppInstallLabel)}

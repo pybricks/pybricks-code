@@ -4,7 +4,6 @@
 // Actions for the app in general.
 
 import { createAction } from '../actions';
-import { BeforeInstallPromptEvent } from '../utils/dom';
 
 /** Creates an action that requests the app to reload. */
 export const reload = createAction((registration: ServiceWorkerRegistration) => ({
@@ -27,23 +26,22 @@ export const didCheckForUpdate = createAction((updateFound: boolean) => ({
 }));
 
 /* Action that indicates the browser wants to prompt the use to install the app. */
-export const didBeforeInstallPrompt = createAction(
-    (event: BeforeInstallPromptEvent) => ({
-        type: 'app.action.didBeforeInstallPrompt',
-        event,
-    }),
-);
+export const appDidReceiveBeforeInstallPrompt = createAction(() => ({
+    type: 'app.action.didBeforeInstallPrompt',
+}));
 
 /* Action that requests to prompt the user to install the app. */
-export const installPrompt = createAction((event: BeforeInstallPromptEvent) => ({
-    type: 'app.action.installPrompt',
-    event,
+export const appShowInstallPrompt = createAction(() => ({
+    type: 'app.action.showInstallPrompt',
 }));
 
 /* Action that indicates that the user responded to the install prompt. */
-export const didInstallPrompt = createAction(() => ({
-    type: 'app.action.didInstallPrompt',
-}));
+export const appDidResolveInstallPrompt = createAction(
+    (result: { outcome: 'accepted' | 'dismissed'; platform: string }) => ({
+        type: 'app.action.didResolveInstallPrompt',
+        result,
+    }),
+);
 
 /* Action that indicates app was installed. */
 export const didInstall = createAction(() => ({

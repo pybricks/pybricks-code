@@ -8,14 +8,13 @@ import {
     serviceWorkerDidSucceed,
     serviceWorkerDidUpdate,
 } from '../service-worker/actions';
-import { BeforeInstallPromptEvent } from '../utils/dom';
 import {
+    appDidReceiveBeforeInstallPrompt,
+    appDidResolveInstallPrompt,
+    appShowInstallPrompt,
     checkForUpdate,
-    didBeforeInstallPrompt,
     didCheckForUpdate,
     didInstall,
-    didInstallPrompt,
-    installPrompt,
 } from './actions';
 
 const serviceWorker: Reducer<ServiceWorkerRegistration | null> = (
@@ -57,27 +56,29 @@ const updateAvailable: Reducer<boolean> = (state = false, action) => {
     return state;
 };
 
-const beforeInstallPrompt: Reducer<BeforeInstallPromptEvent | null> = (
-    state = null,
-    action,
-) => {
-    if (didBeforeInstallPrompt.matches(action)) {
-        return action.event;
+/**
+ * Indicates that the app has received the BeforeInstallPromptEvent but the
+ * app has not been installed yet.
+ */
+const hasUnresolvedInstallPrompt: Reducer<boolean> = (state = false, action) => {
+    if (appDidReceiveBeforeInstallPrompt.matches(action)) {
+        return true;
     }
 
     if (didInstall.matches(action)) {
-        return null;
+        return false;
     }
 
     return state;
 };
 
+/** Indicates that the browser install prompt is active. */
 const promptingInstall: Reducer<boolean> = (state = false, action) => {
-    if (installPrompt.matches(action)) {
+    if (appShowInstallPrompt.matches(action)) {
         return true;
     }
 
-    if (didInstallPrompt.matches(action)) {
+    if (appDidResolveInstallPrompt.matches(action)) {
         return false;
     }
 
@@ -96,7 +97,7 @@ export default combineReducers({
     serviceWorker,
     checkingForUpdate,
     updateAvailable,
-    beforeInstallPrompt,
+    hasUnresolvedInstallPrompt,
     promptingInstall,
     readyForOfflineUse,
 });
