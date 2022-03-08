@@ -103,20 +103,34 @@ See the section about [deployment][deployment] for more information.
 
 [deployment]: https://facebook.github.io/create-react-app/docs/deployment
 
-### `./tools/serve.py`
 
-WebBluetooth requires https. So to locally test the result of `yarn build`,
-run `./tools/serve.py` then point a web browser to <https://localhost:8443>
-(don't leave out https!).
+## Running the app locally
 
-Usually using `yarn start` is more convenient for local development, but this is
-particularly useful for testing changes on an Android device, for example. On
-remote devices, replace `localhost` with the hostname or IP address of the
-computer running the `./tools/serve.py` script.
+For most development work, running `yarn start` will suffice (see above).
+However, there are some features, like the service worker, that are disabled in
+this environment. To test the site as if it was deployed in production, we can
+serve up the output of `yarn build` instead.
 
-This server uses a self-signed certificate, so the browser will complain that
-the site is not secure. This warning can be ignored by clicking the *Advanced*
-button and then click the link to proceed to the site.
+This app uses "powerful web features" so requires a secure (https) connection.
+So for local testing without https, we need to follow
+<https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/#testing-powerful-features>.
+
+To serve the website, run:
+
+    yarn build
+    python3 -m http.server --directory build
+
+Note: the usual `npx serve` doesn't properly serve parts of the site so we use
+Python instead.
+
+Then at `chrome://flags/#unsafely-treat-insecure-origin-as-secure`, add:
+
+    http://localhost:8000
+
+and restart Chromium.
+
+The first link above also has info on how to use port forwarding to test on
+Android devices.
 
 ## Learn More
 
