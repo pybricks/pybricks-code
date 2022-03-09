@@ -1,102 +1,52 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021 The Pybricks Authors
+// Copyright (c) 2021-2022 The Pybricks Authors
 
-import { I18nContext, I18nManager } from '@shopify/react-i18n';
 import {
+    RenderResult,
     fireEvent,
-    render,
-    screen,
     waitFor,
     waitForElementToBeRemoved,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
-import { Provider } from 'react-redux';
-import { Store } from 'redux';
+import { testRender } from '../../test';
 import Editor from './Editor';
 
-function getTextArea(): HTMLTextAreaElement {
+function getTextArea(editor: RenderResult): HTMLTextAreaElement {
     // the textarea in ace editor doesn't actually have any contents, but
     // it gets the focus for input.
-    return screen.getByDisplayValue('') as HTMLTextAreaElement;
+    return editor.getByDisplayValue('') as HTMLTextAreaElement;
 }
 
 it('should focus the text area', () => {
-    const store = {
-        getState: jest.fn(() => ({
-            editor: { current: null },
-            settings: { darkMode: false, showDocs: false },
-        })),
-        dispatch: jest.fn(),
-        subscribe: jest.fn(),
-    } as unknown as Store;
-    const i18n = new I18nManager({ locale: 'en' });
-    render(
-        <Provider store={store}>
-            <I18nContext.Provider value={i18n}>
-                <Editor />
-            </I18nContext.Provider>
-        </Provider>,
-    );
+    const editor = testRender(<Editor />);
 
-    expect(getTextArea()).toHaveFocus();
+    expect(getTextArea(editor)).toHaveFocus();
 });
 
 describe('context menu', () => {
     it('should show the context menu', async () => {
-        const store = {
-            getState: jest.fn(() => ({
-                editor: { current: null },
-                settings: { darkMode: false, showDocs: false },
-            })),
-            dispatch: jest.fn(),
-            subscribe: jest.fn(),
-        } as unknown as Store;
-        const i18n = new I18nManager({ locale: 'en' });
+        const editor = testRender(<Editor />);
 
-        render(
-            <Provider store={store}>
-                <I18nContext.Provider value={i18n}>
-                    <Editor />
-                </I18nContext.Provider>
-            </Provider>,
-        );
-
-        fireEvent.contextMenu(screen.getByText('Write your program here...'));
+        fireEvent.contextMenu(editor.getByText('Write your program here...'));
 
         await waitFor(() => {
-            expect(screen.getByText('Copy')).toBeInTheDocument();
+            expect(editor.getByText('Copy')).toBeInTheDocument();
         });
     });
 
     it('should hide the context menu when Escape is pressed', async () => {
-        const store = {
-            getState: jest.fn(() => ({
-                editor: { current: null },
-                settings: { darkMode: false, showDocs: false },
-            })),
-            dispatch: jest.fn(),
-            subscribe: jest.fn(),
-        } as unknown as Store;
-        const i18n = new I18nManager({ locale: 'en' });
+        const editor = testRender(<Editor />);
 
-        render(
-            <Provider store={store}>
-                <I18nContext.Provider value={i18n}>
-                    <Editor />
-                </I18nContext.Provider>
-            </Provider>,
-        );
+        fireEvent.contextMenu(editor.getByText('Write your program here...'));
 
-        fireEvent.contextMenu(screen.getByText('Write your program here...'));
+        expect(editor.getByText('Copy')).toBeInTheDocument();
 
-        expect(screen.getByText('Copy')).toBeInTheDocument();
+        userEvent.type(editor.getByText('Copy'), '{esc}');
 
-        userEvent.type(screen.getByText('Copy'), '{esc}');
-
-        await waitForElementToBeRemoved(() => screen.queryByText('Copy'));
+        await waitForElementToBeRemoved(() => editor.queryByText('Copy'));
 
         // editor should be focused after context menu closes
-        expect(document.activeElement).toBe(getTextArea());
+        expect(document.activeElement).toBe(getTextArea(editor));
     });
 });

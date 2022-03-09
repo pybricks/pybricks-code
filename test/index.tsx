@@ -1,9 +1,13 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2022 The Pybricks Authors
 
-import { AnyAction } from 'redux';
+import { I18nContext, I18nManager } from '@shopify/react-i18n';
+import { RenderResult, render } from '@testing-library/react';
+import React, { ReactElement } from 'react';
+import { Provider } from 'react-redux';
+import { AnyAction, PreloadedState, createStore } from 'redux';
 import { END, MulticastChannel, Saga, Task, runSaga, stdChannel } from 'redux-saga';
-import { RootState } from '../src/reducers';
+import { RootState, rootReducer } from '../src/reducers';
 import { RootSagaContext } from '../src/sagas';
 
 type RecursivePartial<T> = {
@@ -120,3 +124,27 @@ export function lookup(obj: unknown, id: string): string | undefined {
     }
     return undefined;
 }
+
+/**
+ * Customized version of @testing-library/react render function.
+ *
+ * https://testing-library.com/docs/react-testing-library/setup#custom-render
+ *
+ * @param component The component to render.
+ * @param state Any state required by the component.
+ * @returns The render result.
+ */
+export const testRender = (
+    component: ReactElement,
+    state?: PreloadedState<RootState>,
+): RenderResult => {
+    const store = createStore(rootReducer, state);
+
+    const i18n = new I18nManager({ locale: 'en' });
+
+    return render(
+        <Provider store={store}>
+            <I18nContext.Provider value={i18n}>{component}</I18nContext.Provider>
+        </Provider>,
+    );
+};

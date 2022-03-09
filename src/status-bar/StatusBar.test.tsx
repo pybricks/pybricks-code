@@ -1,94 +1,55 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021 The Pybricks Authors
+// Copyright (c) 2021-2022 The Pybricks Authors
 
-import { I18nContext, I18nManager } from '@shopify/react-i18n';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { mock } from 'jest-mock-extended';
 import React from 'react';
-import { Provider } from 'react-redux';
-import { Store } from 'redux';
+import { testRender } from '../../test';
 import { BleConnectionState } from '../ble/reducers';
-import { RootState } from '../reducers';
 import StatusBar from './StatusBar';
 
 it('should prevent browser context menu', () => {
-    const store = {
-        getState: jest.fn(() => ({
-            ble: { connection: BleConnectionState.Disconnected, deviceName: '' },
-        })),
-        dispatch: jest.fn(),
-        subscribe: jest.fn(),
-    } as unknown as Store;
-    render(
-        <Provider store={store}>
-            <StatusBar />
-        </Provider>,
-    );
+    const statusBar = testRender(<StatusBar />, {
+        ble: { connection: BleConnectionState.Disconnected, deviceName: '' },
+    });
 
-    expect(fireEvent.contextMenu(screen.getByRole('status'))).toBe(false);
+    expect(fireEvent.contextMenu(statusBar.getByRole('status'))).toBe(false);
 });
 
 it('should show popover when hub name is clicked', async () => {
     const testHubName = 'Test hub';
 
-    const store = mock<Store<RootState>>({
-        getState: () =>
-            mock<RootState>({
-                ble: {
-                    connection: BleConnectionState.Connected,
-                    deviceName: testHubName,
-                    deviceType: 'hub type',
-                    deviceFirmwareVersion: 'v0.0.0',
-                    deviceLowBatteryWarning: false,
-                    deviceBatteryCharging: false,
-                },
-            }),
+    const statusBar = testRender(<StatusBar />, {
+        ble: {
+            connection: BleConnectionState.Connected,
+            deviceName: testHubName,
+            deviceType: 'hub type',
+            deviceFirmwareVersion: 'v0.0.0',
+            deviceLowBatteryWarning: false,
+            deviceBatteryCharging: false,
+        },
     });
 
-    const i18n = new I18nManager({ locale: 'en' });
+    userEvent.click(statusBar.getByText(testHubName));
 
-    render(
-        <Provider store={store}>
-            <I18nContext.Provider value={i18n}>
-                <StatusBar />
-            </I18nContext.Provider>
-        </Provider>,
-    );
-
-    userEvent.click(screen.getByText(testHubName));
-
-    await waitFor(() => screen.getByText('Connected to:'));
+    await waitFor(() => statusBar.getByText('Connected to:'));
 });
 
 it('should show popover when battery is clicked', async () => {
     const testHubName = 'Test hub';
 
-    const store = mock<Store<RootState>>({
-        getState: () =>
-            mock<RootState>({
-                ble: {
-                    connection: BleConnectionState.Connected,
-                    deviceName: testHubName,
-                    deviceType: 'hub type',
-                    deviceFirmwareVersion: 'v0.0.0',
-                    deviceLowBatteryWarning: false,
-                    deviceBatteryCharging: false,
-                },
-            }),
+    const statusBar = testRender(<StatusBar />, {
+        ble: {
+            connection: BleConnectionState.Connected,
+            deviceName: testHubName,
+            deviceType: 'hub type',
+            deviceFirmwareVersion: 'v0.0.0',
+            deviceLowBatteryWarning: false,
+            deviceBatteryCharging: false,
+        },
     });
 
-    const i18n = new I18nManager({ locale: 'en' });
+    userEvent.click(statusBar.getByTitle('Battery'));
 
-    render(
-        <Provider store={store}>
-            <I18nContext.Provider value={i18n}>
-                <StatusBar />
-            </I18nContext.Provider>
-        </Provider>,
-    );
-
-    userEvent.click(screen.getByTitle('Battery'));
-
-    await waitFor(() => screen.getByText('Battery level is OK.'));
+    await waitFor(() => statusBar.getByText('Battery level is OK.'));
 });
