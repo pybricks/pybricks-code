@@ -21,7 +21,7 @@ import { useI18n } from '@shopify/react-i18n';
 import React, { useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import AboutDialog from '../about/AboutDialog';
-import { appShowInstallPrompt, checkForUpdate, reload } from '../app/actions';
+import { appCheckForUpdate, appReload, appShowInstallPrompt } from '../app/actions';
 import {
     pybricksBugReportsUrl,
     pybricksGitterUrl,
@@ -50,7 +50,9 @@ const SettingsDrawer: React.FunctionComponent<SettingsProps> = (props) => {
     const showDocs = useSelector((s) => s.settings.showDocs);
     const darkMode = useSelector((s) => s.settings.darkMode);
     const flashCurrentProgram = useSelector((s) => s.settings.flashCurrentProgram);
-    const serviceWorker = useSelector((s) => s.app.serviceWorker);
+    const isServiceWorkerRegistered = useSelector(
+        (s) => s.app.isServiceWorkerRegistered,
+    );
     const checkingForUpdate = useSelector((s) => s.app.checkingForUpdate);
     const updateAvailable = useSelector((s) => s.app.updateAvailable);
     const hasUnresolvedInstallPrompt = useSelector(
@@ -290,12 +292,10 @@ const SettingsDrawer: React.FunctionComponent<SettingsProps> = (props) => {
                                     {i18n.translate(SettingsStringId.AppInstallLabel)}
                                 </Button>
                             )}
-                            {serviceWorker && !updateAvailable && (
+                            {isServiceWorkerRegistered && !updateAvailable && (
                                 <Button
                                     icon="refresh"
-                                    onClick={() =>
-                                        dispatch(checkForUpdate(serviceWorker))
-                                    }
+                                    onClick={() => dispatch(appCheckForUpdate())}
                                     loading={checkingForUpdate}
                                 >
                                     {i18n.translate(
@@ -303,10 +303,10 @@ const SettingsDrawer: React.FunctionComponent<SettingsProps> = (props) => {
                                     )}
                                 </Button>
                             )}
-                            {serviceWorker && updateAvailable && (
+                            {isServiceWorkerRegistered && updateAvailable && (
                                 <Button
                                     icon="refresh"
-                                    onClick={() => dispatch(reload(serviceWorker))}
+                                    onClick={() => dispatch(appReload())}
                                 >
                                     {i18n.translate(SettingsStringId.AppRestartLabel)}
                                 </Button>

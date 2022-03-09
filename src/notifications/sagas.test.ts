@@ -9,7 +9,7 @@ import {
 } from '@pybricks/firmware';
 import { AnyAction } from 'redux';
 import { AsyncSaga } from '../../test';
-import { didCheckForUpdate } from '../app/actions';
+import { appDidCheckForUpdate } from '../app/actions';
 import { bleDIServiceDidReceiveFirmwareRevision } from '../ble-device-info-service/actions';
 import {
     BleDeviceFailToConnectReasonType,
@@ -63,7 +63,7 @@ test.each([
     didFailToCompile(['reason']),
     add('warning', 'message'),
     add('error', 'message', 'url'),
-    serviceWorkerDidUpdate({} as ServiceWorkerRegistration),
+    serviceWorkerDidUpdate(),
     didFailToFinish(FailToFinishReasonType.TimedOut),
     didFailToFinish(
         FailToFinishReasonType.BleError,
@@ -89,7 +89,7 @@ test.each([
     didFailToFinish(FailToFinishReasonType.FailedToCompile),
     didFailToFinish(FailToFinishReasonType.FirmwareSize),
     didFailToFinish(FailToFinishReasonType.Unknown, new Error('test error')),
-    didCheckForUpdate(false),
+    appDidCheckForUpdate(false),
     bleDIServiceDidReceiveFirmwareRevision('3.0.0'),
     didFailToSaveAs(new DOMException('test message', 'NotAllowedError')),
     fileStorageDidFailToInitialize(new Error('test error')),
@@ -125,8 +125,8 @@ test.each([
     bleDidFailToConnect({ reason: BleDeviceFailToConnectReasonType.Canceled }),
     bootloaderDidFailToConnect(BootloaderConnectionFailureReason.Canceled),
     didFailToFinish(FailToFinishReasonType.FailedToConnect),
-    serviceWorkerDidSucceed({} as ServiceWorkerRegistration),
-    didCheckForUpdate(true),
+    serviceWorkerDidSucceed(),
+    appDidCheckForUpdate(true),
     bleDIServiceDidReceiveFirmwareRevision(firmwareVersion),
     didFailToSaveAs(new DOMException('test message', 'AbortError')),
     fileStorageDidFailToExportFile(

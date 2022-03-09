@@ -5,22 +5,18 @@
 
 import { createAction } from '../actions';
 
-/** Creates an action that requests the app to reload. */
-export const reload = createAction((registration: ServiceWorkerRegistration) => ({
+/** Action that requests the app to reload. */
+export const appReload = createAction(() => ({
     type: 'app.action.reload',
-    registration,
 }));
 
-/** Action that requests to check for updates. */
-export const checkForUpdate = createAction(
-    (registration: ServiceWorkerRegistration) => ({
-        type: 'app.action.checkForUpdate',
-        registration,
-    }),
-);
+/* Action that requests to check for updates. */
+export const appCheckForUpdate = createAction(() => ({
+    type: 'app.action.checkForUpdate',
+}));
 
 /** Action that indicates that checking for an update has completed. */
-export const didCheckForUpdate = createAction((updateFound: boolean) => ({
+export const appDidCheckForUpdate = createAction((updateFound: boolean) => ({
     type: 'app.action.didCheckForUpdate',
     updateFound,
 }));

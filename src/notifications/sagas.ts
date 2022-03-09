@@ -10,7 +10,7 @@ import React from 'react';
 import { channel } from 'redux-saga';
 import * as semver from 'semver';
 import { delay, getContext, put, take, takeEvery } from 'typed-redux-saga/macro';
-import { didCheckForUpdate, reload } from '../app/actions';
+import { appDidCheckForUpdate, appReload } from '../app/actions';
 import { appName } from '../app/constants';
 import { bleDIServiceDidReceiveFirmwareRevision } from '../ble-device-info-service/actions';
 import {
@@ -31,7 +31,7 @@ import {
     didFailToConnect as bootloaderDidFailToConnect,
 } from '../lwp3-bootloader/actions';
 import { didCompile, didFailToCompile } from '../mpy/actions';
-import { serviceWorkerDidUpdate as serviceWorkerDidUpdate } from '../service-worker/actions';
+import { serviceWorkerDidUpdate } from '../service-worker/actions';
 import { pythonVersionToSemver } from '../utils/version';
 import NotificationAction from './NotificationAction';
 import NotificationMessage from './NotificationMessage';
@@ -336,9 +336,7 @@ function* handleAddNotification(action: ReturnType<typeof addNotification>): Gen
     });
 }
 
-function* showServiceWorkerUpdate(
-    action: ReturnType<typeof serviceWorkerDidUpdate>,
-): Generator {
+function* showServiceWorkerUpdate(): Generator {
     const ch = channel<React.MouseEvent<HTMLElement>>();
     const userAction = dispatchAction(
         MessageId.ServiceWorkerUpdateAction,
@@ -358,10 +356,10 @@ function* showServiceWorkerUpdate(
 
     yield* take(ch);
 
-    yield* put(reload(action.registration));
+    yield* put(appReload());
 }
 
-function* showNoUpdateInfo(action: ReturnType<typeof didCheckForUpdate>): Generator {
+function* showNoUpdateInfo(action: ReturnType<typeof appDidCheckForUpdate>): Generator {
     if (action.updateFound) {
         // this will be handled by serviceWorkerDidUpdate action
         return;
@@ -442,7 +440,7 @@ export default function* (): Generator {
     yield* takeEvery(didFailToCompile, showCompilerError);
     yield* takeEvery(addNotification, handleAddNotification);
     yield* takeEvery(serviceWorkerDidUpdate, showServiceWorkerUpdate);
-    yield* takeEvery(didCheckForUpdate, showNoUpdateInfo);
+    yield* takeEvery(appDidCheckForUpdate, showNoUpdateInfo);
     yield* takeEvery(bleDIServiceDidReceiveFirmwareRevision, checkVersion);
     yield* takeEvery(fileStorageDidFailToInitialize, showFileStorageFailToInitialize);
     yield* takeEvery(fileStorageDidFailToReadFile, showFileStorageFailToRead);

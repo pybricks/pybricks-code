@@ -3,16 +3,76 @@
 
 import { eventChannel } from 'redux-saga';
 import { call, fork, put, take, takeEvery } from 'typed-redux-saga/macro';
+import {
+    serviceWorkerDidSucceed,
+    serviceWorkerDidUpdate,
+} from '../service-worker/actions';
+import * as serviceWorkerRegistration from '../serviceWorkerRegistration';
 import { BeforeInstallPromptEvent } from '../utils/dom';
 import {
+    appCheckForUpdate,
+    appDidCheckForUpdate,
     appDidReceiveBeforeInstallPrompt,
     appDidResolveInstallPrompt,
+    appReload,
     appShowInstallPrompt,
-    checkForUpdate,
-    didCheckForUpdate,
     didInstall,
-    reload,
 } from './actions';
+
+/**
+ * Handles appReload actions.
+ *
+ * Must be called (forked) with serviceWorkerRegistration context set.
+ */
+function* handleAppReload(registration: ServiceWorkerRegistration): Generator {
+    yield* call(() => registration.unregister());
+
+    location.reload();
+}
+
+/**
+ * Handles appCheckForUpdate actions.
+ *
+ * Must be called (forked) with serviceWorkerRegistration context set.
+ */
+function* handleAppCheckForUpdate(registration: ServiceWorkerRegistration): Generator {
+    yield* call(() => registration.update());
+    const updateFound = registration.installing !== null;
+    yield* put(appDidCheckForUpdate(updateFound));
+}
+
+/**
+ * Marshals CRA serviceWorkerRegistration to saga.
+ */
+function* monitorServiceWorkerRegistration(): Generator {
+    const chan = eventChannel<{
+        isUpdate: boolean;
+        registration: ServiceWorkerRegistration;
+    }>((emit) => {
+        serviceWorkerRegistration.register({
+            onSuccess: (r) => emit({ isUpdate: false, registration: r }),
+            onUpdate: (r) => emit({ isUpdate: true, registration: r }),
+        });
+
+        // istanbul ignore next: never unregistered
+        return () => serviceWorkerRegistration.unregister();
+    });
+
+    // HACK: is assumed that this will only be called at most two times, once
+    // with isUpdate === false and after that, once with isUpdate === true.
+    while (true) {
+        const { isUpdate, registration } = yield* take(chan);
+
+        if (isUpdate) {
+            yield* put(serviceWorkerDidUpdate());
+        } else {
+            yield* takeEvery(appReload, handleAppReload, registration);
+            yield* takeEvery(appCheckForUpdate, handleAppCheckForUpdate, registration);
+
+            yield* put(serviceWorkerDidSucceed());
+        }
+    }
+}
 
 function* monitorAppInstalled(): Generator {
     const chan = eventChannel<Event>((emit) => {
@@ -61,20 +121,8 @@ function* monitorBeforeInstallPrompt(): Generator {
     }
 }
 
-function* handleReload(action: ReturnType<typeof reload>): Generator {
-    yield* call(() => action.registration.unregister());
-    location.reload();
-}
-
-function* handleCheckForUpdate(action: ReturnType<typeof checkForUpdate>): Generator {
-    yield* call(() => action.registration.update());
-    const updateFound = action.registration.installing !== null;
-    yield* put(didCheckForUpdate(updateFound));
-}
-
 export default function* app(): Generator {
+    yield* fork(monitorServiceWorkerRegistration);
     yield* fork(monitorAppInstalled);
     yield* fork(monitorBeforeInstallPrompt);
-    yield* takeEvery(reload, handleReload);
-    yield* takeEvery(checkForUpdate, handleCheckForUpdate);
 }

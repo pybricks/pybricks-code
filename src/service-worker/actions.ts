@@ -3,16 +3,10 @@
 
 import { createAction } from '../actions';
 
-export const serviceWorkerDidUpdate = createAction(
-    (registration: ServiceWorkerRegistration) => ({
-        type: 'serviceWorker.action.didUpdate',
-        registration,
-    }),
-);
+export const serviceWorkerDidUpdate = createAction(() => ({
+    type: 'serviceWorker.action.didUpdate',
+}));
 
-export const serviceWorkerDidSucceed = createAction(
-    (registration: ServiceWorkerRegistration) => ({
-        type: 'serviceWorker.action.didSucceed',
-        registration,
-    }),
-);
+export const serviceWorkerDidSucceed = createAction(() => ({
+    type: 'serviceWorker.action.didSucceed',
+}));

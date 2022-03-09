@@ -9,31 +9,29 @@ import {
     serviceWorkerDidUpdate,
 } from '../service-worker/actions';
 import {
+    appCheckForUpdate,
+    appDidCheckForUpdate,
     appDidReceiveBeforeInstallPrompt,
     appDidResolveInstallPrompt,
     appShowInstallPrompt,
-    checkForUpdate,
-    didCheckForUpdate,
     didInstall,
 } from './actions';
 
-const serviceWorker: Reducer<ServiceWorkerRegistration | null> = (
-    state = null,
-    action,
-) => {
+/** Indicates that the service worker was successfully registered. */
+const isServiceWorkerRegistered: Reducer<boolean> = (state = false, action) => {
     if (serviceWorkerDidSucceed.matches(action)) {
-        return action.registration;
+        return true;
     }
 
     return state;
 };
 
 const checkingForUpdate: Reducer<boolean> = (state = false, action) => {
-    if (checkForUpdate.matches(action)) {
+    if (appCheckForUpdate.matches(action)) {
         return true;
     }
 
-    if (didCheckForUpdate.matches(action)) {
+    if (appDidCheckForUpdate.matches(action)) {
         if (!action.updateFound) {
             return false;
         }
@@ -94,7 +92,7 @@ const readyForOfflineUse: Reducer<boolean> = (state = false, action) => {
 };
 
 export default combineReducers({
-    serviceWorker,
+    isServiceWorkerRegistered,
     checkingForUpdate,
     updateAvailable,
     hasUnresolvedInstallPrompt,

@@ -7,11 +7,11 @@ import {
     serviceWorkerDidUpdate,
 } from '../service-worker/actions';
 import {
+    appCheckForUpdate,
+    appDidCheckForUpdate,
     appDidReceiveBeforeInstallPrompt,
     appDidResolveInstallPrompt,
     appShowInstallPrompt,
-    checkForUpdate,
-    didCheckForUpdate,
     didInstall,
 } from './actions';
 import reducers from './reducers';
@@ -23,57 +23,52 @@ test('initial state', () => {
         Object {
           "checkingForUpdate": false,
           "hasUnresolvedInstallPrompt": false,
+          "isServiceWorkerRegistered": false,
           "promptingInstall": false,
           "readyForOfflineUse": false,
-          "serviceWorker": null,
           "updateAvailable": false,
         }
     `);
 });
 
-test('serviceWorker', () => {
-    const registration = {} as ServiceWorkerRegistration;
-    expect(
-        reducers(
-            { serviceWorker: null } as State,
-            serviceWorkerDidSucceed(registration),
-        ).serviceWorker,
-    ).toBe(registration);
+describe('isServiceWorkerRegistered', () => {
+    it('should be true when service worker registration succeeds', () => {
+        expect(
+            reducers(
+                { isServiceWorkerRegistered: false } as State,
+                serviceWorkerDidSucceed(),
+            ).isServiceWorkerRegistered,
+        ).toBe(true);
+    });
 });
 
 test('checkingForUpdate', () => {
     expect(
-        reducers(
-            { checkingForUpdate: false } as State,
-            checkForUpdate({} as ServiceWorkerRegistration),
-        ).checkingForUpdate,
-    ).toBe(true);
-    expect(
-        reducers({ checkingForUpdate: false } as State, didCheckForUpdate(true))
-            .checkingForUpdate,
-    ).toBe(false);
-    expect(
-        reducers({ checkingForUpdate: true } as State, didCheckForUpdate(true))
+        reducers({ checkingForUpdate: false } as State, appCheckForUpdate())
             .checkingForUpdate,
     ).toBe(true);
     expect(
-        reducers({ checkingForUpdate: true } as State, didCheckForUpdate(false))
+        reducers({ checkingForUpdate: false } as State, appDidCheckForUpdate(true))
             .checkingForUpdate,
     ).toBe(false);
     expect(
-        reducers(
-            { checkingForUpdate: true } as State,
-            serviceWorkerDidUpdate({} as ServiceWorkerRegistration),
-        ).checkingForUpdate,
+        reducers({ checkingForUpdate: true } as State, appDidCheckForUpdate(true))
+            .checkingForUpdate,
+    ).toBe(true);
+    expect(
+        reducers({ checkingForUpdate: true } as State, appDidCheckForUpdate(false))
+            .checkingForUpdate,
+    ).toBe(false);
+    expect(
+        reducers({ checkingForUpdate: true } as State, serviceWorkerDidUpdate())
+            .checkingForUpdate,
     ).toBe(false);
 });
 
 test('updateAvailable', () => {
     expect(
-        reducers(
-            { updateAvailable: false } as State,
-            serviceWorkerDidUpdate({} as ServiceWorkerRegistration),
-        ).updateAvailable,
+        reducers({ updateAvailable: false } as State, serviceWorkerDidUpdate())
+            .updateAvailable,
     ).toBe(true);
 });
 
@@ -124,9 +119,7 @@ describe('promptingInstall', () => {
 
 test('readyForOfflineUse', () => {
     expect(
-        reducers(
-            { readyForOfflineUse: false } as State,
-            serviceWorkerDidSucceed({} as ServiceWorkerRegistration),
-        ).readyForOfflineUse,
+        reducers({ readyForOfflineUse: false } as State, serviceWorkerDidSucceed())
+            .readyForOfflineUse,
     ).toBe(true);
 });
