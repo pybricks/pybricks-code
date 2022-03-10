@@ -78,6 +78,12 @@ export const fileStorageDidFailToWriteFile = createAction(
     }),
 );
 
+/** Request to delete a file from storage. */
+export const fileStorageDeleteFile = createAction((fileName: string) => ({
+    type: 'fileStorage.action.deleteFile',
+    fileName,
+}));
+
 /**
  * Request to export (download) a file.
  * @param fileName The name of the file.

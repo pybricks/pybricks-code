@@ -6,6 +6,7 @@ import { mock } from 'jest-mock-extended';
 import { AsyncSaga } from '../../test';
 import {
     fileStorageArchiveAllFiles,
+    fileStorageDeleteFile,
     fileStorageDidArchiveAllFiles,
     fileStorageDidChangeItem,
     fileStorageDidExportFile,
@@ -14,6 +15,7 @@ import {
     fileStorageDidFailToReadFile,
     fileStorageDidInitialize,
     fileStorageDidReadFile,
+    fileStorageDidRemoveItem,
     fileStorageDidWriteFile,
     fileStorageExportFile,
     fileStorageReadFile,
@@ -28,6 +30,29 @@ beforeEach(() => {
     // to start with a clean slate in each test
     localStorage.clear();
 });
+
+/**
+ * helper function that writes test file to storage for later use in a test
+ * @param saga The saga.
+ * @returns The test file name and test file contents.
+ */
+async function setUpTestFile(saga: AsyncSaga): Promise<[string, string]> {
+    const testFileName = 'test.file';
+    const testFileContents = 'test file contents';
+
+    const action0 = await saga.take();
+    expect(action0).toEqual(fileStorageDidInitialize([]));
+
+    saga.put(fileStorageWriteFile(testFileName, testFileContents));
+
+    const action1 = await saga.take();
+    expect(action1).toEqual(fileStorageDidWriteFile(testFileName));
+
+    const action2 = await saga.take();
+    expect(action2).toEqual(fileStorageDidChangeItem(testFileName));
+
+    return [testFileName, testFileContents];
+}
 
 it('should migrate old program from local storage during initialization', async () => {
     const oldProgramKey = 'program';
@@ -94,30 +119,20 @@ it('should dispatch fail action if file does not exist', async () => {
     await saga.end();
 });
 
+it('should delete files', async () => {
+    const saga = new AsyncSaga(fileStorage);
+
+    const [testFileName] = await setUpTestFile(saga);
+
+    saga.put(fileStorageDeleteFile(testFileName));
+
+    const action = await saga.take();
+    expect(action).toEqual(fileStorageDidRemoveItem(testFileName));
+
+    await saga.end();
+});
+
 describe('export', () => {
-    /**
-     * helper function that writes test file to storage for later use in a test
-     * @param saga The saga.
-     * @returns The test file name and test file contents.
-     */
-    async function setUpTestFile(saga: AsyncSaga): Promise<[string, string]> {
-        const testFileName = 'test.file';
-        const testFileContents = 'test file contents';
-
-        const action0 = await saga.take();
-        expect(action0).toEqual(fileStorageDidInitialize([]));
-
-        saga.put(fileStorageWriteFile(testFileName, testFileContents));
-
-        const action1 = await saga.take();
-        expect(action1).toEqual(fileStorageDidWriteFile(testFileName));
-
-        const action2 = await saga.take();
-        expect(action2).toEqual(fileStorageDidChangeItem(testFileName));
-
-        return [testFileName, testFileContents];
-    }
-
     it('should fail if file does not exist', async () => {
         const testFileName = 'test.file';
 
@@ -236,26 +251,6 @@ describe('export', () => {
 });
 
 describe('archive', () => {
-    /**
-     * helper function that writes test file to storage for later use in a test
-     * @param saga The saga.
-     */
-    async function setUpTestFile(saga: AsyncSaga): Promise<void> {
-        const testFileName = 'test.file';
-        const testFileContents = 'test file contents';
-
-        const action0 = await saga.take();
-        expect(action0).toEqual(fileStorageDidInitialize([]));
-
-        saga.put(fileStorageWriteFile(testFileName, testFileContents));
-
-        const action1 = await saga.take();
-        expect(action1).toEqual(fileStorageDidWriteFile(testFileName));
-
-        const action2 = await saga.take();
-        expect(action2).toEqual(fileStorageDidChangeItem(testFileName));
-    }
-
     it('should archive file with web file system api', async () => {
         const saga = new AsyncSaga(fileStorage);
 

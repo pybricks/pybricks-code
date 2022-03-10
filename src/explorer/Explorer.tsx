@@ -16,6 +16,7 @@ import React, { forwardRef, useImperativeHandle, useMemo, useState } from 'react
 import { useDispatch } from 'react-redux';
 import {
     fileStorageArchiveAllFiles,
+    fileStorageDeleteFile,
     fileStorageExportFile,
 } from '../fileStorage/actions';
 import { useSelector } from '../reducers';
@@ -92,7 +93,7 @@ const FileActionButtonGroup = forwardRef<
                 icon="trash"
                 toolTipId={ExplorerStringId.TreeItemDeleteTooltip}
                 toolTipReplacements={{ fileName: props.fileName }}
-                onClick={() => alert('not implemented')}
+                onClick={() => dispatch(fileStorageDeleteFile(props.fileName))}
             />
         </ButtonGroup>
     );

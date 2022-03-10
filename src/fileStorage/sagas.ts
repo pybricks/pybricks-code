@@ -12,6 +12,7 @@ import { EditorType } from '../editor/Editor';
 import { ensureError, timestamp } from '../utils';
 import {
     fileStorageArchiveAllFiles,
+    fileStorageDeleteFile,
     fileStorageDidArchiveAllFiles,
     fileStorageDidChangeItem,
     fileStorageDidExportFile,
@@ -146,6 +147,18 @@ function* handleExportFile(
     yield* put(fileStorageDidExportFile(action.fileName));
 }
 
+/**
+ * Deletes a file from storage.
+ * @param files The localForage instance.
+ * @param action The action that triggered this saga.
+ */
+function* handleDeleteFile(
+    files: LocalForage,
+    action: ReturnType<typeof fileStorageDeleteFile>,
+) {
+    yield* call(() => files.removeItem(action.fileName));
+}
+
 function* handleArchiveAllFiles(files: LocalForage): Generator {
     try {
         const zip = new JSZip();
@@ -242,6 +255,7 @@ function* initialize(): Generator {
         yield* takeEvery(localForageChannel, handleFileStorageDidChange);
         yield* takeEvery(fileStorageReadFile, handleReadFile, files);
         yield* takeEvery(fileStorageWriteFile, handleWriteFile, files);
+        yield* takeEvery(fileStorageDeleteFile, handleDeleteFile, files);
         yield* takeEvery(fileStorageExportFile, handleExportFile, files);
         yield* takeEvery(fileStorageArchiveAllFiles, handleArchiveAllFiles, files);
 
