@@ -4,23 +4,36 @@
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { testRender } from '../../test';
+import {
+    fileStorageArchiveAllFiles,
+    fileStorageDeleteFile,
+    fileStorageExportFile,
+} from '../fileStorage/actions';
 import Explorer from './Explorer';
 
 describe('archive button', () => {
     it('should be enabled if there are files', () => {
-        const [explorer] = testRender(<Explorer />, {
+        const [explorer, dispatch] = testRender(<Explorer />, {
             fileStorage: { fileNames: ['test.file'] },
         });
 
-        expect(explorer.getByTitle('Backup all files')).toBeEnabled();
+        const button = explorer.getByTitle('Backup all files');
+        expect(button).toBeEnabled();
+
+        userEvent.click(button);
+        expect(dispatch).toHaveBeenCalledWith(fileStorageArchiveAllFiles());
     });
 
     it('should be disabled if there are no files', () => {
-        const [explorer] = testRender(<Explorer />, {
+        const [explorer, dispatch] = testRender(<Explorer />, {
             fileStorage: { fileNames: [] },
         });
 
-        expect(explorer.getByTitle('Backup all files')).toBeDisabled();
+        const button = explorer.getByTitle('Backup all files');
+        expect(button).toBeDisabled();
+
+        userEvent.click(button);
+        expect(dispatch).not.toHaveBeenCalled();
     });
 });
 
@@ -53,5 +66,29 @@ describe('list item', () => {
 
         userEvent.click(button);
         expect(button).not.toHaveFocus();
+    });
+
+    it('should dispatch delete action when button is clicked', async () => {
+        const [explorer, dispatch] = testRender(<Explorer />, {
+            fileStorage: { fileNames: ['test.file'] },
+        });
+
+        const button = explorer.getByTitle('Delete test.file');
+
+        userEvent.click(button);
+
+        expect(dispatch).toHaveBeenCalledWith(fileStorageDeleteFile('test.file'));
+    });
+
+    it('should dispatch export action when button is clicked', async () => {
+        const [explorer, dispatch] = testRender(<Explorer />, {
+            fileStorage: { fileNames: ['test.file'] },
+        });
+
+        const button = explorer.getByTitle('Export test.file');
+
+        userEvent.click(button);
+
+        expect(dispatch).toHaveBeenCalledWith(fileStorageExportFile('test.file'));
     });
 });
