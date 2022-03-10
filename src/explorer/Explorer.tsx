@@ -20,6 +20,7 @@ import {
     fileStorageExportFile,
 } from '../fileStorage/actions';
 import { useSelector } from '../reducers';
+import NewFileWizard from './NewFileWizard';
 import { ExplorerStringId } from './i18n';
 import en from './i18n.en.json';
 
@@ -102,6 +103,7 @@ const FileActionButtonGroup = forwardRef<
 FileActionButtonGroup.displayName = 'FileActionButtonGroup';
 
 const Header: React.VFC = () => {
+    const [isNewFileWizardOpen, setIsNewFileWizardOpen] = useState(false);
     const dispatch = useDispatch();
     const fileNames = useSelector((s) => s.fileStorage.fileNames);
 
@@ -125,7 +127,11 @@ const Header: React.VFC = () => {
                 <ActionButton
                     icon="plus"
                     toolTipId={ExplorerStringId.HeaderAddNewTooltip}
-                    onClick={() => alert('not implemented')}
+                    onClick={() => setIsNewFileWizardOpen(true)}
+                />
+                <NewFileWizard
+                    isOpen={isNewFileWizardOpen}
+                    onClose={() => setIsNewFileWizardOpen(false)}
                 />
             </ButtonGroup>
         </div>

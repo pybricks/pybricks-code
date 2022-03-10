@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2022 The Pybricks Authors
 
+import { getByLabelText, waitFor } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { testRender } from '../../test';
@@ -34,6 +35,22 @@ describe('archive button', () => {
 
         userEvent.click(button);
         expect(dispatch).not.toHaveBeenCalled();
+    });
+});
+
+describe('new file button', () => {
+    it('should show new file wizard', async () => {
+        const [explorer] = testRender(<Explorer />);
+
+        const button = explorer.getByTitle('Create a new file');
+
+        userEvent.click(button);
+
+        const dialog = explorer.getByRole('dialog');
+        expect(dialog).toBeVisible();
+
+        userEvent.click(getByLabelText(dialog, 'Close'));
+        await waitFor(() => expect(dialog).not.toBeVisible());
     });
 });
 

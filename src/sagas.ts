@@ -8,6 +8,7 @@ import blePybricksService from './ble-pybricks-service/sagas';
 import ble from './ble/sagas';
 import editor, { EditorSagaContext } from './editor/sagas';
 import errorLog from './error-log/sagas';
+import explorer from './explorer/sagas';
 import fileStorage from './fileStorage/sagas';
 import flashFirmware, { FirmwareSagaContext } from './firmware/sagas';
 import hub from './hub/sagas';
@@ -30,6 +31,7 @@ export default function* (): Generator {
         lwp3BootloaderProtocol(),
         editor(),
         errorLog(),
+        explorer(),
         flashFirmware(),
         hub(),
         licenses(),

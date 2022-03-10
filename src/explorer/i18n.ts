@@ -11,3 +11,17 @@ export enum ExplorerStringId {
     TreeItemExportTooltip = 'explorer.treeItem.exportTooltip',
     TreeItemRenameTooltip = 'explorer.treeItem.renameTooltip',
 }
+
+export enum NewFileWizardStringId {
+    Title = 'newFileWizard.title',
+    FileNameLabel = 'newFileWizard.fileName.label',
+    FileNameHelpTextIsOk = 'newFileWizard.fileName.helpText.isOk',
+    FileNameHelpTextIsEmpty = 'newFileWizard.fileName.helpText.isEmpty',
+    FileNameHelpTextHasSpaces = 'newFileWizard.fileName.helpText.hasSpaces',
+    FileNameHelpTextHasFileExtension = 'newFileWizard.fileName.helpText.hasFileExtension',
+    FileNameHelpTextHasInvalidFirstCharacter = 'newFileWizard.fileName.helpText.hasInvalidFirstCharacter',
+    FileNameHelpTextHasInvalidCharacters = 'newFileWizard.fileName.helpText.hasInvalidCharacters',
+    FileNameHelpTextAlreadyExists = 'newFileWizard.fileName.helpText.alreadyExists',
+    SmartHubLabel = 'newFileWizard.smartHub.label',
+    ActionCreate = 'newFileWizard.action.create',
+}
