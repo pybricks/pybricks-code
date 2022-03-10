@@ -1,0 +1,14 @@
+{
+    "explorer": {
+        "header": {
+            "exportAllTooltip": "Backup all files",
+            "importTooltip": "Import a file",
+            "addNewTooltip": "Create a new file"
+        },
+        "treeItem": {
+            "deleteTooltip": "Delete {fileName}",
+            "exportTooltip": "Export {fileName}",
+            "renameTooltip": "Rename {fileName}"
+        }
+    }
+}

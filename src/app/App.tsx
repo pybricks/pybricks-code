@@ -1,11 +1,12 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2021 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 
 import { Classes } from '@blueprintjs/core';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import SplitterLayout from 'react-splitter-layout';
 import Editor, { EditorContext, EditorContextType, EditorType } from '../editor/Editor';
+import Explorer from '../explorer/Explorer';
 import { useSelector } from '../reducers';
 import { toggleBoolean } from '../settings/actions';
 import { BooleanSettingId } from '../settings/defaults';
@@ -176,21 +177,31 @@ const App: React.VoidFunctionComponent<AppProps> = (props) => {
                         localStorage.setItem('app-docs-split', String(value))
                     }
                 >
-                    <SplitterLayout
-                        vertical={true}
-                        percentage={true}
-                        secondaryInitialSize={Number(
-                            localStorage.getItem('app-terminal-split') || 30,
-                        )}
-                        onSecondaryPaneSizeChange={(value): void =>
-                            localStorage.setItem('app-terminal-split', String(value))
-                        }
-                    >
-                        <Editor />
-                        <div className="pb-app-terminal-padding h-100">
-                            <Terminal />
+                    <div className="h-100 w-100" style={{ display: 'flex' }}>
+                        <div style={{ display: 'inline-block', width: 250 }}>
+                            <Explorer />
                         </div>
-                    </SplitterLayout>
+                        <div style={{ display: 'inline-block' }}>
+                            <SplitterLayout
+                                vertical={true}
+                                percentage={true}
+                                secondaryInitialSize={Number(
+                                    localStorage.getItem('app-terminal-split') || 30,
+                                )}
+                                onSecondaryPaneSizeChange={(value): void =>
+                                    localStorage.setItem(
+                                        'app-terminal-split',
+                                        String(value),
+                                    )
+                                }
+                            >
+                                <Editor />
+                                <div className="pb-app-terminal-padding h-100">
+                                    <Terminal />
+                                </div>
+                            </SplitterLayout>
+                        </div>
+                    </div>
                     <div className="h-100 w-100">
                         {isDragging && <div className="h-100 w-100 p-absolute" />}
                         <Docs />
