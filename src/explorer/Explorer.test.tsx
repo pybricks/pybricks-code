@@ -8,7 +8,7 @@ import Explorer from './Explorer';
 
 describe('archive button', () => {
     it('should be enabled if there are files', () => {
-        const explorer = testRender(<Explorer />, {
+        const [explorer] = testRender(<Explorer />, {
             fileStorage: { fileNames: ['test.file'] },
         });
 
@@ -16,7 +16,7 @@ describe('archive button', () => {
     });
 
     it('should be disabled if there are no files', () => {
-        const explorer = testRender(<Explorer />, {
+        const [explorer] = testRender(<Explorer />, {
             fileStorage: { fileNames: [] },
         });
 
@@ -26,7 +26,7 @@ describe('archive button', () => {
 
 describe('list item', () => {
     it('should show/hide buttons on hover', () => {
-        const explorer = testRender(<Explorer />, {
+        const [explorer] = testRender(<Explorer />, {
             fileStorage: { fileNames: ['test.file'] },
         });
 
@@ -45,7 +45,7 @@ describe('list item', () => {
     });
 
     it('should not focus buttons on click', () => {
-        const explorer = testRender(<Explorer />, {
+        const [explorer] = testRender(<Explorer />, {
             fileStorage: { fileNames: ['test.file'] },
         });
 

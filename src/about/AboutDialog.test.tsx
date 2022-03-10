@@ -10,7 +10,7 @@ import AboutDialog from './AboutDialog';
 it('should close when the button is clicked', () => {
     const close = jest.fn();
 
-    const dialog = testRender(<AboutDialog isOpen={true} onClose={() => close()} />);
+    const [dialog] = testRender(<AboutDialog isOpen={true} onClose={() => close()} />);
 
     userEvent.click(dialog.getByLabelText('Close'));
 
@@ -18,7 +18,9 @@ it('should close when the button is clicked', () => {
 });
 
 it('should manage license dialog open/close', async () => {
-    const dialog = testRender(<AboutDialog isOpen={true} onClose={() => undefined} />);
+    const [dialog] = testRender(
+        <AboutDialog isOpen={true} onClose={() => undefined} />,
+    );
 
     userEvent.click(dialog.getByText('Software Licenses'));
 

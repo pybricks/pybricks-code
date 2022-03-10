@@ -132,19 +132,22 @@ export function lookup(obj: unknown, id: string): string | undefined {
  *
  * @param component The component to render.
  * @param state Any state required by the component.
- * @returns The render result.
+ * @returns The render result and a spy on the dispatch method.
  */
 export const testRender = (
     component: ReactElement,
     state?: PreloadedState<RootState>,
-): RenderResult => {
+): [RenderResult, jest.SpyInstance<AnyAction, [action: AnyAction]>] => {
     const store = createStore(rootReducer, state);
+    const dispatch = jest.spyOn(store, 'dispatch');
 
     const i18n = new I18nManager({ locale: 'en' });
 
-    return render(
+    const result = render(
         <Provider store={store}>
             <I18nContext.Provider value={i18n}>{component}</I18nContext.Provider>
         </Provider>,
     );
+
+    return [result, dispatch];
 };

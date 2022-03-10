@@ -9,7 +9,7 @@ import { BleConnectionState } from '../ble/reducers';
 import StatusBar from './StatusBar';
 
 it('should prevent browser context menu', () => {
-    const statusBar = testRender(<StatusBar />, {
+    const [statusBar] = testRender(<StatusBar />, {
         ble: { connection: BleConnectionState.Disconnected, deviceName: '' },
     });
 
@@ -19,7 +19,7 @@ it('should prevent browser context menu', () => {
 it('should show popover when hub name is clicked', async () => {
     const testHubName = 'Test hub';
 
-    const statusBar = testRender(<StatusBar />, {
+    const [statusBar] = testRender(<StatusBar />, {
         ble: {
             connection: BleConnectionState.Connected,
             deviceName: testHubName,
@@ -38,7 +38,7 @@ it('should show popover when hub name is clicked', async () => {
 it('should show popover when battery is clicked', async () => {
     const testHubName = 'Test hub';
 
-    const statusBar = testRender(<StatusBar />, {
+    const [statusBar] = testRender(<StatusBar />, {
         ble: {
             connection: BleConnectionState.Connected,
             deviceName: testHubName,

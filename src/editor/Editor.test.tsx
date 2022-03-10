@@ -19,14 +19,14 @@ function getTextArea(editor: RenderResult): HTMLTextAreaElement {
 }
 
 it('should focus the text area', () => {
-    const editor = testRender(<Editor />);
+    const [editor] = testRender(<Editor />);
 
     expect(getTextArea(editor)).toHaveFocus();
 });
 
 describe('context menu', () => {
     it('should show the context menu', async () => {
-        const editor = testRender(<Editor />);
+        const [editor] = testRender(<Editor />);
 
         fireEvent.contextMenu(editor.getByText('Write your program here...'));
 
@@ -36,7 +36,7 @@ describe('context menu', () => {
     });
 
     it('should hide the context menu when Escape is pressed', async () => {
-        const editor = testRender(<Editor />);
+        const [editor] = testRender(<Editor />);
 
         fireEvent.contextMenu(editor.getByText('Write your program here...'));
 
