@@ -18,6 +18,7 @@ import {
 import { didFailToSaveAs } from '../editor/actions';
 import {
     fileStorageDidFailToArchiveAllFiles,
+    fileStorageDidFailToDeleteFile,
     fileStorageDidFailToExportFile,
     fileStorageDidFailToInitialize,
     fileStorageDidFailToReadFile,
@@ -95,6 +96,7 @@ test.each([
     fileStorageDidFailToInitialize(new Error('test error')),
     fileStorageDidFailToReadFile('test.file', new Error('test error')),
     fileStorageDidFailToWriteFile('test.file', new Error('test error')),
+    fileStorageDidFailToDeleteFile('test.file', new Error('test error')),
     fileStorageDidFailToExportFile('test.file', new Error('test error')),
     fileStorageDidFailToArchiveAllFiles(new Error('test error')),
 ])('actions that should show notification: %o', async (action: AnyAction) => {

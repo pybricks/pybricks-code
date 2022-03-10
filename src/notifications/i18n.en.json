@@ -18,6 +18,7 @@
         "failedToInitialize": "Failed to initial file storage. Changes will not be automatically saved.",
         "failedToRead": "Failed to read file.",
         "failedToWrite": "Failed to write file.",
+        "failedToDelete": "Failed to delete file.",
         "failedToExport": "Failed to export file.'"
     },
     "flashFirmware": {

@@ -9,6 +9,7 @@ import {
     fileStorageDeleteFile,
     fileStorageDidArchiveAllFiles,
     fileStorageDidChangeItem,
+    fileStorageDidDeleteFile,
     fileStorageDidExportFile,
     fileStorageDidFailToArchiveAllFiles,
     fileStorageDidFailToExportFile,
@@ -127,7 +128,10 @@ it('should delete files', async () => {
     saga.put(fileStorageDeleteFile(testFileName));
 
     const action = await saga.take();
-    expect(action).toEqual(fileStorageDidRemoveItem(testFileName));
+    expect(action).toEqual(fileStorageDidDeleteFile(testFileName));
+
+    const action2 = await saga.take();
+    expect(action2).toEqual(fileStorageDidRemoveItem(testFileName));
 
     await saga.end();
 });

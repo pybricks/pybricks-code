@@ -78,11 +78,36 @@ export const fileStorageDidFailToWriteFile = createAction(
     }),
 );
 
-/** Request to delete a file from storage. */
+/**
+ * Request to delete a file from storage.
+ * @param fileName The name of the file to delete.
+ */
 export const fileStorageDeleteFile = createAction((fileName: string) => ({
     type: 'fileStorage.action.deleteFile',
     fileName,
 }));
+
+/**
+ * Indicates that fileStorageDeleteFile(fileName) succeeded.
+ * @param fileName The name of the file that was deleted.
+ */
+export const fileStorageDidDeleteFile = createAction((fileName: string) => ({
+    type: 'fileStorage.action.didDeleteFile',
+    fileName,
+}));
+
+/**
+ *  Indicates that fileStorageDeleteFile(fileName) failed.
+ * @param fileName The name of the file that should have been deleted.
+ * @param error The error.
+ */
+export const fileStorageDidFailToDeleteFile = createAction(
+    (fileName: string, error: Error) => ({
+        type: 'fileStorage.action.didFailToDeleteFile',
+        fileName,
+        error,
+    }),
+);
 
 /**
  * Request to export (download) a file.

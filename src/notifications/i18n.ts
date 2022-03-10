@@ -16,6 +16,7 @@ export enum MessageId {
     FileStorageFailedToInitialize = 'fileStorage.failedToInitialize',
     FileStorageFailedToRead = 'fileStorage.failedToRead',
     FileStorageFailedToWrite = 'fileStorage.failedToWrite',
+    FileStorageFailedToDelete = 'fileStorage.failedToDelete',
     FileStorageFailedToExport = 'fileStorage.failedToExport',
     FlashFirmwareTimedOut = 'flashFirmware.timedOut',
     FlashFirmwareBleError = 'flashFirmware.bleError',

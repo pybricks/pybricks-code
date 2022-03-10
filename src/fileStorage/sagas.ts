@@ -15,8 +15,10 @@ import {
     fileStorageDeleteFile,
     fileStorageDidArchiveAllFiles,
     fileStorageDidChangeItem,
+    fileStorageDidDeleteFile,
     fileStorageDidExportFile,
     fileStorageDidFailToArchiveAllFiles,
+    fileStorageDidFailToDeleteFile,
     fileStorageDidFailToExportFile,
     fileStorageDidFailToInitialize,
     fileStorageDidFailToReadFile,
@@ -156,7 +158,12 @@ function* handleDeleteFile(
     files: LocalForage,
     action: ReturnType<typeof fileStorageDeleteFile>,
 ) {
-    yield* call(() => files.removeItem(action.fileName));
+    try {
+        yield* call(() => files.removeItem(action.fileName));
+        yield* put(fileStorageDidDeleteFile(action.fileName));
+    } catch (err) {
+        yield* put(fileStorageDidFailToDeleteFile(action.fileName, ensureError(err)));
+    }
 }
 
 function* handleArchiveAllFiles(files: LocalForage): Generator {
