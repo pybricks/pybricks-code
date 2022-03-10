@@ -14,6 +14,12 @@
     "editor": {
         "failedToSaveFile": "Failed to save the program."
     },
+    "explorer": {
+        "deleteFile": {
+            "message": "The file {fileName} will be permanently deleted. This cannot be undone.",
+            "action": "Delete"
+        }
+    },
     "fileStorage": {
         "failedToInitialize": "Failed to initial file storage. Changes will not be automatically saved.",
         "failedToRead": "Failed to read file.",

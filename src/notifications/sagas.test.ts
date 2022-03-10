@@ -17,13 +17,16 @@ import {
     didFailToConnect as bleDidFailToConnect,
 } from '../ble/actions';
 import { didFailToSaveAs } from '../editor/actions';
+import { explorerDeleteFile } from '../explorer/actions';
 import {
+    fileStorageDeleteFile,
     fileStorageDidFailToArchiveAllFiles,
     fileStorageDidFailToDeleteFile,
     fileStorageDidFailToExportFile,
     fileStorageDidFailToInitialize,
     fileStorageDidFailToReadFile,
     fileStorageDidFailToWriteFile,
+    fileStorageDidRemoveItem,
 } from '../fileStorage/actions';
 import {
     FailToFinishReasonType,
@@ -167,3 +170,61 @@ test.each([[didCompile(new Uint8Array()), MessageId.MpyError]])(
         await saga.end();
     },
 );
+
+describe('delete file saga', () => {
+    it('should not delete the file if the user closes the notification', async () => {
+        const { toaster, saga } = createTestToasterSaga();
+
+        saga.put(explorerDeleteFile('test.file'));
+
+        toaster.dismiss(MessageId.ExplorerDeleteFileMessage);
+
+        await saga.end();
+    });
+
+    it('should delete the file if the user clicks the delete button', async () => {
+        const { toaster, saga } = createTestToasterSaga();
+
+        saga.put(explorerDeleteFile('test.file'));
+
+        const toast = toaster
+            .getToasts()
+            .find((t) => t.key === MessageId.ExplorerDeleteFileMessage);
+
+        expect(toast).toBeDefined();
+        expect(toast?.action).toBeDefined();
+        expect(toast?.action?.onClick).toBeDefined();
+
+        toast?.action?.onClick?.call(
+            toast?.action,
+            {} as React.MouseEvent<HTMLElement>,
+        );
+
+        const action = await saga.take();
+        expect(action).toEqual(fileStorageDeleteFile('test.file'));
+
+        await saga.end();
+    });
+
+    it('should close automatically if the file is deleted without user action', async () => {
+        const { toaster, saga } = createTestToasterSaga();
+
+        saga.put(explorerDeleteFile('test.file'));
+
+        expect(
+            toaster
+                .getToasts()
+                .find((t) => t.key === MessageId.ExplorerDeleteFileMessage),
+        ).toBeDefined();
+
+        saga.put(fileStorageDidRemoveItem('test.file'));
+
+        expect(
+            toaster
+                .getToasts()
+                .find((t) => t.key === MessageId.ExplorerDeleteFileMessage),
+        ).toBeUndefined();
+
+        await saga.end();
+    });
+});

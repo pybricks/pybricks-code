@@ -7,10 +7,10 @@ import React from 'react';
 import { testRender } from '../../test';
 import {
     fileStorageArchiveAllFiles,
-    fileStorageDeleteFile,
     fileStorageExportFile,
 } from '../fileStorage/actions';
 import Explorer from './Explorer';
+import { explorerDeleteFile } from './actions';
 
 describe('archive button', () => {
     it('should be enabled if there are files', () => {
@@ -94,7 +94,7 @@ describe('list item', () => {
 
         userEvent.click(button);
 
-        expect(dispatch).toHaveBeenCalledWith(fileStorageDeleteFile('test.file'));
+        expect(dispatch).toHaveBeenCalledWith(explorerDeleteFile('test.file'));
     });
 
     it('should dispatch export action when button is clicked', async () => {

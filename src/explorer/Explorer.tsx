@@ -16,11 +16,11 @@ import React, { forwardRef, useImperativeHandle, useMemo, useState } from 'react
 import { useDispatch } from 'react-redux';
 import {
     fileStorageArchiveAllFiles,
-    fileStorageDeleteFile,
     fileStorageExportFile,
 } from '../fileStorage/actions';
 import { useSelector } from '../reducers';
 import NewFileWizard from './NewFileWizard';
+import { explorerDeleteFile } from './actions';
 import { ExplorerStringId } from './i18n';
 import en from './i18n.en.json';
 
@@ -94,7 +94,7 @@ const FileActionButtonGroup = forwardRef<
                 icon="trash"
                 toolTipId={ExplorerStringId.TreeItemDeleteTooltip}
                 toolTipReplacements={{ fileName: props.fileName }}
-                onClick={() => dispatch(fileStorageDeleteFile(props.fileName))}
+                onClick={() => dispatch(explorerDeleteFile(props.fileName))}
             />
         </ButtonGroup>
     );

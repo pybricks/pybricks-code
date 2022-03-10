@@ -39,3 +39,12 @@ export const explorerCreateNewFile = createAction(
         hub,
     }),
 );
+
+/**
+ * Action that requests to delete a file.
+ * @param fileName The file name.
+ */
+export const explorerDeleteFile = createAction((fileName: string) => ({
+    type: 'explorer.action.deleteFile',
+    fileName,
+}));

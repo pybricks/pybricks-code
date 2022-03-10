@@ -9,7 +9,7 @@ import { Replacements } from '@shopify/react-i18n';
 import React from 'react';
 import { channel } from 'redux-saga';
 import * as semver from 'semver';
-import { delay, getContext, put, take, takeEvery } from 'typed-redux-saga/macro';
+import { delay, getContext, put, race, take, takeEvery } from 'typed-redux-saga/macro';
 import { appDidCheckForUpdate, appReload } from '../app/actions';
 import { appName } from '../app/constants';
 import { bleDIServiceDidReceiveFirmwareRevision } from '../ble-device-info-service/actions';
@@ -18,12 +18,16 @@ import {
     didFailToConnect as bleDeviceDidFailToConnect,
 } from '../ble/actions';
 import { didFailToSaveAs } from '../editor/actions';
+import { explorerDeleteFile } from '../explorer/actions';
 import {
+    fileStorageDeleteFile,
     fileStorageDidFailToArchiveAllFiles,
+    fileStorageDidFailToDeleteFile,
     fileStorageDidFailToExportFile,
     fileStorageDidFailToInitialize,
     fileStorageDidFailToReadFile,
     fileStorageDidFailToWriteFile,
+    fileStorageDidRemoveItem,
 } from '../fileStorage/actions';
 import { FailToFinishReasonType, didFailToFinish } from '../firmware/actions';
 import {
@@ -409,6 +413,12 @@ function* showFileStorageFailToWrite(
     yield* showUnexpectedError(MessageId.FileStorageFailedToWrite, action.error);
 }
 
+function* showFileStorageFailToDelete(
+    action: ReturnType<typeof fileStorageDidFailToDeleteFile>,
+): Generator {
+    yield* showUnexpectedError(MessageId.FileStorageFailedToDelete, action.error);
+}
+
 function* showFileStorageFailToExport(
     action: ReturnType<typeof fileStorageDidFailToExportFile>,
 ): Generator {
@@ -431,6 +441,45 @@ function* showFileStorageFailToArchive(
     yield* showUnexpectedError(MessageId.FileStorageFailedToExport, action.error);
 }
 
+function* showDeleteFileWarning(action: ReturnType<typeof explorerDeleteFile>) {
+    const ch = channel<React.MouseEvent<HTMLElement>>();
+    const userAction = dispatchAction(
+        MessageId.ExplorerDeleteFileAction,
+        ch.put,
+        'trash',
+    );
+
+    // TODO: this should probably not be a singleton
+    yield* showSingleton(
+        Level.Warning,
+        MessageId.ExplorerDeleteFileMessage,
+        {
+            fileName: React.createElement('strong', undefined, action.fileName),
+        },
+        userAction,
+        ch.close,
+    );
+
+    // task is terminated here if channel is closed (triggered by closing the notification)
+    const { didRemoveFile } = yield* race({
+        userActionEvent: take(ch),
+        didRemoveFile: take(
+            fileStorageDidRemoveItem.when((a) => a.fileName === action.fileName),
+        ),
+    });
+
+    // if the file was removed by other means while the notification was being
+    // shown, close the notification
+    if (didRemoveFile) {
+        const { toaster } = yield* getContext<NotificationContext>('notification');
+        toaster.dismiss(MessageId.ExplorerDeleteFileMessage);
+        return;
+    }
+
+    // this only runs if userAction is dispatched
+    yield* put(fileStorageDeleteFile(action.fileName));
+}
+
 export default function* (): Generator {
     yield* takeEvery(bleDeviceDidFailToConnect, showBleDeviceDidFailToConnectError);
     yield* takeEvery(bootloaderDidFailToConnect, showBootloaderDidFailToConnectError);
@@ -445,6 +494,8 @@ export default function* (): Generator {
     yield* takeEvery(fileStorageDidFailToInitialize, showFileStorageFailToInitialize);
     yield* takeEvery(fileStorageDidFailToReadFile, showFileStorageFailToRead);
     yield* takeEvery(fileStorageDidFailToWriteFile, showFileStorageFailToWrite);
+    yield* takeEvery(fileStorageDidFailToDeleteFile, showFileStorageFailToDelete);
     yield* takeEvery(fileStorageDidFailToExportFile, showFileStorageFailToExport);
     yield* takeEvery(fileStorageDidFailToArchiveAllFiles, showFileStorageFailToArchive);
+    yield* takeEvery(explorerDeleteFile, showDeleteFileWarning);
 }

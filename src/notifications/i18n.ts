@@ -13,6 +13,8 @@ export enum MessageId {
     BleNoWebBluetooth = 'ble.noWebBluetooth',
     BleNoBluetooth = 'ble.noBluetooth',
     EditorFailedToSaveFile = 'editor.failedToSaveFile',
+    ExplorerDeleteFileMessage = 'explorer.deleteFile.message',
+    ExplorerDeleteFileAction = 'explorer.deleteFile.action',
     FileStorageFailedToInitialize = 'fileStorage.failedToInitialize',
     FileStorageFailedToRead = 'fileStorage.failedToRead',
     FileStorageFailedToWrite = 'fileStorage.failedToWrite',
