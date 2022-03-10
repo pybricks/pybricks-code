@@ -7,6 +7,7 @@ import {
     FirmwareReaderErrorCode,
     firmwareVersion,
 } from '@pybricks/firmware';
+import { I18nManager } from '@shopify/react-i18n';
 import { AnyAction } from 'redux';
 import { AsyncSaga } from '../../test';
 import { appDidCheckForUpdate } from '../app/actions';
@@ -39,9 +40,24 @@ import {
     serviceWorkerDidSucceed,
     serviceWorkerDidUpdate,
 } from '../service-worker/actions';
+import * as I18nToaster from './I18nToaster';
 import { add } from './actions';
 import { MessageId } from './i18n';
 import notification from './sagas';
+
+function createTestToasterSaga(): { toaster: IToaster; saga: AsyncSaga } {
+    const i18n = new I18nManager({ locale: 'en' });
+    const toaster = I18nToaster.create(i18n);
+
+    jest.spyOn(toaster, 'clear');
+    jest.spyOn(toaster, 'dismiss');
+    jest.spyOn(toaster, 'getToasts');
+    jest.spyOn(toaster, 'show');
+
+    const saga = new AsyncSaga(notification, {}, { notification: { toaster } });
+
+    return { toaster, saga };
+}
 
 test.each([
     bleDidFailToConnect({ reason: BleDeviceFailToConnectReasonType.NoWebBluetooth }),
@@ -100,25 +116,13 @@ test.each([
     fileStorageDidFailToExportFile('test.file', new Error('test error')),
     fileStorageDidFailToArchiveAllFiles(new Error('test error')),
 ])('actions that should show notification: %o', async (action: AnyAction) => {
-    const getToasts = jest.fn().mockReturnValue([]);
-    const show = jest.fn();
-    const dismiss = jest.fn();
-    const clear = jest.fn();
-
-    const toaster: IToaster = {
-        getToasts,
-        show,
-        dismiss,
-        clear,
-    };
-
-    const saga = new AsyncSaga(notification, {}, { notification: { toaster } });
+    const { toaster, saga } = createTestToasterSaga();
 
     saga.put(action);
 
-    expect(show).toBeCalled();
-    expect(dismiss).not.toBeCalled();
-    expect(clear).not.toBeCalled();
+    expect(toaster.show).toBeCalled();
+    expect(toaster.dismiss).not.toBeCalled();
+    expect(toaster.clear).not.toBeCalled();
 
     await saga.end();
 });
@@ -137,26 +141,14 @@ test.each([
     ),
     fileStorageDidFailToArchiveAllFiles(new DOMException('test message', 'AbortError')),
 ])('actions that should not show a notification: %o', async (action: AnyAction) => {
-    const getToasts = jest.fn().mockReturnValue([]);
-    const show = jest.fn();
-    const dismiss = jest.fn();
-    const clear = jest.fn();
-
-    const toaster: IToaster = {
-        getToasts,
-        show,
-        dismiss,
-        clear,
-    };
-
-    const saga = new AsyncSaga(notification, {}, { notification: { toaster } });
+    const { toaster, saga } = createTestToasterSaga();
 
     saga.put(action);
 
-    expect(getToasts).not.toBeCalled();
-    expect(show).not.toBeCalled();
-    expect(dismiss).not.toBeCalled();
-    expect(clear).not.toBeCalled();
+    expect(toaster.getToasts).not.toBeCalled();
+    expect(toaster.show).not.toBeCalled();
+    expect(toaster.dismiss).not.toBeCalled();
+    expect(toaster.clear).not.toBeCalled();
 
     await saga.end();
 });
@@ -164,25 +156,13 @@ test.each([
 test.each([[didCompile(new Uint8Array()), MessageId.MpyError]])(
     'actions that should close a notification: %o',
     async (action: AnyAction, key: string) => {
-        const getToasts = jest.fn().mockReturnValue([]);
-        const show = jest.fn();
-        const dismiss = jest.fn();
-        const clear = jest.fn();
-
-        const toaster: IToaster = {
-            getToasts,
-            show,
-            dismiss,
-            clear,
-        };
-
-        const saga = new AsyncSaga(notification, {}, { notification: { toaster } });
+        const { toaster, saga } = createTestToasterSaga();
 
         saga.put(action);
 
-        expect(show).not.toBeCalled();
-        expect(dismiss).toBeCalledWith(key);
-        expect(clear).not.toBeCalled();
+        expect(toaster.show).not.toBeCalled();
+        expect(toaster.dismiss).toBeCalledWith(key);
+        expect(toaster.clear).not.toBeCalled();
 
         await saga.end();
     },
