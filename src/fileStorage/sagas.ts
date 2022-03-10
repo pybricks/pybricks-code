@@ -112,7 +112,7 @@ function* handleExportFile(
         try {
             const handle = yield* call(() =>
                 window.showSaveFilePicker({
-                    suggestedName: 'main.py',
+                    suggestedName: action.fileName,
                     types: [
                         {
                             accept: { 'text/x-python': '.py' },
@@ -135,7 +135,7 @@ function* handleExportFile(
     } else {
         // this is a fallback to use the standard browser download mechanism
         try {
-            FileSaver.saveAs(blob, 'main.py');
+            FileSaver.saveAs(blob, action.fileName);
         } catch (err) {
             yield* put(
                 fileStorageDidFailToExportFile(action.fileName, ensureError(err)),
