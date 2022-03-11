@@ -18,7 +18,8 @@
         "deleteFile": {
             "message": "The file {fileName} will be permanently deleted. This cannot be undone.",
             "action": "Delete"
-        }
+        },
+        "failedToImportFiles": "Failed to import file(s)"
     },
     "fileStorage": {
         "failedToInitialize": "Failed to initial file storage. Changes will not be automatically saved.",

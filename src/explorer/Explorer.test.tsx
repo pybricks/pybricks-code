@@ -10,7 +10,7 @@ import {
     fileStorageExportFile,
 } from '../fileStorage/actions';
 import Explorer from './Explorer';
-import { explorerDeleteFile } from './actions';
+import { explorerDeleteFile, explorerImportFiles } from './actions';
 
 describe('archive button', () => {
     it('should be enabled if there are files', () => {
@@ -35,6 +35,17 @@ describe('archive button', () => {
 
         userEvent.click(button);
         expect(dispatch).not.toHaveBeenCalled();
+    });
+});
+
+describe('import file button', () => {
+    it('should dispatch action when clicked', async () => {
+        const [explorer, dispatch] = testRender(<Explorer />);
+
+        const button = explorer.getByTitle('Import a file');
+
+        userEvent.click(button);
+        expect(dispatch).toHaveBeenCalledWith(explorerImportFiles());
     });
 });
 

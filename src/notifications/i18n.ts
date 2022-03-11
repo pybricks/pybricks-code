@@ -15,6 +15,7 @@ export enum MessageId {
     EditorFailedToSaveFile = 'editor.failedToSaveFile',
     ExplorerDeleteFileMessage = 'explorer.deleteFile.message',
     ExplorerDeleteFileAction = 'explorer.deleteFile.action',
+    ExplorerFailedToImportFiles = 'explorer.failedToImportFiles',
     FileStorageFailedToInitialize = 'fileStorage.failedToInitialize',
     FileStorageFailedToRead = 'fileStorage.failedToRead',
     FileStorageFailedToWrite = 'fileStorage.failedToWrite',

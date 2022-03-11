@@ -18,7 +18,7 @@ import {
     didFailToConnect as bleDeviceDidFailToConnect,
 } from '../ble/actions';
 import { didFailToSaveAs } from '../editor/actions';
-import { explorerDeleteFile } from '../explorer/actions';
+import { explorerDeleteFile, explorerDidFailToImportFiles } from '../explorer/actions';
 import {
     fileStorageDeleteFile,
     fileStorageDidFailToArchiveAllFiles,
@@ -480,6 +480,17 @@ function* showDeleteFileWarning(action: ReturnType<typeof explorerDeleteFile>) {
     yield* put(fileStorageDeleteFile(action.fileName));
 }
 
+function* showExplorerFailToImportFiles(
+    action: ReturnType<typeof explorerDidFailToImportFiles>,
+): Generator {
+    if (action.error.name === 'AbortError') {
+        // user clicked cancel button - not an error
+        return;
+    }
+
+    yield* showUnexpectedError(MessageId.ExplorerFailedToImportFiles, action.error);
+}
+
 export default function* (): Generator {
     yield* takeEvery(bleDeviceDidFailToConnect, showBleDeviceDidFailToConnectError);
     yield* takeEvery(bootloaderDidFailToConnect, showBootloaderDidFailToConnectError);
@@ -498,4 +509,5 @@ export default function* (): Generator {
     yield* takeEvery(fileStorageDidFailToExportFile, showFileStorageFailToExport);
     yield* takeEvery(fileStorageDidFailToArchiveAllFiles, showFileStorageFailToArchive);
     yield* takeEvery(explorerDeleteFile, showDeleteFileWarning);
+    yield* takeEvery(explorerDidFailToImportFiles, showExplorerFailToImportFiles);
 }

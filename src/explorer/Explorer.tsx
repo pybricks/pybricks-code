@@ -20,7 +20,7 @@ import {
 } from '../fileStorage/actions';
 import { useSelector } from '../reducers';
 import NewFileWizard from './NewFileWizard';
-import { explorerDeleteFile } from './actions';
+import { explorerDeleteFile, explorerImportFiles } from './actions';
 import { ExplorerStringId } from './i18n';
 import en from './i18n.en.json';
 
@@ -122,7 +122,7 @@ const Header: React.VFC = () => {
                     // even though this is the "import" action
                     icon="export"
                     toolTipId={ExplorerStringId.HeaderImportTooltip}
-                    onClick={() => alert('not implemented')}
+                    onClick={() => dispatch(explorerImportFiles())}
                 />
                 <ActionButton
                     icon="plus"

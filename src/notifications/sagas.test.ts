@@ -17,7 +17,7 @@ import {
     didFailToConnect as bleDidFailToConnect,
 } from '../ble/actions';
 import { didFailToSaveAs } from '../editor/actions';
-import { explorerDeleteFile } from '../explorer/actions';
+import { explorerDeleteFile, explorerDidFailToImportFiles } from '../explorer/actions';
 import {
     fileStorageDeleteFile,
     fileStorageDidFailToArchiveAllFiles,
@@ -118,6 +118,7 @@ test.each([
     fileStorageDidFailToDeleteFile('test.file', new Error('test error')),
     fileStorageDidFailToExportFile('test.file', new Error('test error')),
     fileStorageDidFailToArchiveAllFiles(new Error('test error')),
+    explorerDidFailToImportFiles(new Error('test error')),
 ])('actions that should show notification: %o', async (action: AnyAction) => {
     const { toaster, saga } = createTestToasterSaga();
 
@@ -143,6 +144,7 @@ test.each([
         new DOMException('test message', 'AbortError'),
     ),
     fileStorageDidFailToArchiveAllFiles(new DOMException('test message', 'AbortError')),
+    explorerDidFailToImportFiles(new DOMException('test message', 'AbortError')),
 ])('actions that should not show a notification: %o', async (action: AnyAction) => {
     const { toaster, saga } = createTestToasterSaga();
 

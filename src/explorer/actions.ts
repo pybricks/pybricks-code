@@ -24,6 +24,29 @@ export enum Hub {
 }
 
 /**
+ * Action that requests to import (upload) files into the app.
+ */
+export const explorerImportFiles = createAction(() => ({
+    type: 'explorer.action.importFiles',
+}));
+
+/**
+ * Action that indicates that explorerImportFiles() succeeded.
+ */
+export const explorerDidImportFiles = createAction(() => ({
+    type: 'explorer.action.didImportFiles',
+}));
+
+/**
+ * Action that indicates that explorerImportFiles() failed.
+ * @param error The error.
+ */
+export const explorerDidFailToImportFiles = createAction((error: Error) => ({
+    type: 'explorer.action.didFailToImportFiles',
+    error,
+}));
+
+/**
  * Action that requests to create a new file.
  * @param fileName The requested new file name (without file extension).
  * @param fileExtension The file extension (including leading ".").

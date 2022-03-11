@@ -276,8 +276,9 @@ module.exports = {
                         '[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs|cjs|ts|tsx)$',
                     );
                     // https://github.com/react-monaco-editor/react-monaco-editor/issues/306#issuecomment-701025628
+                    // https://github.com/GoogleChromeLabs/browser-fs-access/issues/42
                     jestConfig.transformIgnorePatterns[index] =
-                        '[/\\\\]node_modules[/\\\\](?!(monaco-editor|react-monaco-editor)[/\\\\]).+\\.(js|jsx|mjs|cjs|ts|tsx)$';
+                        '[/\\\\]node_modules[/\\\\](?!(monaco-editor|react-monaco-editor|browser-fs-access)[/\\\\]).+\\.(js|jsx|mjs|cjs|ts|tsx)$';
                     return jestConfig;
                 },
             },
