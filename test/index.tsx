@@ -5,25 +5,21 @@ import { I18nContext, I18nManager } from '@shopify/react-i18n';
 import { RenderResult, render } from '@testing-library/react';
 import React, { ReactElement } from 'react';
 import { Provider } from 'react-redux';
-import { AnyAction, PreloadedState, createStore } from 'redux';
+import { AnyAction, DeepPartial, PreloadedState, createStore } from 'redux';
 import { END, MulticastChannel, Saga, Task, runSaga, stdChannel } from 'redux-saga';
 import { RootState, rootReducer } from '../src/reducers';
 import { RootSagaContext } from '../src/sagas';
-
-type RecursivePartial<T> = {
-    [P in keyof T]?: RecursivePartial<T[P]>;
-};
 
 export class AsyncSaga {
     private channel: MulticastChannel<AnyAction>;
     private dispatches: (AnyAction | END)[];
     private takers: { put: (action: AnyAction | END) => void }[];
-    private state: RecursivePartial<RootState>;
+    private state: DeepPartial<RootState>;
     private task: Task;
 
     public constructor(
         saga: Saga,
-        state: RecursivePartial<RootState> = {},
+        state: DeepPartial<RootState> = {},
         context?: Partial<RootSagaContext>,
     ) {
         this.channel = stdChannel();
@@ -76,7 +72,7 @@ export class AsyncSaga {
         return Promise.resolve(next);
     }
 
-    public updateState(state: RecursivePartial<RootState>): void {
+    public updateState(state: DeepPartial<RootState>): void {
         for (const key of Object.keys(state) as Array<keyof RootState>) {
             // @ts-expect-error: writing to readonly for testing
             this.state[key] = { ...this.state[key], ...state[key] };
