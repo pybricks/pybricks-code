@@ -57,7 +57,7 @@ function createTestToasterSaga(): { toaster: IToaster; saga: AsyncSaga } {
     jest.spyOn(toaster, 'getToasts');
     jest.spyOn(toaster, 'show');
 
-    const saga = new AsyncSaga(notification, {}, { notification: { toaster } });
+    const saga = new AsyncSaga(notification, { notification: { toaster } });
 
     return { toaster, saga };
 }

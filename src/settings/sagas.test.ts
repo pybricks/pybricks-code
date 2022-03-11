@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2021 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 //
 // Tests for settings sagas.
 
@@ -218,9 +218,7 @@ describe('startup', () => {
 
 describe('store settings to local storage', () => {
     test('failed storage', async () => {
-        const saga = new AsyncSaga(settings, {
-            settings: { showDocs: false, hubName: '' },
-        });
+        const saga = new AsyncSaga(settings);
 
         const testError = new Error('local storage is disabled');
 
@@ -260,7 +258,7 @@ describe('store settings to local storage', () => {
     });
 
     test('showDocs', async () => {
-        const saga = new AsyncSaga(settings, { settings: { showDocs: false } });
+        const saga = new AsyncSaga(settings);
 
         const mockSetItem = jest
             .spyOn(Object.getPrototypeOf(window.localStorage), 'setItem')
@@ -279,7 +277,9 @@ describe('store settings to local storage', () => {
     });
 
     test('darkMode', async () => {
-        const saga = new AsyncSaga(settings, { settings: { darkMode: true } });
+        const saga = new AsyncSaga(settings);
+
+        saga.updateState({ settings: { darkMode: true } });
 
         const mockSetItem = jest
             .spyOn(Object.getPrototypeOf(window.localStorage), 'setItem')
@@ -298,9 +298,9 @@ describe('store settings to local storage', () => {
     });
 
     test('flashCurrentProgram', async () => {
-        const saga = new AsyncSaga(settings, {
-            settings: { flashCurrentProgram: true },
-        });
+        const saga = new AsyncSaga(settings);
+
+        saga.updateState({ settings: { flashCurrentProgram: true } });
 
         const mockSetItem = jest
             .spyOn(Object.getPrototypeOf(window.localStorage), 'setItem')
@@ -375,7 +375,7 @@ describe('storage monitor', () => {
 
 describe('toggle', () => {
     test('showDocs', async () => {
-        const saga = new AsyncSaga(settings, { settings: { showDocs: false } });
+        const saga = new AsyncSaga(settings);
 
         const mockSetItem = jest
             .spyOn(Object.getPrototypeOf(window.localStorage), 'setItem')

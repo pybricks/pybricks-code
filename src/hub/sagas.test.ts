@@ -27,14 +27,10 @@ jest.mock('react-monaco-editor');
 describe('downloadAndRun', () => {
     test('no errors', async () => {
         const mockEditor = mock<monaco.editor.ICodeEditor>();
-        const saga = new AsyncSaga(
-            hub,
-            {},
-            {
-                editor: mockEditor,
-                nextMessageId: createCountFunc(),
-            },
-        );
+        const saga = new AsyncSaga(hub, {
+            editor: mockEditor,
+            nextMessageId: createCountFunc(),
+        });
 
         saga.put(downloadAndRun());
 
@@ -87,7 +83,7 @@ describe('downloadAndRun', () => {
 });
 
 test('repl', async () => {
-    const saga = new AsyncSaga(hub, {}, { nextMessageId: createCountFunc() });
+    const saga = new AsyncSaga(hub, { nextMessageId: createCountFunc() });
 
     saga.put(repl());
 
@@ -98,7 +94,7 @@ test('repl', async () => {
 });
 
 test('stop', async () => {
-    const saga = new AsyncSaga(hub, {}, { nextMessageId: createCountFunc() });
+    const saga = new AsyncSaga(hub, { nextMessageId: createCountFunc() });
 
     saga.put(stop());
 

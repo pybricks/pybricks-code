@@ -19,11 +19,7 @@ const encoder = new TextEncoder();
 
 describe('Data receiver filters out hub status', () => {
     test('normal message - no status', async () => {
-        const saga = new AsyncSaga(
-            terminal,
-            { hub: { runtime: HubRuntimeState.Unknown } },
-            { nextMessageId: createCountFunc() },
-        );
+        const saga = new AsyncSaga(terminal, { nextMessageId: createCountFunc() });
 
         // sending ASCII space character
         saga.put(didNotify(new DataView(new Uint8Array([0x20]).buffer)));
@@ -35,11 +31,9 @@ describe('Data receiver filters out hub status', () => {
     });
 
     test('checksum message', async () => {
-        const saga = new AsyncSaga(
-            terminal,
-            { hub: { runtime: HubRuntimeState.Loading } },
-            { nextMessageId: createCountFunc() },
-        );
+        const saga = new AsyncSaga(terminal, { nextMessageId: createCountFunc() });
+
+        saga.updateState({ hub: { runtime: HubRuntimeState.Loading } });
 
         saga.put(didNotify(new DataView(new Uint8Array([0xaa]).buffer)));
 
@@ -52,11 +46,10 @@ describe('Data receiver filters out hub status', () => {
 
 test('Terminal data source responds to send data actions', async () => {
     const dataSource = new PushStream<string>();
-    const saga = new AsyncSaga(
-        terminal,
-        {},
-        { nextMessageId: createCountFunc(), terminal: { dataSource } },
-    );
+    const saga = new AsyncSaga(terminal, {
+        nextMessageId: createCountFunc(),
+        terminal: { dataSource },
+    });
 
     const data = new Array<string>();
     dataSource.observable.subscribe({ next: (v) => data.push(v) });
@@ -77,7 +70,7 @@ describe('Terminal data source responds to receive data actions', () => {
     const expected = encoder.encode('test1234');
 
     test('basic function works', async () => {
-        const saga = new AsyncSaga(terminal, {}, { nextMessageId: createCountFunc() });
+        const saga = new AsyncSaga(terminal, { nextMessageId: createCountFunc() });
 
         saga.put(receiveData('test1234'));
 
@@ -88,7 +81,7 @@ describe('Terminal data source responds to receive data actions', () => {
     });
 
     test('messages are queued until previous has completed', async () => {
-        const saga = new AsyncSaga(terminal, {}, { nextMessageId: createCountFunc() });
+        const saga = new AsyncSaga(terminal, { nextMessageId: createCountFunc() });
 
         saga.put(receiveData('test1234'));
         await delay(50); // without delay, messages are combined
@@ -114,7 +107,7 @@ describe('Terminal data source responds to receive data actions', () => {
     });
 
     test('messages are queued until previous has failed', async () => {
-        const saga = new AsyncSaga(terminal, {}, { nextMessageId: createCountFunc() });
+        const saga = new AsyncSaga(terminal, { nextMessageId: createCountFunc() });
 
         saga.put(receiveData('test1234'));
         await delay(50); // without delay, messages are combined
@@ -140,7 +133,7 @@ describe('Terminal data source responds to receive data actions', () => {
     });
 
     test('small messages are combined', async () => {
-        const saga = new AsyncSaga(terminal, {}, { nextMessageId: createCountFunc() });
+        const saga = new AsyncSaga(terminal, { nextMessageId: createCountFunc() });
 
         saga.put(receiveData('test1234'));
         saga.put(receiveData('test1234'));
@@ -154,7 +147,7 @@ describe('Terminal data source responds to receive data actions', () => {
     test('long messages are split', async () => {
         const testData = '012345678901234567890123456789';
 
-        const saga = new AsyncSaga(terminal, {}, { nextMessageId: createCountFunc() });
+        const saga = new AsyncSaga(terminal, { nextMessageId: createCountFunc() });
 
         saga.put(receiveData(testData));
 

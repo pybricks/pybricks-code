@@ -21,7 +21,7 @@ describe('handleExplorerImportFiles', () => {
         const testFileName = 'test.py';
         const testFileContents = '# test';
 
-        const saga = new AsyncSaga(explorer, { fileStorage: { fileNames: [] } });
+        const saga = new AsyncSaga(explorer);
 
         jest.spyOn(browserFsAccess, 'fileOpen').mockResolvedValueOnce([
             mock<FileWithHandle>({

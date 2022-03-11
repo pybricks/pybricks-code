@@ -13,7 +13,7 @@ jest.mock('file-saver');
 
 test('open', async () => {
     const mockEditor = mock<monaco.editor.ICodeEditor>();
-    const saga = new AsyncSaga(editor, {}, { editor: mockEditor });
+    const saga = new AsyncSaga(editor, { editor: mockEditor });
 
     const data = new Uint8Array().buffer;
     saga.put(open(data));
@@ -26,7 +26,7 @@ test('open', async () => {
 describe('saveAs', () => {
     test('web file system api can succeed', async () => {
         const mockEditor = mock<monaco.editor.ICodeEditor>();
-        const saga = new AsyncSaga(editor, {}, { editor: mockEditor });
+        const saga = new AsyncSaga(editor, { editor: mockEditor });
 
         // window.showSaveFilePicker is not defined in the test environment
         // so we can't use spyOn().
@@ -55,7 +55,7 @@ describe('saveAs', () => {
 
     test('web file system api can fail', async () => {
         const mockEditor = mock<monaco.editor.ICodeEditor>();
-        const saga = new AsyncSaga(editor, {}, { editor: mockEditor });
+        const saga = new AsyncSaga(editor, { editor: mockEditor });
 
         // window.showSaveFilePicker is not defined in the test environment
         // so we can't use spyOn().
@@ -82,7 +82,7 @@ describe('saveAs', () => {
 
     test('fallback can succeed', async () => {
         const mockEditor = mock<monaco.editor.ICodeEditor>();
-        const saga = new AsyncSaga(editor, {}, { editor: mockEditor });
+        const saga = new AsyncSaga(editor, { editor: mockEditor });
 
         const mockFileSaverSaveAs = jest.spyOn(FileSaver, 'saveAs');
 
@@ -101,7 +101,7 @@ describe('saveAs', () => {
 
     test('fallback can fail', async () => {
         const mockEditor = mock<monaco.editor.ICodeEditor>();
-        const saga = new AsyncSaga(editor, {}, { editor: mockEditor });
+        const saga = new AsyncSaga(editor, { editor: mockEditor });
 
         const testError = new Error('test error');
         const mockFileSaverSaveAs = jest

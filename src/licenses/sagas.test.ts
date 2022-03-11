@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2021 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 
 // Tests for license sagas.
 
@@ -15,7 +15,7 @@ afterAll(() => {
 describe('fetchLicenses', () => {
     test('first call', async () => {
         const testLicenseList: LicenseList = [];
-        const saga = new AsyncSaga(license, { licenses: { list: null } });
+        const saga = new AsyncSaga(license);
 
         jest.spyOn(globalThis, 'fetch').mockResolvedValue(
             new Response(JSON.stringify(testLicenseList)),
@@ -30,12 +30,15 @@ describe('fetchLicenses', () => {
 
         await saga.end();
     });
+
     test('second call', async () => {
         const testLicenseList: LicenseList = [];
-        const saga = new AsyncSaga(license, { licenses: { list: testLicenseList } });
+        const saga = new AsyncSaga(license);
+
+        saga.updateState({ licenses: { list: testLicenseList } });
 
         jest.spyOn(globalThis, 'fetch').mockRejectedValue(
-            'fetch () should not have been called',
+            'fetch() should not have been called',
         );
 
         // after we have the list, we don't fetch it again since it will
@@ -47,9 +50,10 @@ describe('fetchLicenses', () => {
 
         await saga.end();
     });
+
     test('failed fetch', async () => {
         const failResponse = new Response(undefined, { status: 404 });
-        const saga = new AsyncSaga(license, { licenses: { list: null } });
+        const saga = new AsyncSaga(license);
 
         jest.spyOn(globalThis, 'fetch').mockResolvedValue(failResponse);
 

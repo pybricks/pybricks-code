@@ -78,16 +78,11 @@ describe('flashFirmware', () => {
                 new Response(await zip.generateAsync({ type: 'blob' })),
             );
 
-            const saga = new AsyncSaga(
-                flashFirmware,
-                {
-                    bootloader: { connection: BootloaderConnectionState.Disconnected },
-                    settings: { flashCurrentProgram: false, hubName: 'test name' },
-                },
-                {
-                    nextMessageId: createCountFunc(),
-                },
-            );
+            const saga = new AsyncSaga(flashFirmware, {
+                nextMessageId: createCountFunc(),
+            });
+
+            saga.updateState({ settings: { hubName: 'test name' } });
 
             // saga is triggered by this action
 
@@ -230,16 +225,9 @@ describe('flashFirmware', () => {
                 new Response(await zip.generateAsync({ type: 'blob' })),
             );
 
-            const saga = new AsyncSaga(
-                flashFirmware,
-                {
-                    bootloader: { connection: BootloaderConnectionState.Disconnected },
-                    settings: { flashCurrentProgram: false },
-                },
-                {
-                    nextMessageId: createCountFunc(),
-                },
-            );
+            const saga = new AsyncSaga(flashFirmware, {
+                nextMessageId: createCountFunc(),
+            });
 
             // saga is triggered by this action
 
@@ -286,16 +274,9 @@ describe('flashFirmware', () => {
                 new Response(await zip.generateAsync({ type: 'blob' })),
             );
 
-            const saga = new AsyncSaga(
-                flashFirmware,
-                {
-                    bootloader: { connection: BootloaderConnectionState.Disconnected },
-                    settings: { flashCurrentProgram: false },
-                },
-                {
-                    nextMessageId: createCountFunc(),
-                },
-            );
+            const saga = new AsyncSaga(flashFirmware, {
+                nextMessageId: createCountFunc(),
+            });
 
             // saga is triggered by this action
 
@@ -360,16 +341,9 @@ describe('flashFirmware', () => {
                 new Response(await zip.generateAsync({ type: 'blob' })),
             );
 
-            const saga = new AsyncSaga(
-                flashFirmware,
-                {
-                    bootloader: { connection: BootloaderConnectionState.Disconnected },
-                    settings: { flashCurrentProgram: false },
-                },
-                {
-                    nextMessageId: createCountFunc(),
-                },
-            );
+            const saga = new AsyncSaga(flashFirmware, {
+                nextMessageId: createCountFunc(),
+            });
 
             // saga is triggered by this action
 
@@ -430,16 +404,9 @@ describe('flashFirmware', () => {
                 new Response(await zip.generateAsync({ type: 'blob' })),
             );
 
-            const saga = new AsyncSaga(
-                flashFirmware,
-                {
-                    bootloader: { connection: BootloaderConnectionState.Disconnected },
-                    settings: { flashCurrentProgram: false },
-                },
-                {
-                    nextMessageId: createCountFunc(),
-                },
-            );
+            const saga = new AsyncSaga(flashFirmware, {
+                nextMessageId: createCountFunc(),
+            });
 
             // saga is triggered by this action
 
@@ -503,16 +470,9 @@ describe('flashFirmware', () => {
                 new Response(await zip.generateAsync({ type: 'blob' })),
             );
 
-            const saga = new AsyncSaga(
-                flashFirmware,
-                {
-                    bootloader: { connection: BootloaderConnectionState.Disconnected },
-                    settings: { flashCurrentProgram: false },
-                },
-                {
-                    nextMessageId: createCountFunc(),
-                },
-            );
+            const saga = new AsyncSaga(flashFirmware, {
+                nextMessageId: createCountFunc(),
+            });
 
             // saga is triggered by this action
 
@@ -569,16 +529,9 @@ describe('flashFirmware', () => {
             const response = new Response(undefined, { status: 404 });
             jest.spyOn(window, 'fetch').mockResolvedValueOnce(response);
 
-            const saga = new AsyncSaga(
-                flashFirmware,
-                {
-                    bootloader: { connection: BootloaderConnectionState.Disconnected },
-                    settings: { flashCurrentProgram: false },
-                },
-                {
-                    nextMessageId: createCountFunc(),
-                },
-            );
+            const saga = new AsyncSaga(flashFirmware, {
+                nextMessageId: createCountFunc(),
+            });
 
             // saga is triggered by this action
 
@@ -641,16 +594,9 @@ describe('flashFirmware', () => {
                 new Response(await zip.generateAsync({ type: 'blob' })),
             );
 
-            const saga = new AsyncSaga(
-                flashFirmware,
-                {
-                    bootloader: { connection: BootloaderConnectionState.Disconnected },
-                    settings: { flashCurrentProgram: false },
-                },
-                {
-                    nextMessageId: createCountFunc(),
-                },
-            );
+            const saga = new AsyncSaga(flashFirmware, {
+                nextMessageId: createCountFunc(),
+            });
 
             // saga is triggered by this action
 
@@ -729,16 +675,9 @@ describe('flashFirmware', () => {
                 new Response(await zip.generateAsync({ type: 'blob' })),
             );
 
-            const saga = new AsyncSaga(
-                flashFirmware,
-                {
-                    bootloader: { connection: BootloaderConnectionState.Disconnected },
-                    settings: { flashCurrentProgram: false },
-                },
-                {
-                    nextMessageId: createCountFunc(),
-                },
-            );
+            const saga = new AsyncSaga(flashFirmware, {
+                nextMessageId: createCountFunc(),
+            });
 
             // saga is triggered by this action
 
@@ -801,16 +740,9 @@ describe('flashFirmware', () => {
                 new Response(await zip.generateAsync({ type: 'blob' })),
             );
 
-            const saga = new AsyncSaga(
-                flashFirmware,
-                {
-                    bootloader: { connection: BootloaderConnectionState.Disconnected },
-                    settings: { flashCurrentProgram: false },
-                },
-                {
-                    nextMessageId: createCountFunc(),
-                },
-            );
+            const saga = new AsyncSaga(flashFirmware, {
+                nextMessageId: createCountFunc(),
+            });
 
             // saga is triggered by this action
 
@@ -902,16 +834,9 @@ describe('flashFirmware', () => {
                 new Response(await zip.generateAsync({ type: 'blob' })),
             );
 
-            const saga = new AsyncSaga(
-                flashFirmware,
-                {
-                    bootloader: { connection: BootloaderConnectionState.Disconnected },
-                    settings: { flashCurrentProgram: false },
-                },
-                {
-                    nextMessageId: createCountFunc(),
-                },
-            );
+            const saga = new AsyncSaga(flashFirmware, {
+                nextMessageId: createCountFunc(),
+            });
 
             // saga is triggered by this action
 
@@ -1012,16 +937,9 @@ describe('flashFirmware', () => {
                 new Response(await zip.generateAsync({ type: 'blob' })),
             );
 
-            const saga = new AsyncSaga(
-                flashFirmware,
-                {
-                    bootloader: { connection: BootloaderConnectionState.Disconnected },
-                    settings: { flashCurrentProgram: false },
-                },
-                {
-                    nextMessageId: createCountFunc(),
-                },
-            );
+            const saga = new AsyncSaga(flashFirmware, {
+                nextMessageId: createCountFunc(),
+            });
 
             // saga is triggered by this action
 
@@ -1162,16 +1080,9 @@ describe('flashFirmware', () => {
                 new Response(await zip.generateAsync({ type: 'blob' })),
             );
 
-            const saga = new AsyncSaga(
-                flashFirmware,
-                {
-                    bootloader: { connection: BootloaderConnectionState.Disconnected },
-                    settings: { flashCurrentProgram: false },
-                },
-                {
-                    nextMessageId: createCountFunc(),
-                },
-            );
+            const saga = new AsyncSaga(flashFirmware, {
+                nextMessageId: createCountFunc(),
+            });
 
             // saga is triggered by this action
 
@@ -1310,16 +1221,9 @@ describe('flashFirmware', () => {
             zip.file('main.py', 'print("test")');
             zip.file('ReadMe_OSS.txt', 'test');
 
-            const saga = new AsyncSaga(
-                flashFirmware,
-                {
-                    bootloader: { connection: BootloaderConnectionState.Disconnected },
-                    settings: { flashCurrentProgram: false },
-                },
-                {
-                    nextMessageId: createCountFunc(),
-                },
-            );
+            const saga = new AsyncSaga(flashFirmware, {
+                nextMessageId: createCountFunc(),
+            });
 
             // saga is triggered by this action
 
@@ -1461,16 +1365,9 @@ describe('flashFirmware', () => {
             zip.file('main.py', 'print("test")');
             zip.file('ReadMe_OSS.txt', 'test');
 
-            const saga = new AsyncSaga(
-                flashFirmware,
-                {
-                    bootloader: { connection: BootloaderConnectionState.Disconnected },
-                    settings: { flashCurrentProgram: false },
-                },
-                {
-                    nextMessageId: createCountFunc(),
-                },
-            );
+            const saga = new AsyncSaga(flashFirmware, {
+                nextMessageId: createCountFunc(),
+            });
 
             // saga is triggered by this action
 
@@ -1511,16 +1408,9 @@ describe('flashFirmware', () => {
             zip.file('main.py', 'print("test")');
             zip.file('ReadMe_OSS.txt', 'test');
 
-            const saga = new AsyncSaga(
-                flashFirmware,
-                {
-                    bootloader: { connection: BootloaderConnectionState.Disconnected },
-                    settings: { flashCurrentProgram: false },
-                },
-                {
-                    nextMessageId: createCountFunc(),
-                },
-            );
+            const saga = new AsyncSaga(flashFirmware, {
+                nextMessageId: createCountFunc(),
+            });
 
             // saga is triggered by this action
 
@@ -1560,16 +1450,9 @@ describe('flashFirmware', () => {
             zip.file('main.py', 'print("test")');
             zip.file('ReadMe_OSS.txt', 'test');
 
-            const saga = new AsyncSaga(
-                flashFirmware,
-                {
-                    bootloader: { connection: BootloaderConnectionState.Disconnected },
-                    settings: { flashCurrentProgram: false },
-                },
-                {
-                    nextMessageId: createCountFunc(),
-                },
-            );
+            const saga = new AsyncSaga(flashFirmware, {
+                nextMessageId: createCountFunc(),
+            });
 
             // saga is triggered by this action
 
@@ -1622,16 +1505,9 @@ describe('flashFirmware', () => {
             zip.file('main.py', 'print("test")');
             zip.file('ReadMe_OSS.txt', 'test');
 
-            const saga = new AsyncSaga(
-                flashFirmware,
-                {
-                    bootloader: { connection: BootloaderConnectionState.Disconnected },
-                    settings: { flashCurrentProgram: false },
-                },
-                {
-                    nextMessageId: createCountFunc(),
-                },
-            );
+            const saga = new AsyncSaga(flashFirmware, {
+                nextMessageId: createCountFunc(),
+            });
 
             // saga is triggered by this action
 
@@ -1685,16 +1561,9 @@ describe('flashFirmware', () => {
             zip.file('main.py', 'print("test")');
             zip.file('ReadMe_OSS.txt', 'test');
 
-            const saga = new AsyncSaga(
-                flashFirmware,
-                {
-                    bootloader: { connection: BootloaderConnectionState.Disconnected },
-                    settings: { flashCurrentProgram: false },
-                },
-                {
-                    nextMessageId: createCountFunc(),
-                },
-            );
+            const saga = new AsyncSaga(flashFirmware, {
+                nextMessageId: createCountFunc(),
+            });
 
             // saga is triggered by this action
 
@@ -1751,16 +1620,9 @@ describe('flashFirmware', () => {
             zip.file('main.py', 'print("test")');
             zip.file('ReadMe_OSS.txt', 'test');
 
-            const saga = new AsyncSaga(
-                flashFirmware,
-                {
-                    bootloader: { connection: BootloaderConnectionState.Disconnected },
-                    settings: { flashCurrentProgram: false },
-                },
-                {
-                    nextMessageId: createCountFunc(),
-                },
-            );
+            const saga = new AsyncSaga(flashFirmware, {
+                nextMessageId: createCountFunc(),
+            });
 
             // saga is triggered by this action
 
@@ -1846,14 +1708,10 @@ describe('flashFirmware', () => {
             getValue: () => 'print("test")',
         });
 
-        const saga = new AsyncSaga(
-            flashFirmware,
-            {
-                bootloader: { connection: BootloaderConnectionState.Disconnected },
-                settings: { flashCurrentProgram: true },
-            },
-            { editor, nextMessageId: createCountFunc() },
-        );
+        const saga = new AsyncSaga(flashFirmware, {
+            editor,
+            nextMessageId: createCountFunc(),
+        });
 
         // saga is triggered by this action
 

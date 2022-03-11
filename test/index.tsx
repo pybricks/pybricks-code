@@ -14,18 +14,14 @@ export class AsyncSaga {
     private channel: MulticastChannel<AnyAction>;
     private dispatches: (AnyAction | END)[];
     private takers: { put: (action: AnyAction | END) => void }[];
-    private state: DeepPartial<RootState>;
+    private state: RootState;
     private task: Task;
 
-    public constructor(
-        saga: Saga,
-        state: DeepPartial<RootState> = {},
-        context?: Partial<RootSagaContext>,
-    ) {
+    public constructor(saga: Saga, context?: Partial<RootSagaContext>) {
         this.channel = stdChannel();
         this.dispatches = [];
         this.takers = [];
-        this.state = state;
+        this.state = createStore(rootReducer).getState();
         this.task = runSaga(
             {
                 channel: this.channel,
