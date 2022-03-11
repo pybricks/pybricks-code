@@ -4,6 +4,9 @@
 /** The Python file extension ('.py') */
 export const pythonFileExtension = '.py';
 
+/** A regular expression that matches the Python file extension. */
+export const pythonFileExtensionRegex = /\.[Pp][Yy]$/;
+
 /** The Python file MIME type ('text/x-python') */
 export const pythonFileMimeType = 'text/x-python';
 

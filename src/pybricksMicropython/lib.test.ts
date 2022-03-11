@@ -1,7 +1,31 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2022 The Pybricks Authors
 
-import { FileNameValidationResult, pythonFileExtension, validateFileName } from './lib';
+import {
+    FileNameValidationResult,
+    pythonFileExtension,
+    pythonFileExtensionRegex,
+    validateFileName,
+} from './lib';
+
+describe('pythonFileExtensionRegex', () => {
+    it.each(['test.py', 'test.PY', 'test.Py', 'test.pY'])(
+        'should be case insensitive',
+        (testCase) => {
+            expect(testCase.match(pythonFileExtensionRegex)).not.toBeNull();
+        },
+    );
+
+    it('should not match the extension in the middle of a string', () => {
+        expect('test.py.test'.match(pythonFileExtensionRegex)).toBeNull();
+    });
+
+    it('should only match the extension and not any other part of the string', () => {
+        const match = 'test.py'.match(pythonFileExtensionRegex);
+        expect(match).toHaveLength(1);
+        expect(match).toContain(pythonFileExtension);
+    });
+});
 
 describe('validateFileName', () => {
     it('should allow file names with underscores', () => {
