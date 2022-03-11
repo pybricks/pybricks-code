@@ -3,6 +3,7 @@
 
 import FileSaver from 'file-saver';
 import { call, getContext, put, takeEvery } from 'typed-redux-saga/macro';
+import { pythonFileExtension, pythonFileMimeType } from '../pybricksMicropython/lib';
 import { ensureError } from '../utils';
 import { EditorType } from './Editor';
 import { didFailToSaveAs, didSaveAs, open, saveAs } from './actions';
@@ -37,7 +38,7 @@ function* handleSaveAs(): Generator {
     }
 
     const data = editor.getValue();
-    const blob = new Blob([data], { type: 'text/x-python;charset=utf-8' });
+    const blob = new Blob([data], { type: `${pythonFileMimeType};charset=utf-8` });
 
     if (window.showSaveFilePicker) {
         // This uses https://wicg.github.io/file-system-access which is not
@@ -48,7 +49,7 @@ function* handleSaveAs(): Generator {
                     suggestedName: 'main.py',
                     types: [
                         {
-                            accept: { 'text/x-python': '.py' },
+                            accept: { [pythonFileMimeType]: pythonFileExtension },
                             // TODO: translate description
                             description: 'Python Files',
                         },

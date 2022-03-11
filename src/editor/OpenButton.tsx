@@ -4,6 +4,7 @@
 import React, { useContext } from 'react';
 import { useDispatch } from 'react-redux';
 import * as notificationActions from '../notifications/actions';
+import { pythonFileExtension } from '../pybricksMicropython/lib';
 import OpenFileButton, { OpenFileButtonProps } from '../toolbar/OpenFileButton';
 import { TooltipId } from '../toolbar/i18n';
 import { EditorContext } from './Editor';
@@ -18,7 +19,7 @@ const OpenButton: React.FunctionComponent<OpenButtonProps> = (props) => {
 
     return (
         <OpenFileButton
-            fileExtension=".py"
+            fileExtension={pythonFileExtension}
             tooltip={TooltipId.Open}
             icon={openIcon}
             enabled={editor !== null}

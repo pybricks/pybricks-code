@@ -2,14 +2,15 @@
 // Copyright (c) 2022 The Pybricks Authors
 
 import { AsyncSaga } from '../../test';
-import { FileExtension, Hub, explorerCreateNewFile } from './actions';
+import { pythonFileExtension } from '../pybricksMicropython/lib';
+import { Hub, explorerCreateNewFile } from './actions';
 import explorer from './sagas';
 
 describe('handleExplorerCreateNewFile', () => {
     it('should dispatch fileStorage action', async () => {
         const saga = new AsyncSaga(explorer);
 
-        saga.put(explorerCreateNewFile('test', FileExtension.Python, Hub.Technic));
+        saga.put(explorerCreateNewFile('test', pythonFileExtension, Hub.Technic));
 
         const action = await saga.take();
         expect(action).toMatchInlineSnapshot(`

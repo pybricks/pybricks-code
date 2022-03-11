@@ -14,71 +14,18 @@ import {
 import { useI18n } from '@shopify/react-i18n';
 import React, { useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import {
+    FileNameValidationResult,
+    pythonFileExtension,
+    validateFileName,
+} from '../pybricksMicropython/lib';
 import { useSelector } from '../reducers';
-import { FileExtension, Hub, explorerCreateNewFile } from './actions';
+import { Hub, explorerCreateNewFile } from './actions';
 import { NewFileWizardStringId } from './i18n';
 import en from './i18n.en.json';
 
 // This should be set to the most commonly used hub.
 const defaultHub = Hub.Technic;
-
-/** File name validation results. */
-enum FileNameValidationResult {
-    /** The file name is acceptable. */
-    IsOk,
-    /** The file name is an empty string. */
-    IsEmpty,
-    /** The file name contains spaces. */
-    HasSpaces,
-    /** The file name include the file file extension. */
-    HasFileExtension,
-    /** The first character is not a letter or underscore. */
-    HasInvalidFirstCharacter,
-    /** The file name has invalid characters. */
-    HasInvalidCharacters,
-    /** A file with the same name already exists. */
-    AlreadyExists,
-}
-
-/**
- * Validates the file name according to a number of criteria.
- *
- * @param fileName The file name (without extension).
- * @param extension The file extension (include ".").
- * @param existingFiles List of existing files.
- * @returns The result of the validation.
- */
-function validateFileName(
-    fileName: string,
-    extension: string,
-    existingFiles: ReadonlyArray<string>,
-): FileNameValidationResult {
-    if (existingFiles.includes(`${fileName}${extension}`)) {
-        return FileNameValidationResult.AlreadyExists;
-    }
-
-    if (fileName.length === 0) {
-        return FileNameValidationResult.IsEmpty;
-    }
-
-    if (fileName.match(/\s/)) {
-        return FileNameValidationResult.HasSpaces;
-    }
-
-    if (fileName.endsWith(extension)) {
-        return FileNameValidationResult.HasFileExtension;
-    }
-
-    if (!fileName.match(/^[a-zA-Z_]/)) {
-        return FileNameValidationResult.HasInvalidFirstCharacter;
-    }
-
-    if (!fileName.match(/^[a-zA-Z0-9_-]+$/)) {
-        return FileNameValidationResult.HasInvalidCharacters;
-    }
-
-    return FileNameValidationResult.IsOk;
-}
 
 type FileNameHelpTextProps = {
     validation: FileNameValidationResult;
@@ -169,7 +116,7 @@ const NewFileWizard: React.VoidFunctionComponent<NewFileWizardProps> = (props) =
 
     const handleFileNameChanged = (fileName: string) => {
         setFileNameValidation(
-            validateFileName(fileName, FileExtension.Python, fileNames),
+            validateFileName(fileName, pythonFileExtension, fileNames),
         );
         setFileName(fileName);
     };
@@ -194,7 +141,7 @@ const NewFileWizard: React.VoidFunctionComponent<NewFileWizardProps> = (props) =
                         value={fileName}
                         inputRef={fileNameInputRef}
                         intent={fileNameIntent}
-                        rightElement={<Tag>{FileExtension.Python}</Tag>}
+                        rightElement={<Tag>{pythonFileExtension}</Tag>}
                         onChange={(e) => handleFileNameChanged(e.target.value)}
                     />
                 </FormGroup>
@@ -224,7 +171,7 @@ const NewFileWizard: React.VoidFunctionComponent<NewFileWizardProps> = (props) =
                             dispatch(
                                 explorerCreateNewFile(
                                     fileName,
-                                    FileExtension.Python,
+                                    pythonFileExtension,
                                     hubType,
                                 ),
                             );

@@ -9,6 +9,7 @@ import { eventChannel } from 'redux-saga';
 import { call, fork, getContext, put, takeEvery } from 'typed-redux-saga/macro';
 import Observable from 'zen-observable';
 import { EditorType } from '../editor/Editor';
+import { pythonFileExtension, pythonFileMimeType } from '../pybricksMicropython/lib';
 import { ensureError, timestamp } from '../utils';
 import {
     fileStorageArchiveAllFiles,
@@ -117,7 +118,7 @@ function* handleExportFile(
                     suggestedName: action.fileName,
                     types: [
                         {
-                            accept: { 'text/x-python': '.py' },
+                            accept: { [pythonFileMimeType]: pythonFileExtension },
                             // TODO: translate description
                             description: 'Python Files',
                         },

@@ -2,12 +2,10 @@
 // Copyright (c) 2022 The Pybricks Authors
 
 import { createAction } from '../actions';
+import { pythonFileExtension } from '../pybricksMicropython/lib';
 
 /** Supported file extensions. */
-export enum FileExtension {
-    /** Python (.py) */
-    Python = '.py',
-}
+type SupportedFileExtension = typeof pythonFileExtension;
 
 /** Supported hub types. */
 export enum Hub {
@@ -32,7 +30,7 @@ export enum Hub {
  * @param hub The type of hub this file is for.
  */
 export const explorerCreateNewFile = createAction(
-    (fileName: string, fileExtension: FileExtension, hub: Hub) => ({
+    (fileName: string, fileExtension: SupportedFileExtension, hub: Hub) => ({
         type: 'explorer.action.createNewFile',
         fileName,
         fileExtension,
