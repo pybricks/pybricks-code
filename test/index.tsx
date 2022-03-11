@@ -12,8 +12,8 @@ import { RootSagaContext } from '../src/sagas';
 
 export class AsyncSaga {
     private channel: MulticastChannel<AnyAction>;
-    private dispatches: (AnyAction | END)[];
-    private takers: { put: (action: AnyAction | END) => void }[];
+    private dispatches: AnyAction[];
+    private takers: { put: (action: AnyAction) => void }[];
     private state: RootState;
     private task: Task;
 
@@ -51,7 +51,7 @@ export class AsyncSaga {
             // completed later
             return new Promise((resolve, reject) => {
                 this.takers.push({
-                    put: (a: AnyAction | END): void => {
+                    put: (a: AnyAction): void => {
                         if (a.type === END.type) {
                             reject();
                         } else {
@@ -85,7 +85,7 @@ export class AsyncSaga {
         }
     }
 
-    private dispatch(action: AnyAction | END): AnyAction | END {
+    private dispatch(action: AnyAction): AnyAction {
         const taker = this.takers.shift();
         if (taker === undefined) {
             // if there are no takers waiting, the queue the action
