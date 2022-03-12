@@ -3,8 +3,6 @@
 
 import { ButtonGroup } from '@blueprintjs/core';
 import React, { useState } from 'react';
-import OpenButton from '../editor/OpenButton';
-import SaveAsButton from '../editor/SaveAsButton';
 import FlashButton from '../firmware/FlashButton';
 import BluetoothButton from '../hub/BluetoothButton';
 import ReplButton from '../hub/ReplButton';
@@ -25,10 +23,6 @@ const Toolbar: React.VFC = (_props) => {
             onContextMenu={preventBrowserNativeContextMenu}
             className="pb-toolbar"
         >
-            <ButtonGroup className="pb-toolbar-group pb-align-left">
-                <OpenButton id="open" />
-                <SaveAsButton id="saveAs" />
-            </ButtonGroup>
             <ButtonGroup className="pb-toolbar-group pb-align-left">
                 <RunButton id="run" keyboardShortcut="F5" />
                 <StopButton id="stop" keyboardShortcut="F6" />

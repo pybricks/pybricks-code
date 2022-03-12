@@ -6,7 +6,7 @@ import { didStart } from './app/actions';
 import app from './app/sagas';
 import blePybricksService from './ble-pybricks-service/sagas';
 import ble from './ble/sagas';
-import editor, { EditorSagaContext } from './editor/sagas';
+import { EditorType } from './editor/Editor';
 import errorLog from './error-log/sagas';
 import explorer from './explorer/sagas';
 import fileStorage from './fileStorage/sagas';
@@ -29,7 +29,6 @@ export default function* (): Generator {
         fileStorage(),
         lwp3BootloaderBle(),
         lwp3BootloaderProtocol(),
-        editor(),
         errorLog(),
         explorer(),
         flashFirmware(),
@@ -46,7 +45,6 @@ export default function* (): Generator {
 /**
  * Combined type for all saga contexts.
  */
-export type RootSagaContext = EditorSagaContext &
-    FirmwareSagaContext &
+export type RootSagaContext = { editor: EditorType } & FirmwareSagaContext &
     NotificationSagaContext &
     TerminalSagaContext;

@@ -16,7 +16,6 @@ import {
     BleDeviceFailToConnectReasonType,
     didFailToConnect as bleDidFailToConnect,
 } from '../ble/actions';
-import { didFailToSaveAs } from '../editor/actions';
 import { explorerDeleteFile, explorerDidFailToImportFiles } from '../explorer/actions';
 import {
     fileStorageDeleteFile,
@@ -111,7 +110,6 @@ test.each([
     didFailToFinish(FailToFinishReasonType.Unknown, new Error('test error')),
     appDidCheckForUpdate(false),
     bleDIServiceDidReceiveFirmwareRevision('3.0.0'),
-    didFailToSaveAs(new DOMException('test message', 'NotAllowedError')),
     fileStorageDidFailToInitialize(new Error('test error')),
     fileStorageDidFailToReadFile('test.file', new Error('test error')),
     fileStorageDidFailToWriteFile('test.file', new Error('test error')),
@@ -138,7 +136,6 @@ test.each([
     serviceWorkerDidSucceed(),
     appDidCheckForUpdate(true),
     bleDIServiceDidReceiveFirmwareRevision(firmwareVersion),
-    didFailToSaveAs(new DOMException('test message', 'AbortError')),
     fileStorageDidFailToExportFile(
         'test.file',
         new DOMException('test message', 'AbortError'),

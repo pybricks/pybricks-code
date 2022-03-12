@@ -17,7 +17,6 @@ import {
     BleDeviceFailToConnectReasonType,
     didFailToConnect as bleDeviceDidFailToConnect,
 } from '../ble/actions';
-import { didFailToSaveAs } from '../editor/actions';
 import { explorerDeleteFile, explorerDidFailToImportFiles } from '../explorer/actions';
 import {
     fileStorageDeleteFile,
@@ -237,17 +236,6 @@ function* showBootloaderDidFailToConnectError(
             yield* showUnexpectedError(MessageId.BleUnexpectedError, action.err);
             break;
     }
-}
-
-function* showEditorFailToSaveFile(
-    action: ReturnType<typeof didFailToSaveAs>,
-): Generator {
-    if (action.err.name === 'AbortError') {
-        // user clicked cancel button - not an error
-        return;
-    }
-
-    yield* showUnexpectedError(MessageId.EditorFailedToSaveFile, action.err);
 }
 
 function* showFlashFirmwareError(
@@ -494,7 +482,6 @@ function* showExplorerFailToImportFiles(
 export default function* (): Generator {
     yield* takeEvery(bleDeviceDidFailToConnect, showBleDeviceDidFailToConnectError);
     yield* takeEvery(bootloaderDidFailToConnect, showBootloaderDidFailToConnectError);
-    yield* takeEvery(didFailToSaveAs, showEditorFailToSaveFile);
     yield* takeEvery(didFailToFinish, showFlashFirmwareError);
     yield* takeEvery(didCompile, dismissCompilerError);
     yield* takeEvery(didFailToCompile, showCompilerError);

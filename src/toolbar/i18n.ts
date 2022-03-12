@@ -1,11 +1,9 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2021 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 //
-// Button translation keys.
+// Toolbar button translation keys.
 
 export enum TooltipId {
-    Open = 'open.tooltip',
-    SaveAs = 'saveAs.tooltip',
     Run = 'run.action.tooltip',
     RunProgress = 'run.progress.tooltip',
     Stop = 'stop.tooltip',

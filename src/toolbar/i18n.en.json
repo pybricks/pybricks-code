@@ -1,6 +1,4 @@
 {
-    "open": { "tooltip": "Open file" },
-    "saveAs": { "tooltip": "Download file" },
     "stop": { "tooltip": "Stop everything" },
     "run": {
         "action": { "tooltip": "Download and run this program" },
