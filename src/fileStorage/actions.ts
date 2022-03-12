@@ -110,6 +110,47 @@ export const fileStorageDidFailToDeleteFile = createAction(
 );
 
 /**
+ * Requests for a file to be renamed.
+ * @param oldName The name of a file that exists in storage.
+ * @param newName The new name for the file.
+ */
+export const fileStorageRenameFile = createAction(
+    (oldName: string, newName: string) => ({
+        type: 'fileStorage.action.renameFile',
+        oldName,
+        newName,
+    }),
+);
+
+/**
+ * Indicates that fileStorageRenameFile(oldName, newName) succeeded.
+ * @param oldName The previous file name.
+ * @param newName The current file name.
+ */
+export const fileStorageDidRenameFile = createAction(
+    (oldName: string, newName: string) => ({
+        type: 'fileStorage.action.didRenameFile',
+        oldName,
+        newName,
+    }),
+);
+
+/**
+ * Indicates that fileStorageRenameFile(oldName, newName) failed.
+ * @param oldName The current file name.
+ * @param newName The requested new file name.
+ * @param error The error.
+ */
+export const fileStorageDidFailToRenameFile = createAction(
+    (oldName: string, newName: string, error: Error) => ({
+        type: 'fileStorage.action.didRenameFile',
+        oldName,
+        newName,
+        error,
+    }),
+);
+
+/**
  * Request to export (download) a file.
  * @param fileName The name of the file.
  */

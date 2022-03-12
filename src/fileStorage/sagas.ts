@@ -23,13 +23,16 @@ import {
     fileStorageDidFailToExportFile,
     fileStorageDidFailToInitialize,
     fileStorageDidFailToReadFile,
+    fileStorageDidFailToRenameFile,
     fileStorageDidFailToWriteFile,
     fileStorageDidInitialize,
     fileStorageDidReadFile,
     fileStorageDidRemoveItem,
+    fileStorageDidRenameFile,
     fileStorageDidWriteFile,
     fileStorageExportFile,
     fileStorageReadFile,
+    fileStorageRenameFile,
     fileStorageWriteFile,
 } from './actions';
 
@@ -167,6 +170,38 @@ function* handleDeleteFile(
     }
 }
 
+/**
+ * Renames a file in storage.
+ * @param files The localForage instance.
+ * @param action The action that triggered this saga.
+ */
+function* handleRenameFile(
+    files: LocalForage,
+    action: ReturnType<typeof fileStorageRenameFile>,
+) {
+    try {
+        yield* call(async () => {
+            // There is no move/rename API, so we have to make a copy with the
+            // new name and delete the old one.
+            // FIXME: This should be an atomic operation, e.g. if removing the
+            // old file fails, the new file should be removed.
+            const contents = await files.getItem(action.oldName);
+            await files.setItem(action.newName, contents);
+            await files.removeItem(action.oldName);
+        });
+
+        yield* put(fileStorageDidRenameFile(action.oldName, action.newName));
+    } catch (err) {
+        yield* put(
+            fileStorageDidFailToRenameFile(
+                action.oldName,
+                action.newName,
+                ensureError(err),
+            ),
+        );
+    }
+}
+
 function* handleArchiveAllFiles(files: LocalForage): Generator {
     try {
         const zip = new JSZip();
@@ -264,6 +299,7 @@ function* initialize(): Generator {
         yield* takeEvery(fileStorageReadFile, handleReadFile, files);
         yield* takeEvery(fileStorageWriteFile, handleWriteFile, files);
         yield* takeEvery(fileStorageDeleteFile, handleDeleteFile, files);
+        yield* takeEvery(fileStorageRenameFile, handleRenameFile, files);
         yield* takeEvery(fileStorageExportFile, handleExportFile, files);
         yield* takeEvery(fileStorageArchiveAllFiles, handleArchiveAllFiles, files);
 

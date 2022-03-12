@@ -17,9 +17,11 @@ import {
     fileStorageDidInitialize,
     fileStorageDidReadFile,
     fileStorageDidRemoveItem,
+    fileStorageDidRenameFile,
     fileStorageDidWriteFile,
     fileStorageExportFile,
     fileStorageReadFile,
+    fileStorageRenameFile,
     fileStorageWriteFile,
 } from './actions';
 import fileStorage from './sagas';
@@ -134,6 +136,29 @@ it('should delete files', async () => {
     expect(action2).toEqual(fileStorageDidRemoveItem(testFileName));
 
     await saga.end();
+});
+
+describe('rename', () => {
+    it('should rename files', async () => {
+        const newName = 'new.file';
+
+        const saga = new AsyncSaga(fileStorage);
+
+        const [testFileName] = await setUpTestFile(saga);
+
+        saga.put(fileStorageRenameFile(testFileName, newName));
+
+        const action = await saga.take();
+        expect(action).toEqual(fileStorageDidChangeItem(newName));
+
+        const action2 = await saga.take();
+        expect(action2).toEqual(fileStorageDidRemoveItem(testFileName));
+
+        const action3 = await saga.take();
+        expect(action3).toEqual(fileStorageDidRenameFile(testFileName, newName));
+
+        await saga.end();
+    });
 });
 
 describe('export', () => {
