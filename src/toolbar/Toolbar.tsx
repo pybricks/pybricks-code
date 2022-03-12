@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2021 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 
 import { ButtonGroup } from '@blueprintjs/core';
 import React, { useState } from 'react';
@@ -12,6 +12,7 @@ import RunButton from '../hub/RunButton';
 import StopButton from '../hub/StopButton';
 import SettingsButton from '../settings/SettingsButton';
 import SettingsDrawer from '../settings/SettingsDrawer';
+import { preventBrowserNativeContextMenu } from '../utils/react';
 
 import './toolbar.scss';
 
@@ -21,7 +22,7 @@ const Toolbar: React.VFC = (_props) => {
     return (
         <div
             role="toolbar"
-            onContextMenu={(e): void => e.preventDefault()}
+            onContextMenu={preventBrowserNativeContextMenu}
             className="pb-toolbar"
         >
             <ButtonGroup className="pb-toolbar-group pb-align-left">

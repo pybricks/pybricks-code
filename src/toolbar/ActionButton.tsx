@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2021 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 
 import {
     Button,
@@ -13,6 +13,7 @@ import { Tooltip2 } from '@blueprintjs/popover2';
 import { useI18n } from '@shopify/react-i18n';
 import React, { useEffect, useMemo, useState } from 'react';
 import { tooltipDelay } from '../app/constants';
+import { preventFocusOnClick } from '../utils/react';
 import { TooltipId } from './i18n';
 import en from './i18n.en.json';
 
@@ -104,10 +105,7 @@ const ActionButton: React.FC<ActionButtonProps> = (props) => {
                     elementRef={tooltipTargetRef as IRef<HTMLButtonElement>}
                     {...tooltipTargetProps}
                     intent={Intent.PRIMARY}
-                    onMouseDown={(e) => {
-                        // prevent focus from mouse click
-                        e.preventDefault();
-                    }}
+                    onMouseDown={preventFocusOnClick}
                     onClick={() => props.onAction()}
                     disabled={props.enabled === false}
                     style={

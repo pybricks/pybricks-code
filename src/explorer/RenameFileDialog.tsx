@@ -7,6 +7,7 @@ import React, { useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { fileStorageRenameFile } from '../fileStorage/actions';
 import { FileNameValidationResult } from '../pybricksMicropython/lib';
+import { preventFocusOnClick } from '../utils/react';
 import FileNameFormGroup from './FileNameFormGroup';
 import { RenameFileStringId } from './i18n';
 import en from './i18n.en.json';
@@ -61,7 +62,7 @@ const RenameFileDialog: React.VoidFunctionComponent<RenameFileDialogProps> = (
                         aria-label="Rename"
                         intent="primary"
                         disabled={result !== FileNameValidationResult.IsOk}
-                        onMouseDown={(e) => e.preventDefault()}
+                        onMouseDown={preventFocusOnClick}
                         onClick={() => {
                             props.onClose();
                             dispatch(

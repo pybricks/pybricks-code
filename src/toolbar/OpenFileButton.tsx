@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2021 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 
 import { Button, IRef, Intent, Spinner, SpinnerSize } from '@blueprintjs/core';
 import { Tooltip2 } from '@blueprintjs/popover2';
@@ -7,6 +7,7 @@ import { useI18n } from '@shopify/react-i18n';
 import React, { useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { tooltipDelay } from '../app/constants';
+import { preventFocusOnClick } from '../utils/react';
 import { TooltipId } from './i18n';
 import en from './i18n.en.json';
 
@@ -123,10 +124,7 @@ const OpenFileButton: React.FC<OpenFileButtonProps> = (props) => {
                             props.enabled === false
                                 ? { pointerEvents: 'none' }
                                 : undefined,
-                        onMouseDown: (e) => {
-                            // prevent focus from mouse click
-                            e.preventDefault();
-                        },
+                        onMouseDown: preventFocusOnClick,
                         onClick: props.onClick,
                     })}
                 >

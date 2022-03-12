@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2021 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 
 import { Button, Intent, ProgressBar } from '@blueprintjs/core';
 import { Classes as Classes2, Popover2, Popover2Props } from '@blueprintjs/popover2';
@@ -7,6 +7,7 @@ import { useI18n } from '@shopify/react-i18n';
 import React from 'react';
 import { BleConnectionState } from '../ble/reducers';
 import { useSelector } from '../reducers';
+import { preventBrowserNativeContextMenu, preventFocusOnClick } from '../utils/react';
 import { MessageId } from './i18n';
 import en from './i18n.en.json';
 
@@ -61,7 +62,7 @@ const HubInfoButton: React.VFC = (_props) => {
             <Button
                 title={i18n.translate(MessageId.HubInfoTitle)}
                 minimal={true}
-                onMouseDown={(e) => e.preventDefault()}
+                onMouseDown={preventFocusOnClick}
             >
                 {deviceName}
             </Button>
@@ -112,7 +113,7 @@ const StatusBar: React.VFC = (_props) => {
             className="pb-status-bar"
             role="status"
             aria-live="off"
-            onContextMenu={(e): void => e.preventDefault()}
+            onContextMenu={preventBrowserNativeContextMenu}
         >
             {connection === BleConnectionState.Connected && (
                 <>

@@ -26,6 +26,7 @@ import {
     fileStorageExportFile,
 } from '../fileStorage/actions';
 import { useSelector } from '../reducers';
+import { preventBrowserNativeContextMenu, preventFocusOnClick } from '../utils/react';
 import NewFileWizard from './NewFileWizard';
 import RenameFileDialog from './RenameFileDialog';
 import { explorerDeleteFile, explorerImportFiles } from './actions';
@@ -53,8 +54,7 @@ const ActionButton: React.VoidFunctionComponent<ActionButtonProps> = (props) => 
             icon={props.icon}
             title={i18n.translate(props.toolTipId, props.toolTipReplacements)}
             disabled={props.disabled}
-            // prevent focus on click
-            onMouseDown={(e) => e.preventDefault()}
+            onMouseDown={preventFocusOnClick}
             onClick={() => props.onClick()}
         />
     );
@@ -208,7 +208,7 @@ const FileTree: React.VFC = () => {
 
 const Explorer: React.VFC = () => {
     return (
-        <div className="h-100" onContextMenu={(e) => e.preventDefault()}>
+        <div className="h-100" onContextMenu={preventBrowserNativeContextMenu}>
             <Header />
             <Divider />
             <FileTree />
