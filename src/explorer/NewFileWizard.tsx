@@ -51,15 +51,15 @@ const NewFileWizard: React.VoidFunctionComponent<NewFileWizardProps> = (props) =
             isOpen={props.isOpen}
             onOpening={() => setFileName('')}
             onOpened={() => fileNameInputRef.current?.focus()}
-            onClose={() => props.onClose()}
+            onClose={props.onClose}
         >
             <div className={Classes.DIALOG_BODY}>
                 <FileNameFormGroup
                     fileName={fileName}
                     fileExtension={pythonFileExtension}
                     inputRef={fileNameInputRef}
-                    onChange={(n) => setFileName(n)}
-                    onValidation={(r) => setFileNameValidation(r)}
+                    onChange={setFileName}
+                    onValidation={setFileNameValidation}
                 />
                 <FormGroup label={i18n.translate(NewFileWizardStringId.SmartHubLabel)}>
                     <RadioGroup

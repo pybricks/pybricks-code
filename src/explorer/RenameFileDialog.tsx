@@ -52,8 +52,8 @@ const RenameFileDialog: React.VoidFunctionComponent<RenameFileDialogProps> = (
                     fileName={newName}
                     fileExtension={extension}
                     inputRef={inputRef}
-                    onChange={(n) => setNewName(n)}
-                    onValidation={(r) => setResult(r)}
+                    onChange={setNewName}
+                    onValidation={setResult}
                 />
             </div>
             <div className={Classes.DIALOG_FOOTER}>

@@ -10,7 +10,7 @@ import AboutDialog from './AboutDialog';
 it('should close when the button is clicked', () => {
     const close = jest.fn();
 
-    const [dialog] = testRender(<AboutDialog isOpen={true} onClose={() => close()} />);
+    const [dialog] = testRender(<AboutDialog isOpen={true} onClose={close} />);
 
     userEvent.click(dialog.getByLabelText('Close'));
 

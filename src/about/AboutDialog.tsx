@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021 The Pybricks Authors
+// Copyright (c) 2021-2022 The Pybricks Authors
 
 // The about dialog
 
@@ -33,7 +33,7 @@ const AboutDialog: React.FunctionComponent<AboutDialogProps> = (props) => {
         <Dialog
             title={`Pybricks v${firmwareVersion} (${appName} v${appVersion})`}
             isOpen={props.isOpen}
-            onClose={() => props.onClose()}
+            onClose={props.onClose}
         >
             <div className={Classes.DIALOG_BODY}>
                 <div className="pb-about-icon">

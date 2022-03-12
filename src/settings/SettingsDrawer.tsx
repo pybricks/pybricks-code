@@ -92,7 +92,7 @@ const SettingsDrawer: React.FunctionComponent<SettingsProps> = (props) => {
             icon="cog"
             size={Drawer.SIZE_SMALL}
             title={i18n.translate(SettingsStringId.Title)}
-            onClose={() => props.onClose()}
+            onClose={props.onClose}
         >
             <div className={Classes.DRAWER_BODY}>
                 <div className={Classes.DIALOG_BODY}>

@@ -106,7 +106,7 @@ const ActionButton: React.FC<ActionButtonProps> = (props) => {
                     {...tooltipTargetProps}
                     intent={Intent.PRIMARY}
                     onMouseDown={preventFocusOnClick}
-                    onClick={() => props.onAction()}
+                    onClick={props.onAction}
                     disabled={props.enabled === false}
                     style={
                         props.enabled === false ? { pointerEvents: 'none' } : undefined

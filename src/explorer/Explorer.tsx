@@ -55,7 +55,7 @@ const ActionButton: React.VoidFunctionComponent<ActionButtonProps> = (props) => 
             title={i18n.translate(props.toolTipId, props.toolTipReplacements)}
             disabled={props.disabled}
             onMouseDown={preventFocusOnClick}
-            onClick={() => props.onClick()}
+            onClick={props.onClick}
         />
     );
 };
