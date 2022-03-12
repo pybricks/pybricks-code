@@ -14,3 +14,6 @@ export const preventFocusOnClick: React.MouseEventHandler = (e) => e.preventDefa
  */
 export const preventBrowserNativeContextMenu: React.MouseEventHandler = (e) =>
     e.preventDefault();
+
+/** Style to disable pointer events. */
+export const pointerEventsNone: React.CSSProperties = { pointerEvents: 'none' };

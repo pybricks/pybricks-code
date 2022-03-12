@@ -7,7 +7,7 @@ import { useI18n } from '@shopify/react-i18n';
 import React, { useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { tooltipDelay } from '../app/constants';
-import { preventFocusOnClick } from '../utils/react';
+import { pointerEventsNone, preventFocusOnClick } from '../utils/react';
 import { TooltipId } from './i18n';
 import en from './i18n.en.json';
 
@@ -120,10 +120,7 @@ const OpenFileButton: React.FC<OpenFileButtonProps> = (props) => {
                         ...tooltipTargetProps,
                         intent: Intent.PRIMARY,
                         disabled: props.enabled === false,
-                        style:
-                            props.enabled === false
-                                ? { pointerEvents: 'none' }
-                                : undefined,
+                        style: props.enabled === false ? pointerEventsNone : undefined,
                         onMouseDown: preventFocusOnClick,
                         onClick: props.onClick,
                     })}
@@ -141,7 +138,7 @@ const OpenFileButton: React.FC<OpenFileButtonProps> = (props) => {
                             height={`${buttonSize}px`}
                             src={props.icon}
                             alt={props.id}
-                            style={{ pointerEvents: 'none' }}
+                            style={pointerEventsNone}
                         />
                     )}
                 </Button>

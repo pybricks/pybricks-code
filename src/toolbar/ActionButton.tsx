@@ -13,7 +13,7 @@ import { Tooltip2 } from '@blueprintjs/popover2';
 import { useI18n } from '@shopify/react-i18n';
 import React, { useEffect, useMemo, useState } from 'react';
 import { tooltipDelay } from '../app/constants';
-import { preventFocusOnClick } from '../utils/react';
+import { pointerEventsNone, preventFocusOnClick } from '../utils/react';
 import { TooltipId } from './i18n';
 import en from './i18n.en.json';
 
@@ -108,9 +108,7 @@ const ActionButton: React.FC<ActionButtonProps> = (props) => {
                     onMouseDown={preventFocusOnClick}
                     onClick={props.onAction}
                     disabled={props.enabled === false}
-                    style={
-                        props.enabled === false ? { pointerEvents: 'none' } : undefined
-                    }
+                    style={props.enabled === false ? pointerEventsNone : undefined}
                 >
                     {props.showProgress ? (
                         <Spinner
@@ -124,7 +122,7 @@ const ActionButton: React.FC<ActionButtonProps> = (props) => {
                             height={`${buttonSize}px`}
                             src={props.icon}
                             alt={props.id}
-                            style={{ pointerEvents: 'none' }}
+                            style={pointerEventsNone}
                         />
                     )}
                 </Button>
