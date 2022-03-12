@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2021 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 
 import React from 'react';
 import { useDispatch } from 'react-redux';
@@ -14,7 +14,7 @@ import btDisconnectedIcon from './bt-disconnected.svg';
 
 type BluetoothButtonProps = Pick<ActionButtonProps, 'id'>;
 
-const BluetoothButton: React.FunctionComponent<BluetoothButtonProps> = (props) => {
+const BluetoothButton: React.VoidFunctionComponent<BluetoothButtonProps> = ({ id }) => {
     const bootloaderConnection = useSelector((s) => s.bootloader.connection);
     const bleConnection = useSelector((s) => s.ble.connection);
 
@@ -26,6 +26,7 @@ const BluetoothButton: React.FunctionComponent<BluetoothButtonProps> = (props) =
 
     return (
         <ActionButton
+            id={id}
             tooltip={
                 isDisconnected
                     ? TooltipId.BluetoothConnect
@@ -35,7 +36,6 @@ const BluetoothButton: React.FunctionComponent<BluetoothButtonProps> = (props) =
             enabled={isDisconnected || bleConnection === BleConnectionState.Connected}
             showProgress={bleConnection === BleConnectionState.Connecting}
             onAction={() => dispatch(toggleBluetooth())}
-            {...props}
         />
     );
 };

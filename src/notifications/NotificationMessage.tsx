@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021 The Pybricks Authors
+// Copyright (c) 2021-2022 The Pybricks Authors
 
 // provides translation for notification text
 
@@ -13,14 +13,17 @@ type NotificationMessageProps = {
     replacements?: Replacements;
 };
 
-const NotificationMessage: React.FC<NotificationMessageProps> = (props) => {
+const NotificationMessage: React.VoidFunctionComponent<NotificationMessageProps> = ({
+    messageId,
+    replacements,
+}) => {
     const [i18n] = useI18n({
         id: 'notification',
         translations: { en },
         fallback: en,
     });
 
-    let message = i18n.translate(props.messageId, props.replacements) as
+    let message = i18n.translate(messageId, replacements) as
         | React.ReactElement
         | string;
 

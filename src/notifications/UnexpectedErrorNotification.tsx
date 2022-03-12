@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021 The Pybricks Authors
+// Copyright (c) 2021-2022 The Pybricks Authors
 
 // Provides special notification contents for unexpected errors.
 
@@ -14,9 +14,9 @@ type UnexpectedErrorNotificationProps = {
     err: Error;
 };
 
-const UnexpectedErrorNotification: React.FC<UnexpectedErrorNotificationProps> = (
-    props,
-) => {
+const UnexpectedErrorNotification: React.VoidFunctionComponent<
+    UnexpectedErrorNotificationProps
+> = ({ messageId, err }) => {
     const [i18n] = useI18n({
         id: 'notification',
         translations: { en },
@@ -25,9 +25,7 @@ const UnexpectedErrorNotification: React.FC<UnexpectedErrorNotificationProps> = 
 
     return (
         <>
-            <p>
-                {i18n.translate(props.messageId, { errorMessage: props.err.message })}
-            </p>
+            <p>{i18n.translate(messageId, { errorMessage: err.message })}</p>
             <div>
                 <ButtonGroup minimal={true} fill={true}>
                     <Button
@@ -35,9 +33,7 @@ const UnexpectedErrorNotification: React.FC<UnexpectedErrorNotificationProps> = 
                         icon="duplicate"
                         onClick={() =>
                             navigator.clipboard.writeText(
-                                `\`\`\`\n${
-                                    props.err.stack || props.err.message
-                                }\n\`\`\``,
+                                `\`\`\`\n${err.stack || err.message}\n\`\`\``,
                             )
                         }
                     >
@@ -48,7 +44,7 @@ const UnexpectedErrorNotification: React.FC<UnexpectedErrorNotificationProps> = 
                         icon="virus"
                         href={`https://github.com/pybricks/support/issues?q=${encodeURIComponent(
                             'is:issue',
-                        )}+${encodeURIComponent(props.err.message)}`}
+                        )}+${encodeURIComponent(err.message)}`}
                         target="_blank"
                     >
                         {i18n.translate(MessageId.ReportBug)}

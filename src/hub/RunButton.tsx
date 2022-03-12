@@ -11,10 +11,12 @@ import { downloadAndRun } from './actions';
 import { HubRuntimeState } from './reducers';
 import runIcon from './run.svg';
 
-type RunButtonProps = Pick<ActionButtonProps, 'id'> &
-    Pick<ActionButtonProps, 'keyboardShortcut'>;
+type RunButtonProps = Pick<ActionButtonProps, 'id' | 'keyboardShortcut'>;
 
-const RunButton: React.FunctionComponent<RunButtonProps> = (props) => {
+const RunButton: React.VoidFunctionComponent<RunButtonProps> = ({
+    id,
+    keyboardShortcut,
+}) => {
     const { editor } = useContext(EditorContext);
     const downloadProgress = useSelector((s) => s.hub.downloadProgress);
     const runtime = useSelector((s) => s.hub.runtime);
@@ -23,6 +25,8 @@ const RunButton: React.FunctionComponent<RunButtonProps> = (props) => {
 
     return (
         <ActionButton
+            id={id}
+            keyboardShortcut={keyboardShortcut}
             tooltip={TooltipId.Run}
             progressTooltip={TooltipId.RunProgress}
             icon={runIcon}
@@ -30,7 +34,6 @@ const RunButton: React.FunctionComponent<RunButtonProps> = (props) => {
             showProgress={runtime === HubRuntimeState.Loading}
             progress={downloadProgress === null ? undefined : downloadProgress}
             onAction={() => dispatch(downloadAndRun())}
-            {...props}
         />
     );
 };

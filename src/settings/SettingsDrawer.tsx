@@ -45,7 +45,10 @@ type SettingsProps = {
     onClose(): void;
 };
 
-const SettingsDrawer: React.FunctionComponent<SettingsProps> = (props) => {
+const SettingsDrawer: React.VoidFunctionComponent<SettingsProps> = ({
+    isOpen,
+    onClose,
+}) => {
     const [isAboutDialogOpen, setIsAboutDialogOpen] = useState(false);
 
     const showDocs = useSelector((s) => s.settings.showDocs);
@@ -89,11 +92,11 @@ const SettingsDrawer: React.FunctionComponent<SettingsProps> = (props) => {
 
     return (
         <Drawer
-            isOpen={props.isOpen}
+            isOpen={isOpen}
             icon="cog"
             size={DrawerSize.SMALL}
             title={i18n.translate(SettingsStringId.Title)}
-            onClose={props.onClose}
+            onClose={onClose}
         >
             <div className={Classes.DRAWER_BODY}>
                 <div className={Classes.DIALOG_BODY}>

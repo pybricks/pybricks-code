@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2021 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 
 import React from 'react';
 import { useDispatch } from 'react-redux';
@@ -14,7 +14,7 @@ import firmwareIcon from './firmware.svg';
 
 type FlashButtonProps = Pick<OpenFileButtonProps, 'id'>;
 
-const FlashButton: React.FunctionComponent<FlashButtonProps> = (props) => {
+const FlashButton: React.VoidFunctionComponent<FlashButtonProps> = ({ id }) => {
     const bootloaderConnection = useSelector((s) => s.bootloader.connection);
     const bleConnection = useSelector((s) => s.ble.connection);
     const flashing = useSelector((s) => s.firmware.flashing);
@@ -24,6 +24,7 @@ const FlashButton: React.FunctionComponent<FlashButtonProps> = (props) => {
 
     return (
         <OpenFileButton
+            id={id}
             fileExtension=".zip"
             icon={firmwareIcon}
             tooltip={flashing ? TooltipId.FlashProgress : TooltipId.Flash}
@@ -43,7 +44,6 @@ const FlashButton: React.FunctionComponent<FlashButtonProps> = (props) => {
                 )
             }
             onClick={() => dispatch(flashFirmware(null))}
-            {...props}
         />
     );
 };

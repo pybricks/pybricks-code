@@ -127,7 +127,7 @@ type AppProps = {
     onEditorChanged?: (editor: EditorType) => void;
 };
 
-const App: React.VoidFunctionComponent<AppProps> = (props) => {
+const App: React.VoidFunctionComponent<AppProps> = ({ onEditorChanged }) => {
     const darkMode = useSelector((s): boolean => s.settings.darkMode);
     const showDocs = useSelector((s): boolean => s.settings.showDocs);
     const [isDragging, setIsDragging] = useState(false);
@@ -139,8 +139,8 @@ const App: React.VoidFunctionComponent<AppProps> = (props) => {
             setEditor: (editor) => {
                 setEditor(editor);
 
-                if (props.onEditorChanged) {
-                    props.onEditorChanged(editor);
+                if (onEditorChanged) {
+                    onEditorChanged(editor);
                 }
             },
         }),

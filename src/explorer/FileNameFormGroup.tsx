@@ -17,12 +17,12 @@ type FileNameHelpTextProps = {
 /**
  * Component that maps FileNameValidationResult to help message to display to user.
  */
-const FileNameHelpText: React.VoidFunctionComponent<FileNameHelpTextProps> = (
-    props,
-) => {
+const FileNameHelpText: React.VoidFunctionComponent<FileNameHelpTextProps> = ({
+    validation,
+}) => {
     const [i18n] = useI18n({ id: 'explorer', translations: { en }, fallback: en });
 
-    switch (props.validation) {
+    switch (validation) {
         case FileNameValidationResult.IsOk:
             return <>{i18n.translate(NewFileWizardStringId.FileNameHelpTextIsOk)}</>;
         case FileNameValidationResult.IsEmpty:
@@ -92,23 +92,27 @@ type FileNameFormGroupProps = {
 /**
  * Component used to get a valid new file name.
  */
-const FileNameFormGroup: React.VoidFunctionComponent<FileNameFormGroupProps> = (
-    props,
-) => {
+const FileNameFormGroup: React.VoidFunctionComponent<FileNameFormGroupProps> = ({
+    fileName,
+    fileExtension,
+    inputRef,
+    onChange,
+    onValidation,
+}) => {
     const [i18n] = useI18n({ id: 'explorer', translations: { en }, fallback: en });
     const fileNames = useSelector((s) => s.fileStorage.fileNames);
 
     const [fileNameValidation, fileNameIntent] = useMemo(() => {
-        const result = validateFileName(props.fileName, props.fileExtension, fileNames);
+        const result = validateFileName(fileName, fileExtension, fileNames);
 
         // can't call callback now because it would break react, so defer it
-        setTimeout(() => props.onValidation(result), 0);
+        setTimeout(() => onValidation(result), 0);
 
         return [
             result,
             result === FileNameValidationResult.IsOk ? Intent.NONE : Intent.DANGER,
         ];
-    }, [props.fileName, props.fileExtension, fileNames]);
+    }, [fileName, fileExtension, fileNames]);
 
     return (
         <FormGroup
@@ -118,11 +122,11 @@ const FileNameFormGroup: React.VoidFunctionComponent<FileNameFormGroupProps> = (
         >
             <InputGroup
                 aria-label="File name"
-                value={props.fileName}
-                inputRef={props.inputRef}
+                value={fileName}
+                inputRef={inputRef}
                 intent={fileNameIntent}
-                rightElement={<Tag>{props.fileExtension}</Tag>}
-                onChange={(e) => props.onChange(e.target.value)}
+                rightElement={<Tag>{fileExtension}</Tag>}
+                onChange={(e) => onChange(e.target.value)}
             />
         </FormGroup>
     );

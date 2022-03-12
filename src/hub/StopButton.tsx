@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2021 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 
 import React from 'react';
 import { useDispatch } from 'react-redux';
@@ -10,21 +10,24 @@ import { stop } from './actions';
 import { HubRuntimeState } from './reducers';
 import stopIcon from './stop.svg';
 
-type StopButtonProps = Pick<ActionButtonProps, 'id'> &
-    Pick<ActionButtonProps, 'keyboardShortcut'>;
+type StopButtonProps = Pick<ActionButtonProps, 'id' | 'keyboardShortcut'>;
 
-const StopButton: React.FunctionComponent<StopButtonProps> = (props) => {
+const StopButton: React.VoidFunctionComponent<StopButtonProps> = ({
+    id,
+    keyboardShortcut,
+}) => {
     const runtime = useSelector((s) => s.hub.runtime);
 
     const dispatch = useDispatch();
 
     return (
         <ActionButton
+            id={id}
+            keyboardShortcut={keyboardShortcut}
             tooltip={TooltipId.Stop}
             icon={stopIcon}
             enabled={runtime === HubRuntimeState.Running}
             onAction={() => dispatch(stop())}
-            {...props}
         />
     );
 };

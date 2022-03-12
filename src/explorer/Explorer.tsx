@@ -46,16 +46,22 @@ type ActionButtonProps = {
     onClick: () => void;
 };
 
-const ActionButton: React.VoidFunctionComponent<ActionButtonProps> = (props) => {
+const ActionButton: React.VoidFunctionComponent<ActionButtonProps> = ({
+    icon,
+    toolTipId,
+    toolTipReplacements,
+    disabled,
+    onClick,
+}) => {
     const [i18n] = useI18n({ id: 'explorer', translations: { en }, fallback: en });
 
     return (
         <Button
-            icon={props.icon}
-            title={i18n.translate(props.toolTipId, props.toolTipReplacements)}
-            disabled={props.disabled}
+            icon={icon}
+            title={i18n.translate(toolTipId, toolTipReplacements)}
+            disabled={disabled}
             onMouseDown={preventFocusOnClick}
-            onClick={props.onClick}
+            onClick={onClick}
         />
     );
 };
@@ -73,7 +79,7 @@ type ActionButtonGroupProps = {
 const FileActionButtonGroup = forwardRef<
     FileActionButtonGroupRef,
     ActionButtonGroupProps
->((props, ref) => {
+>(({ fileName }, ref) => {
     const dispatch = useDispatch();
     const [visible, setVisible] = useState(false);
     const [isRenameDialogOpen, setIsRenameDialogOpen] = useState(false);
@@ -85,10 +91,10 @@ const FileActionButtonGroup = forwardRef<
     // received.
     const fileNames = useSelector((s) => s.fileStorage.fileNames);
     useEffect(() => {
-        if (!fileNames.includes(props.fileName)) {
+        if (!fileNames.includes(fileName)) {
             setVisible(false);
         }
-    }, [fileNames, props.fileName, setVisible]);
+    }, [fileNames, fileName, setVisible]);
 
     useImperativeHandle(ref, () => ({ setVisible }), [setVisible]);
 
@@ -97,11 +103,11 @@ const FileActionButtonGroup = forwardRef<
             <ActionButton
                 icon="edit"
                 toolTipId={ExplorerStringId.TreeItemRenameTooltip}
-                toolTipReplacements={{ fileName: props.fileName }}
+                toolTipReplacements={{ fileName: fileName }}
                 onClick={() => setIsRenameDialogOpen(true)}
             />
             <RenameFileDialog
-                oldName={props.fileName}
+                oldName={fileName}
                 isOpen={isRenameDialogOpen}
                 onClose={() => setIsRenameDialogOpen(false)}
             />
@@ -113,14 +119,14 @@ const FileActionButtonGroup = forwardRef<
                 // download operation
                 icon="import"
                 toolTipId={ExplorerStringId.TreeItemExportTooltip}
-                toolTipReplacements={{ fileName: props.fileName }}
-                onClick={() => dispatch(fileStorageExportFile(props.fileName))}
+                toolTipReplacements={{ fileName: fileName }}
+                onClick={() => dispatch(fileStorageExportFile(fileName))}
             />
             <ActionButton
                 icon="trash"
                 toolTipId={ExplorerStringId.TreeItemDeleteTooltip}
-                toolTipReplacements={{ fileName: props.fileName }}
-                onClick={() => dispatch(explorerDeleteFile(props.fileName))}
+                toolTipReplacements={{ fileName: fileName }}
+                onClick={() => dispatch(explorerDeleteFile(fileName))}
             />
         </ButtonGroup>
     );

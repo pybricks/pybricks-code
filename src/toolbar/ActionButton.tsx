@@ -40,7 +40,17 @@ export interface ActionButtonProps {
     readonly onAction: () => void;
 }
 
-const ActionButton: React.FC<ActionButtonProps> = (props) => {
+const ActionButton: React.VoidFunctionComponent<ActionButtonProps> = ({
+    id,
+    keyboardShortcut,
+    tooltip,
+    progressTooltip,
+    icon,
+    enabled,
+    showProgress,
+    progress,
+    onAction,
+}) => {
     const [i18n] = useI18n({ id: 'actionButton', translations: { en }, fallback: en });
 
     const [isSmallScreen, setIsSmallScreen] = useState(
@@ -58,18 +68,16 @@ const ActionButton: React.FC<ActionButtonProps> = (props) => {
     const buttonSize = isSmallScreen ? SpinnerSize.SMALL : SpinnerSize.STANDARD;
 
     const tooltipText =
-        props.showProgress && props.progressTooltip
-            ? i18n.translate(props.progressTooltip, {
+        showProgress && progressTooltip
+            ? i18n.translate(progressTooltip, {
                   percent:
-                      props.progress === undefined
-                          ? ''
-                          : i18n.formatPercentage(props.progress),
+                      progress === undefined ? '' : i18n.formatPercentage(progress),
               })
-            : i18n.translate(props.tooltip) +
-              (props.keyboardShortcut ? ` (${props.keyboardShortcut})` : '');
+            : i18n.translate(tooltip) +
+              (keyboardShortcut ? ` (${keyboardShortcut})` : '');
 
     const hotkeys = useMemo(() => {
-        if (!props.keyboardShortcut) {
+        if (!keyboardShortcut) {
             return [];
         }
 
@@ -78,16 +86,16 @@ const ActionButton: React.FC<ActionButtonProps> = (props) => {
                 global: true,
                 allowInInput: true,
                 preventDefault: true,
-                combo: props.keyboardShortcut.replaceAll('-', '+'),
-                label: i18n.translate(props.tooltip),
+                combo: keyboardShortcut.replaceAll('-', '+'),
+                label: i18n.translate(tooltip),
                 onKeyDown: () => {
-                    if (props.enabled) {
-                        props.onAction();
+                    if (enabled) {
+                        onAction();
                     }
                 },
             },
         ];
-    }, [props.keyboardShortcut, props.tooltip, props.enabled, props.onAction, i18n]);
+    }, [keyboardShortcut, tooltip, enabled, onAction, i18n]);
 
     useHotkeys(hotkeys);
 
@@ -106,13 +114,13 @@ const ActionButton: React.FC<ActionButtonProps> = (props) => {
                     {...tooltipTargetProps}
                     intent={Intent.PRIMARY}
                     onMouseDown={preventFocusOnClick}
-                    onClick={props.onAction}
-                    disabled={props.enabled === false}
-                    style={props.enabled === false ? pointerEventsNone : undefined}
+                    onClick={onAction}
+                    disabled={enabled === false}
+                    style={enabled === false ? pointerEventsNone : undefined}
                 >
-                    {props.showProgress ? (
+                    {showProgress ? (
                         <Spinner
-                            value={props.progress}
+                            value={progress}
                             intent={Intent.PRIMARY}
                             size={buttonSize}
                         />
@@ -120,8 +128,8 @@ const ActionButton: React.FC<ActionButtonProps> = (props) => {
                         <img
                             width={`${buttonSize}px`}
                             height={`${buttonSize}px`}
-                            src={props.icon}
-                            alt={props.id}
+                            src={icon}
+                            alt={id}
                             style={pointerEventsNone}
                         />
                     )}

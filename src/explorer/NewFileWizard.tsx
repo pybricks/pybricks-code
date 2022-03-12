@@ -32,7 +32,10 @@ type NewFileWizardProps = {
     readonly onClose: () => void;
 };
 
-const NewFileWizard: React.VoidFunctionComponent<NewFileWizardProps> = (props) => {
+const NewFileWizard: React.VoidFunctionComponent<NewFileWizardProps> = ({
+    isOpen,
+    onClose,
+}) => {
     const [i18n] = useI18n({ id: 'explorer', translations: { en }, fallback: en });
     const dispatch = useDispatch();
 
@@ -48,10 +51,10 @@ const NewFileWizard: React.VoidFunctionComponent<NewFileWizardProps> = (props) =
         <Dialog
             icon="plus"
             title={i18n.translate(NewFileWizardStringId.Title)}
-            isOpen={props.isOpen}
+            isOpen={isOpen}
             onOpening={() => setFileName('')}
             onOpened={() => fileNameInputRef.current?.focus()}
-            onClose={props.onClose}
+            onClose={onClose}
         >
             <div className={Classes.DIALOG_BODY}>
                 <FileNameFormGroup
@@ -83,7 +86,7 @@ const NewFileWizard: React.VoidFunctionComponent<NewFileWizardProps> = (props) =
                         disabled={fileNameValidation !== FileNameValidationResult.IsOk}
                         onMouseDown={preventFocusOnClick}
                         onClick={() => {
-                            props.onClose();
+                            onClose();
                             dispatch(
                                 explorerCreateNewFile(
                                     fileName,

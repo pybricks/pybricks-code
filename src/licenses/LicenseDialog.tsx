@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021 The Pybricks Authors
+// Copyright (c) 2021-2022 The Pybricks Authors
 
 // The license dialog
 
@@ -28,9 +28,9 @@ type LicenseListPanelProps = {
     onItemClick(info: LicenseInfo): void;
 };
 
-const LicenseListPanel: React.VoidFunctionComponent<LicenseListPanelProps> = (
-    props,
-) => {
+const LicenseListPanel: React.VoidFunctionComponent<LicenseListPanelProps> = ({
+    onItemClick,
+}) => {
     const licenseList = useSelector((s) => s.licenses.list);
 
     return (
@@ -43,7 +43,7 @@ const LicenseListPanel: React.VoidFunctionComponent<LicenseListPanelProps> = (
             ) : (
                 <ButtonGroup minimal={true} vertical={true} alignText="left">
                     {licenseList.map((info, i) => (
-                        <Button key={i} onClick={() => props.onItemClick(info)}>
+                        <Button key={i} onClick={() => onItemClick(info)}>
                             {info.name}
                         </Button>
                     ))}
@@ -107,7 +107,10 @@ type LicenseDialogProps = {
     onClose(): void;
 };
 
-const LicenseDialog: React.VoidFunctionComponent<LicenseDialogProps> = (props) => {
+const LicenseDialog: React.VoidFunctionComponent<LicenseDialogProps> = ({
+    isOpen,
+    onClose,
+}) => {
     const infoDiv = React.useRef<HTMLDivElement>(null);
 
     const dispatch = useDispatch();
@@ -116,10 +119,11 @@ const LicenseDialog: React.VoidFunctionComponent<LicenseDialogProps> = (props) =
 
     return (
         <Dialog
-            title={i18n.translate(LicenseStringId.Title)}
-            onOpening={() => dispatch(fetchList())}
             className="pb-license-dialog"
-            {...props}
+            title={i18n.translate(LicenseStringId.Title)}
+            isOpen={isOpen}
+            onOpening={() => dispatch(fetchList())}
+            onClose={onClose}
         >
             <div className={Classes.DIALOG_BODY}>
                 <Callout className={Classes.INTENT_PRIMARY} icon="info-sign">

@@ -24,7 +24,10 @@ import './about.scss';
 
 type AboutDialogProps = { isOpen: boolean; onClose: () => void };
 
-const AboutDialog: React.FunctionComponent<AboutDialogProps> = (props) => {
+const AboutDialog: React.VoidFunctionComponent<AboutDialogProps> = ({
+    isOpen,
+    onClose,
+}) => {
     const [isLicenseDialogOpen, setIsLicenseDialogOpen] = useState(false);
 
     const [i18n] = useI18n({ id: 'about', translations: { en }, fallback: en });
@@ -32,8 +35,8 @@ const AboutDialog: React.FunctionComponent<AboutDialogProps> = (props) => {
     return (
         <Dialog
             title={`Pybricks v${firmwareVersion} (${appName} v${appVersion})`}
-            isOpen={props.isOpen}
-            onClose={props.onClose}
+            isOpen={isOpen}
+            onClose={onClose}
         >
             <div className={Classes.DIALOG_BODY}>
                 <div className="pb-about-icon">

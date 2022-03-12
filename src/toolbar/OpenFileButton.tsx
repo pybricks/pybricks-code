@@ -38,7 +38,18 @@ export interface OpenFileButtonProps {
 /**
  * Button that opens a file chooser dialog or accepts files dropped on it.
  */
-const OpenFileButton: React.FC<OpenFileButtonProps> = (props) => {
+const OpenFileButton: React.VoidFunctionComponent<OpenFileButtonProps> = ({
+    id,
+    fileExtension,
+    tooltip,
+    icon,
+    enabled,
+    showProgress,
+    progress,
+    onFile,
+    onReject,
+    onClick,
+}) => {
     const [i18n] = useI18n({
         id: 'openFileButton',
         translations: { en },
@@ -60,11 +71,11 @@ const OpenFileButton: React.FC<OpenFileButtonProps> = (props) => {
     const buttonSize = isSmallScreen ? SpinnerSize.SMALL : SpinnerSize.STANDARD;
 
     const { getRootProps, getInputProps } = useDropzone({
-        accept: props.fileExtension,
+        accept: fileExtension,
         // using File System Access API is blocked by https://github.com/react-dropzone/react-dropzone/issues/1141
         useFsAccessApi: false,
         multiple: false,
-        noClick: props.onClick !== undefined,
+        noClick: onClick !== undefined,
         onDropAccepted: (acceptedFiles) => {
             // should only be one file since multiple={false}
             acceptedFiles.forEach((f) => {
@@ -80,7 +91,7 @@ const OpenFileButton: React.FC<OpenFileButtonProps> = (props) => {
                     if (typeof binaryStr === 'string') {
                         throw Error('Unexpected string binaryStr');
                     }
-                    props.onFile(binaryStr);
+                    onFile(binaryStr);
                 };
                 reader.readAsArrayBuffer(f);
             });
@@ -88,7 +99,7 @@ const OpenFileButton: React.FC<OpenFileButtonProps> = (props) => {
         onDropRejected: (fileRejections) => {
             // should only be one file since multiple={false}
             fileRejections.forEach((r) => {
-                props.onReject(r.file);
+                onReject(r.file);
             });
         },
     });
@@ -96,13 +107,13 @@ const OpenFileButton: React.FC<OpenFileButtonProps> = (props) => {
     return (
         <Tooltip2
             content={i18n.translate(
-                props.tooltip,
-                props.tooltip === TooltipId.FlashProgress
+                tooltip,
+                tooltip === TooltipId.FlashProgress
                     ? {
                           percent:
-                              props.progress === undefined
+                              progress === undefined
                                   ? ''
-                                  : i18n.formatPercentage(props.progress),
+                                  : i18n.formatPercentage(progress),
                       }
                     : undefined,
             )}
@@ -119,16 +130,16 @@ const OpenFileButton: React.FC<OpenFileButtonProps> = (props) => {
                         elementRef: tooltipTargetRef as IRef<HTMLButtonElement>,
                         ...tooltipTargetProps,
                         intent: Intent.PRIMARY,
-                        disabled: props.enabled === false,
-                        style: props.enabled === false ? pointerEventsNone : undefined,
+                        disabled: enabled === false,
+                        style: enabled === false ? pointerEventsNone : undefined,
                         onMouseDown: preventFocusOnClick,
-                        onClick: props.onClick,
+                        onClick: onClick,
                     })}
                 >
                     <input {...getInputProps()} />
-                    {props.showProgress ? (
+                    {showProgress ? (
                         <Spinner
-                            value={props.progress}
+                            value={progress}
                             intent={Intent.PRIMARY}
                             size={buttonSize}
                         />
@@ -136,8 +147,8 @@ const OpenFileButton: React.FC<OpenFileButtonProps> = (props) => {
                         <img
                             width={`${buttonSize}px`}
                             height={`${buttonSize}px`}
-                            src={props.icon}
-                            alt={props.id}
+                            src={icon}
+                            alt={id}
                             style={pointerEventsNone}
                         />
                     )}

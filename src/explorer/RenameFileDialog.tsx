@@ -21,13 +21,15 @@ type RenameFileDialogProps = {
     onClose: () => void;
 };
 
-const RenameFileDialog: React.VoidFunctionComponent<RenameFileDialogProps> = (
-    props,
-) => {
+const RenameFileDialog: React.VoidFunctionComponent<RenameFileDialogProps> = ({
+    oldName,
+    isOpen,
+    onClose,
+}) => {
     const [i18n] = useI18n({ id: 'explorer', translations: { en }, fallback: en });
     const dispatch = useDispatch();
 
-    const [baseName, extension] = props.oldName.split(/(\.\w+)$/);
+    const [baseName, extension] = oldName.split(/(\.\w+)$/);
 
     const [newName, setNewName] = useState(baseName);
     const [result, setResult] = useState(FileNameValidationResult.Unknown);
@@ -37,15 +39,15 @@ const RenameFileDialog: React.VoidFunctionComponent<RenameFileDialogProps> = (
     return (
         <Dialog
             title={i18n.translate(RenameFileStringId.Title, {
-                fileName: props.oldName,
+                fileName: oldName,
             })}
-            isOpen={props.isOpen}
+            isOpen={isOpen}
             onOpening={() => setNewName(baseName)}
             onOpened={() => {
                 inputRef.current?.select();
                 inputRef.current?.focus();
             }}
-            onClose={() => props.onClose()}
+            onClose={() => onClose()}
         >
             <div className={Classes.DIALOG_BODY}>
                 <FileNameFormGroup
@@ -64,10 +66,10 @@ const RenameFileDialog: React.VoidFunctionComponent<RenameFileDialogProps> = (
                         disabled={result !== FileNameValidationResult.IsOk}
                         onMouseDown={preventFocusOnClick}
                         onClick={() => {
-                            props.onClose();
+                            onClose();
                             dispatch(
                                 fileStorageRenameFile(
-                                    props.oldName,
+                                    oldName,
                                     `${newName}${extension}`,
                                 ),
                             );
