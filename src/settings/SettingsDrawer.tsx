@@ -8,6 +8,7 @@ import {
     Classes,
     ControlGroup,
     Drawer,
+    DrawerSize,
     FormGroup,
     Icon,
     InputGroup,
@@ -90,7 +91,7 @@ const SettingsDrawer: React.FunctionComponent<SettingsProps> = (props) => {
         <Drawer
             isOpen={props.isOpen}
             icon="cog"
-            size={Drawer.SIZE_SMALL}
+            size={DrawerSize.SMALL}
             title={i18n.translate(SettingsStringId.Title)}
             onClose={props.onClose}
         >
