@@ -87,7 +87,7 @@ const ActionButton: React.FC<ActionButtonProps> = (props) => {
                 },
             },
         ];
-    }, [props, i18n]);
+    }, [props.keyboardShortcut, props.tooltip, props.enabled, props.onAction, i18n]);
 
     useHotkeys(hotkeys);
 

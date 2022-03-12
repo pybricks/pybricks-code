@@ -82,7 +82,7 @@ const SettingsDrawer: React.FunctionComponent<SettingsProps> = (props) => {
                 onKeyDown: () => dispatch(toggleBoolean(BooleanSettingId.ShowDocs)),
             },
         ],
-        [],
+        [i18n, dispatch],
     );
 
     useHotkeys(hotkeys);
