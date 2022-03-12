@@ -24,13 +24,13 @@ const Toolbar: React.VFC = (_props) => {
             className="pb-toolbar"
         >
             <ButtonGroup className="pb-toolbar-group pb-align-left">
+                <FlashButton id="flash" />
+                <BluetoothButton id="bluetooth" />
+            </ButtonGroup>
+            <ButtonGroup className="pb-toolbar-group pb-align-left">
                 <RunButton id="run" keyboardShortcut="F5" />
                 <StopButton id="stop" keyboardShortcut="F6" />
                 <ReplButton id="repl" />
-            </ButtonGroup>
-            <ButtonGroup className="pb-toolbar-group pb-align-left">
-                <FlashButton id="flash" />
-                <BluetoothButton id="bluetooth" />
             </ButtonGroup>
             <ButtonGroup className="pb-toolbar-group pb-align-right">
                 <SettingsButton
