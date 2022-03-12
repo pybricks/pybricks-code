@@ -6,10 +6,8 @@ import {
     Classes,
     Dialog,
     FormGroup,
-    InputGroup,
     Radio,
     RadioGroup,
-    Tag,
 } from '@blueprintjs/core';
 import { useI18n } from '@shopify/react-i18n';
 import React, { useRef, useState } from 'react';
@@ -17,9 +15,8 @@ import { useDispatch } from 'react-redux';
 import {
     FileNameValidationResult,
     pythonFileExtension,
-    validateFileName,
 } from '../pybricksMicropython/lib';
-import { useSelector } from '../reducers';
+import FileNameFormGroup from './FileNameFormGroup';
 import { Hub, explorerCreateNewFile } from './actions';
 import { NewFileWizardStringId } from './i18n';
 import en from './i18n.en.json';
@@ -27,124 +24,42 @@ import en from './i18n.en.json';
 // This should be set to the most commonly used hub.
 const defaultHub = Hub.Technic;
 
-type FileNameHelpTextProps = {
-    validation: FileNameValidationResult;
-};
-
-/**
- * Component that maps FileNameValidationResult to help message to display to user.
- */
-const FileNameHelpText: React.VoidFunctionComponent<FileNameHelpTextProps> = (
-    props,
-) => {
-    const [i18n] = useI18n({ id: 'newFileWizard', translations: { en }, fallback: en });
-
-    switch (props.validation) {
-        case FileNameValidationResult.IsOk:
-            return <>{i18n.translate(NewFileWizardStringId.FileNameHelpTextIsOk)}</>;
-        case FileNameValidationResult.IsEmpty:
-            return <>{i18n.translate(NewFileWizardStringId.FileNameHelpTextIsEmpty)}</>;
-        case FileNameValidationResult.HasSpaces:
-            return (
-                <>{i18n.translate(NewFileWizardStringId.FileNameHelpTextHasSpaces)}</>
-            );
-        case FileNameValidationResult.HasFileExtension:
-            return (
-                <>
-                    {i18n.translate(
-                        NewFileWizardStringId.FileNameHelpTextHasFileExtension,
-                    )}
-                </>
-            );
-        case FileNameValidationResult.HasInvalidFirstCharacter:
-            return (
-                <>
-                    {i18n.translate(
-                        NewFileWizardStringId.FileNameHelpTextHasInvalidFirstCharacter,
-                        {
-                            letters: <code className={Classes.CODE}>a…z</code>,
-                            underscore: <code className={Classes.CODE}>_</code>,
-                        },
-                    )}
-                </>
-            );
-        case FileNameValidationResult.HasInvalidCharacters:
-            return (
-                <>
-                    {i18n.translate(
-                        NewFileWizardStringId.FileNameHelpTextHasInvalidCharacters,
-                        {
-                            letters: <code className={Classes.CODE}>a…z</code>,
-                            numbers: <code className={Classes.CODE}>0…9</code>,
-                            dash: <code className={Classes.CODE}>-</code>,
-                            underscore: <code className={Classes.CODE}>_</code>,
-                        },
-                    )}
-                </>
-            );
-        case FileNameValidationResult.AlreadyExists:
-            return (
-                <>
-                    {i18n.translate(
-                        NewFileWizardStringId.FileNameHelpTextAlreadyExists,
-                    )}
-                </>
-            );
-    }
-};
-
 type NewFileWizardProps = {
+    /** Controls if the dialog is open. */
     readonly isOpen: boolean;
+    /** Called when the dialog is closed. */
     readonly onClose: () => void;
 };
 
 const NewFileWizard: React.VoidFunctionComponent<NewFileWizardProps> = (props) => {
-    const [i18n] = useI18n({ id: 'newFileWizard', translations: { en }, fallback: en });
+    const [i18n] = useI18n({ id: 'explorer', translations: { en }, fallback: en });
     const dispatch = useDispatch();
-    const fileNames = useSelector((s) => s.fileStorage.fileNames);
 
     const [fileName, setFileName] = useState('');
     const [fileNameValidation, setFileNameValidation] = useState(
-        FileNameValidationResult.IsEmpty,
+        FileNameValidationResult.Unknown,
     );
     const [hubType, setHubType] = useState(defaultHub);
 
     const fileNameInputRef = useRef<HTMLInputElement>(null);
-
-    const fileNameIntent =
-        fileNameValidation === FileNameValidationResult.IsOk ? 'none' : 'danger';
-
-    const handleFileNameChanged = (fileName: string) => {
-        setFileNameValidation(
-            validateFileName(fileName, pythonFileExtension, fileNames),
-        );
-        setFileName(fileName);
-    };
 
     return (
         <Dialog
             icon="plus"
             title={i18n.translate(NewFileWizardStringId.Title)}
             isOpen={props.isOpen}
-            onOpening={() => handleFileNameChanged('')}
+            onOpening={() => setFileName('')}
             onOpened={() => fileNameInputRef.current?.focus()}
             onClose={() => props.onClose()}
         >
             <div className={Classes.DIALOG_BODY}>
-                <FormGroup
-                    label={i18n.translate(NewFileWizardStringId.FileNameLabel)}
-                    intent={fileNameIntent}
-                    subLabel={<FileNameHelpText validation={fileNameValidation} />}
-                >
-                    <InputGroup
-                        aria-label="File name"
-                        value={fileName}
-                        inputRef={fileNameInputRef}
-                        intent={fileNameIntent}
-                        rightElement={<Tag>{pythonFileExtension}</Tag>}
-                        onChange={(e) => handleFileNameChanged(e.target.value)}
-                    />
-                </FormGroup>
+                <FileNameFormGroup
+                    fileName={fileName}
+                    fileExtension={pythonFileExtension}
+                    inputRef={fileNameInputRef}
+                    onChange={(n) => setFileName(n)}
+                    onValidation={(r) => setFileNameValidation(r)}
+                />
                 <FormGroup label={i18n.translate(NewFileWizardStringId.SmartHubLabel)}>
                     <RadioGroup
                         selectedValue={hubType}

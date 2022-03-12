@@ -12,14 +12,22 @@ import {
     TreeNodeInfo,
 } from '@blueprintjs/core';
 import { useI18n } from '@shopify/react-i18n';
-import React, { forwardRef, useImperativeHandle, useMemo, useState } from 'react';
+import React, {
+    forwardRef,
+    useEffect,
+    useImperativeHandle,
+    useMemo,
+    useState,
+} from 'react';
 import { useDispatch } from 'react-redux';
+import { useDebounce } from 'usehooks-ts';
 import {
     fileStorageArchiveAllFiles,
     fileStorageExportFile,
 } from '../fileStorage/actions';
 import { useSelector } from '../reducers';
 import NewFileWizard from './NewFileWizard';
+import RenameFileDialog from './RenameFileDialog';
 import { explorerDeleteFile, explorerImportFiles } from './actions';
 import { ExplorerStringId } from './i18n';
 import en from './i18n.en.json';
@@ -68,8 +76,21 @@ const FileActionButtonGroup = forwardRef<
 >((props, ref) => {
     const dispatch = useDispatch();
     const [visible, setVisible] = useState(false);
+    const [isRenameDialogOpen, setIsRenameDialogOpen] = useState(false);
 
-    useImperativeHandle(ref, () => ({ setVisible }));
+    // HACK: Hide buttons if file is removed from storage. Without this, if a
+    // file is renamed to a new name then renamed again to the original name,
+    // the buttons will be showing even though the list item is not hovered
+    // because the list item was removed before the mouseleave event was
+    // received.
+    const fileNames = useSelector((s) => s.fileStorage.fileNames);
+    useEffect(() => {
+        if (!fileNames.includes(props.fileName)) {
+            setVisible(false);
+        }
+    }, [fileNames, props.fileName, setVisible]);
+
+    useImperativeHandle(ref, () => ({ setVisible }), [setVisible]);
 
     return (
         <ButtonGroup minimal={true} style={visible ? {} : { display: 'none' }}>
@@ -77,7 +98,12 @@ const FileActionButtonGroup = forwardRef<
                 icon="edit"
                 toolTipId={ExplorerStringId.TreeItemRenameTooltip}
                 toolTipReplacements={{ fileName: props.fileName }}
-                onClick={() => alert('not implemented')}
+                onClick={() => setIsRenameDialogOpen(true)}
+            />
+            <RenameFileDialog
+                oldName={props.fileName}
+                isOpen={isRenameDialogOpen}
+                onClose={() => setIsRenameDialogOpen(false)}
             />
             <ActionButton
                 // NB: the "import" icon has an arrow pointing down, which is
@@ -140,10 +166,11 @@ const Header: React.VFC = () => {
 
 const FileTree: React.VFC = () => {
     const fileNames = useSelector((s) => s.fileStorage.fileNames);
+    const debouncedFileNames = useDebounce(fileNames);
 
     const treeContents = useMemo(
         () =>
-            [...fileNames].map<
+            [...debouncedFileNames].map<
                 TreeNodeInfo<{
                     actionButtonGroupRef: React.RefObject<FileActionButtonGroupRef>;
                 }>
@@ -163,7 +190,7 @@ const FileTree: React.VFC = () => {
                     nodeData: { actionButtonGroupRef },
                 };
             }),
-        [fileNames],
+        [debouncedFileNames],
     );
 
     return (

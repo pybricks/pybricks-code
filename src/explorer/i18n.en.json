@@ -31,5 +31,11 @@
         "action": {
             "create": "Create"
         }
+    },
+    "renameFile": {
+        "title": "Rename '{fileName}'",
+        "action": {
+            "rename": "Rename"
+        }
     }
 }
