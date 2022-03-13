@@ -2,15 +2,11 @@
 // Copyright (c) 2020-2022 The Pybricks Authors
 
 import { Menu, MenuDivider, MenuItem } from '@blueprintjs/core';
-import {
-    ContextMenu2,
-    ContextMenu2ContentProps,
-    ResizeSensor2,
-} from '@blueprintjs/popover2';
+import { ContextMenu2, ResizeSensor2 } from '@blueprintjs/popover2';
 import { useI18n } from '@shopify/react-i18n';
 import tomorrowNightEightiesTheme from 'monaco-themes/themes/Tomorrow-Night-Eighties.json';
 import xcodeTheme from 'monaco-themes/themes/Xcode_default.json';
-import React, { createContext, useContext, useRef } from 'react';
+import React, { useState } from 'react';
 import MonacoEditor, { monaco } from 'react-monaco-editor';
 import { useDispatch } from 'react-redux';
 import { IDisposable } from 'xterm';
@@ -31,22 +27,6 @@ import './editor.scss';
  * The editor type. Null indicates no current editor.
  */
 export type EditorType = monaco.editor.ICodeEditor | null;
-
-/**
- * The type for the value of EditorContext.
- */
-export type EditorContextType = {
-    editor: EditorType;
-    setEditor: (editor: EditorType) => void;
-};
-
-/**
- * Editor context for getting access to the current editor.
- */
-export const EditorContext = createContext<EditorContextType>({
-    editor: null,
-    setEditor: () => undefined,
-});
 
 const pybricksMicroPythonId = 'pybricks-micropython';
 monaco.languages.register({ id: pybricksMicroPythonId });
@@ -83,10 +63,21 @@ monaco.editor.defineTheme(
 const xcodeId = 'xcode';
 monaco.editor.defineTheme(xcodeId, xcodeTheme as monaco.editor.IStandaloneThemeData);
 
-const contextMenu = (_props: ContextMenu2ContentProps): JSX.Element => {
-    const { editor } = useContext(EditorContext);
+type EditorContextMenuProps = { editor: EditorType };
 
+const EditorContextMenu: React.VoidFunctionComponent<EditorContextMenuProps> = ({
+    editor,
+}) => {
     const [i18n] = useI18n({ id: 'editor', translations: { en }, fallback: en });
+
+    const hasEditor = editor !== null;
+
+    const selection = editor?.getSelection();
+    const hasSelection = selection && !selection.isEmpty();
+
+    const model = editor?.getModel();
+    const canUndo = model && model.canUndo();
+    const canRedo = model && model.canRedo();
 
     return (
         <Menu>
@@ -98,7 +89,7 @@ const contextMenu = (_props: ContextMenu2ContentProps): JSX.Element => {
                 text={i18n.translate(EditorStringId.Copy)}
                 icon="duplicate"
                 label={isMacOS() ? 'Cmd-C' : 'Ctrl-C'}
-                disabled={!editor?.getSelection() || editor?.getSelection()?.isEmpty()}
+                disabled={!hasSelection}
             />
             <MenuItem
                 onClick={() => {
@@ -108,6 +99,7 @@ const contextMenu = (_props: ContextMenu2ContentProps): JSX.Element => {
                 text={i18n.translate(EditorStringId.Paste)}
                 icon="clipboard"
                 label={isMacOS() ? 'Cmd-V' : 'Ctrl-V'}
+                disabled={!hasEditor}
             />
             <MenuItem
                 onClick={() => {
@@ -117,6 +109,7 @@ const contextMenu = (_props: ContextMenu2ContentProps): JSX.Element => {
                 text={i18n.translate(EditorStringId.SelectAll)}
                 icon="blank"
                 label={isMacOS() ? 'Cmd-A' : 'Ctrl-A'}
+                disabled={!hasEditor}
             />
             <MenuDivider />
             <MenuItem
@@ -127,7 +120,7 @@ const contextMenu = (_props: ContextMenu2ContentProps): JSX.Element => {
                 text={i18n.translate(EditorStringId.Undo)}
                 icon="undo"
                 label={isMacOS() ? 'Cmd-Z' : 'Ctrl-Z'}
-                disabled={!editor?.getModel()?.canUndo()}
+                disabled={!canUndo}
             />
             <MenuItem
                 onClick={() => {
@@ -137,30 +130,33 @@ const contextMenu = (_props: ContextMenu2ContentProps): JSX.Element => {
                 text={i18n.translate(EditorStringId.Redo)}
                 icon="redo"
                 label={isMacOS() ? 'Cmd-Shift-Z' : 'Ctrl-Shift-Z'}
-                disabled={!editor?.getModel()?.canRedo()}
+                disabled={!canRedo}
             />
         </Menu>
     );
 };
 
-const Editor: React.FunctionComponent = (_props) => {
-    const editorRef = useRef<MonacoEditor>(null);
-    const dispatch = useDispatch();
-    const { setEditor } = useContext(EditorContext);
+type EditorProps = { onEditorChanged: (editor: EditorType) => void };
 
+const Editor: React.VoidFunctionComponent<EditorProps> = ({ onEditorChanged }) => {
+    const dispatch = useDispatch();
+
+    const [editor, setEditor] = useState<EditorType>(null);
     const darkMode = useSelector((s) => s.settings.darkMode);
 
     const [i18n] = useI18n({ id: 'editor', translations: { en }, fallback: en });
 
     return (
-        <ResizeSensor2 onResize={() => editorRef?.current?.editor?.layout()}>
+        <ResizeSensor2 onResize={() => editor?.layout()}>
             <ContextMenu2
                 className="h-100"
-                content={contextMenu}
-                popoverProps={{ onClosed: () => editorRef.current?.editor?.focus() }}
+                // NB: we have to create a new context menu each time it is
+                // shown in order to get some state, like canUndo and canRedo
+                // that don't have events to monitor changes.
+                content={() => <EditorContextMenu editor={editor} />}
+                popoverProps={{ onClosed: () => editor?.focus() }}
             >
                 <MonacoEditor
-                    ref={editorRef}
                     language={pybricksMicroPythonId}
                     theme={darkMode ? tomorrowNightEightiesId : xcodeId}
                     width="100%"
@@ -224,6 +220,9 @@ const Editor: React.FunctionComponent = (_props) => {
                         );
                         editor.focus();
                         setEditor(editor);
+                        if (onEditorChanged) {
+                            onEditorChanged(editor);
+                        }
                     }}
                     // REVIST: need to ensure we have exclusive access to file
                     onChange={(v) => dispatch(fileStorageWriteFile('main.py', v))}

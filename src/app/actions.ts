@@ -48,3 +48,9 @@ export const didInstall = createAction(() => ({
 export const didStart = createAction(() => ({
     type: 'app.action.didStart',
 }));
+
+/** Temporary action for transitioning editor context. Do no use in new code. */
+export const appEditor = createAction((hasEditor: boolean) => ({
+    type: 'app.action.editor',
+    hasEditor,
+}));

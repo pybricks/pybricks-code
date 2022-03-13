@@ -1,9 +1,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2022 The Pybricks Authors
 
-import React, { useContext } from 'react';
+import React from 'react';
 import { useDispatch } from 'react-redux';
-import { EditorContext } from '../editor/Editor';
 import { useSelector } from '../reducers';
 import ActionButton, { ActionButtonProps } from '../toolbar/ActionButton';
 import { TooltipId } from '../toolbar/i18n';
@@ -17,9 +16,9 @@ const RunButton: React.VoidFunctionComponent<RunButtonProps> = ({
     id,
     keyboardShortcut,
 }) => {
-    const { editor } = useContext(EditorContext);
     const downloadProgress = useSelector((s) => s.hub.downloadProgress);
     const runtime = useSelector((s) => s.hub.runtime);
+    const hasEditor = useSelector((s) => s.app.hasEditor);
 
     const dispatch = useDispatch();
 
@@ -30,7 +29,7 @@ const RunButton: React.VoidFunctionComponent<RunButtonProps> = ({
             tooltip={TooltipId.Run}
             progressTooltip={TooltipId.RunProgress}
             icon={runIcon}
-            enabled={editor !== null && runtime === HubRuntimeState.Idle}
+            enabled={hasEditor && runtime === HubRuntimeState.Idle}
             showProgress={runtime === HubRuntimeState.Loading}
             progress={downloadProgress === null ? undefined : downloadProgress}
             onAction={() => dispatch(downloadAndRun())}
