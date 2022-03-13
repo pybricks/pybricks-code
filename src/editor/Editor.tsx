@@ -127,7 +127,6 @@ const contextMenu = (_props: ContextMenu2ContentProps): JSX.Element => {
                 text={i18n.translate(EditorStringId.Undo)}
                 icon="undo"
                 label={isMacOS() ? 'Cmd-Z' : 'Ctrl-Z'}
-                // @ts-expect-error internal method canUndo()
                 disabled={!editor?.getModel()?.canUndo()}
             />
             <MenuItem
@@ -138,7 +137,6 @@ const contextMenu = (_props: ContextMenu2ContentProps): JSX.Element => {
                 text={i18n.translate(EditorStringId.Redo)}
                 icon="redo"
                 label={isMacOS() ? 'Cmd-Shift-Z' : 'Ctrl-Shift-Z'}
-                // @ts-expect-error internal method canUndo()
                 disabled={!editor?.getModel()?.canRedo()}
             />
         </Menu>
