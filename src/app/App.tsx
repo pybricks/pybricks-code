@@ -149,25 +149,25 @@ const App: React.VoidFunctionComponent<AppProps> = ({ onEditorChanged }) => {
     return (
         <div className="pb-app h-100 w-100 p-absolute">
             <Toolbar />
-            <SplitterLayout
-                customClassName={`pb-app-body ${
-                    showDocs ? 'pb-show-docs' : 'pb-hide-docs'
-                }`}
-                onDragStart={(): void => setIsDragging(true)}
-                onDragEnd={(): void => setIsDragging(false)}
-                percentage={true}
-                secondaryInitialSize={Number(
-                    localStorage.getItem('app-docs-split') || 30,
-                )}
-                onSecondaryPaneSizeChange={(value): void =>
-                    localStorage.setItem('app-docs-split', String(value))
-                }
+            <div
+                className="pb-app-body"
+                style={{ display: 'grid', gridTemplateColumns: '250px auto' }}
             >
-                <div className="h-100 w-100" style={{ display: 'flex' }}>
-                    <div style={{ display: 'inline-block', width: 250 }}>
-                        <Explorer />
-                    </div>
-                    <div style={{ display: 'inline-block' }}>
+                <Explorer />
+                {/* need a container for SplitterLayout since it uses position: absolute */}
+                <div>
+                    <SplitterLayout
+                        customClassName={showDocs ? 'pb-show-docs' : 'pb-hide-docs'}
+                        onDragStart={(): void => setIsDragging(true)}
+                        onDragEnd={(): void => setIsDragging(false)}
+                        percentage={true}
+                        secondaryInitialSize={Number(
+                            localStorage.getItem('app-docs-split') || 30,
+                        )}
+                        onSecondaryPaneSizeChange={(value): void =>
+                            localStorage.setItem('app-docs-split', String(value))
+                        }
+                    >
                         <SplitterLayout
                             vertical={true}
                             percentage={true}
@@ -193,13 +193,13 @@ const App: React.VoidFunctionComponent<AppProps> = ({ onEditorChanged }) => {
                                 <Terminal />
                             </div>
                         </SplitterLayout>
-                    </div>
+                        <div className="h-100 w-100">
+                            {isDragging && <div className="h-100 w-100 p-absolute" />}
+                            <Docs />
+                        </div>
+                    </SplitterLayout>
                 </div>
-                <div className="h-100 w-100">
-                    {isDragging && <div className="h-100 w-100 p-absolute" />}
-                    <Docs />
-                </div>
-            </SplitterLayout>
+            </div>
             <StatusBar />
         </div>
     );
