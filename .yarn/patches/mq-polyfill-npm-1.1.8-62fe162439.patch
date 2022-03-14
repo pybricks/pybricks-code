@@ -1,0 +1,74 @@
+diff --git a/lib/MediaQueryList/MediaQueryList.js b/lib/MediaQueryList/MediaQueryList.js
+index ebb32fc06b31c229f3f0f547ddaddcdda326551e..145d734c1ba508cae996669ded7b7a025d24d8b5 100644
+--- a/lib/MediaQueryList/MediaQueryList.js
++++ b/lib/MediaQueryList/MediaQueryList.js
+@@ -24,5 +24,13 @@ class MediaQueryList {
+     throw new TypeError("'removeListener' called on an object that does not implement interface MediaQueryList.");
+   }
+ 
++  addEventListener() {
++    throw new TypeError("'addEventListener' called on an object that does not implement interface MediaQueryList.");
++  }
++
++  removeEventListener() {
++    throw new TypeError("'removeEventListener' called on an object that does not implement interface MediaQueryList.");
++  }
++
+ }
+ exports.default = MediaQueryList;
+\ No newline at end of file
+diff --git a/lib/MediaQueryList/MediaQueryList.js.flow b/lib/MediaQueryList/MediaQueryList.js.flow
+index 394f8456f1f3c3a38a9ef88bac4ca998cbb09722..f10ab50abcf94639b064c2a75059f4a20db755bf 100644
+--- a/lib/MediaQueryList/MediaQueryList.js.flow
++++ b/lib/MediaQueryList/MediaQueryList.js.flow
+@@ -31,8 +31,22 @@ export default class MediaQueryList {
+     );
+   }
+ 
++  addEventListener() {
++    throw new TypeError(
++      "'addEventListener' called on an object that does not implement interface MediaQueryList.",
++    );
++  }
++
++  removeEventListener() {
++    throw new TypeError(
++      "'removeEventListener' called on an object that does not implement interface MediaQueryList.",
++    );
++  }
++
+   media: string;
+   matches: boolean;
+   addListener: (listener: ListenerType) => void;
+   removeListener: (listener: ListenerType) => void;
++  addEventListener: (type: 'change', listener: ListenerType) => void;
++  removeEventListener: (type: 'change', listener: ListenerType) => void;
+ }
+diff --git a/lib/matchMedia.js b/lib/matchMedia.js
+index 3105de98293431985c2bf5b2fc4336a7f70a1d7d..37fb50e772c4105d6ba5c25cda078d570c5ef0ff 100644
+--- a/lib/matchMedia.js
++++ b/lib/matchMedia.js
+@@ -19,7 +19,9 @@ const matchMedia = ({
+     media: { enumerable: true, value: media },
+     matches: { enumerable: true, configurable: true, value: evalQuery(media) },
+     addListener: { value: addListener },
+-    removeListener: { value: removeListener }
++    removeListener: { value: removeListener },
++    addEventListener: { value: (type, listener) => addListener(listener) },
++    removeEventListener: { value: (type, listener) => removeListener(listener) }
+   });
+ 
+   return mqList;
+diff --git a/lib/matchMedia.js.flow b/lib/matchMedia.js.flow
+index f6d10b7f982fc261ef1cd9945ce9f007e1f9c008..7a91088ba321f712bcecafbb003d9e4e06e17e99 100644
+--- a/lib/matchMedia.js.flow
++++ b/lib/matchMedia.js.flow
+@@ -25,6 +25,8 @@ const matchMedia: CreateMatchMediaType = ({
+       matches: { enumerable: true, configurable: true, value: evalQuery(media) },
+       addListener: { value: addListener },
+       removeListener: { value: removeListener },
++      addEventListener: { value: (type, listener) => addListener(listener) },
++      removeEventListener: { value: (type, listener) => removeListener(listener) },
+     });
+ 
+     return mqList;
