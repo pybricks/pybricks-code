@@ -5,7 +5,7 @@ import { Classes } from '@blueprintjs/core';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import SplitterLayout from 'react-splitter-layout';
-import { useLocalStorage } from 'usehooks-ts';
+import { useDarkMode, useLocalStorage } from 'usehooks-ts';
 import Editor, { EditorType } from '../editor/Editor';
 import Explorer from '../explorer/Explorer';
 import { useSelector } from '../reducers';
@@ -130,7 +130,7 @@ type AppProps = {
 };
 
 const App: React.VoidFunctionComponent<AppProps> = ({ onEditorChanged }) => {
-    const darkMode = useSelector((s): boolean => s.settings.darkMode);
+    const { isDarkMode } = useDarkMode();
     const showDocs = useSelector((s): boolean => s.settings.showDocs);
     const [isDragging, setIsDragging] = useState(false);
     const dispatch = useDispatch();
@@ -138,17 +138,17 @@ const App: React.VoidFunctionComponent<AppProps> = ({ onEditorChanged }) => {
     const [docsSplit, setDocsSplit] = useLocalStorage('app-docs-split', 30);
     const [terminalSplit, setTerminalSplit] = useLocalStorage('app-terminal-split', 30);
 
-    // darkMode class has to be applied to body element, otherwise it won't
+    // Classes.DARK has to be applied to body element, otherwise it won't
     // affect portals
     useEffect(() => {
-        if (!darkMode) {
+        if (!isDarkMode) {
             // no class for light mode, so nothing to do
             return;
         }
 
         document.body.classList.add(Classes.DARK);
         return () => document.body.classList.remove(Classes.DARK);
-    }, [darkMode]);
+    }, [isDarkMode]);
 
     return (
         <div className="pb-app h-100 w-100 p-absolute">

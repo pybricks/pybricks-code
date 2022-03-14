@@ -9,10 +9,10 @@ import xcodeTheme from 'monaco-themes/themes/Xcode_default.json';
 import React, { useState } from 'react';
 import MonacoEditor, { monaco } from 'react-monaco-editor';
 import { useDispatch } from 'react-redux';
+import { useDarkMode } from 'usehooks-ts';
 import { IDisposable } from 'xterm';
 import { fileStorageWriteFile } from '../fileStorage/actions';
 import { compile } from '../mpy/actions';
-import { useSelector } from '../reducers';
 import { toggleBoolean } from '../settings/actions';
 import { BooleanSettingId } from '../settings/defaults';
 import { isMacOS } from '../utils/os';
@@ -136,13 +136,13 @@ const EditorContextMenu: React.VoidFunctionComponent<EditorContextMenuProps> = (
     );
 };
 
-type EditorProps = { onEditorChanged: (editor: EditorType) => void };
+type EditorProps = { onEditorChanged?: (editor: EditorType) => void };
 
 const Editor: React.VoidFunctionComponent<EditorProps> = ({ onEditorChanged }) => {
     const dispatch = useDispatch();
 
     const [editor, setEditor] = useState<EditorType>(null);
-    const darkMode = useSelector((s) => s.settings.darkMode);
+    const { isDarkMode } = useDarkMode();
 
     const [i18n] = useI18n({ id: 'editor', translations: { en }, fallback: en });
 
@@ -158,7 +158,7 @@ const Editor: React.VoidFunctionComponent<EditorProps> = ({ onEditorChanged }) =
             >
                 <MonacoEditor
                     language={pybricksMicroPythonId}
-                    theme={darkMode ? tomorrowNightEightiesId : xcodeId}
+                    theme={isDarkMode ? tomorrowNightEightiesId : xcodeId}
                     width="100%"
                     height="100%"
                     options={{

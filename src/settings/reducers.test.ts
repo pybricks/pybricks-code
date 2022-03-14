@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2021 The Pybricks Authors
+
 import { AnyAction } from 'redux';
 import { didBooleanChange, didStringChange } from './actions';
 import { BooleanSettingId, StringSettingId } from './defaults';
@@ -8,24 +11,12 @@ type State = ReturnType<typeof reducers>;
 test('initial state', () => {
     expect(reducers(undefined, {} as AnyAction)).toMatchInlineSnapshot(`
         Object {
-          "darkMode": false,
           "flashCurrentProgram": false,
           "hubName": "",
           "isHubNameValid": true,
           "showDocs": true,
         }
     `);
-});
-
-describe('darkMode', () => {
-    test('setting changed', () => {
-        expect(
-            reducers(
-                { darkMode: false } as State,
-                didBooleanChange(BooleanSettingId.DarkMode, true),
-            ).darkMode,
-        ).toBe(true);
-    });
 });
 
 describe('showDocs', () => {

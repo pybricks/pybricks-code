@@ -12,20 +12,6 @@ import {
 
 const encoder = new TextEncoder();
 
-const darkMode: Reducer<boolean> = (
-    state = getDefaultBooleanValue(BooleanSettingId.DarkMode),
-    action,
-) => {
-    if (didBooleanChange.matches(action)) {
-        if (action.id === BooleanSettingId.DarkMode) {
-            return action.newState;
-        }
-        return state;
-    }
-
-    return state;
-};
-
 const showDocs: Reducer<boolean> = (
     state = getDefaultBooleanValue(BooleanSettingId.ShowDocs),
     action,
@@ -87,7 +73,6 @@ const isHubNameValid: Reducer<boolean> = (state = true, action) => {
 };
 
 export default combineReducers({
-    darkMode,
     showDocs,
     flashCurrentProgram,
     hubName,

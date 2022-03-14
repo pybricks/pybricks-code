@@ -151,69 +151,6 @@ describe('startup', () => {
             await saga.end();
         });
     });
-
-    describe('darkMode', () => {
-        test('with no value set', async () => {
-            const saga = new AsyncSaga(settings);
-
-            jest.spyOn(
-                Object.getPrototypeOf(window.localStorage),
-                'getItem',
-            ).mockReturnValue(null);
-
-            saga.put(didStart());
-
-            // does nothing
-
-            await saga.end();
-        });
-
-        test('with value set to true', async () => {
-            const saga = new AsyncSaga(settings);
-
-            jest.spyOn(
-                Object.getPrototypeOf(window.localStorage),
-                'getItem',
-            ).mockImplementation((key) => {
-                switch (key) {
-                    case 'setting.darkMode':
-                        return 'true';
-                    default:
-                        return null;
-                }
-            });
-
-            saga.put(didStart());
-
-            // requests to enable dark mode
-            const action = await saga.take();
-            expect(action).toEqual(didBooleanChange(BooleanSettingId.DarkMode, true));
-
-            await saga.end();
-        });
-
-        test('with value set to false', async () => {
-            const saga = new AsyncSaga(settings);
-
-            jest.spyOn(
-                Object.getPrototypeOf(window.localStorage),
-                'getItem',
-            ).mockImplementation((key) => {
-                switch (key) {
-                    case 'setting.darkMode':
-                        return 'false';
-                    default:
-                        return null;
-                }
-            });
-
-            saga.put(didStart());
-
-            // does nothing
-
-            await saga.end();
-        });
-    });
 });
 
 describe('store settings to local storage', () => {
@@ -272,27 +209,6 @@ describe('store settings to local storage', () => {
 
         const action = await saga.take();
         expect(action).toEqual(didBooleanChange(BooleanSettingId.ShowDocs, true));
-
-        await saga.end();
-    });
-
-    test('darkMode', async () => {
-        const saga = new AsyncSaga(settings);
-
-        saga.updateState({ settings: { darkMode: true } });
-
-        const mockSetItem = jest
-            .spyOn(Object.getPrototypeOf(window.localStorage), 'setItem')
-            .mockImplementation((key, value) => {
-                expect(key).toBe('setting.darkMode');
-                expect(value).toBe('false');
-            });
-
-        saga.put(setBoolean(BooleanSettingId.DarkMode, false));
-        expect(mockSetItem).toHaveBeenCalled();
-
-        const action = await saga.take();
-        expect(action).toEqual(didBooleanChange(BooleanSettingId.DarkMode, false));
 
         await saga.end();
     });

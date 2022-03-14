@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2021 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 
 import { Menu, MenuDivider, MenuItem, ResizeSensor } from '@blueprintjs/core';
 import { ContextMenu2, ContextMenu2ContentProps } from '@blueprintjs/popover2';
 import { useI18n } from '@shopify/react-i18n';
 import React, { useContext, useEffect, useMemo, useRef } from 'react';
 import { useDispatch } from 'react-redux';
+import { useDarkMode } from 'usehooks-ts';
 import { Terminal as XTerm } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
-import { useSelector } from '../reducers';
 import { isMacOS } from '../utils/os';
 import { TerminalContext } from './TerminalContext';
 import { receiveData } from './actions';
@@ -100,7 +100,7 @@ function createContextMenu(
 const Terminal: React.FC = (_props) => {
     const { xterm, fitAddon } = useMemo(createXTerm, [createXTerm]);
     const terminalRef = useRef<HTMLDivElement>(null);
-    const darkMode = useSelector((s) => s.settings.darkMode);
+    const { isDarkMode } = useDarkMode();
     const dispatch = useDispatch();
     const terminalStream = useContext(TerminalContext);
 
@@ -118,16 +118,16 @@ const Terminal: React.FC = (_props) => {
         return () => xterm.dispose();
     }, [xterm]);
 
-    // wire up darkMode to terminal
+    // wire up isDarkMode to terminal
     useEffect(() => {
         xterm.options.theme = {
-            background: darkMode ? 'black' : 'white',
-            foreground: darkMode ? 'white' : 'black',
-            cursor: darkMode ? 'white' : 'black',
+            background: isDarkMode ? 'black' : 'white',
+            foreground: isDarkMode ? 'white' : 'black',
+            cursor: isDarkMode ? 'white' : 'black',
             // transparency is needed to work around https://github.com/xtermjs/xterm.js/issues/2808
-            selection: darkMode ? 'rgb(81,81,81,0.5)' : 'rgba(181,213,255,0.5)', // this should match AceEditor theme
+            selection: isDarkMode ? 'rgb(81,81,81,0.5)' : 'rgba(181,213,255,0.5)', // this should match AceEditor theme
         };
-    }, [darkMode]);
+    }, [isDarkMode]);
 
     const handleKeyDownEvent = (e: KeyboardEvent): void => {
         // implement CTRL+SHIFT+C keyboard shortcut for copying text from terminal
