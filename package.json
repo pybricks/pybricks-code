@@ -103,5 +103,6 @@
         "eslint-plugin-total-functions": "^4.10.1",
         "jest-mock-extended": "^2.0.4",
         "prettier": "^2.5.1"
-    }
+    },
+    "packageManager": "yarn@3.2.0"
 }
