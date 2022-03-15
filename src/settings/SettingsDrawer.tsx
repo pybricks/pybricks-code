@@ -35,9 +35,11 @@ import { pseudolocalize } from '../i18n';
 import { useSelector } from '../reducers';
 import ExternalLinkIcon from '../utils/ExternalLinkIcon';
 import { isMacOS } from '../utils/os';
-import { setString } from './actions';
-import { StringSettingId } from './defaults';
-import { useSettingFlashCurrentProgram, useSettingIsShowDocsEnabled } from './hooks';
+import {
+    useSettingFlashCurrentProgram,
+    useSettingHubName,
+    useSettingIsShowDocsEnabled,
+} from './hooks';
 import { SettingsStringId } from './i18n';
 import en from './i18n.en.json';
 import './settings.scss';
@@ -71,8 +73,7 @@ const SettingsDrawer: React.VoidFunctionComponent<SettingsProps> = ({
     );
     const promptingInstall = useSelector((s) => s.app.promptingInstall);
     const readyForOfflineUse = useSelector((s) => s.app.readyForOfflineUse);
-    const hubName = useSelector((s) => s.settings.hubName);
-    const isHubNameValid = useSelector((s) => s.settings.isHubNameValid);
+    const { hubName, isHubNameValid, setHubName } = useSettingHubName();
 
     const dispatch = useDispatch();
 
@@ -200,14 +201,7 @@ const SettingsDrawer: React.VoidFunctionComponent<SettingsProps> = ({
                             <InputGroup
                                 id="hub-name-input"
                                 value={hubName}
-                                onChange={(e) =>
-                                    dispatch(
-                                        setString(
-                                            StringSettingId.HubName,
-                                            e.currentTarget.value,
-                                        ),
-                                    )
-                                }
+                                onChange={(e) => setHubName(e.currentTarget.value)}
                                 onMouseOver={(e) => e.preventDefault()}
                                 className="pb-hub-name-input"
                                 intent={isHubNameValid ? Intent.NONE : Intent.DANGER}

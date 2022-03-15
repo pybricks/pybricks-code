@@ -182,6 +182,7 @@ function* firmwareIterator(data: DataView, maxSize: number): Generator<number> {
 function* loadFirmware(
     data: ArrayBuffer,
     program: string | undefined,
+    hubName: string,
 ): SagaGenerator<{ firmware: Uint8Array; deviceId: HubType }> {
     const [reader, readerErr] = yield* call(() => maybe(FirmwareReader.load(data)));
 
@@ -247,8 +248,6 @@ function* loadFirmware(
 
     // if the firmware supports it, we can set a custom hub name
     if (metadata['max-hub-name-size']) {
-        const hubName = yield* select((s: RootState) => s.settings.hubName);
-
         // empty string means use default name (don't write over firmware)
         if (hubName) {
             firmware.set(encodeHubName(hubName, metadata), metadata['hub-name-offset']);
@@ -299,7 +298,11 @@ function* handleFlashFirmware(action: ReturnType<typeof flashFirmware>): Generat
         }
 
         if (action.data !== null) {
-            ({ firmware, deviceId } = yield* loadFirmware(action.data, program));
+            ({ firmware, deviceId } = yield* loadFirmware(
+                action.data,
+                program,
+                action.hubName,
+            ));
         }
 
         yield* put(connect());
@@ -341,7 +344,11 @@ function* handleFlashFirmware(action: ReturnType<typeof flashFirmware>): Generat
             }
 
             const data = yield* call(() => response.arrayBuffer());
-            ({ firmware, deviceId } = yield* loadFirmware(data, program));
+            ({ firmware, deviceId } = yield* loadFirmware(
+                data,
+                program,
+                action.hubName,
+            ));
 
             if (deviceId !== undefined && info.hubType !== deviceId) {
                 yield* put(didFailToFinish(FailToFinishReasonType.DeviceMismatch));

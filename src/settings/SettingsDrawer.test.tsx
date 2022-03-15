@@ -55,6 +55,34 @@ describe('flashCurrentProgram setting switch', () => {
     });
 });
 
+describe('hubName setting', () => {
+    it('should migrate old settings', () => {
+        // old settings did not use json format, so lack quotes
+        localStorage.setItem('setting.hubName', 'old name');
+
+        const [settings] = testRender(
+            <SettingsDrawer isOpen={true} onClose={() => undefined} />,
+        );
+
+        const textBox = settings.getByLabelText('Hub name');
+
+        expect(textBox).toHaveValue('old name');
+    });
+
+    it('should update the setting', () => {
+        const [settings] = testRender(
+            <SettingsDrawer isOpen={true} onClose={() => undefined} />,
+        );
+
+        expect(localStorage.getItem('setting.hubName')).toBe(null);
+
+        const textBox = settings.getByLabelText('Hub name');
+        userEvent.type(textBox, 'test name');
+
+        expect(localStorage.getItem('setting.hubName')).toBe('"test name"');
+    });
+});
+
 describe('about dialog', () => {
     it('should open the dialog when the button is clicked', async () => {
         const [settings] = testRender(
