@@ -12,20 +12,6 @@ import {
 
 const encoder = new TextEncoder();
 
-const showDocs: Reducer<boolean> = (
-    state = getDefaultBooleanValue(BooleanSettingId.ShowDocs),
-    action,
-) => {
-    if (didBooleanChange.matches(action)) {
-        if (action.id === BooleanSettingId.ShowDocs) {
-            return action.newState;
-        }
-        return state;
-    }
-
-    return state;
-};
-
 const flashCurrentProgram: Reducer<boolean> = (
     state = getDefaultBooleanValue(BooleanSettingId.FlashCurrentProgram),
     action,
@@ -73,7 +59,6 @@ const isHubNameValid: Reducer<boolean> = (state = true, action) => {
 };
 
 export default combineReducers({
-    showDocs,
     flashCurrentProgram,
     hubName,
     isHubNameValid,

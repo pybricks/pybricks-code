@@ -17,6 +17,7 @@ import {
     didStringChange,
     setBoolean,
     setString,
+    settingsToggleShowDocs,
     toggleBoolean,
 } from './actions';
 import {
@@ -157,10 +158,30 @@ function* storeStringSetting(action: ReturnType<typeof setString>): Generator {
     }
 }
 
+/**
+ * Hack to wire editor action to settings hook.
+ *
+ * There are a few places where using toggleIsSettingShowDocsEnabled() doesn't
+ * work because it needs to be called from outside of a React component that
+ * doesn't get updated when state changes.
+ */
+function* handleToggleShowDocs(): Generator {
+    // HACK: This depends on the implementation detail that
+    // useSettingIsShowDocsEnabled() uses useLocalStorage() internally.
+    yield* call(() => {
+        const key = 'setting.showDocs';
+        const oldValue = localStorage.getItem(key);
+        const newValue = JSON.stringify(!(oldValue && JSON.parse(oldValue)));
+        localStorage.setItem(key, newValue);
+        window.dispatchEvent(new Event('local-storage'));
+    });
+}
+
 export default function* (): Generator {
     yield* fork(monitorLocalStorage);
     yield* takeEvery(didStart, loadSettings);
     yield* takeEvery(setBoolean, storeBooleanSetting);
     yield* takeEvery(toggleBoolean, toggleBooleanSetting);
     yield* takeEvery(setString, storeStringSetting);
+    yield* takeEvery(settingsToggleShowDocs, handleToggleShowDocs);
 }

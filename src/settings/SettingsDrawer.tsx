@@ -35,8 +35,9 @@ import { pseudolocalize } from '../i18n';
 import { useSelector } from '../reducers';
 import ExternalLinkIcon from '../utils/ExternalLinkIcon';
 import { isMacOS } from '../utils/os';
-import { setBoolean, setString, toggleBoolean } from './actions';
+import { setBoolean, setString } from './actions';
 import { BooleanSettingId, StringSettingId } from './defaults';
+import { useSettingIsShowDocsEnabled } from './hooks';
 import { SettingsStringId } from './i18n';
 import en from './i18n.en.json';
 import './settings.scss';
@@ -50,10 +51,14 @@ const SettingsDrawer: React.VoidFunctionComponent<SettingsProps> = ({
     isOpen,
     onClose,
 }) => {
+    const {
+        isSettingShowDocsEnabled,
+        setIsSettingShowDocsEnabled,
+        toggleIsSettingShowDocsEnabled,
+    } = useSettingIsShowDocsEnabled();
     const [isAboutDialogOpen, setIsAboutDialogOpen] = useState(false);
     const { isDarkMode, toggle: toggleDarkMode } = useDarkMode();
 
-    const showDocs = useSelector((s) => s.settings.showDocs);
     const flashCurrentProgram = useSelector((s) => s.settings.flashCurrentProgram);
     const isServiceWorkerRegistered = useSelector(
         (s) => s.app.isServiceWorkerRegistered,
@@ -83,10 +88,10 @@ const SettingsDrawer: React.VoidFunctionComponent<SettingsProps> = ({
                 label: i18n.translate(SettingsStringId.AppearanceDocumentationTooltip),
                 global: true,
                 preventDefault: true,
-                onKeyDown: () => dispatch(toggleBoolean(BooleanSettingId.ShowDocs)),
+                onKeyDown: toggleIsSettingShowDocsEnabled,
             },
         ],
-        [i18n, dispatch],
+        [i18n, toggleIsSettingShowDocsEnabled],
     );
 
     useHotkeys(hotkeys);
@@ -124,13 +129,10 @@ const SettingsDrawer: React.VoidFunctionComponent<SettingsProps> = ({
                                 label={i18n.translate(
                                     SettingsStringId.AppearanceDocumentationLabel,
                                 )}
-                                checked={showDocs}
+                                checked={isSettingShowDocsEnabled}
                                 onChange={(e) =>
-                                    dispatch(
-                                        setBoolean(
-                                            BooleanSettingId.ShowDocs,
-                                            (e.target as HTMLInputElement).checked,
-                                        ),
+                                    setIsSettingShowDocsEnabled(
+                                        (e.target as HTMLInputElement).checked,
                                     )
                                 }
                             />

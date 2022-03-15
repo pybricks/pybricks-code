@@ -8,19 +8,17 @@ import SplitterLayout from 'react-splitter-layout';
 import { useDarkMode, useLocalStorage } from 'usehooks-ts';
 import Editor, { EditorType } from '../editor/Editor';
 import Explorer from '../explorer/Explorer';
-import { useSelector } from '../reducers';
-import { toggleBoolean } from '../settings/actions';
-import { BooleanSettingId } from '../settings/defaults';
+import { settingsToggleShowDocs } from '../settings/actions';
+import { useSettingIsShowDocsEnabled } from '../settings/hooks';
 import StatusBar from '../status-bar/StatusBar';
 import Terminal from '../terminal/Terminal';
 import Toolbar from '../toolbar/Toolbar';
 import { isMacOS } from '../utils/os';
-
+import { appEditor } from './actions';
 import 'react-splitter-layout/lib/index.css';
 import './app.scss';
-import { appEditor } from './actions';
 
-const Docs: React.FunctionComponent = (_props) => {
+const Docs: React.VFC = () => {
     const dispatch = useDispatch();
 
     return (
@@ -106,7 +104,10 @@ const Docs: React.FunctionComponent = (_props) => {
                         e.key == 'd'
                     ) {
                         e.preventDefault();
-                        dispatch(toggleBoolean(BooleanSettingId.ShowDocs));
+                        // we have to use dispatch here instead of
+                        // toggleIsSettingShowDocsEnabled since this
+                        // isn't updated on state changes
+                        dispatch(settingsToggleShowDocs());
                     }
                 });
 
@@ -116,7 +117,7 @@ const Docs: React.FunctionComponent = (_props) => {
             }}
             src="static/docs/index.html"
             allowFullScreen={true}
-            title="docs"
+            role="documentation"
             width="100%"
             height="100%"
             frameBorder="none"
@@ -131,7 +132,7 @@ type AppProps = {
 
 const App: React.VoidFunctionComponent<AppProps> = ({ onEditorChanged }) => {
     const { isDarkMode } = useDarkMode();
-    const showDocs = useSelector((s): boolean => s.settings.showDocs);
+    const { isSettingShowDocsEnabled } = useSettingIsShowDocsEnabled();
     const [isDragging, setIsDragging] = useState(false);
     const dispatch = useDispatch();
 
@@ -161,7 +162,9 @@ const App: React.VoidFunctionComponent<AppProps> = ({ onEditorChanged }) => {
                 {/* need a container for SplitterLayout since it uses position: absolute */}
                 <div>
                     <SplitterLayout
-                        customClassName={showDocs ? 'pb-show-docs' : 'pb-hide-docs'}
+                        customClassName={
+                            isSettingShowDocsEnabled ? 'pb-show-docs' : 'pb-hide-docs'
+                        }
                         onDragStart={(): void => setIsDragging(true)}
                         onDragEnd={(): void => setIsDragging(false)}
                         percentage={true}

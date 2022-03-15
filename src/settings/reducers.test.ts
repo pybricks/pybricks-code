@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021 The Pybricks Authors
+// Copyright (c) 2021-2022 The Pybricks Authors
 
 import { AnyAction } from 'redux';
 import { didBooleanChange, didStringChange } from './actions';
@@ -14,20 +14,8 @@ test('initial state', () => {
           "flashCurrentProgram": false,
           "hubName": "",
           "isHubNameValid": true,
-          "showDocs": true,
         }
     `);
-});
-
-describe('showDocs', () => {
-    test('setting changed', () => {
-        expect(
-            reducers(
-                { showDocs: false } as State,
-                didBooleanChange(BooleanSettingId.ShowDocs, true),
-            ).showDocs,
-        ).toBe(true);
-    });
 });
 
 describe('flashCurrentProgram', () => {

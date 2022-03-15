@@ -4,153 +4,19 @@
 // Tests for settings sagas.
 
 import { AsyncSaga } from '../../test';
-import { didStart } from '../app/actions';
 import {
     didBooleanChange,
-    didFailToSetBoolean,
     didFailToSetString,
     didStringChange,
     setBoolean,
     setString,
-    toggleBoolean,
+    settingsToggleShowDocs,
 } from './actions';
 import { BooleanSettingId, StringSettingId } from './defaults';
 import settings from './sagas';
 
-afterAll(() => {
+afterEach(() => {
     jest.restoreAllMocks();
-});
-
-describe('startup', () => {
-    describe('showDocs', () => {
-        test('with large screen and no value set', async () => {
-            const saga = new AsyncSaga(settings);
-
-            jest.spyOn(
-                Object.getPrototypeOf(window.localStorage),
-                'getItem',
-            ).mockReturnValue(null);
-            innerWidth = 1024;
-
-            saga.put(didStart());
-
-            // does nothing
-
-            await saga.end();
-        });
-
-        test('with small screen and no value set', async () => {
-            const saga = new AsyncSaga(settings);
-
-            jest.spyOn(
-                Object.getPrototypeOf(window.localStorage),
-                'getItem',
-            ).mockReturnValue(null);
-            innerWidth = 800;
-
-            saga.put(didStart());
-
-            // does nothing
-
-            await saga.end();
-        });
-
-        test('with large screen and stored value "true"', async () => {
-            const saga = new AsyncSaga(settings);
-
-            jest.spyOn(
-                Object.getPrototypeOf(window.localStorage),
-                'getItem',
-            ).mockImplementation((key) => {
-                switch (key) {
-                    case 'setting.showDocs':
-                        return 'true';
-                    default:
-                        return null;
-                }
-            });
-            innerWidth = 1024;
-
-            saga.put(didStart());
-
-            // does nothing
-
-            await saga.end();
-        });
-
-        test('with small screen and stored value "true"', async () => {
-            const saga = new AsyncSaga(settings);
-
-            jest.spyOn(
-                Object.getPrototypeOf(window.localStorage),
-                'getItem',
-            ).mockImplementation((key) => {
-                switch (key) {
-                    case 'setting.showDocs':
-                        return 'true';
-                    default:
-                        return null;
-                }
-            });
-            innerWidth = 800;
-
-            saga.put(didStart());
-
-            // requests documentation to be shown
-            const action = await saga.take();
-            expect(action).toEqual(didBooleanChange(BooleanSettingId.ShowDocs, true));
-
-            await saga.end();
-        });
-
-        test('with large screen stored value "false"', async () => {
-            const saga = new AsyncSaga(settings);
-
-            jest.spyOn(
-                Object.getPrototypeOf(window.localStorage),
-                'getItem',
-            ).mockImplementation((key) => {
-                switch (key) {
-                    case 'setting.showDocs':
-                        return 'false';
-                    default:
-                        return null;
-                }
-            });
-            innerWidth = 1024;
-
-            saga.put(didStart());
-
-            // requests documentation to be hidden
-            const action = await saga.take();
-            expect(action).toEqual(didBooleanChange(BooleanSettingId.ShowDocs, false));
-
-            await saga.end();
-        });
-
-        test('with small screen stored value "false"', async () => {
-            const saga = new AsyncSaga(settings);
-
-            jest.spyOn(
-                Object.getPrototypeOf(window.localStorage),
-                'getItem',
-            ).mockImplementation((key) => {
-                switch (key) {
-                    case 'setting.showDocs':
-                        return 'false';
-                    default:
-                        return null;
-                }
-            });
-            innerWidth = 800;
-
-            saga.put(didStart());
-
-            // does nothing
-
-            await saga.end();
-        });
-    });
 });
 
 describe('store settings to local storage', () => {
@@ -165,21 +31,6 @@ describe('store settings to local storage', () => {
                 throw testError;
             });
 
-        saga.put(setBoolean(BooleanSettingId.ShowDocs, true));
-        expect(mockSetItem).toHaveBeenCalled();
-
-        // raises error that storing setting didn't work
-        const action1 = await saga.take();
-        expect(action1).toEqual(
-            didFailToSetBoolean(BooleanSettingId.ShowDocs, testError),
-        );
-
-        // but the setting is still applied anyway
-        const action2 = await saga.take();
-        expect(action2).toEqual(didBooleanChange(BooleanSettingId.ShowDocs, true));
-
-        mockSetItem.mockClear();
-
         saga.put(setString(StringSettingId.HubName, 'test name'));
         expect(mockSetItem).toHaveBeenCalled();
 
@@ -190,25 +41,6 @@ describe('store settings to local storage', () => {
         // but the setting is still applied anyway
         const action4 = await saga.take();
         expect(action4).toEqual(didStringChange(StringSettingId.HubName, 'test name'));
-
-        await saga.end();
-    });
-
-    test('showDocs', async () => {
-        const saga = new AsyncSaga(settings);
-
-        const mockSetItem = jest
-            .spyOn(Object.getPrototypeOf(window.localStorage), 'setItem')
-            .mockImplementation((key, value) => {
-                expect(key).toBe('setting.showDocs');
-                expect(value).toBe('true');
-            });
-
-        saga.put(setBoolean(BooleanSettingId.ShowDocs, true));
-        expect(mockSetItem).toHaveBeenCalled();
-
-        const action = await saga.take();
-        expect(action).toEqual(didBooleanChange(BooleanSettingId.ShowDocs, true));
 
         await saga.end();
     });
@@ -253,24 +85,6 @@ describe('storage monitor', () => {
         await saga.end();
     });
 
-    test('puts action when setting changes', async () => {
-        const saga = new AsyncSaga(settings);
-
-        window.dispatchEvent(
-            new StorageEvent('storage', {
-                key: 'setting.showDocs',
-                newValue: 'true',
-                oldValue: 'false',
-                storageArea: localStorage,
-            }),
-        );
-
-        const action = await saga.take();
-        expect(action).toEqual(didBooleanChange(BooleanSettingId.ShowDocs, true));
-
-        await saga.end();
-    });
-
     test('ignores session storage', async () => {
         const saga = new AsyncSaga(settings);
 
@@ -289,22 +103,16 @@ describe('storage monitor', () => {
     });
 });
 
-describe('toggle', () => {
-    test('showDocs', async () => {
+describe('handleToggleShowDocs', () => {
+    it('should toggle the showDocs setting', async () => {
+        const key = 'setting.showDocs';
         const saga = new AsyncSaga(settings);
 
-        const mockSetItem = jest
-            .spyOn(Object.getPrototypeOf(window.localStorage), 'setItem')
-            .mockImplementation((key, value) => {
-                expect(key).toBe('setting.showDocs');
-                expect(value).toBe('true');
-            });
+        saga.put(settingsToggleShowDocs());
+        expect(localStorage.getItem(key)).toBe('true');
 
-        saga.put(toggleBoolean(BooleanSettingId.ShowDocs));
-        expect(mockSetItem).toHaveBeenCalled();
-
-        const action = await saga.take();
-        expect(action).toEqual(didBooleanChange(BooleanSettingId.ShowDocs, true));
+        saga.put(settingsToggleShowDocs());
+        expect(localStorage.getItem(key)).toBe('false');
 
         await saga.end();
     });

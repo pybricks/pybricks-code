@@ -13,8 +13,7 @@ import { useDarkMode } from 'usehooks-ts';
 import { IDisposable } from 'xterm';
 import { fileStorageWriteFile } from '../fileStorage/actions';
 import { compile } from '../mpy/actions';
-import { toggleBoolean } from '../settings/actions';
-import { BooleanSettingId } from '../settings/defaults';
+import { settingsToggleShowDocs } from '../settings/actions';
 import { isMacOS } from '../utils/os';
 import { EditorStringId } from './i18n';
 import en from './i18n.en.json';
@@ -181,7 +180,10 @@ const Editor: React.VoidFunctionComponent<EditorProps> = ({ onEditorChanged }) =
                                 id: 'pybricks.action.toggleDocs',
                                 label: i18n.translate(EditorStringId.ToggleDocs),
                                 run: () => {
-                                    dispatch(toggleBoolean(BooleanSettingId.ShowDocs));
+                                    // we have to use dispatch here instead of
+                                    // toggleIsSettingShowDocsEnabled since this
+                                    // isn't updated on state changes
+                                    dispatch(settingsToggleShowDocs());
                                 },
                                 keybindings: [
                                     monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyD,

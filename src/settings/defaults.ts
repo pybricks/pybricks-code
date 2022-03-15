@@ -4,14 +4,11 @@
 // Definitions for user selectable settings.
 
 export enum BooleanSettingId {
-    ShowDocs = 'showDocs',
     FlashCurrentProgram = 'flashCurrentProgram',
 }
 
 export function getDefaultBooleanValue(id: BooleanSettingId): boolean {
     switch (id) {
-        case BooleanSettingId.ShowDocs:
-            return window.innerWidth >= 1024;
         case BooleanSettingId.FlashCurrentProgram:
             return false;
         // istanbul ignore next: it is a programmer error if we hit this
