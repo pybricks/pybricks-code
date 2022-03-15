@@ -21,7 +21,7 @@ import { Tooltip2 } from '@blueprintjs/popover2';
 import { useI18n } from '@shopify/react-i18n';
 import React, { useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useDarkMode } from 'usehooks-ts';
+import { useTernaryDarkMode } from 'usehooks-ts';
 import AboutDialog from '../about/AboutDialog';
 import { appCheckForUpdate, appReload, appShowInstallPrompt } from '../app/actions';
 import {
@@ -59,7 +59,7 @@ const SettingsDrawer: React.VoidFunctionComponent<SettingsProps> = ({
         toggleIsSettingShowDocsEnabled,
     } = useSettingIsShowDocsEnabled();
     const [isAboutDialogOpen, setIsAboutDialogOpen] = useState(false);
-    const { isDarkMode, toggle: toggleDarkMode } = useDarkMode();
+    const { isDarkMode, setTernaryDarkMode } = useTernaryDarkMode();
 
     const [isFlashCurrentProgramEnabled, setIsFlashCurrentProgramEnabled] =
         useSettingFlashCurrentProgram();
@@ -153,7 +153,13 @@ const SettingsDrawer: React.VoidFunctionComponent<SettingsProps> = ({
                                     SettingsStringId.AppearanceDarkModeLabel,
                                 )}
                                 checked={isDarkMode}
-                                onChange={toggleDarkMode}
+                                onChange={(e) =>
+                                    setTernaryDarkMode(
+                                        (e.target as HTMLInputElement).checked
+                                            ? 'dark'
+                                            : 'light',
+                                    )
+                                }
                             />
                         </Tooltip2>
                     </FormGroup>

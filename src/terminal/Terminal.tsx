@@ -6,7 +6,7 @@ import { ContextMenu2, ContextMenu2ContentProps } from '@blueprintjs/popover2';
 import { useI18n } from '@shopify/react-i18n';
 import React, { useContext, useEffect, useMemo, useRef } from 'react';
 import { useDispatch } from 'react-redux';
-import { useDarkMode } from 'usehooks-ts';
+import { useTernaryDarkMode } from 'usehooks-ts';
 import { Terminal as XTerm } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
 import { isMacOS } from '../utils/os';
@@ -100,7 +100,7 @@ function createContextMenu(
 const Terminal: React.FC = (_props) => {
     const { xterm, fitAddon } = useMemo(createXTerm, [createXTerm]);
     const terminalRef = useRef<HTMLDivElement>(null);
-    const { isDarkMode } = useDarkMode();
+    const { isDarkMode } = useTernaryDarkMode();
     const dispatch = useDispatch();
     const terminalStream = useContext(TerminalContext);
 

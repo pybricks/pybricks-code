@@ -21,7 +21,10 @@ afterEach(() => {
 });
 
 it.each([false, true])('should render', (darkMode) => {
-    localStorage.setItem('usehooks-ts-dark-mode', String(darkMode));
+    localStorage.setItem(
+        'usehooks-ts-ternary-dark-mode',
+        JSON.stringify(darkMode ? 'dark' : 'light'),
+    );
     testRender(<App />);
 });
 

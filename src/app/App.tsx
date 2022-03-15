@@ -5,7 +5,7 @@ import { Classes } from '@blueprintjs/core';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import SplitterLayout from 'react-splitter-layout';
-import { useDarkMode, useLocalStorage } from 'usehooks-ts';
+import { useLocalStorage, useTernaryDarkMode } from 'usehooks-ts';
 import Editor, { EditorType } from '../editor/Editor';
 import Explorer from '../explorer/Explorer';
 import { settingsToggleShowDocs } from '../settings/actions';
@@ -131,7 +131,7 @@ type AppProps = {
 };
 
 const App: React.VoidFunctionComponent<AppProps> = ({ onEditorChanged }) => {
-    const { isDarkMode } = useDarkMode();
+    const { isDarkMode } = useTernaryDarkMode();
     const { isSettingShowDocsEnabled } = useSettingIsShowDocsEnabled();
     const [isDragging, setIsDragging] = useState(false);
     const dispatch = useDispatch();

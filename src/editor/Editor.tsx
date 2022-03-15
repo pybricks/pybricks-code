@@ -9,7 +9,7 @@ import xcodeTheme from 'monaco-themes/themes/Xcode_default.json';
 import React, { useState } from 'react';
 import MonacoEditor, { monaco } from 'react-monaco-editor';
 import { useDispatch } from 'react-redux';
-import { useDarkMode } from 'usehooks-ts';
+import { useTernaryDarkMode } from 'usehooks-ts';
 import { IDisposable } from 'xterm';
 import { fileStorageWriteFile } from '../fileStorage/actions';
 import { compile } from '../mpy/actions';
@@ -141,7 +141,7 @@ const Editor: React.VoidFunctionComponent<EditorProps> = ({ onEditorChanged }) =
     const dispatch = useDispatch();
 
     const [editor, setEditor] = useState<EditorType>(null);
-    const { isDarkMode } = useDarkMode();
+    const { isDarkMode } = useTernaryDarkMode();
 
     const [i18n] = useI18n({ id: 'editor', translations: { en }, fallback: en });
 

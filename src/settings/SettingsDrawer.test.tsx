@@ -39,6 +39,25 @@ describe('showDocs setting switch', () => {
     });
 });
 
+describe('darkMode setting switch', () => {
+    it('should toggle setting', async () => {
+        const [settings] = testRender(
+            <SettingsDrawer isOpen={true} onClose={() => undefined} />,
+        );
+
+        const darkMode = settings.getByLabelText('Dark mode');
+        expect(darkMode).not.toBeChecked();
+        expect(localStorage.getItem('usehooks-ts-ternary-dark-mode')).toBe(null);
+
+        userEvent.click(darkMode);
+        expect(darkMode).toBeChecked();
+        expect(localStorage.getItem('usehooks-ts-ternary-dark-mode')).toBe('"dark"');
+
+        userEvent.click(darkMode);
+        expect(darkMode).not.toBeChecked();
+        expect(localStorage.getItem('usehooks-ts-ternary-dark-mode')).toBe('"light"');
+    });
+});
 describe('flashCurrentProgram setting switch', () => {
     it('should toggle the setting', () => {
         const [settings] = testRender(
