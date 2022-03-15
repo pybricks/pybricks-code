@@ -1,0 +1,53 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2022 The Pybricks Authors
+
+import { cleanup } from '@testing-library/react';
+import React from 'react';
+import { testRender } from '../../test';
+import LicenseDialog from './LicenseDialog';
+
+afterEach(() => {
+    cleanup();
+    localStorage.clear();
+    jest.clearAllMocks();
+});
+
+describe('LicenseDialog', () => {
+    it('should show placeholder if no license is selected', () => {
+        const [dialog] = testRender(
+            <LicenseDialog isOpen={true} onClose={() => undefined} />,
+        );
+
+        expect(dialog.getByText('Select a package to view the license.')).toBeDefined();
+    });
+
+    it('should show a license', async () => {
+        jest.spyOn(window, 'fetch').mockResolvedValue(
+            new Response(
+                JSON.stringify([
+                    {
+                        name: 'super-duper',
+                        version: '1.0.0',
+                        author: 'Joe Somebody',
+                        license: 'MIT',
+                        licenseText: '...',
+                    },
+                ]),
+            ),
+        );
+
+        const [dialog] = testRender(
+            <LicenseDialog isOpen={true} onClose={() => undefined} />,
+        );
+
+        // have to wait for async fetch
+        const button = await dialog.findByText('super-duper', { selector: 'button *' });
+
+        // when the dialog is first show, no license is selected
+        expect(dialog.queryByText('Joe Somebody')).toBeNull();
+
+        // then when you click on a license button, the license is shown
+        button.click();
+        expect(dialog.getByText('Joe Somebody')).toBeDefined();
+    });
+});

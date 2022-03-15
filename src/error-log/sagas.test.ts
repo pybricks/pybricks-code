@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 
 import { AsyncSaga } from '../../test';
 import { didFailToWrite } from '../ble-nordic-uart-service/actions';
@@ -8,7 +8,6 @@ import {
     BleDeviceFailToConnectReasonType,
     didFailToConnect as bleDidFailToConnect,
 } from '../ble/actions';
-import { didFailToFetchList } from '../licenses/actions';
 import {
     BootloaderConnectionFailureReason,
     didError,
@@ -72,20 +71,6 @@ test('bootloaderDidError', async () => {
 
     console.error = jest.fn();
     saga.put(didError(new Error('test error')));
-    expect(console.error).toHaveBeenCalledTimes(1);
-
-    await saga.end();
-});
-
-test('licenseDidFailToFetch', async () => {
-    const saga = new AsyncSaga(errorLog);
-
-    console.error = jest.fn();
-    saga.put(
-        didFailToFetchList(
-            new Response(undefined, { status: 404, statusText: 'not found' }),
-        ),
-    );
     expect(console.error).toHaveBeenCalledTimes(1);
 
     await saga.end();

@@ -13,16 +13,23 @@ import {
     NonIdealState,
 } from '@blueprintjs/core';
 import { useI18n } from '@shopify/react-i18n';
-import React from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useState } from 'react';
+import { useFetch } from 'usehooks-ts';
 import { appName } from '../app/constants';
-import { useSelector } from '../reducers';
-import { fetchList, select } from './actions';
 import { LicenseStringId } from './i18n';
 import en from './i18n.en.json';
-import { LicenseInfo } from './reducers';
 
 import './license.scss';
+
+interface LicenseInfo {
+    readonly name: string;
+    readonly version: string;
+    readonly author: string | undefined;
+    readonly license: string;
+    readonly licenseText: string;
+}
+
+type LicenseList = ReadonlyArray<LicenseInfo>;
 
 type LicenseListPanelProps = {
     onItemClick(info: LicenseInfo): void;
@@ -31,18 +38,18 @@ type LicenseListPanelProps = {
 const LicenseListPanel: React.VoidFunctionComponent<LicenseListPanelProps> = ({
     onItemClick,
 }) => {
-    const licenseList = useSelector((s) => s.licenses.list);
+    const { data, error } = useFetch<LicenseList>('static/oss-licenses.json');
 
     return (
         <div className="pb-license-list">
-            {licenseList === null ? (
+            {error || !data ? (
                 // TODO: this should be translated and hooked to
                 // state indicating if download is in progress
                 // or there was an actual failure.
                 <NonIdealState>Failed to load license data.</NonIdealState>
             ) : (
                 <ButtonGroup minimal={true} vertical={true} alignText="left">
-                    {licenseList.map((info, i) => (
+                    {data.map((info, i) => (
                         <Button key={i} onClick={() => onItemClick(info)}>
                             {info.name}
                         </Button>
@@ -53,52 +60,57 @@ const LicenseListPanel: React.VoidFunctionComponent<LicenseListPanelProps> = ({
     );
 };
 
-const LicenseInfoPanel = React.forwardRef<HTMLDivElement>((_props, ref) => {
-    const licenseInfo = useSelector((s) => s.licenses.selected);
+type LicenseInfoPanelProps = {
+    /** The license info to show or null if no license info is selected. */
+    licenseInfo: LicenseInfo | null;
+};
 
-    const [i18n] = useI18n({ id: 'license', translations: { en }, fallback: en });
+const LicenseInfoPanel = React.forwardRef<HTMLDivElement, LicenseInfoPanelProps>(
+    ({ licenseInfo }, ref) => {
+        const [i18n] = useI18n({ id: 'license', translations: { en }, fallback: en });
 
-    return (
-        <div className="pb-license-info" ref={ref}>
-            {licenseInfo == null ? (
-                <NonIdealState>
-                    {i18n.translate(LicenseStringId.SelectPackageHelp)}
-                </NonIdealState>
-            ) : (
-                <div>
-                    <Card>
-                        <p>
-                            <strong>
-                                {i18n.translate(LicenseStringId.PackageLabel)}
-                            </strong>{' '}
-                            {licenseInfo.name}{' '}
-                            <span className={Classes.TEXT_MUTED}>
-                                v{licenseInfo.version}
-                            </span>
-                        </p>
-                        {licenseInfo.author && (
+        return (
+            <div className="pb-license-info" ref={ref}>
+                {licenseInfo == null ? (
+                    <NonIdealState>
+                        {i18n.translate(LicenseStringId.SelectPackageHelp)}
+                    </NonIdealState>
+                ) : (
+                    <div>
+                        <Card>
                             <p>
                                 <strong>
-                                    {i18n.translate(LicenseStringId.AuthorLabel)}
+                                    {i18n.translate(LicenseStringId.PackageLabel)}
                                 </strong>{' '}
-                                {licenseInfo.author}
+                                {licenseInfo.name}{' '}
+                                <span className={Classes.TEXT_MUTED}>
+                                    v{licenseInfo.version}
+                                </span>
                             </p>
-                        )}
-                        <p>
-                            <strong>
-                                {i18n.translate(LicenseStringId.LicenseLabel)}
-                            </strong>{' '}
-                            {licenseInfo.license}
-                        </p>
-                    </Card>
-                    <div className="pb-license-text">
-                        <pre>{licenseInfo.licenseText}</pre>
+                            {licenseInfo.author && (
+                                <p>
+                                    <strong>
+                                        {i18n.translate(LicenseStringId.AuthorLabel)}
+                                    </strong>{' '}
+                                    {licenseInfo.author}
+                                </p>
+                            )}
+                            <p>
+                                <strong>
+                                    {i18n.translate(LicenseStringId.LicenseLabel)}
+                                </strong>{' '}
+                                {licenseInfo.license}
+                            </p>
+                        </Card>
+                        <div className="pb-license-text">
+                            <pre>{licenseInfo.licenseText}</pre>
+                        </div>
                     </div>
-                </div>
-            )}
-        </div>
-    );
-});
+                )}
+            </div>
+        );
+    },
+);
 
 LicenseInfoPanel.displayName = 'LicenseInfoPanel';
 
@@ -111,9 +123,8 @@ const LicenseDialog: React.VoidFunctionComponent<LicenseDialogProps> = ({
     isOpen,
     onClose,
 }) => {
+    const [licenseInfo, setLicenseInfo] = useState<LicenseInfo | null>(null);
     const infoDiv = React.useRef<HTMLDivElement>(null);
-
-    const dispatch = useDispatch();
 
     const [i18n] = useI18n({ id: 'license', translations: { en }, fallback: en });
 
@@ -122,7 +133,6 @@ const LicenseDialog: React.VoidFunctionComponent<LicenseDialogProps> = ({
             className="pb-license-dialog"
             title={i18n.translate(LicenseStringId.Title)}
             isOpen={isOpen}
-            onOpening={() => dispatch(fetchList())}
             onClose={onClose}
         >
             <div className={Classes.DIALOG_BODY}>
@@ -135,10 +145,10 @@ const LicenseDialog: React.VoidFunctionComponent<LicenseDialogProps> = ({
                     <LicenseListPanel
                         onItemClick={(info) => {
                             infoDiv.current?.scrollTo(0, 0);
-                            dispatch(select(info));
+                            setLicenseInfo(info);
                         }}
                     />
-                    <LicenseInfoPanel ref={infoDiv} />
+                    <LicenseInfoPanel licenseInfo={licenseInfo} ref={infoDiv} />
                 </Callout>
             </div>
         </Dialog>

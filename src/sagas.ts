@@ -12,7 +12,6 @@ import explorer from './explorer/sagas';
 import fileStorage from './fileStorage/sagas';
 import flashFirmware, { FirmwareSagaContext } from './firmware/sagas';
 import hub from './hub/sagas';
-import licenses from './licenses/sagas';
 import lwp3BootloaderProtocol from './lwp3-bootloader/sagas';
 import lwp3BootloaderBle from './lwp3-bootloader/sagas-ble';
 import mpy from './mpy/sagas';
@@ -33,7 +32,6 @@ export default function* (): Generator {
         explorer(),
         flashFirmware(),
         hub(),
-        licenses(),
         mpy(),
         notifications(),
         settings(),

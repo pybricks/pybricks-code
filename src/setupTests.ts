@@ -26,6 +26,13 @@ window.resizeTo = function resizeTo(width, height) {
     }).dispatchEvent(new this.Event('resize'));
 };
 
+// scroll functions are not implemented in jsdom
+// https://github.com/jsdom/jsdom/issues/1695
+
+if (!Element.prototype.scrollTo) {
+    Element.prototype.scrollTo = jest.fn();
+}
+
 // HACK: work around https://github.com/palantir/blueprint/issues/4165
 // userEvent.keyboard does not set which, so we have to do a reverse lookup
 // using the blueprintjs keymap.

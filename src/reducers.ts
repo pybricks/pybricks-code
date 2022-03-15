@@ -8,7 +8,6 @@ import ble from './ble/reducers';
 import fileStorage from './fileStorage/reducers';
 import firmware from './firmware/reducers';
 import hub from './hub/reducers';
-import licenses from './licenses/reducers';
 import bootloader from './lwp3-bootloader/reducers';
 
 /**
@@ -21,7 +20,6 @@ export const rootReducer = combineReducers({
     fileStorage,
     firmware,
     hub,
-    licenses,
 });
 
 /**
