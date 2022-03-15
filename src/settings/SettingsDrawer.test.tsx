@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2022 The Pybricks Authors
 
-import { cleanup, waitFor } from '@testing-library/react';
+import { cleanup, getByLabelText, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { testRender } from '../../test';
@@ -36,5 +36,25 @@ describe('showDocs setting switch', () => {
         userEvent.keyboard('{ctrl}d{/ctrl}');
 
         await waitFor(() => expect(showDocs).not.toBeChecked());
+    });
+});
+
+describe('about dialog', () => {
+    it('should open the dialog when the button is clicked', async () => {
+        const [settings] = testRender(
+            <SettingsDrawer isOpen={true} onClose={() => undefined} />,
+        );
+
+        expect(settings.queryByRole('dialog')).toBeNull();
+
+        settings.getByText('About').click();
+
+        const dialog = settings.getByRole('dialog');
+
+        expect(dialog).toBeVisible();
+
+        getByLabelText(dialog, 'Close').click();
+
+        await waitFor(() => expect(dialog).not.toBeVisible());
     });
 });
