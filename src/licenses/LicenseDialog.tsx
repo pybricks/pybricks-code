@@ -11,6 +11,7 @@ import {
     Classes,
     Dialog,
     NonIdealState,
+    Spinner,
 } from '@blueprintjs/core';
 import { useI18n } from '@shopify/react-i18n';
 import React, { useState } from 'react';
@@ -38,15 +39,19 @@ type LicenseListPanelProps = {
 const LicenseListPanel: React.VoidFunctionComponent<LicenseListPanelProps> = ({
     onItemClick,
 }) => {
+    const [i18n] = useI18n({ id: 'license', translations: { en }, fallback: en });
     const { data, error } = useFetch<LicenseList>('static/oss-licenses.json');
 
     return (
         <div className="pb-license-list">
-            {error || !data ? (
-                // TODO: this should be translated and hooked to
-                // state indicating if download is in progress
-                // or there was an actual failure.
-                <NonIdealState>Failed to load license data.</NonIdealState>
+            {!data ? (
+                <NonIdealState>
+                    {error ? (
+                        i18n.translate(LicenseStringId.ErrorFetchFailed)
+                    ) : (
+                        <Spinner />
+                    )}
+                </NonIdealState>
             ) : (
                 <ButtonGroup minimal={true} vertical={true} alignText="left">
                     {data.map((info, i) => (

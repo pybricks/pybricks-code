@@ -5,6 +5,9 @@
         "packageLabel": "Package:",
         "authorLabel": "Author:",
         "licenseLabel": "License:",
+        "error": {
+            "fetchFailed": "Failed to load license data."
+        },
         "help": {
             "selectPackage": "Select a package to view the license."
         }
