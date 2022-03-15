@@ -39,6 +39,22 @@ describe('showDocs setting switch', () => {
     });
 });
 
+describe('flashCurrentProgram setting switch', () => {
+    it('should toggle the setting', () => {
+        const [settings] = testRender(
+            <SettingsDrawer isOpen={true} onClose={() => undefined} />,
+        );
+
+        expect(localStorage.getItem('setting.flashCurrentProgram')).toBe(null);
+
+        settings.getByLabelText('Include current program').click();
+        expect(localStorage.getItem('setting.flashCurrentProgram')).toBe('true');
+
+        settings.getByLabelText('Include current program').click();
+        expect(localStorage.getItem('setting.flashCurrentProgram')).toBe('false');
+    });
+});
+
 describe('about dialog', () => {
     it('should open the dialog when the button is clicked', async () => {
         const [settings] = testRender(

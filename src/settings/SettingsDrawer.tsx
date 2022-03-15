@@ -35,9 +35,9 @@ import { pseudolocalize } from '../i18n';
 import { useSelector } from '../reducers';
 import ExternalLinkIcon from '../utils/ExternalLinkIcon';
 import { isMacOS } from '../utils/os';
-import { setBoolean, setString } from './actions';
-import { BooleanSettingId, StringSettingId } from './defaults';
-import { useSettingIsShowDocsEnabled } from './hooks';
+import { setString } from './actions';
+import { StringSettingId } from './defaults';
+import { useSettingFlashCurrentProgram, useSettingIsShowDocsEnabled } from './hooks';
 import { SettingsStringId } from './i18n';
 import en from './i18n.en.json';
 import './settings.scss';
@@ -59,7 +59,8 @@ const SettingsDrawer: React.VoidFunctionComponent<SettingsProps> = ({
     const [isAboutDialogOpen, setIsAboutDialogOpen] = useState(false);
     const { isDarkMode, toggle: toggleDarkMode } = useDarkMode();
 
-    const flashCurrentProgram = useSelector((s) => s.settings.flashCurrentProgram);
+    const [isFlashCurrentProgramEnabled, setIsFlashCurrentProgramEnabled] =
+        useSettingFlashCurrentProgram();
     const isServiceWorkerRegistered = useSelector(
         (s) => s.app.isServiceWorkerRegistered,
     );
@@ -169,13 +170,10 @@ const SettingsDrawer: React.VoidFunctionComponent<SettingsProps> = ({
                                 label={i18n.translate(
                                     SettingsStringId.FirmwareCurrentProgramLabel,
                                 )}
-                                checked={flashCurrentProgram}
+                                checked={isFlashCurrentProgramEnabled}
                                 onChange={(e) =>
-                                    dispatch(
-                                        setBoolean(
-                                            BooleanSettingId.FlashCurrentProgram,
-                                            (e.target as HTMLInputElement).checked,
-                                        ),
+                                    setIsFlashCurrentProgramEnabled(
+                                        (e.target as HTMLInputElement).checked,
                                     )
                                 }
                             />

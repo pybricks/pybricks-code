@@ -7,6 +7,7 @@ import { BleConnectionState } from '../ble/reducers';
 import { BootloaderConnectionState } from '../lwp3-bootloader/reducers';
 import * as notificationActions from '../notifications/actions';
 import { useSelector } from '../reducers';
+import { useSettingFlashCurrentProgram } from '../settings/hooks';
 import OpenFileButton, { OpenFileButtonProps } from '../toolbar/OpenFileButton';
 import { TooltipId } from '../toolbar/i18n';
 import { flashFirmware } from './actions';
@@ -19,6 +20,7 @@ const FlashButton: React.VoidFunctionComponent<FlashButtonProps> = ({ id }) => {
     const bleConnection = useSelector((s) => s.ble.connection);
     const flashing = useSelector((s) => s.firmware.flashing);
     const progress = useSelector((s) => s.firmware.progress);
+    const [isSettingFlashCurrentProgramEnabled] = useSettingFlashCurrentProgram();
 
     const dispatch = useDispatch();
 
@@ -34,7 +36,9 @@ const FlashButton: React.VoidFunctionComponent<FlashButtonProps> = ({ id }) => {
             }
             showProgress={flashing}
             progress={progress === null ? undefined : progress}
-            onFile={(data) => dispatch(flashFirmware(data))}
+            onFile={(data) =>
+                dispatch(flashFirmware(data, isSettingFlashCurrentProgramEnabled))
+            }
             onReject={(file) =>
                 dispatch(
                     notificationActions.add(
@@ -43,7 +47,9 @@ const FlashButton: React.VoidFunctionComponent<FlashButtonProps> = ({ id }) => {
                     ),
                 )
             }
-            onClick={() => dispatch(flashFirmware(null))}
+            onClick={() =>
+                dispatch(flashFirmware(null, isSettingFlashCurrentProgramEnabled))
+            }
         />
     );
 };

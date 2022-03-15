@@ -3,20 +3,6 @@
 
 // Definitions for user selectable settings.
 
-export enum BooleanSettingId {
-    FlashCurrentProgram = 'flashCurrentProgram',
-}
-
-export function getDefaultBooleanValue(id: BooleanSettingId): boolean {
-    switch (id) {
-        case BooleanSettingId.FlashCurrentProgram:
-            return false;
-        // istanbul ignore next: it is a programmer error if we hit this
-        default:
-            throw Error(`Bad BooleanSettingId: ${id}`);
-    }
-}
-
 export enum StringSettingId {
     HubName = 'hubName',
 }

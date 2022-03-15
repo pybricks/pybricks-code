@@ -286,11 +286,7 @@ function* handleFlashFirmware(action: ReturnType<typeof flashFirmware>): Generat
 
         let program: string | undefined = undefined;
 
-        const flashCurrentProgram = yield* select(
-            (s: RootState) => s.settings.flashCurrentProgram,
-        );
-
-        if (flashCurrentProgram) {
+        if (action.flashCurrentProgram) {
             const editor = yield* getContext<EditorType>('editor');
 
             // istanbul ignore if: it is a bug to dispatch this action with no current editor

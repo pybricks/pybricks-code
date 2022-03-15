@@ -120,11 +120,16 @@ export type FailToFinishReason =
 /**
  * Creates a new action to flash firmware to a hub.
  * @param data The firmware zip file data or `null` to get firmware later.
+ * @param flashCurrentProgram If true, flash the current program from the editor,
+ *      otherwise use the program from firmware.zip.
  */
-export const flashFirmware = createAction((data: ArrayBuffer | null) => ({
-    type: 'flashFirmware.action.flashFirmware',
-    data,
-}));
+export const flashFirmware = createAction(
+    (data: ArrayBuffer | null, flashCurrentProgram: boolean) => ({
+        type: 'flashFirmware.action.flashFirmware',
+        data,
+        flashCurrentProgram,
+    }),
+);
 
 /**
  * Action that indicates flashing firmware started.

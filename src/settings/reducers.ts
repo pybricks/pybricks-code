@@ -2,29 +2,10 @@
 // Copyright (c) 2021-2022 The Pybricks Authors
 
 import { Reducer, combineReducers } from 'redux';
-import { didBooleanChange, didStringChange } from './actions';
-import {
-    BooleanSettingId,
-    StringSettingId,
-    getDefaultBooleanValue,
-    getDefaultStringValue,
-} from './defaults';
+import { didStringChange } from './actions';
+import { StringSettingId, getDefaultStringValue } from './defaults';
 
 const encoder = new TextEncoder();
-
-const flashCurrentProgram: Reducer<boolean> = (
-    state = getDefaultBooleanValue(BooleanSettingId.FlashCurrentProgram),
-    action,
-) => {
-    if (didBooleanChange.matches(action)) {
-        if (action.id === BooleanSettingId.FlashCurrentProgram) {
-            return action.newState;
-        }
-        return state;
-    }
-
-    return state;
-};
 
 const hubName: Reducer<string> = (
     state = getDefaultStringValue(StringSettingId.HubName),
@@ -59,7 +40,6 @@ const isHubNameValid: Reducer<boolean> = (state = true, action) => {
 };
 
 export default combineReducers({
-    flashCurrentProgram,
     hubName,
     isHubNameValid,
 });

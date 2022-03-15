@@ -2,8 +2,8 @@
 // Copyright (c) 2021-2022 The Pybricks Authors
 
 import { AnyAction } from 'redux';
-import { didBooleanChange, didStringChange } from './actions';
-import { BooleanSettingId, StringSettingId } from './defaults';
+import { didStringChange } from './actions';
+import { StringSettingId } from './defaults';
 import reducers from './reducers';
 
 type State = ReturnType<typeof reducers>;
@@ -11,22 +11,10 @@ type State = ReturnType<typeof reducers>;
 test('initial state', () => {
     expect(reducers(undefined, {} as AnyAction)).toMatchInlineSnapshot(`
         Object {
-          "flashCurrentProgram": false,
           "hubName": "",
           "isHubNameValid": true,
         }
     `);
-});
-
-describe('flashCurrentProgram', () => {
-    test('setting changed', () => {
-        expect(
-            reducers(
-                { flashCurrentProgram: false } as State,
-                didBooleanChange(BooleanSettingId.FlashCurrentProgram, true),
-            ).flashCurrentProgram,
-        ).toBe(true);
-    });
 });
 
 describe('hubName', () => {

@@ -1,8 +1,11 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2022 The Pybricks Authors
 
-import { useCallback } from 'react';
+import { Dispatch, SetStateAction, useCallback } from 'react';
 import { useLocalStorage } from 'usehooks-ts';
+
+// this is private type from usehooks-ts
+type SetValue<T> = Dispatch<SetStateAction<T>>;
 
 /** Hook for "showDocs" setting. */
 export function useSettingIsShowDocsEnabled(): {
@@ -25,4 +28,9 @@ export function useSettingIsShowDocsEnabled(): {
         setIsSettingShowDocsEnabled,
         toggleIsSettingShowDocsEnabled,
     };
+}
+
+/** Hook for "flashCurrentProgram" setting. */
+export function useSettingFlashCurrentProgram(): [boolean, SetValue<boolean>] {
+    return useLocalStorage<boolean>('setting.flashCurrentProgram', false);
 }

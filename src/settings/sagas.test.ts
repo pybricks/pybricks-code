@@ -5,14 +5,12 @@
 
 import { AsyncSaga } from '../../test';
 import {
-    didBooleanChange,
     didFailToSetString,
     didStringChange,
-    setBoolean,
     setString,
     settingsToggleShowDocs,
 } from './actions';
-import { BooleanSettingId, StringSettingId } from './defaults';
+import { StringSettingId } from './defaults';
 import settings from './sagas';
 
 afterEach(() => {
@@ -41,29 +39,6 @@ describe('store settings to local storage', () => {
         // but the setting is still applied anyway
         const action4 = await saga.take();
         expect(action4).toEqual(didStringChange(StringSettingId.HubName, 'test name'));
-
-        await saga.end();
-    });
-
-    test('flashCurrentProgram', async () => {
-        const saga = new AsyncSaga(settings);
-
-        saga.updateState({ settings: { flashCurrentProgram: true } });
-
-        const mockSetItem = jest
-            .spyOn(Object.getPrototypeOf(window.localStorage), 'setItem')
-            .mockImplementation((key, value) => {
-                expect(key).toBe('setting.flashCurrentProgram');
-                expect(value).toBe('false');
-            });
-
-        saga.put(setBoolean(BooleanSettingId.FlashCurrentProgram, false));
-        expect(mockSetItem).toHaveBeenCalled();
-
-        const action = await saga.take();
-        expect(action).toEqual(
-            didBooleanChange(BooleanSettingId.FlashCurrentProgram, false),
-        );
 
         await saga.end();
     });

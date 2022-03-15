@@ -11,25 +11,12 @@ import { didStart } from '../app/actions';
 import { RootState } from '../reducers';
 import { ensureError } from '../utils';
 import {
-    didBooleanChange,
-    didFailToSetBoolean,
     didFailToSetString,
     didStringChange,
-    setBoolean,
     setString,
     settingsToggleShowDocs,
-    toggleBoolean,
 } from './actions';
-import {
-    BooleanSettingId,
-    StringSettingId,
-    getDefaultBooleanValue,
-    getDefaultStringValue,
-} from './defaults';
-
-function stringToBoolean(value: string): boolean {
-    return value.toLowerCase().match(/(true|yes|1)/) !== null;
-}
+import { StringSettingId, getDefaultStringValue } from './defaults';
 
 function createLocalStorageEventChannel(): EventChannel<StorageEvent> {
     return eventChannel((emitter) => {
@@ -58,16 +45,6 @@ function* monitorLocalStorage(): Generator {
 
         const id = event.key.replace(/^setting\./, '');
 
-        if (Object.values(BooleanSettingId).includes(id as BooleanSettingId)) {
-            yield* put(
-                didBooleanChange(
-                    id as BooleanSettingId,
-                    stringToBoolean(event.newValue || 'false'),
-                ),
-            );
-            continue;
-        }
-
         if (Object.values(StringSettingId).includes(id as StringSettingId)) {
             yield* put(didStringChange(id as StringSettingId, event.newValue || ''));
             continue;
@@ -79,17 +56,6 @@ function* monitorLocalStorage(): Generator {
 }
 
 function* loadSettings(): Generator {
-    for (const id of Object.values(BooleanSettingId)) {
-        const storageValue = localStorage.getItem(`setting.${id}`);
-        const defaultValue = getDefaultBooleanValue(id);
-        const value =
-            storageValue === null ? defaultValue : stringToBoolean(storageValue);
-
-        if (value !== defaultValue) {
-            yield* put(didBooleanChange(id, value));
-        }
-    }
-
     for (const id of Object.values(StringSettingId)) {
         const storageValue = localStorage.getItem(`setting.${id}`);
         const defaultValue = getDefaultStringValue(id);
@@ -99,37 +65,6 @@ function* loadSettings(): Generator {
             yield* put(didStringChange(id, value));
         }
     }
-}
-
-function* storeBooleanSetting(action: ReturnType<typeof setBoolean>): Generator {
-    const key = `setting.${action.id}`;
-    const newValue = String(action.newState);
-
-    try {
-        localStorage.setItem(key, newValue);
-    } catch (err) {
-        yield* put(didFailToSetBoolean(action.id, ensureError(err)));
-    }
-
-    // storage event is only raised when a value is changed externally, so we
-    // mimic the event when we call setItem(), whether it actually succeeded
-    // or not.
-    const oldState = yield* select((s: RootState) => s.settings[action.id]);
-    if (action.newState !== oldState) {
-        window.dispatchEvent(
-            new StorageEvent('storage', {
-                key,
-                newValue,
-                oldValue: String(oldState),
-                storageArea: localStorage,
-            }),
-        );
-    }
-}
-
-function* toggleBooleanSetting(action: ReturnType<typeof toggleBoolean>): Generator {
-    const oldValue = yield* select((s: RootState) => s.settings[action.id]);
-    yield* storeBooleanSetting(setBoolean(action.id, !oldValue));
 }
 
 function* storeStringSetting(action: ReturnType<typeof setString>): Generator {
@@ -180,8 +115,6 @@ function* handleToggleShowDocs(): Generator {
 export default function* (): Generator {
     yield* fork(monitorLocalStorage);
     yield* takeEvery(didStart, loadSettings);
-    yield* takeEvery(setBoolean, storeBooleanSetting);
-    yield* takeEvery(toggleBoolean, toggleBooleanSetting);
     yield* takeEvery(setString, storeStringSetting);
     yield* takeEvery(settingsToggleShowDocs, handleToggleShowDocs);
 }
