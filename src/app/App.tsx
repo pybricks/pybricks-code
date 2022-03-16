@@ -159,8 +159,8 @@ const App: React.VoidFunctionComponent<AppProps> = ({ onEditorChanged }) => {
                 style={{ display: 'grid', gridTemplateColumns: '250px auto' }}
             >
                 <Explorer />
-                {/* need a container for SplitterLayout since it uses position: absolute */}
-                <div>
+                {/* need a container with position: relative; for SplitterLayout since it uses position: absolute; */}
+                <div style={{ position: 'relative' }}>
                     <SplitterLayout
                         customClassName={
                             isSettingShowDocsEnabled ? 'pb-show-docs' : 'pb-hide-docs'
