@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2022 The Pybricks Authors
 
-import FileSaver from 'file-saver';
+import { fileSave } from 'browser-fs-access';
 import JSZip from 'jszip';
 import localForage from 'localforage';
 import { extendPrototype } from 'localforage-observable';
@@ -110,47 +110,24 @@ function* handleExportFile(
         return;
     }
 
-    const blob = new Blob([data], { type: `${pythonFileMimeType};charset=utf-8` });
+    const blob = new Blob([data], { type: `${pythonFileMimeType}` });
 
-    if (window.showSaveFilePicker) {
-        // This uses https://wicg.github.io/file-system-access which is not
-        // available in all browsers
-        try {
-            const handle = yield* call(() =>
-                window.showSaveFilePicker({
-                    suggestedName: action.fileName,
-                    types: [
-                        {
-                            accept: { [pythonFileMimeType]: pythonFileExtension },
-                            // TODO: translate description
-                            description: 'Python Files',
-                        },
-                    ],
-                }),
-            );
+    try {
+        yield* call(() =>
+            fileSave(blob, {
+                id: 'pybricksCodeFileStorageExport',
+                fileName: action.fileName,
+                extensions: [pythonFileExtension],
+                mimeTypes: [pythonFileMimeType],
+                // TODO: translate description
+                description: 'Python Files',
+            }),
+        );
 
-            const writeable = yield* call(() => handle.createWritable());
-            yield* call(() => writeable.write(blob));
-            yield* call(() => writeable.close());
-        } catch (err) {
-            yield* put(
-                fileStorageDidFailToExportFile(action.fileName, ensureError(err)),
-            );
-            return;
-        }
-    } else {
-        // this is a fallback to use the standard browser download mechanism
-        try {
-            FileSaver.saveAs(blob, action.fileName);
-        } catch (err) {
-            yield* put(
-                fileStorageDidFailToExportFile(action.fileName, ensureError(err)),
-            );
-            return;
-        }
+        yield* put(fileStorageDidExportFile(action.fileName));
+    } catch (err) {
+        yield* put(fileStorageDidFailToExportFile(action.fileName, ensureError(err)));
     }
-
-    yield* put(fileStorageDidExportFile(action.fileName));
 }
 
 /**
@@ -214,31 +191,18 @@ function* handleArchiveAllFiles(files: LocalForage): Generator {
 
         const zipData = yield* call(() => zip.generateAsync({ type: 'blob' }));
 
-        const suggestedName = `pybricks-backup-${timestamp()}.zip`;
+        const fileName = `pybricks-backup-${timestamp()}.zip`;
 
-        if (window.showSaveFilePicker) {
-            // This uses https://wicg.github.io/file-system-access which is not
-            // available in all browsers
-            const handle = yield* call(() =>
-                window.showSaveFilePicker({
-                    suggestedName,
-                    types: [
-                        {
-                            accept: { 'application/zip': '.zip' },
-                            // TODO: translate description
-                            description: 'Zip Files',
-                        },
-                    ],
-                }),
-            );
-
-            const writeable = yield* call(() => handle.createWritable());
-            yield* call(() => writeable.write(zipData));
-            yield* call(() => writeable.close());
-        } else {
-            // this is a fallback to use the standard browser download mechanism
-            FileSaver.saveAs(zipData, suggestedName);
-        }
+        yield* call(() =>
+            fileSave(zipData, {
+                id: 'pybricksCodeFileStorageArchive',
+                fileName,
+                extensions: ['.zip'],
+                mimeTypes: ['application/zip'],
+                // TODO: translate description
+                description: 'Zip Files',
+            }),
+        );
 
         yield* put(fileStorageDidArchiveAllFiles());
     } catch (err) {

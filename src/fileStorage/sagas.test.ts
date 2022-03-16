@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2022 The Pybricks Authors
 
-import FileSaver from 'file-saver';
-import { mock } from 'jest-mock-extended';
+import * as browserFsAccess from 'browser-fs-access';
 import { AsyncSaga } from '../../test';
 import {
     fileStorageArchiveAllFiles,
@@ -26,9 +25,10 @@ import {
 } from './actions';
 import fileStorage from './sagas';
 
-jest.mock('file-saver');
+jest.mock('browser-fs-access');
 
 beforeEach(() => {
+    jest.clearAllMocks();
     // localForge uses localStorage as backend in test environment, so we need
     // to start with a clean slate in each test
     localStorage.clear();
@@ -183,195 +183,69 @@ describe('export', () => {
         await saga.end();
     });
 
-    it('should export file with web file system api', async () => {
+    it('should export file', async () => {
         const saga = new AsyncSaga(fileStorage);
 
-        // window.showSaveFilePicker is not defined in the test environment
-        // so we can't use spyOn().
-        const mockWriteable = mock<FileSystemWritableFileStream>();
-        const originalShowSaveFilePicker = window.showSaveFilePicker;
-        window.showSaveFilePicker = jest.fn().mockResolvedValue(
-            mock<FileSystemFileHandle>({
-                createWritable: jest.fn().mockResolvedValue(mockWriteable),
-            }),
-        );
-
         const [testFileName] = await setUpTestFile(saga);
+
+        jest.spyOn(browserFsAccess, 'fileSave');
 
         saga.put(fileStorageExportFile(testFileName));
 
         const action = await saga.take();
         expect(action).toEqual(fileStorageDidExportFile(testFileName));
-        expect(window.showSaveFilePicker).toHaveBeenCalled();
-        expect(mockWriteable.write).toHaveBeenCalled();
-        expect(mockWriteable.close).toHaveBeenCalled();
+        expect(browserFsAccess.fileSave).toHaveBeenCalled();
 
         await saga.end();
-
-        window.showSaveFilePicker = originalShowSaveFilePicker;
     });
 
-    it('should get error from web file system api', async () => {
+    it('should catch error', async () => {
         const saga = new AsyncSaga(fileStorage);
 
-        // window.showSaveFilePicker is not defined in the test environment
-        // so we can't use spyOn().
-        const testError = new Error('test error');
-        const originalShowSaveFilePicker = window.showSaveFilePicker;
-        window.showSaveFilePicker = jest.fn().mockResolvedValue(
-            mock<FileSystemFileHandle>({
-                createWritable: jest.fn().mockRejectedValue(testError),
-            }),
-        );
-
         const [testFileName] = await setUpTestFile(saga);
+
+        const testError = new Error('test error');
+        jest.spyOn(browserFsAccess, 'fileSave').mockRejectedValue(testError);
 
         saga.put(fileStorageExportFile(testFileName));
 
         const action = await saga.take();
         expect(action).toEqual(fileStorageDidFailToExportFile(testFileName, testError));
-        expect(window.showSaveFilePicker).toHaveBeenCalled();
 
         await saga.end();
-
-        window.showSaveFilePicker = originalShowSaveFilePicker;
-    });
-
-    it('should export file using fallback', async () => {
-        const saga = new AsyncSaga(fileStorage);
-
-        const mockFileSaverSaveAs = jest.spyOn(FileSaver, 'saveAs');
-
-        const [testFileName] = await setUpTestFile(saga);
-
-        saga.put(fileStorageExportFile(testFileName));
-
-        const action = await saga.take();
-        expect(action).toEqual(fileStorageDidExportFile(testFileName));
-        expect(mockFileSaverSaveAs).toHaveBeenCalled();
-
-        await saga.end();
-
-        mockFileSaverSaveAs.mockRestore();
-    });
-
-    it('should get error from fallback', async () => {
-        const saga = new AsyncSaga(fileStorage);
-
-        const testError = new Error('test error');
-        const mockFileSaverSaveAs = jest
-            .spyOn(FileSaver, 'saveAs')
-            .mockImplementation(() => {
-                throw testError;
-            });
-
-        const [testFileName] = await setUpTestFile(saga);
-
-        saga.put(fileStorageExportFile(testFileName));
-
-        const action = await saga.take();
-        expect(action).toEqual(fileStorageDidFailToExportFile(testFileName, testError));
-        expect(mockFileSaverSaveAs).toHaveBeenCalled();
-
-        await saga.end();
-
-        mockFileSaverSaveAs.mockRestore();
     });
 });
 
 describe('archive', () => {
-    it('should archive file with web file system api', async () => {
+    it('should archive file', async () => {
         const saga = new AsyncSaga(fileStorage);
 
-        // window.showSaveFilePicker is not defined in the test environment
-        // so we can't use spyOn().
-        const mockWriteable = mock<FileSystemWritableFileStream>();
-        const originalShowSaveFilePicker = window.showSaveFilePicker;
-        window.showSaveFilePicker = jest.fn().mockResolvedValue(
-            mock<FileSystemFileHandle>({
-                createWritable: jest.fn().mockResolvedValue(mockWriteable),
-            }),
-        );
-
         await setUpTestFile(saga);
+
+        jest.spyOn(browserFsAccess, 'fileSave');
 
         saga.put(fileStorageArchiveAllFiles());
 
         const action = await saga.take();
         expect(action).toEqual(fileStorageDidArchiveAllFiles());
-        expect(window.showSaveFilePicker).toHaveBeenCalled();
-        expect(mockWriteable.write).toHaveBeenCalled();
-        expect(mockWriteable.close).toHaveBeenCalled();
+        expect(browserFsAccess.fileSave).toHaveBeenCalled();
 
         await saga.end();
-
-        window.showSaveFilePicker = originalShowSaveFilePicker;
     });
 
-    it('should get error from web file system api', async () => {
+    it('should catch error', async () => {
         const saga = new AsyncSaga(fileStorage);
 
-        // window.showSaveFilePicker is not defined in the test environment
-        // so we can't use spyOn().
-        const testError = new Error('test error');
-        const originalShowSaveFilePicker = window.showSaveFilePicker;
-        window.showSaveFilePicker = jest.fn().mockResolvedValue(
-            mock<FileSystemFileHandle>({
-                createWritable: jest.fn().mockRejectedValue(testError),
-            }),
-        );
-
         await setUpTestFile(saga);
+
+        const testError = new Error('test error');
+        jest.spyOn(browserFsAccess, 'fileSave').mockRejectedValue(testError);
 
         saga.put(fileStorageArchiveAllFiles());
 
         const action = await saga.take();
         expect(action).toEqual(fileStorageDidFailToArchiveAllFiles(testError));
-        expect(window.showSaveFilePicker).toHaveBeenCalled();
 
         await saga.end();
-
-        window.showSaveFilePicker = originalShowSaveFilePicker;
-    });
-
-    it('should export file using fallback', async () => {
-        const saga = new AsyncSaga(fileStorage);
-
-        const mockFileSaverSaveAs = jest.spyOn(FileSaver, 'saveAs');
-
-        await setUpTestFile(saga);
-
-        saga.put(fileStorageArchiveAllFiles());
-
-        const action = await saga.take();
-        expect(action).toEqual(fileStorageDidArchiveAllFiles());
-        expect(mockFileSaverSaveAs).toHaveBeenCalled();
-
-        await saga.end();
-
-        mockFileSaverSaveAs.mockRestore();
-    });
-
-    it('should get error from fallback', async () => {
-        const saga = new AsyncSaga(fileStorage);
-
-        const testError = new Error('test error');
-        const mockFileSaverSaveAs = jest
-            .spyOn(FileSaver, 'saveAs')
-            .mockImplementation(() => {
-                throw testError;
-            });
-
-        await setUpTestFile(saga);
-
-        saga.put(fileStorageArchiveAllFiles());
-
-        const action = await saga.take();
-        expect(action).toEqual(fileStorageDidFailToArchiveAllFiles(testError));
-        expect(mockFileSaverSaveAs).toHaveBeenCalled();
-
-        await saga.end();
-
-        mockFileSaverSaveAs.mockRestore();
     });
 });
