@@ -110,7 +110,7 @@ function* handleExportFile(
         return;
     }
 
-    const blob = new Blob([data], { type: 'text/x-python;charset=utf-8' });
+    const blob = new Blob([data], { type: `${pythonFileMimeType};charset=utf-8` });
 
     if (window.showSaveFilePicker) {
         // This uses https://wicg.github.io/file-system-access which is not
