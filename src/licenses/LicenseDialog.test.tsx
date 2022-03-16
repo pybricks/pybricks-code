@@ -46,7 +46,7 @@ describe('LicenseDialog', () => {
             selector: `.${Classes.TREE_NODE} *`,
         });
 
-        // when the dialog is first show, no license is selected
+        // when the dialog is first shown, no license is selected
         expect(dialog.queryByText('Joe Somebody')).toBeNull();
 
         // then when you click on a license name, the license is shown
