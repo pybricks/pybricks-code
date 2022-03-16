@@ -1717,26 +1717,26 @@
   resolved "https://registry.yarnpkg.com/@shopify/i18n/-/i18n-1.0.9.tgz#9ed8af63851275bf69a99f77a735ceff9a8605bf"
   integrity sha512-ZxoIB8UTmWHvRig6E4zvYJt3fAa24iJGYTQLHsjZBV3cmqi/AiSet9Qys7GkqzKcYV/4xukZIfpeWXVjef3v7A==
 
-"@shopify/react-effect@^4.1.11":
-  version "4.1.11"
-  resolved "https://registry.yarnpkg.com/@shopify/react-effect/-/react-effect-4.1.11.tgz#9aa7ce38881726a568066855d65aa25924f48c9a"
-  integrity sha512-xlP2g9SkVZCgpLckFqCF9mYLwbiPAJL1cUmWlYIMbKLBV6qg8+g5qf+bbfH+s7S1UCqW8sWnOv8X5L668CX+Xw==
+"@shopify/react-effect@^4.1.12":
+  version "4.1.12"
+  resolved "https://registry.yarnpkg.com/@shopify/react-effect/-/react-effect-4.1.12.tgz#fb9bff0c224c844035bef2b5dbff9341322f5c21"
+  integrity sha512-Zy0CH0onvv/Jll4ePxvWa1STS6cILjoFI+6LxMFapC8ZVcCQdnrQFLmuoyF+rfyuFqJtwHE9y1sDZcP+EkW3GQ==
 
 "@shopify/react-hooks@^2.1.18":
   version "2.1.18"
   resolved "https://registry.yarnpkg.com/@shopify/react-hooks/-/react-hooks-2.1.18.tgz#161d41bf7196203183f6e504bbe1e64ed746e648"
   integrity sha512-LZJcqKhqQC8+3B+x+JANR+4M0k6YICA8LwfF0/6yeF6NC7r8tr8lLhfyZPD//LP8HweVRZoqi8QphXzcjZNVwA==
 
-"@shopify/react-i18n@^6.3.12":
-  version "6.3.12"
-  resolved "https://registry.yarnpkg.com/@shopify/react-i18n/-/react-i18n-6.3.12.tgz#5fe129cb34eb054d1798489d55b04c548f0e9449"
-  integrity sha512-3D7WRTCE1XCS1P3ZENMqCL5rmdnZljn7tVBQmzPeUZU2EIORkodZg1fDFZXlb5RmXxq5WGa1dtTw9Ipl5ls4Eg==
+"@shopify/react-i18n@^6.3.13":
+  version "6.3.13"
+  resolved "https://registry.yarnpkg.com/@shopify/react-i18n/-/react-i18n-6.3.13.tgz#d89bf764f52194d63d47a5b26ea87356fb40fc98"
+  integrity sha512-WUmgvP3amhzZy5xamd6bd0FIhXfVdMKZzO6YnDYpLKRJ8YAq+lx2T3rEy26dcF3GmFOobFaLMrQrP/UojyKiGw==
   dependencies:
     "@shopify/dates" "^1.1.5"
     "@shopify/decorators" "^2.0.8"
     "@shopify/function-enhancers" "^2.0.8"
     "@shopify/i18n" "^1.0.9"
-    "@shopify/react-effect" "^4.1.11"
+    "@shopify/react-effect" "^4.1.12"
     "@shopify/react-hooks" "^2.1.18"
     "@shopify/useful-types" "^4.0.2"
     "@types/hoist-non-react-statics" "^3.0.1"
