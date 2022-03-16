@@ -19,7 +19,7 @@ import {
 } from '@blueprintjs/core';
 import { Tooltip2 } from '@blueprintjs/popover2';
 import { useI18n } from '@shopify/react-i18n';
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useTernaryDarkMode } from 'usehooks-ts';
 import AboutDialog from '../about/AboutDialog';
@@ -98,12 +98,24 @@ const SettingsDrawer: React.VoidFunctionComponent<SettingsProps> = ({
 
     useHotkeys(hotkeys);
 
+    // HACK: set additional attributes that are not supported via Drawer props
+    const handleDrawerOpening = useCallback<(node: HTMLElement) => void>((n) => {
+        n.setAttribute('role', 'dialog');
+        n.setAttribute('aria-modal', 'true');
+        n.setAttribute('aria-labelledby', 'settings-drawer-dialog-title');
+    }, []);
+
     return (
         <Drawer
             isOpen={isOpen}
             icon="cog"
             size={DrawerSize.SMALL}
-            title={i18n.translate(SettingsStringId.Title)}
+            title={
+                <span id="settings-drawer-dialog-title">
+                    {i18n.translate(SettingsStringId.Title)}
+                </span>
+            }
+            onOpening={handleDrawerOpening}
             onClose={onClose}
             // work around https://github.com/palantir/blueprint/issues/5169
             shouldReturnFocusOnClose={false}

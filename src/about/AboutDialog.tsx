@@ -34,7 +34,7 @@ const AboutDialog: React.VoidFunctionComponent<AboutDialogProps> = ({
 
     return (
         <Dialog
-            title={`Pybricks v${firmwareVersion} (${appName} v${appVersion})`}
+            title={i18n.translate(AboutStringId.Title, { appName })}
             isOpen={isOpen}
             onClose={onClose}
         >
@@ -45,6 +45,7 @@ const AboutDialog: React.VoidFunctionComponent<AboutDialogProps> = ({
                 <p>
                     <strong>{i18n.translate(AboutStringId.Description)}</strong>
                 </p>
+                <p>{`v${firmwareVersion} (${appName} v${appVersion})`}</p>
                 <p>{pybricksCopyright}</p>
             </div>
             <div className={Classes.DIALOG_FOOTER}>

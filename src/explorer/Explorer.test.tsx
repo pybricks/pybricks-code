@@ -57,7 +57,7 @@ describe('new file button', () => {
 
         userEvent.click(button);
 
-        const dialog = explorer.getByRole('dialog');
+        const dialog = explorer.getByRole('dialog', { name: 'Create a new file' });
         expect(dialog).toBeVisible();
 
         userEvent.click(getByLabelText(dialog, 'Close'));

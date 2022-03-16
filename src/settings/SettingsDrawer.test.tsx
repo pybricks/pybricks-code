@@ -108,11 +108,13 @@ describe('about dialog', () => {
             <SettingsDrawer isOpen={true} onClose={() => undefined} />,
         );
 
-        expect(settings.queryByRole('dialog')).toBeNull();
+        const appName = process.env.REACT_APP_NAME;
+
+        expect(settings.queryByRole('dialog', { name: `About ${appName}` })).toBeNull();
 
         settings.getByText('About').click();
 
-        const dialog = settings.getByRole('dialog');
+        const dialog = settings.getByRole('dialog', { name: `About ${appName}` });
 
         expect(dialog).toBeVisible();
 

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2021-2022 The Pybricks Authors
 
-import { getByLabelText, waitForElementToBeRemoved } from '@testing-library/react';
+import { getByLabelText, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { testRender } from '../../test';
@@ -22,28 +22,19 @@ it('should manage license dialog open/close', async () => {
         <AboutDialog isOpen={true} onClose={() => undefined} />,
     );
 
+    expect(
+        dialog.queryByRole('dialog', { name: 'Open Source Software Licenses' }),
+    ).toBeNull();
+
     userEvent.click(dialog.getByText('Software Licenses'));
 
-    expect(
-        dialog.getByText(
-            `${process.env.REACT_APP_NAME} is built on open source software.`,
-            {
-                exact: false,
-            },
-        ),
-    ).toBeInTheDocument();
+    const licenseDialog = dialog.getByRole('dialog', {
+        name: 'Open Source Software Licenses',
+    });
 
-    const licenseDialog = document.querySelector(
-        '.pb-license-dialog',
-    ) as HTMLDivElement;
+    expect(licenseDialog).toBeVisible();
+
     userEvent.click(getByLabelText(licenseDialog, 'Close'));
 
-    await waitForElementToBeRemoved(() =>
-        dialog.queryByText(
-            `${process.env.REACT_APP_NAME} is built on open source software.`,
-            {
-                exact: false,
-            },
-        ),
-    );
+    await waitFor(() => expect(licenseDialog).not.toBeVisible());
 });
