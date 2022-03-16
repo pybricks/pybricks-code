@@ -194,6 +194,7 @@ const SettingsDrawer: React.VoidFunctionComponent<SettingsProps> = ({
                                 placement="left"
                                 targetTagName="div"
                                 hoverOpenDelay={tooltipDelay}
+                                openOnTargetFocus={false}
                             >
                                 <Label
                                     className={Classes.INLINE}
