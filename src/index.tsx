@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2022 The Pybricks Authors
 
+import { FocusStyleManager } from '@blueprintjs/core';
 import { I18nContext } from '@shopify/react-i18n';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -45,6 +46,8 @@ if (appVersion.match(/beta/)) {
 }
 
 sagaMiddleware.run(rootSaga);
+
+FocusStyleManager.onlyShowFocusOnTabs();
 
 ReactDOM.render(
     <React.StrictMode>

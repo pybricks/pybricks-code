@@ -49,12 +49,6 @@ a.#{$ns}-button {
     text-align: left;
 }
 
-// https://github.com/palantir/blueprint/issues/
-.#{$ns}-control input:focus:not(:focus-visible) ~ .#{$ns}-control-indicator,
-.#{$ns}-button:focus:not(:focus-visible) {
-    outline: none;
-}
-
 .#{$ns}-button-text > img {
     display: block;
 }
