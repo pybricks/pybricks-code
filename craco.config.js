@@ -7,6 +7,7 @@ const CopyPlugin = require('copy-webpack-plugin');
 const LicensePlugin = require('license-webpack-plugin').LicenseWebpackPlugin;
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 const satisfies = require('spdx-satisfies');
+const path = require('path');
 
 // Permissive licenses can be added here. We would like to avoid copyleft.
 const approvedLicenses = ['0BSD', 'Apache-2.0', 'BSD-3-Clause', 'ISC', 'MIT'];
@@ -226,6 +227,15 @@ module.exports = {
                 licenseTextOverrides,
                 additionalModules: [
                     { name: '@pybricks/pybricks-code', directory: __dirname },
+                    {
+                        name: '@pybricks/ide-docs',
+                        directory: path.join(
+                            __dirname,
+                            'node_modules',
+                            '@pybricks',
+                            'ide-docs',
+                        ),
+                    },
                 ],
                 unacceptableLicenseTest: (licenseType) =>
                     !satisfies(licenseType, `(${approvedLicenses.join(' OR ')})`),
