@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2022 The Pybricks Authors
 
+import { Classes } from '@blueprintjs/core';
 import { cleanup } from '@testing-library/react';
 import React from 'react';
 import { testRender } from '../../test';
@@ -41,13 +42,15 @@ describe('LicenseDialog', () => {
         );
 
         // have to wait for async fetch
-        const button = await dialog.findByText('super-duper', { selector: 'button *' });
+        const treeNode = await dialog.findByText('super-duper', {
+            selector: `.${Classes.TREE_NODE} *`,
+        });
 
         // when the dialog is first show, no license is selected
         expect(dialog.queryByText('Joe Somebody')).toBeNull();
 
-        // then when you click on a license button, the license is shown
-        button.click();
+        // then when you click on a license name, the license is shown
+        treeNode.click();
         expect(dialog.getByText('Joe Somebody')).toBeDefined();
     });
 });

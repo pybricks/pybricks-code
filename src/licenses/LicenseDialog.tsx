@@ -4,17 +4,18 @@
 // The license dialog
 
 import {
-    Button,
-    ButtonGroup,
     Callout,
     Card,
     Classes,
     Dialog,
     NonIdealState,
     Spinner,
+    Tree,
+    TreeEventHandler,
+    TreeNodeInfo,
 } from '@blueprintjs/core';
 import { useI18n } from '@shopify/react-i18n';
-import React, { useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useFetch } from 'usehooks-ts';
 import { appName } from '../app/constants';
 import { LicenseStringId } from './i18n';
@@ -33,7 +34,7 @@ interface LicenseInfo {
 type LicenseList = ReadonlyArray<LicenseInfo>;
 
 type LicenseListPanelProps = {
-    onItemClick(info: LicenseInfo): void;
+    onItemClick(info?: LicenseInfo): void;
 };
 
 const LicenseListPanel: React.VoidFunctionComponent<LicenseListPanelProps> = ({
@@ -41,10 +42,32 @@ const LicenseListPanel: React.VoidFunctionComponent<LicenseListPanelProps> = ({
 }) => {
     const [i18n] = useI18n({ id: 'license', translations: { en }, fallback: en });
     const { data, error } = useFetch<LicenseList>('static/oss-licenses.json');
+    const [selectedNode, setSelectedNode] = useState<string | undefined>(undefined);
+
+    const contents = useMemo(() => {
+        if (!data) {
+            return undefined;
+        }
+
+        return data.map<TreeNodeInfo<LicenseInfo>>((info, i) => ({
+            id: i,
+            label: info.name,
+            isSelected: info.name === selectedNode,
+            nodeData: info,
+        }));
+    }, [data, selectedNode]);
+
+    const handleNodeClick = useCallback<TreeEventHandler<LicenseInfo>>(
+        (e) => {
+            setSelectedNode(e.nodeData?.name);
+            onItemClick(e.nodeData);
+        },
+        [setSelectedNode, onItemClick],
+    );
 
     return (
         <div className="pb-license-list">
-            {!data ? (
+            {contents === undefined ? (
                 <NonIdealState>
                     {error ? (
                         i18n.translate(LicenseStringId.ErrorFetchFailed)
@@ -53,21 +76,15 @@ const LicenseListPanel: React.VoidFunctionComponent<LicenseListPanelProps> = ({
                     )}
                 </NonIdealState>
             ) : (
-                <ButtonGroup minimal={true} vertical={true} alignText="left">
-                    {data.map((info, i) => (
-                        <Button key={i} onClick={() => onItemClick(info)}>
-                            {info.name}
-                        </Button>
-                    ))}
-                </ButtonGroup>
+                <Tree contents={contents} onNodeClick={handleNodeClick} />
             )}
         </div>
     );
 };
 
 type LicenseInfoPanelProps = {
-    /** The license info to show or null if no license info is selected. */
-    licenseInfo: LicenseInfo | null;
+    /** The license info to show or undefined if no license info is selected. */
+    licenseInfo: LicenseInfo | undefined;
 };
 
 const LicenseInfoPanel = React.forwardRef<HTMLDivElement, LicenseInfoPanelProps>(
@@ -76,7 +93,7 @@ const LicenseInfoPanel = React.forwardRef<HTMLDivElement, LicenseInfoPanelProps>
 
         return (
             <div className="pb-license-info" ref={ref}>
-                {licenseInfo == null ? (
+                {licenseInfo === undefined ? (
                     <NonIdealState>
                         {i18n.translate(LicenseStringId.SelectPackageHelp)}
                     </NonIdealState>
@@ -128,7 +145,7 @@ const LicenseDialog: React.VoidFunctionComponent<LicenseDialogProps> = ({
     isOpen,
     onClose,
 }) => {
-    const [licenseInfo, setLicenseInfo] = useState<LicenseInfo | null>(null);
+    const [licenseInfo, setLicenseInfo] = useState<LicenseInfo | undefined>(undefined);
     const infoDiv = React.useRef<HTMLDivElement>(null);
 
     const [i18n] = useI18n({ id: 'license', translations: { en }, fallback: en });
