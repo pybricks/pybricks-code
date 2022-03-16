@@ -16,7 +16,6 @@ import {
     FileNameValidationResult,
     pythonFileExtension,
 } from '../pybricksMicropython/lib';
-import { preventFocusOnClick } from '../utils/react';
 import FileNameFormGroup from './FileNameFormGroup';
 import { Hub, explorerCreateNewFile } from './actions';
 import { NewFileWizardStringId } from './i18n';
@@ -84,7 +83,6 @@ const NewFileWizard: React.VoidFunctionComponent<NewFileWizardProps> = ({
                         aria-label="Create"
                         intent="primary"
                         disabled={fileNameValidation !== FileNameValidationResult.IsOk}
-                        onMouseDown={preventFocusOnClick}
                         onClick={() => {
                             onClose();
                             dispatch(

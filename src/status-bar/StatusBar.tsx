@@ -7,7 +7,7 @@ import { useI18n } from '@shopify/react-i18n';
 import React from 'react';
 import { BleConnectionState } from '../ble/reducers';
 import { useSelector } from '../reducers';
-import { preventBrowserNativeContextMenu, preventFocusOnClick } from '../utils/react';
+import { preventBrowserNativeContextMenu } from '../utils/react';
 import { MessageId } from './i18n';
 import en from './i18n.en.json';
 
@@ -59,11 +59,7 @@ const HubInfoButton: React.VFC = (_props) => {
                 </table>
             }
         >
-            <Button
-                title={i18n.translate(MessageId.HubInfoTitle)}
-                minimal={true}
-                onMouseDown={preventFocusOnClick}
-            >
+            <Button title={i18n.translate(MessageId.HubInfoTitle)} minimal={true}>
                 {deviceName}
             </Button>
         </Popover2>

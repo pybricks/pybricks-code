@@ -13,7 +13,7 @@ import { Tooltip2 } from '@blueprintjs/popover2';
 import { useI18n } from '@shopify/react-i18n';
 import React, { useEffect, useMemo, useState } from 'react';
 import { tooltipDelay } from '../app/constants';
-import { pointerEventsNone, preventFocusOnClick } from '../utils/react';
+import { pointerEventsNone } from '../utils/react';
 import { TooltipId } from './i18n';
 import en from './i18n.en.json';
 
@@ -113,7 +113,6 @@ const ActionButton: React.VoidFunctionComponent<ActionButtonProps> = ({
                     elementRef={tooltipTargetRef as IRef<HTMLButtonElement>}
                     {...tooltipTargetProps}
                     intent={Intent.PRIMARY}
-                    onMouseDown={preventFocusOnClick}
                     onClick={onAction}
                     disabled={enabled === false}
                     style={enabled === false ? pointerEventsNone : undefined}

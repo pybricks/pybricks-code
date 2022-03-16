@@ -26,7 +26,7 @@ import {
     fileStorageExportFile,
 } from '../fileStorage/actions';
 import { useSelector } from '../reducers';
-import { preventBrowserNativeContextMenu, preventFocusOnClick } from '../utils/react';
+import { preventBrowserNativeContextMenu } from '../utils/react';
 import NewFileWizard from './NewFileWizard';
 import RenameFileDialog from './RenameFileDialog';
 import { explorerDeleteFile, explorerImportFiles } from './actions';
@@ -60,7 +60,6 @@ const ActionButton: React.VoidFunctionComponent<ActionButtonProps> = ({
             icon={icon}
             title={i18n.translate(toolTipId, toolTipReplacements)}
             disabled={disabled}
-            onMouseDown={preventFocusOnClick}
             onClick={onClick}
         />
     );

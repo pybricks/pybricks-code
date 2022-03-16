@@ -7,7 +7,7 @@ import { useI18n } from '@shopify/react-i18n';
 import React, { useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { tooltipDelay } from '../app/constants';
-import { pointerEventsNone, preventFocusOnClick } from '../utils/react';
+import { pointerEventsNone } from '../utils/react';
 import { TooltipId } from './i18n';
 import en from './i18n.en.json';
 
@@ -132,7 +132,6 @@ const OpenFileButton: React.VoidFunctionComponent<OpenFileButtonProps> = ({
                         intent: Intent.PRIMARY,
                         disabled: enabled === false,
                         style: enabled === false ? pointerEventsNone : undefined,
-                        onMouseDown: preventFocusOnClick,
                         onClick: onClick,
                     })}
                 >

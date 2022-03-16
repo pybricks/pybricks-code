@@ -85,17 +85,6 @@ describe('list item', () => {
         expect(button).not.toBeVisible();
     });
 
-    it('should not focus buttons on click', () => {
-        const [explorer] = testRender(<Explorer />, {
-            fileStorage: { fileNames: ['test.file'] },
-        });
-
-        const button = explorer.getByTitle('Rename test.file');
-
-        userEvent.click(button);
-        expect(button).not.toHaveFocus();
-    });
-
     it('should dispatch delete action when button is clicked', async () => {
         const [explorer, dispatch] = testRender(<Explorer />, {
             fileStorage: { fileNames: ['test.file'] },
