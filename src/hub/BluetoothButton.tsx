@@ -12,9 +12,11 @@ import { TooltipId } from '../toolbar/i18n';
 import btConnectedIcon from './bt-connected.svg';
 import btDisconnectedIcon from './bt-disconnected.svg';
 
-type BluetoothButtonProps = Pick<ActionButtonProps, 'id'>;
+type BluetoothButtonProps = Pick<ActionButtonProps, 'label'>;
 
-const BluetoothButton: React.VoidFunctionComponent<BluetoothButtonProps> = ({ id }) => {
+const BluetoothButton: React.VoidFunctionComponent<BluetoothButtonProps> = ({
+    label,
+}) => {
     const bootloaderConnection = useSelector((s) => s.bootloader.connection);
     const bleConnection = useSelector((s) => s.ble.connection);
 
@@ -26,7 +28,7 @@ const BluetoothButton: React.VoidFunctionComponent<BluetoothButtonProps> = ({ id
 
     return (
         <ActionButton
-            id={id}
+            label={label}
             tooltip={
                 isDisconnected
                     ? TooltipId.BluetoothConnect

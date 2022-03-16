@@ -13,8 +13,8 @@ import en from './i18n.en.json';
 
 const smallScreenThreshold = 700;
 export interface OpenFileButtonProps {
-    /** A unique id for each instance. */
-    readonly id: string;
+    /** A unique label for each instance. */
+    readonly label: string;
     /** The accepted file extension */
     readonly fileExtension: string;
     /** Tooltip text that appears when hovering over the button. */
@@ -39,7 +39,7 @@ export interface OpenFileButtonProps {
  * Button that opens a file chooser dialog or accepts files dropped on it.
  */
 const OpenFileButton: React.VoidFunctionComponent<OpenFileButtonProps> = ({
-    id,
+    label,
     fileExtension,
     tooltip,
     icon,
@@ -126,6 +126,7 @@ const OpenFileButton: React.VoidFunctionComponent<OpenFileButtonProps> = ({
             }) => (
                 <Button
                     {...getRootProps({
+                        'aria-label': label,
                         refKey: 'elementRef',
                         elementRef: tooltipTargetRef as IRef<HTMLButtonElement>,
                         ...tooltipTargetProps,
@@ -147,7 +148,7 @@ const OpenFileButton: React.VoidFunctionComponent<OpenFileButtonProps> = ({
                             width={`${buttonSize}px`}
                             height={`${buttonSize}px`}
                             src={icon}
-                            alt={id}
+                            alt={label}
                             style={pointerEventsNone}
                         />
                     )}

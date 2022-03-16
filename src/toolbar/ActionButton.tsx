@@ -20,8 +20,8 @@ import en from './i18n.en.json';
 const smallScreenThreshold = 700;
 
 export interface ActionButtonProps {
-    /** A unique id for each instance. */
-    readonly id: string;
+    /** A unique label for each instance. */
+    readonly label: string;
     /** Keyboard shortcut. */
     readonly keyboardShortcut?: string;
     /** Tooltip text that appears when hovering over the button. */
@@ -41,7 +41,7 @@ export interface ActionButtonProps {
 }
 
 const ActionButton: React.VoidFunctionComponent<ActionButtonProps> = ({
-    id,
+    label,
     keyboardShortcut,
     tooltip,
     progressTooltip,
@@ -110,6 +110,7 @@ const ActionButton: React.VoidFunctionComponent<ActionButtonProps> = ({
                 ...tooltipTargetProps
             }) => (
                 <Button
+                    aria-label={label}
                     elementRef={tooltipTargetRef as IRef<HTMLButtonElement>}
                     {...tooltipTargetProps}
                     intent={Intent.PRIMARY}
@@ -128,7 +129,7 @@ const ActionButton: React.VoidFunctionComponent<ActionButtonProps> = ({
                             width={`${buttonSize}px`}
                             height={`${buttonSize}px`}
                             src={icon}
-                            alt={id}
+                            alt={label}
                             style={pointerEventsNone}
                         />
                     )}

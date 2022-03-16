@@ -10,10 +10,10 @@ import { repl } from './actions';
 import { HubRuntimeState } from './reducers';
 import replIcon from './repl.svg';
 
-type ReplButtonProps = Pick<ActionButtonProps, 'id' | 'keyboardShortcut'>;
+type ReplButtonProps = Pick<ActionButtonProps, 'label' | 'keyboardShortcut'>;
 
 const ReplButton: React.VoidFunctionComponent<ReplButtonProps> = ({
-    id,
+    label,
     keyboardShortcut,
 }) => {
     const enabled = useSelector((s) => s.hub.runtime === HubRuntimeState.Idle);
@@ -22,7 +22,7 @@ const ReplButton: React.VoidFunctionComponent<ReplButtonProps> = ({
 
     return (
         <ActionButton
-            id={id}
+            label={label}
             keyboardShortcut={keyboardShortcut}
             tooltip={TooltipId.Repl}
             icon={replIcon}

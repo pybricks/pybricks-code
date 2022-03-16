@@ -10,10 +10,10 @@ import { stop } from './actions';
 import { HubRuntimeState } from './reducers';
 import stopIcon from './stop.svg';
 
-type StopButtonProps = Pick<ActionButtonProps, 'id' | 'keyboardShortcut'>;
+type StopButtonProps = Pick<ActionButtonProps, 'label' | 'keyboardShortcut'>;
 
 const StopButton: React.VoidFunctionComponent<StopButtonProps> = ({
-    id,
+    label,
     keyboardShortcut,
 }) => {
     const runtime = useSelector((s) => s.hub.runtime);
@@ -22,7 +22,7 @@ const StopButton: React.VoidFunctionComponent<StopButtonProps> = ({
 
     return (
         <ActionButton
-            id={id}
+            label={label}
             keyboardShortcut={keyboardShortcut}
             tooltip={TooltipId.Stop}
             icon={stopIcon}

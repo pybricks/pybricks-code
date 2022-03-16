@@ -13,9 +13,9 @@ import { TooltipId } from '../toolbar/i18n';
 import { flashFirmware } from './actions';
 import firmwareIcon from './firmware.svg';
 
-type FlashButtonProps = Pick<OpenFileButtonProps, 'id'>;
+type FlashButtonProps = Pick<OpenFileButtonProps, 'label'>;
 
-const FlashButton: React.VoidFunctionComponent<FlashButtonProps> = ({ id }) => {
+const FlashButton: React.VoidFunctionComponent<FlashButtonProps> = ({ label }) => {
     const bootloaderConnection = useSelector((s) => s.bootloader.connection);
     const bleConnection = useSelector((s) => s.ble.connection);
     const flashing = useSelector((s) => s.firmware.flashing);
@@ -27,7 +27,7 @@ const FlashButton: React.VoidFunctionComponent<FlashButtonProps> = ({ id }) => {
 
     return (
         <OpenFileButton
-            id={id}
+            label={label}
             fileExtension=".zip"
             icon={firmwareIcon}
             tooltip={flashing ? TooltipId.FlashProgress : TooltipId.Flash}

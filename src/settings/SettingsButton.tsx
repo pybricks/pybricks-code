@@ -6,15 +6,15 @@ import ActionButton, { ActionButtonProps } from '../toolbar/ActionButton';
 import { TooltipId } from '../toolbar/i18n';
 import settingsIcon from './settings.svg';
 
-type SettingsButtonProps = Pick<ActionButtonProps, 'id' | 'onAction'>;
+type SettingsButtonProps = Pick<ActionButtonProps, 'label' | 'onAction'>;
 
 const SettingsButton: React.VoidFunctionComponent<SettingsButtonProps> = ({
-    id,
+    label,
     onAction,
 }) => {
     return (
         <ActionButton
-            id={id}
+            label={label}
             tooltip={TooltipId.Settings}
             icon={settingsIcon}
             onAction={onAction}

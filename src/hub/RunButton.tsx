@@ -10,10 +10,10 @@ import { downloadAndRun } from './actions';
 import { HubRuntimeState } from './reducers';
 import runIcon from './run.svg';
 
-type RunButtonProps = Pick<ActionButtonProps, 'id' | 'keyboardShortcut'>;
+type RunButtonProps = Pick<ActionButtonProps, 'label' | 'keyboardShortcut'>;
 
 const RunButton: React.VoidFunctionComponent<RunButtonProps> = ({
-    id,
+    label,
     keyboardShortcut,
 }) => {
     const downloadProgress = useSelector((s) => s.hub.downloadProgress);
@@ -24,7 +24,7 @@ const RunButton: React.VoidFunctionComponent<RunButtonProps> = ({
 
     return (
         <ActionButton
-            id={id}
+            label={label}
             keyboardShortcut={keyboardShortcut}
             tooltip={TooltipId.Run}
             progressTooltip={TooltipId.RunProgress}
