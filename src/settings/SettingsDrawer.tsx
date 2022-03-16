@@ -105,6 +105,8 @@ const SettingsDrawer: React.VoidFunctionComponent<SettingsProps> = ({
             size={DrawerSize.SMALL}
             title={i18n.translate(SettingsStringId.Title)}
             onClose={onClose}
+            // work around https://github.com/palantir/blueprint/issues/5169
+            shouldReturnFocusOnClose={false}
         >
             <div className={Classes.DRAWER_BODY}>
                 <div className={Classes.DIALOG_BODY}>
