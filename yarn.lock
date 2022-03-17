@@ -1455,7 +1455,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.10.2, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.15.4, @babel/runtime@npm:^7.16.3, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.6.3, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.9.2":
+"@babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.10.2, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.15.4, @babel/runtime@npm:^7.16.3, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.6.3, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.2":
   version: 7.17.7
   resolution: "@babel/runtime@npm:7.17.7"
   dependencies:
@@ -1510,54 +1510,54 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@blueprintjs/colors@npm:^4.0.0-alpha.2":
+"@blueprintjs/colors@npm:^4.0.0-rc.0":
   version: 4.0.0-rc.0
   resolution: "@blueprintjs/colors@npm:4.0.0-rc.0"
   checksum: 82a06335bdf3a04e75243dfc5850396c0a74cdedaa96122a9a89acec4fdfbc622ffd34e823464b92a001da6a66db74a6d2618b55d3a4b30eae9a429dc8ffdef7
   languageName: node
   linkType: hard
 
-"@blueprintjs/core@npm:^3.53.0":
-  version: 3.53.0
-  resolution: "@blueprintjs/core@npm:3.53.0"
+"@blueprintjs/core@npm:^4.0.0-rc.0":
+  version: 4.0.0-rc.0
+  resolution: "@blueprintjs/core@npm:4.0.0-rc.0"
   dependencies:
-    "@blueprintjs/colors": ^4.0.0-alpha.2
-    "@blueprintjs/icons": ^3.32.0
+    "@blueprintjs/colors": ^4.0.0-rc.0
+    "@blueprintjs/icons": ^4.0.0-rc.0
     "@types/dom4": ^2.0.1
     classnames: ^2.2
     dom4: ^2.1.5
     normalize.css: ^8.0.1
     popper.js: ^1.16.1
-    react-lifecycles-compat: ^3.0.4
     react-popper: ^1.3.7
-    react-transition-group: ^2.9.0
+    react-transition-group: ^4.4.1
     resize-observer-polyfill: ^1.5.1
     tslib: ~1.13.0
   peerDependencies:
-    react: ^15.3.0 || 16 || 17
-    react-dom: ^15.3.0 || 16 || 17
+    react: ^16.8 || 17
+    react-dom: ^16.8 || 17
   bin:
     upgrade-blueprint-2.0.0-rename: scripts/upgrade-blueprint-2.0.0-rename.sh
     upgrade-blueprint-3.0.0-rename: scripts/upgrade-blueprint-3.0.0-rename.sh
-  checksum: de7bdfacd571412ac3a965fa7b3c29f54b85c7579abc698c05e10a179a9623a2a1217a97cb19e8588e2b74f6b17a15e9c3906ed60d7abdef59090207867e1750
+  checksum: d91e6c45cea98696a29861aae97b613757e92059c1178a90cedb54a23796b6852f335d7340551ac03c30c784babc8c4bd6b087869fb6bf68473f26cc1f21363b
   languageName: node
   linkType: hard
 
-"@blueprintjs/icons@npm:^3.32.0":
-  version: 3.32.0
-  resolution: "@blueprintjs/icons@npm:3.32.0"
+"@blueprintjs/icons@npm:^4.0.0-rc.0":
+  version: 4.0.0-rc.0
+  resolution: "@blueprintjs/icons@npm:4.0.0-rc.0"
   dependencies:
+    change-case: ^4.1.2
     classnames: ^2.2
     tslib: ~1.13.0
-  checksum: 02f9e583c72869c956c5c67c93858bf5488e0c1f38790c1faf4ffc2a0f8f6d574311d62f818fbf853f234e61c3052c19378fad889c2a24cd981d88a97be34646
+  checksum: 84dd62bf29fcaa3d7dae1c8e7cddf1d26c724b304001b4b4d277f3ad37e03a112bc2628e31f27340b2ce9e2151a4941f4f65db471e453550f770e3d7815c305c
   languageName: node
   linkType: hard
 
-"@blueprintjs/popover2@npm:^0.13.0":
-  version: 0.13.0
-  resolution: "@blueprintjs/popover2@npm:0.13.0"
+"@blueprintjs/popover2@npm:^1.0.0-rc.0":
+  version: 1.0.0-rc.0
+  resolution: "@blueprintjs/popover2@npm:1.0.0-rc.0"
   dependencies:
-    "@blueprintjs/core": ^3.53.0
+    "@blueprintjs/core": ^4.0.0-rc.0
     "@popperjs/core": ^2.5.4
     classnames: ^2.2
     dom4: ^2.1.5
@@ -1566,7 +1566,7 @@ __metadata:
     tslib: ~1.13.0
   peerDependencies:
     react: ^16.8.0 || ^17
-  checksum: a80c8fd02b0fd23427ad7ca222534b4e78c8da1c6a09ca0196203688847d8c520fd796e3bafeb4962a3ccae9cc92506bc4260d9cf11d8b81b65fb24fec90f1f9
+  checksum: 546b676f482cba7948373b81a1b6bd069cf6a2c09fd1acd47628bbdd0a45d2562eb1d4739fc1604b52b7e79914695e7d1741b1203092c58b8f43db9bd9769e44
   languageName: node
   linkType: hard
 
@@ -2102,8 +2102,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@pybricks/pybricks-code@workspace:."
   dependencies:
-    "@blueprintjs/core": ^3.53.0
-    "@blueprintjs/popover2": ^0.13.0
+    "@blueprintjs/core": ^4.0.0-rc.0
+    "@blueprintjs/popover2": ^1.0.0-rc.0
     "@craco/craco": ^6.4.3
     "@pybricks/firmware": 4.14.0
     "@pybricks/ide-docs": 2.1.0
@@ -6385,12 +6385,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dom-helpers@npm:^3.4.0":
-  version: 3.4.0
-  resolution: "dom-helpers@npm:3.4.0"
+"dom-helpers@npm:^5.0.1":
+  version: 5.2.1
+  resolution: "dom-helpers@npm:5.2.1"
   dependencies:
-    "@babel/runtime": ^7.1.2
-  checksum: 58d9f1c4a96daf77eddc63ae1236b826e1cddd6db66bbf39b18d7e21896d99365b376593352d52a60969d67fa4a8dbef26adc1439fa2c1b355efa37cacbaf637
+    "@babel/runtime": ^7.8.7
+    csstype: ^3.0.2
+  checksum: 863ba9e086f7093df3376b43e74ce4422571d404fc9828bf2c56140963d5edf0e56160f9b2f3bb61b282c07f8fc8134f023c98fd684bddcb12daf7b0f14d951c
   languageName: node
   linkType: hard
 
@@ -13724,13 +13725,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-lifecycles-compat@npm:^3.0.4":
-  version: 3.0.4
-  resolution: "react-lifecycles-compat@npm:3.0.4"
-  checksum: a904b0fc0a8eeb15a148c9feb7bc17cec7ef96e71188280061fc340043fd6d8ee3ff233381f0e8f95c1cf926210b2c4a31f38182c8f35ac55057e453d6df204f
-  languageName: node
-  linkType: hard
-
 "react-monaco-editor@npm:^0.47.0":
   version: 0.47.0
   resolution: "react-monaco-editor@npm:0.47.0"
@@ -13890,18 +13884,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-transition-group@npm:^2.9.0":
-  version: 2.9.0
-  resolution: "react-transition-group@npm:2.9.0"
+"react-transition-group@npm:^4.4.1":
+  version: 4.4.2
+  resolution: "react-transition-group@npm:4.4.2"
   dependencies:
-    dom-helpers: ^3.4.0
+    "@babel/runtime": ^7.5.5
+    dom-helpers: ^5.0.1
     loose-envify: ^1.4.0
     prop-types: ^15.6.2
-    react-lifecycles-compat: ^3.0.4
   peerDependencies:
-    react: ">=15.0.0"
-    react-dom: ">=15.0.0"
-  checksum: d8c9e50aabdc2cfc324e5cdb0ad1c6eecb02e1c0cd007b26d5b30ccf49015e900683dd489348c71fba4055858308d9ba7019e0d37d0e8d37bd46ed098788f670
+    react: ">=16.6.0"
+    react-dom: ">=16.6.0"
+  checksum: b67bf5b3e86dbab72d658b9a52a3589e5960583ab28c7c66272427d8fe30d4c7de422d5046ae96bd2683cdf80cc3264b2516f5ce80cae1dbe6cf3ca6dda392c5
   languageName: node
   linkType: hard
 

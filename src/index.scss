@@ -53,6 +53,13 @@ a.#{$ns}-button {
     display: block;
 }
 
+.#{$ns}-button-group:not(.#{$ns}-minimal)
+    > .#{$ns}-popover-wrapper:not(:last-child)
+    .#{$ns}-button,
+.#{$ns}-button-group:not(.#{$ns}-minimal) > .#{$ns}-button:not(:last-child) {
+    margin-right: 0px;
+}
+
 .#{$ns}-dialog-footer-actions {
     flex-wrap: wrap;
     row-gap: 10px;
