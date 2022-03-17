@@ -105,6 +105,7 @@
     },
     "packageManager": "yarn@3.2.0",
     "resolutions": {
-        "mq-polyfill@1.1.8": "patch:mq-polyfill@npm:1.1.8#.yarn/patches/mq-polyfill-npm-1.1.8-62fe162439.patch"
+        "mq-polyfill@1.1.8": "patch:mq-polyfill@npm:1.1.8#.yarn/patches/mq-polyfill-npm-1.1.8-62fe162439.patch",
+        "react-error-overlay": "6.0.9"
     }
 }
