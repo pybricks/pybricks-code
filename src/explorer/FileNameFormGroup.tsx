@@ -3,15 +3,14 @@
 
 import { Classes, FormGroup, InputGroup, Intent, Tag } from '@blueprintjs/core';
 import { useI18n } from '@shopify/react-i18n';
-import React, { useMemo } from 'react';
-import { FileNameValidationResult, validateFileName } from '../pybricksMicropython/lib';
-import { useSelector } from '../reducers';
+import React from 'react';
+import { FileNameValidationResult } from '../pybricksMicropython/lib';
 import { NewFileWizardStringId } from './i18n';
 import en from './i18n.en.json';
 
 type FileNameHelpTextProps = {
     /** The result of the file name validation. */
-    validation: Exclude<FileNameValidationResult, FileNameValidationResult.Unknown>;
+    validation: FileNameValidationResult;
 };
 
 /**
@@ -81,12 +80,12 @@ type FileNameFormGroupProps = {
     readonly fileName: string;
     /** The file extension (including leading ".") */
     readonly fileExtension: string;
+    /** The result of the file name validation. */
+    readonly validationResult: FileNameValidationResult;
     /** Ref to get handle to input (e.g to be able to call focus()) */
     readonly inputRef?: React.RefObject<HTMLInputElement>;
     /** Called when the user changes the text in the input box. */
     readonly onChange: (newName: string) => void;
-    /** Called when `fileName` is validated. */
-    readonly onValidation: (result: FileNameValidationResult) => void;
 };
 
 /**
@@ -95,30 +94,22 @@ type FileNameFormGroupProps = {
 const FileNameFormGroup: React.VoidFunctionComponent<FileNameFormGroupProps> = ({
     fileName,
     fileExtension,
+    validationResult,
     inputRef,
     onChange,
-    onValidation,
 }) => {
     const [i18n] = useI18n({ id: 'explorer', translations: { en }, fallback: en });
-    const fileNames = useSelector((s) => s.fileStorage.fileNames);
 
-    const [fileNameValidation, fileNameIntent] = useMemo(() => {
-        const result = validateFileName(fileName, fileExtension, fileNames);
-
-        // can't call callback now because it would break react, so defer it
-        setTimeout(() => onValidation(result), 0);
-
-        return [
-            result,
-            result === FileNameValidationResult.IsOk ? Intent.NONE : Intent.DANGER,
-        ];
-    }, [fileName, fileExtension, fileNames]);
+    const fileNameIntent =
+        validationResult === FileNameValidationResult.IsOk
+            ? Intent.NONE
+            : Intent.DANGER;
 
     return (
         <FormGroup
             label={i18n.translate(NewFileWizardStringId.FileNameLabel)}
             intent={fileNameIntent}
-            subLabel={<FileNameHelpText validation={fileNameValidation} />}
+            subLabel={<FileNameHelpText validation={validationResult} />}
         >
             <InputGroup
                 aria-label="File name"

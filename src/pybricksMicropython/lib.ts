@@ -12,8 +12,6 @@ export const pythonFileMimeType = 'text/x-python';
 
 /** File name validation results. */
 export enum FileNameValidationResult {
-    /** The result is not yet known. */
-    Unknown,
     /** The file name is acceptable. */
     IsOk,
     /** The file name is an empty string. */
@@ -42,7 +40,7 @@ export function validateFileName(
     fileName: string,
     extension: string,
     existingFiles: ReadonlyArray<string>,
-): Exclude<FileNameValidationResult, FileNameValidationResult.Unknown> {
+): FileNameValidationResult {
     if (existingFiles.includes(`${fileName}${extension}`)) {
         return FileNameValidationResult.AlreadyExists;
     }

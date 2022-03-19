@@ -15,7 +15,9 @@ import { useDispatch } from 'react-redux';
 import {
     FileNameValidationResult,
     pythonFileExtension,
+    validateFileName,
 } from '../pybricksMicropython/lib';
+import { useSelector } from '../reducers';
 import FileNameFormGroup from './FileNameFormGroup';
 import { Hub, explorerCreateNewFile } from './actions';
 import { NewFileWizardStringId } from './i18n';
@@ -39,8 +41,11 @@ const NewFileWizard: React.VoidFunctionComponent<NewFileWizardProps> = ({
     const dispatch = useDispatch();
 
     const [fileName, setFileName] = useState('');
-    const [fileNameValidation, setFileNameValidation] = useState(
-        FileNameValidationResult.Unknown,
+    const fileNames = useSelector((s) => s.fileStorage.fileNames);
+    const fileNameValidation = validateFileName(
+        fileName,
+        pythonFileExtension,
+        fileNames,
     );
     const [hubType, setHubType] = useState(defaultHub);
 
@@ -59,9 +64,9 @@ const NewFileWizard: React.VoidFunctionComponent<NewFileWizardProps> = ({
                 <FileNameFormGroup
                     fileName={fileName}
                     fileExtension={pythonFileExtension}
+                    validationResult={fileNameValidation}
                     inputRef={fileNameInputRef}
                     onChange={setFileName}
-                    onValidation={setFileNameValidation}
                 />
                 <FormGroup label={i18n.translate(NewFileWizardStringId.SmartHubLabel)}>
                     <RadioGroup

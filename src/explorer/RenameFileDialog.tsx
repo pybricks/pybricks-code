@@ -4,7 +4,8 @@
 import { Button, Classes, Dialog } from '@blueprintjs/core';
 import { useI18n } from '@shopify/react-i18n';
 import React, { useCallback, useRef, useState } from 'react';
-import { FileNameValidationResult } from '../pybricksMicropython/lib';
+import { FileNameValidationResult, validateFileName } from '../pybricksMicropython/lib';
+import { useSelector } from '../reducers';
 import FileNameFormGroup from './FileNameFormGroup';
 import { RenameFileStringId } from './i18n';
 import en from './i18n.en.json';
@@ -31,7 +32,8 @@ const RenameFileDialog: React.VoidFunctionComponent<RenameFileDialogProps> = ({
     const [baseName, extension] = oldName.split(/(\.\w+)$/);
 
     const [newName, setNewName] = useState(baseName);
-    const [result, setResult] = useState(FileNameValidationResult.Unknown);
+    const fileNames = useSelector((s) => s.fileStorage.fileNames);
+    const result = validateFileName(newName, extension, fileNames);
 
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -61,9 +63,9 @@ const RenameFileDialog: React.VoidFunctionComponent<RenameFileDialogProps> = ({
                     <FileNameFormGroup
                         fileName={newName}
                         fileExtension={extension}
+                        validationResult={result}
                         inputRef={inputRef}
                         onChange={setNewName}
-                        onValidation={setResult}
                     />
                 </div>
                 <div className={Classes.DIALOG_FOOTER}>
