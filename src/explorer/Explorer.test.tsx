@@ -2,6 +2,7 @@
 // Copyright (c) 2022 The Pybricks Authors
 
 import { getByLabelText, waitFor } from '@testing-library/dom';
+import { cleanup } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { testRender } from '../../test';
@@ -11,6 +12,12 @@ import {
 } from '../fileStorage/actions';
 import Explorer from './Explorer';
 import { explorerDeleteFile, explorerImportFiles } from './actions';
+
+afterEach(async () => {
+    cleanup();
+    jest.clearAllMocks();
+    localStorage.clear();
+});
 
 describe('archive button', () => {
     it('should be enabled if there are files', () => {
@@ -65,24 +72,48 @@ describe('new file button', () => {
     });
 });
 
-describe('list item', () => {
-    it('should show/hide buttons on hover', () => {
+describe('tree item', () => {
+    it('should show rename dialog when button is clicked', async () => {
         const [explorer] = testRender(<Explorer />, {
             fileStorage: { fileNames: ['test.file'] },
         });
 
+        expect(
+            explorer.queryByRole('dialog', { name: "Rename 'test.file'" }),
+        ).toBeNull();
+
+        // NB: this button is intentionally not accessible (by role) since
+        // there is a keyboard shortcut.
         const button = explorer.getByTitle('Rename test.file');
 
-        // by default, the buttons are hidden
-        expect(button).not.toBeVisible();
+        userEvent.click(button);
 
-        // but are visible when hovered
-        userEvent.hover(button);
-        expect(button).toBeVisible();
+        const dialog = await explorer.findByRole('dialog', {
+            name: "Rename 'test.file'",
+        });
 
-        // and hide again when unhovered
-        userEvent.unhover(button);
-        expect(button).not.toBeVisible();
+        expect(dialog).toBeVisible();
+    });
+
+    it('should show rename dialog when key is pressed', async () => {
+        const [explorer] = testRender(<Explorer />, {
+            fileStorage: { fileNames: ['test.file'] },
+        });
+
+        expect(
+            explorer.queryByRole('dialog', { name: "Rename 'test.file'" }),
+        ).toBeNull();
+
+        const treeItem = explorer.getByRole('treeitem', { name: 'test.file' });
+
+        userEvent.click(treeItem);
+        userEvent.keyboard('{f2}');
+
+        const dialog = await explorer.findByRole('dialog', {
+            name: "Rename 'test.file'",
+        });
+
+        expect(dialog).toBeVisible();
     });
 
     it('should dispatch delete action when button is clicked', async () => {
@@ -90,9 +121,24 @@ describe('list item', () => {
             fileStorage: { fileNames: ['test.file'] },
         });
 
+        // NB: this button is intentionally not accessible (by role) since
+        // there is a keyboard shortcut.
         const button = explorer.getByTitle('Delete test.file');
 
         userEvent.click(button);
+
+        expect(dispatch).toHaveBeenCalledWith(explorerDeleteFile('test.file'));
+    });
+
+    it('should dispatch delete action when key is pressed', async () => {
+        const [explorer, dispatch] = testRender(<Explorer />, {
+            fileStorage: { fileNames: ['test.file'] },
+        });
+
+        const treeItem = explorer.getByRole('treeitem', { name: 'test.file' });
+
+        userEvent.click(treeItem);
+        userEvent.keyboard('{del}');
 
         expect(dispatch).toHaveBeenCalledWith(explorerDeleteFile('test.file'));
     });
@@ -102,9 +148,24 @@ describe('list item', () => {
             fileStorage: { fileNames: ['test.file'] },
         });
 
+        // NB: this button is intentionally not accessible (by role) since
+        // there is a keyboard shortcut.
         const button = explorer.getByTitle('Export test.file');
 
         userEvent.click(button);
+
+        expect(dispatch).toHaveBeenCalledWith(fileStorageExportFile('test.file'));
+    });
+
+    it('should dispatch export action when key is pressed', async () => {
+        const [explorer, dispatch] = testRender(<Explorer />, {
+            fileStorage: { fileNames: ['test.file'] },
+        });
+
+        const treeItem = explorer.getByRole('treeitem', { name: 'test.file' });
+
+        userEvent.click(treeItem);
+        userEvent.keyboard('{ctrl}e');
 
         expect(dispatch).toHaveBeenCalledWith(fileStorageExportFile('test.file'));
     });

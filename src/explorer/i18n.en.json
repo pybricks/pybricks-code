@@ -5,6 +5,22 @@
             "importTooltip": "Import a file",
             "addNewTooltip": "Create a new file"
         },
+        "tree": {
+            "label": "File Explorer",
+            "liveDescriptor": {
+                "intro": {
+                    "accessibilityGuide": "Accessibility guide for tree {treeLabel}.",
+                    "navigation": "Navigate the tree with the arrow keys. Start typing the name of a file to search for a file. Additional keybindings are available:",
+                    "keybindings": {
+                        "primaryAction": "{key} to open the file in the code editor",
+                        "rename": "{key} to start renaming the focused file",
+                        "export": "{key} to export the focused file",
+                        "delete": "{key} to delete the focused file"
+                    }
+                },
+                "searching": "Searching."
+            }
+        },
         "treeItem": {
             "deleteTooltip": "Delete {fileName}",
             "exportTooltip": "Export {fileName}",

@@ -5,6 +5,7 @@
 @import '~normalize.css';
 @import '~@blueprintjs/core/src/blueprint.scss';
 @import '~@blueprintjs/popover2/src/blueprint-popover2.scss';
+@import '~react-complex-tree/lib/style.css';
 
 :root {
     --pb-vh: 100vh;
@@ -104,4 +105,10 @@ a.#{$ns}-button {
 
 .#{$ns}-input-group .#{$ns}-icon {
     margin: 7px;
+}
+
+// don't take up so much space when there is no caret
+.#{$ns}-tree-node-caret-none {
+    // $pt-grid-size / 2 matches padding on .#{$ns}-tree-node-conent
+    min-width: $pt-grid-size / 2;
 }

@@ -3,9 +3,7 @@
 
 import { Button, Classes, Dialog } from '@blueprintjs/core';
 import { useI18n } from '@shopify/react-i18n';
-import React, { useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { fileStorageRenameFile } from '../fileStorage/actions';
+import React, { useCallback, useRef, useState } from 'react';
 import { FileNameValidationResult } from '../pybricksMicropython/lib';
 import FileNameFormGroup from './FileNameFormGroup';
 import { RenameFileStringId } from './i18n';
@@ -16,17 +14,19 @@ type RenameFileDialogProps = {
     oldName: string;
     /** Controls the dialog open state. */
     isOpen: boolean;
-    /** Called when the dialog is closed. */
-    onClose: () => void;
+    /** Called when the dialog is accepted. */
+    onAccept: (oldName: string, newName: string) => void;
+    /** Called when the dialog is canceled. */
+    onCancel: () => void;
 };
 
 const RenameFileDialog: React.VoidFunctionComponent<RenameFileDialogProps> = ({
     oldName,
     isOpen,
-    onClose,
+    onAccept,
+    onCancel,
 }) => {
     const [i18n] = useI18n({ id: 'explorer', translations: { en }, fallback: en });
-    const dispatch = useDispatch();
 
     const [baseName, extension] = oldName.split(/(\.\w+)$/);
 
@@ -34,6 +34,14 @@ const RenameFileDialog: React.VoidFunctionComponent<RenameFileDialogProps> = ({
     const [result, setResult] = useState(FileNameValidationResult.Unknown);
 
     const inputRef = useRef<HTMLInputElement>(null);
+
+    const handleSubmit = useCallback<React.FormEventHandler>(
+        (e) => {
+            e.preventDefault();
+            onAccept(oldName, `${newName}${extension}`);
+        },
+        [onAccept, oldName, newName, extension],
+    );
 
     return (
         <Dialog
@@ -46,37 +54,30 @@ const RenameFileDialog: React.VoidFunctionComponent<RenameFileDialogProps> = ({
                 inputRef.current?.select();
                 inputRef.current?.focus();
             }}
-            onClose={() => onClose()}
+            onClose={onCancel}
         >
-            <div className={Classes.DIALOG_BODY}>
-                <FileNameFormGroup
-                    fileName={newName}
-                    fileExtension={extension}
-                    inputRef={inputRef}
-                    onChange={setNewName}
-                    onValidation={setResult}
-                />
-            </div>
-            <div className={Classes.DIALOG_FOOTER}>
-                <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-                    <Button
-                        aria-label="Rename"
-                        intent="primary"
-                        disabled={result !== FileNameValidationResult.IsOk}
-                        onClick={() => {
-                            onClose();
-                            dispatch(
-                                fileStorageRenameFile(
-                                    oldName,
-                                    `${newName}${extension}`,
-                                ),
-                            );
-                        }}
-                    >
-                        {i18n.translate(RenameFileStringId.ActionRename)}
-                    </Button>
+            <form onSubmit={handleSubmit}>
+                <div className={Classes.DIALOG_BODY}>
+                    <FileNameFormGroup
+                        fileName={newName}
+                        fileExtension={extension}
+                        inputRef={inputRef}
+                        onChange={setNewName}
+                        onValidation={setResult}
+                    />
                 </div>
-            </div>
+                <div className={Classes.DIALOG_FOOTER}>
+                    <div className={Classes.DIALOG_FOOTER_ACTIONS}>
+                        <Button
+                            intent="primary"
+                            disabled={result !== FileNameValidationResult.IsOk}
+                            type="submit"
+                        >
+                            {i18n.translate(RenameFileStringId.ActionRename)}
+                        </Button>
+                    </div>
+                </div>
+            </form>
         </Dialog>
     );
 };

@@ -2152,6 +2152,7 @@ __metadata:
     prettier: ^2.5.1
     prop-types: ^15.8.1
     react: ^16.13.1
+    react-complex-tree: ^1.1.4
     react-dom: ^16.13.1
     react-dropzone: ^12.0.4
     react-monaco-editor: ^0.47.0
@@ -13635,6 +13636,13 @@ __metadata:
     regenerator-runtime: ^0.13.7
     whatwg-fetch: ^3.4.1
   checksum: 99e52a6b2229c7ca730cfd44ac95640f955be71d144225bd6c24fa47922a742658a371d0a2f0876d732533f1055b7cd7e9d534c89c29f8ca889ecd1b8d15f065
+  languageName: node
+  linkType: hard
+
+"react-complex-tree@npm:^1.1.4":
+  version: 1.1.4
+  resolution: "react-complex-tree@npm:1.1.4"
+  checksum: 11ed3d99f58e4bb594be7b64e599609e57e1ee244733c799fee595d096ce5596f9a884a51a222dde41a44fb4f105b253c13b26c59af60a36542ce34a619ce66e
   languageName: node
   linkType: hard
 

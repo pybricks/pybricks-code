@@ -1,0 +1,14 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2022 The Pybricks Authors
+
+@import '../variables.scss';
+
+.pb-explorer-file-tree {
+    // to allow for focus outline
+    padding: 6px;
+}
+
+// reveal file action buttons on hover
+.#{$ns}-tree-node-content:not(:hover) .pb-explorer-file-action-button-group {
+    display: none;
+}

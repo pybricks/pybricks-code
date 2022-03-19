@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2022 The Pybricks Authors
 
+import { HotkeysProvider } from '@blueprintjs/core';
 import { I18nContext, I18nManager } from '@shopify/react-i18n';
 import { RenderResult, render } from '@testing-library/react';
 import React, { ReactElement } from 'react';
@@ -137,7 +138,9 @@ export const testRender = (
 
     const result = render(
         <Provider store={store}>
-            <I18nContext.Provider value={i18n}>{component}</I18nContext.Provider>
+            <I18nContext.Provider value={i18n}>
+                <HotkeysProvider>{component}</HotkeysProvider>
+            </I18nContext.Provider>
         </Provider>,
     );
 
