@@ -25,7 +25,6 @@ const cx = (...classNames: Array<string | undefined | false>): string =>
 
 /** Node item data similar to blueprintsjs TreeNodeInfo */
 export type TreeItemData = {
-    readonly label: string;
     readonly icon?: IconName | MaybeElement;
     readonly secondaryLabel?: string | MaybeElement;
 };
@@ -36,9 +35,7 @@ export type TreeItemData = {
  */
 export const TreeItemContext = createContext<TreeItem<TreeItemData>>({
     index: '<default>',
-    data: {
-        label: '<default>',
-    },
+    data: {},
 });
 
 export const renderers: Omit<

@@ -79,9 +79,13 @@ const ActionButton: React.VoidFunctionComponent<ActionButtonProps> = ({
     );
 };
 
+type FileTreeItemData = TreeItemData & { fileName: string };
+
+type FileTreeItem = TreeItem<FileTreeItemData>;
+
 type ActionButtonGroupProps = {
     /** The name of the file (displayed to user) */
-    item: TreeItem<TreeItemData>;
+    item: TreeItem;
 };
 
 const FileActionButtonGroup: React.VoidFunctionComponent<ActionButtonGroupProps> = ({
@@ -236,7 +240,7 @@ const FileTree: React.VFC = () => {
                     obj[index] = {
                         index,
                         data: {
-                            label: fileName,
+                            fileName,
                             icon: 'document',
                             secondaryLabel: (
                                 <TreeItemContext.Consumer>
@@ -251,19 +255,16 @@ const FileTree: React.VFC = () => {
                 {
                     [rootItemIndex]: {
                         index: rootItemIndex,
-                        data: { label: '/' },
+                        data: { fileName: '/' },
                         hasChildren: true,
                         children: debouncedFileNames.map((n) => `/${n}`),
                     },
-                } as Record<TreeItemIndex, TreeItem<TreeItemData>>,
+                } as Record<TreeItemIndex, FileTreeItem>,
             ),
         [debouncedFileNames],
     );
 
-    const getItemTitle = useCallback(
-        (item: TreeItem<TreeItemData>) => item.data.label,
-        [],
-    );
+    const getItemTitle = useCallback((item: FileTreeItem) => item.data.fileName, []);
 
     const [renameFileName, setRenameFileName] = useState('');
     const [isRenameDialogOpen, setIsRenameDialogOpen] = useState(false);
@@ -328,7 +329,7 @@ const FileTree: React.VFC = () => {
     );
 
     // override default renderRenameInput since we have a separate rename dialog
-    const renderRenameInput = useCallback<typeof renderers.renderRenameInput>(
+    const renderRenameInput = useCallback(
         ({ item }) => (
             <span className={[Classes.TREE_NODE_LABEL, Classes.TEXT_MUTED].join(' ')}>
                 {getItemTitle(item)}
@@ -338,7 +339,7 @@ const FileTree: React.VFC = () => {
     );
 
     const handleStartRenamingItem = useCallback(
-        (item: TreeItem<TreeItemData>) => {
+        (item: FileTreeItem) => {
             // we are ignoring most of the props since we are opening a dialog
             // instead of using an inline input and button
             setRenameFileName(getItemTitle(item));
@@ -380,7 +381,7 @@ const FileTree: React.VFC = () => {
     );
 
     return (
-        <ControlledTreeEnvironment<TreeItemData>
+        <ControlledTreeEnvironment<FileTreeItemData>
             {...renderers}
             renderTreeContainer={renderTreeContainer}
             renderRenameInput={renderRenameInput}

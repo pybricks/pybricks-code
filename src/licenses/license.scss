@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2021 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 
 // Custom styling for the LicenseDialog control.
 
@@ -25,6 +25,8 @@
     width: 25%;
     flex-flow: column;
     overflow: auto;
+    // to allow for focus outline
+    padding: 6px;
 }
 
 .pb-license-info {

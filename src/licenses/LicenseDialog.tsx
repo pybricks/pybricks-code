@@ -10,20 +10,25 @@ import {
     Dialog,
     NonIdealState,
     Spinner,
-    Tree,
-    TreeEventHandler,
-    TreeNodeInfo,
 } from '@blueprintjs/core';
 import { useI18n } from '@shopify/react-i18n';
 import React, { useCallback, useMemo, useState } from 'react';
+import {
+    ControlledTreeEnvironment,
+    Tree,
+    TreeItem,
+    TreeItemIndex,
+    TreeViewState,
+} from 'react-complex-tree';
 import { useFetch } from 'usehooks-ts';
 import { appName } from '../app/constants';
+import { TreeItemData, renderers } from '../utils/tree-renderer';
 import { LicenseStringId } from './i18n';
 import en from './i18n.en.json';
 
 import './license.scss';
 
-interface LicenseInfo {
+interface LicenseInfo extends TreeItemData {
     readonly name: string;
     readonly version: string;
     readonly author: string | undefined;
@@ -42,27 +47,52 @@ const LicenseListPanel: React.VoidFunctionComponent<LicenseListPanelProps> = ({
 }) => {
     const [i18n] = useI18n({ id: 'license', translations: { en }, fallback: en });
     const { data, error } = useFetch<LicenseList>('static/oss-licenses.json');
-    const [selectedNode, setSelectedNode] = useState<string | undefined>(undefined);
+    const [focusedItem, setFocusedItem] = useState<TreeItemIndex>();
+    const [activeItem, setActiveItem] = useState<TreeItemIndex>();
 
     const contents = useMemo(() => {
         if (!data) {
             return undefined;
         }
 
-        return data.map<TreeNodeInfo<LicenseInfo>>((info, i) => ({
-            id: i,
-            label: info.name,
-            isSelected: info.name === selectedNode,
-            nodeData: info,
-        }));
-    }, [data, selectedNode]);
+        return data.reduce(
+            (obj, info, i) => {
+                obj[i] = {
+                    index: i,
+                    data: info,
+                };
 
-    const handleNodeClick = useCallback<TreeEventHandler<LicenseInfo>>(
-        (e) => {
-            setSelectedNode(e.nodeData?.name);
-            onItemClick(e.nodeData);
+                return obj;
+            },
+            {
+                root: {
+                    index: 'root',
+                    data: {} as LicenseInfo,
+                    hasChildren: true,
+                    children: data.map((_info, i) => i),
+                },
+            } as Record<TreeItemIndex, TreeItem<LicenseInfo>>,
+        );
+    }, [data]);
+
+    const handlePrimaryAction = useCallback(
+        (item: TreeItem<LicenseInfo>) => {
+            setActiveItem(item.index);
+            onItemClick(item.data);
         },
-        [setSelectedNode, onItemClick],
+        [onItemClick],
+    );
+
+    const viewState = useMemo<TreeViewState>(
+        () => ({
+            'pb-license-list': {
+                focusedItem,
+                // REVISIT: it would be nice if there was an active item separate
+                // from using selected items.
+                selectedItems: activeItem === undefined ? undefined : [activeItem],
+            },
+        }),
+        [focusedItem, activeItem],
     );
 
     return (
@@ -76,7 +106,18 @@ const LicenseListPanel: React.VoidFunctionComponent<LicenseListPanelProps> = ({
                     )}
                 </NonIdealState>
             ) : (
-                <Tree contents={contents} onNodeClick={handleNodeClick} />
+                <ControlledTreeEnvironment<LicenseInfo>
+                    {...renderers}
+                    items={contents}
+                    getItemTitle={(item) => item.data.name}
+                    viewState={viewState}
+                    canRename={false}
+                    showLiveDescription={false}
+                    onFocusItem={(item) => setFocusedItem(item.index)}
+                    onPrimaryAction={handlePrimaryAction}
+                >
+                    <Tree treeId="pb-license-list" rootItem="root" />
+                </ControlledTreeEnvironment>
             )}
         </div>
     );
