@@ -143,7 +143,7 @@ export const fileStorageDidRenameFile = createAction(
  */
 export const fileStorageDidFailToRenameFile = createAction(
     (oldName: string, newName: string, error: Error) => ({
-        type: 'fileStorage.action.didRenameFile',
+        type: 'fileStorage.action.didFailToRenameFile',
         oldName,
         newName,
         error,
