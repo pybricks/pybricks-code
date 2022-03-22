@@ -11,7 +11,7 @@ import {
     IconName,
     useHotkeys,
 } from '@blueprintjs/core';
-import { useI18n } from '@shopify/react-i18n';
+import { I18n, useI18n } from '@shopify/react-i18n';
 import React, { useCallback, useMemo, useState } from 'react';
 import {
     ControlledTreeEnvironment,
@@ -32,10 +32,9 @@ import { useSelector } from '../reducers';
 import { isMacOS } from '../utils/os';
 import { preventBrowserNativeContextMenu } from '../utils/react';
 import { TreeItemContext, TreeItemData, renderers } from '../utils/tree-renderer';
-import NewFileWizard from './NewFileWizard';
 import { explorerDeleteFile, explorerImportFiles, explorerRenameFile } from './actions';
-import { ExplorerStringId } from './i18n';
-import en from './i18n.en.json';
+import { I18nId } from './i18n';
+import NewFileWizard from './newFileWizard/NewFileWizard';
 import RenameFileDialog from './renameFileDialog/RenameFileDialog';
 import './explorer.scss';
 
@@ -43,13 +42,15 @@ type ActionButtonProps = {
     /** The icon to use for the button. */
     icon: IconName;
     /** The tooltip translation ID for the tooltip text. */
-    toolTipId: ExplorerStringId;
+    toolTipId: I18nId;
     /** Replacements if required by `toolTipId` */
     toolTipReplacements?: { [key: string]: string };
     /** If provided, controls button disabled state. */
     disabled?: boolean;
     /** If false, prevent focus. Default is true. */
     focusable?: boolean;
+    /** Translation context. */
+    i18n: I18n;
     /** Callback for button click event. */
     onClick: () => void;
 };
@@ -60,10 +61,9 @@ const ActionButton: React.VoidFunctionComponent<ActionButtonProps> = ({
     toolTipReplacements,
     disabled,
     focusable,
+    i18n,
     onClick,
 }) => {
-    const [i18n] = useI18n({ id: 'explorer', translations: { en }, fallback: en });
-
     return (
         <Button
             icon={icon}
@@ -83,10 +83,13 @@ type FileTreeItem = TreeItem<FileTreeItemData>;
 type ActionButtonGroupProps = {
     /** The name of the file (displayed to user) */
     item: TreeItem;
+    /** Translation context. */
+    i18n: I18n;
 };
 
 const FileActionButtonGroup: React.VoidFunctionComponent<ActionButtonGroupProps> = ({
     item,
+    i18n,
 }) => {
     const dispatch = useDispatch();
     const environment = useTreeEnvironment();
@@ -101,9 +104,10 @@ const FileActionButtonGroup: React.VoidFunctionComponent<ActionButtonGroupProps>
         >
             <ActionButton
                 icon="edit"
-                toolTipId={ExplorerStringId.TreeItemRenameTooltip}
+                toolTipId={I18nId.TreeItemRenameTooltip}
                 toolTipReplacements={{ fileName }}
                 focusable={false}
+                i18n={i18n}
                 onClick={() => dispatch(explorerRenameFile(fileName))}
             />
             <ActionButton
@@ -113,23 +117,30 @@ const FileActionButtonGroup: React.VoidFunctionComponent<ActionButtonGroupProps>
                 // archive icon which is also used to indicate an export/
                 // download operation
                 icon="import"
-                toolTipId={ExplorerStringId.TreeItemExportTooltip}
+                toolTipId={I18nId.TreeItemExportTooltip}
                 toolTipReplacements={{ fileName: fileName }}
                 focusable={false}
+                i18n={i18n}
                 onClick={() => dispatch(fileStorageExportFile(fileName))}
             />
             <ActionButton
                 icon="trash"
-                toolTipId={ExplorerStringId.TreeItemDeleteTooltip}
+                toolTipId={I18nId.TreeItemDeleteTooltip}
                 toolTipReplacements={{ fileName: fileName }}
                 focusable={false}
+                i18n={i18n}
                 onClick={() => dispatch(explorerDeleteFile(fileName))}
             />
         </ButtonGroup>
     );
 };
 
-const Header: React.VFC = () => {
+type HeaderProps = {
+    /** Translation context. */
+    i18n: I18n;
+};
+
+const Header: React.VoidFunctionComponent<HeaderProps> = ({ i18n }) => {
     const [isNewFileWizardOpen, setIsNewFileWizardOpen] = useState(false);
     const dispatch = useDispatch();
     const fileNames = useSelector((s) => s.fileStorage.fileNames);
@@ -139,8 +150,9 @@ const Header: React.VFC = () => {
             <ButtonGroup minimal={true}>
                 <ActionButton
                     icon="archive"
-                    toolTipId={ExplorerStringId.HeaderExportAllTooltip}
+                    toolTipId={I18nId.HeaderExportAllTooltip}
                     disabled={fileNames.length === 0}
+                    i18n={i18n}
                     onClick={() => dispatch(fileStorageArchiveAllFiles())}
                 />
                 <ActionButton
@@ -148,12 +160,14 @@ const Header: React.VFC = () => {
                     // what we want here since import is analogous to upload
                     // even though this is the "import" action
                     icon="export"
-                    toolTipId={ExplorerStringId.HeaderImportTooltip}
+                    toolTipId={I18nId.HeaderImportTooltip}
+                    i18n={i18n}
                     onClick={() => dispatch(explorerImportFiles())}
                 />
                 <ActionButton
                     icon="plus"
-                    toolTipId={ExplorerStringId.HeaderAddNewTooltip}
+                    toolTipId={I18nId.HeaderAddNewTooltip}
+                    i18n={i18n}
                     onClick={() => setIsNewFileWizardOpen(true)}
                 />
                 <NewFileWizard
@@ -167,43 +181,37 @@ const Header: React.VFC = () => {
 
 /**
  * Accessibility live descriptors.
+ * @param i18n Translation context.
  */
-function useLiveDescriptors(): LiveDescriptors {
-    const [i18n] = useI18n({ id: 'explorer', translations: { en }, fallback: en });
-
+function useLiveDescriptors(i18n: I18n): LiveDescriptors {
     return useMemo(
         () => ({
             introduction: `
-                <p>${i18n.translate(
-                    ExplorerStringId.TreeLiveDescriptorIntroAccessibilityGuide,
-                    { treeLabel: '{treeLabel}' },
-                )}</p>
-                <p>${i18n.translate(
-                    ExplorerStringId.TreeLiveDescriptorIntroNavigation,
-                )}</p>
+                <p>${i18n.translate(I18nId.TreeLiveDescriptorIntroAccessibilityGuide, {
+                    treeLabel: '{treeLabel}',
+                })}</p>
+                <p>${i18n.translate(I18nId.TreeLiveDescriptorIntroNavigation)}</p>
                 <ul>
                     <li>${i18n.translate(
-                        ExplorerStringId.TreeLiveDescriptorIntroKeybindingsPrimaryAction,
+                        I18nId.TreeLiveDescriptorIntroKeybindingsPrimaryAction,
                         { key: '{keybinding:primaryAction}' },
                     )}</li>
                     <li>${i18n.translate(
-                        ExplorerStringId.TreeLiveDescriptorIntroKeybindingsRename,
+                        I18nId.TreeLiveDescriptorIntroKeybindingsRename,
                         { key: 'f2' },
                     )}</li>
                     <li>${i18n.translate(
-                        ExplorerStringId.TreeLiveDescriptorIntroKeybindingsExport,
+                        I18nId.TreeLiveDescriptorIntroKeybindingsExport,
                         { key: `${isMacOS() ? 'cmd' : 'ctrl'}+e` },
                     )}</li>
                     <li>${i18n.translate(
-                        ExplorerStringId.TreeLiveDescriptorIntroKeybindingsDelete,
+                        I18nId.TreeLiveDescriptorIntroKeybindingsDelete,
                         { key: 'delete' },
                     )}</li>
                 </ul>
             `,
             renamingItem: 'not used',
-            searching: `<p>${i18n.translate(
-                ExplorerStringId.TreeLiveDescriptorSearching,
-            )}</p>`,
+            searching: `<p>${i18n.translate(I18nId.TreeLiveDescriptorSearching)}</p>`,
             programmaticallyDragging: 'not used',
             programmaticallyDraggingTarget: 'not used',
         }),
@@ -280,12 +288,16 @@ const renderTreeContainer: typeof renderers.renderTreeContainer = (props) => {
     return <div onKeyDown={handleKeyDown}>{renderers.renderTreeContainer(props)}</div>;
 };
 
-const FileTree: React.VFC = () => {
-    const [i18n] = useI18n({ id: 'explorer', translations: { en }, fallback: en });
+type FileTreeProps = {
+    /** Translation context. */
+    i18n: I18n;
+};
+
+const FileTree: React.VoidFunctionComponent<FileTreeProps> = ({ i18n }) => {
     const [focusedItem, setFocusedItem] = useState<TreeItemIndex>();
     const fileNames = useSelector((s) => s.fileStorage.fileNames);
     const debouncedFileNames = useDebounce(fileNames);
-    const liveDescriptors = useLiveDescriptors();
+    const liveDescriptors = useLiveDescriptors(i18n);
 
     const rootItemIndex = '/';
 
@@ -302,7 +314,12 @@ const FileTree: React.VFC = () => {
                             icon: 'document',
                             secondaryLabel: (
                                 <TreeItemContext.Consumer>
-                                    {(item) => <FileActionButtonGroup item={item} />}
+                                    {(item) => (
+                                        <FileActionButtonGroup
+                                            item={item}
+                                            i18n={i18n}
+                                        />
+                                    )}
                                 </TreeItemContext.Consumer>
                             ),
                         },
@@ -346,7 +363,7 @@ const FileTree: React.VFC = () => {
                 <Tree
                     treeId={treeId}
                     rootItem={rootItemIndex}
-                    treeLabel={i18n.translate(ExplorerStringId.TreeLabel)}
+                    treeLabel={i18n.translate(I18nId.TreeLabel)}
                 />
             </div>
         </ControlledTreeEnvironment>
@@ -354,11 +371,13 @@ const FileTree: React.VFC = () => {
 };
 
 const Explorer: React.VFC = () => {
+    const [i18n] = useI18n();
+
     return (
         <div className="h-100" onContextMenu={preventBrowserNativeContextMenu}>
-            <Header />
+            <Header i18n={i18n} />
             <Divider />
-            <FileTree />
+            <FileTree i18n={i18n} />
             <RenameFileDialog />
         </div>
     );

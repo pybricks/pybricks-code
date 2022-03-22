@@ -3,10 +3,10 @@
 
 // About dialog translation keys.
 
-export enum AboutStringId {
-    Title = 'about.title',
-    Description = 'about.description',
-    LicenseButtonLabel = 'about.licenseButton.label',
-    ChangelogButtonLabel = 'about.changelogButton.label',
-    WebsiteButtonLabel = 'about.websiteButton.label',
+export enum I18nId {
+    Title = 'title',
+    Description = 'description',
+    LicenseButtonLabel = 'licenseButton.label',
+    ChangelogButtonLabel = 'changelogButton.label',
+    WebsiteButtonLabel = 'websiteButton.label',
 }

@@ -3,12 +3,12 @@
 
 // License dialog translation keys.
 
-export enum LicenseStringId {
-    Title = 'license.title',
-    Description = 'license.description',
-    PackageLabel = 'license.packageLabel',
-    AuthorLabel = 'license.authorLabel',
-    LicenseLabel = 'license.licenseLabel',
-    ErrorFetchFailed = 'license.error.fetchFailed',
-    SelectPackageHelp = 'license.help.selectPackage',
+export enum I18nId {
+    Title = 'title',
+    Description = 'description',
+    PackageLabel = 'packageLabel',
+    AuthorLabel = 'authorLabel',
+    LicenseLabel = 'licenseLabel',
+    ErrorFetchFailed = 'error.fetchFailed',
+    SelectPackageHelp = 'help.selectPackage',
 }

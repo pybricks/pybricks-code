@@ -3,7 +3,7 @@
 
 import { Menu, MenuDivider, MenuItem } from '@blueprintjs/core';
 import { ContextMenu2, ResizeSensor2 } from '@blueprintjs/popover2';
-import { useI18n } from '@shopify/react-i18n';
+import { I18n, useI18n } from '@shopify/react-i18n';
 import tomorrowNightEightiesTheme from 'monaco-themes/themes/Tomorrow-Night-Eighties.json';
 import xcodeTheme from 'monaco-themes/themes/Xcode_default.json';
 import React, { useState } from 'react';
@@ -15,8 +15,7 @@ import { fileStorageWriteFile } from '../fileStorage/actions';
 import { compile } from '../mpy/actions';
 import { settingsToggleShowDocs } from '../settings/actions';
 import { isMacOS } from '../utils/os';
-import { EditorStringId } from './i18n';
-import en from './i18n.en.json';
+import { I18nId } from './i18n';
 import * as pybricksMicroPython from './pybricksMicroPython';
 import { UntitledHintContribution } from './untitledHint';
 
@@ -62,13 +61,12 @@ monaco.editor.defineTheme(
 const xcodeId = 'xcode';
 monaco.editor.defineTheme(xcodeId, xcodeTheme as monaco.editor.IStandaloneThemeData);
 
-type EditorContextMenuProps = { editor: EditorType };
+type EditorContextMenuProps = { editor: EditorType; i18n: I18n };
 
 const EditorContextMenu: React.VoidFunctionComponent<EditorContextMenuProps> = ({
     editor,
+    i18n,
 }) => {
-    const [i18n] = useI18n({ id: 'editor', translations: { en }, fallback: en });
-
     const hasEditor = editor !== null;
 
     const selection = editor?.getSelection();
@@ -85,7 +83,7 @@ const EditorContextMenu: React.VoidFunctionComponent<EditorContextMenuProps> = (
                     editor?.focus();
                     editor?.trigger(null, 'editor.action.clipboardCopyAction', null);
                 }}
-                text={i18n.translate(EditorStringId.Copy)}
+                text={i18n.translate(I18nId.Copy)}
                 icon="duplicate"
                 label={isMacOS() ? 'Cmd-C' : 'Ctrl-C'}
                 disabled={!hasSelection}
@@ -95,7 +93,7 @@ const EditorContextMenu: React.VoidFunctionComponent<EditorContextMenuProps> = (
                     editor?.focus();
                     editor?.trigger(null, 'editor.action.clipboardPasteAction', null);
                 }}
-                text={i18n.translate(EditorStringId.Paste)}
+                text={i18n.translate(I18nId.Paste)}
                 icon="clipboard"
                 label={isMacOS() ? 'Cmd-V' : 'Ctrl-V'}
                 disabled={!hasEditor}
@@ -105,7 +103,7 @@ const EditorContextMenu: React.VoidFunctionComponent<EditorContextMenuProps> = (
                     editor?.focus();
                     editor?.trigger(null, 'editor.action.selectAll', null);
                 }}
-                text={i18n.translate(EditorStringId.SelectAll)}
+                text={i18n.translate(I18nId.SelectAll)}
                 icon="blank"
                 label={isMacOS() ? 'Cmd-A' : 'Ctrl-A'}
                 disabled={!hasEditor}
@@ -116,7 +114,7 @@ const EditorContextMenu: React.VoidFunctionComponent<EditorContextMenuProps> = (
                     editor?.focus();
                     editor?.trigger(null, 'undo', null);
                 }}
-                text={i18n.translate(EditorStringId.Undo)}
+                text={i18n.translate(I18nId.Undo)}
                 icon="undo"
                 label={isMacOS() ? 'Cmd-Z' : 'Ctrl-Z'}
                 disabled={!canUndo}
@@ -126,7 +124,7 @@ const EditorContextMenu: React.VoidFunctionComponent<EditorContextMenuProps> = (
                     editor?.focus();
                     editor?.trigger(null, 'redo', null);
                 }}
-                text={i18n.translate(EditorStringId.Redo)}
+                text={i18n.translate(I18nId.Redo)}
                 icon="redo"
                 label={isMacOS() ? 'Cmd-Shift-Z' : 'Ctrl-Shift-Z'}
                 disabled={!canRedo}
@@ -143,7 +141,7 @@ const Editor: React.VoidFunctionComponent<EditorProps> = ({ onEditorChanged }) =
     const [editor, setEditor] = useState<EditorType>(null);
     const { isDarkMode } = useTernaryDarkMode();
 
-    const [i18n] = useI18n({ id: 'editor', translations: { en }, fallback: en });
+    const [i18n] = useI18n();
 
     return (
         <ResizeSensor2 onResize={() => editor?.layout()}>
@@ -152,7 +150,7 @@ const Editor: React.VoidFunctionComponent<EditorProps> = ({ onEditorChanged }) =
                 // NB: we have to create a new context menu each time it is
                 // shown in order to get some state, like canUndo and canRedo
                 // that don't have events to monitor changes.
-                content={() => <EditorContextMenu editor={editor} />}
+                content={() => <EditorContextMenu editor={editor} i18n={i18n} />}
                 popoverProps={{ onClosed: () => editor?.focus() }}
             >
                 <MonacoEditor
@@ -172,13 +170,13 @@ const Editor: React.VoidFunctionComponent<EditorProps> = ({ onEditorChanged }) =
                         subscriptions.push(
                             new UntitledHintContribution(
                                 editor,
-                                i18n.translate(EditorStringId.Placeholder),
+                                i18n.translate(I18nId.Placeholder),
                             ),
                         );
                         subscriptions.push(
                             editor.addAction({
                                 id: 'pybricks.action.toggleDocs',
-                                label: i18n.translate(EditorStringId.ToggleDocs),
+                                label: i18n.translate(I18nId.ToggleDocs),
                                 run: () => {
                                     // we have to use dispatch here instead of
                                     // toggleIsSettingShowDocsEnabled since this
@@ -193,7 +191,7 @@ const Editor: React.VoidFunctionComponent<EditorProps> = ({ onEditorChanged }) =
                         subscriptions.push(
                             editor.addAction({
                                 id: 'pybricks.action.check',
-                                label: i18n.translate(EditorStringId.Check),
+                                label: i18n.translate(I18nId.Check),
                                 // REVISIT: the compile options here might need to be changed - hopefully there is
                                 // one setting that works for all hub types for cases where we aren't connected.
                                 run: (e) => {

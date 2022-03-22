@@ -12,8 +12,7 @@ import { FitAddon } from 'xterm-addon-fit';
 import { isMacOS } from '../utils/os';
 import { TerminalContext } from './TerminalContext';
 import { receiveData } from './actions';
-import { TerminalStringId } from './i18n';
-import en from './i18n.en.json';
+import { I18nId } from './i18n';
 
 import 'xterm/css/xterm.css';
 
@@ -55,7 +54,7 @@ function createContextMenu(
     xterm: XTerm,
 ): (props: ContextMenu2ContentProps) => JSX.Element {
     const contextMenu = (_props: ContextMenu2ContentProps): JSX.Element => {
-        const [i18n] = useI18n({ id: 'terminal', translations: { en }, fallback: en });
+        const [i18n] = useI18n();
 
         return (
             <Menu>
@@ -66,7 +65,7 @@ function createContextMenu(
                             navigator.clipboard.writeText(selected);
                         }
                     }}
-                    text={i18n.translate(TerminalStringId.Copy)}
+                    text={i18n.translate(I18nId.Copy)}
                     icon="duplicate"
                     label={isMacOS() ? 'Cmd-C' : 'Ctrl-Shift-C'}
                     disabled={!xterm.hasSelection()}
@@ -75,19 +74,19 @@ function createContextMenu(
                     onClick={async (): Promise<void> => {
                         xterm.paste(await navigator.clipboard.readText());
                     }}
-                    text={i18n.translate(TerminalStringId.Paste)}
+                    text={i18n.translate(I18nId.Paste)}
                     icon="clipboard"
                     label={isMacOS() ? 'Cmd-V' : 'Ctrl-V'}
                 />
                 <MenuItem
                     onClick={() => xterm.selectAll()}
-                    text={i18n.translate(TerminalStringId.SelectAll)}
+                    text={i18n.translate(I18nId.SelectAll)}
                     icon="blank"
                 />
                 <MenuDivider />
                 <MenuItem
                     onClick={(): void => xterm.clear()}
-                    text={i18n.translate(TerminalStringId.Clear)}
+                    text={i18n.translate(I18nId.Clear)}
                     icon="trash"
                 />
             </Menu>

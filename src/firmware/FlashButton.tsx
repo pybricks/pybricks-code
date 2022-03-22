@@ -9,7 +9,7 @@ import * as notificationActions from '../notifications/actions';
 import { useSelector } from '../reducers';
 import { useSettingFlashCurrentProgram, useSettingHubName } from '../settings/hooks';
 import OpenFileButton, { OpenFileButtonProps } from '../toolbar/OpenFileButton';
-import { TooltipId } from '../toolbar/i18n';
+import { I18nId } from '../toolbar/i18n';
 import { flashFirmware } from './actions';
 import firmwareIcon from './firmware.svg';
 
@@ -30,7 +30,7 @@ const FlashButton: React.VoidFunctionComponent<FlashButtonProps> = ({ label }) =
             label={label}
             fileExtension=".zip"
             icon={firmwareIcon}
-            tooltip={flashing ? TooltipId.FlashProgress : TooltipId.Flash}
+            tooltip={flashing ? I18nId.FlashProgress : I18nId.Flash}
             enabled={
                 bootloaderConnection === BootloaderConnectionState.Disconnected &&
                 bleConnection === BleConnectionState.Disconnected

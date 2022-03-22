@@ -10,20 +10,15 @@ import {
     validateFileName,
 } from '../../pybricksMicropython/lib';
 import { useSelector } from '../../reducers';
-import FileNameFormGroup from '../FileNameFormGroup';
+import FileNameFormGroup from '../fileNameFormGroup/FileNameFormGroup';
 import { renameFileDialogDidAccept, renameFileDialogDidCancel } from './actions';
-import { RenameFileDialogStringId } from './i18n';
-import en from './i18n.en.json';
+import { I18nId } from './i18n';
 
 const RenameFileDialog: React.VFC = () => {
     const dispatch = useDispatch();
     const isOpen = useSelector((s) => s.explorer.renameFileDialog.isOpen);
     const oldName = useSelector((s) => s.explorer.renameFileDialog.fileName);
-    const [i18n] = useI18n({
-        id: 'renameFileDialog',
-        translations: { en },
-        fallback: en,
-    });
+    const [i18n] = useI18n();
 
     const [baseName, extension] = oldName.split(/(\.\w+)$/);
 
@@ -47,7 +42,7 @@ const RenameFileDialog: React.VFC = () => {
 
     return (
         <Dialog
-            title={i18n.translate(RenameFileDialogStringId.Title, {
+            title={i18n.translate(I18nId.Title, {
                 fileName: oldName,
             })}
             isOpen={isOpen}
@@ -75,7 +70,7 @@ const RenameFileDialog: React.VFC = () => {
                             disabled={result !== FileNameValidationResult.IsOk}
                             type="submit"
                         >
-                            {i18n.translate(RenameFileDialogStringId.ActionRename)}
+                            {i18n.translate(I18nId.ActionRename)}
                         </Button>
                     </div>
                 </div>

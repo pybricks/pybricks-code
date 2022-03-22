@@ -2,7 +2,7 @@
 //
 // https://github.com/gsoft-inc/craco/blob/master/packages/craco/README.md#configuration
 
-const { addBeforeLoader, loaderByName } = require('@craco/craco');
+const { addBeforeLoader, loaderByName, getLoader } = require('@craco/craco');
 const CopyPlugin = require('copy-webpack-plugin');
 const LicensePlugin = require('license-webpack-plugin').LicenseWebpackPlugin;
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
@@ -183,6 +183,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.`,
 };
 
 module.exports = {
+    babel: {
+        plugins: ['@shopify/react-i18n/babel'],
+    },
     webpack: {
         plugins: [
             new CopyPlugin({

@@ -1,0 +1,9 @@
+{
+    "title": "Create a new file",
+    "smartHub": {
+        "label": "Smart hub"
+    },
+    "action": {
+        "create": "Create"
+    }
+}

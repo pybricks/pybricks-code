@@ -5,7 +5,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from '../reducers';
 import ActionButton, { ActionButtonProps } from '../toolbar/ActionButton';
-import { TooltipId } from '../toolbar/i18n';
+import { I18nId } from '../toolbar/i18n';
 import { stop } from './actions';
 import { HubRuntimeState } from './reducers';
 import stopIcon from './stop.svg';
@@ -24,7 +24,7 @@ const StopButton: React.VoidFunctionComponent<StopButtonProps> = ({
         <ActionButton
             label={label}
             keyboardShortcut={keyboardShortcut}
-            tooltip={TooltipId.Stop}
+            tooltip={I18nId.Stop}
             icon={stopIcon}
             enabled={runtime === HubRuntimeState.Running}
             onAction={() => dispatch(stop())}

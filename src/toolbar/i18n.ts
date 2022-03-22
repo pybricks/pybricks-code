@@ -3,7 +3,7 @@
 //
 // Toolbar button translation keys.
 
-export enum TooltipId {
+export enum I18nId {
     Run = 'run.action.tooltip',
     RunProgress = 'run.progress.tooltip',
     Stop = 'stop.tooltip',

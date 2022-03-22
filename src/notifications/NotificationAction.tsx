@@ -5,11 +5,10 @@
 
 import { Replacements, useI18n } from '@shopify/react-i18n';
 import React from 'react';
-import { MessageId } from './i18n';
-import en from './i18n.en.json';
+import { I18nId } from './i18n';
 
 type NotificationActionProps = {
-    messageId: MessageId;
+    messageId: I18nId;
     replacements?: Replacements;
 };
 
@@ -17,11 +16,7 @@ const NotificationAction: React.VoidFunctionComponent<NotificationActionProps> =
     messageId,
     replacements,
 }) => {
-    const [i18n] = useI18n({
-        id: 'notification',
-        translations: { en },
-        fallback: en,
-    });
+    const [i18n] = useI18n();
 
     return <>{i18n.translate(messageId, replacements)}</>;
 };

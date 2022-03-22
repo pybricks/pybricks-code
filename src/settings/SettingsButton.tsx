@@ -3,7 +3,7 @@
 
 import React from 'react';
 import ActionButton, { ActionButtonProps } from '../toolbar/ActionButton';
-import { TooltipId } from '../toolbar/i18n';
+import { I18nId } from '../toolbar/i18n';
 import settingsIcon from './settings.svg';
 
 type SettingsButtonProps = Pick<ActionButtonProps, 'label' | 'onAction'>;
@@ -15,7 +15,7 @@ const SettingsButton: React.VoidFunctionComponent<SettingsButtonProps> = ({
     return (
         <ActionButton
             label={label}
-            tooltip={TooltipId.Settings}
+            tooltip={I18nId.Settings}
             icon={settingsIcon}
             onAction={onAction}
         />

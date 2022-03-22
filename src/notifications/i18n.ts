@@ -3,7 +3,7 @@
 //
 // Notification translation keys.
 
-export enum MessageId {
+export enum I18nId {
     AppNoUpdateFound = 'app.noUpdateFound',
     CopyErrorMessage = 'copyErrorMessage',
     ReportBug = 'reportBug',

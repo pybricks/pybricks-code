@@ -8,8 +8,7 @@ import React, { useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { tooltipDelay } from '../app/constants';
 import { pointerEventsNone } from '../utils/react';
-import { TooltipId } from './i18n';
-import en from './i18n.en.json';
+import { I18nId } from './i18n';
 
 const smallScreenThreshold = 700;
 export interface OpenFileButtonProps {
@@ -18,7 +17,7 @@ export interface OpenFileButtonProps {
     /** The accepted file extension */
     readonly fileExtension: string;
     /** Tooltip text that appears when hovering over the button. */
-    readonly tooltip: TooltipId;
+    readonly tooltip: I18nId;
     /** Icon shown on the button. */
     readonly icon: string;
     /** When true or undefined, the button is enabled. */
@@ -50,11 +49,7 @@ const OpenFileButton: React.VoidFunctionComponent<OpenFileButtonProps> = ({
     onReject,
     onClick,
 }) => {
-    const [i18n] = useI18n({
-        id: 'openFileButton',
-        translations: { en },
-        fallback: en,
-    });
+    const [i18n] = useI18n();
 
     const [isSmallScreen, setIsSmallScreen] = useState(
         window.innerWidth <= smallScreenThreshold,
@@ -108,7 +103,7 @@ const OpenFileButton: React.VoidFunctionComponent<OpenFileButtonProps> = ({
         <Tooltip2
             content={i18n.translate(
                 tooltip,
-                tooltip === TooltipId.FlashProgress
+                tooltip === I18nId.FlashProgress
                     ? {
                           percent:
                               progress === undefined

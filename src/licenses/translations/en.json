@@ -1,0 +1,13 @@
+{
+    "title": "Open Source Software Licenses",
+    "description": "{name} is built on open source software. By using {name} you are agreeing to the terms and conditions of all of the included software licenses.",
+    "packageLabel": "Package:",
+    "authorLabel": "Author:",
+    "licenseLabel": "License:",
+    "error": {
+        "fetchFailed": "Failed to load license data."
+    },
+    "help": {
+        "selectPackage": "Select a package to view the license."
+    }
+}

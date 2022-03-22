@@ -1,0 +1,12 @@
+{
+    "label": "File name",
+    "helpText": {
+        "isOk": "OK!",
+        "isEmpty": "File name cannot be empty.",
+        "hasSpaces": "File name cannot have spaces.",
+        "hasFileExtension": "The file extension will be added automatically.",
+        "hasInvalidFirstCharacter": "File name must start with a letter ({letters}) or underscore ({underscore}).",
+        "hasInvalidCharacters": "File name can only contain letters ({letters}), numbers ({numbers}), dashes ({dash}) and underscores ({underscore}).",
+        "alreadyExists": "A file with this name already exists."
+    }
+}

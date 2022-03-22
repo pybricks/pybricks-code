@@ -2,15 +2,16 @@
 // Copyright (c) 2022 The Pybricks Authors
 
 import { Classes, FormGroup, InputGroup, Intent, Tag } from '@blueprintjs/core';
-import { useI18n } from '@shopify/react-i18n';
+import { I18n, useI18n } from '@shopify/react-i18n';
 import React from 'react';
-import { FileNameValidationResult } from '../pybricksMicropython/lib';
-import { NewFileWizardStringId } from './i18n';
-import en from './i18n.en.json';
+import { FileNameValidationResult } from '../../pybricksMicropython/lib';
+import { I18nId } from './i18n';
 
 type FileNameHelpTextProps = {
     /** The result of the file name validation. */
     validation: FileNameValidationResult;
+    /** Translation context. */
+    i18n: I18n;
 };
 
 /**
@@ -18,60 +19,39 @@ type FileNameHelpTextProps = {
  */
 const FileNameHelpText: React.VoidFunctionComponent<FileNameHelpTextProps> = ({
     validation,
+    i18n,
 }) => {
-    const [i18n] = useI18n({ id: 'explorer', translations: { en }, fallback: en });
-
     switch (validation) {
         case FileNameValidationResult.IsOk:
-            return <>{i18n.translate(NewFileWizardStringId.FileNameHelpTextIsOk)}</>;
+            return <>{i18n.translate(I18nId.HelpTextIsOk)}</>;
         case FileNameValidationResult.IsEmpty:
-            return <>{i18n.translate(NewFileWizardStringId.FileNameHelpTextIsEmpty)}</>;
+            return <>{i18n.translate(I18nId.HelpTextIsEmpty)}</>;
         case FileNameValidationResult.HasSpaces:
-            return (
-                <>{i18n.translate(NewFileWizardStringId.FileNameHelpTextHasSpaces)}</>
-            );
+            return <>{i18n.translate(I18nId.HelpTextHasSpaces)}</>;
         case FileNameValidationResult.HasFileExtension:
-            return (
-                <>
-                    {i18n.translate(
-                        NewFileWizardStringId.FileNameHelpTextHasFileExtension,
-                    )}
-                </>
-            );
+            return <>{i18n.translate(I18nId.HelpTextHasFileExtension)}</>;
         case FileNameValidationResult.HasInvalidFirstCharacter:
             return (
                 <>
-                    {i18n.translate(
-                        NewFileWizardStringId.FileNameHelpTextHasInvalidFirstCharacter,
-                        {
-                            letters: <code className={Classes.CODE}>a…z</code>,
-                            underscore: <code className={Classes.CODE}>_</code>,
-                        },
-                    )}
+                    {i18n.translate(I18nId.HelpTextHasInvalidFirstCharacter, {
+                        letters: <code className={Classes.CODE}>a…z</code>,
+                        underscore: <code className={Classes.CODE}>_</code>,
+                    })}
                 </>
             );
         case FileNameValidationResult.HasInvalidCharacters:
             return (
                 <>
-                    {i18n.translate(
-                        NewFileWizardStringId.FileNameHelpTextHasInvalidCharacters,
-                        {
-                            letters: <code className={Classes.CODE}>a…z</code>,
-                            numbers: <code className={Classes.CODE}>0…9</code>,
-                            dash: <code className={Classes.CODE}>-</code>,
-                            underscore: <code className={Classes.CODE}>_</code>,
-                        },
-                    )}
+                    {i18n.translate(I18nId.HelpTextHasInvalidCharacters, {
+                        letters: <code className={Classes.CODE}>a…z</code>,
+                        numbers: <code className={Classes.CODE}>0…9</code>,
+                        dash: <code className={Classes.CODE}>-</code>,
+                        underscore: <code className={Classes.CODE}>_</code>,
+                    })}
                 </>
             );
         case FileNameValidationResult.AlreadyExists:
-            return (
-                <>
-                    {i18n.translate(
-                        NewFileWizardStringId.FileNameHelpTextAlreadyExists,
-                    )}
-                </>
-            );
+            return <>{i18n.translate(I18nId.HelpTextAlreadyExists)}</>;
     }
 };
 
@@ -98,7 +78,7 @@ const FileNameFormGroup: React.VoidFunctionComponent<FileNameFormGroupProps> = (
     inputRef,
     onChange,
 }) => {
-    const [i18n] = useI18n({ id: 'explorer', translations: { en }, fallback: en });
+    const [i18n] = useI18n();
 
     const fileNameIntent =
         validationResult === FileNameValidationResult.IsOk
@@ -107,9 +87,9 @@ const FileNameFormGroup: React.VoidFunctionComponent<FileNameFormGroupProps> = (
 
     return (
         <FormGroup
-            label={i18n.translate(NewFileWizardStringId.FileNameLabel)}
+            label={i18n.translate(I18nId.Label)}
             intent={fileNameIntent}
-            subLabel={<FileNameHelpText validation={validationResult} />}
+            subLabel={<FileNameHelpText validation={validationResult} i18n={i18n} />}
         >
             <InputGroup
                 aria-label="File name"

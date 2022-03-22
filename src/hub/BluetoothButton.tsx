@@ -8,7 +8,7 @@ import { BleConnectionState } from '../ble/reducers';
 import { BootloaderConnectionState } from '../lwp3-bootloader/reducers';
 import { useSelector } from '../reducers';
 import ActionButton, { ActionButtonProps } from '../toolbar/ActionButton';
-import { TooltipId } from '../toolbar/i18n';
+import { I18nId } from '../toolbar/i18n';
 import btConnectedIcon from './bt-connected.svg';
 import btDisconnectedIcon from './bt-disconnected.svg';
 
@@ -30,9 +30,7 @@ const BluetoothButton: React.VoidFunctionComponent<BluetoothButtonProps> = ({
         <ActionButton
             label={label}
             tooltip={
-                isDisconnected
-                    ? TooltipId.BluetoothConnect
-                    : TooltipId.BluetoothDisconnect
+                isDisconnected ? I18nId.BluetoothConnect : I18nId.BluetoothDisconnect
             }
             icon={isDisconnected ? btDisconnectedIcon : btConnectedIcon}
             enabled={isDisconnected || bleConnection === BleConnectionState.Connected}

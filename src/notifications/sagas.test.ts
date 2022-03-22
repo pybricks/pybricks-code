@@ -44,7 +44,7 @@ import {
 } from '../service-worker/actions';
 import * as I18nToaster from './I18nToaster';
 import { add } from './actions';
-import { MessageId } from './i18n';
+import { I18nId } from './i18n';
 import notification from './sagas';
 
 function createTestToasterSaga(): { toaster: IToaster; saga: AsyncSaga } {
@@ -155,7 +155,7 @@ test.each([
     await saga.end();
 });
 
-test.each([[didCompile(new Uint8Array()), MessageId.MpyError]])(
+test.each([[didCompile(new Uint8Array()), I18nId.MpyError]])(
     'actions that should close a notification: %o',
     async (action: AnyAction, key: string) => {
         const { toaster, saga } = createTestToasterSaga();
@@ -176,7 +176,7 @@ describe('delete file saga', () => {
 
         saga.put(explorerDeleteFile('test.file'));
 
-        toaster.dismiss(MessageId.ExplorerDeleteFileMessage);
+        toaster.dismiss(I18nId.ExplorerDeleteFileMessage);
 
         await saga.end();
     });
@@ -188,7 +188,7 @@ describe('delete file saga', () => {
 
         const toast = toaster
             .getToasts()
-            .find((t) => t.key === MessageId.ExplorerDeleteFileMessage);
+            .find((t) => t.key === I18nId.ExplorerDeleteFileMessage);
 
         expect(toast).toBeDefined();
         expect(toast?.action).toBeDefined();
@@ -211,17 +211,13 @@ describe('delete file saga', () => {
         saga.put(explorerDeleteFile('test.file'));
 
         expect(
-            toaster
-                .getToasts()
-                .find((t) => t.key === MessageId.ExplorerDeleteFileMessage),
+            toaster.getToasts().find((t) => t.key === I18nId.ExplorerDeleteFileMessage),
         ).toBeDefined();
 
         saga.put(fileStorageDidRemoveItem('test.file'));
 
         expect(
-            toaster
-                .getToasts()
-                .find((t) => t.key === MessageId.ExplorerDeleteFileMessage),
+            toaster.getToasts().find((t) => t.key === I18nId.ExplorerDeleteFileMessage),
         ).toBeUndefined();
 
         await saga.end();

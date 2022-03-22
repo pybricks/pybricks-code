@@ -14,8 +14,7 @@ import { useI18n } from '@shopify/react-i18n';
 import React, { useEffect, useMemo, useState } from 'react';
 import { tooltipDelay } from '../app/constants';
 import { pointerEventsNone } from '../utils/react';
-import { TooltipId } from './i18n';
-import en from './i18n.en.json';
+import { I18nId } from './i18n';
 
 const smallScreenThreshold = 700;
 
@@ -25,9 +24,9 @@ export interface ActionButtonProps {
     /** Keyboard shortcut. */
     readonly keyboardShortcut?: string;
     /** Tooltip text that appears when hovering over the button. */
-    readonly tooltip: TooltipId;
+    readonly tooltip: I18nId;
     /** Tooltip text that appears when hovering over the button and @showProgress is true. */
-    readonly progressTooltip?: TooltipId;
+    readonly progressTooltip?: I18nId;
     /** Icon shown on the button. */
     readonly icon: string;
     /** When true or undefined, the button is enabled. */
@@ -51,7 +50,7 @@ const ActionButton: React.VoidFunctionComponent<ActionButtonProps> = ({
     progress,
     onAction,
 }) => {
-    const [i18n] = useI18n({ id: 'actionButton', translations: { en }, fallback: en });
+    const [i18n] = useI18n();
 
     const [isSmallScreen, setIsSmallScreen] = useState(
         window.innerWidth <= smallScreenThreshold,

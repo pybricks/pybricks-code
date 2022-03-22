@@ -4,7 +4,7 @@
 import { waitFor } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
-import { testRender } from '../../test';
+import { testRender } from '../../../test';
 import NewFileWizard from './NewFileWizard';
 
 describe('create button', () => {

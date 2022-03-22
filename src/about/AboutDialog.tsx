@@ -17,8 +17,7 @@ import {
 } from '../app/constants';
 import LicenseDialog from '../licenses/LicenseDialog';
 import ExternalLinkIcon from '../utils/ExternalLinkIcon';
-import { AboutStringId } from './i18n';
-import en from './i18n.en.json';
+import { I18nId } from './i18n';
 
 import './about.scss';
 
@@ -30,11 +29,11 @@ const AboutDialog: React.VoidFunctionComponent<AboutDialogProps> = ({
 }) => {
     const [isLicenseDialogOpen, setIsLicenseDialogOpen] = useState(false);
 
-    const [i18n] = useI18n({ id: 'about', translations: { en }, fallback: en });
+    const [i18n] = useI18n();
 
     return (
         <Dialog
-            title={i18n.translate(AboutStringId.Title, { appName })}
+            title={i18n.translate(I18nId.Title, { appName })}
             isOpen={isOpen}
             onClose={onClose}
         >
@@ -43,7 +42,7 @@ const AboutDialog: React.VoidFunctionComponent<AboutDialogProps> = ({
                     <img src="favicon.ico" />
                 </div>
                 <p>
-                    <strong>{i18n.translate(AboutStringId.Description)}</strong>
+                    <strong>{i18n.translate(I18nId.Description)}</strong>
                 </p>
                 <p>{`v${firmwareVersion} (${appName} v${appVersion})`}</p>
                 <p>{pybricksCopyright}</p>
@@ -54,14 +53,14 @@ const AboutDialog: React.VoidFunctionComponent<AboutDialogProps> = ({
                 </p>
                 <div className={Classes.DIALOG_FOOTER_ACTIONS}>
                     <Button onClick={() => setIsLicenseDialogOpen(true)}>
-                        {i18n.translate(AboutStringId.LicenseButtonLabel)}
+                        {i18n.translate(I18nId.LicenseButtonLabel)}
                     </Button>
                     <AnchorButton href={changelogUrl} target="blank_">
-                        {i18n.translate(AboutStringId.ChangelogButtonLabel)}
+                        {i18n.translate(I18nId.ChangelogButtonLabel)}
                         <ExternalLinkIcon />
                     </AnchorButton>
                     <AnchorButton href={pybricksWebsiteUrl} target="blank_">
-                        {i18n.translate(AboutStringId.WebsiteButtonLabel)}
+                        {i18n.translate(I18nId.WebsiteButtonLabel)}
                         <ExternalLinkIcon />
                     </AnchorButton>
                 </div>

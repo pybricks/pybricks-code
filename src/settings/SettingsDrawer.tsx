@@ -40,8 +40,7 @@ import {
     useSettingHubName,
     useSettingIsShowDocsEnabled,
 } from './hooks';
-import { SettingsStringId } from './i18n';
-import en from './i18n.en.json';
+import { I18nId } from './i18n';
 import './settings.scss';
 
 type SettingsProps = {
@@ -77,17 +76,13 @@ const SettingsDrawer: React.VoidFunctionComponent<SettingsProps> = ({
 
     const dispatch = useDispatch();
 
-    const [i18n] = useI18n({
-        id: 'settings',
-        translations: { en },
-        fallback: en,
-    });
+    const [i18n] = useI18n();
 
     const hotkeys = useMemo(
         () => [
             {
                 combo: 'mod+d',
-                label: i18n.translate(SettingsStringId.AppearanceDocumentationTooltip),
+                label: i18n.translate(I18nId.AppearanceDocumentationTooltip),
                 global: true,
                 preventDefault: true,
                 onKeyDown: toggleIsSettingShowDocsEnabled,
@@ -112,7 +107,7 @@ const SettingsDrawer: React.VoidFunctionComponent<SettingsProps> = ({
             size={DrawerSize.SMALL}
             title={
                 <span id="settings-drawer-dialog-title">
-                    {i18n.translate(SettingsStringId.Title)}
+                    {i18n.translate(I18nId.Title)}
                 </span>
             }
             onOpening={handleDrawerOpening}
@@ -123,18 +118,15 @@ const SettingsDrawer: React.VoidFunctionComponent<SettingsProps> = ({
             <div className={Classes.DRAWER_BODY}>
                 <div className={Classes.DIALOG_BODY}>
                     <FormGroup
-                        label={i18n.translate(SettingsStringId.AppearanceTitle)}
-                        helperText={i18n.translate(
-                            SettingsStringId.AppearanceZoomHelp,
-                            {
-                                in: <span>{isMacOS() ? 'Cmd' : 'Ctrl'}-+</span>,
-                                out: <span>{isMacOS() ? 'Cmd' : 'Ctrl'}--</span>,
-                            },
-                        )}
+                        label={i18n.translate(I18nId.AppearanceTitle)}
+                        helperText={i18n.translate(I18nId.AppearanceZoomHelp, {
+                            in: <span>{isMacOS() ? 'Cmd' : 'Ctrl'}-+</span>,
+                            out: <span>{isMacOS() ? 'Cmd' : 'Ctrl'}--</span>,
+                        })}
                     >
                         <Tooltip2
                             content={i18n.translate(
-                                SettingsStringId.AppearanceDocumentationTooltip,
+                                I18nId.AppearanceDocumentationTooltip,
                             )}
                             rootBoundary="document"
                             placement="left"
@@ -143,7 +135,7 @@ const SettingsDrawer: React.VoidFunctionComponent<SettingsProps> = ({
                         >
                             <Switch
                                 label={i18n.translate(
-                                    SettingsStringId.AppearanceDocumentationLabel,
+                                    I18nId.AppearanceDocumentationLabel,
                                 )}
                                 checked={isSettingShowDocsEnabled}
                                 onChange={(e) =>
@@ -154,18 +146,14 @@ const SettingsDrawer: React.VoidFunctionComponent<SettingsProps> = ({
                             />
                         </Tooltip2>
                         <Tooltip2
-                            content={i18n.translate(
-                                SettingsStringId.AppearanceDarkModeTooltip,
-                            )}
+                            content={i18n.translate(I18nId.AppearanceDarkModeTooltip)}
                             rootBoundary="document"
                             placement="left"
                             targetTagName="div"
                             hoverOpenDelay={tooltipDelay}
                         >
                             <Switch
-                                label={i18n.translate(
-                                    SettingsStringId.AppearanceDarkModeLabel,
-                                )}
+                                label={i18n.translate(I18nId.AppearanceDarkModeLabel)}
                                 checked={isDarkMode}
                                 onChange={(e) =>
                                     setTernaryDarkMode(
@@ -177,10 +165,10 @@ const SettingsDrawer: React.VoidFunctionComponent<SettingsProps> = ({
                             />
                         </Tooltip2>
                     </FormGroup>
-                    <FormGroup label={i18n.translate(SettingsStringId.FirmwareTitle)}>
+                    <FormGroup label={i18n.translate(I18nId.FirmwareTitle)}>
                         <Tooltip2
                             content={i18n.translate(
-                                SettingsStringId.FirmwareCurrentProgramTooltip,
+                                I18nId.FirmwareCurrentProgramTooltip,
                             )}
                             rootBoundary="document"
                             placement="left"
@@ -189,7 +177,7 @@ const SettingsDrawer: React.VoidFunctionComponent<SettingsProps> = ({
                         >
                             <Switch
                                 label={i18n.translate(
-                                    SettingsStringId.FirmwareCurrentProgramLabel,
+                                    I18nId.FirmwareCurrentProgramLabel,
                                 )}
                                 checked={isFlashCurrentProgramEnabled}
                                 onChange={(e) =>
@@ -201,9 +189,7 @@ const SettingsDrawer: React.VoidFunctionComponent<SettingsProps> = ({
                         </Tooltip2>
                         <ControlGroup>
                             <Tooltip2
-                                content={i18n.translate(
-                                    SettingsStringId.FirmwareHubNameTooltip,
-                                )}
+                                content={i18n.translate(I18nId.FirmwareHubNameTooltip)}
                                 rootBoundary="document"
                                 placement="left"
                                 targetTagName="div"
@@ -214,9 +200,7 @@ const SettingsDrawer: React.VoidFunctionComponent<SettingsProps> = ({
                                     className={Classes.INLINE}
                                     htmlFor="hub-name-input"
                                 >
-                                    {i18n.translate(
-                                        SettingsStringId.FirmwareHubNameLabel,
-                                    )}
+                                    {i18n.translate(I18nId.FirmwareHubNameLabel)}
                                 </Label>
                             </Tooltip2>
                             <InputGroup
@@ -231,7 +215,7 @@ const SettingsDrawer: React.VoidFunctionComponent<SettingsProps> = ({
                                     isHubNameValid ? undefined : (
                                         <Tooltip2
                                             content={i18n.translate(
-                                                SettingsStringId.FirmwareHubNameErrorTooltip,
+                                                I18nId.FirmwareHubNameErrorTooltip,
                                             )}
                                             rootBoundary="document"
                                             placement="bottom"
@@ -248,14 +232,14 @@ const SettingsDrawer: React.VoidFunctionComponent<SettingsProps> = ({
                             />
                         </ControlGroup>
                     </FormGroup>
-                    <FormGroup label={i18n.translate(SettingsStringId.HelpTitle)}>
+                    <FormGroup label={i18n.translate(I18nId.HelpTitle)}>
                         <ButtonGroup minimal={true} vertical={true} alignText="left">
                             <AnchorButton
                                 icon="lightbulb"
                                 href={pybricksProjectsUrl}
                                 target="blank_"
                             >
-                                {i18n.translate(SettingsStringId.HelpProjectsLabel)}
+                                {i18n.translate(I18nId.HelpProjectsLabel)}
                                 <ExternalLinkIcon />
                             </AnchorButton>
                             <AnchorButton
@@ -263,7 +247,7 @@ const SettingsDrawer: React.VoidFunctionComponent<SettingsProps> = ({
                                 href={pybricksSupportUrl}
                                 target="blank_"
                             >
-                                {i18n.translate(SettingsStringId.HelpSupportLabel)}
+                                {i18n.translate(I18nId.HelpSupportLabel)}
                                 <ExternalLinkIcon />
                             </AnchorButton>
                             <AnchorButton
@@ -271,7 +255,7 @@ const SettingsDrawer: React.VoidFunctionComponent<SettingsProps> = ({
                                 href={pybricksGitterUrl}
                                 target="blank_"
                             >
-                                {i18n.translate(SettingsStringId.HelpChatLabel)}
+                                {i18n.translate(I18nId.HelpChatLabel)}
                                 <ExternalLinkIcon />
                             </AnchorButton>
                             <AnchorButton
@@ -279,7 +263,7 @@ const SettingsDrawer: React.VoidFunctionComponent<SettingsProps> = ({
                                 href={pybricksBugReportsUrl}
                                 target="blank_"
                             >
-                                {i18n.translate(SettingsStringId.HelpBugsLabel)}
+                                {i18n.translate(I18nId.HelpBugsLabel)}
                                 <ExternalLinkIcon />
                             </AnchorButton>
                             <AboutDialog
@@ -289,10 +273,10 @@ const SettingsDrawer: React.VoidFunctionComponent<SettingsProps> = ({
                         </ButtonGroup>
                     </FormGroup>
                     <FormGroup
-                        label={i18n.translate(SettingsStringId.AppTitle)}
+                        label={i18n.translate(I18nId.AppTitle)}
                         helperText={
                             readyForOfflineUse &&
-                            i18n.translate(SettingsStringId.AppOfflineUseHelp)
+                            i18n.translate(I18nId.AppOfflineUseHelp)
                         }
                     >
                         <ButtonGroup minimal={true} vertical={true} alignText="left">
@@ -302,7 +286,7 @@ const SettingsDrawer: React.VoidFunctionComponent<SettingsProps> = ({
                                     onClick={() => dispatch(appShowInstallPrompt())}
                                     loading={promptingInstall}
                                 >
-                                    {i18n.translate(SettingsStringId.AppInstallLabel)}
+                                    {i18n.translate(I18nId.AppInstallLabel)}
                                 </Button>
                             )}
                             {isServiceWorkerRegistered && !updateAvailable && (
@@ -311,9 +295,7 @@ const SettingsDrawer: React.VoidFunctionComponent<SettingsProps> = ({
                                     onClick={() => dispatch(appCheckForUpdate())}
                                     loading={checkingForUpdate}
                                 >
-                                    {i18n.translate(
-                                        SettingsStringId.AppCheckForUpdateLabel,
-                                    )}
+                                    {i18n.translate(I18nId.AppCheckForUpdateLabel)}
                                 </Button>
                             )}
                             {isServiceWorkerRegistered && updateAvailable && (
@@ -321,7 +303,7 @@ const SettingsDrawer: React.VoidFunctionComponent<SettingsProps> = ({
                                     icon="refresh"
                                     onClick={() => dispatch(appReload())}
                                 >
-                                    {i18n.translate(SettingsStringId.AppRestartLabel)}
+                                    {i18n.translate(I18nId.AppRestartLabel)}
                                 </Button>
                             )}
                             <Button
@@ -331,7 +313,7 @@ const SettingsDrawer: React.VoidFunctionComponent<SettingsProps> = ({
                                     return true;
                                 }}
                             >
-                                {i18n.translate(SettingsStringId.AppAboutLabel)}
+                                {i18n.translate(I18nId.AppAboutLabel)}
                             </Button>
                         </ButtonGroup>
                     </FormGroup>

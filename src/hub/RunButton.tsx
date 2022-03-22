@@ -5,7 +5,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from '../reducers';
 import ActionButton, { ActionButtonProps } from '../toolbar/ActionButton';
-import { TooltipId } from '../toolbar/i18n';
+import { I18nId } from '../toolbar/i18n';
 import { downloadAndRun } from './actions';
 import { HubRuntimeState } from './reducers';
 import runIcon from './run.svg';
@@ -26,8 +26,8 @@ const RunButton: React.VoidFunctionComponent<RunButtonProps> = ({
         <ActionButton
             label={label}
             keyboardShortcut={keyboardShortcut}
-            tooltip={TooltipId.Run}
-            progressTooltip={TooltipId.RunProgress}
+            tooltip={I18nId.Run}
+            progressTooltip={I18nId.RunProgress}
             icon={runIcon}
             enabled={hasEditor && runtime === HubRuntimeState.Idle}
             showProgress={runtime === HubRuntimeState.Loading}

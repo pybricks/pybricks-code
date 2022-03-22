@@ -5,7 +5,7 @@ import React, { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from '../reducers';
 import ActionButton, { ActionButtonProps } from '../toolbar/ActionButton';
-import { TooltipId } from '../toolbar/i18n';
+import { I18nId } from '../toolbar/i18n';
 import { repl } from './actions';
 import { HubRuntimeState } from './reducers';
 import replIcon from './repl.svg';
@@ -24,7 +24,7 @@ const ReplButton: React.VoidFunctionComponent<ReplButtonProps> = ({
         <ActionButton
             label={label}
             keyboardShortcut={keyboardShortcut}
-            tooltip={TooltipId.Repl}
+            tooltip={I18nId.Repl}
             icon={replIcon}
             enabled={enabled}
             onAction={action}

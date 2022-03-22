@@ -16,12 +16,11 @@ import {
     FileNameValidationResult,
     pythonFileExtension,
     validateFileName,
-} from '../pybricksMicropython/lib';
-import { useSelector } from '../reducers';
-import FileNameFormGroup from './FileNameFormGroup';
-import { Hub, explorerCreateNewFile } from './actions';
-import { NewFileWizardStringId } from './i18n';
-import en from './i18n.en.json';
+} from '../../pybricksMicropython/lib';
+import { useSelector } from '../../reducers';
+import FileNameFormGroup from '../fileNameFormGroup/FileNameFormGroup';
+import { Hub, explorerCreateNewFile } from './../actions';
+import { I18nId } from './i18n';
 
 // This should be set to the most commonly used hub.
 const defaultHub = Hub.Technic;
@@ -37,7 +36,7 @@ const NewFileWizard: React.VoidFunctionComponent<NewFileWizardProps> = ({
     isOpen,
     onClose,
 }) => {
-    const [i18n] = useI18n({ id: 'explorer', translations: { en }, fallback: en });
+    const [i18n] = useI18n();
     const dispatch = useDispatch();
 
     const [fileName, setFileName] = useState('');
@@ -54,7 +53,7 @@ const NewFileWizard: React.VoidFunctionComponent<NewFileWizardProps> = ({
     return (
         <Dialog
             icon="plus"
-            title={i18n.translate(NewFileWizardStringId.Title)}
+            title={i18n.translate(I18nId.Title)}
             isOpen={isOpen}
             onOpening={() => setFileName('')}
             onOpened={() => fileNameInputRef.current?.focus()}
@@ -68,7 +67,7 @@ const NewFileWizard: React.VoidFunctionComponent<NewFileWizardProps> = ({
                     inputRef={fileNameInputRef}
                     onChange={setFileName}
                 />
-                <FormGroup label={i18n.translate(NewFileWizardStringId.SmartHubLabel)}>
+                <FormGroup label={i18n.translate(I18nId.SmartHubLabel)}>
                     <RadioGroup
                         selectedValue={hubType}
                         onChange={(e) => setHubType(e.currentTarget.value as Hub)}
@@ -99,7 +98,7 @@ const NewFileWizard: React.VoidFunctionComponent<NewFileWizardProps> = ({
                             );
                         }}
                     >
-                        {i18n.translate(NewFileWizardStringId.ActionCreate)}
+                        {i18n.translate(I18nId.ActionCreate)}
                     </Button>
                 </div>
             </div>
