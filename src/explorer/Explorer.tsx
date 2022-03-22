@@ -41,33 +41,27 @@ import './explorer.scss';
 type ActionButtonProps = {
     /** The icon to use for the button. */
     icon: IconName;
-    /** The tooltip translation ID for the tooltip text. */
-    toolTipId: I18nId;
-    /** Replacements if required by `toolTipId` */
-    toolTipReplacements?: { [key: string]: string };
+    /** The tooltip/title text. */
+    tooltip: string;
     /** If provided, controls button disabled state. */
     disabled?: boolean;
     /** If false, prevent focus. Default is true. */
     focusable?: boolean;
-    /** Translation context. */
-    i18n: I18n;
     /** Callback for button click event. */
     onClick: () => void;
 };
 
 const ActionButton: React.VoidFunctionComponent<ActionButtonProps> = ({
     icon,
-    toolTipId,
-    toolTipReplacements,
+    tooltip,
     disabled,
     focusable,
-    i18n,
     onClick,
 }) => {
     return (
         <Button
             icon={icon}
-            title={i18n.translate(toolTipId, toolTipReplacements)}
+            title={tooltip}
             disabled={disabled}
             tabIndex={focusable === false ? -1 : undefined}
             onFocus={focusable === false ? (e) => e.preventDefault() : undefined}
@@ -104,10 +98,8 @@ const FileActionButtonGroup: React.VoidFunctionComponent<ActionButtonGroupProps>
         >
             <ActionButton
                 icon="edit"
-                toolTipId={I18nId.TreeItemRenameTooltip}
-                toolTipReplacements={{ fileName }}
+                tooltip={i18n.translate(I18nId.TreeItemRenameTooltip, { fileName })}
                 focusable={false}
-                i18n={i18n}
                 onClick={() => dispatch(explorerRenameFile(fileName))}
             />
             <ActionButton
@@ -117,18 +109,14 @@ const FileActionButtonGroup: React.VoidFunctionComponent<ActionButtonGroupProps>
                 // archive icon which is also used to indicate an export/
                 // download operation
                 icon="import"
-                toolTipId={I18nId.TreeItemExportTooltip}
-                toolTipReplacements={{ fileName: fileName }}
+                tooltip={i18n.translate(I18nId.TreeItemExportTooltip, { fileName })}
                 focusable={false}
-                i18n={i18n}
                 onClick={() => dispatch(fileStorageExportFile(fileName))}
             />
             <ActionButton
                 icon="trash"
-                toolTipId={I18nId.TreeItemDeleteTooltip}
-                toolTipReplacements={{ fileName: fileName }}
+                tooltip={i18n.translate(I18nId.TreeItemDeleteTooltip, { fileName })}
                 focusable={false}
-                i18n={i18n}
                 onClick={() => dispatch(explorerDeleteFile(fileName))}
             />
         </ButtonGroup>
@@ -150,9 +138,8 @@ const Header: React.VoidFunctionComponent<HeaderProps> = ({ i18n }) => {
             <ButtonGroup minimal={true}>
                 <ActionButton
                     icon="archive"
-                    toolTipId={I18nId.HeaderExportAllTooltip}
+                    tooltip={i18n.translate(I18nId.HeaderExportAllTooltip)}
                     disabled={fileNames.length === 0}
-                    i18n={i18n}
                     onClick={() => dispatch(fileStorageArchiveAllFiles())}
                 />
                 <ActionButton
@@ -160,14 +147,12 @@ const Header: React.VoidFunctionComponent<HeaderProps> = ({ i18n }) => {
                     // what we want here since import is analogous to upload
                     // even though this is the "import" action
                     icon="export"
-                    toolTipId={I18nId.HeaderImportTooltip}
-                    i18n={i18n}
+                    tooltip={i18n.translate(I18nId.HeaderImportTooltip)}
                     onClick={() => dispatch(explorerImportFiles())}
                 />
                 <ActionButton
                     icon="plus"
-                    toolTipId={I18nId.HeaderAddNewTooltip}
-                    i18n={i18n}
+                    tooltip={i18n.translate(I18nId.HeaderAddNewTooltip)}
                     onClick={() => setIsNewFileWizardOpen(true)}
                 />
                 <NewFileWizard
