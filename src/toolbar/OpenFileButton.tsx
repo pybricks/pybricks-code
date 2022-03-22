@@ -3,12 +3,10 @@
 
 import { Button, IRef, Intent, Spinner, SpinnerSize } from '@blueprintjs/core';
 import { Tooltip2 } from '@blueprintjs/popover2';
-import { useI18n } from '@shopify/react-i18n';
 import React, { useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { tooltipDelay } from '../app/constants';
 import { pointerEventsNone } from '../utils/react';
-import { I18nId } from './i18n';
 
 const smallScreenThreshold = 700;
 export interface OpenFileButtonProps {
@@ -17,7 +15,7 @@ export interface OpenFileButtonProps {
     /** The accepted file extension */
     readonly fileExtension: string;
     /** Tooltip text that appears when hovering over the button. */
-    readonly tooltip: I18nId;
+    readonly tooltip: string;
     /** Icon shown on the button. */
     readonly icon: string;
     /** When true or undefined, the button is enabled. */
@@ -49,8 +47,6 @@ const OpenFileButton: React.VoidFunctionComponent<OpenFileButtonProps> = ({
     onReject,
     onClick,
 }) => {
-    const [i18n] = useI18n();
-
     const [isSmallScreen, setIsSmallScreen] = useState(
         window.innerWidth <= smallScreenThreshold,
     );
@@ -101,17 +97,7 @@ const OpenFileButton: React.VoidFunctionComponent<OpenFileButtonProps> = ({
 
     return (
         <Tooltip2
-            content={i18n.translate(
-                tooltip,
-                tooltip === I18nId.FlashProgress
-                    ? {
-                          percent:
-                              progress === undefined
-                                  ? ''
-                                  : i18n.formatPercentage(progress),
-                      }
-                    : undefined,
-            )}
+            content={tooltip}
             placement="bottom"
             hoverOpenDelay={tooltipDelay}
             renderTarget={({

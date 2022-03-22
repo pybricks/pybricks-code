@@ -1,21 +1,23 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2022 The Pybricks Authors
 
+import { useI18n } from '@shopify/react-i18n';
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { BleConnectionState } from '../ble/reducers';
-import { BootloaderConnectionState } from '../lwp3-bootloader/reducers';
-import * as notificationActions from '../notifications/actions';
-import { useSelector } from '../reducers';
-import { useSettingFlashCurrentProgram, useSettingHubName } from '../settings/hooks';
-import OpenFileButton, { OpenFileButtonProps } from '../toolbar/OpenFileButton';
-import { I18nId } from '../toolbar/i18n';
-import { flashFirmware } from './actions';
-import firmwareIcon from './firmware.svg';
+import { BleConnectionState } from '../../../ble/reducers';
+import { flashFirmware } from '../../../firmware/actions';
+import { BootloaderConnectionState } from '../../../lwp3-bootloader/reducers';
+import * as notificationActions from '../../../notifications/actions';
+import { useSelector } from '../../../reducers';
+import {
+    useSettingFlashCurrentProgram,
+    useSettingHubName,
+} from '../../../settings/hooks';
+import OpenFileButton from '../../../toolbar/OpenFileButton';
+import { I18nId } from './i18n';
+import icon from './icon.svg';
 
-type FlashButtonProps = Pick<OpenFileButtonProps, 'label'>;
-
-const FlashButton: React.VoidFunctionComponent<FlashButtonProps> = ({ label }) => {
+const FlashButton: React.VFC = () => {
     const bootloaderConnection = useSelector((s) => s.bootloader.connection);
     const bleConnection = useSelector((s) => s.ble.connection);
     const flashing = useSelector((s) => s.firmware.flashing);
@@ -24,13 +26,20 @@ const FlashButton: React.VoidFunctionComponent<FlashButtonProps> = ({ label }) =
     const { hubName } = useSettingHubName();
 
     const dispatch = useDispatch();
+    const [i18n] = useI18n();
 
     return (
         <OpenFileButton
-            label={label}
+            label={i18n.translate(I18nId.Label)}
             fileExtension=".zip"
-            icon={firmwareIcon}
-            tooltip={flashing ? I18nId.FlashProgress : I18nId.Flash}
+            icon={icon}
+            tooltip={
+                progress
+                    ? i18n.translate(I18nId.TooltipProgress, {
+                          percent: i18n.formatPercentage(progress),
+                      })
+                    : i18n.translate(I18nId.TooltipAction)
+            }
             enabled={
                 bootloaderConnection === BootloaderConnectionState.Disconnected &&
                 bleConnection === BleConnectionState.Disconnected

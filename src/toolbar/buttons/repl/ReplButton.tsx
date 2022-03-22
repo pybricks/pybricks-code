@@ -1,0 +1,31 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2020-2022 The Pybricks Authors
+
+import { useI18n } from '@shopify/react-i18n';
+import React, { useCallback } from 'react';
+import { useDispatch } from 'react-redux';
+import { repl } from '../../../hub/actions';
+import { HubRuntimeState } from '../../../hub/reducers';
+import { useSelector } from '../../../reducers';
+import ActionButton from '../../ActionButton';
+import { I18nId } from './i18n';
+import icon from './icon.svg';
+
+const ReplButton: React.VFC = () => {
+    const enabled = useSelector((s) => s.hub.runtime === HubRuntimeState.Idle);
+    const [i18n] = useI18n();
+    const dispatch = useDispatch();
+    const action = useCallback(() => dispatch(repl()), [dispatch]);
+
+    return (
+        <ActionButton
+            label={i18n.translate(I18nId.Label)}
+            tooltip={i18n.translate(I18nId.Tooltip)}
+            icon={icon}
+            enabled={enabled}
+            onAction={action}
+        />
+    );
+};
+
+export default ReplButton;

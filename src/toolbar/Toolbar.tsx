@@ -3,14 +3,14 @@
 
 import { ButtonGroup } from '@blueprintjs/core';
 import React, { useState } from 'react';
-import FlashButton from '../firmware/FlashButton';
-import BluetoothButton from '../hub/BluetoothButton';
-import ReplButton from '../hub/ReplButton';
-import RunButton from '../hub/RunButton';
-import StopButton from '../hub/StopButton';
-import SettingsButton from '../settings/SettingsButton';
 import SettingsDrawer from '../settings/SettingsDrawer';
 import { preventBrowserNativeContextMenu } from '../utils/react';
+import BluetoothButton from './buttons/bluetooth/BluetoothButton';
+import FlashButton from './buttons/flash/FlashButton';
+import ReplButton from './buttons/repl/ReplButton';
+import RunButton from './buttons/run/RunButton';
+import SettingsButton from './buttons/settings/SettingsButton';
+import StopButton from './buttons/stop/StopButton';
 
 import './toolbar.scss';
 
@@ -24,19 +24,16 @@ const Toolbar: React.VFC = (_props) => {
             className="pb-toolbar"
         >
             <ButtonGroup className="pb-toolbar-group pb-align-left">
-                <FlashButton label="Flash" />
-                <BluetoothButton label="Bluetooth" />
+                <FlashButton />
+                <BluetoothButton />
             </ButtonGroup>
             <ButtonGroup className="pb-toolbar-group pb-align-left">
-                <RunButton label="Run" keyboardShortcut="F5" />
-                <StopButton label="Stop" keyboardShortcut="F6" />
-                <ReplButton label="REPL" />
+                <RunButton />
+                <StopButton />
+                <ReplButton />
             </ButtonGroup>
             <ButtonGroup className="pb-toolbar-group pb-align-right">
-                <SettingsButton
-                    label="Settings"
-                    onAction={() => setIsSettingsDrawerOpen(true)}
-                />
+                <SettingsButton onAction={() => setIsSettingsDrawerOpen(true)} />
                 <SettingsDrawer
                     isOpen={isSettingsDrawerOpen}
                     onClose={() => setIsSettingsDrawerOpen(false)}
