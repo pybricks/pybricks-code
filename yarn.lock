@@ -2229,10 +2229,10 @@
   dependencies:
     source-map "^0.6.1"
 
-"@types/web-bluetooth@^0.0.13":
-  version "0.0.13"
-  resolved "https://registry.yarnpkg.com/@types/web-bluetooth/-/web-bluetooth-0.0.13.tgz#5755802ec9eda2241083ac654e583756131952b2"
-  integrity sha512-P+G3oHVFDDzT9QS4FhBb4QGCgK5PMlxmqxzasgV6Emmq8tWK199yikousByiuZ0SrvWNggLZOPMtHBuwMYI0Uw==
+"@types/web-bluetooth@^0.0.14":
+  version "0.0.14"
+  resolved "https://registry.yarnpkg.com/@types/web-bluetooth/-/web-bluetooth-0.0.14.tgz#94e175b53623384bff1f354cdb3197a8d63cdbe5"
+  integrity sha512-5d2RhCard1nQUC3aHcq/gHzWYO6K0WJmAbjO7mQJgCQKtZpgXxv1rOM6O/dBDhDYYVutk1sciOgNSe+5YyfM8A==
 
 "@types/webpack-sources@*":
   version "2.1.1"
