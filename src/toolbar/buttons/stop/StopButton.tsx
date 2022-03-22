@@ -15,8 +15,9 @@ const StopButton: React.VFC = () => {
     const runtime = useSelector((s) => s.hub.runtime);
     const keyboardShortcut = 'F6';
 
-    const dispatch = useDispatch();
+    // istanbul ignore next: babel-loader rewrites this line
     const [i18n] = useI18n();
+    const dispatch = useDispatch();
 
     return (
         <ActionButton

@@ -21,8 +21,9 @@ const BluetoothButton: React.VFC = () => {
         bootloaderConnection === BootloaderConnectionState.Disconnected &&
         bleConnection === BleConnectionState.Disconnected;
 
-    const dispatch = useDispatch();
+    // istanbul ignore next: babel-loader rewrites this line
     const [i18n] = useI18n();
+    const dispatch = useDispatch();
 
     return (
         <ActionButton

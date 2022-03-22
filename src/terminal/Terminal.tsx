@@ -54,6 +54,7 @@ function createContextMenu(
     xterm: XTerm,
 ): (props: ContextMenu2ContentProps) => JSX.Element {
     const contextMenu = (_props: ContextMenu2ContentProps): JSX.Element => {
+        // istanbul ignore next: babel-loader rewrites this line
         const [i18n] = useI18n();
 
         return (

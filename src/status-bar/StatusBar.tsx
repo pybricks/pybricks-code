@@ -107,8 +107,10 @@ const BatteryIndicator: React.VoidFunctionComponent<BatteryIndicatorProps> = ({
 };
 
 const StatusBar: React.VFC = (_props) => {
-    const connection = useSelector((s) => s.ble.connection);
+    // istanbul ignore next: babel-loader rewrites this line
     const [i18n] = useI18n();
+
+    const connection = useSelector((s) => s.ble.connection);
 
     return (
         <div

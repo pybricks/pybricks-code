@@ -15,10 +15,11 @@ import { renameFileDialogDidAccept, renameFileDialogDidCancel } from './actions'
 import { I18nId } from './i18n';
 
 const RenameFileDialog: React.VFC = () => {
+    // istanbul ignore next: babel-loader rewrites this line
+    const [i18n] = useI18n();
     const dispatch = useDispatch();
     const isOpen = useSelector((s) => s.explorer.renameFileDialog.isOpen);
     const oldName = useSelector((s) => s.explorer.renameFileDialog.fileName);
-    const [i18n] = useI18n();
 
     const [baseName, extension] = oldName.split(/(\.\w+)$/);
 

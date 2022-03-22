@@ -12,9 +12,11 @@ import { I18nId } from './i18n';
 import icon from './icon.svg';
 
 const ReplButton: React.VFC = () => {
-    const enabled = useSelector((s) => s.hub.runtime === HubRuntimeState.Idle);
+    // istanbul ignore next: babel-loader rewrites this line
     const [i18n] = useI18n();
     const dispatch = useDispatch();
+
+    const enabled = useSelector((s) => s.hub.runtime === HubRuntimeState.Idle);
     const action = useCallback(() => dispatch(repl()), [dispatch]);
 
     return (

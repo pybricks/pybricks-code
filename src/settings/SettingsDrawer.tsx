@@ -76,6 +76,7 @@ const SettingsDrawer: React.VoidFunctionComponent<SettingsProps> = ({
 
     const dispatch = useDispatch();
 
+    // istanbul ignore next: babel-loader rewrites this line
     const [i18n] = useI18n();
 
     const hotkeys = useMemo(

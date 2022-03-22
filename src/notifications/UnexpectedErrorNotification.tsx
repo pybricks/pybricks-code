@@ -16,6 +16,7 @@ type UnexpectedErrorNotificationProps = {
 const UnexpectedErrorNotification: React.VoidFunctionComponent<
     UnexpectedErrorNotificationProps
 > = ({ messageId, err }) => {
+    // istanbul ignore next: babel-loader rewrites this line
     const [i18n] = useI18n();
 
     return (

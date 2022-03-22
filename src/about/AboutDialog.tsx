@@ -29,6 +29,7 @@ const AboutDialog: React.VoidFunctionComponent<AboutDialogProps> = ({
 }) => {
     const [isLicenseDialogOpen, setIsLicenseDialogOpen] = useState(false);
 
+    // istanbul ignore next: babel-loader rewrites this line
     const [i18n] = useI18n();
 
     return (

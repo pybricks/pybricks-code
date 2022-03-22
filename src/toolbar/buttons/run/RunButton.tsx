@@ -20,8 +20,9 @@ const RunButton: React.VFC = () => {
     const hasEditor = useSelector((s) => s.app.hasEditor);
     const keyboardShortcut = 'F5';
 
-    const dispatch = useDispatch();
+    // istanbul ignore next: babel-loader rewrites this line
     const [i18n] = useI18n();
+    const dispatch = useDispatch();
 
     return (
         <ActionButton

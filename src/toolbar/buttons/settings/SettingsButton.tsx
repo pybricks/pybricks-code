@@ -12,6 +12,7 @@ type SettingsButtonProps = Pick<ActionButtonProps, 'onAction'>;
 const SettingsButton: React.VoidFunctionComponent<SettingsButtonProps> = ({
     onAction,
 }) => {
+    // istanbul ignore next: babel-loader rewrites this line
     const [i18n] = useI18n();
 
     return (

@@ -25,8 +25,9 @@ const FlashButton: React.VFC = () => {
     const [isSettingFlashCurrentProgramEnabled] = useSettingFlashCurrentProgram();
     const { hubName } = useSettingHubName();
 
-    const dispatch = useDispatch();
+    // istanbul ignore next: babel-loader rewrites this line
     const [i18n] = useI18n();
+    const dispatch = useDispatch();
 
     return (
         <OpenFileButton

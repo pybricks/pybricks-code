@@ -141,6 +141,7 @@ const Editor: React.VoidFunctionComponent<EditorProps> = ({ onEditorChanged }) =
     const [editor, setEditor] = useState<EditorType>(null);
     const { isDarkMode } = useTernaryDarkMode();
 
+    // istanbul ignore next: babel-loader rewrites this line
     const [i18n] = useI18n();
 
     return (

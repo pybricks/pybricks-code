@@ -183,6 +183,7 @@ const LicenseDialog: React.VoidFunctionComponent<LicenseDialogProps> = ({
     const [licenseInfo, setLicenseInfo] = useState<LicenseInfo | undefined>(undefined);
     const infoDiv = React.useRef<HTMLDivElement>(null);
 
+    // istanbul ignore next: babel-loader rewrites this line
     const [i18n] = useI18n();
 
     return (

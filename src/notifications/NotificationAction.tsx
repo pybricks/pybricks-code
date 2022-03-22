@@ -16,6 +16,7 @@ const NotificationAction: React.VoidFunctionComponent<NotificationActionProps> =
     messageId,
     replacements,
 }) => {
+    // istanbul ignore next: babel-loader rewrites this line
     const [i18n] = useI18n();
 
     return <>{i18n.translate(messageId, replacements)}</>;

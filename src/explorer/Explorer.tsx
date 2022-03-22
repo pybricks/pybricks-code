@@ -371,6 +371,7 @@ const FileTree: React.VoidFunctionComponent<FileTreeProps> = ({ i18n }) => {
 };
 
 const Explorer: React.VFC = () => {
+    // istanbul ignore next: babel-loader rewrites this line
     const [i18n] = useI18n();
 
     return (
