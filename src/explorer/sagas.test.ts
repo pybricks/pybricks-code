@@ -109,14 +109,14 @@ describe('handleExplorerRenameFile', () => {
         expect(action).toEqual(renameFileDialogShow('old.file'));
     });
 
-    it('should do nothing if canceled', async () => {
+    it('should dispatch action if canceled', async () => {
         saga.put(renameFileDialogDidCancel());
 
         const action = await saga.take();
         expect(action).toEqual(explorerDidFailToRenameFile());
     });
 
-    describe('should attempt to rename file if accepted', () => {
+    describe('should dispatch fileStorage action if accepted', () => {
         beforeEach(async () => {
             saga.put(renameFileDialogDidAccept('old.file', 'new.file'));
 
@@ -124,7 +124,7 @@ describe('handleExplorerRenameFile', () => {
             expect(action).toEqual(fileStorageRenameFile('old.file', 'new.file'));
         });
 
-        test('and chain failure', async () => {
+        it('should dispatch action on fileStorage failure', async () => {
             saga.put(
                 fileStorageDidFailToRenameFile(
                     'old.file',
@@ -137,7 +137,7 @@ describe('handleExplorerRenameFile', () => {
             expect(action).toEqual(explorerDidFailToRenameFile());
         });
 
-        test('and chain success', async () => {
+        it('should dispatch action on fileStorage success', async () => {
             saga.put(fileStorageDidRenameFile('old.file', 'new.file'));
 
             const action = await saga.take();
