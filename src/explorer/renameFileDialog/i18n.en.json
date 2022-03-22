@@ -1,0 +1,8 @@
+{
+    "renameFileDialog": {
+        "title": "Rename '{fileName}'",
+        "action": {
+            "rename": "Rename"
+        }
+    }
+}

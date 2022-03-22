@@ -4,30 +4,26 @@
 import { Button, Classes, Dialog } from '@blueprintjs/core';
 import { useI18n } from '@shopify/react-i18n';
 import React, { useCallback, useRef, useState } from 'react';
-import { FileNameValidationResult, validateFileName } from '../pybricksMicropython/lib';
-import { useSelector } from '../reducers';
-import FileNameFormGroup from './FileNameFormGroup';
-import { RenameFileStringId } from './i18n';
+import { useDispatch } from 'react-redux';
+import {
+    FileNameValidationResult,
+    validateFileName,
+} from '../../pybricksMicropython/lib';
+import { useSelector } from '../../reducers';
+import FileNameFormGroup from '../FileNameFormGroup';
+import { renameFileDialogDidAccept, renameFileDialogDidCancel } from './actions';
+import { RenameFileDialogStringId } from './i18n';
 import en from './i18n.en.json';
 
-type RenameFileDialogProps = {
-    /** The current file name (including file extension). */
-    oldName: string;
-    /** Controls the dialog open state. */
-    isOpen: boolean;
-    /** Called when the dialog is accepted. */
-    onAccept: (oldName: string, newName: string) => void;
-    /** Called when the dialog is canceled. */
-    onCancel: () => void;
-};
-
-const RenameFileDialog: React.VoidFunctionComponent<RenameFileDialogProps> = ({
-    oldName,
-    isOpen,
-    onAccept,
-    onCancel,
-}) => {
-    const [i18n] = useI18n({ id: 'explorer', translations: { en }, fallback: en });
+const RenameFileDialog: React.VFC = () => {
+    const dispatch = useDispatch();
+    const isOpen = useSelector((s) => s.explorer.renameFileDialog.isOpen);
+    const oldName = useSelector((s) => s.explorer.renameFileDialog.fileName);
+    const [i18n] = useI18n({
+        id: 'renameFileDialog',
+        translations: { en },
+        fallback: en,
+    });
 
     const [baseName, extension] = oldName.split(/(\.\w+)$/);
 
@@ -40,14 +36,18 @@ const RenameFileDialog: React.VoidFunctionComponent<RenameFileDialogProps> = ({
     const handleSubmit = useCallback<React.FormEventHandler>(
         (e) => {
             e.preventDefault();
-            onAccept(oldName, `${newName}${extension}`);
+            dispatch(renameFileDialogDidAccept(oldName, `${newName}${extension}`));
         },
-        [onAccept, oldName, newName, extension],
+        [dispatch, oldName, newName, extension],
     );
+
+    const handleClose = useCallback(() => {
+        dispatch(renameFileDialogDidCancel());
+    }, [dispatch]);
 
     return (
         <Dialog
-            title={i18n.translate(RenameFileStringId.Title, {
+            title={i18n.translate(RenameFileDialogStringId.Title, {
                 fileName: oldName,
             })}
             isOpen={isOpen}
@@ -56,7 +56,7 @@ const RenameFileDialog: React.VoidFunctionComponent<RenameFileDialogProps> = ({
                 inputRef.current?.select();
                 inputRef.current?.focus();
             }}
-            onClose={onCancel}
+            onClose={handleClose}
         >
             <form onSubmit={handleSubmit}>
                 <div className={Classes.DIALOG_BODY}>
@@ -75,7 +75,7 @@ const RenameFileDialog: React.VoidFunctionComponent<RenameFileDialogProps> = ({
                             disabled={result !== FileNameValidationResult.IsOk}
                             type="submit"
                         >
-                            {i18n.translate(RenameFileStringId.ActionRename)}
+                            {i18n.translate(RenameFileDialogStringId.ActionRename)}
                         </Button>
                     </div>
                 </div>

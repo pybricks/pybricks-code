@@ -33,8 +33,3 @@ export enum NewFileWizardStringId {
     SmartHubLabel = 'newFileWizard.smartHub.label',
     ActionCreate = 'newFileWizard.action.create',
 }
-
-export enum RenameFileStringId {
-    Title = 'renameFile.title',
-    ActionRename = 'renameFile.action.rename',
-}

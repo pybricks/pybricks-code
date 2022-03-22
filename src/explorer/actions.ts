@@ -62,6 +62,29 @@ export const explorerCreateNewFile = createAction(
 );
 
 /**
+ * Action that requests to rename a file.
+ * @param fileName The file name.
+ */
+export const explorerRenameFile = createAction((fileName: string) => ({
+    type: 'explorer.action.renameFile',
+    fileName,
+}));
+
+/**
+ * Action that indicates that {@link explorerRenameFile} succeeded.
+ */
+export const explorerDidRenameFile = createAction(() => ({
+    type: 'explorer.action.didRenameFile',
+}));
+
+/**
+ * Action that indicates that {@link explorerRenameFile} failed.
+ */
+export const explorerDidFailToRenameFile = createAction(() => ({
+    type: 'explorer.action.didFailToRenameFile',
+}));
+
+/**
  * Action that requests to delete a file.
  * @param fileName The file name.
  */

@@ -4,21 +4,15 @@
 import { waitFor } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
-import { testRender } from '../../test';
+import { testRender } from '../../../test';
 import RenameFileDialog from './RenameFileDialog';
+import { renameFileDialogDidAccept, renameFileDialogDidCancel } from './actions';
 
 describe('rename button', () => {
     it('should accept the dialog Rename is clicked', async () => {
-        const onAccept = jest.fn();
-        const onCancel = jest.fn();
-        const [dialog] = testRender(
-            <RenameFileDialog
-                oldName="old.file"
-                isOpen={true}
-                onAccept={onAccept}
-                onCancel={onCancel}
-            />,
-        );
+        const [dialog, dispatch] = testRender(<RenameFileDialog />, {
+            explorer: { renameFileDialog: { isOpen: true, fileName: 'old.file' } },
+        });
 
         const button = dialog.getByRole('button', { name: 'Rename' });
 
@@ -29,48 +23,36 @@ describe('rename button', () => {
         await waitFor(() => expect(button).not.toBeDisabled());
 
         userEvent.click(button);
-        expect(onAccept).toHaveBeenCalledWith('old.file', 'new.file');
+        expect(dispatch).toHaveBeenCalledWith(
+            renameFileDialogDidAccept('old.file', 'new.file'),
+        );
     });
 
     it('should accept the dialog when enter is pressed in the text input', async () => {
-        const onAccept = jest.fn();
-        const onCancel = jest.fn();
-        const [dialog] = testRender(
-            <RenameFileDialog
-                oldName="old.file"
-                isOpen={true}
-                onAccept={onAccept}
-                onCancel={onCancel}
-            />,
-        );
+        const [dialog, dispatch] = testRender(<RenameFileDialog />, {
+            explorer: { renameFileDialog: { isOpen: true, fileName: 'old.file' } },
+        });
 
         // have to type a new file name before Rename button is enabled
         const input = dialog.getByLabelText('File name');
         await waitFor(() => expect(input).toHaveFocus());
         userEvent.type(input, 'new{enter}');
 
-        expect(onAccept).toHaveBeenCalledWith('old.file', 'new.file');
+        expect(dispatch).toHaveBeenCalledWith(
+            renameFileDialogDidAccept('old.file', 'new.file'),
+        );
     });
 
     it('should be cancellable', async () => {
-        const onAccept = jest.fn();
-        const onCancel = jest.fn();
-
-        const [dialog, dispatch] = testRender(
-            <RenameFileDialog
-                oldName="old.file"
-                isOpen={true}
-                onAccept={onAccept}
-                onCancel={onCancel}
-            />,
-        );
+        const [dialog, dispatch] = testRender(<RenameFileDialog />, {
+            explorer: { renameFileDialog: { isOpen: true } },
+        });
 
         const button = dialog.getByRole('button', { name: 'Close' });
 
         await waitFor(() => expect(button).toBeVisible());
 
         userEvent.click(button);
-        expect(onCancel).toHaveBeenCalled();
-        expect(dispatch).not.toHaveBeenCalled();
+        expect(dispatch).toHaveBeenCalledWith(renameFileDialogDidCancel());
     });
 });

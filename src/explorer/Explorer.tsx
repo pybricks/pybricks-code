@@ -6,21 +6,19 @@
 import {
     Button,
     ButtonGroup,
-    Classes,
     Divider,
     HotkeyConfig,
     IconName,
     useHotkeys,
 } from '@blueprintjs/core';
 import { useI18n } from '@shopify/react-i18n';
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
     ControlledTreeEnvironment,
     LiveDescriptors,
     Tree,
     TreeItem,
     TreeItemIndex,
-    TreeRef,
     useTree,
     useTreeEnvironment,
 } from 'react-complex-tree';
@@ -29,17 +27,16 @@ import { useDebounce } from 'usehooks-ts';
 import {
     fileStorageArchiveAllFiles,
     fileStorageExportFile,
-    fileStorageRenameFile,
 } from '../fileStorage/actions';
 import { useSelector } from '../reducers';
 import { isMacOS } from '../utils/os';
 import { preventBrowserNativeContextMenu } from '../utils/react';
 import { TreeItemContext, TreeItemData, renderers } from '../utils/tree-renderer';
 import NewFileWizard from './NewFileWizard';
-import RenameFileDialog from './RenameFileDialog';
-import { explorerDeleteFile, explorerImportFiles } from './actions';
+import { explorerDeleteFile, explorerImportFiles, explorerRenameFile } from './actions';
 import { ExplorerStringId } from './i18n';
 import en from './i18n.en.json';
+import RenameFileDialog from './renameFileDialog/RenameFileDialog';
 import './explorer.scss';
 
 type ActionButtonProps = {
@@ -92,16 +89,9 @@ const FileActionButtonGroup: React.VoidFunctionComponent<ActionButtonGroupProps>
     item,
 }) => {
     const dispatch = useDispatch();
-    const { treeId, setRenamingItem } = useTree();
     const environment = useTreeEnvironment();
 
     const fileName = environment.getItemTitle(item);
-
-    // this is essentially the same implementation as the keyboard shortcut
-    const handleRename = useCallback(() => {
-        environment.onStartRenamingItem?.(item, treeId);
-        setRenamingItem(item.index);
-    }, [environment, item, treeId, setRenamingItem]);
 
     return (
         <ButtonGroup
@@ -114,7 +104,7 @@ const FileActionButtonGroup: React.VoidFunctionComponent<ActionButtonGroupProps>
                 toolTipId={ExplorerStringId.TreeItemRenameTooltip}
                 toolTipReplacements={{ fileName }}
                 focusable={false}
-                onClick={handleRename}
+                onClick={() => dispatch(explorerRenameFile(fileName))}
             />
             <ActionButton
                 // NB: the "import" icon has an arrow pointing down, which is
@@ -198,7 +188,7 @@ function useLiveDescriptors(): LiveDescriptors {
                     )}</li>
                     <li>${i18n.translate(
                         ExplorerStringId.TreeLiveDescriptorIntroKeybindingsRename,
-                        { key: '{keybinding:renameItem}' },
+                        { key: 'f2' },
                     )}</li>
                     <li>${i18n.translate(
                         ExplorerStringId.TreeLiveDescriptorIntroKeybindingsExport,
@@ -221,13 +211,81 @@ function useLiveDescriptors(): LiveDescriptors {
     );
 }
 
+/**
+ * Adds additional key bindings to {@link renderers.renderTreeContainer}.
+ *
+ * REVISIT: maybe there will be a better way to do this some day:
+ * https://github.com/lukasbach/react-complex-tree/issues/47
+ */
+const renderTreeContainer: typeof renderers.renderTreeContainer = (props) => {
+    const dispatch = useDispatch();
+    const { treeId } = useTree();
+    const environment = useTreeEnvironment();
+    const focusedItem = environment.viewState[treeId]?.focusedItem;
+
+    const isActiveTree = environment.activeTreeId === treeId;
+    const hotKeyActive =
+        isActiveTree; /* && !dnd.isProgrammaticallyDragging && !isRenaming */
+
+    const handleRenameKeyDown = useCallback(() => {
+        if (focusedItem !== undefined) {
+            const fileName = environment.getItemTitle(environment.items[focusedItem]);
+            dispatch(explorerRenameFile(fileName));
+        }
+    }, [environment]);
+
+    const handleDeleteKeyDown = useCallback(() => {
+        if (focusedItem !== undefined) {
+            const fileName = environment.getItemTitle(environment.items[focusedItem]);
+            dispatch(explorerDeleteFile(fileName));
+        }
+    }, [environment]);
+
+    const handleExportKeyDown = useCallback(() => {
+        if (focusedItem !== undefined) {
+            const fileName = environment.getItemTitle(environment.items[focusedItem]);
+            dispatch(fileStorageExportFile(fileName));
+        }
+    }, [environment]);
+
+    const hotkeys = useMemo<readonly HotkeyConfig[]>(
+        () => [
+            {
+                combo: 'f2',
+                label: 'Rename',
+                disabled: !hotKeyActive,
+                preventDefault: true,
+                onKeyDown: handleRenameKeyDown,
+            },
+            {
+                combo: 'del',
+                label: 'Delete',
+                disabled: !hotKeyActive,
+                preventDefault: true,
+                onKeyDown: handleDeleteKeyDown,
+            },
+            {
+                combo: 'mod+e',
+                label: 'Export',
+                disabled: !hotKeyActive,
+                preventDefault: true,
+                onKeyDown: handleExportKeyDown,
+            },
+        ],
+        [hotKeyActive, handleDeleteKeyDown],
+    );
+
+    const { handleKeyDown } = useHotkeys(hotkeys);
+
+    return <div onKeyDown={handleKeyDown}>{renderers.renderTreeContainer(props)}</div>;
+};
+
 const FileTree: React.VFC = () => {
     const [i18n] = useI18n({ id: 'explorer', translations: { en }, fallback: en });
     const [focusedItem, setFocusedItem] = useState<TreeItemIndex>();
     const fileNames = useSelector((s) => s.fileStorage.fileNames);
     const debouncedFileNames = useDebounce(fileNames);
     const liveDescriptors = useLiveDescriptors();
-    const dispatch = useDispatch();
 
     const rootItemIndex = '/';
 
@@ -266,113 +324,6 @@ const FileTree: React.VFC = () => {
 
     const getItemTitle = useCallback((item: FileTreeItem) => item.data.fileName, []);
 
-    const [renameFileName, setRenameFileName] = useState('');
-    const [isRenameDialogOpen, setIsRenameDialogOpen] = useState(false);
-
-    const renderTreeContainer = useCallback<typeof renderers.renderTreeContainer>(
-        (props) => {
-            const { treeId, renamingItem } = useTree();
-            const environment = useTreeEnvironment();
-
-            const isActiveTree = environment.activeTreeId === treeId;
-            const isRenaming = !!renamingItem;
-            const hotKeyActive =
-                isActiveTree && /*!dnd.isProgrammaticallyDragging &&*/ !isRenaming;
-
-            const handleDeleteKeyDown = useCallback(() => {
-                if (focusedItem) {
-                    const fileName = environment.getItemTitle(
-                        environment.items[focusedItem],
-                    );
-                    dispatch(explorerDeleteFile(fileName));
-                }
-            }, [environment]);
-
-            const handleExportKeyDown = useCallback(() => {
-                if (focusedItem) {
-                    const fileName = environment.getItemTitle(
-                        environment.items[focusedItem],
-                    );
-                    dispatch(fileStorageExportFile(fileName));
-                }
-            }, [environment]);
-
-            const hotkeys = useMemo<readonly HotkeyConfig[]>(
-                () => [
-                    {
-                        combo: 'del',
-                        label: 'Delete',
-                        disabled: !hotKeyActive,
-                        preventDefault: true,
-                        onKeyDown: handleDeleteKeyDown,
-                    },
-                    {
-                        combo: 'mod+e',
-                        label: 'Export',
-                        disabled: !hotKeyActive,
-                        preventDefault: true,
-                        onKeyDown: handleExportKeyDown,
-                    },
-                ],
-                [hotKeyActive, handleDeleteKeyDown],
-            );
-
-            const { handleKeyDown } = useHotkeys(hotkeys);
-
-            return (
-                <div onKeyDown={handleKeyDown}>
-                    {renderers.renderTreeContainer(props)}
-                </div>
-            );
-        },
-        [renderers, focusedItem, dispatch],
-    );
-
-    // override default renderRenameInput since we have a separate rename dialog
-    const renderRenameInput = useCallback(
-        ({ item }) => (
-            <span className={[Classes.TREE_NODE_LABEL, Classes.TEXT_MUTED].join(' ')}>
-                {getItemTitle(item)}
-            </span>
-        ),
-        [getItemTitle],
-    );
-
-    const handleStartRenamingItem = useCallback(
-        (item: FileTreeItem) => {
-            // we are ignoring most of the props since we are opening a dialog
-            // instead of using an inline input and button
-            setRenameFileName(getItemTitle(item));
-            setIsRenameDialogOpen(true);
-        },
-        [getItemTitle, setRenameFileName, setIsRenameDialogOpen],
-    );
-
-    const treeRef = useRef<TreeRef<TreeItemData>>(null);
-
-    const handleRenameDialogAccept = useCallback(
-        (oldName: string, newName: string) => {
-            setIsRenameDialogOpen(false);
-            // completeRenamingItem is not implemented
-            treeRef.current?.stopRenamingItem();
-            dispatch(fileStorageRenameFile(oldName, newName));
-            // HACK: This is fragile, ideally we would rename an existing node
-            // rather than removing and replacing the node. The delay has to
-            // be long enough to avoid the debounce.
-            setTimeout(() => treeRef.current?.focusItem(`/${newName}`), 1000);
-        },
-        [setIsRenameDialogOpen, treeRef],
-    );
-
-    const handleRenameDialogCancel = useCallback(() => {
-        setIsRenameDialogOpen(false);
-        treeRef.current?.abortRenamingItem();
-
-        if (focusedItem) {
-            requestAnimationFrame(() => treeRef.current?.focusItem(focusedItem));
-        }
-    }, [setIsRenameDialogOpen, treeRef, focusedItem]);
-
     const treeId = 'pb-explorer-file-tree';
 
     const viewState = useMemo(
@@ -384,12 +335,11 @@ const FileTree: React.VFC = () => {
         <ControlledTreeEnvironment<FileTreeItemData>
             {...renderers}
             renderTreeContainer={renderTreeContainer}
-            renderRenameInput={renderRenameInput}
             items={treeItems}
             getItemTitle={getItemTitle}
             viewState={viewState}
             liveDescriptors={liveDescriptors}
-            onStartRenamingItem={handleStartRenamingItem}
+            canRename={false} // we implement our own rename handler
             onFocusItem={(item) => setFocusedItem(item.index)}
         >
             <div className="pb-explorer-file-tree">
@@ -397,13 +347,6 @@ const FileTree: React.VFC = () => {
                     treeId={treeId}
                     rootItem={rootItemIndex}
                     treeLabel={i18n.translate(ExplorerStringId.TreeLabel)}
-                    ref={treeRef}
-                />
-                <RenameFileDialog
-                    oldName={renameFileName}
-                    isOpen={isRenameDialogOpen}
-                    onAccept={handleRenameDialogAccept}
-                    onCancel={handleRenameDialogCancel}
                 />
             </div>
         </ControlledTreeEnvironment>
@@ -416,6 +359,7 @@ const Explorer: React.VFC = () => {
             <Header />
             <Divider />
             <FileTree />
+            <RenameFileDialog />
         </div>
     );
 };

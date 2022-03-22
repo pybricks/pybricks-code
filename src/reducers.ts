@@ -5,6 +5,7 @@ import { TypedUseSelectorHook, useSelector as useReduxSelector } from 'react-red
 import { Reducer, combineReducers } from 'redux';
 import app from './app/reducers';
 import ble from './ble/reducers';
+import explorer from './explorer/reducers';
 import fileStorage from './fileStorage/reducers';
 import firmware from './firmware/reducers';
 import hub from './hub/reducers';
@@ -17,6 +18,7 @@ export const rootReducer = combineReducers({
     app,
     bootloader,
     ble,
+    explorer,
     fileStorage,
     firmware,
     hub,

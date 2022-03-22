@@ -11,7 +11,7 @@ import {
     fileStorageExportFile,
 } from '../fileStorage/actions';
 import Explorer from './Explorer';
-import { explorerDeleteFile, explorerImportFiles } from './actions';
+import { explorerDeleteFile, explorerImportFiles, explorerRenameFile } from './actions';
 
 afterEach(async () => {
     cleanup();
@@ -73,8 +73,8 @@ describe('new file button', () => {
 });
 
 describe('tree item', () => {
-    it('should show rename dialog when button is clicked', async () => {
-        const [explorer] = testRender(<Explorer />, {
+    it('should dispatch action when button is clicked', async () => {
+        const [explorer, dispatch] = testRender(<Explorer />, {
             fileStorage: { fileNames: ['test.file'] },
         });
 
@@ -88,15 +88,11 @@ describe('tree item', () => {
 
         userEvent.click(button);
 
-        const dialog = await explorer.findByRole('dialog', {
-            name: "Rename 'test.file'",
-        });
-
-        expect(dialog).toBeVisible();
+        expect(dispatch).toHaveBeenCalledWith(explorerRenameFile('test.file'));
     });
 
-    it('should show rename dialog when key is pressed', async () => {
-        const [explorer] = testRender(<Explorer />, {
+    it('should dispatch action when key is pressed', async () => {
+        const [explorer, dispatch] = testRender(<Explorer />, {
             fileStorage: { fileNames: ['test.file'] },
         });
 
@@ -109,11 +105,7 @@ describe('tree item', () => {
         userEvent.click(treeItem);
         userEvent.keyboard('{f2}');
 
-        const dialog = await explorer.findByRole('dialog', {
-            name: "Rename 'test.file'",
-        });
-
-        expect(dialog).toBeVisible();
+        expect(dispatch).toHaveBeenCalledWith(explorerRenameFile('test.file'));
     });
 
     it('should dispatch delete action when button is clicked', async () => {
