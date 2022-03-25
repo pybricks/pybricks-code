@@ -165,7 +165,7 @@ const Editor: React.VoidFunctionComponent<EditorProps> = ({ onEditorChanged }) =
                         contextmenu: false,
                         rulers: [80],
                     }}
-                    editorDidMount={(editor, _monaco) => {
+                    editorDidMount={(editor) => {
                         const subscriptions = new Array<IDisposable>();
                         // FIXME: editor does not respond to changes in i18n
                         subscriptions.push(
