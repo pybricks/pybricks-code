@@ -16,7 +16,6 @@ import lwp3BootloaderProtocol from './lwp3-bootloader/sagas';
 import lwp3BootloaderBle from './lwp3-bootloader/sagas-ble';
 import mpy from './mpy/sagas';
 import notifications, { NotificationSagaContext } from './notifications/sagas';
-import settings from './settings/sagas';
 import terminal, { TerminalSagaContext } from './terminal/sagas';
 
 /* istanbul ignore next */
@@ -34,7 +33,6 @@ export default function* (): Generator {
         hub(),
         mpy(),
         notifications(),
-        settings(),
         terminal(),
         put(didStart()),
     ]);

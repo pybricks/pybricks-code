@@ -8,7 +8,6 @@ import SplitterLayout from 'react-splitter-layout';
 import { useLocalStorage, useTernaryDarkMode } from 'usehooks-ts';
 import Editor, { EditorType } from '../editor/Editor';
 import Explorer from '../explorer/Explorer';
-import { settingsToggleShowDocs } from '../settings/actions';
 import { useSettingIsShowDocsEnabled } from '../settings/hooks';
 import StatusBar from '../status-bar/StatusBar';
 import Terminal from '../terminal/Terminal';
@@ -19,7 +18,7 @@ import 'react-splitter-layout/lib/index.css';
 import './app.scss';
 
 const Docs: React.VFC = () => {
-    const dispatch = useDispatch();
+    const { setIsSettingShowDocsEnabled } = useSettingIsShowDocsEnabled();
 
     return (
         <iframe
@@ -104,10 +103,9 @@ const Docs: React.VFC = () => {
                         e.key == 'd'
                     ) {
                         e.preventDefault();
-                        // we have to use dispatch here instead of
-                        // toggleIsSettingShowDocsEnabled since this
-                        // isn't updated on state changes
-                        dispatch(settingsToggleShowDocs());
+                        // since the iframe is only visible when docs are shown
+                        // the only action is to hide the docs
+                        setIsSettingShowDocsEnabled(false);
                     }
                 });
 
