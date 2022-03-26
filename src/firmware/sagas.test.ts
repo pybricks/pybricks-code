@@ -6,7 +6,6 @@ import {
     FirmwareReaderError,
     FirmwareReaderErrorCode,
 } from '@pybricks/firmware';
-import { mock } from 'jest-mock-extended';
 import JSZip from 'jszip';
 import { AsyncSaga } from '../../test';
 import {

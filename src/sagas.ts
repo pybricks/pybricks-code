@@ -10,7 +10,7 @@ import editor from './editor/sagas';
 import errorLog from './error-log/sagas';
 import explorer from './explorer/sagas';
 import fileStorage from './fileStorage/sagas';
-import flashFirmware, { FirmwareSagaContext } from './firmware/sagas';
+import flashFirmware from './firmware/sagas';
 import hub from './hub/sagas';
 import lwp3BootloaderProtocol from './lwp3-bootloader/sagas';
 import lwp3BootloaderBle from './lwp3-bootloader/sagas-ble';
@@ -42,6 +42,7 @@ export default function* (): Generator {
 /**
  * Combined type for all saga contexts.
  */
-export type RootSagaContext = FirmwareSagaContext &
-    NotificationSagaContext &
+export type RootSagaContext = {
+    nextMessageId: () => number;
+} & NotificationSagaContext &
     TerminalSagaContext;

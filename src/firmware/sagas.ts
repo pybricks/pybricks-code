@@ -65,16 +65,6 @@ import {
     flashFirmware,
 } from './actions';
 
-/**
- * Function that returns the next unused message ID.
- */
-type NextMessageIdFunc = () => number;
-
-/**
- * Partial saga context type for context used in the firmware sagas.
- */
-export type FirmwareSagaContext = { nextMessageId: NextMessageIdFunc };
-
 const firmwareZipMap = new Map<HubType, string>([
     [HubType.CityHub, cityHubZip],
     [HubType.TechnicHub, technicHubZip],
@@ -305,7 +295,7 @@ function* handleFlashFirmware(action: ReturnType<typeof flashFirmware>): Generat
             return;
         }
 
-        const nextMessageId = yield* getContext<NextMessageIdFunc>('nextMessageId');
+        const nextMessageId = yield* getContext<() => number>('nextMessageId');
 
         const infoAction = yield* put(infoRequest(nextMessageId()));
         const { info } = yield* all({
