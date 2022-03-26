@@ -13,7 +13,6 @@ import {
     appDidCheckForUpdate,
     appDidReceiveBeforeInstallPrompt,
     appDidResolveInstallPrompt,
-    appEditor,
     appShowInstallPrompt,
     didInstall,
 } from './actions';
@@ -92,15 +91,6 @@ const readyForOfflineUse: Reducer<boolean> = (state = false, action) => {
     return state;
 };
 
-/** Temporary reducer for transitioning editor context. Do no use in new code. */
-const hasEditor: Reducer<boolean> = (state = false, action) => {
-    if (appEditor.matches(action)) {
-        return action.hasEditor;
-    }
-
-    return state;
-};
-
 export default combineReducers({
     isServiceWorkerRegistered,
     checkingForUpdate,
@@ -108,5 +98,4 @@ export default combineReducers({
     hasUnresolvedInstallPrompt,
     promptingInstall,
     readyForOfflineUse,
-    hasEditor,
 });

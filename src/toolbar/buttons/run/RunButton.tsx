@@ -1,7 +1,4 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
-
-// SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2022 The Pybricks Authors
 
 import { useI18n } from '@shopify/react-i18n';
@@ -17,7 +14,7 @@ import icon from './icon.svg';
 const RunButton: React.VFC = () => {
     const downloadProgress = useSelector((s) => s.hub.downloadProgress);
     const runtime = useSelector((s) => s.hub.runtime);
-    const hasEditor = useSelector((s) => s.app.hasEditor);
+    const isEditorReady = useSelector((s) => s.editor.isReady);
     const keyboardShortcut = 'F5';
 
     // istanbul ignore next: babel-loader rewrites this line
@@ -36,7 +33,7 @@ const RunButton: React.VFC = () => {
                     : i18n.translate(I18nId.TooltipAction, { key: keyboardShortcut })
             }
             icon={icon}
-            enabled={hasEditor && runtime === HubRuntimeState.Idle}
+            enabled={isEditorReady && runtime === HubRuntimeState.Idle}
             showProgress={runtime === HubRuntimeState.Loading}
             progress={downloadProgress === null ? undefined : downloadProgress}
             onAction={() => dispatch(downloadAndRun())}

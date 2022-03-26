@@ -11,6 +11,7 @@ import {
     fileStorageReadFile,
 } from '../fileStorage/actions';
 import { RootState } from '../reducers';
+import { editorDidCreate } from './actions';
 
 function* handleDidCreateEditor(editor: monaco.editor.ICodeEditor): Generator {
     // first, we need to be sure that file storage is ready
@@ -42,6 +43,8 @@ function* handleDidCreateEditor(editor: monaco.editor.ICodeEditor): Generator {
     }
 
     // TODO: subscribe to actions that act on the editor
+
+    yield* put(editorDidCreate());
 }
 
 function* monitorEditors(): Generator {

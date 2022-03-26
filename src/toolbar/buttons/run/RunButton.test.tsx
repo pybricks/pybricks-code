@@ -14,7 +14,7 @@ afterEach(() => {
 
 it('should dispatch action when clicked', () => {
     const [button, dispatch] = testRender(<RunButton />, {
-        app: { hasEditor: true },
+        editor: { isReady: true },
         hub: { runtime: HubRuntimeState.Idle },
     });
 

@@ -22,7 +22,6 @@ test('initial state', () => {
     expect(reducers(undefined, {} as AnyAction)).toMatchInlineSnapshot(`
         Object {
           "checkingForUpdate": false,
-          "hasEditor": false,
           "hasUnresolvedInstallPrompt": false,
           "isServiceWorkerRegistered": false,
           "promptingInstall": false,
