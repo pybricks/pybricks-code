@@ -7,6 +7,7 @@ import app from './app/sagas';
 import blePybricksService from './ble-pybricks-service/sagas';
 import ble from './ble/sagas';
 import { EditorType } from './editor/Editor';
+import editor from './editor/sagas';
 import errorLog from './error-log/sagas';
 import explorer from './explorer/sagas';
 import fileStorage from './fileStorage/sagas';
@@ -24,6 +25,7 @@ export default function* (): Generator {
         app(),
         blePybricksService(),
         ble(),
+        editor(),
         fileStorage(),
         lwp3BootloaderBle(),
         lwp3BootloaderProtocol(),
