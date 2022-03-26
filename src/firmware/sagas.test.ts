@@ -9,7 +9,6 @@ import {
 import { mock } from 'jest-mock-extended';
 import JSZip from 'jszip';
 import { AsyncSaga } from '../../test';
-import { EditorType } from '../editor/Editor';
 import {
     BootloaderConnectionFailureReason,
     checksumRequest,
@@ -1730,12 +1729,7 @@ describe('flashFirmware', () => {
             new Response(await zip.generateAsync({ type: 'blob' })),
         );
 
-        const editor = mock<EditorType>({
-            getValue: () => 'print("test")',
-        });
-
         const saga = new AsyncSaga(flashFirmware, {
-            editor,
             nextMessageId: createCountFunc(),
         });
 

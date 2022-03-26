@@ -1,14 +1,13 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2022 The Pybricks Authors
 
-import { mock } from 'jest-mock-extended';
-import { monaco } from 'react-monaco-editor';
 import { AsyncSaga } from '../../test';
 import { didWrite, write } from '../ble-nordic-uart-service/actions';
 import {
     didSendCommand,
     sendStopUserProgramCommand,
 } from '../ble-pybricks-service/actions';
+import { editorGetValueRequest, editorGetValueResponse } from '../editor/actions';
 import { compile, didCompile } from '../mpy/actions';
 import { createCountFunc } from '../utils/iter';
 import {
@@ -26,17 +25,23 @@ jest.mock('react-monaco-editor');
 
 describe('downloadAndRun', () => {
     test('no errors', async () => {
-        const mockEditor = mock<monaco.editor.ICodeEditor>();
         const saga = new AsyncSaga(hub, {
-            editor: mockEditor,
             nextMessageId: createCountFunc(),
         });
 
+        saga.updateState({ editor: { isReady: true } });
+
         saga.put(downloadAndRun());
 
-        // first, it tries to compile the program in the current editor
+        // first, it gets the value from the current editor
+        const editorValueAction = await saga.take();
+        expect(editorValueAction).toEqual(editorGetValueRequest(0));
+
+        saga.put(editorGetValueResponse(0, ''));
+
+        // then it tries to compile the program in the current editor
         const compileAction = await saga.take();
-        expect(compile.matches(compileAction)).toBeTruthy();
+        expect(compileAction).toEqual(compile('', ['-mno-unicode']));
         saga.put(didCompile(new Uint8Array(30)));
 
         // then it notifies that loading has begun
@@ -45,9 +50,8 @@ describe('downloadAndRun', () => {
 
         // first message is the length
         const writeAction = await saga.take();
-        expect(writeAction).toBeTruthy();
-        expect((writeAction as ReturnType<typeof write>).value.length).toBe(4);
-        saga.put(didWrite(0));
+        expect(writeAction).toEqual(write(1, new Uint8Array([30, 0, 0, 0])));
+        saga.put(didWrite(1));
         saga.put(checksum(30));
 
         // then progress is updated
@@ -56,9 +60,8 @@ describe('downloadAndRun', () => {
 
         // then the first chunk of 20 bytes
         const writeAction2 = await saga.take();
-        expect(write.matches(writeAction2)).toBeTruthy();
-        expect((writeAction2 as ReturnType<typeof write>).value.length).toBe(20);
-        saga.put(didWrite(1));
+        expect(writeAction2).toEqual(write(2, new Uint8Array(20)));
+        saga.put(didWrite(2));
         saga.put(checksum(0));
 
         // then progress is updated
@@ -67,9 +70,8 @@ describe('downloadAndRun', () => {
 
         // then last chunk
         const writeAction3 = await saga.take();
-        expect(write.matches(writeAction3)).toBeTruthy();
-        expect((writeAction3 as ReturnType<typeof write>).value.length).toBe(10);
-        saga.put(didWrite(2));
+        expect(writeAction3).toEqual(write(3, new Uint8Array(10)));
+        saga.put(didWrite(3));
         saga.put(checksum(0));
 
         // Then a status message saying that we are done

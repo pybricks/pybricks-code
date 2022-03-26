@@ -25,7 +25,7 @@ import {
     take,
     takeEvery,
 } from 'typed-redux-saga/macro';
-import { EditorType } from '../editor/Editor';
+import { editorGetValue } from '../editor/sagas';
 import {
     checksumRequest,
     checksumResponse,
@@ -286,15 +286,7 @@ function* handleFlashFirmware(action: ReturnType<typeof flashFirmware>): Generat
         let program: string | undefined = undefined;
 
         if (action.flashCurrentProgram) {
-            const editor = yield* getContext<EditorType>('editor');
-
-            // istanbul ignore if: it is a bug to dispatch this action with no current editor
-            if (editor === null) {
-                console.error('flashFirmware: No current editor');
-                return;
-            }
-
-            program = editor.getValue();
+            program = yield* editorGetValue();
         }
 
         if (action.data !== null) {

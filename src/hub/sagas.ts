@@ -19,7 +19,7 @@ import {
     sendStopUserProgramCommand,
 } from '../ble-pybricks-service/actions';
 import { didConnect } from '../ble/actions';
-import { EditorType } from '../editor/Editor';
+import { editorGetValue } from '../editor/sagas';
 import { compile, didCompile, didFailToCompile } from '../mpy/actions';
 import { defined } from '../utils';
 import { xor8 } from '../utils/math';
@@ -47,16 +47,10 @@ function* waitForWrite(id: number): SagaGenerator<{
 }
 
 function* handleDownloadAndRun(): Generator {
-    const editor = yield* getContext<EditorType>('editor');
+    const script = yield* editorGetValue();
 
-    // istanbul ignore next: it is a bug to dispatch this action with no current editor
-    if (editor === null) {
-        console.error('downloadAndRun: No current editor');
-        return;
-    }
-
-    const script = editor.getValue();
     yield* put(compile(script, ['-mno-unicode']));
+
     const { mpy, mpyFail } = yield* race({
         mpy: take(didCompile),
         mpyFail: take(didFailToCompile),

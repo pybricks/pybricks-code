@@ -3,7 +3,16 @@
 
 import { monaco } from 'react-monaco-editor';
 import { eventChannel } from 'redux-saga';
-import { fork, put, race, select, take, takeEvery } from 'typed-redux-saga/macro';
+import {
+    SagaGenerator,
+    fork,
+    getContext,
+    put,
+    race,
+    select,
+    take,
+    takeEvery,
+} from 'typed-redux-saga/macro';
 import {
     fileStorageDidFailToReadFile,
     fileStorageDidInitialize,
@@ -11,7 +20,40 @@ import {
     fileStorageReadFile,
 } from '../fileStorage/actions';
 import { RootState } from '../reducers';
-import { editorDidCreate } from './actions';
+import {
+    editorDidCreate,
+    editorGetValueRequest,
+    editorGetValueResponse,
+} from './actions';
+
+/**
+ * Saga that gets the current value from the editor.
+ * @returns The value.
+ * @throws Error if editor.isReady state is false.
+ */
+export function* editorGetValue(): SagaGenerator<string> {
+    const nextMessageId = yield* getContext<() => number>('nextMessageId');
+
+    const isReady = yield* select((s: RootState) => s.editor.isReady);
+
+    if (!isReady) {
+        throw new Error('editorGetValue() called before editor.isReady');
+    }
+
+    const request = yield* put(editorGetValueRequest(nextMessageId()));
+    const response = yield* take(
+        editorGetValueResponse.when((a) => a.id === request.id),
+    );
+
+    return response.value;
+}
+
+function* handleEditorGetValueRequest(
+    editor: monaco.editor.ICodeEditor,
+    action: ReturnType<typeof editorGetValueRequest>,
+): Generator {
+    yield* put(editorGetValueResponse(action.id, editor.getValue()));
+}
 
 function* handleDidCreateEditor(editor: monaco.editor.ICodeEditor): Generator {
     // first, we need to be sure that file storage is ready
@@ -42,7 +84,7 @@ function* handleDidCreateEditor(editor: monaco.editor.ICodeEditor): Generator {
         editor.setValue(succeeded.fileContents);
     }
 
-    // TODO: subscribe to actions that act on the editor
+    yield* takeEvery(editorGetValueRequest, handleEditorGetValueRequest, editor);
 
     yield* put(editorDidCreate());
 }
