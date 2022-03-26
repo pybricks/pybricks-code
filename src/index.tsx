@@ -25,7 +25,6 @@ const toaster = I18nToaster.create(i18nManager);
 
 const sagaMiddleware = createSagaMiddleware<RootSagaContext>({
     context: {
-        editor: null,
         nextMessageId: createCountFunc(),
         notification: { toaster },
         terminal: defaultTerminalContext,
@@ -54,9 +53,7 @@ ReactDOM.render(
         <Provider store={store}>
             <I18nContext.Provider value={i18nManager}>
                 <ViewHeightSensor />
-                <App
-                    onEditorChanged={(editor) => sagaMiddleware.setContext({ editor })}
-                />
+                <App />
             </I18nContext.Provider>
         </Provider>
     </React.StrictMode>,

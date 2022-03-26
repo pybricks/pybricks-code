@@ -5,7 +5,7 @@ import { Classes } from '@blueprintjs/core';
 import React, { useEffect, useState } from 'react';
 import SplitterLayout from 'react-splitter-layout';
 import { useLocalStorage, useTernaryDarkMode } from 'usehooks-ts';
-import Editor, { EditorType } from '../editor/Editor';
+import Editor from '../editor/Editor';
 import Explorer from '../explorer/Explorer';
 import { useSettingIsShowDocsEnabled } from '../settings/hooks';
 import StatusBar from '../status-bar/StatusBar';
@@ -121,12 +121,7 @@ const Docs: React.VFC = () => {
     );
 };
 
-type AppProps = {
-    /** Called when the editor is initialized. */
-    onEditorChanged?: (editor: EditorType) => void;
-};
-
-const App: React.VoidFunctionComponent<AppProps> = ({ onEditorChanged }) => {
+const App: React.VFC = () => {
     const { isDarkMode } = useTernaryDarkMode();
     const { isSettingShowDocsEnabled } = useSettingIsShowDocsEnabled();
     const [isDragging, setIsDragging] = useState(false);
@@ -172,13 +167,7 @@ const App: React.VoidFunctionComponent<AppProps> = ({ onEditorChanged }) => {
                             secondaryInitialSize={terminalSplit}
                             onSecondaryPaneSizeChange={setTerminalSplit}
                         >
-                            <Editor
-                                onEditorChanged={(editor) => {
-                                    if (onEditorChanged) {
-                                        onEditorChanged(editor);
-                                    }
-                                }}
-                            />
+                            <Editor />
                             <div className="pb-app-terminal-padding h-100">
                                 <Terminal />
                             </div>

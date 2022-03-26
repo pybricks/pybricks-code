@@ -26,11 +26,6 @@ import { UntitledHintContribution } from './untitledHint';
 
 import './editor.scss';
 
-/**
- * The editor type. Null indicates no current editor.
- */
-export type EditorType = monaco.editor.ICodeEditor | null;
-
 const pybricksMicroPythonId = 'pybricks-micropython';
 monaco.languages.register({ id: pybricksMicroPythonId });
 
@@ -186,9 +181,7 @@ function useEditorAction(
     );
 }
 
-type EditorProps = { onEditorChanged?: (editor: EditorType) => void };
-
-const Editor: React.VoidFunctionComponent<EditorProps> = ({ onEditorChanged }) => {
+const Editor: React.VFC = () => {
     const dispatch = useDispatch();
 
     const [editor, setEditor] = useState<monaco.editor.IStandaloneCodeEditor>();
@@ -265,21 +258,13 @@ const Editor: React.VoidFunctionComponent<EditorProps> = ({ onEditorChanged }) =
         (editor) => {
             editor.focus();
             setEditor(editor);
-
-            if (onEditorChanged) {
-                onEditorChanged(editor);
-            }
         },
-        [onEditorChanged, setEditor],
+        [setEditor],
     );
 
     const handleEditorWillUnmount = useCallback<EditorWillUnmount>(() => {
-        if (onEditorChanged) {
-            onEditorChanged(null);
-        }
-
         setEditor(undefined);
-    }, [onEditorChanged, setEditor]);
+    }, [setEditor]);
 
     const handleChange = useCallback<ChangeHandler>(
         // REVISIT: need to ensure we have exclusive access to file

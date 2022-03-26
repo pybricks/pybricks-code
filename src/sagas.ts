@@ -6,7 +6,6 @@ import { didStart } from './app/actions';
 import app from './app/sagas';
 import blePybricksService from './ble-pybricks-service/sagas';
 import ble from './ble/sagas';
-import { EditorType } from './editor/Editor';
 import editor from './editor/sagas';
 import errorLog from './error-log/sagas';
 import explorer from './explorer/sagas';
@@ -43,6 +42,6 @@ export default function* (): Generator {
 /**
  * Combined type for all saga contexts.
  */
-export type RootSagaContext = { editor: EditorType } & FirmwareSagaContext &
+export type RootSagaContext = FirmwareSagaContext &
     NotificationSagaContext &
     TerminalSagaContext;
