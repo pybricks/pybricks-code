@@ -2,6 +2,7 @@
 // Copyright (c) 2022 The Pybricks Authors
 
 import * as browserFsAccess from 'browser-fs-access';
+import 'fake-indexeddb/auto';
 import { AsyncSaga } from '../../test';
 import {
     fileStorageArchiveAllFiles,
@@ -27,10 +28,15 @@ import fileStorage from './sagas';
 
 jest.mock('browser-fs-access');
 
-beforeEach(() => {
+afterEach(async () => {
     jest.clearAllMocks();
-    // localForge uses localStorage as backend in test environment, so we need
-    // to start with a clean slate in each test
+
+    await new Promise((resolve, reject) => {
+        const request = indexedDB.deleteDatabase('pybricks.fileStorage');
+        request.addEventListener('success', resolve);
+        request.addEventListener('error', reject);
+    });
+
     localStorage.clear();
 });
 
@@ -43,16 +49,13 @@ async function setUpTestFile(saga: AsyncSaga): Promise<[string, string]> {
     const testFileName = 'test.file';
     const testFileContents = 'test file contents';
 
-    const action0 = await saga.take();
-    expect(action0).toEqual(fileStorageDidInitialize([]));
+    await expect(saga.take()).resolves.toEqual(fileStorageDidInitialize([]));
 
     saga.put(fileStorageWriteFile(testFileName, testFileContents));
 
-    const action1 = await saga.take();
-    expect(action1).toEqual(fileStorageDidWriteFile(testFileName));
+    await expect(saga.take()).resolves.toEqual(fileStorageDidWriteFile(testFileName));
 
-    const action2 = await saga.take();
-    expect(action2).toEqual(fileStorageDidChangeItem(testFileName));
+    await expect(saga.take()).resolves.toEqual(fileStorageDidChangeItem(testFileName));
 
     return [testFileName, testFileContents];
 }
@@ -69,8 +72,7 @@ it('should migrate old program from local storage during initialization', async 
 
     // initialization should remove the localStorage entry and add add it to
     // new storage backend
-    const action = await saga.take();
-    expect(action).toEqual(fileStorageDidInitialize(['main.py']));
+    await expect(saga.take()).resolves.toEqual(fileStorageDidInitialize(['main.py']));
     expect(localStorage.getItem(oldProgramKey)).toBeNull();
 
     await saga.end();
@@ -79,9 +81,7 @@ it('should migrate old program from local storage during initialization', async 
 it('should read and write files', async () => {
     const saga = new AsyncSaga(fileStorage);
 
-    let action = await saga.take();
-
-    expect(action).toEqual(fileStorageDidInitialize([]));
+    await expect(saga.take()).resolves.toEqual(fileStorageDidInitialize([]));
 
     const testFileName = 'test.file';
     const testFileContents = 'test file contents';
@@ -90,18 +90,17 @@ it('should read and write files', async () => {
     saga.put(fileStorageWriteFile(testFileName, testFileContents));
 
     // writing file triggers response
-    action = await saga.take();
-    expect(action).toEqual(fileStorageDidWriteFile(testFileName));
+    await expect(saga.take()).resolves.toEqual(fileStorageDidWriteFile(testFileName));
 
     // and as a side-effect, triggers item change as well
-    action = await saga.take();
-    expect(action).toEqual(fileStorageDidChangeItem(testFileName));
+    await expect(saga.take()).resolves.toEqual(fileStorageDidChangeItem(testFileName));
 
     // test reading the same file back
     saga.put(fileStorageReadFile(testFileName));
 
-    action = await saga.take();
-    expect(action).toEqual(fileStorageDidReadFile(testFileName, testFileContents));
+    await expect(saga.take()).resolves.toEqual(
+        fileStorageDidReadFile(testFileName, testFileContents),
+    );
 
     await saga.end();
 });
@@ -109,15 +108,15 @@ it('should read and write files', async () => {
 it('should dispatch fail action if file does not exist', async () => {
     const saga = new AsyncSaga(fileStorage);
 
-    let action = await saga.take();
-    expect(action).toEqual(fileStorageDidInitialize([]));
+    await expect(saga.take()).resolves.toEqual(fileStorageDidInitialize([]));
 
     const testFileName = 'test.file';
 
     saga.put(fileStorageReadFile(testFileName));
 
-    action = await saga.take();
-    expect(fileStorageDidFailToReadFile.matches(action)).toBeTruthy();
+    await expect(saga.take()).resolves.toEqual(
+        fileStorageDidFailToReadFile('test.file', new Error('file does not exist')),
+    );
 
     await saga.end();
 });
@@ -129,11 +128,9 @@ it('should delete files', async () => {
 
     saga.put(fileStorageDeleteFile(testFileName));
 
-    const action = await saga.take();
-    expect(action).toEqual(fileStorageDidDeleteFile(testFileName));
+    await expect(saga.take()).resolves.toEqual(fileStorageDidDeleteFile(testFileName));
 
-    const action2 = await saga.take();
-    expect(action2).toEqual(fileStorageDidRemoveItem(testFileName));
+    await expect(saga.take()).resolves.toEqual(fileStorageDidRemoveItem(testFileName));
 
     await saga.end();
 });
@@ -148,14 +145,15 @@ describe('rename', () => {
 
         saga.put(fileStorageRenameFile(testFileName, newName));
 
-        const action = await saga.take();
-        expect(action).toEqual(fileStorageDidChangeItem(newName));
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageDidRenameFile(testFileName, newName),
+        );
 
-        const action2 = await saga.take();
-        expect(action2).toEqual(fileStorageDidRemoveItem(testFileName));
+        await expect(saga.take()).resolves.toEqual(fileStorageDidChangeItem(newName));
 
-        const action3 = await saga.take();
-        expect(action3).toEqual(fileStorageDidRenameFile(testFileName, newName));
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageDidRemoveItem(testFileName),
+        );
 
         await saga.end();
     });
@@ -167,13 +165,11 @@ describe('export', () => {
 
         const saga = new AsyncSaga(fileStorage);
 
-        const action0 = await saga.take();
-        expect(action0).toEqual(fileStorageDidInitialize([]));
+        await expect(saga.take()).resolves.toEqual(fileStorageDidInitialize([]));
 
         saga.put(fileStorageExportFile(testFileName));
 
-        const action = await saga.take();
-        expect(action).toEqual(
+        await expect(saga.take()).resolves.toEqual(
             fileStorageDidFailToExportFile(
                 testFileName,
                 new Error('file does not exist'),
@@ -192,8 +188,9 @@ describe('export', () => {
 
         saga.put(fileStorageExportFile(testFileName));
 
-        const action = await saga.take();
-        expect(action).toEqual(fileStorageDidExportFile(testFileName));
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageDidExportFile(testFileName),
+        );
         expect(browserFsAccess.fileSave).toHaveBeenCalled();
 
         await saga.end();
@@ -209,8 +206,9 @@ describe('export', () => {
 
         saga.put(fileStorageExportFile(testFileName));
 
-        const action = await saga.take();
-        expect(action).toEqual(fileStorageDidFailToExportFile(testFileName, testError));
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageDidFailToExportFile(testFileName, testError),
+        );
 
         await saga.end();
     });
@@ -226,8 +224,7 @@ describe('archive', () => {
 
         saga.put(fileStorageArchiveAllFiles());
 
-        const action = await saga.take();
-        expect(action).toEqual(fileStorageDidArchiveAllFiles());
+        await expect(saga.take()).resolves.toEqual(fileStorageDidArchiveAllFiles());
         expect(browserFsAccess.fileSave).toHaveBeenCalled();
 
         await saga.end();
@@ -243,8 +240,9 @@ describe('archive', () => {
 
         saga.put(fileStorageArchiveAllFiles());
 
-        const action = await saga.take();
-        expect(action).toEqual(fileStorageDidFailToArchiveAllFiles(testError));
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageDidFailToArchiveAllFiles(testError),
+        );
 
         await saga.end();
     });

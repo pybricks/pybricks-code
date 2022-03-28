@@ -2,12 +2,17 @@
 // Copyright (c) 2022 The Pybricks Authors
 
 import { fileSave } from 'browser-fs-access';
+import Dexie, { Table } from 'dexie';
+import {
+    ICreateChange,
+    IDatabaseChange,
+    IDeleteChange,
+    IUpdateChange,
+} from 'dexie-observable/api';
+import 'dexie-observable';
 import JSZip from 'jszip';
-import localForage from 'localforage';
-import { extendPrototype } from 'localforage-observable';
 import { eventChannel } from 'redux-saga';
-import { call, fork, put, takeEvery } from 'typed-redux-saga/macro';
-import Observable from 'zen-observable';
+import { call, fork, put, take, takeEvery } from 'typed-redux-saga/macro';
 import { pythonFileExtension, pythonFileMimeType } from '../pybricksMicropython/lib';
 import { ensureError, timestamp } from '../utils';
 import {
@@ -35,42 +40,145 @@ import {
     fileStorageWriteFile,
 } from './actions';
 
+// HACK: we have to redefine DatabaseChangeType since it is a const enum
+// https://ncjamieson.com/dont-export-const-enums
+const enum DatabaseChangeType {
+    Create = 1,
+    Update = 2,
+    Delete = 3,
+}
+
+/** Type discriminator for {@link ICreateChange} */
+function isCreateChange(change: IDatabaseChange): change is ICreateChange {
+    return change.type === Number(DatabaseChangeType.Create);
+}
+
+/** Type discriminator for {@link IUpdateChange} */
+function isUpdateChange(change: IDatabaseChange): change is IUpdateChange {
+    return change.type === Number(DatabaseChangeType.Update);
+}
+
+/** Type discriminator for {@link IDeleteChange} */
+function isDeleteChange(change: IDatabaseChange): change is IDeleteChange {
+    return change.type === Number(DatabaseChangeType.Delete);
+}
+
+/** Type discriminator for {@link ICreateChange} of {@link FileMetadata} */
+function isFileMetadataCreateChange(
+    change: ICreateChange,
+): change is Omit<ICreateChange, 'key' | 'obj'> & { key: string; obj: FileMetadata } {
+    return change.table === 'metadata';
+}
+
+/** Type discriminator for {@link IUpdateChange} of {@link FileMetadata} */
+function isFileMetadataUpdateChange(change: IUpdateChange): change is Omit<
+    IUpdateChange,
+    'key' | 'obj' | 'oldObj'
+> & {
+    key: string;
+    obj: FileMetadata;
+    oldObj: FileMetadata;
+} {
+    return change.table === 'metadata';
+}
+
+/** Type discriminator for {@link IDeleteChange} of {@link FileMetadata} */
+function isFileMetaDataDeleteChange(change: IDeleteChange): change is Omit<
+    IDeleteChange,
+    'key' | 'oldObj'
+> & {
+    key: string;
+    oldObj: FileMetadata;
+} {
+    return change.table === 'metadata';
+}
+
+/** Database metadata table data type. */
+type FileMetadata = {
+    /** A globally unique identifier that serves a a file handle. */
+    uuid?: string;
+    /** The path of the file in storage. */
+    path: string;
+};
+
+/** Database contents table data type. */
+type FileContents = {
+    /** The path of the file in storage. */
+    path: string;
+    /** The contents of the file. */
+    contents: string;
+};
+
+class FileStorageDb extends Dexie {
+    metadata!: Table<FileMetadata, string>;
+    // NB: This table starts with an underscore to hide it from Dexie observable.
+    // In the future we may change this to use File Access API or some other
+    // storage, so we don't want to rely on the file contents being included
+    // with the metadata.
+    _contents!: Table<FileContents, string>;
+
+    constructor() {
+        super('pybricks.fileStorage');
+        this.version(1).stores({
+            metadata: '$$uuid, &path',
+            _contents: 'path, contents',
+        });
+    }
+}
+
 /**
  * Converts localForage change events to redux actions.
- * @param change The storage change event.
+ * @param changes The list of changes from the 'changed' event.
  */
-function* handleFileStorageDidChange(change: LocalForageObservableChange): Generator {
-    switch (change.methodName) {
-        case 'setItem':
-            if (change.success) {
-                yield* put(fileStorageDidChangeItem(change.key));
+function* handleFileStorageDidChange(changes: IDatabaseChange[]): Generator {
+    for (const change of changes) {
+        if (isCreateChange(change)) {
+            if (isFileMetadataCreateChange(change)) {
+                yield* put(fileStorageDidChangeItem(change.obj.path));
             }
-            break;
-        case 'removeItem':
-            if (change.success) {
-                yield* put(fileStorageDidRemoveItem(change.key));
+        } else if (isUpdateChange(change)) {
+            if (isFileMetadataUpdateChange(change)) {
+                if (change.oldObj.path !== change.obj.path) {
+                    // TODO: need to introduce a DidCreate action
+                    yield* put(fileStorageDidChangeItem(change.obj.path));
+                    yield* put(fileStorageDidRemoveItem(change.oldObj.path));
+                }
             }
-            break;
+        } else if (isDeleteChange(change)) {
+            if (isFileMetaDataDeleteChange(change)) {
+                yield* put(fileStorageDidRemoveItem(change.oldObj.path));
+            }
+        }
     }
 }
 
 /**
  * Handles requests to read a file.
- * @param files The storage instance.
+ * @param db The database instance.
  * @param action The requested action.
  */
 function* handleReadFile(
-    files: LocalForage,
+    db: FileStorageDb,
     action: ReturnType<typeof fileStorageReadFile>,
 ): Generator {
     try {
-        const value = yield* call(() => files.getItem<string>(action.fileName));
+        const file = yield* call(() =>
+            db.transaction('r', db.metadata, db._contents, async () => {
+                const metadata = await db.metadata.get(action.fileName);
 
-        if (value === null) {
+                if (!metadata) {
+                    return undefined;
+                }
+
+                return db._contents.get(metadata.path);
+            }),
+        );
+
+        if (!file) {
             throw new Error('file does not exist');
         }
 
-        yield* put(fileStorageDidReadFile(action.fileName, value));
+        yield* put(fileStorageDidReadFile(action.fileName, file.contents));
     } catch (err) {
         yield* put(fileStorageDidFailToReadFile(action.fileName, ensureError(err)));
     }
@@ -78,15 +186,26 @@ function* handleReadFile(
 
 /**
  * Saves the file contents to storage.
- * @param files The localForage instance.
+ * @param db The database instance.
  * @param action The action that triggered this saga.
  */
 function* handleWriteFile(
-    files: LocalForage,
+    db: FileStorageDb,
     action: ReturnType<typeof fileStorageWriteFile>,
 ) {
     try {
-        yield* call(() => files.setItem(action.fileName, action.fileContents));
+        yield* call(() =>
+            db.transaction('rw', db.metadata, db._contents, async () => {
+                await db.metadata.put({
+                    uuid: action.fileName,
+                    path: action.fileName,
+                });
+                await db._contents.put({
+                    path: action.fileName,
+                    contents: action.fileContents,
+                });
+            }),
+        );
         yield* put(fileStorageDidWriteFile(action.fileName));
     } catch (err) {
         yield* put(fileStorageDidFailToWriteFile(action.fileName, ensureError(err)));
@@ -94,12 +213,22 @@ function* handleWriteFile(
 }
 
 function* handleExportFile(
-    files: LocalForage,
+    db: FileStorageDb,
     action: ReturnType<typeof fileStorageExportFile>,
 ): Generator {
-    const data = yield* call(() => files.getItem<string>(action.fileName));
+    const file = yield* call(() =>
+        db.transaction('r', db.metadata, db._contents, async () => {
+            const metadata = await db.metadata.get(action.fileName);
 
-    if (data === null) {
+            if (!metadata) {
+                return undefined;
+            }
+
+            return db._contents.get(metadata.path);
+        }),
+    );
+
+    if (!file) {
         yield* put(
             fileStorageDidFailToExportFile(
                 action.fileName,
@@ -109,7 +238,7 @@ function* handleExportFile(
         return;
     }
 
-    const blob = new Blob([data], { type: `${pythonFileMimeType}` });
+    const blob = new Blob([file.contents], { type: `${pythonFileMimeType}` });
 
     try {
         yield* call(() =>
@@ -131,15 +260,28 @@ function* handleExportFile(
 
 /**
  * Deletes a file from storage.
- * @param files The localForage instance.
+ * @param db The database instance.
  * @param action The action that triggered this saga.
  */
 function* handleDeleteFile(
-    files: LocalForage,
+    db: FileStorageDb,
     action: ReturnType<typeof fileStorageDeleteFile>,
 ) {
     try {
-        yield* call(() => files.removeItem(action.fileName));
+        yield* call(() =>
+            db.transaction('rw', db.metadata, db._contents, async () => {
+                const metadata = await db.metadata.get(action.fileName);
+
+                if (!metadata) {
+                    throw new Error(
+                        `cannot rename: file '${action.fileName}' does not exist in db`,
+                    );
+                }
+
+                await db.metadata.delete(action.fileName);
+                await db._contents.delete(metadata.path);
+            }),
+        );
         yield* put(fileStorageDidDeleteFile(action.fileName));
     } catch (err) {
         yield* put(fileStorageDidFailToDeleteFile(action.fileName, ensureError(err)));
@@ -148,23 +290,46 @@ function* handleDeleteFile(
 
 /**
  * Renames a file in storage.
- * @param files The localForage instance.
+ * @param db The database instance.
  * @param action The action that triggered this saga.
  */
 function* handleRenameFile(
-    files: LocalForage,
+    db: FileStorageDb,
     action: ReturnType<typeof fileStorageRenameFile>,
 ) {
     try {
-        yield* call(async () => {
-            // There is no move/rename API, so we have to make a copy with the
-            // new name and delete the old one.
-            // FIXME: This should be an atomic operation, e.g. if removing the
-            // old file fails, the new file should be removed.
-            const contents = await files.getItem(action.oldName);
-            await files.setItem(action.newName, contents);
-            await files.removeItem(action.oldName);
-        });
+        yield* call(() =>
+            db.transaction('rw', db.metadata, db._contents, async () => {
+                const metadata = await db.metadata.get(action.oldName);
+
+                if (!metadata) {
+                    throw new Error(
+                        `cannot rename: file '${action.oldName}' does not exist in db`,
+                    );
+                }
+
+                const oldFile = await db._contents.get(metadata.path);
+
+                if (!oldFile) {
+                    throw new Error(
+                        `cannot rename: file '${action.oldName}' does not exist in storage`,
+                    );
+                }
+
+                const newFile = await db._contents.get(action.newName);
+
+                if (newFile) {
+                    throw new Error(
+                        `cannot rename: file '${action.newName}' already exists`,
+                    );
+                }
+
+                await db._contents.delete(action.oldName);
+                await db._contents.add({ ...oldFile, path: action.newName });
+
+                await db.metadata.put({ ...metadata, path: action.newName });
+            }),
+        );
 
         yield* put(fileStorageDidRenameFile(action.oldName, action.newName));
     } catch (err) {
@@ -178,15 +343,11 @@ function* handleRenameFile(
     }
 }
 
-function* handleArchiveAllFiles(files: LocalForage): Generator {
+function* handleArchiveAllFiles(db: FileStorageDb): Generator {
     try {
         const zip = new JSZip();
 
-        yield* call(() =>
-            files.iterate<string, void>((value, key) => {
-                zip.file(key, value);
-            }),
-        );
+        yield* call(() => db._contents.each((f) => zip.file(f.path, f.contents)));
 
         const zipData = yield* call(() => zip.generateAsync({ type: 'blob' }));
 
@@ -213,64 +374,62 @@ function* handleArchiveAllFiles(files: LocalForage): Generator {
  * Initializes the storage backend.
  */
 function* initialize(): Generator {
+    const defer = new Array<(...args: unknown[]) => unknown>();
+
     try {
-        // set up storage
-
-        const files = extendPrototype(
-            localForage.createInstance({ name: 'fileStorage' }),
-        );
-
-        files.newObservable.factory = (subscribe) =>
-            // @ts-expect-error localforage-observable Subscription is missing
-            // closed property compared to zen-observable Subscription.
-            new Observable(subscribe);
-
-        yield* call(() => files.ready());
+        const db = new FileStorageDb();
 
         // migrate from old storage
 
-        // Previous versions of pybricks code used local storage to save a single program.
-        const oldProgram = localStorage.getItem('program');
+        // NB: this is a one-shot event, so we don't need to unsubscribe
+        db.on('ready', async () => {
+            // Previous versions of pybricks code used local storage to save a single program.
+            const oldProgram = localStorage.getItem('program');
 
-        if (oldProgram !== null) {
-            yield* call(() => files.setItem('main.py', oldProgram));
-            localStorage.removeItem('program');
-        }
+            if (oldProgram !== null) {
+                await db.transaction('rw', db.metadata, db._contents, async () => {
+                    await db.metadata.add({ uuid: 'main.py', path: 'main.py' });
+                    await db._contents.add({ path: 'main.py', contents: oldProgram });
+                });
+                localStorage.removeItem('program');
+            }
+        });
+
+        yield* call(() => db.open());
+        defer.push(() => db.close());
 
         // wire storage observable to redux-sagas
 
-        files.configObservables({
-            crossTabNotification: true,
-            crossTabChangeDetection: true,
+        const changesChan = eventChannel<IDatabaseChange[]>((emit) => {
+            db.on('changes').subscribe(emit);
+            return () => db.on('changes').unsubscribe(emit);
         });
 
-        const localForageChannel = eventChannel<LocalForageObservableChange>((emit) => {
-            const filesObservable = files.newObservable({
-                crossTabNotification: true,
-            });
-
-            const subscription = filesObservable.subscribe({
-                next: (value) => emit(value),
-            });
-
-            return () => subscription.unsubscribe();
-        });
+        defer.push(() => changesChan.close());
 
         // subscribe to events
 
-        yield* takeEvery(localForageChannel, handleFileStorageDidChange);
-        yield* takeEvery(fileStorageReadFile, handleReadFile, files);
-        yield* takeEvery(fileStorageWriteFile, handleWriteFile, files);
-        yield* takeEvery(fileStorageDeleteFile, handleDeleteFile, files);
-        yield* takeEvery(fileStorageRenameFile, handleRenameFile, files);
-        yield* takeEvery(fileStorageExportFile, handleExportFile, files);
-        yield* takeEvery(fileStorageArchiveAllFiles, handleArchiveAllFiles, files);
+        yield* takeEvery(changesChan, handleFileStorageDidChange);
+        yield* takeEvery(fileStorageReadFile, handleReadFile, db);
+        yield* takeEvery(fileStorageWriteFile, handleWriteFile, db);
+        yield* takeEvery(fileStorageDeleteFile, handleDeleteFile, db);
+        yield* takeEvery(fileStorageRenameFile, handleRenameFile, db);
+        yield* takeEvery(fileStorageExportFile, handleExportFile, db);
+        yield* takeEvery(fileStorageArchiveAllFiles, handleArchiveAllFiles, db);
 
-        const fileNames = yield* call(() => files.keys());
+        const files = yield* call(() => db.metadata.toArray());
 
-        yield* put(fileStorageDidInitialize(fileNames));
+        yield* put(fileStorageDidInitialize(files.map((f) => f.path)));
+
+        // this blocks "forever" until canceled so that the finally
+        // clause will run cleanup code at the appropriate time
+        yield* take('__never__');
     } catch (err) {
         yield* put(fileStorageDidFailToInitialize(ensureError(err)));
+    } finally {
+        for (const callback of defer.reverse()) {
+            yield* call(callback);
+        }
     }
 }
 
