@@ -5,8 +5,9 @@ import { getByLabelText, waitFor } from '@testing-library/dom';
 import { cleanup } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
-import { testRender } from '../../test';
+import { testRender, uuid } from '../../test';
 import {
+    FileMetadata,
     fileStorageArchiveAllFiles,
     fileStorageExportFile,
 } from '../fileStorage/actions';
@@ -19,10 +20,16 @@ afterEach(async () => {
     localStorage.clear();
 });
 
+const testFile: FileMetadata = {
+    uuid: uuid(0),
+    path: 'test.file',
+    sha256: '',
+};
+
 describe('archive button', () => {
     it('should be enabled if there are files', () => {
         const [explorer, dispatch] = testRender(<Explorer />, {
-            fileStorage: { fileNames: ['test.file'] },
+            fileStorage: { files: [testFile] },
         });
 
         const button = explorer.getByTitle('Backup all files');
@@ -34,7 +41,7 @@ describe('archive button', () => {
 
     it('should be disabled if there are no files', () => {
         const [explorer, dispatch] = testRender(<Explorer />, {
-            fileStorage: { fileNames: [] },
+            fileStorage: { files: [] },
         });
 
         const button = explorer.getByTitle('Backup all files');
@@ -75,7 +82,7 @@ describe('new file button', () => {
 describe('tree item', () => {
     it('should dispatch action when button is clicked', async () => {
         const [explorer, dispatch] = testRender(<Explorer />, {
-            fileStorage: { fileNames: ['test.file'] },
+            fileStorage: { files: [testFile] },
         });
 
         expect(
@@ -93,7 +100,7 @@ describe('tree item', () => {
 
     it('should dispatch action when key is pressed', async () => {
         const [explorer, dispatch] = testRender(<Explorer />, {
-            fileStorage: { fileNames: ['test.file'] },
+            fileStorage: { files: [testFile] },
         });
 
         expect(
@@ -110,7 +117,7 @@ describe('tree item', () => {
 
     it('should dispatch delete action when button is clicked', async () => {
         const [explorer, dispatch] = testRender(<Explorer />, {
-            fileStorage: { fileNames: ['test.file'] },
+            fileStorage: { files: [testFile] },
         });
 
         // NB: this button is intentionally not accessible (by role) since
@@ -124,7 +131,7 @@ describe('tree item', () => {
 
     it('should dispatch delete action when key is pressed', async () => {
         const [explorer, dispatch] = testRender(<Explorer />, {
-            fileStorage: { fileNames: ['test.file'] },
+            fileStorage: { files: [testFile] },
         });
 
         const treeItem = explorer.getByRole('treeitem', { name: 'test.file' });
@@ -137,7 +144,7 @@ describe('tree item', () => {
 
     it('should dispatch export action when button is clicked', async () => {
         const [explorer, dispatch] = testRender(<Explorer />, {
-            fileStorage: { fileNames: ['test.file'] },
+            fileStorage: { files: [testFile] },
         });
 
         // NB: this button is intentionally not accessible (by role) since
@@ -151,7 +158,7 @@ describe('tree item', () => {
 
     it('should dispatch export action when key is pressed', async () => {
         const [explorer, dispatch] = testRender(<Explorer />, {
-            fileStorage: { fileNames: ['test.file'] },
+            fileStorage: { files: [testFile] },
         });
 
         const treeItem = explorer.getByRole('treeitem', { name: 'test.file' });

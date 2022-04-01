@@ -3,14 +3,33 @@
 
 import { createAction } from '../actions';
 
+/** Type to avoid mixing UUID with regular string. */
+export type UUID = string & { _uuidBrand: undefined };
+
+/**
+ * Database metadata table data type.
+ *
+ * IMPORTANT: if this type is changed, we need to modify the database schema to match
+ */
+export type FileMetadata = Readonly<{
+    /** A globally unique identifier that serves a a file handle. */
+    uuid: UUID;
+    /** The path of the file in storage. */
+    path: string;
+    /** The SHA256 hash of the file contents. */
+    sha256: string;
+}>;
+
 /**
  * Action that indicates that the storage backend is ready to use.
- * @param fileNames List of all files currently in storage.
+ * @param files List of all files currently in storage.
  */
-export const fileStorageDidInitialize = createAction((fileNames: string[]) => ({
-    type: 'fileStorage.action.didInitialize',
-    fileNames,
-}));
+export const fileStorageDidInitialize = createAction(
+    (files: readonly FileMetadata[]) => ({
+        type: 'fileStorage.action.didInitialize',
+        files,
+    }),
+);
 
 /**
  * Action that indicates that the storage backend failed to initialize.
@@ -23,29 +42,33 @@ export const fileStorageDidFailToInitialize = createAction((error: Error) => ({
 
 /**
  * Action that indicates that an item in the storage was created by us or in another tab.
- * @param id The file handle UUID.
+ * @param file The file metadata.
  */
-export const fileStorageDidAddItem = createAction((id: string) => ({
+export const fileStorageDidAddItem = createAction((file: FileMetadata) => ({
     type: 'fileStorage.action.didAddItem',
-    id,
+    file,
 }));
 
 /**
  * Action that indicates that an item in the storage was  changed by us or in another tab.
- * @param id The file handle UUID.
+ * @param file The old file metadata.
+ * @param file The file metadata.
  */
-export const fileStorageDidChangeItem = createAction((id: string) => ({
-    type: 'fileStorage.action.didChangeItem',
-    id,
-}));
+export const fileStorageDidChangeItem = createAction(
+    (oldFile: FileMetadata, file: FileMetadata) => ({
+        type: 'fileStorage.action.didChangeItem',
+        oldFile,
+        file,
+    }),
+);
 
 /**
  * Action that indicates that an item in the storage was removed by us or in another tab.
- * @param id The file handle UUID.
+ * @param file The file metadata.
  */
-export const fileStorageDidRemoveItem = createAction((id: string) => ({
+export const fileStorageDidRemoveItem = createAction((file: FileMetadata) => ({
     type: 'fileStorage.action.didRemoveItem',
-    id,
+    file,
 }));
 
 /**
@@ -62,7 +85,7 @@ export const fileStorageOpenFile = createAction((path: string) => ({
  * @param path The file path.
  * @param id The file handle UUID.
  */
-export const fileStorageDidOpenFile = createAction((path: string, id: string) => ({
+export const fileStorageDidOpenFile = createAction((path: string, id: UUID) => ({
     type: 'fileStorage.action.DidOpen',
     path,
     id,
@@ -84,7 +107,7 @@ export const fileStorageDidFailToOpenFile = createAction(
  * Requests to read a file from storage.
  * @param id The file handle UUID.
  */
-export const fileStorageReadFile = createAction((id: string) => ({
+export const fileStorageReadFile = createAction((id: UUID) => ({
     type: 'fileStorage.action.readFile',
     id,
 }));
@@ -94,7 +117,7 @@ export const fileStorageReadFile = createAction((id: string) => ({
  * @param id The file handle UUID.
  * @param contents The contents of the file.
  */
-export const fileStorageDidReadFile = createAction((id: string, contents: string) => ({
+export const fileStorageDidReadFile = createAction((id: UUID, contents: string) => ({
     type: 'fileStorage.action.didReadFile',
     id,
     contents,
@@ -105,20 +128,18 @@ export const fileStorageDidReadFile = createAction((id: string, contents: string
  * @param id The file handle UUID.
  * @param error The error.
  */
-export const fileStorageDidFailToReadFile = createAction(
-    (id: string, error: Error) => ({
-        type: 'fileStorage.action.didFailToReadFile',
-        id,
-        error,
-    }),
-);
+export const fileStorageDidFailToReadFile = createAction((id: UUID, error: Error) => ({
+    type: 'fileStorage.action.didFailToReadFile',
+    id,
+    error,
+}));
 
 /**
  * Requests to write a file to storage.
  * @param id The file handle UUID.
  * @param contents The contents of the file.
  */
-export const fileStorageWriteFile = createAction((id: string, contents: string) => ({
+export const fileStorageWriteFile = createAction((id: UUID, contents: string) => ({
     type: 'fileStorage.action.writeFile',
     id,
     contents,
@@ -128,7 +149,7 @@ export const fileStorageWriteFile = createAction((id: string, contents: string) 
  * Response to write file request indicating success.
  * @param id The file handle UUID.
  */
-export const fileStorageDidWriteFile = createAction((id: string) => ({
+export const fileStorageDidWriteFile = createAction((id: UUID) => ({
     type: 'fileStorage.action.didWriteFile',
     id,
 }));
@@ -138,74 +159,74 @@ export const fileStorageDidWriteFile = createAction((id: string) => ({
  * @param id The file handle UUID.
  * @param error The error.
  */
-export const fileStorageDidFailToWriteFile = createAction(
-    (id: string, error: Error) => ({
-        type: 'fileStorage.action.didFailToWriteFile',
-        id,
-        error,
-    }),
-);
+export const fileStorageDidFailToWriteFile = createAction((id: UUID, error: Error) => ({
+    type: 'fileStorage.action.didFailToWriteFile',
+    id,
+    error,
+}));
 
 /**
  * Request to delete a file from storage.
  * @param id The file handle UUID.
  */
-export const fileStorageDeleteFile = createAction((id: string) => ({
+export const fileStorageDeleteFile = createAction((fileName: string) => ({
     type: 'fileStorage.action.deleteFile',
-    id,
+    fileName,
 }));
 
 /**
  * Indicates that {@link fileStorageDeleteFile} succeeded.
- * @param id The file handle UUID.
+ * @param fileName The file handle UUID.
  */
-export const fileStorageDidDeleteFile = createAction((id: string) => ({
+export const fileStorageDidDeleteFile = createAction((fileName: string) => ({
     type: 'fileStorage.action.didDeleteFile',
-    id,
+    fileName,
 }));
 
 /**
  *  Indicates that {@link fileStorageDeleteFile} failed.
- * @param id The file handle UUID.
+ * @param fileName The file handle UUID.
  * @param error The error.
  */
 export const fileStorageDidFailToDeleteFile = createAction(
-    (id: string, error: Error) => ({
+    (fileName: string, error: Error) => ({
         type: 'fileStorage.action.didFailToDeleteFile',
-        id,
+        fileName,
         error,
     }),
 );
 
 /**
  * Requests for a file to be renamed.
- * @param id The file handle UUID.
+ * @param fileName The file handle UUID.
  * @param newName The new name for the file.
  */
-export const fileStorageRenameFile = createAction((id: string, newName: string) => ({
-    type: 'fileStorage.action.renameFile',
-    id,
-    newName,
-}));
+export const fileStorageRenameFile = createAction(
+    (fileName: string, newName: string) => ({
+        type: 'fileStorage.action.renameFile',
+        fileName,
+        newName,
+    }),
+);
 
 /**
  * Indicates that fileStorageRenameFile(oldName, newName) succeeded.
- * @param id The file handle UUID.
+ * @param fileName The file handle UUID.
  */
-export const fileStorageDidRenameFile = createAction((id: string) => ({
+export const fileStorageDidRenameFile = createAction((fileName: string) => ({
     type: 'fileStorage.action.didRenameFile',
-    id,
+    fileName,
 }));
 
 /**
  * Indicates that fileStorageRenameFile(oldName, newName) failed.
- * @param id The file handle UUID.
+ * @param fileName The file handle UUID.
  * @param error The error.
  */
 export const fileStorageDidFailToRenameFile = createAction(
-    (id: string, error: Error) => ({
+    (fileName: string, error: Error) => ({
         type: 'fileStorage.action.didFailToRenameFile',
-        id,
+        fileName,
         error,
     }),
 );
@@ -214,29 +235,29 @@ export const fileStorageDidFailToRenameFile = createAction(
  * Request to export (download) a file.
  * @param id The file handle UUID.
  */
-export const fileStorageExportFile = createAction((id: string) => ({
+export const fileStorageExportFile = createAction((fileName: string) => ({
     type: 'fileStorage.action.exportFile',
-    id,
+    fileName,
 }));
 
 /**
  * Indicates that fileStorageExportFile(fileName) succeeded.
- * @param id The file handle UUID.
+ * @param fileName The file handle UUID.
  */
-export const fileStorageDidExportFile = createAction((id: string) => ({
+export const fileStorageDidExportFile = createAction((fileName: string) => ({
     type: 'fileStorage.action.didExportFile',
-    id,
+    fileName,
 }));
 
 /**
  * Indicates that fileStorageExportFile(fileName) failed.
- * @param id The file handle UUID.
+ * @param fileName The file name.
  * @param error The error that was raised.
  */
 export const fileStorageDidFailToExportFile = createAction(
-    (id: string, error: Error) => ({
+    (fileName: string, error: Error) => ({
         type: 'fileStorage.action.didFailToExportFile',
-        id,
+        fileName,
         error,
     }),
 );

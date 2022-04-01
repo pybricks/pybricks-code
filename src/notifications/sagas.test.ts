@@ -9,22 +9,23 @@ import {
 } from '@pybricks/firmware';
 import { I18nManager } from '@shopify/react-i18n';
 import { AnyAction } from 'redux';
-import { AsyncSaga } from '../../test';
+import { AsyncSaga, uuid } from '../../test';
 import { appDidCheckForUpdate } from '../app/actions';
 import { bleDIServiceDidReceiveFirmwareRevision } from '../ble-device-info-service/actions';
 import {
     BleDeviceFailToConnectReasonType,
     didFailToConnect as bleDidFailToConnect,
 } from '../ble/actions';
-import { explorerDeleteFile, explorerDidFailToImportFiles } from '../explorer/actions';
+import {
+    explorerDeleteFile,
+    explorerDidFailToCreateNewFile,
+    explorerDidFailToImportFiles,
+} from '../explorer/actions';
 import {
     fileStorageDeleteFile,
     fileStorageDidFailToArchiveAllFiles,
-    fileStorageDidFailToDeleteFile,
     fileStorageDidFailToExportFile,
     fileStorageDidFailToInitialize,
-    fileStorageDidFailToReadFile,
-    fileStorageDidFailToWriteFile,
     fileStorageDidRemoveItem,
 } from '../fileStorage/actions';
 import {
@@ -111,12 +112,10 @@ test.each([
     appDidCheckForUpdate(false),
     bleDIServiceDidReceiveFirmwareRevision('3.0.0'),
     fileStorageDidFailToInitialize(new Error('test error')),
-    fileStorageDidFailToReadFile('test.file', new Error('test error')),
-    fileStorageDidFailToWriteFile('test.file', new Error('test error')),
-    fileStorageDidFailToDeleteFile('test.file', new Error('test error')),
     fileStorageDidFailToExportFile('test.file', new Error('test error')),
     fileStorageDidFailToArchiveAllFiles(new Error('test error')),
     explorerDidFailToImportFiles(new Error('test error')),
+    explorerDidFailToCreateNewFile(new Error('test error')),
 ])('actions that should show notification: %o', async (action: AnyAction) => {
     const { toaster, saga } = createTestToasterSaga();
 
@@ -214,7 +213,9 @@ describe('delete file saga', () => {
             toaster.getToasts().find((t) => t.key === I18nId.ExplorerDeleteFileMessage),
         ).toBeDefined();
 
-        saga.put(fileStorageDidRemoveItem('test.file'));
+        saga.put(
+            fileStorageDidRemoveItem({ uuid: uuid(0), path: 'test.file', sha256: '' }),
+        );
 
         expect(
             toaster.getToasts().find((t) => t.key === I18nId.ExplorerDeleteFileMessage),

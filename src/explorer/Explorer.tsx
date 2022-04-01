@@ -23,7 +23,6 @@ import {
     useTreeEnvironment,
 } from 'react-complex-tree';
 import { useDispatch } from 'react-redux';
-import { useDebounce } from 'usehooks-ts';
 import {
     fileStorageArchiveAllFiles,
     fileStorageExportFile,
@@ -131,7 +130,7 @@ type HeaderProps = {
 const Header: React.VoidFunctionComponent<HeaderProps> = ({ i18n }) => {
     const [isNewFileWizardOpen, setIsNewFileWizardOpen] = useState(false);
     const dispatch = useDispatch();
-    const fileNames = useSelector((s) => s.fileStorage.fileNames);
+    const files = useSelector((s) => s.fileStorage.files);
 
     return (
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -139,7 +138,7 @@ const Header: React.VoidFunctionComponent<HeaderProps> = ({ i18n }) => {
                 <ActionButton
                     icon="archive"
                     tooltip={i18n.translate(I18nId.HeaderExportAllTooltip)}
-                    disabled={fileNames.length === 0}
+                    disabled={files.length === 0}
                     onClick={() => dispatch(fileStorageArchiveAllFiles())}
                 />
                 <ActionButton
@@ -280,22 +279,21 @@ type FileTreeProps = {
 
 const FileTree: React.VoidFunctionComponent<FileTreeProps> = ({ i18n }) => {
     const [focusedItem, setFocusedItem] = useState<TreeItemIndex>();
-    const fileNames = useSelector((s) => s.fileStorage.fileNames);
-    const debouncedFileNames = useDebounce(fileNames);
+    const files = useSelector((s) => s.fileStorage.files);
     const liveDescriptors = useLiveDescriptors(i18n);
 
-    const rootItemIndex = '/';
+    const rootItemIndex = 'root';
 
     const treeItems = useMemo(
         () =>
-            debouncedFileNames.reduce(
-                (obj, fileName) => {
-                    const index = `/${fileName}`;
+            files.reduce(
+                (obj, file) => {
+                    const index = file.uuid;
 
                     obj[index] = {
                         index,
                         data: {
-                            fileName,
+                            fileName: file.path,
                             icon: 'document',
                             secondaryLabel: (
                                 <TreeItemContext.Consumer>
@@ -317,11 +315,14 @@ const FileTree: React.VoidFunctionComponent<FileTreeProps> = ({ i18n }) => {
                         index: rootItemIndex,
                         data: { fileName: '/' },
                         hasChildren: true,
-                        children: debouncedFileNames.map((n) => `/${n}`),
+                        children: [...files]
+                            // REVISIT: consider using Intl.Collator() for i18n.locale
+                            .sort((a, b) => a.path.localeCompare(b.path))
+                            .map((n) => n.uuid),
                     },
                 } as Record<TreeItemIndex, FileTreeItem>,
             ),
-        [debouncedFileNames],
+        [files],
     );
 
     const getItemTitle = useCallback((item: FileTreeItem) => item.data.fileName, []);

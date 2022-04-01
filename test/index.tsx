@@ -8,6 +8,7 @@ import React, { ReactElement } from 'react';
 import { Provider } from 'react-redux';
 import { AnyAction, DeepPartial, PreloadedState, createStore } from 'redux';
 import { END, MulticastChannel, Saga, Task, runSaga, stdChannel } from 'redux-saga';
+import { UUID } from '../src/fileStorage/actions';
 import { RootState, rootReducer } from '../src/reducers';
 import { RootSagaContext } from '../src/sagas';
 
@@ -159,6 +160,6 @@ export const testRender = (
  *
  * @param id A unique identifier.
  */
-export function uuid(id: number): string {
-    return `${id.toString().padStart(8, '0')}-0000-0000-0000-000000000000`;
+export function uuid(id: number): UUID {
+    return `${id.toString().padStart(8, '0')}-0000-0000-0000-000000000000` as UUID;
 }

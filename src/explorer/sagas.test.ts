@@ -6,10 +6,10 @@ import { FileWithHandle } from 'browser-fs-access';
 import { mock } from 'jest-mock-extended';
 import { AsyncSaga, uuid } from '../../test';
 import {
-    fileStorageDidFailToOpenFile,
     fileStorageDidFailToRenameFile,
     fileStorageDidOpenFile,
     fileStorageDidRenameFile,
+    fileStorageDidWriteFile,
     fileStorageOpenFile,
     fileStorageRenameFile,
     fileStorageWriteFile,
@@ -18,6 +18,7 @@ import { pythonFileExtension } from '../pybricksMicropython/lib';
 import {
     Hub,
     explorerCreateNewFile,
+    explorerDidCreateNewFile,
     explorerDidFailToImportFiles,
     explorerDidFailToRenameFile,
     explorerDidImportFiles,
@@ -48,11 +49,17 @@ describe('handleExplorerImportFiles', () => {
 
         saga.put(explorerImportFiles());
 
-        const action = await saga.take();
-        expect(action).toEqual(fileStorageWriteFile(testFileName, testFileContents));
+        await expect(saga.take()).resolves.toEqual(fileStorageOpenFile(testFileName));
 
-        const action2 = await saga.take();
-        expect(action2).toEqual(explorerDidImportFiles());
+        saga.put(fileStorageDidOpenFile(testFileName, uuid(0)));
+
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageWriteFile(uuid(0), testFileContents),
+        );
+
+        saga.put(fileStorageDidWriteFile(uuid(0)));
+
+        await expect(saga.take()).resolves.toEqual(explorerDidImportFiles());
 
         await saga.end();
     });
@@ -79,8 +86,11 @@ describe('handleExplorerCreateNewFile', () => {
 
         saga.put(explorerCreateNewFile('test', pythonFileExtension, Hub.Technic));
 
-        const action = await saga.take();
-        expect(action).toMatchInlineSnapshot(`
+        await expect(saga.take()).resolves.toEqual(fileStorageOpenFile('test.py'));
+
+        saga.put(fileStorageDidOpenFile('test.py', uuid(0)));
+
+        await expect(saga.take()).resolves.toMatchInlineSnapshot(`
             Object {
               "contents": "from pybricks.hubs import TechnicHub
             from pybricks.pupdevices import Motor
@@ -91,10 +101,14 @@ describe('handleExplorerCreateNewFile', () => {
             hub = TechnicHub()
 
             ",
-              "id": "test.py",
+              "id": "00000000-0000-0000-0000-000000000000",
               "type": "fileStorage.action.writeFile",
             }
         `);
+
+        saga.put(fileStorageDidWriteFile(uuid(0)));
+
+        await expect(saga.take()).resolves.toEqual(explorerDidCreateNewFile());
 
         await saga.end();
     });
@@ -121,39 +135,23 @@ describe('handleExplorerRenameFile', () => {
         beforeEach(async () => {
             saga.put(renameFileDialogDidAccept('old.file', 'new.file'));
 
-            await expect(saga.take()).resolves.toEqual(fileStorageOpenFile('old.file'));
+            await expect(saga.take()).resolves.toEqual(
+                fileStorageRenameFile('old.file', 'new.file'),
+            );
         });
 
-        it('should dispatch action on fileStorageOpenFile failure', async () => {
-            saga.put(fileStorageDidFailToOpenFile('old.file', new Error('test error')));
+        it('should dispatch action on fileStorageRenameFile failure', async () => {
+            saga.put(
+                fileStorageDidFailToRenameFile('old.file', new Error('test error')),
+            );
 
             await expect(saga.take()).resolves.toEqual(explorerDidFailToRenameFile());
         });
 
-        describe('should dispatch fileStorageRenameFile action on fileStorageOpenFile success', () => {
-            beforeEach(async () => {
-                saga.put(fileStorageDidOpenFile('old.file', uuid(0)));
+        it('should dispatch action on fileStorageRenameFile success', async () => {
+            saga.put(fileStorageDidRenameFile('old.file'));
 
-                await expect(saga.take()).resolves.toEqual(
-                    fileStorageRenameFile(uuid(0), 'new.file'),
-                );
-            });
-
-            it('should dispatch action on fileStorageRenameFile failure', async () => {
-                saga.put(
-                    fileStorageDidFailToRenameFile(uuid(0), new Error('test error')),
-                );
-
-                await expect(saga.take()).resolves.toEqual(
-                    explorerDidFailToRenameFile(),
-                );
-            });
-
-            it('should dispatch action on fileStorageRenameFile success', async () => {
-                saga.put(fileStorageDidRenameFile(uuid(0)));
-
-                await expect(saga.take()).resolves.toEqual(explorerDidRenameFile());
-            });
+            await expect(saga.take()).resolves.toEqual(explorerDidRenameFile());
         });
     });
 

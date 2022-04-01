@@ -2,7 +2,9 @@
 // Copyright (c) 2022 The Pybricks Authors
 
 import { AnyAction } from 'redux';
+import { uuid } from '../../test';
 import {
+    FileMetadata,
     fileStorageDidAddItem,
     fileStorageDidChangeItem,
     fileStorageDidInitialize,
@@ -15,7 +17,7 @@ type State = ReturnType<typeof reducers>;
 test('initial state', () => {
     expect(reducers(undefined, {} as AnyAction)).toMatchInlineSnapshot(`
         Object {
-          "fileNames": Array [],
+          "files": Array [],
           "isInitialized": false,
         }
     `);
@@ -29,37 +31,45 @@ test('isInitialized', () => {
 });
 
 test('fileNames', () => {
-    const testFileName = 'test.file';
+    const testFile: FileMetadata = {
+        uuid: uuid(0),
+        path: 'test.file',
+        sha256: '',
+    };
+
+    const modifiedFile: FileMetadata = { ...testFile, path: 'modified.file' };
+
+    expect(testFile).not.toEqual(modifiedFile);
 
     // initialization populates file list
     expect(
         reducers(
-            { fileNames: [] as ReadonlyArray<string> } as State,
-            fileStorageDidInitialize([testFileName]),
-        ).fileNames,
-    ).toEqual([testFileName]);
+            { files: [] as readonly FileMetadata[] } as State,
+            fileStorageDidInitialize([testFile]),
+        ).files,
+    ).toEqual([testFile]);
 
     // adding appends an item
     expect(
         reducers(
-            { fileNames: [] as ReadonlyArray<string> } as State,
-            fileStorageDidAddItem(testFileName),
-        ).fileNames,
-    ).toEqual([testFileName]);
+            { files: [] as readonly FileMetadata[] } as State,
+            fileStorageDidAddItem(testFile),
+        ).files,
+    ).toEqual([testFile]);
 
-    // changing does nothing
+    // changing replaces an item
     expect(
         reducers(
-            { fileNames: [testFileName] as ReadonlyArray<string> } as State,
-            fileStorageDidChangeItem(testFileName),
-        ).fileNames,
-    ).toEqual([testFileName]);
+            { files: [testFile] as readonly FileMetadata[] } as State,
+            fileStorageDidChangeItem(testFile, modifiedFile),
+        ).files,
+    ).toEqual([modifiedFile]);
 
     // removing deletes an item
     expect(
         reducers(
-            { fileNames: [testFileName] as ReadonlyArray<string> } as State,
-            fileStorageDidRemoveItem(testFileName),
-        ).fileNames,
-    ).not.toContain(testFileName);
+            { files: [testFile] as readonly FileMetadata[] } as State,
+            fileStorageDidRemoveItem(testFile),
+        ).files,
+    ).not.toContain(testFile);
 });

@@ -62,6 +62,22 @@ export const explorerCreateNewFile = createAction(
 );
 
 /**
+ * Action that indicates that {@link explorerCreateNewFile} succeeded.
+ */
+export const explorerDidCreateNewFile = createAction(() => ({
+    type: 'explorer.action.didCreateNewFile',
+}));
+
+/**
+ * Action that indicates that {@link explorerCreateNewFile} failed.
+ * @param error The error.
+ */
+export const explorerDidFailToCreateNewFile = createAction((error: Error) => ({
+    type: 'explorer.action.didFailToCreateNewFile',
+    error,
+}));
+
+/**
  * Action that requests to rename a file.
  * @param fileName The file name.
  */

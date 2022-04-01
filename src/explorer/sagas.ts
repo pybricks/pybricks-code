@@ -15,8 +15,10 @@ import { getPybricksMicroPythonFileTemplate } from '../editor/pybricksMicroPytho
 import {
     fileStorageDidFailToOpenFile,
     fileStorageDidFailToRenameFile,
+    fileStorageDidFailToWriteFile,
     fileStorageDidOpenFile,
     fileStorageDidRenameFile,
+    fileStorageDidWriteFile,
     fileStorageOpenFile,
     fileStorageRenameFile,
     fileStorageWriteFile,
@@ -32,6 +34,8 @@ import { RootState } from '../reducers';
 import { defined, ensureError } from '../utils';
 import {
     explorerCreateNewFile,
+    explorerDidCreateNewFile,
+    explorerDidFailToCreateNewFile,
     explorerDidFailToImportFiles,
     explorerDidFailToRenameFile,
     explorerDidImportFiles,
@@ -64,14 +68,12 @@ function* handleExplorerImportFiles(): Generator {
             const text = yield* call(() => file.text());
 
             const [baseName] = file.name.split(pythonFileExtensionRegex);
-            const existingFiles = yield* select(
-                (s: RootState) => s.fileStorage.fileNames,
-            );
+            const existingFiles = yield* select((s: RootState) => s.fileStorage.files);
 
             const result = validateFileName(
                 baseName,
                 pythonFileExtension,
-                existingFiles,
+                existingFiles.map((f) => f.path),
             );
 
             if (result != FileNameValidationResult.IsOk) {
@@ -84,7 +86,37 @@ function* handleExplorerImportFiles(): Generator {
                 continue;
             }
 
-            yield* put(fileStorageWriteFile(`${baseName}${pythonFileExtension}`, text));
+            const fileName = `${baseName}${pythonFileExtension}`;
+
+            yield* put(fileStorageOpenFile(fileName));
+
+            const { didOpen, didFailToOpen } = yield* race({
+                didOpen: take(fileStorageDidOpenFile.when((a) => a.path === fileName)),
+                didFailToOpen: take(
+                    fileStorageDidFailToOpenFile.when((a) => a.path === fileName),
+                ),
+            });
+
+            if (didFailToOpen) {
+                throw didFailToOpen.error;
+            }
+
+            defined(didOpen);
+
+            yield* put(fileStorageWriteFile(didOpen.id, text));
+
+            const { didFailToWrite } = yield* race({
+                didWrite: take(
+                    fileStorageDidWriteFile.when((a) => a.id === didOpen.id),
+                ),
+                didFailToWrite: take(
+                    fileStorageDidFailToWriteFile.when((a) => a.id === didOpen.id),
+                ),
+            });
+
+            if (didFailToWrite) {
+                throw didFailToWrite.error;
+            }
         }
 
         yield* put(explorerDidImportFiles());
@@ -96,14 +128,46 @@ function* handleExplorerImportFiles(): Generator {
 function* handleExplorerCreateNewFile(
     action: ReturnType<typeof explorerCreateNewFile>,
 ): Generator {
-    const fileName = `${action.fileName}${action.fileExtension}`;
+    try {
+        const fileName = `${action.fileName}${action.fileExtension}`;
 
-    yield* put(
-        fileStorageWriteFile(
-            fileName,
-            getPybricksMicroPythonFileTemplate(action.hub) || '',
-        ),
-    );
+        yield* put(fileStorageOpenFile(fileName));
+
+        const { didOpen, didFailToOpen } = yield* race({
+            didOpen: take(fileStorageDidOpenFile.when((a) => a.path === fileName)),
+            didFailToOpen: take(
+                fileStorageDidFailToOpenFile.when((a) => a.path === fileName),
+            ),
+        });
+
+        if (didFailToOpen) {
+            throw didFailToOpen.error;
+        }
+
+        defined(didOpen);
+
+        yield* put(
+            fileStorageWriteFile(
+                didOpen.id,
+                getPybricksMicroPythonFileTemplate(action.hub) || '',
+            ),
+        );
+
+        const { didFailToWrite } = yield* race({
+            didWrite: take(fileStorageDidWriteFile.when((a) => a.id === didOpen.id)),
+            didFailToWrite: take(
+                fileStorageDidFailToWriteFile.when((a) => a.id === didOpen.id),
+            ),
+        });
+
+        if (didFailToWrite) {
+            throw didFailToWrite.error;
+        }
+
+        yield* put(explorerDidCreateNewFile());
+    } catch (err) {
+        yield* put(explorerDidFailToCreateNewFile(ensureError(err)));
+    }
 }
 
 /** Connects user initiate rename file actions to the rename file dialog. */
@@ -124,31 +188,15 @@ function* handleExplorerRenameFile(
 
     defined(accepted);
 
-    yield* put(fileStorageOpenFile(accepted.oldName));
-
-    const didOpen = yield* race({
-        succeeded: take(
-            fileStorageDidOpenFile.when((a) => a.path === accepted.oldName),
-        ),
-        failed: take(
-            fileStorageDidFailToOpenFile.when((a) => a.path === accepted.oldName),
-        ),
-    });
-
-    if (didOpen.failed) {
-        yield* put(explorerDidFailToRenameFile());
-        return;
-    }
-
-    defined(didOpen.succeeded);
-
-    const { id } = didOpen.succeeded;
-
-    yield* put(fileStorageRenameFile(id, accepted.newName));
+    yield* put(fileStorageRenameFile(action.fileName, accepted.newName));
 
     const didRename = yield* race({
-        succeeded: take(fileStorageDidRenameFile.when((a) => a.id === id)),
-        failed: take(fileStorageDidFailToRenameFile.when((a) => a.id === id)),
+        succeeded: take(
+            fileStorageDidRenameFile.when((a) => a.fileName === action.fileName),
+        ),
+        failed: take(
+            fileStorageDidFailToRenameFile.when((a) => a.fileName === action.fileName),
+        ),
     });
 
     if (didRename.failed) {

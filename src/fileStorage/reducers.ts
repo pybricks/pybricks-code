@@ -3,6 +3,7 @@
 
 import { Reducer, combineReducers } from 'redux';
 import {
+    FileMetadata,
     fileStorageDidAddItem,
     fileStorageDidChangeItem,
     fileStorageDidInitialize,
@@ -17,24 +18,24 @@ const isInitialized: Reducer<boolean> = (state = false, action) => {
     return state;
 };
 
-const fileNames: Reducer<ReadonlyArray<string>> = (state = [], action) => {
+const files: Reducer<readonly FileMetadata[]> = (state = [], action) => {
     if (fileStorageDidInitialize.matches(action)) {
-        return [...action.fileNames];
+        return [...action.files];
     }
 
     if (fileStorageDidAddItem.matches(action)) {
-        return [...state, action.id];
+        return [...state, action.file];
     }
 
     if (fileStorageDidChangeItem.matches(action)) {
-        return state;
+        return [...state].map((f) => (f.uuid === action.file.uuid ? action.file : f));
     }
 
     if (fileStorageDidRemoveItem.matches(action)) {
-        return [...state].filter((value) => value !== action.id);
+        return [...state].filter((value) => value.uuid !== action.file.uuid);
     }
 
     return state;
 };
 
-export default combineReducers({ isInitialized, fileNames });
+export default combineReducers({ isInitialized, files });

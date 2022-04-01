@@ -17,15 +17,16 @@ import {
     BleDeviceFailToConnectReasonType,
     didFailToConnect as bleDeviceDidFailToConnect,
 } from '../ble/actions';
-import { explorerDeleteFile, explorerDidFailToImportFiles } from '../explorer/actions';
+import {
+    explorerDeleteFile,
+    explorerDidFailToCreateNewFile,
+    explorerDidFailToImportFiles,
+} from '../explorer/actions';
 import {
     fileStorageDeleteFile,
     fileStorageDidFailToArchiveAllFiles,
-    fileStorageDidFailToDeleteFile,
     fileStorageDidFailToExportFile,
     fileStorageDidFailToInitialize,
-    fileStorageDidFailToReadFile,
-    fileStorageDidFailToWriteFile,
     fileStorageDidRemoveItem,
 } from '../fileStorage/actions';
 import { FailToFinishReasonType, didFailToFinish } from '../firmware/actions';
@@ -386,24 +387,6 @@ function* showFileStorageFailToInitialize(
     yield* showUnexpectedError(I18nId.FileStorageFailedToInitialize, action.error);
 }
 
-function* showFileStorageFailToRead(
-    action: ReturnType<typeof fileStorageDidFailToReadFile>,
-): Generator {
-    yield* showUnexpectedError(I18nId.FileStorageFailedToRead, action.error);
-}
-
-function* showFileStorageFailToWrite(
-    action: ReturnType<typeof fileStorageDidFailToWriteFile>,
-): Generator {
-    yield* showUnexpectedError(I18nId.FileStorageFailedToWrite, action.error);
-}
-
-function* showFileStorageFailToDelete(
-    action: ReturnType<typeof fileStorageDidFailToDeleteFile>,
-): Generator {
-    yield* showUnexpectedError(I18nId.FileStorageFailedToDelete, action.error);
-}
-
 function* showFileStorageFailToExport(
     action: ReturnType<typeof fileStorageDidFailToExportFile>,
 ): Generator {
@@ -445,7 +428,7 @@ function* showDeleteFileWarning(action: ReturnType<typeof explorerDeleteFile>) {
     const { didRemoveFile } = yield* race({
         userActionEvent: take(ch),
         didRemoveFile: take(
-            fileStorageDidRemoveItem.when((a) => a.id === action.fileName),
+            fileStorageDidRemoveItem.when((a) => a.file.path === action.fileName),
         ),
     });
 
@@ -472,6 +455,12 @@ function* showExplorerFailToImportFiles(
     yield* showUnexpectedError(I18nId.ExplorerFailedToImportFiles, action.error);
 }
 
+function* showExplorerFailToCreateFile(
+    action: ReturnType<typeof explorerDidFailToCreateNewFile>,
+): Generator {
+    yield* showUnexpectedError(I18nId.FileStorageFailedToDelete, action.error);
+}
+
 export default function* (): Generator {
     yield* takeEvery(bleDeviceDidFailToConnect, showBleDeviceDidFailToConnectError);
     yield* takeEvery(bootloaderDidFailToConnect, showBootloaderDidFailToConnectError);
@@ -483,11 +472,9 @@ export default function* (): Generator {
     yield* takeEvery(appDidCheckForUpdate, showNoUpdateInfo);
     yield* takeEvery(bleDIServiceDidReceiveFirmwareRevision, checkVersion);
     yield* takeEvery(fileStorageDidFailToInitialize, showFileStorageFailToInitialize);
-    yield* takeEvery(fileStorageDidFailToReadFile, showFileStorageFailToRead);
-    yield* takeEvery(fileStorageDidFailToWriteFile, showFileStorageFailToWrite);
-    yield* takeEvery(fileStorageDidFailToDeleteFile, showFileStorageFailToDelete);
     yield* takeEvery(fileStorageDidFailToExportFile, showFileStorageFailToExport);
     yield* takeEvery(fileStorageDidFailToArchiveAllFiles, showFileStorageFailToArchive);
     yield* takeEvery(explorerDeleteFile, showDeleteFileWarning);
     yield* takeEvery(explorerDidFailToImportFiles, showExplorerFailToImportFiles);
+    yield* takeEvery(explorerDidFailToCreateNewFile, showExplorerFailToCreateFile);
 }

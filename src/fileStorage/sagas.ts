@@ -17,6 +17,8 @@ import { pythonFileExtension, pythonFileMimeType } from '../pybricksMicropython/
 import { ensureError, timestamp } from '../utils';
 import { sha256Digest } from '../utils/crypto';
 import {
+    FileMetadata,
+    UUID,
     fileStorageArchiveAllFiles,
     fileStorageDeleteFile,
     fileStorageDidAddItem,
@@ -98,16 +100,6 @@ function isFileMetaDataDeleteChange(change: IDeleteChange): change is Omit<
     return change.table === 'metadata';
 }
 
-/** Database metadata table data type. */
-type FileMetadata = {
-    /** A globally unique identifier that serves a a file handle. */
-    uuid: string;
-    /** The path of the file in storage. */
-    path: string;
-    /** The SHA256 hash of the file contents. */
-    sha256: string;
-};
-
 /** Database contents table data type. */
 type FileContents = {
     /** The path of the file in storage. */
@@ -117,7 +109,7 @@ type FileContents = {
 };
 
 class FileStorageDb extends Dexie {
-    metadata!: Table<FileMetadata, string>;
+    metadata!: Table<FileMetadata, UUID>;
     // NB: This table starts with an underscore to hide it from Dexie observable.
     // In the future we may change this to use File Access API or some other
     // storage, so we don't want to rely on the file contents being included
@@ -127,7 +119,7 @@ class FileStorageDb extends Dexie {
     constructor() {
         super('pybricks.fileStorage');
         this.version(1).stores({
-            metadata: '$$uuid, &path',
+            metadata: '$$uuid, &path, sha256',
             _contents: 'path, contents',
         });
     }
@@ -141,15 +133,15 @@ function* handleFileStorageDidChange(changes: IDatabaseChange[]): Generator {
     for (const change of changes) {
         if (isCreateChange(change)) {
             if (isFileMetadataCreateChange(change)) {
-                yield* put(fileStorageDidAddItem(change.obj.uuid));
+                yield* put(fileStorageDidAddItem(change.obj));
             }
         } else if (isUpdateChange(change)) {
             if (isFileMetadataUpdateChange(change)) {
-                yield* put(fileStorageDidChangeItem(change.obj.uuid));
+                yield* put(fileStorageDidChangeItem(change.oldObj, change.obj));
             }
         } else if (isDeleteChange(change)) {
             if (isFileMetaDataDeleteChange(change)) {
-                yield* put(fileStorageDidRemoveItem(change.oldObj.uuid));
+                yield* put(fileStorageDidRemoveItem(change.oldObj));
             }
         }
     }
@@ -270,7 +262,10 @@ function* handleExportFile(
 ): Generator {
     const file = yield* call(() =>
         db.transaction('r', db.metadata, db._contents, async () => {
-            const metadata = await db.metadata.get(action.id);
+            const metadata = await db.metadata
+                .where('path')
+                .equals(action.fileName)
+                .first();
 
             if (!metadata) {
                 return undefined;
@@ -282,7 +277,10 @@ function* handleExportFile(
 
     if (!file) {
         yield* put(
-            fileStorageDidFailToExportFile(action.id, new Error('file does not exist')),
+            fileStorageDidFailToExportFile(
+                action.fileName,
+                new Error('file does not exist'),
+            ),
         );
         return;
     }
@@ -301,9 +299,9 @@ function* handleExportFile(
             }),
         );
 
-        yield* put(fileStorageDidExportFile(action.id));
+        yield* put(fileStorageDidExportFile(action.fileName));
     } catch (err) {
-        yield* put(fileStorageDidFailToExportFile(action.id, ensureError(err)));
+        yield* put(fileStorageDidFailToExportFile(action.fileName, ensureError(err)));
     }
 }
 
@@ -319,19 +317,22 @@ function* handleDeleteFile(
     try {
         yield* call(() =>
             db.transaction('rw', db.metadata, db._contents, async () => {
-                const metadata = await db.metadata.get(action.id);
+                const metadata = await db.metadata
+                    .where('path')
+                    .equals(action.fileName)
+                    .first();
 
                 if (!metadata) {
-                    throw new Error(`file handle '${action.id}' does not exist`);
+                    throw new Error(`file '${action.fileName}' does not exist`);
                 }
 
-                await db.metadata.delete(action.id);
+                await db.metadata.delete(metadata.uuid);
                 await db._contents.delete(metadata.path);
             }),
         );
-        yield* put(fileStorageDidDeleteFile(action.id));
+        yield* put(fileStorageDidDeleteFile(action.fileName));
     } catch (err) {
-        yield* put(fileStorageDidFailToDeleteFile(action.id, ensureError(err)));
+        yield* put(fileStorageDidFailToDeleteFile(action.fileName, ensureError(err)));
     }
 }
 
@@ -347,10 +348,13 @@ function* handleRenameFile(
     try {
         yield* call(() =>
             db.transaction('rw', db.metadata, db._contents, async () => {
-                const metadata = await db.metadata.get(action.id);
+                const metadata = await db.metadata
+                    .where('path')
+                    .equals(action.fileName)
+                    .first();
 
                 if (!metadata) {
-                    throw new Error(`file handle '${action.id}' does not exist`);
+                    throw new Error(`file '${action.fileName}' does not exist`);
                 }
 
                 const oldName = metadata.path;
@@ -376,9 +380,9 @@ function* handleRenameFile(
             }),
         );
 
-        yield* put(fileStorageDidRenameFile(action.id));
+        yield* put(fileStorageDidRenameFile(action.fileName));
     } catch (err) {
-        yield* put(fileStorageDidFailToRenameFile(action.id, ensureError(err)));
+        yield* put(fileStorageDidFailToRenameFile(action.fileName, ensureError(err)));
     }
 }
 
@@ -467,7 +471,7 @@ function* initialize(): Generator {
 
         const files = yield* call(() => db.metadata.toArray());
 
-        yield* put(fileStorageDidInitialize(files.map((f) => f.path)));
+        yield* put(fileStorageDidInitialize(files));
 
         // this blocks "forever" until canceled so that the finally
         // clause will run cleanup code at the appropriate time

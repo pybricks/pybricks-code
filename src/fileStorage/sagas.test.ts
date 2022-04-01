@@ -8,6 +8,7 @@ import 'dexie-observable';
 import { AsyncSaga, uuid } from '../../test';
 import { createCountFunc } from '../utils/iter';
 import {
+    FileMetadata,
     fileStorageArchiveAllFiles,
     fileStorageDeleteFile,
     fileStorageDidAddItem,
@@ -55,12 +56,24 @@ afterEach(async () => {
 /**
  * helper function that writes test file to storage for later use in a test
  * @param saga The saga.
- * @returns The test file id and test file contents.
+ * @returns The test file metadata and test file contents.
  */
-async function setUpTestFile(saga: AsyncSaga): Promise<[string, string]> {
+async function setUpTestFile(saga: AsyncSaga): Promise<[FileMetadata, string]> {
     const testFilePath = 'test.file';
     const testFileId = uuid(0);
     const testFileContents = 'test file contents';
+    const testFileContentsSha256 =
+        'c4fa968a745586faaa030054f51fb1cafd5e9ae25fa6b137ac6477715fdc81b1';
+
+    const testFile: FileMetadata = {
+        uuid: testFileId,
+        path: testFilePath,
+        sha256: testFileContentsSha256,
+    };
+
+    const emptyFileSha256 =
+        'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855';
+    const emptyFile: FileMetadata = { ...testFile, sha256: emptyFileSha256 };
 
     await expect(saga.take()).resolves.toEqual(fileStorageDidInitialize([]));
 
@@ -69,19 +82,23 @@ async function setUpTestFile(saga: AsyncSaga): Promise<[string, string]> {
     await expect(saga.take()).resolves.toEqual(
         fileStorageDidOpenFile(testFilePath, testFileId),
     );
-    await expect(saga.take()).resolves.toEqual(fileStorageDidAddItem(testFileId));
+    await expect(saga.take()).resolves.toEqual(fileStorageDidAddItem(emptyFile));
 
     saga.put(fileStorageWriteFile(testFileId, testFileContents));
 
     await expect(saga.take()).resolves.toEqual(fileStorageDidWriteFile(testFileId));
-    await expect(saga.take()).resolves.toEqual(fileStorageDidChangeItem(testFileId));
+    await expect(saga.take()).resolves.toEqual(
+        fileStorageDidChangeItem(emptyFile, testFile),
+    );
 
-    return [testFileId, testFileContents];
+    return [testFile, testFileContents];
 }
 
 it('should migrate old program from local storage during initialization', async () => {
     const oldProgramKey = 'program';
     const oldProgramContents = '# test program';
+    const oldProgramContentsSha256 =
+        '31c21eb39c9276341d9364f6d4bcac46a4aa3768bc2626f8aa742c46e3e0fdd6';
 
     // add item to localStorage to simulate an existing program
     localStorage.setItem(oldProgramKey, oldProgramContents);
@@ -91,7 +108,11 @@ it('should migrate old program from local storage during initialization', async 
 
     // initialization should remove the localStorage entry and add add it to
     // new storage backend
-    await expect(saga.take()).resolves.toEqual(fileStorageDidInitialize(['main.py']));
+    await expect(saga.take()).resolves.toEqual(
+        fileStorageDidInitialize([
+            { uuid: uuid(0), path: 'main.py', sha256: oldProgramContentsSha256 },
+        ]),
+    );
     expect(localStorage.getItem(oldProgramKey)).toBeNull();
 
     await saga.end();
@@ -102,31 +123,45 @@ it('should read and write files', async () => {
 
     await expect(saga.take()).resolves.toEqual(fileStorageDidInitialize([]));
 
-    const testFile = 'test.file';
-    const testId = uuid(0);
+    const testFilePath = 'test.file';
+    const testFileId = uuid(0);
     const testFileContents = 'test file contents';
+    const testFileContentsSha256 =
+        'c4fa968a745586faaa030054f51fb1cafd5e9ae25fa6b137ac6477715fdc81b1';
 
-    saga.put(fileStorageOpenFile(testFile));
+    const testFile: FileMetadata = {
+        uuid: testFileId,
+        path: testFilePath,
+        sha256: testFileContentsSha256,
+    };
+
+    const emptyFileSha256 =
+        'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855';
+    const emptyFile: FileMetadata = { ...testFile, sha256: emptyFileSha256 };
+
+    saga.put(fileStorageOpenFile(testFilePath));
 
     await expect(saga.take()).resolves.toEqual(
-        fileStorageDidOpenFile(testFile, testId),
+        fileStorageDidOpenFile(testFilePath, testFileId),
     );
-    await expect(saga.take()).resolves.toEqual(fileStorageDidAddItem(testId));
+    await expect(saga.take()).resolves.toEqual(fileStorageDidAddItem(emptyFile));
 
     // test writing a file
-    saga.put(fileStorageWriteFile(testId, testFileContents));
+    saga.put(fileStorageWriteFile(testFileId, testFileContents));
 
     // writing file triggers response
-    await expect(saga.take()).resolves.toEqual(fileStorageDidWriteFile(testId));
+    await expect(saga.take()).resolves.toEqual(fileStorageDidWriteFile(testFileId));
 
     // and as a side-effect, triggers item change as well
-    await expect(saga.take()).resolves.toEqual(fileStorageDidChangeItem(testId));
+    await expect(saga.take()).resolves.toEqual(
+        fileStorageDidChangeItem(emptyFile, testFile),
+    );
 
     // test reading the same file back
-    saga.put(fileStorageReadFile(testId));
+    saga.put(fileStorageReadFile(testFileId));
 
     await expect(saga.take()).resolves.toEqual(
-        fileStorageDidReadFile(testId, testFileContents),
+        fileStorageDidReadFile(testFileId, testFileContents),
     );
 
     await saga.end();
@@ -137,12 +172,12 @@ it('should dispatch fail action if file does not exist', async () => {
 
     await expect(saga.take()).resolves.toEqual(fileStorageDidInitialize([]));
 
-    const testFile = 'test.file';
+    const testFileId = uuid(0);
 
-    saga.put(fileStorageReadFile(testFile));
+    saga.put(fileStorageReadFile(testFileId));
 
     await expect(saga.take()).resolves.toEqual(
-        fileStorageDidFailToReadFile('test.file', new Error('file does not exist')),
+        fileStorageDidFailToReadFile(testFileId, new Error('file does not exist')),
     );
 
     await saga.end();
@@ -153,9 +188,9 @@ it('should delete files', async () => {
 
     const [testFile] = await setUpTestFile(saga);
 
-    saga.put(fileStorageDeleteFile(testFile));
+    saga.put(fileStorageDeleteFile(testFile.path));
 
-    await expect(saga.take()).resolves.toEqual(fileStorageDidDeleteFile(testFile));
+    await expect(saga.take()).resolves.toEqual(fileStorageDidDeleteFile(testFile.path));
 
     await expect(saga.take()).resolves.toEqual(fileStorageDidRemoveItem(testFile));
 
@@ -170,10 +205,16 @@ describe('rename', () => {
 
         const [testFile] = await setUpTestFile(saga);
 
-        saga.put(fileStorageRenameFile(testFile, newName));
+        saga.put(fileStorageRenameFile(testFile.path, newName));
 
-        await expect(saga.take()).resolves.toEqual(fileStorageDidRenameFile(testFile));
-        await expect(saga.take()).resolves.toEqual(fileStorageDidChangeItem(testFile));
+        const newMetadata: FileMetadata = { ...testFile, path: newName };
+
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageDidRenameFile(testFile.path),
+        );
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageDidChangeItem(testFile, newMetadata),
+        );
 
         await saga.end();
     });
@@ -203,9 +244,11 @@ describe('export', () => {
 
         jest.spyOn(browserFsAccess, 'fileSave');
 
-        saga.put(fileStorageExportFile(testFile));
+        saga.put(fileStorageExportFile(testFile.path));
 
-        await expect(saga.take()).resolves.toEqual(fileStorageDidExportFile(testFile));
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageDidExportFile(testFile.path),
+        );
         expect(browserFsAccess.fileSave).toHaveBeenCalled();
 
         await saga.end();
@@ -219,10 +262,10 @@ describe('export', () => {
         const testError = new Error('test error');
         jest.spyOn(browserFsAccess, 'fileSave').mockRejectedValue(testError);
 
-        saga.put(fileStorageExportFile(testFile));
+        saga.put(fileStorageExportFile(testFile.path));
 
         await expect(saga.take()).resolves.toEqual(
-            fileStorageDidFailToExportFile(testFile, testError),
+            fileStorageDidFailToExportFile(testFile.path, testError),
         );
 
         await saga.end();

@@ -16,7 +16,7 @@ import MonacoEditor, {
 import { useDispatch } from 'react-redux';
 import { useTernaryDarkMode } from 'usehooks-ts';
 import { IDisposable } from 'xterm';
-import { fileStorageWriteFile } from '../fileStorage/actions';
+import { UUID, fileStorageWriteFile } from '../fileStorage/actions';
 import { compile } from '../mpy/actions';
 import { useSettingIsShowDocsEnabled } from '../settings/hooks';
 import { isMacOS } from '../utils/os';
@@ -268,7 +268,7 @@ const Editor: React.VFC = () => {
 
     const handleChange = useCallback<ChangeHandler>(
         // REVISIT: need to ensure we have exclusive access to file
-        (v) => dispatch(fileStorageWriteFile('main.py', v)),
+        (v) => dispatch(fileStorageWriteFile('main.py' as UUID, v)),
         [dispatch],
     );
 

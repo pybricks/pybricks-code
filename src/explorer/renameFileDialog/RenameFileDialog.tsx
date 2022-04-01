@@ -24,8 +24,12 @@ const RenameFileDialog: React.VFC = () => {
     const [baseName, extension] = oldName.split(/(\.\w+)$/);
 
     const [newName, setNewName] = useState(baseName);
-    const fileNames = useSelector((s) => s.fileStorage.fileNames);
-    const result = validateFileName(newName, extension, fileNames);
+    const files = useSelector((s) => s.fileStorage.files);
+    const result = validateFileName(
+        newName,
+        extension,
+        files.map((f) => f.path),
+    );
 
     const inputRef = useRef<HTMLInputElement>(null);
 
