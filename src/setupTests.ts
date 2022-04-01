@@ -6,6 +6,7 @@
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom/extend-expect';
+import crypto from 'crypto';
 import {
     KeyCodes,
     Modifiers,
@@ -71,3 +72,7 @@ function addWhichToKeyboardEvent(e: KeyboardEvent) {
 document.addEventListener('keydown', addWhichToKeyboardEvent);
 document.addEventListener('keypress', addWhichToKeyboardEvent);
 document.addEventListener('keyup', addWhichToKeyboardEvent);
+
+Object.defineProperty(global.self, 'crypto', {
+    value: crypto.webcrypto,
+});

@@ -3,6 +3,7 @@
 
 import { AnyAction } from 'redux';
 import {
+    fileStorageDidAddItem,
     fileStorageDidChangeItem,
     fileStorageDidInitialize,
     fileStorageDidRemoveItem,
@@ -38,15 +39,15 @@ test('fileNames', () => {
         ).fileNames,
     ).toEqual([testFileName]);
 
-    // if item is not in set, add it
+    // adding appends an item
     expect(
         reducers(
             { fileNames: [] as ReadonlyArray<string> } as State,
-            fileStorageDidChangeItem(testFileName),
+            fileStorageDidAddItem(testFileName),
         ).fileNames,
     ).toEqual([testFileName]);
 
-    // if item is already in set, there should not be duplicates
+    // changing does nothing
     expect(
         reducers(
             { fileNames: [testFileName] as ReadonlyArray<string> } as State,
@@ -54,7 +55,7 @@ test('fileNames', () => {
         ).fileNames,
     ).toEqual([testFileName]);
 
-    // if item is in set, it should be removed
+    // removing deletes an item
     expect(
         reducers(
             { fileNames: [testFileName] as ReadonlyArray<string> } as State,

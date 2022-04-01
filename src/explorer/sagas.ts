@@ -13,8 +13,11 @@ import {
 } from 'typed-redux-saga/macro';
 import { getPybricksMicroPythonFileTemplate } from '../editor/pybricksMicroPython';
 import {
+    fileStorageDidFailToOpenFile,
     fileStorageDidFailToRenameFile,
+    fileStorageDidOpenFile,
     fileStorageDidRenameFile,
+    fileStorageOpenFile,
     fileStorageRenameFile,
     fileStorageWriteFile,
 } from '../fileStorage/actions';
@@ -121,22 +124,34 @@ function* handleExplorerRenameFile(
 
     defined(accepted);
 
-    yield* put(fileStorageRenameFile(accepted.oldName, accepted.newName));
+    yield* put(fileStorageOpenFile(accepted.oldName));
 
-    const { failed } = yield* race({
+    const didOpen = yield* race({
         succeeded: take(
-            fileStorageDidRenameFile.when(
-                (a) => a.oldName === accepted.oldName && a.newName === accepted.newName,
-            ),
+            fileStorageDidOpenFile.when((a) => a.path === accepted.oldName),
         ),
         failed: take(
-            fileStorageDidFailToRenameFile.when(
-                (a) => a.oldName === accepted.oldName && a.newName === accepted.newName,
-            ),
+            fileStorageDidFailToOpenFile.when((a) => a.path === accepted.oldName),
         ),
     });
 
-    if (failed) {
+    if (didOpen.failed) {
+        yield* put(explorerDidFailToRenameFile());
+        return;
+    }
+
+    defined(didOpen.succeeded);
+
+    const { id } = didOpen.succeeded;
+
+    yield* put(fileStorageRenameFile(id, accepted.newName));
+
+    const didRename = yield* race({
+        succeeded: take(fileStorageDidRenameFile.when((a) => a.id === id)),
+        failed: take(fileStorageDidFailToRenameFile.when((a) => a.id === id)),
+    });
+
+    if (didRename.failed) {
         yield* put(explorerDidFailToRenameFile());
         return;
     }

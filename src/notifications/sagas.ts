@@ -445,7 +445,7 @@ function* showDeleteFileWarning(action: ReturnType<typeof explorerDeleteFile>) {
     const { didRemoveFile } = yield* race({
         userActionEvent: take(ch),
         didRemoveFile: take(
-            fileStorageDidRemoveItem.when((a) => a.fileName === action.fileName),
+            fileStorageDidRemoveItem.when((a) => a.id === action.fileName),
         ),
     });
 

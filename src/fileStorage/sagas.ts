@@ -15,9 +15,11 @@ import { eventChannel } from 'redux-saga';
 import { call, fork, put, take, takeEvery } from 'typed-redux-saga/macro';
 import { pythonFileExtension, pythonFileMimeType } from '../pybricksMicropython/lib';
 import { ensureError, timestamp } from '../utils';
+import { sha256Digest } from '../utils/crypto';
 import {
     fileStorageArchiveAllFiles,
     fileStorageDeleteFile,
+    fileStorageDidAddItem,
     fileStorageDidArchiveAllFiles,
     fileStorageDidChangeItem,
     fileStorageDidDeleteFile,
@@ -26,15 +28,18 @@ import {
     fileStorageDidFailToDeleteFile,
     fileStorageDidFailToExportFile,
     fileStorageDidFailToInitialize,
+    fileStorageDidFailToOpenFile,
     fileStorageDidFailToReadFile,
     fileStorageDidFailToRenameFile,
     fileStorageDidFailToWriteFile,
     fileStorageDidInitialize,
+    fileStorageDidOpenFile,
     fileStorageDidReadFile,
     fileStorageDidRemoveItem,
     fileStorageDidRenameFile,
     fileStorageDidWriteFile,
     fileStorageExportFile,
+    fileStorageOpenFile,
     fileStorageReadFile,
     fileStorageRenameFile,
     fileStorageWriteFile,
@@ -96,9 +101,11 @@ function isFileMetaDataDeleteChange(change: IDeleteChange): change is Omit<
 /** Database metadata table data type. */
 type FileMetadata = {
     /** A globally unique identifier that serves a a file handle. */
-    uuid?: string;
+    uuid: string;
     /** The path of the file in storage. */
     path: string;
+    /** The SHA256 hash of the file contents. */
+    sha256: string;
 };
 
 /** Database contents table data type. */
@@ -134,21 +141,61 @@ function* handleFileStorageDidChange(changes: IDatabaseChange[]): Generator {
     for (const change of changes) {
         if (isCreateChange(change)) {
             if (isFileMetadataCreateChange(change)) {
-                yield* put(fileStorageDidChangeItem(change.obj.path));
+                yield* put(fileStorageDidAddItem(change.obj.uuid));
             }
         } else if (isUpdateChange(change)) {
             if (isFileMetadataUpdateChange(change)) {
-                if (change.oldObj.path !== change.obj.path) {
-                    // TODO: need to introduce a DidCreate action
-                    yield* put(fileStorageDidChangeItem(change.obj.path));
-                    yield* put(fileStorageDidRemoveItem(change.oldObj.path));
-                }
+                yield* put(fileStorageDidChangeItem(change.obj.uuid));
             }
         } else if (isDeleteChange(change)) {
             if (isFileMetaDataDeleteChange(change)) {
-                yield* put(fileStorageDidRemoveItem(change.oldObj.path));
+                yield* put(fileStorageDidRemoveItem(change.oldObj.uuid));
             }
         }
+    }
+}
+
+/**
+ * Handles requests to open a file.
+ * @param db The database instance.
+ * @param action The requested action.
+ */
+function* handleOpenFile(
+    db: FileStorageDb,
+    action: ReturnType<typeof fileStorageOpenFile>,
+): Generator {
+    try {
+        // NB: can't await non-db functions inside of transaction, so we have
+        // to do this before even if it is not used
+        const contents = '';
+        const sha256 = yield* call(() => sha256Digest(contents));
+
+        const uuid = yield* call(() =>
+            db.transaction('rw', db.metadata, db._contents, async () => {
+                const metadata = await db.metadata
+                    .where('path')
+                    .equals(action.path)
+                    .first();
+
+                // if the file exists, return the existing uuid
+                if (metadata) {
+                    return metadata.uuid;
+                }
+
+                // otherwise create a new empty file
+                const key = await db.metadata.add((<Omit<FileMetadata, 'uuid'>>{
+                    path: action.path,
+                    sha256,
+                }) as FileMetadata);
+
+                await db._contents.put({ path: action.path, contents });
+
+                return key;
+            }),
+        );
+        yield* put(fileStorageDidOpenFile(action.path, uuid));
+    } catch (err) {
+        yield* put(fileStorageDidFailToOpenFile(action.path, ensureError(err)));
     }
 }
 
@@ -164,13 +211,13 @@ function* handleReadFile(
     try {
         const file = yield* call(() =>
             db.transaction('r', db.metadata, db._contents, async () => {
-                const metadata = await db.metadata.get(action.fileName);
+                const metadata = await db.metadata.get(action.id);
 
                 if (!metadata) {
                     return undefined;
                 }
 
-                return db._contents.get(metadata.path);
+                return await db._contents.get(metadata.path);
             }),
         );
 
@@ -178,9 +225,9 @@ function* handleReadFile(
             throw new Error('file does not exist');
         }
 
-        yield* put(fileStorageDidReadFile(action.fileName, file.contents));
+        yield* put(fileStorageDidReadFile(action.id, file.contents));
     } catch (err) {
-        yield* put(fileStorageDidFailToReadFile(action.fileName, ensureError(err)));
+        yield* put(fileStorageDidFailToReadFile(action.id, ensureError(err)));
     }
 }
 
@@ -194,21 +241,26 @@ function* handleWriteFile(
     action: ReturnType<typeof fileStorageWriteFile>,
 ) {
     try {
+        const sha256 = yield* call(() => sha256Digest(action.contents));
+
         yield* call(() =>
             db.transaction('rw', db.metadata, db._contents, async () => {
-                await db.metadata.put({
-                    uuid: action.fileName,
-                    path: action.fileName,
-                });
+                const metadata = await db.metadata.get(action.id);
+
+                if (!metadata) {
+                    throw new Error(`file handle '${action.id}' does not exist`);
+                }
+
+                await db.metadata.put({ ...metadata, sha256 });
                 await db._contents.put({
-                    path: action.fileName,
-                    contents: action.fileContents,
+                    path: metadata.path,
+                    contents: action.contents,
                 });
             }),
         );
-        yield* put(fileStorageDidWriteFile(action.fileName));
+        yield* put(fileStorageDidWriteFile(action.id));
     } catch (err) {
-        yield* put(fileStorageDidFailToWriteFile(action.fileName, ensureError(err)));
+        yield* put(fileStorageDidFailToWriteFile(action.id, ensureError(err)));
     }
 }
 
@@ -218,22 +270,19 @@ function* handleExportFile(
 ): Generator {
     const file = yield* call(() =>
         db.transaction('r', db.metadata, db._contents, async () => {
-            const metadata = await db.metadata.get(action.fileName);
+            const metadata = await db.metadata.get(action.id);
 
             if (!metadata) {
                 return undefined;
             }
 
-            return db._contents.get(metadata.path);
+            return await db._contents.get(metadata.path);
         }),
     );
 
     if (!file) {
         yield* put(
-            fileStorageDidFailToExportFile(
-                action.fileName,
-                new Error('file does not exist'),
-            ),
+            fileStorageDidFailToExportFile(action.id, new Error('file does not exist')),
         );
         return;
     }
@@ -244,7 +293,7 @@ function* handleExportFile(
         yield* call(() =>
             fileSave(blob, {
                 id: 'pybricksCodeFileStorageExport',
-                fileName: action.fileName,
+                fileName: file.path,
                 extensions: [pythonFileExtension],
                 mimeTypes: [pythonFileMimeType],
                 // TODO: translate description
@@ -252,9 +301,9 @@ function* handleExportFile(
             }),
         );
 
-        yield* put(fileStorageDidExportFile(action.fileName));
+        yield* put(fileStorageDidExportFile(action.id));
     } catch (err) {
-        yield* put(fileStorageDidFailToExportFile(action.fileName, ensureError(err)));
+        yield* put(fileStorageDidFailToExportFile(action.id, ensureError(err)));
     }
 }
 
@@ -270,21 +319,19 @@ function* handleDeleteFile(
     try {
         yield* call(() =>
             db.transaction('rw', db.metadata, db._contents, async () => {
-                const metadata = await db.metadata.get(action.fileName);
+                const metadata = await db.metadata.get(action.id);
 
                 if (!metadata) {
-                    throw new Error(
-                        `cannot rename: file '${action.fileName}' does not exist in db`,
-                    );
+                    throw new Error(`file handle '${action.id}' does not exist`);
                 }
 
-                await db.metadata.delete(action.fileName);
+                await db.metadata.delete(action.id);
                 await db._contents.delete(metadata.path);
             }),
         );
-        yield* put(fileStorageDidDeleteFile(action.fileName));
+        yield* put(fileStorageDidDeleteFile(action.id));
     } catch (err) {
-        yield* put(fileStorageDidFailToDeleteFile(action.fileName, ensureError(err)));
+        yield* put(fileStorageDidFailToDeleteFile(action.id, ensureError(err)));
     }
 }
 
@@ -300,20 +347,18 @@ function* handleRenameFile(
     try {
         yield* call(() =>
             db.transaction('rw', db.metadata, db._contents, async () => {
-                const metadata = await db.metadata.get(action.oldName);
+                const metadata = await db.metadata.get(action.id);
 
                 if (!metadata) {
-                    throw new Error(
-                        `cannot rename: file '${action.oldName}' does not exist in db`,
-                    );
+                    throw new Error(`file handle '${action.id}' does not exist`);
                 }
 
-                const oldFile = await db._contents.get(metadata.path);
+                const oldName = metadata.path;
+
+                const oldFile = await db._contents.get(oldName);
 
                 if (!oldFile) {
-                    throw new Error(
-                        `cannot rename: file '${action.oldName}' does not exist in storage`,
-                    );
+                    throw new Error(`file '${oldName}' does not exist in storage`);
                 }
 
                 const newFile = await db._contents.get(action.newName);
@@ -324,22 +369,16 @@ function* handleRenameFile(
                     );
                 }
 
-                await db._contents.delete(action.oldName);
+                await db._contents.delete(oldName);
                 await db._contents.add({ ...oldFile, path: action.newName });
 
                 await db.metadata.put({ ...metadata, path: action.newName });
             }),
         );
 
-        yield* put(fileStorageDidRenameFile(action.oldName, action.newName));
+        yield* put(fileStorageDidRenameFile(action.id));
     } catch (err) {
-        yield* put(
-            fileStorageDidFailToRenameFile(
-                action.oldName,
-                action.newName,
-                ensureError(err),
-            ),
-        );
+        yield* put(fileStorageDidFailToRenameFile(action.id, ensureError(err)));
     }
 }
 
@@ -381,19 +420,27 @@ function* initialize(): Generator {
 
         // migrate from old storage
 
-        // NB: this is a one-shot event, so we don't need to unsubscribe
-        db.on('ready', async () => {
-            // Previous versions of pybricks code used local storage to save a single program.
-            const oldProgram = localStorage.getItem('program');
+        const oldProgram = localStorage.getItem('program');
 
-            if (oldProgram !== null) {
+        if (oldProgram !== null) {
+            // NB: Dexie only allows Promise and DexiePromise to be awaited
+            // inside of 'ready' callback so we have to do digest here
+            const sha256 = yield* call(() => sha256Digest(oldProgram));
+
+            // NB: this is a one-shot event, so we don't need to unsubscribe
+            db.on('ready', async () => {
                 await db.transaction('rw', db.metadata, db._contents, async () => {
-                    await db.metadata.add({ uuid: 'main.py', path: 'main.py' });
+                    await db.metadata.add((<Omit<FileMetadata, 'uuid'>>{
+                        path: 'main.py',
+                        sha256,
+                    }) as FileMetadata);
+
                     await db._contents.add({ path: 'main.py', contents: oldProgram });
                 });
+
                 localStorage.removeItem('program');
-            }
-        });
+            });
+        }
 
         yield* call(() => db.open());
         defer.push(() => db.close());
@@ -410,6 +457,7 @@ function* initialize(): Generator {
         // subscribe to events
 
         yield* takeEvery(changesChan, handleFileStorageDidChange);
+        yield* takeEvery(fileStorageOpenFile, handleOpenFile, db);
         yield* takeEvery(fileStorageReadFile, handleReadFile, db);
         yield* takeEvery(fileStorageWriteFile, handleWriteFile, db);
         yield* takeEvery(fileStorageDeleteFile, handleDeleteFile, db);

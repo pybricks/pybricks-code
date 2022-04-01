@@ -3,6 +3,7 @@
 
 import { Reducer, combineReducers } from 'redux';
 import {
+    fileStorageDidAddItem,
     fileStorageDidChangeItem,
     fileStorageDidInitialize,
     fileStorageDidRemoveItem,
@@ -21,16 +22,16 @@ const fileNames: Reducer<ReadonlyArray<string>> = (state = [], action) => {
         return [...action.fileNames];
     }
 
-    if (fileStorageDidChangeItem.matches(action)) {
-        if (state.includes(action.fileName)) {
-            return state;
-        }
+    if (fileStorageDidAddItem.matches(action)) {
+        return [...state, action.id];
+    }
 
-        return [...state, action.fileName];
+    if (fileStorageDidChangeItem.matches(action)) {
+        return state;
     }
 
     if (fileStorageDidRemoveItem.matches(action)) {
-        return [...state].filter((value) => value !== action.fileName);
+        return [...state].filter((value) => value !== action.id);
     }
 
     return state;

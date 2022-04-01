@@ -149,3 +149,16 @@ export const testRender = (
 
     return [result, dispatch];
 };
+
+/**
+ * Formats a number as a UUID string.
+ *
+ * The UUID will look like `XXXXXXXX-0000-0000-0000-00000000`.
+ *
+ * This allows for deterministic UUIDs for testing.
+ *
+ * @param id A unique identifier.
+ */
+export function uuid(id: number): string {
+    return `${id.toString().padStart(8, '0')}-0000-0000-0000-000000000000`;
+}

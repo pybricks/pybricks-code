@@ -4,10 +4,13 @@
 import * as browserFsAccess from 'browser-fs-access';
 import { FileWithHandle } from 'browser-fs-access';
 import { mock } from 'jest-mock-extended';
-import { AsyncSaga } from '../../test';
+import { AsyncSaga, uuid } from '../../test';
 import {
+    fileStorageDidFailToOpenFile,
     fileStorageDidFailToRenameFile,
+    fileStorageDidOpenFile,
     fileStorageDidRenameFile,
+    fileStorageOpenFile,
     fileStorageRenameFile,
     fileStorageWriteFile,
 } from '../fileStorage/actions';
@@ -79,7 +82,7 @@ describe('handleExplorerCreateNewFile', () => {
         const action = await saga.take();
         expect(action).toMatchInlineSnapshot(`
             Object {
-              "fileContents": "from pybricks.hubs import TechnicHub
+              "contents": "from pybricks.hubs import TechnicHub
             from pybricks.pupdevices import Motor
             from pybricks.parameters import Button, Color, Direction, Port, Stop
             from pybricks.robotics import DriveBase
@@ -88,7 +91,7 @@ describe('handleExplorerCreateNewFile', () => {
             hub = TechnicHub()
 
             ",
-              "fileName": "test.py",
+              "id": "test.py",
               "type": "fileStorage.action.writeFile",
             }
         `);
@@ -105,43 +108,52 @@ describe('handleExplorerRenameFile', () => {
 
         saga.put(explorerRenameFile('old.file'));
 
-        const action = await saga.take();
-        expect(action).toEqual(renameFileDialogShow('old.file'));
+        await expect(saga.take()).resolves.toEqual(renameFileDialogShow('old.file'));
     });
 
     it('should dispatch action if canceled', async () => {
         saga.put(renameFileDialogDidCancel());
 
-        const action = await saga.take();
-        expect(action).toEqual(explorerDidFailToRenameFile());
+        await expect(saga.take()).resolves.toEqual(explorerDidFailToRenameFile());
     });
 
-    describe('should dispatch fileStorage action if accepted', () => {
+    describe('should dispatch fileStorageOpenFile action if accepted', () => {
         beforeEach(async () => {
             saga.put(renameFileDialogDidAccept('old.file', 'new.file'));
 
-            const action = await saga.take();
-            expect(action).toEqual(fileStorageRenameFile('old.file', 'new.file'));
+            await expect(saga.take()).resolves.toEqual(fileStorageOpenFile('old.file'));
         });
 
-        it('should dispatch action on fileStorage failure', async () => {
-            saga.put(
-                fileStorageDidFailToRenameFile(
-                    'old.file',
-                    'new.file',
-                    new Error('test error'),
-                ),
-            );
+        it('should dispatch action on fileStorageOpenFile failure', async () => {
+            saga.put(fileStorageDidFailToOpenFile('old.file', new Error('test error')));
 
-            const action = await saga.take();
-            expect(action).toEqual(explorerDidFailToRenameFile());
+            await expect(saga.take()).resolves.toEqual(explorerDidFailToRenameFile());
         });
 
-        it('should dispatch action on fileStorage success', async () => {
-            saga.put(fileStorageDidRenameFile('old.file', 'new.file'));
+        describe('should dispatch fileStorageRenameFile action on fileStorageOpenFile success', () => {
+            beforeEach(async () => {
+                saga.put(fileStorageDidOpenFile('old.file', uuid(0)));
 
-            const action = await saga.take();
-            expect(action).toEqual(explorerDidRenameFile());
+                await expect(saga.take()).resolves.toEqual(
+                    fileStorageRenameFile(uuid(0), 'new.file'),
+                );
+            });
+
+            it('should dispatch action on fileStorageRenameFile failure', async () => {
+                saga.put(
+                    fileStorageDidFailToRenameFile(uuid(0), new Error('test error')),
+                );
+
+                await expect(saga.take()).resolves.toEqual(
+                    explorerDidFailToRenameFile(),
+                );
+            });
+
+            it('should dispatch action on fileStorageRenameFile success', async () => {
+                saga.put(fileStorageDidRenameFile(uuid(0)));
+
+                await expect(saga.take()).resolves.toEqual(explorerDidRenameFile());
+            });
         });
     });
 

@@ -2115,7 +2115,7 @@ __metadata:
     "@testing-library/user-event": ^13.5.0
     "@types/file-saver": ^2.0.5
     "@types/jest": ^27.4.1
-    "@types/node": ^12.20.47
+    "@types/node": ^16.11.7
     "@types/react": ^16.14.24
     "@types/react-dom": ^16.9.14
     "@types/react-redux": ^7.1.23
@@ -2132,7 +2132,7 @@ __metadata:
     canvas: ^2.9.0
     copy-webpack-plugin: ^6.4.1
     dexie: ^3.2.1
-    dexie-observable: ^3.0.0-beta.11
+    dexie-observable: ^4.0.0-beta.13
     eslint: ^7.31.0
     eslint-config-prettier: ^7.2.0
     eslint-config-typed-fp: ^1.6.0
@@ -2814,10 +2814,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^12.20.47":
-  version: 12.20.47
-  resolution: "@types/node@npm:12.20.47"
-  checksum: 97487af02fada4342e1bd47f9c9ebf601c12b85cbf17056ba73a315339ae996490403f2d4d1d799d8078cfe43a59e33370b4a5ae2d4fb79dd02359f4691934b4
+"@types/node@npm:^16.11.7":
+  version: 16.11.26
+  resolution: "@types/node@npm:16.11.26"
+  checksum: 57757caaba3f0d95de82198cb276a1002c49b710108c932a1d02d7c91ff2fa57cfe2dd19fde60853b6dd90b0964b3cf35557981d2628e20aed6a909057aedfe6
   languageName: node
   linkType: hard
 
@@ -6293,12 +6293,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dexie-observable@npm:^3.0.0-beta.11":
-  version: 3.0.0-beta.11
-  resolution: "dexie-observable@npm:3.0.0-beta.11"
+"dexie-observable@npm:^4.0.0-beta.13":
+  version: 4.0.0-beta.13
+  resolution: "dexie-observable@npm:4.0.0-beta.13"
   peerDependencies:
-    dexie: ^3.0.2
-  checksum: af154708ca5a47d3c35a78fdf5b1a0935d1f8a394dbaaf09576344289188f02855f77776428bf68deb1d2489b3f69d9ca8690f76d06b50826ca471fefd5610a1
+    dexie: ^3.0.2 || ^4.0.0-alpha.1
+  checksum: 1f80f6308cebde83d63681babeccc110d170be2a6715ff7129695c949e808fec0ef8bee851ffa27c59f0888baf79fc82fd9ae74e02e1b2d2b8a6bcd247703084
   languageName: node
   linkType: hard
 
