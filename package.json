@@ -47,7 +47,7 @@
         "node-sass": "^6.0.1",
         "prop-types": "^15.8.1",
         "react": "^16.13.1",
-        "react-complex-tree": "^1.1.4",
+        "react-complex-tree": "^1.1.5",
         "react-dom": "^16.13.1",
         "react-dropzone": "^12.0.4",
         "react-monaco-editor": "^0.47.0",

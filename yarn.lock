@@ -2153,7 +2153,7 @@ __metadata:
     prettier: ^2.5.1
     prop-types: ^15.8.1
     react: ^16.13.1
-    react-complex-tree: ^1.1.4
+    react-complex-tree: ^1.1.5
     react-dom: ^16.13.1
     react-dropzone: ^12.0.4
     react-monaco-editor: ^0.47.0
@@ -13653,10 +13653,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-complex-tree@npm:^1.1.4":
-  version: 1.1.4
-  resolution: "react-complex-tree@npm:1.1.4"
-  checksum: 11ed3d99f58e4bb594be7b64e599609e57e1ee244733c799fee595d096ce5596f9a884a51a222dde41a44fb4f105b253c13b26c59af60a36542ce34a619ce66e
+"react-complex-tree@npm:^1.1.5":
+  version: 1.1.5
+  resolution: "react-complex-tree@npm:1.1.5"
+  checksum: eae0e121b71bf915d43ff05bf9800d6e69930119d674010877bbd615b0292818358eb98dc97fc8e00445808df6a411397e5957a87fd1b70cd7f8898ce3a1721b
   languageName: node
   linkType: hard
 
