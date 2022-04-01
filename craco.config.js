@@ -2,12 +2,13 @@
 //
 // https://github.com/gsoft-inc/craco/blob/master/packages/craco/README.md#configuration
 
-const { addBeforeLoader, loaderByName, getLoader } = require('@craco/craco');
+const { addBeforeLoader, loaderByName } = require('@craco/craco');
 const CopyPlugin = require('copy-webpack-plugin');
 const LicensePlugin = require('license-webpack-plugin').LicenseWebpackPlugin;
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 const satisfies = require('spdx-satisfies');
 const path = require('path');
+const fs = require('fs');
 
 // Permissive licenses can be added here. We would like to avoid copyleft.
 const approvedLicenses = ['0BSD', 'Apache-2.0', 'BSD-3-Clause', 'ISC', 'MIT'];
@@ -36,6 +37,11 @@ function personToString(person) {
 
 // Some packages don't have a separate license file, so we have to copy the
 // license here e.g. from the README.
+
+const dexieLicense = fs.readFileSync(
+    path.join(__dirname, 'node_modules', 'dexie', 'LICENSE'),
+    { encoding: 'utf-8' },
+);
 
 function fedorIndutnyLicense(year) {
     return `This software is licensed under the MIT License.
@@ -115,6 +121,7 @@ const licenseTextOverrides = {
     '@shopify/react': shopifyLicense,
     '@shopify/react-hooks': shopifyLicense,
     '@shopify/react-i18n': shopifyLicense,
+    'dexie-observable': dexieLicense,
     'bn.js': fedorIndutnyLicense(2015),
     brorand: fedorIndutnyLicense(2014),
     'des.js': fedorIndutnyLicense(2015),
@@ -266,6 +273,11 @@ module.exports = {
                 ],
                 unacceptableLicenseTest: (licenseType) =>
                     !satisfies(licenseType, `(${approvedLicenses.join(' OR ')})`),
+                handleMissingLicenseText: (packageName, licenseType) => {
+                    throw new Error(
+                        `missing license text for ${packageName} (${licenseType})`,
+                    );
+                },
             }),
             new MonacoWebpackPlugin({
                 languages: ['python'],
