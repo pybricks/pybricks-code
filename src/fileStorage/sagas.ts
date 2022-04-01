@@ -13,7 +13,6 @@ import 'dexie-observable';
 import JSZip from 'jszip';
 import { eventChannel } from 'redux-saga';
 import { call, fork, put, take, takeEvery } from 'typed-redux-saga/macro';
-import { pythonFileExtension, pythonFileMimeType } from '../pybricksMicropython/lib';
 import { ensureError, timestamp } from '../utils';
 import { sha256Digest } from '../utils/crypto';
 import {
@@ -25,10 +24,8 @@ import {
     fileStorageDidArchiveAllFiles,
     fileStorageDidChangeItem,
     fileStorageDidDeleteFile,
-    fileStorageDidExportFile,
     fileStorageDidFailToArchiveAllFiles,
     fileStorageDidFailToDeleteFile,
-    fileStorageDidFailToExportFile,
     fileStorageDidFailToInitialize,
     fileStorageDidFailToOpenFile,
     fileStorageDidFailToReadFile,
@@ -40,7 +37,6 @@ import {
     fileStorageDidRemoveItem,
     fileStorageDidRenameFile,
     fileStorageDidWriteFile,
-    fileStorageExportFile,
     fileStorageOpenFile,
     fileStorageReadFile,
     fileStorageRenameFile,
@@ -256,55 +252,6 @@ function* handleWriteFile(
     }
 }
 
-function* handleExportFile(
-    db: FileStorageDb,
-    action: ReturnType<typeof fileStorageExportFile>,
-): Generator {
-    const file = yield* call(() =>
-        db.transaction('r', db.metadata, db._contents, async () => {
-            const metadata = await db.metadata
-                .where('path')
-                .equals(action.fileName)
-                .first();
-
-            if (!metadata) {
-                return undefined;
-            }
-
-            return await db._contents.get(metadata.path);
-        }),
-    );
-
-    if (!file) {
-        yield* put(
-            fileStorageDidFailToExportFile(
-                action.fileName,
-                new Error('file does not exist'),
-            ),
-        );
-        return;
-    }
-
-    const blob = new Blob([file.contents], { type: `${pythonFileMimeType}` });
-
-    try {
-        yield* call(() =>
-            fileSave(blob, {
-                id: 'pybricksCodeFileStorageExport',
-                fileName: file.path,
-                extensions: [pythonFileExtension],
-                mimeTypes: [pythonFileMimeType],
-                // TODO: translate description
-                description: 'Python Files',
-            }),
-        );
-
-        yield* put(fileStorageDidExportFile(action.fileName));
-    } catch (err) {
-        yield* put(fileStorageDidFailToExportFile(action.fileName, ensureError(err)));
-    }
-}
-
 /**
  * Deletes a file from storage.
  * @param db The database instance.
@@ -466,7 +413,6 @@ function* initialize(): Generator {
         yield* takeEvery(fileStorageWriteFile, handleWriteFile, db);
         yield* takeEvery(fileStorageDeleteFile, handleDeleteFile, db);
         yield* takeEvery(fileStorageRenameFile, handleRenameFile, db);
-        yield* takeEvery(fileStorageExportFile, handleExportFile, db);
         yield* takeEvery(fileStorageArchiveAllFiles, handleArchiveAllFiles, db);
 
         const files = yield* call(() => db.metadata.toArray());

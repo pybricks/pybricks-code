@@ -232,37 +232,6 @@ export const fileStorageDidFailToRenameFile = createAction(
 );
 
 /**
- * Request to export (download) a file.
- * @param id The file handle UUID.
- */
-export const fileStorageExportFile = createAction((fileName: string) => ({
-    type: 'fileStorage.action.exportFile',
-    fileName,
-}));
-
-/**
- * Indicates that fileStorageExportFile(fileName) succeeded.
- * @param fileName The file handle UUID.
- */
-export const fileStorageDidExportFile = createAction((fileName: string) => ({
-    type: 'fileStorage.action.didExportFile',
-    fileName,
-}));
-
-/**
- * Indicates that fileStorageExportFile(fileName) failed.
- * @param fileName The file name.
- * @param error The error that was raised.
- */
-export const fileStorageDidFailToExportFile = createAction(
-    (fileName: string, error: Error) => ({
-        type: 'fileStorage.action.didFailToExportFile',
-        fileName,
-        error,
-    }),
-);
-
-/**
  * Request to archive (download) all files in the store.
  */
 export const fileStorageArchiveAllFiles = createAction(() => ({

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2022 The Pybricks Authors
 
-import { fileOpen } from 'browser-fs-access';
+import { fileOpen, fileSave } from 'browser-fs-access';
 import {
     call,
     put,
@@ -14,12 +14,15 @@ import {
 import { getPybricksMicroPythonFileTemplate } from '../editor/pybricksMicroPython';
 import {
     fileStorageDidFailToOpenFile,
+    fileStorageDidFailToReadFile,
     fileStorageDidFailToRenameFile,
     fileStorageDidFailToWriteFile,
     fileStorageDidOpenFile,
+    fileStorageDidReadFile,
     fileStorageDidRenameFile,
     fileStorageDidWriteFile,
     fileStorageOpenFile,
+    fileStorageReadFile,
     fileStorageRenameFile,
     fileStorageWriteFile,
 } from '../fileStorage/actions';
@@ -35,11 +38,14 @@ import { defined, ensureError } from '../utils';
 import {
     explorerCreateNewFile,
     explorerDidCreateNewFile,
+    explorerDidExportFile,
     explorerDidFailToCreateNewFile,
+    explorerDidFailToExportFile,
     explorerDidFailToImportFiles,
     explorerDidFailToRenameFile,
     explorerDidImportFiles,
     explorerDidRenameFile,
+    explorerExportFile,
     explorerImportFiles,
     explorerRenameFile,
 } from './actions';
@@ -207,6 +213,61 @@ function* handleExplorerRenameFile(
     yield* put(explorerDidRenameFile());
 }
 
+function* handleExplorerExportFile(
+    action: ReturnType<typeof explorerExportFile>,
+): Generator {
+    try {
+        yield* put(fileStorageOpenFile(action.fileName));
+
+        const { didOpen, didFailToOpen } = yield* race({
+            didOpen: take(
+                fileStorageDidOpenFile.when((a) => a.path === action.fileName),
+            ),
+            didFailToOpen: take(
+                fileStorageDidFailToOpenFile.when((a) => a.path === action.fileName),
+            ),
+        });
+
+        if (didFailToOpen) {
+            throw didFailToOpen.error;
+        }
+
+        defined(didOpen);
+
+        yield* put(fileStorageReadFile(didOpen.id));
+
+        const { didRead, didFailToRead } = yield* race({
+            didRead: take(fileStorageDidReadFile.when((a) => a.id === didOpen.id)),
+            didFailToRead: take(
+                fileStorageDidFailToReadFile.when((a) => a.id === didOpen.id),
+            ),
+        });
+
+        if (didFailToRead) {
+            throw didFailToRead.error;
+        }
+
+        defined(didRead);
+
+        const blob = new Blob([didRead.contents], { type: `${pythonFileMimeType}` });
+
+        yield* call(() =>
+            fileSave(blob, {
+                id: 'pybricksCodeFileStorageExport',
+                fileName: didOpen.path,
+                extensions: [pythonFileExtension],
+                mimeTypes: [pythonFileMimeType],
+                // TODO: translate description
+                description: 'Python Files',
+            }),
+        );
+
+        yield* put(explorerDidExportFile(action.fileName));
+    } catch (err) {
+        yield* put(explorerDidFailToExportFile(action.fileName, ensureError(err)));
+    }
+}
+
 export default function* (): Generator {
     yield* takeEvery(explorerImportFiles, handleExplorerImportFiles);
     yield* takeEvery(explorerCreateNewFile, handleExplorerCreateNewFile);
@@ -214,4 +275,5 @@ export default function* (): Generator {
     // previous one is finished, the old one will be canceled. We don't expect
     // this to happen in practice though.
     yield* takeLatest(explorerRenameFile, handleExplorerRenameFile);
+    yield* takeLatest(explorerExportFile, handleExplorerExportFile);
 }

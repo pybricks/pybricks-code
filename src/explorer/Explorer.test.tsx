@@ -6,13 +6,14 @@ import { cleanup } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { testRender, uuid } from '../../test';
-import {
-    FileMetadata,
-    fileStorageArchiveAllFiles,
-    fileStorageExportFile,
-} from '../fileStorage/actions';
+import { FileMetadata, fileStorageArchiveAllFiles } from '../fileStorage/actions';
 import Explorer from './Explorer';
-import { explorerDeleteFile, explorerImportFiles, explorerRenameFile } from './actions';
+import {
+    explorerDeleteFile,
+    explorerExportFile,
+    explorerImportFiles,
+    explorerRenameFile,
+} from './actions';
 
 afterEach(async () => {
     cleanup();
@@ -153,7 +154,7 @@ describe('tree item', () => {
 
         userEvent.click(button);
 
-        expect(dispatch).toHaveBeenCalledWith(fileStorageExportFile('test.file'));
+        expect(dispatch).toHaveBeenCalledWith(explorerExportFile('test.file'));
     });
 
     it('should dispatch export action when key is pressed', async () => {
@@ -166,6 +167,6 @@ describe('tree item', () => {
         userEvent.click(treeItem);
         userEvent.keyboard('{ctrl}e');
 
-        expect(dispatch).toHaveBeenCalledWith(fileStorageExportFile('test.file'));
+        expect(dispatch).toHaveBeenCalledWith(explorerExportFile('test.file'));
     });
 });

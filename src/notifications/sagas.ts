@@ -20,12 +20,12 @@ import {
 import {
     explorerDeleteFile,
     explorerDidFailToCreateNewFile,
+    explorerDidFailToExportFile,
     explorerDidFailToImportFiles,
 } from '../explorer/actions';
 import {
     fileStorageDeleteFile,
     fileStorageDidFailToArchiveAllFiles,
-    fileStorageDidFailToExportFile,
     fileStorageDidFailToInitialize,
     fileStorageDidRemoveItem,
 } from '../fileStorage/actions';
@@ -387,17 +387,6 @@ function* showFileStorageFailToInitialize(
     yield* showUnexpectedError(I18nId.FileStorageFailedToInitialize, action.error);
 }
 
-function* showFileStorageFailToExport(
-    action: ReturnType<typeof fileStorageDidFailToExportFile>,
-): Generator {
-    if (action.error.name === 'AbortError') {
-        // user clicked cancel button - not an error
-        return;
-    }
-
-    yield* showUnexpectedError(I18nId.FileStorageFailedToExport, action.error);
-}
-
 function* showFileStorageFailToArchive(
     action: ReturnType<typeof fileStorageDidFailToArchiveAllFiles>,
 ): Generator {
@@ -406,7 +395,7 @@ function* showFileStorageFailToArchive(
         return;
     }
 
-    yield* showUnexpectedError(I18nId.FileStorageFailedToExport, action.error);
+    yield* showUnexpectedError(I18nId.FileStorageFailedToArchive, action.error);
 }
 
 function* showDeleteFileWarning(action: ReturnType<typeof explorerDeleteFile>) {
@@ -458,7 +447,18 @@ function* showExplorerFailToImportFiles(
 function* showExplorerFailToCreateFile(
     action: ReturnType<typeof explorerDidFailToCreateNewFile>,
 ): Generator {
-    yield* showUnexpectedError(I18nId.FileStorageFailedToDelete, action.error);
+    yield* showUnexpectedError(I18nId.ExplorerFailedToCreate, action.error);
+}
+
+function* showExplorerFailToExport(
+    action: ReturnType<typeof explorerDidFailToExportFile>,
+): Generator {
+    if (action.error.name === 'AbortError') {
+        // user clicked cancel button - not an error
+        return;
+    }
+
+    yield* showUnexpectedError(I18nId.ExplorerFailedToExport, action.error);
 }
 
 export default function* (): Generator {
@@ -472,9 +472,9 @@ export default function* (): Generator {
     yield* takeEvery(appDidCheckForUpdate, showNoUpdateInfo);
     yield* takeEvery(bleDIServiceDidReceiveFirmwareRevision, checkVersion);
     yield* takeEvery(fileStorageDidFailToInitialize, showFileStorageFailToInitialize);
-    yield* takeEvery(fileStorageDidFailToExportFile, showFileStorageFailToExport);
     yield* takeEvery(fileStorageDidFailToArchiveAllFiles, showFileStorageFailToArchive);
     yield* takeEvery(explorerDeleteFile, showDeleteFileWarning);
     yield* takeEvery(explorerDidFailToImportFiles, showExplorerFailToImportFiles);
     yield* takeEvery(explorerDidFailToCreateNewFile, showExplorerFailToCreateFile);
+    yield* takeEvery(explorerDidFailToExportFile, showExplorerFailToExport);
 }

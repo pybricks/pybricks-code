@@ -23,15 +23,17 @@ import {
     useTreeEnvironment,
 } from 'react-complex-tree';
 import { useDispatch } from 'react-redux';
-import {
-    fileStorageArchiveAllFiles,
-    fileStorageExportFile,
-} from '../fileStorage/actions';
+import { fileStorageArchiveAllFiles } from '../fileStorage/actions';
 import { useSelector } from '../reducers';
 import { isMacOS } from '../utils/os';
 import { preventBrowserNativeContextMenu } from '../utils/react';
 import { TreeItemContext, TreeItemData, renderers } from '../utils/tree-renderer';
-import { explorerDeleteFile, explorerImportFiles, explorerRenameFile } from './actions';
+import {
+    explorerDeleteFile,
+    explorerExportFile,
+    explorerImportFiles,
+    explorerRenameFile,
+} from './actions';
 import { I18nId } from './i18n';
 import NewFileWizard from './newFileWizard/NewFileWizard';
 import RenameFileDialog from './renameFileDialog/RenameFileDialog';
@@ -110,7 +112,7 @@ const FileActionButtonGroup: React.VoidFunctionComponent<ActionButtonGroupProps>
                 icon="import"
                 tooltip={i18n.translate(I18nId.TreeItemExportTooltip, { fileName })}
                 focusable={false}
-                onClick={() => dispatch(fileStorageExportFile(fileName))}
+                onClick={() => dispatch(explorerExportFile(fileName))}
             />
             <ActionButton
                 icon="trash"
@@ -236,7 +238,7 @@ const renderTreeContainer: typeof renderers.renderTreeContainer = (props) => {
     const handleExportKeyDown = useCallback(() => {
         if (focusedItem !== undefined) {
             const fileName = environment.getItemTitle(environment.items[focusedItem]);
-            dispatch(fileStorageExportFile(fileName));
+            dispatch(explorerExportFile(fileName));
         }
     }, [environment]);
 

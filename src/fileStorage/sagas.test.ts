@@ -15,9 +15,7 @@ import {
     fileStorageDidArchiveAllFiles,
     fileStorageDidChangeItem,
     fileStorageDidDeleteFile,
-    fileStorageDidExportFile,
     fileStorageDidFailToArchiveAllFiles,
-    fileStorageDidFailToExportFile,
     fileStorageDidFailToReadFile,
     fileStorageDidInitialize,
     fileStorageDidOpenFile,
@@ -25,7 +23,6 @@ import {
     fileStorageDidRemoveItem,
     fileStorageDidRenameFile,
     fileStorageDidWriteFile,
-    fileStorageExportFile,
     fileStorageOpenFile,
     fileStorageReadFile,
     fileStorageRenameFile,
@@ -219,59 +216,6 @@ describe('rename', () => {
         await saga.end();
     });
 });
-
-describe('export', () => {
-    it('should fail if file does not exist', async () => {
-        const testFile = 'test.file';
-
-        const saga = new AsyncSaga(fileStorage);
-
-        await expect(saga.take()).resolves.toEqual(fileStorageDidInitialize([]));
-
-        saga.put(fileStorageExportFile(testFile));
-
-        await expect(saga.take()).resolves.toEqual(
-            fileStorageDidFailToExportFile(testFile, new Error('file does not exist')),
-        );
-
-        await saga.end();
-    });
-
-    it('should export file', async () => {
-        const saga = new AsyncSaga(fileStorage);
-
-        const [testFile] = await setUpTestFile(saga);
-
-        jest.spyOn(browserFsAccess, 'fileSave');
-
-        saga.put(fileStorageExportFile(testFile.path));
-
-        await expect(saga.take()).resolves.toEqual(
-            fileStorageDidExportFile(testFile.path),
-        );
-        expect(browserFsAccess.fileSave).toHaveBeenCalled();
-
-        await saga.end();
-    });
-
-    it('should catch error', async () => {
-        const saga = new AsyncSaga(fileStorage);
-
-        const [testFile] = await setUpTestFile(saga);
-
-        const testError = new Error('test error');
-        jest.spyOn(browserFsAccess, 'fileSave').mockRejectedValue(testError);
-
-        saga.put(fileStorageExportFile(testFile.path));
-
-        await expect(saga.take()).resolves.toEqual(
-            fileStorageDidFailToExportFile(testFile.path, testError),
-        );
-
-        await saga.end();
-    });
-});
-
 describe('archive', () => {
     it('should archive file', async () => {
         const saga = new AsyncSaga(fileStorage);

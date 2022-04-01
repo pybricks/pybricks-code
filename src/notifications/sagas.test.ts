@@ -19,12 +19,12 @@ import {
 import {
     explorerDeleteFile,
     explorerDidFailToCreateNewFile,
+    explorerDidFailToExportFile,
     explorerDidFailToImportFiles,
 } from '../explorer/actions';
 import {
     fileStorageDeleteFile,
     fileStorageDidFailToArchiveAllFiles,
-    fileStorageDidFailToExportFile,
     fileStorageDidFailToInitialize,
     fileStorageDidRemoveItem,
 } from '../fileStorage/actions';
@@ -112,10 +112,10 @@ test.each([
     appDidCheckForUpdate(false),
     bleDIServiceDidReceiveFirmwareRevision('3.0.0'),
     fileStorageDidFailToInitialize(new Error('test error')),
-    fileStorageDidFailToExportFile('test.file', new Error('test error')),
     fileStorageDidFailToArchiveAllFiles(new Error('test error')),
     explorerDidFailToImportFiles(new Error('test error')),
     explorerDidFailToCreateNewFile(new Error('test error')),
+    explorerDidFailToExportFile('test.file', new Error('test error')),
 ])('actions that should show notification: %o', async (action: AnyAction) => {
     const { toaster, saga } = createTestToasterSaga();
 
@@ -135,12 +135,12 @@ test.each([
     serviceWorkerDidSucceed(),
     appDidCheckForUpdate(true),
     bleDIServiceDidReceiveFirmwareRevision(firmwareVersion),
-    fileStorageDidFailToExportFile(
+    fileStorageDidFailToArchiveAllFiles(new DOMException('test message', 'AbortError')),
+    explorerDidFailToImportFiles(new DOMException('test message', 'AbortError')),
+    explorerDidFailToExportFile(
         'test.file',
         new DOMException('test message', 'AbortError'),
     ),
-    fileStorageDidFailToArchiveAllFiles(new DOMException('test message', 'AbortError')),
-    explorerDidFailToImportFiles(new DOMException('test message', 'AbortError')),
 ])('actions that should not show a notification: %o', async (action: AnyAction) => {
     const { toaster, saga } = createTestToasterSaga();
 

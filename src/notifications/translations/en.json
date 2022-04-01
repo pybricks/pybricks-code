@@ -19,14 +19,13 @@
             "message": "The file {fileName} will be permanently deleted. This cannot be undone.",
             "action": "Delete"
         },
-        "failedToImportFiles": "Failed to import file(s)"
+        "failedToImportFiles": "Failed to import file(s).",
+        "failedToCreate": "Failed to create file.",
+        "failedToExport": "Failed to export file."
     },
     "fileStorage": {
         "failedToInitialize": "Failed to initial file storage. Changes will not be automatically saved.",
-        "failedToRead": "Failed to read file.",
-        "failedToWrite": "Failed to write file.",
-        "failedToDelete": "Failed to delete file.",
-        "failedToExport": "Failed to export file.'"
+        "failedToArchive": "Failed to archive files.'"
     },
     "flashFirmware": {
         "timedOut": "The hub took too long to respond. Restart the hub and try again.",

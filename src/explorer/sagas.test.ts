@@ -6,11 +6,15 @@ import { FileWithHandle } from 'browser-fs-access';
 import { mock } from 'jest-mock-extended';
 import { AsyncSaga, uuid } from '../../test';
 import {
+    fileStorageDidFailToOpenFile,
+    fileStorageDidFailToReadFile,
     fileStorageDidFailToRenameFile,
     fileStorageDidOpenFile,
+    fileStorageDidReadFile,
     fileStorageDidRenameFile,
     fileStorageDidWriteFile,
     fileStorageOpenFile,
+    fileStorageReadFile,
     fileStorageRenameFile,
     fileStorageWriteFile,
 } from '../fileStorage/actions';
@@ -19,10 +23,13 @@ import {
     Hub,
     explorerCreateNewFile,
     explorerDidCreateNewFile,
+    explorerDidExportFile,
+    explorerDidFailToExportFile,
     explorerDidFailToImportFiles,
     explorerDidFailToRenameFile,
     explorerDidImportFiles,
     explorerDidRenameFile,
+    explorerExportFile,
     explorerImportFiles,
     explorerRenameFile,
 } from './actions';
@@ -152,6 +159,73 @@ describe('handleExplorerRenameFile', () => {
             saga.put(fileStorageDidRenameFile('old.file'));
 
             await expect(saga.take()).resolves.toEqual(explorerDidRenameFile());
+        });
+    });
+
+    afterEach(async () => {
+        await saga.end();
+    });
+});
+
+describe('handleExplorerExportFile', () => {
+    let saga: AsyncSaga;
+    const testFile = 'test.file';
+    const testFileId = uuid(0);
+    const testFileContents = '# test file contents';
+    const testError = new Error('test error');
+
+    beforeEach(async () => {
+        saga = new AsyncSaga(explorer);
+
+        saga.put(explorerExportFile(testFile));
+
+        await expect(saga.take()).resolves.toEqual(fileStorageOpenFile(testFile));
+    });
+
+    it('should fail if file does not exist', async () => {
+        saga.put(fileStorageDidFailToOpenFile(testFile, testError));
+
+        await expect(saga.take()).resolves.toEqual(
+            explorerDidFailToExportFile(testFile, testError),
+        );
+    });
+
+    describe('should read file', () => {
+        beforeEach(async () => {
+            saga.put(fileStorageDidOpenFile(testFile, testFileId));
+
+            await expect(saga.take()).resolves.toEqual(fileStorageReadFile(testFileId));
+        });
+
+        it('should catch read error', async () => {
+            saga.put(fileStorageDidFailToReadFile(testFileId, testError));
+
+            await expect(saga.take()).resolves.toEqual(
+                explorerDidFailToExportFile(testFile, testError),
+            );
+        });
+
+        describe('should read file', () => {
+            it('should export file', async () => {
+                jest.spyOn(browserFsAccess, 'fileSave').mockResolvedValue(null);
+
+                saga.put(fileStorageDidReadFile(testFileId, testFileContents));
+
+                await expect(saga.take()).resolves.toEqual(
+                    explorerDidExportFile('test.file'),
+                );
+                expect(browserFsAccess.fileSave).toHaveBeenCalled();
+            });
+
+            it('should catch error', async () => {
+                jest.spyOn(browserFsAccess, 'fileSave').mockRejectedValue(testError);
+
+                saga.put(fileStorageDidReadFile(testFileId, testFileContents));
+
+                await expect(saga.take()).resolves.toEqual(
+                    explorerDidFailToExportFile('test.file', testError),
+                );
+            });
         });
     });
 
