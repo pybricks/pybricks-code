@@ -41,7 +41,7 @@ const NewFileWizard: React.VoidFunctionComponent<NewFileWizardProps> = ({
     const dispatch = useDispatch();
 
     const [fileName, setFileName] = useState('');
-    const files = useSelector((s) => s.fileStorage.files);
+    const files = useSelector((s) => s.explorer.files);
     const fileNameValidation = validateFileName(
         fileName,
         pythonFileExtension,

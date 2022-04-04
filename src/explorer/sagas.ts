@@ -120,7 +120,7 @@ function* handleExplorerImportFiles(): Generator {
             const text = yield* call(() => file.text());
 
             const [baseName] = file.name.split(pythonFileExtensionRegex);
-            const existingFiles = yield* select((s: RootState) => s.fileStorage.files);
+            const existingFiles = yield* select((s: RootState) => s.explorer.files);
 
             const result = validateFileName(
                 baseName,

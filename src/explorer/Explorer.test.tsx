@@ -31,7 +31,7 @@ const testFile: FileMetadata = {
 describe('archive button', () => {
     it('should be enabled if there are files', () => {
         const [explorer, dispatch] = testRender(<Explorer />, {
-            fileStorage: { files: [testFile] },
+            explorer: { files: [testFile] },
         });
 
         const button = explorer.getByTitle('Backup all files');
@@ -43,7 +43,7 @@ describe('archive button', () => {
 
     it('should be disabled if there are no files', () => {
         const [explorer, dispatch] = testRender(<Explorer />, {
-            fileStorage: { files: [] },
+            explorer: { files: [] },
         });
 
         const button = explorer.getByTitle('Backup all files');
@@ -84,7 +84,7 @@ describe('new file button', () => {
 describe('tree item', () => {
     it('should dispatch action when button is clicked', async () => {
         const [explorer, dispatch] = testRender(<Explorer />, {
-            fileStorage: { files: [testFile] },
+            explorer: { files: [testFile] },
         });
 
         expect(
@@ -102,7 +102,7 @@ describe('tree item', () => {
 
     it('should dispatch action when key is pressed', async () => {
         const [explorer, dispatch] = testRender(<Explorer />, {
-            fileStorage: { files: [testFile] },
+            explorer: { files: [testFile] },
         });
 
         expect(
@@ -119,7 +119,7 @@ describe('tree item', () => {
 
     it('should dispatch delete action when button is clicked', async () => {
         const [explorer, dispatch] = testRender(<Explorer />, {
-            fileStorage: { files: [testFile] },
+            explorer: { files: [testFile] },
         });
 
         // NB: this button is intentionally not accessible (by role) since
@@ -133,7 +133,7 @@ describe('tree item', () => {
 
     it('should dispatch delete action when key is pressed', async () => {
         const [explorer, dispatch] = testRender(<Explorer />, {
-            fileStorage: { files: [testFile] },
+            explorer: { files: [testFile] },
         });
 
         const treeItem = explorer.getByRole('treeitem', { name: 'test.file' });
@@ -146,7 +146,7 @@ describe('tree item', () => {
 
     it('should dispatch export action when button is clicked', async () => {
         const [explorer, dispatch] = testRender(<Explorer />, {
-            fileStorage: { files: [testFile] },
+            explorer: { files: [testFile] },
         });
 
         // NB: this button is intentionally not accessible (by role) since
@@ -160,7 +160,7 @@ describe('tree item', () => {
 
     it('should dispatch export action when key is pressed', async () => {
         const [explorer, dispatch] = testRender(<Explorer />, {
-            fileStorage: { files: [testFile] },
+            explorer: { files: [testFile] },
         });
 
         const treeItem = explorer.getByRole('treeitem', { name: 'test.file' });

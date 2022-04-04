@@ -132,7 +132,7 @@ type HeaderProps = {
 const Header: React.VoidFunctionComponent<HeaderProps> = ({ i18n }) => {
     const [isNewFileWizardOpen, setIsNewFileWizardOpen] = useState(false);
     const dispatch = useDispatch();
-    const files = useSelector((s) => s.fileStorage.files);
+    const files = useSelector((s) => s.explorer.files);
 
     return (
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -281,7 +281,7 @@ type FileTreeProps = {
 
 const FileTree: React.VoidFunctionComponent<FileTreeProps> = ({ i18n }) => {
     const [focusedItem, setFocusedItem] = useState<TreeItemIndex>();
-    const files = useSelector((s) => s.fileStorage.files);
+    const files = useSelector((s) => s.explorer.files);
     const liveDescriptors = useLiveDescriptors(i18n);
 
     const rootItemIndex = 'root';
