@@ -3,6 +3,12 @@
 
 import { createAction } from '../actions';
 
+/** File open modes. */
+export type FileOpenMode = 'r' | 'w';
+
+/** Type to avoid mixing up file descriptor with number. */
+export type FD = number & { _fdBrand: undefined };
+
 /** Type to avoid mixing UUID with regular string. */
 export type UUID = string & { _uuidBrand: undefined };
 
@@ -74,140 +80,228 @@ export const fileStorageDidRemoveItem = createAction((file: FileMetadata) => ({
 /**
  * Action that requests to open a file in storage.
  * @param path The file path.
+ * @param mode 'r' to open for reading or 'w' to open for writing.
  */
-export const fileStorageOpenFile = createAction((path: string) => ({
+export const fileStorageOpen = createAction((path: string, mode: FileOpenMode) => ({
     type: 'fileStorage.action.Open',
     path,
+    mode,
 }));
 
 /**
- * Action that indicates that {@link fileStorageOpenFile} succeeded.
+ * Action that indicates that {@link fileStorageOpen} succeeded.
  * @param path The file path.
- * @param id The file handle UUID.
+ * @param fd The file descriptor.
  */
-export const fileStorageDidOpenFile = createAction((path: string, id: UUID) => ({
+export const fileStorageDidOpen = createAction((path: string, fd: FD) => ({
     type: 'fileStorage.action.DidOpen',
     path,
-    id,
+    fd,
 }));
 
 /**
- * Action that indicates that {@link fileStorageOpenFile} failed.
+ * Action that indicates that {@link fileStorageOpen} failed.
  * @param path The file path.
  * @param error The error.
  */
-export const fileStorageDidFailToOpenFile = createAction(
-    (path: string, error: Error) => ({
-        type: 'fileStorage.action.DidFailToOpen',
-        path,
-        error,
-    }),
-);
-/**
- * Requests to read a file from storage.
- * @param id The file handle UUID.
- */
-export const fileStorageReadFile = createAction((id: UUID) => ({
-    type: 'fileStorage.action.readFile',
-    id,
+export const fileStorageDidFailToOpen = createAction((path: string, error: Error) => ({
+    type: 'fileStorage.action.DidFailToOpen',
+    path,
+    error,
 }));
 
 /**
- * Response to read file request indicating success.
- * @param id The file handle UUID.
+ * Closes a file that was opened with {@link fileStorageOpen}.
+ * @param fd The file descriptor received by {@link fileStorageDidOpen}.
+ */
+export const fileStorageClose = createAction((fd: FD) => ({
+    type: 'fileStorage.action.close',
+    fd,
+}));
+
+/**
+ * Indicates that {@link fileStorageClose} completed.
+ * @param fd The file descriptor that was passed to {@link fileStorageClose}.
+ */
+export const fileStorageDidClose = createAction((fd: FD) => ({
+    type: 'fileStorage.action.didClose',
+    fd,
+}));
+
+// NB: Unlike most "did" actions, closing a file does not fail so there is no
+// `fileStorageDidFailToClose` action.
+
+/**
+ * Requests to read a file from storage.
+ * @param fd An open file descriptor.
+ */
+export const fileStorageRead = createAction((fd: FD) => ({
+    type: 'fileStorage.action.read',
+    fd,
+}));
+
+/**
+ * Indicates that {@link fileStorageRead} succeeded.
+ * @param fd The file descriptor passed to {@link fileStorageRead}
  * @param contents The contents of the file.
  */
-export const fileStorageDidReadFile = createAction((id: UUID, contents: string) => ({
-    type: 'fileStorage.action.didReadFile',
-    id,
+export const fileStorageDidRead = createAction((fd: FD, contents: string) => ({
+    type: 'fileStorage.action.didRead',
+    fd,
     contents,
 }));
 
 /**
- * Response to read file request indicating failure.
- * @param id The file handle UUID.
+ * Indicates that {@link fileStorageRead} failed.
+ * @param fd The file descriptor passed to {@link fileStorageRead}
  * @param error The error.
  */
-export const fileStorageDidFailToReadFile = createAction((id: UUID, error: Error) => ({
-    type: 'fileStorage.action.didFailToReadFile',
-    id,
+export const fileStorageDidFailToRead = createAction((fd: FD, error: Error) => ({
+    type: 'fileStorage.action.didFailToRead',
+    fd,
     error,
 }));
 
 /**
  * Requests to write a file to storage.
- * @param id The file handle UUID.
+ * @param fd A file descriptor that is open for writing.
  * @param contents The contents of the file.
  */
-export const fileStorageWriteFile = createAction((id: UUID, contents: string) => ({
-    type: 'fileStorage.action.writeFile',
-    id,
+export const fileStorageWrite = createAction((fd: FD, contents: string) => ({
+    type: 'fileStorage.action.write',
+    fd,
     contents,
 }));
 
 /**
- * Response to write file request indicating success.
- * @param id The file handle UUID.
+ * Indicates that {@link fileStorageWrite} succeeded.
+ * @param fd The file descriptor passed to {@link fileStorageWrite}
  */
-export const fileStorageDidWriteFile = createAction((id: UUID) => ({
-    type: 'fileStorage.action.didWriteFile',
-    id,
+export const fileStorageDidWrite = createAction((fd: FD) => ({
+    type: 'fileStorage.action.didWrite',
+    fd,
 }));
 
 /**
- * Response to write file request indicating failure.
- * @param id The file handle UUID.
+ * Indicates that {@link fileStorageWrite} failed.
+ * @param fd The file descriptor passed to {@link fileStorageWrite}
  * @param error The error.
  */
-export const fileStorageDidFailToWriteFile = createAction((id: UUID, error: Error) => ({
-    type: 'fileStorage.action.didFailToWriteFile',
-    id,
+export const fileStorageDidFailToWrite = createAction((fd: FD, error: Error) => ({
+    type: 'fileStorage.action.didFailToWrite',
+    fd,
     error,
 }));
 
 /**
- * Request to delete a file from storage.
- * @param id The file handle UUID.
+ * Performs file open, read, close.
+ * @param path: The file path.
  */
-export const fileStorageDeleteFile = createAction((fileName: string) => ({
+export const fileStorageReadFile = createAction((path: string) => ({
+    type: 'fileStorage.action.readFile',
+    path,
+}));
+
+/**
+ * Indicates that {@link fileStorageReadFile} succeeded.
+ * @param path: The file path.
+ * @param contents: The contents read from the file.
+ */
+export const fileStorageDidReadFile = createAction(
+    (path: string, contents: string) => ({
+        type: 'fileStorage.action.didReadFile',
+        path,
+        contents,
+    }),
+);
+
+/**
+ * Indicates that {@link fileStorageReadFile} failed.
+ * @param path: The file path.
+ * @param error The error.
+ */
+export const fileStorageDidFailToReadFile = createAction(
+    (path: string, error: Error) => ({
+        type: 'fileStorage.action.didFailToReadFile',
+        path,
+        error,
+    }),
+);
+
+/**
+ * Performs file open, write, close.
+ * @param path: The file path.
+ * @param contents: The contents read from the file.
+ */
+export const fileStorageWriteFile = createAction((path: string, contents: string) => ({
+    type: 'fileStorage.action.writeFile',
+    path,
+    contents,
+}));
+
+/**
+ * Indicates that {@link fileStorageWriteFile} succeeded.
+ * @param path: The file path.
+ */
+export const fileStorageDidWriteFile = createAction((path: string) => ({
+    type: 'fileStorage.action.didWriteFile',
+    path,
+}));
+
+/**
+ * Indicates that {@link fileStorageWriteFile} failed.
+ * @param path: The file path.
+ * @param error The error.
+ */
+export const fileStorageDidFailToWriteFile = createAction(
+    (path: string, error: Error) => ({
+        type: 'fileStorage.action.didFailToWriteFile',
+        path,
+        error,
+    }),
+);
+
+/**
+ * Request to delete a file from storage.
+ * @param path: The file path.
+ */
+export const fileStorageDeleteFile = createAction((path: string) => ({
     type: 'fileStorage.action.deleteFile',
-    fileName,
+    path,
 }));
 
 /**
  * Indicates that {@link fileStorageDeleteFile} succeeded.
- * @param fileName The file handle UUID.
+ * @param path: The file path.
  */
-export const fileStorageDidDeleteFile = createAction((fileName: string) => ({
+export const fileStorageDidDeleteFile = createAction((path: string) => ({
     type: 'fileStorage.action.didDeleteFile',
-    fileName,
+    path,
 }));
 
 /**
  *  Indicates that {@link fileStorageDeleteFile} failed.
- * @param fileName The file handle UUID.
+ * @param path: The file path.
  * @param error The error.
  */
 export const fileStorageDidFailToDeleteFile = createAction(
-    (fileName: string, error: Error) => ({
+    (path: string, error: Error) => ({
         type: 'fileStorage.action.didFailToDeleteFile',
-        fileName,
+        path,
         error,
     }),
 );
 
 /**
  * Requests for a file to be renamed.
- * @param fileName The file handle UUID.
- * @param newName The new name for the file.
+ * @param path: The file path.
+ * @param newPath The new path for the file.
  */
-export const fileStorageRenameFile = createAction(
-    (fileName: string, newName: string) => ({
-        type: 'fileStorage.action.renameFile',
-        fileName,
-        newName,
-    }),
-);
+export const fileStorageRenameFile = createAction((path: string, newPath: string) => ({
+    type: 'fileStorage.action.renameFile',
+    path,
+    newPath,
+}));
 
 /**
  * Indicates that fileStorageRenameFile(oldName, newName) succeeded.

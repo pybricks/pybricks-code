@@ -13,15 +13,12 @@ import {
 } from 'typed-redux-saga/macro';
 import { getPybricksMicroPythonFileTemplate } from '../editor/pybricksMicroPython';
 import {
-    fileStorageDidFailToOpenFile,
     fileStorageDidFailToReadFile,
     fileStorageDidFailToRenameFile,
     fileStorageDidFailToWriteFile,
-    fileStorageDidOpenFile,
     fileStorageDidReadFile,
     fileStorageDidRenameFile,
     fileStorageDidWriteFile,
-    fileStorageOpenFile,
     fileStorageReadFile,
     fileStorageRenameFile,
     fileStorageWriteFile,
@@ -94,29 +91,14 @@ function* handleExplorerImportFiles(): Generator {
 
             const fileName = `${baseName}${pythonFileExtension}`;
 
-            yield* put(fileStorageOpenFile(fileName));
-
-            const { didOpen, didFailToOpen } = yield* race({
-                didOpen: take(fileStorageDidOpenFile.when((a) => a.path === fileName)),
-                didFailToOpen: take(
-                    fileStorageDidFailToOpenFile.when((a) => a.path === fileName),
-                ),
-            });
-
-            if (didFailToOpen) {
-                throw didFailToOpen.error;
-            }
-
-            defined(didOpen);
-
-            yield* put(fileStorageWriteFile(didOpen.id, text));
+            yield* put(fileStorageWriteFile(fileName, text));
 
             const { didFailToWrite } = yield* race({
                 didWrite: take(
-                    fileStorageDidWriteFile.when((a) => a.id === didOpen.id),
+                    fileStorageDidWriteFile.when((a) => a.path === fileName),
                 ),
                 didFailToWrite: take(
-                    fileStorageDidFailToWriteFile.when((a) => a.id === didOpen.id),
+                    fileStorageDidFailToWriteFile.when((a) => a.path === fileName),
                 ),
             });
 
@@ -137,32 +119,17 @@ function* handleExplorerCreateNewFile(
     try {
         const fileName = `${action.fileName}${action.fileExtension}`;
 
-        yield* put(fileStorageOpenFile(fileName));
-
-        const { didOpen, didFailToOpen } = yield* race({
-            didOpen: take(fileStorageDidOpenFile.when((a) => a.path === fileName)),
-            didFailToOpen: take(
-                fileStorageDidFailToOpenFile.when((a) => a.path === fileName),
-            ),
-        });
-
-        if (didFailToOpen) {
-            throw didFailToOpen.error;
-        }
-
-        defined(didOpen);
-
         yield* put(
             fileStorageWriteFile(
-                didOpen.id,
+                fileName,
                 getPybricksMicroPythonFileTemplate(action.hub) || '',
             ),
         );
 
         const { didFailToWrite } = yield* race({
-            didWrite: take(fileStorageDidWriteFile.when((a) => a.id === didOpen.id)),
+            didWrite: take(fileStorageDidWriteFile.when((a) => a.path === fileName)),
             didFailToWrite: take(
-                fileStorageDidFailToWriteFile.when((a) => a.id === didOpen.id),
+                fileStorageDidFailToWriteFile.when((a) => a.path === fileName),
             ),
         });
 
@@ -217,29 +184,14 @@ function* handleExplorerExportFile(
     action: ReturnType<typeof explorerExportFile>,
 ): Generator {
     try {
-        yield* put(fileStorageOpenFile(action.fileName));
-
-        const { didOpen, didFailToOpen } = yield* race({
-            didOpen: take(
-                fileStorageDidOpenFile.when((a) => a.path === action.fileName),
-            ),
-            didFailToOpen: take(
-                fileStorageDidFailToOpenFile.when((a) => a.path === action.fileName),
-            ),
-        });
-
-        if (didFailToOpen) {
-            throw didFailToOpen.error;
-        }
-
-        defined(didOpen);
-
-        yield* put(fileStorageReadFile(didOpen.id));
+        yield* put(fileStorageReadFile(action.fileName));
 
         const { didRead, didFailToRead } = yield* race({
-            didRead: take(fileStorageDidReadFile.when((a) => a.id === didOpen.id)),
+            didRead: take(
+                fileStorageDidReadFile.when((a) => a.path === action.fileName),
+            ),
             didFailToRead: take(
-                fileStorageDidFailToReadFile.when((a) => a.id === didOpen.id),
+                fileStorageDidFailToReadFile.when((a) => a.path === action.fileName),
             ),
         });
 
@@ -254,7 +206,7 @@ function* handleExplorerExportFile(
         yield* call(() =>
             fileSave(blob, {
                 id: 'pybricksCodeFileStorageExport',
-                fileName: didOpen.path,
+                fileName: action.fileName,
                 extensions: [pythonFileExtension],
                 mimeTypes: [pythonFileMimeType],
                 // TODO: translate description

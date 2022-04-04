@@ -4,16 +4,13 @@
 import * as browserFsAccess from 'browser-fs-access';
 import { FileWithHandle } from 'browser-fs-access';
 import { mock } from 'jest-mock-extended';
-import { AsyncSaga, uuid } from '../../test';
+import { AsyncSaga } from '../../test';
 import {
-    fileStorageDidFailToOpenFile,
     fileStorageDidFailToReadFile,
     fileStorageDidFailToRenameFile,
-    fileStorageDidOpenFile,
     fileStorageDidReadFile,
     fileStorageDidRenameFile,
     fileStorageDidWriteFile,
-    fileStorageOpenFile,
     fileStorageReadFile,
     fileStorageRenameFile,
     fileStorageWriteFile,
@@ -56,15 +53,11 @@ describe('handleExplorerImportFiles', () => {
 
         saga.put(explorerImportFiles());
 
-        await expect(saga.take()).resolves.toEqual(fileStorageOpenFile(testFileName));
-
-        saga.put(fileStorageDidOpenFile(testFileName, uuid(0)));
-
         await expect(saga.take()).resolves.toEqual(
-            fileStorageWriteFile(uuid(0), testFileContents),
+            fileStorageWriteFile(testFileName, testFileContents),
         );
 
-        saga.put(fileStorageDidWriteFile(uuid(0)));
+        saga.put(fileStorageDidWriteFile(testFileName));
 
         await expect(saga.take()).resolves.toEqual(explorerDidImportFiles());
 
@@ -93,10 +86,6 @@ describe('handleExplorerCreateNewFile', () => {
 
         saga.put(explorerCreateNewFile('test', pythonFileExtension, Hub.Technic));
 
-        await expect(saga.take()).resolves.toEqual(fileStorageOpenFile('test.py'));
-
-        saga.put(fileStorageDidOpenFile('test.py', uuid(0)));
-
         await expect(saga.take()).resolves.toMatchInlineSnapshot(`
             Object {
               "contents": "from pybricks.hubs import TechnicHub
@@ -108,12 +97,12 @@ describe('handleExplorerCreateNewFile', () => {
             hub = TechnicHub()
 
             ",
-              "id": "00000000-0000-0000-0000-000000000000",
+              "path": "test.py",
               "type": "fileStorage.action.writeFile",
             }
         `);
 
-        saga.put(fileStorageDidWriteFile(uuid(0)));
+        saga.put(fileStorageDidWriteFile('test.py'));
 
         await expect(saga.take()).resolves.toEqual(explorerDidCreateNewFile());
 
@@ -170,7 +159,6 @@ describe('handleExplorerRenameFile', () => {
 describe('handleExplorerExportFile', () => {
     let saga: AsyncSaga;
     const testFile = 'test.file';
-    const testFileId = uuid(0);
     const testFileContents = '# test file contents';
     const testError = new Error('test error');
 
@@ -179,11 +167,11 @@ describe('handleExplorerExportFile', () => {
 
         saga.put(explorerExportFile(testFile));
 
-        await expect(saga.take()).resolves.toEqual(fileStorageOpenFile(testFile));
+        await expect(saga.take()).resolves.toEqual(fileStorageReadFile(testFile));
     });
 
     it('should fail if file does not exist', async () => {
-        saga.put(fileStorageDidFailToOpenFile(testFile, testError));
+        saga.put(fileStorageDidFailToReadFile(testFile, testError));
 
         await expect(saga.take()).resolves.toEqual(
             explorerDidFailToExportFile(testFile, testError),
@@ -191,41 +179,25 @@ describe('handleExplorerExportFile', () => {
     });
 
     describe('should read file', () => {
-        beforeEach(async () => {
-            saga.put(fileStorageDidOpenFile(testFile, testFileId));
+        it('should export file', async () => {
+            // NB: resolved value doesn't matter since it is not used
+            jest.spyOn(browserFsAccess, 'fileSave').mockResolvedValue(null);
 
-            await expect(saga.take()).resolves.toEqual(fileStorageReadFile(testFileId));
+            saga.put(fileStorageDidReadFile(testFile, testFileContents));
+
+            await expect(saga.take()).resolves.toEqual(explorerDidExportFile(testFile));
+
+            expect(browserFsAccess.fileSave).toHaveBeenCalled();
         });
 
-        it('should catch read error', async () => {
-            saga.put(fileStorageDidFailToReadFile(testFileId, testError));
+        it('should catch error', async () => {
+            jest.spyOn(browserFsAccess, 'fileSave').mockRejectedValue(testError);
+
+            saga.put(fileStorageDidReadFile(testFile, testFileContents));
 
             await expect(saga.take()).resolves.toEqual(
                 explorerDidFailToExportFile(testFile, testError),
             );
-        });
-
-        describe('should read file', () => {
-            it('should export file', async () => {
-                jest.spyOn(browserFsAccess, 'fileSave').mockResolvedValue(null);
-
-                saga.put(fileStorageDidReadFile(testFileId, testFileContents));
-
-                await expect(saga.take()).resolves.toEqual(
-                    explorerDidExportFile('test.file'),
-                );
-                expect(browserFsAccess.fileSave).toHaveBeenCalled();
-            });
-
-            it('should catch error', async () => {
-                jest.spyOn(browserFsAccess, 'fileSave').mockRejectedValue(testError);
-
-                saga.put(fileStorageDidReadFile(testFileId, testFileContents));
-
-                await expect(saga.take()).resolves.toEqual(
-                    explorerDidFailToExportFile('test.file', testError),
-                );
-            });
         });
     });
 

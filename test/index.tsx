@@ -52,7 +52,7 @@ export class AsyncSaga {
             // if there are no dispatches queued, then queue the taker to be
             // completed later
             return new Promise((resolve, reject) => {
-                const timeout = setTimeout(reject, 500, new Error('timed out'));
+                const timeout = setTimeout(reject, 1000, new Error('timed out'));
 
                 this.takers.push({
                     put: (a: AnyAction): void => {

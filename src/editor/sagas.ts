@@ -14,16 +14,12 @@ import {
     takeEvery,
 } from 'typed-redux-saga/macro';
 import {
-    fileStorageDidFailToOpenFile,
     fileStorageDidFailToReadFile,
     fileStorageDidInitialize,
-    fileStorageDidOpenFile,
     fileStorageDidReadFile,
-    fileStorageOpenFile,
     fileStorageReadFile,
 } from '../fileStorage/actions';
 import { RootState } from '../reducers';
-import { defined } from '../utils';
 import {
     editorDidCreate,
     editorGetValueRequest,
@@ -73,31 +69,18 @@ function* handleDidCreateEditor(editor: monaco.editor.ICodeEditor): Generator {
     // then we can load the most recently used file
     // REVISIT: should this be here or elsewhere?
 
-    yield* put(fileStorageOpenFile('main.py'));
+    yield* put(fileStorageReadFile('main.py'));
 
-    const didOpen = yield* race({
-        succeeded: take(fileStorageDidOpenFile.when((a) => a.path === 'main.py')),
-        failed: take(fileStorageDidFailToOpenFile.when((a) => a.path === 'main.py')),
+    const { didRead } = yield* race({
+        didRead: take(fileStorageDidReadFile.when((a) => a.path === 'main.py')),
+        didFailToRead: take(
+            fileStorageDidFailToReadFile.when((a) => a.path === 'main.py'),
+        ),
     });
 
     // TODO: what to do in case of failure?
-    if (didOpen.succeeded) {
-        defined(didOpen.succeeded);
-
-        const { id } = didOpen.succeeded;
-
-        yield* put(fileStorageReadFile(id));
-
-        const didRead = yield* race({
-            succeeded: take(fileStorageDidReadFile.when((a) => a.id === id)),
-            failed: take(fileStorageDidFailToReadFile.when((a) => a.id === id)),
-        });
-
-        // TODO: what to do in case of failure?
-        if (didRead.succeeded) {
-            const { contents } = didRead.succeeded;
-            editor.setValue(contents);
-        }
+    if (didRead) {
+        editor.setValue(didRead.contents);
     }
 
     yield* takeEvery(editorGetValueRequest, handleEditorGetValueRequest, editor);

@@ -6,7 +6,9 @@
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom/extend-expect';
+import 'navigator.locks';
 import crypto from 'crypto';
+import { inspect } from 'util';
 import {
     KeyCodes,
     Modifiers,
@@ -76,3 +78,15 @@ document.addEventListener('keyup', addWhichToKeyboardEvent);
 Object.defineProperty(global.self, 'crypto', {
     value: crypto.webcrypto,
 });
+
+// https://github.com/facebook/jest/issues/11698
+function fail(reason: unknown): never {
+    if (typeof reason === 'string') {
+        throw new Error(reason);
+    }
+    throw new Error(inspect(reason));
+}
+
+if (global.fail === undefined) {
+    global.fail = fail;
+}

@@ -12,34 +12,45 @@ import {
 import 'dexie-observable';
 import JSZip from 'jszip';
 import { eventChannel } from 'redux-saga';
-import { call, fork, put, take, takeEvery } from 'typed-redux-saga/macro';
-import { ensureError, timestamp } from '../utils';
+import { call, fork, put, race, take, takeEvery } from 'typed-redux-saga/macro';
+import { defined, ensureError, timestamp } from '../utils';
 import { sha256Digest } from '../utils/crypto';
+import { createCountFunc } from '../utils/iter';
 import {
+    FD,
     FileMetadata,
+    FileOpenMode,
     UUID,
     fileStorageArchiveAllFiles,
+    fileStorageClose,
     fileStorageDeleteFile,
     fileStorageDidAddItem,
     fileStorageDidArchiveAllFiles,
     fileStorageDidChangeItem,
+    fileStorageDidClose,
     fileStorageDidDeleteFile,
     fileStorageDidFailToArchiveAllFiles,
     fileStorageDidFailToDeleteFile,
     fileStorageDidFailToInitialize,
-    fileStorageDidFailToOpenFile,
+    fileStorageDidFailToOpen,
+    fileStorageDidFailToRead,
     fileStorageDidFailToReadFile,
     fileStorageDidFailToRenameFile,
+    fileStorageDidFailToWrite,
     fileStorageDidFailToWriteFile,
     fileStorageDidInitialize,
-    fileStorageDidOpenFile,
+    fileStorageDidOpen,
+    fileStorageDidRead,
     fileStorageDidReadFile,
     fileStorageDidRemoveItem,
     fileStorageDidRenameFile,
+    fileStorageDidWrite,
     fileStorageDidWriteFile,
-    fileStorageOpenFile,
+    fileStorageOpen,
+    fileStorageRead,
     fileStorageReadFile,
     fileStorageRenameFile,
+    fileStorageWrite,
     fileStorageWriteFile,
 } from './actions';
 
@@ -104,6 +115,9 @@ type FileContents = {
     contents: string;
 };
 
+/** Map for keeping track of open file descriptors. */
+type OpenFdMap = Map<FD, { mode: FileOpenMode; uuid: UUID }>;
+
 class FileStorageDb extends Dexie {
     metadata!: Table<FileMetadata, UUID>;
     // NB: This table starts with an underscore to hide it from Dexie observable.
@@ -119,6 +133,13 @@ class FileStorageDb extends Dexie {
             _contents: 'path, contents',
         });
     }
+}
+
+/**
+ * Creates a namespaced lock name for the given path.
+ */
+function lockNameForPath(path: string): string {
+    return `pybricks.fileStorage:${path}`;
 }
 
 /**
@@ -146,61 +167,161 @@ function* handleFileStorageDidChange(changes: IDatabaseChange[]): Generator {
 /**
  * Handles requests to open a file.
  * @param db The database instance.
+ * @param nextFd Function to get the next file descriptor.
+ * @param openFds Map of open file descriptors.
  * @param action The requested action.
  */
-function* handleOpenFile(
+function* handleOpen(
     db: FileStorageDb,
-    action: ReturnType<typeof fileStorageOpenFile>,
+    nextFd: () => FD,
+    openFds: OpenFdMap,
+    action: ReturnType<typeof fileStorageOpen>,
 ): Generator {
     try {
-        // NB: can't await non-db functions inside of transaction, so we have
-        // to do this before even if it is not used
-        const contents = '';
-        const sha256 = yield* call(() => sha256Digest(contents));
+        const fd = nextFd();
+        let lockWaiter: Promise<void>;
 
-        const uuid = yield* call(() =>
-            db.transaction('rw', db.metadata, db._contents, async () => {
-                const metadata = await db.metadata
-                    .where('path')
-                    .equals(action.path)
-                    .first();
+        const close = yield* call(
+            () =>
+                new Promise<(() => void) | void>((resolve, reject) => {
+                    lockWaiter = navigator.locks
+                        .request(
+                            lockNameForPath(action.path),
+                            {
+                                ifAvailable: true,
+                                mode: action.mode === 'w' ? 'exclusive' : 'shared',
+                            },
+                            (lock) => {
+                                if (lock === null) {
+                                    resolve();
+                                    return;
+                                }
 
-                // if the file exists, return the existing uuid
-                if (metadata) {
-                    return metadata.uuid;
-                }
-
-                // otherwise create a new empty file
-                const key = await db.metadata.add((<Omit<FileMetadata, 'uuid'>>{
-                    path: action.path,
-                    sha256,
-                }) as FileMetadata);
-
-                await db._contents.put({ path: action.path, contents });
-
-                return key;
-            }),
+                                // capture a promise new resolve function that will be used
+                                // to release the lock later
+                                return new Promise<void>((resolve2) =>
+                                    resolve(resolve2),
+                                );
+                            },
+                        )
+                        .catch(reject);
+                }),
         );
-        yield* put(fileStorageDidOpenFile(action.path, uuid));
+
+        if (!close) {
+            throw new Error(`file '${action.path}' is already in use`);
+        }
+
+        let isCloseExplicitlyRequested = false;
+
+        try {
+            // NB: can't await non-db functions inside of transaction, so we have
+            // to do this before even if it is not used
+            const contents = '';
+            const sha256 = yield* call(() => sha256Digest(contents));
+
+            const uuid = yield* call(() =>
+                db.transaction('rw', db.metadata, db._contents, async () => {
+                    const metadata = await db.metadata
+                        .where('path')
+                        .equals(action.path)
+                        .first();
+
+                    // if the file exists, return the existing uuid
+                    if (metadata) {
+                        return metadata.uuid;
+                    }
+
+                    // if reading, do not create a new file
+                    if (action.mode === 'r') {
+                        return;
+                    }
+
+                    // otherwise create a new empty file for writing
+                    const key = await db.metadata.add((<Omit<FileMetadata, 'uuid'>>{
+                        path: action.path,
+                        sha256,
+                    }) as FileMetadata);
+
+                    await db._contents.put({ path: action.path, contents });
+
+                    return key;
+                }),
+            );
+
+            // uuid will be undefined if we attempted to open for reading
+            // and the file does not exist
+            if (!uuid) {
+                throw new Error(`file '${action.path}' does not exist`);
+            }
+
+            openFds.set(fd, { mode: action.mode, uuid });
+
+            yield* put(fileStorageDidOpen(action.path, fd));
+
+            yield* take(fileStorageClose.when((a) => a.fd === fd));
+
+            isCloseExplicitlyRequested = true;
+        } finally {
+            openFds.delete(fd);
+            close();
+
+            // this ensures that the lock is released before we send the action
+            yield* call(() => lockWaiter);
+
+            // Post fileStorageDidClose only if fileStorageClose was received.
+            // If the task is canceled or fails, we don't want this extra action.
+            if (isCloseExplicitlyRequested) {
+                yield* put(fileStorageDidClose(fd));
+            }
+        }
     } catch (err) {
-        yield* put(fileStorageDidFailToOpenFile(action.path, ensureError(err)));
+        yield* put(fileStorageDidFailToOpen(action.path, ensureError(err)));
     }
+}
+
+/**
+ * Handles requests to close a file.
+ * @param openFds The map of open file descriptors.
+ * @param action The action that triggered this handler.
+ */
+function* handleClose(
+    openFds: OpenFdMap,
+    action: ReturnType<typeof fileStorageClose>,
+): Generator {
+    if (openFds.has(action.fd)) {
+        // handleOpenFile handles closing open files so there is nothing to do here.
+        return;
+    }
+
+    // Close was called more than once, which is allowed, so respond to avoid
+    // blocking while waiting for response.
+    yield* put(fileStorageDidClose(action.fd));
 }
 
 /**
  * Handles requests to read a file.
  * @param db The database instance.
+ * @param openFds Map of open file descriptors.
  * @param action The requested action.
  */
-function* handleReadFile(
+function* handleRead(
     db: FileStorageDb,
-    action: ReturnType<typeof fileStorageReadFile>,
+    openFds: OpenFdMap,
+    action: ReturnType<typeof fileStorageRead>,
 ): Generator {
     try {
+        const fdInfo = openFds.get(action.fd);
+
+        if (!fdInfo) {
+            throw new Error(`file descriptor ${action.fd} is not open`);
+        }
+
         const file = yield* call(() =>
             db.transaction('r', db.metadata, db._contents, async () => {
-                const metadata = await db.metadata.get(action.id);
+                const metadata = await db.metadata.get(fdInfo.uuid);
 
+                // istanbul ignore if: file locks should prevent this from happening
                 if (!metadata) {
                     return undefined;
                 }
@@ -209,34 +330,48 @@ function* handleReadFile(
             }),
         );
 
+        // istanbul ignore if: file locks should prevent this from happening
         if (!file) {
             throw new Error('file does not exist');
         }
 
-        yield* put(fileStorageDidReadFile(action.id, file.contents));
+        yield* put(fileStorageDidRead(action.fd, file.contents));
     } catch (err) {
-        yield* put(fileStorageDidFailToReadFile(action.id, ensureError(err)));
+        yield* put(fileStorageDidFailToRead(action.fd, ensureError(err)));
     }
 }
 
 /**
  * Saves the file contents to storage.
  * @param db The database instance.
+ * @param openFds Map of open file descriptors.
  * @param action The action that triggered this saga.
  */
-function* handleWriteFile(
+function* handleWrite(
     db: FileStorageDb,
-    action: ReturnType<typeof fileStorageWriteFile>,
+    openFds: OpenFdMap,
+    action: ReturnType<typeof fileStorageWrite>,
 ) {
     try {
+        const fdInfo = openFds.get(action.fd);
+
+        if (!fdInfo) {
+            throw new Error(`file descriptor ${action.fd} is not open`);
+        }
+
+        if (fdInfo.mode !== 'w') {
+            throw new Error(`file descriptor ${action.fd} is not open for writing`);
+        }
+
         const sha256 = yield* call(() => sha256Digest(action.contents));
 
         yield* call(() =>
             db.transaction('rw', db.metadata, db._contents, async () => {
-                const metadata = await db.metadata.get(action.id);
+                const metadata = await db.metadata.get(fdInfo.uuid);
 
+                // istanbul ignore if: file locks should prevent this from happening
                 if (!metadata) {
-                    throw new Error(`file handle '${action.id}' does not exist`);
+                    throw new Error(`file handle '${fdInfo.uuid}' does not exist`);
                 }
 
                 await db.metadata.put({ ...metadata, sha256 });
@@ -246,9 +381,105 @@ function* handleWriteFile(
                 });
             }),
         );
-        yield* put(fileStorageDidWriteFile(action.id));
+        yield* put(fileStorageDidWrite(action.fd));
     } catch (err) {
-        yield* put(fileStorageDidFailToWriteFile(action.id, ensureError(err)));
+        yield* put(fileStorageDidFailToWrite(action.fd, ensureError(err)));
+    }
+}
+
+/**
+ * Handle open, read, close action.
+ * @param action The action that triggered this saga.
+ */
+function* handleReadFile(action: ReturnType<typeof fileStorageReadFile>): Generator {
+    try {
+        yield* put(fileStorageOpen(action.path, 'r'));
+
+        const { didOpen, didFailToOpen } = yield* race({
+            didOpen: take(fileStorageDidOpen.when((a) => a.path === action.path)),
+            didFailToOpen: take(
+                fileStorageDidFailToOpen.when((a) => a.path === action.path),
+            ),
+        });
+
+        if (didFailToOpen) {
+            throw didFailToOpen.error;
+        }
+
+        defined(didOpen);
+
+        let contents: string;
+
+        try {
+            yield* put(fileStorageRead(didOpen.fd));
+
+            const { didRead, didFailToRead } = yield* race({
+                didRead: take(fileStorageDidRead.when((a) => a.fd === didOpen.fd)),
+                didFailToRead: take(
+                    fileStorageDidFailToRead.when((a) => a.fd === didOpen.fd),
+                ),
+            });
+
+            if (didFailToRead) {
+                throw didFailToRead.error;
+            }
+
+            defined(didRead);
+
+            contents = didRead.contents;
+        } finally {
+            yield* put(fileStorageClose(didOpen.fd));
+            yield* take(fileStorageDidClose.when((a) => a.fd === didOpen.fd));
+        }
+
+        yield* put(fileStorageDidReadFile(action.path, contents));
+    } catch (err) {
+        yield* put(fileStorageDidFailToReadFile(action.path, ensureError(err)));
+    }
+}
+
+/**
+ * Handle open, write, close action.
+ * @param action The action that triggered this saga.
+ */
+function* handleWriteFile(action: ReturnType<typeof fileStorageWriteFile>): Generator {
+    try {
+        yield* put(fileStorageOpen(action.path, 'w'));
+
+        const { didOpen, didFailToOpen } = yield* race({
+            didOpen: take(fileStorageDidOpen.when((a) => a.path === action.path)),
+            didFailToOpen: take(
+                fileStorageDidFailToOpen.when((a) => a.path === action.path),
+            ),
+        });
+
+        if (didFailToOpen) {
+            throw didFailToOpen.error;
+        }
+
+        defined(didOpen);
+
+        try {
+            yield* put(fileStorageWrite(didOpen.fd, action.contents));
+
+            const { didFailToWrite } = yield* race({
+                didWrite: take(fileStorageDidWrite.when((a) => a.fd === didOpen.fd)),
+                didFailToWrite: take(
+                    fileStorageDidFailToWrite.when((a) => a.fd === didOpen.fd),
+                ),
+            });
+
+            if (didFailToWrite) {
+                throw didFailToWrite.error;
+            }
+        } finally {
+            yield* put(fileStorageClose(didOpen.fd));
+            yield* take(fileStorageDidClose.when((a) => a.fd === didOpen.fd));
+        }
+
+        yield* put(fileStorageDidWriteFile(action.path));
+    } catch (err) {
+        yield* put(fileStorageDidFailToWriteFile(action.path, ensureError(err)));
     }
 }
 
@@ -263,23 +494,34 @@ function* handleDeleteFile(
 ) {
     try {
         yield* call(() =>
-            db.transaction('rw', db.metadata, db._contents, async () => {
-                const metadata = await db.metadata
-                    .where('path')
-                    .equals(action.fileName)
-                    .first();
+            navigator.locks.request(
+                lockNameForPath(action.path),
+                { ifAvailable: true },
+                async (lock) => {
+                    if (lock === null) {
+                        throw new Error(`file '${action.path}' is in use`);
+                    }
 
-                if (!metadata) {
-                    throw new Error(`file '${action.fileName}' does not exist`);
-                }
+                    await db.transaction('rw', db.metadata, db._contents, async () => {
+                        const metadata = await db.metadata
+                            .where('path')
+                            .equals(action.path)
+                            .first();
 
-                await db.metadata.delete(metadata.uuid);
-                await db._contents.delete(metadata.path);
-            }),
+                        if (!metadata) {
+                            throw new Error(`file '${action.path}' does not exist`);
+                        }
+
+                        await db.metadata.delete(metadata.uuid);
+                        await db._contents.delete(metadata.path);
+                    });
+                },
+            ),
         );
-        yield* put(fileStorageDidDeleteFile(action.fileName));
+
+        yield* put(fileStorageDidDeleteFile(action.path));
     } catch (err) {
-        yield* put(fileStorageDidFailToDeleteFile(action.fileName, ensureError(err)));
+        yield* put(fileStorageDidFailToDeleteFile(action.path, ensureError(err)));
     }
 }
 
@@ -294,42 +536,82 @@ function* handleRenameFile(
 ) {
     try {
         yield* call(() =>
-            db.transaction('rw', db.metadata, db._contents, async () => {
-                const metadata = await db.metadata
-                    .where('path')
-                    .equals(action.fileName)
-                    .first();
+            navigator.locks.request(
+                lockNameForPath(action.path),
+                { ifAvailable: true },
+                async (lock) => {
+                    if (lock === null) {
+                        throw new Error(`file '${action.path}' is in use`);
+                    }
 
-                if (!metadata) {
-                    throw new Error(`file '${action.fileName}' does not exist`);
-                }
+                    await navigator.locks.request(
+                        lockNameForPath(action.newPath),
+                        { ifAvailable: true },
+                        async (lock2) => {
+                            if (lock2 === null) {
+                                throw new Error(
+                                    `file '${action.newPath}' already exists`,
+                                );
+                            }
 
-                const oldName = metadata.path;
+                            await db.transaction(
+                                'rw',
+                                db.metadata,
+                                db._contents,
+                                async () => {
+                                    const metadata = await db.metadata
+                                        .where('path')
+                                        .equals(action.path)
+                                        .first();
 
-                const oldFile = await db._contents.get(oldName);
+                                    if (!metadata) {
+                                        throw new Error(
+                                            `file '${action.path}' does not exist`,
+                                        );
+                                    }
 
-                if (!oldFile) {
-                    throw new Error(`file '${oldName}' does not exist in storage`);
-                }
+                                    const oldName = metadata.path;
 
-                const newFile = await db._contents.get(action.newName);
+                                    const oldFile = await db._contents.get(oldName);
 
-                if (newFile) {
-                    throw new Error(
-                        `cannot rename: file '${action.newName}' already exists`,
+                                    // istanbul ignore if: file locks should prevent this from happening
+                                    if (!oldFile) {
+                                        throw new Error(
+                                            `file '${oldName}' does not exist in storage`,
+                                        );
+                                    }
+
+                                    const newFile = await db._contents.get(
+                                        action.newPath,
+                                    );
+
+                                    if (newFile) {
+                                        throw new Error(
+                                            `file '${action.newPath}' already exists`,
+                                        );
+                                    }
+
+                                    await db._contents.delete(oldName);
+                                    await db._contents.add({
+                                        ...oldFile,
+                                        path: action.newPath,
+                                    });
+
+                                    await db.metadata.put({
+                                        ...metadata,
+                                        path: action.newPath,
+                                    });
+                                },
+                            );
+                        },
                     );
-                }
-
-                await db._contents.delete(oldName);
-                await db._contents.add({ ...oldFile, path: action.newName });
-
-                await db.metadata.put({ ...metadata, path: action.newName });
-            }),
+                },
+            ),
         );
 
-        yield* put(fileStorageDidRenameFile(action.fileName));
+        yield* put(fileStorageDidRenameFile(action.path));
     } catch (err) {
-        yield* put(fileStorageDidFailToRenameFile(action.fileName, ensureError(err)));
+        yield* put(fileStorageDidFailToRenameFile(action.path, ensureError(err)));
     }
 }
 
@@ -407,10 +689,16 @@ function* initialize(): Generator {
 
         // subscribe to events
 
+        const nextFd = createCountFunc() as () => FD;
+        const openFds: OpenFdMap = new Map();
+
         yield* takeEvery(changesChan, handleFileStorageDidChange);
-        yield* takeEvery(fileStorageOpenFile, handleOpenFile, db);
-        yield* takeEvery(fileStorageReadFile, handleReadFile, db);
-        yield* takeEvery(fileStorageWriteFile, handleWriteFile, db);
+        yield* takeEvery(fileStorageOpen, handleOpen, db, nextFd, openFds);
+        yield* takeEvery(fileStorageClose, handleClose, openFds);
+        yield* takeEvery(fileStorageRead, handleRead, db, openFds);
+        yield* takeEvery(fileStorageWrite, handleWrite, db, openFds);
+        yield* takeEvery(fileStorageReadFile, handleReadFile);
+        yield* takeEvery(fileStorageWriteFile, handleWriteFile);
         yield* takeEvery(fileStorageDeleteFile, handleDeleteFile, db);
         yield* takeEvery(fileStorageRenameFile, handleRenameFile, db);
         yield* takeEvery(fileStorageArchiveAllFiles, handleArchiveAllFiles, db);

@@ -2123,6 +2123,7 @@ __metadata:
     "@types/redux-logger": ^3.0.9
     "@types/semver": ^7.3.9
     "@types/web-bluetooth": ^0.0.13
+    "@types/web-locks-api": ^0.0.2
     "@types/wicg-file-system-access": ^2020.9.5
     "@types/zen-push": ^0.1.1
     "@typescript-eslint/eslint-plugin": ^4.33.0
@@ -2149,6 +2150,7 @@ __metadata:
     monaco-editor-webpack-plugin: ^6.0.0
     monaco-themes: ^0.4.0
     mq-polyfill: 1.1.8
+    navigator.locks: 0.8.1
     node-sass: ^6.0.1
     prettier: ^2.5.1
     prop-types: ^15.8.1
@@ -2992,6 +2994,13 @@ __metadata:
   version: 0.0.13
   resolution: "@types/web-bluetooth@npm:0.0.13"
   checksum: b1cbd7f5caeb836753ad0043bc2dab6aa307d0f9b41990cb2a434c7adc76348cd104f1ebcecead410e8190072ee4b819f010e2033d1dfb996a48b10559c71c54
+  languageName: node
+  linkType: hard
+
+"@types/web-locks-api@npm:^0.0.2":
+  version: 0.0.2
+  resolution: "@types/web-locks-api@npm:0.0.2"
+  checksum: 36d8e6378f4b48143fb8ac829ebd0f071782b0a2f7db98babddfbe05a82d8332a123c88599100aceebbbb2cdf512e67ed3f2c188f8b70f38000f9563f366f298
   languageName: node
   linkType: hard
 
@@ -11397,6 +11406,20 @@ __metadata:
   version: 1.4.0
   resolution: "natural-compare@npm:1.4.0"
   checksum: 23ad088b08f898fc9b53011d7bb78ec48e79de7627e01ab5518e806033861bef68d5b0cd0e2205c2f36690ac9571ff6bcb05eb777ced2eeda8d4ac5b44592c3d
+  languageName: node
+  linkType: hard
+
+"navigator.locks@npm:0.8.1":
+  version: 0.8.1
+  resolution: "navigator.locks@npm:0.8.1"
+  checksum: 15438f3500839f91fb9fb516e35436263847182a9bf593581a5aa0f50f744b0b62957d5cf54556f733692318dd9f774ca99a40e7babe7fef2b436b8ef82fb9ca
+  languageName: node
+  linkType: hard
+
+"navigator.locks@patch:navigator.locks@npm:0.8.1#.yarn/patches/navigator.locks-npm-0.8.1-e8530a2d4f.patch::locator=%40pybricks%2Fpybricks-code%40workspace%3A.":
+  version: 0.8.1
+  resolution: "navigator.locks@patch:navigator.locks@npm%3A0.8.1#.yarn/patches/navigator.locks-npm-0.8.1-e8530a2d4f.patch::version=0.8.1&hash=cb7184&locator=%40pybricks%2Fpybricks-code%40workspace%3A."
+  checksum: a4ce9fa068d07874234f11849dccc4bc265ce9baa468aea29a3734bc672be893cd6e9d1c91320b898fbe011d0c3ce8d55fb7af8ed4295f9d67feda65697f2bbe
   languageName: node
   linkType: hard
 
