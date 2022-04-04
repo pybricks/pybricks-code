@@ -18,13 +18,13 @@ import {
 } from '../ble/actions';
 import {
     explorerDeleteFile,
+    explorerDidFailToArchiveAllFiles,
     explorerDidFailToCreateNewFile,
     explorerDidFailToExportFile,
     explorerDidFailToImportFiles,
 } from '../explorer/actions';
 import {
     fileStorageDeleteFile,
-    fileStorageDidFailToArchiveAllFiles,
     fileStorageDidFailToInitialize,
     fileStorageDidRemoveItem,
 } from '../fileStorage/actions';
@@ -112,7 +112,7 @@ test.each([
     appDidCheckForUpdate(false),
     bleDIServiceDidReceiveFirmwareRevision('3.0.0'),
     fileStorageDidFailToInitialize(new Error('test error')),
-    fileStorageDidFailToArchiveAllFiles(new Error('test error')),
+    explorerDidFailToArchiveAllFiles(new Error('test error')),
     explorerDidFailToImportFiles(new Error('test error')),
     explorerDidFailToCreateNewFile(new Error('test error')),
     explorerDidFailToExportFile('test.file', new Error('test error')),
@@ -135,7 +135,7 @@ test.each([
     serviceWorkerDidSucceed(),
     appDidCheckForUpdate(true),
     bleDIServiceDidReceiveFirmwareRevision(firmwareVersion),
-    fileStorageDidFailToArchiveAllFiles(new DOMException('test message', 'AbortError')),
+    explorerDidFailToArchiveAllFiles(new DOMException('test message', 'AbortError')),
     explorerDidFailToImportFiles(new DOMException('test message', 'AbortError')),
     explorerDidFailToExportFile(
         'test.file',

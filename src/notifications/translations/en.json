@@ -21,11 +21,11 @@
         },
         "failedToImportFiles": "Failed to import file(s).",
         "failedToCreate": "Failed to create file.",
-        "failedToExport": "Failed to export file."
+        "failedToExport": "Failed to export file.",
+        "failedToArchive": "Failed to archive files.'"
     },
     "fileStorage": {
-        "failedToInitialize": "Failed to initial file storage. Changes will not be automatically saved.",
-        "failedToArchive": "Failed to archive files.'"
+        "failedToInitialize": "Failed to initial file storage. Changes will not be automatically saved."
     },
     "flashFirmware": {
         "timedOut": "The hub took too long to respond. Restart the hub and try again.",

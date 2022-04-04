@@ -2,6 +2,7 @@
 // Copyright (c) 2022 The Pybricks Authors
 
 import { fileOpen, fileSave } from 'browser-fs-access';
+import JSZip from 'jszip';
 import {
     call,
     put,
@@ -13,12 +14,15 @@ import {
 } from 'typed-redux-saga/macro';
 import { getPybricksMicroPythonFileTemplate } from '../editor/pybricksMicroPython';
 import {
+    fileStorageDidDumpAllFiles,
+    fileStorageDidFailToDumpAllFiles,
     fileStorageDidFailToReadFile,
     fileStorageDidFailToRenameFile,
     fileStorageDidFailToWriteFile,
     fileStorageDidReadFile,
     fileStorageDidRenameFile,
     fileStorageDidWriteFile,
+    fileStorageDumpAllFiles,
     fileStorageReadFile,
     fileStorageRenameFile,
     fileStorageWriteFile,
@@ -31,11 +35,14 @@ import {
     validateFileName,
 } from '../pybricksMicropython/lib';
 import { RootState } from '../reducers';
-import { defined, ensureError } from '../utils';
+import { defined, ensureError, timestamp } from '../utils';
 import {
+    explorerArchiveAllFiles,
     explorerCreateNewFile,
+    explorerDidArchiveAllFiles,
     explorerDidCreateNewFile,
     explorerDidExportFile,
+    explorerDidFailToArchiveAllFiles,
     explorerDidFailToCreateNewFile,
     explorerDidFailToExportFile,
     explorerDidFailToImportFiles,
@@ -51,6 +58,48 @@ import {
     renameFileDialogDidCancel,
     renameFileDialogShow,
 } from './renameFileDialog/actions';
+
+function* handleExplorerArchiveAllFiles(): Generator {
+    try {
+        yield* put(fileStorageDumpAllFiles());
+
+        const { didDump, didFailToDump } = yield* race({
+            didDump: take(fileStorageDidDumpAllFiles),
+            didFailToDump: take(fileStorageDidFailToDumpAllFiles),
+        });
+
+        if (didFailToDump) {
+            throw didFailToDump.error;
+        }
+
+        defined(didDump);
+
+        const zip = new JSZip();
+
+        for (const f of didDump.files) {
+            yield* call(() => zip.file(f.path, f.contents));
+        }
+
+        const zipData = yield* call(() => zip.generateAsync({ type: 'blob' }));
+
+        const fileName = `pybricks-backup-${timestamp()}.zip`;
+
+        yield* call(() =>
+            fileSave(zipData, {
+                id: 'pybricksCodeFileStorageArchive',
+                fileName,
+                extensions: ['.zip'],
+                mimeTypes: ['application/zip'],
+                // TODO: translate description
+                description: 'Zip Files',
+            }),
+        );
+
+        yield* put(explorerDidArchiveAllFiles());
+    } catch (err) {
+        yield* put(explorerDidFailToArchiveAllFiles(ensureError(err)));
+    }
+}
 
 function* handleExplorerImportFiles(): Generator {
     try {
@@ -221,6 +270,7 @@ function* handleExplorerExportFile(
 }
 
 export default function* (): Generator {
+    yield* takeEvery(explorerArchiveAllFiles, handleExplorerArchiveAllFiles);
     yield* takeEvery(explorerImportFiles, handleExplorerImportFiles);
     yield* takeEvery(explorerCreateNewFile, handleExplorerCreateNewFile);
     // takeLatest should ensure that if we trigger a new rename before the

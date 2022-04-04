@@ -19,13 +19,13 @@ import {
 } from '../ble/actions';
 import {
     explorerDeleteFile,
+    explorerDidFailToArchiveAllFiles,
     explorerDidFailToCreateNewFile,
     explorerDidFailToExportFile,
     explorerDidFailToImportFiles,
 } from '../explorer/actions';
 import {
     fileStorageDeleteFile,
-    fileStorageDidFailToArchiveAllFiles,
     fileStorageDidFailToInitialize,
     fileStorageDidRemoveItem,
 } from '../fileStorage/actions';
@@ -388,14 +388,14 @@ function* showFileStorageFailToInitialize(
 }
 
 function* showFileStorageFailToArchive(
-    action: ReturnType<typeof fileStorageDidFailToArchiveAllFiles>,
+    action: ReturnType<typeof explorerDidFailToArchiveAllFiles>,
 ): Generator {
     if (action.error.name === 'AbortError') {
         // user clicked cancel button - not an error
         return;
     }
 
-    yield* showUnexpectedError(I18nId.FileStorageFailedToArchive, action.error);
+    yield* showUnexpectedError(I18nId.ExplorerFailedToArchive, action.error);
 }
 
 function* showDeleteFileWarning(action: ReturnType<typeof explorerDeleteFile>) {
@@ -472,7 +472,7 @@ export default function* (): Generator {
     yield* takeEvery(appDidCheckForUpdate, showNoUpdateInfo);
     yield* takeEvery(bleDIServiceDidReceiveFirmwareRevision, checkVersion);
     yield* takeEvery(fileStorageDidFailToInitialize, showFileStorageFailToInitialize);
-    yield* takeEvery(fileStorageDidFailToArchiveAllFiles, showFileStorageFailToArchive);
+    yield* takeEvery(explorerDidFailToArchiveAllFiles, showFileStorageFailToArchive);
     yield* takeEvery(explorerDeleteFile, showDeleteFileWarning);
     yield* takeEvery(explorerDidFailToImportFiles, showExplorerFailToImportFiles);
     yield* takeEvery(explorerDidFailToCreateNewFile, showExplorerFailToCreateFile);

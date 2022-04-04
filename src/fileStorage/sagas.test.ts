@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2022 The Pybricks Authors
 
-import * as browserFsAccess from 'browser-fs-access';
 import 'fake-indexeddb/auto';
 import Dexie from 'dexie';
 import 'dexie-observable';
@@ -11,16 +10,15 @@ import {
     FD,
     FileMetadata,
     FileOpenMode,
-    fileStorageArchiveAllFiles,
     fileStorageClose,
     fileStorageDeleteFile,
     fileStorageDidAddItem,
-    fileStorageDidArchiveAllFiles,
     fileStorageDidChangeItem,
     fileStorageDidClose,
     fileStorageDidDeleteFile,
-    fileStorageDidFailToArchiveAllFiles,
+    fileStorageDidDumpAllFiles,
     fileStorageDidFailToDeleteFile,
+    fileStorageDidFailToDumpAllFiles,
     fileStorageDidFailToInitialize,
     fileStorageDidFailToOpen,
     fileStorageDidFailToRead,
@@ -36,6 +34,7 @@ import {
     fileStorageDidRenameFile,
     fileStorageDidWrite,
     fileStorageDidWriteFile,
+    fileStorageDumpAllFiles,
     fileStorageOpen,
     fileStorageRead,
     fileStorageReadFile,
@@ -44,8 +43,6 @@ import {
     fileStorageWriteFile,
 } from './actions';
 import fileStorage from './sagas';
-
-jest.mock('browser-fs-access');
 
 /** SHA256 hash of '' */
 const emptyFileSha256 =
@@ -700,33 +697,39 @@ describe('renameFile', () => {
     });
 });
 
-describe('archive', () => {
+describe('dump all files', () => {
     let saga: AsyncSaga;
+    let testFile: FileMetadata;
+    let testFileContents: string;
 
     beforeEach(async () => {
         saga = new AsyncSaga(fileStorage);
 
         await expect(saga.take()).resolves.toEqual(fileStorageDidInitialize([]));
-        await setUpTestFile(saga);
+        [testFile, testFileContents] = await setUpTestFile(saga);
     });
 
     it('should archive file', async () => {
-        jest.spyOn(browserFsAccess, 'fileSave');
+        saga.put(fileStorageDumpAllFiles());
 
-        saga.put(fileStorageArchiveAllFiles());
-
-        await expect(saga.take()).resolves.toEqual(fileStorageDidArchiveAllFiles());
-        expect(browserFsAccess.fileSave).toHaveBeenCalled();
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageDidDumpAllFiles([
+                { path: testFile.path, contents: testFileContents },
+            ]),
+        );
     });
 
     it('should catch error', async () => {
         const testError = new Error('test error');
-        jest.spyOn(browserFsAccess, 'fileSave').mockRejectedValue(testError);
 
-        saga.put(fileStorageArchiveAllFiles());
+        jest.spyOn(Dexie.prototype, 'transaction').mockImplementation(() => {
+            throw testError;
+        });
+
+        saga.put(fileStorageDumpAllFiles());
 
         await expect(saga.take()).resolves.toEqual(
-            fileStorageDidFailToArchiveAllFiles(testError),
+            fileStorageDidFailToDumpAllFiles(testError),
         );
     });
 

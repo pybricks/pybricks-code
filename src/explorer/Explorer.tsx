@@ -23,12 +23,12 @@ import {
     useTreeEnvironment,
 } from 'react-complex-tree';
 import { useDispatch } from 'react-redux';
-import { fileStorageArchiveAllFiles } from '../fileStorage/actions';
 import { useSelector } from '../reducers';
 import { isMacOS } from '../utils/os';
 import { preventBrowserNativeContextMenu } from '../utils/react';
 import { TreeItemContext, TreeItemData, renderers } from '../utils/tree-renderer';
 import {
+    explorerArchiveAllFiles,
     explorerDeleteFile,
     explorerExportFile,
     explorerImportFiles,
@@ -141,7 +141,7 @@ const Header: React.VoidFunctionComponent<HeaderProps> = ({ i18n }) => {
                     icon="archive"
                     tooltip={i18n.translate(I18nId.HeaderExportAllTooltip)}
                     disabled={files.length === 0}
-                    onClick={() => dispatch(fileStorageArchiveAllFiles())}
+                    onClick={() => dispatch(explorerArchiveAllFiles())}
                 />
                 <ActionButton
                     // NB: the "export" icon has an arrow pointing up, which is

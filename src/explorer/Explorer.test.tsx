@@ -6,9 +6,10 @@ import { cleanup } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { testRender, uuid } from '../../test';
-import { FileMetadata, fileStorageArchiveAllFiles } from '../fileStorage/actions';
+import { FileMetadata } from '../fileStorage/actions';
 import Explorer from './Explorer';
 import {
+    explorerArchiveAllFiles,
     explorerDeleteFile,
     explorerExportFile,
     explorerImportFiles,
@@ -37,7 +38,7 @@ describe('archive button', () => {
         expect(button).toBeEnabled();
 
         userEvent.click(button);
-        expect(dispatch).toHaveBeenCalledWith(fileStorageArchiveAllFiles());
+        expect(dispatch).toHaveBeenCalledWith(explorerArchiveAllFiles());
     });
 
     it('should be disabled if there are no files', () => {

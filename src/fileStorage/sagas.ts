@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2022 The Pybricks Authors
 
-import { fileSave } from 'browser-fs-access';
 import Dexie, { Table } from 'dexie';
 import {
     ICreateChange,
@@ -10,10 +9,9 @@ import {
     IUpdateChange,
 } from 'dexie-observable/api';
 import 'dexie-observable';
-import JSZip from 'jszip';
 import { eventChannel } from 'redux-saga';
 import { call, fork, put, race, take, takeEvery } from 'typed-redux-saga/macro';
-import { defined, ensureError, timestamp } from '../utils';
+import { defined, ensureError } from '../utils';
 import { sha256Digest } from '../utils/crypto';
 import { createCountFunc } from '../utils/iter';
 import {
@@ -21,16 +19,15 @@ import {
     FileMetadata,
     FileOpenMode,
     UUID,
-    fileStorageArchiveAllFiles,
     fileStorageClose,
     fileStorageDeleteFile,
     fileStorageDidAddItem,
-    fileStorageDidArchiveAllFiles,
     fileStorageDidChangeItem,
     fileStorageDidClose,
     fileStorageDidDeleteFile,
-    fileStorageDidFailToArchiveAllFiles,
+    fileStorageDidDumpAllFiles,
     fileStorageDidFailToDeleteFile,
+    fileStorageDidFailToDumpAllFiles,
     fileStorageDidFailToInitialize,
     fileStorageDidFailToOpen,
     fileStorageDidFailToRead,
@@ -46,6 +43,7 @@ import {
     fileStorageDidRenameFile,
     fileStorageDidWrite,
     fileStorageDidWriteFile,
+    fileStorageDumpAllFiles,
     fileStorageOpen,
     fileStorageRead,
     fileStorageReadFile,
@@ -615,30 +613,23 @@ function* handleRenameFile(
     }
 }
 
-function* handleArchiveAllFiles(db: FileStorageDb): Generator {
+function* handleDumpAllFiles(db: FileStorageDb): Generator {
     try {
-        const zip = new JSZip();
+        const dump = new Array<{ path: string; contents: string }>();
 
-        yield* call(() => db._contents.each((f) => zip.file(f.path, f.contents)));
-
-        const zipData = yield* call(() => zip.generateAsync({ type: 'blob' }));
-
-        const fileName = `pybricks-backup-${timestamp()}.zip`;
+        // REVISIT: consider using dexie-export-import addon if we want to do
+        // a full backup instead of just the file contents
+        // https://www.npmjs.com/package/dexie-export-import
 
         yield* call(() =>
-            fileSave(zipData, {
-                id: 'pybricksCodeFileStorageArchive',
-                fileName,
-                extensions: ['.zip'],
-                mimeTypes: ['application/zip'],
-                // TODO: translate description
-                description: 'Zip Files',
-            }),
+            db.transaction('r', db._contents, () =>
+                db._contents.each((f) => dump.push(f)),
+            ),
         );
 
-        yield* put(fileStorageDidArchiveAllFiles());
+        yield* put(fileStorageDidDumpAllFiles(dump));
     } catch (err) {
-        yield* put(fileStorageDidFailToArchiveAllFiles(ensureError(err)));
+        yield* put(fileStorageDidFailToDumpAllFiles(ensureError(err)));
     }
 }
 
@@ -701,7 +692,7 @@ function* initialize(): Generator {
         yield* takeEvery(fileStorageWriteFile, handleWriteFile);
         yield* takeEvery(fileStorageDeleteFile, handleDeleteFile, db);
         yield* takeEvery(fileStorageRenameFile, handleRenameFile, db);
-        yield* takeEvery(fileStorageArchiveAllFiles, handleArchiveAllFiles, db);
+        yield* takeEvery(fileStorageDumpAllFiles, handleDumpAllFiles, db);
 
         const files = yield* call(() => db.metadata.toArray());
 

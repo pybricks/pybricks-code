@@ -326,24 +326,28 @@ export const fileStorageDidFailToRenameFile = createAction(
 );
 
 /**
- * Request to archive (download) all files in the store.
+ * Requests file storage to dump all file paths and contents currently in storage.
  */
-export const fileStorageArchiveAllFiles = createAction(() => ({
-    type: 'fileStorage.action.archiveAllFiles',
+export const fileStorageDumpAllFiles = createAction(() => ({
+    type: 'fileStorage.action.dumpAllFiles',
 }));
 
 /**
- * Indicates that fileStorageArchiveAllFiles() succeeded.
+ * Indicates that {@link fileStorageDumpAllFiles} succeeded.
+ * @param files: An array of all file paths and contents.
  */
-export const fileStorageDidArchiveAllFiles = createAction(() => ({
-    type: 'fileStorage.action.didArchiveAllFiles',
-}));
+export const fileStorageDidDumpAllFiles = createAction(
+    (files: ReadonlyArray<Readonly<{ path: string; contents: string }>>) => ({
+        type: 'fileStorage.action.didDumpAllFiles',
+        files,
+    }),
+);
 
 /**
- * Indicates that fileStorageArchiveAllFiles() failed.
- * @param error The error that was raised.
+ * Indicates that {@link fileStorageDumpAllFiles} succeeded.
+ * @param error The error.
  */
-export const fileStorageDidFailToArchiveAllFiles = createAction((error: Error) => ({
-    type: 'fileStorage.action.didFailToArchiveAllFiles',
+export const fileStorageDidFailToDumpAllFiles = createAction((error: Error) => ({
+    type: 'fileStorage.action.didFailToDumpAllFiles',
     error,
 }));

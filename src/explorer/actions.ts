@@ -24,6 +24,29 @@ export enum Hub {
 }
 
 /**
+ * Request to archive (download) all files in the store.
+ */
+export const explorerArchiveAllFiles = createAction(() => ({
+    type: 'explorer.action.archiveAllFiles',
+}));
+
+/**
+ * Indicates that {@link explorerArchiveAllFiles} succeeded.
+ */
+export const explorerDidArchiveAllFiles = createAction(() => ({
+    type: 'explorer.action.didArchiveAllFiles',
+}));
+
+/**
+ * Indicates that {@link explorerArchiveAllFiles} failed.
+ * @param error The error that was raised.
+ */
+export const explorerDidFailToArchiveAllFiles = createAction((error: Error) => ({
+    type: 'explorer.action.didFailToArchiveAllFiles',
+    error,
+}));
+
+/**
  * Action that requests to import (upload) files into the app.
  */
 export const explorerImportFiles = createAction(() => ({

@@ -6,11 +6,14 @@ import { FileWithHandle } from 'browser-fs-access';
 import { mock } from 'jest-mock-extended';
 import { AsyncSaga } from '../../test';
 import {
+    fileStorageDidDumpAllFiles,
+    fileStorageDidFailToDumpAllFiles,
     fileStorageDidFailToReadFile,
     fileStorageDidFailToRenameFile,
     fileStorageDidReadFile,
     fileStorageDidRenameFile,
     fileStorageDidWriteFile,
+    fileStorageDumpAllFiles,
     fileStorageReadFile,
     fileStorageRenameFile,
     fileStorageWriteFile,
@@ -18,9 +21,12 @@ import {
 import { pythonFileExtension } from '../pybricksMicropython/lib';
 import {
     Hub,
+    explorerArchiveAllFiles,
     explorerCreateNewFile,
+    explorerDidArchiveAllFiles,
     explorerDidCreateNewFile,
     explorerDidExportFile,
+    explorerDidFailToArchiveAllFiles,
     explorerDidFailToExportFile,
     explorerDidFailToImportFiles,
     explorerDidFailToRenameFile,
@@ -36,6 +42,70 @@ import {
     renameFileDialogShow,
 } from './renameFileDialog/actions';
 import explorer from './sagas';
+
+jest.mock('browser-fs-access');
+
+describe('handleExplorerArchiveAllFiles', () => {
+    let saga: AsyncSaga;
+
+    beforeEach(async () => {
+        saga = new AsyncSaga(explorer);
+    });
+
+    describe('should call into fileStorage', () => {
+        beforeEach(async () => {
+            saga.put(explorerArchiveAllFiles());
+
+            await expect(saga.take()).resolves.toEqual(fileStorageDumpAllFiles());
+        });
+
+        it('should propagate error when fileStorage fails', async () => {
+            const testError = new Error('test error');
+
+            saga.put(fileStorageDidFailToDumpAllFiles(testError));
+
+            await expect(saga.take()).resolves.toEqual(
+                explorerDidFailToArchiveAllFiles(testError),
+            );
+        });
+
+        describe('should continue when fileStorage succeeds', () => {
+            beforeEach(async () => {
+                saga.put(
+                    fileStorageDidDumpAllFiles([
+                        { path: 'test.file', contents: 'test file contents' },
+                    ]),
+                );
+            });
+
+            it('should catch error', async () => {
+                const testError = new Error('test error');
+
+                jest.spyOn(browserFsAccess, 'fileSave').mockImplementation(() => {
+                    throw testError;
+                });
+
+                await expect(saga.take()).resolves.toEqual(
+                    explorerDidFailToArchiveAllFiles(testError),
+                );
+            });
+
+            it('should archive file', async () => {
+                jest.spyOn(browserFsAccess, 'fileSave');
+
+                await expect(saga.take()).resolves.toEqual(
+                    explorerDidArchiveAllFiles(),
+                );
+
+                expect(browserFsAccess.fileSave).toHaveBeenCalled();
+            });
+        });
+    });
+
+    afterEach(async () => {
+        await saga.end();
+    });
+});
 
 describe('handleExplorerImportFiles', () => {
     it('should write file to storage', async () => {
