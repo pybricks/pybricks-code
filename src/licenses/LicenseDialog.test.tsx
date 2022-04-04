@@ -8,9 +8,9 @@ import { testRender } from '../../test';
 import LicenseDialog from './LicenseDialog';
 
 afterEach(() => {
+    jest.restoreAllMocks();
     cleanup();
     localStorage.clear();
-    jest.clearAllMocks();
 });
 
 describe('LicenseDialog', () => {

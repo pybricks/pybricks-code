@@ -16,8 +16,8 @@ import {
 } from './actions';
 
 afterEach(async () => {
+    jest.restoreAllMocks();
     cleanup();
-    jest.clearAllMocks();
     localStorage.clear();
 });
 
