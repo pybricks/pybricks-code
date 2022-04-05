@@ -2150,7 +2150,7 @@ __metadata:
     monaco-editor-webpack-plugin: ^6.0.0
     monaco-themes: ^0.4.0
     mq-polyfill: 1.1.8
-    navigator.locks: 0.8.1
+    navigator.locks: ^0.8.5
     node-sass: ^6.0.1
     prettier: ^2.5.1
     prop-types: ^15.8.1
@@ -11409,17 +11409,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"navigator.locks@npm:0.8.1":
-  version: 0.8.1
-  resolution: "navigator.locks@npm:0.8.1"
-  checksum: 15438f3500839f91fb9fb516e35436263847182a9bf593581a5aa0f50f744b0b62957d5cf54556f733692318dd9f774ca99a40e7babe7fef2b436b8ef82fb9ca
-  languageName: node
-  linkType: hard
-
-"navigator.locks@patch:navigator.locks@npm:0.8.1#.yarn/patches/navigator.locks-npm-0.8.1-e8530a2d4f.patch::locator=%40pybricks%2Fpybricks-code%40workspace%3A.":
-  version: 0.8.1
-  resolution: "navigator.locks@patch:navigator.locks@npm%3A0.8.1#.yarn/patches/navigator.locks-npm-0.8.1-e8530a2d4f.patch::version=0.8.1&hash=cb7184&locator=%40pybricks%2Fpybricks-code%40workspace%3A."
-  checksum: a4ce9fa068d07874234f11849dccc4bc265ce9baa468aea29a3734bc672be893cd6e9d1c91320b898fbe011d0c3ce8d55fb7af8ed4295f9d67feda65697f2bbe
+"navigator.locks@npm:^0.8.5":
+  version: 0.8.5
+  resolution: "navigator.locks@npm:0.8.5"
+  checksum: fab379c6dfb49faf4aaa064e98050feadc8023eab22fa96df91f15db35234a978d4ad6a23cdfa1a8a9a6d8acd4c43864bde3a454cfc1c77739e318464f9a44e6
   languageName: node
   linkType: hard
 

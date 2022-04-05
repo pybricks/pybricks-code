@@ -45,7 +45,7 @@
         "monaco-editor-webpack-plugin": "^6.0.0",
         "monaco-themes": "^0.4.0",
         "mq-polyfill": "1.1.8",
-        "navigator.locks": "0.8.1",
+        "navigator.locks": "^0.8.5",
         "node-sass": "^6.0.1",
         "prop-types": "^15.8.1",
         "react": "^16.13.1",
@@ -110,7 +110,6 @@
     "packageManager": "yarn@3.2.0",
     "resolutions": {
         "mq-polyfill@1.1.8": "patch:mq-polyfill@npm:1.1.8#.yarn/patches/mq-polyfill-npm-1.1.8-62fe162439.patch",
-        "react-error-overlay": "6.0.9",
-        "navigator.locks@0.8.1": "patch:navigator.locks@npm:0.8.1#.yarn/patches/navigator.locks-npm-0.8.1-e8530a2d4f.patch"
+        "react-error-overlay": "6.0.9"
     }
 }
