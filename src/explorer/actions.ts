@@ -110,37 +110,6 @@ export const explorerRenameFile = createAction((fileName: string) => ({
 }));
 
 /**
- * Request to export (download) a file.
- * @param fileName The file name.
- */
-export const explorerExportFile = createAction((fileName: string) => ({
-    type: 'explorer.action.exportFile',
-    fileName,
-}));
-
-/**
- * Indicates that explorerExportFile(fileName) succeeded.
- * @param fileName The file name.
- */
-export const explorerDidExportFile = createAction((fileName: string) => ({
-    type: 'explorer.action.didExportFile',
-    fileName,
-}));
-
-/**
- * Indicates that explorerExportFile(fileName) failed.
- * @param fileName The file name.
- * @param error The error that was raised.
- */
-export const explorerDidFailToExportFile = createAction(
-    (fileName: string, error: Error) => ({
-        type: 'explorer.action.didFailToExportFile',
-        fileName,
-        error,
-    }),
-);
-
-/**
  * Action that indicates that {@link explorerRenameFile} succeeded.
  */
 export const explorerDidRenameFile = createAction(() => ({
@@ -153,6 +122,37 @@ export const explorerDidRenameFile = createAction(() => ({
 export const explorerDidFailToRenameFile = createAction(() => ({
     type: 'explorer.action.didFailToRenameFile',
 }));
+
+/**
+ * Request to export (download) a file.
+ * @param fileName The file name.
+ */
+export const explorerExportFile = createAction((fileName: string) => ({
+    type: 'explorer.action.exportFile',
+    fileName,
+}));
+
+/**
+ * Indicates that {@link explorerExportFile} succeeded.
+ * @param fileName The file name.
+ */
+export const explorerDidExportFile = createAction((fileName: string) => ({
+    type: 'explorer.action.didExportFile',
+    fileName,
+}));
+
+/**
+ * Indicates that {@link explorerExportFile} failed.
+ * @param fileName The file name.
+ * @param error The error that was raised.
+ */
+export const explorerDidFailToExportFile = createAction(
+    (fileName: string, error: Error) => ({
+        type: 'explorer.action.didFailToExportFile',
+        fileName,
+        error,
+    }),
+);
 
 /**
  * Action that requests to delete a file.
