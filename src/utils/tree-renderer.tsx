@@ -94,7 +94,6 @@ export const renderers: Omit<
                         className={Classes.TREE_NODE_ICON}
                         icon={props.item.data.icon}
                         aria-hidden={true}
-                        tabIndex={-1}
                     />
                     {props.title}
                     {props.item.data.secondaryLabel && (
