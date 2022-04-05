@@ -1,0 +1,11 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2022 The Pybricks Authors
+
+@import '../variables.scss';
+
+// HACK: work around https://github.com/palantir/blueprint/issues/5229
+// TODO: this can be removed when https://github.com/palantir/blueprint/pull/5235 is merged and released
+
+.#{$ns}-focus-disabled .pb-focus-manager-ignore :focus {
+    outline: $pt-outline-color auto 2px !important;
+}
