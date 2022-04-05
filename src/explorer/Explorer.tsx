@@ -290,12 +290,12 @@ const FileTree: React.VoidFunctionComponent<FileTreeProps> = ({ i18n }) => {
         () =>
             files.reduce(
                 (obj, file) => {
-                    const index = file.uuid;
+                    const index = file.id;
 
                     obj[index] = {
                         index,
                         data: {
-                            fileName: file.path,
+                            fileName: file.name,
                             icon: 'document',
                             secondaryLabel: (
                                 <TreeItemContext.Consumer>
@@ -319,8 +319,8 @@ const FileTree: React.VoidFunctionComponent<FileTreeProps> = ({ i18n }) => {
                         hasChildren: true,
                         children: [...files]
                             // REVISIT: consider using Intl.Collator() for i18n.locale
-                            .sort((a, b) => a.path.localeCompare(b.path))
-                            .map((n) => n.uuid),
+                            .sort((a, b) => a.name.localeCompare(b.name))
+                            .map((n) => n.id),
                     },
                 } as Record<TreeItemIndex, FileTreeItem>,
             ),

@@ -45,7 +45,7 @@ const NewFileWizard: React.VoidFunctionComponent<NewFileWizardProps> = ({
     const fileNameValidation = validateFileName(
         fileName,
         pythonFileExtension,
-        files.map((f) => f.path),
+        files.map((f) => f.name),
     );
     const [hubType, setHubType] = useState(defaultHub);
 

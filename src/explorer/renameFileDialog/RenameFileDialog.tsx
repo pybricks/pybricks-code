@@ -28,7 +28,7 @@ const RenameFileDialog: React.VFC = () => {
     const result = validateFileName(
         newName,
         extension,
-        files.map((f) => f.path),
+        files.map((f) => f.name),
     );
 
     const inputRef = useRef<HTMLInputElement>(null);

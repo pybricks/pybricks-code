@@ -125,7 +125,7 @@ function* handleExplorerImportFiles(): Generator {
             const result = validateFileName(
                 baseName,
                 pythonFileExtension,
-                existingFiles.map((f) => f.path),
+                existingFiles.map((f) => f.name),
             );
 
             if (result != FileNameValidationResult.IsOk) {

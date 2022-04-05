@@ -12,21 +12,40 @@ import {
 
 import renameFileDialog from './renameFileDialog/reducers';
 
-const files: Reducer<readonly FileMetadata[]> = (state = [], action) => {
+export type ExplorerFileInfo = Readonly<{
+    /** A unique identifier for this file (not the path, which can change). */
+    id: string;
+    /** The file name (including extension - without directory). */
+    name: string;
+}>;
+
+function metadataToInfo(file: FileMetadata): ExplorerFileInfo {
+    return { id: file.uuid, name: file.path };
+}
+
+const files: Reducer<readonly ExplorerFileInfo[]> = (state = [], action) => {
     if (fileStorageDidInitialize.matches(action)) {
-        return [...action.files];
+        return action.files.map(metadataToInfo);
     }
 
     if (fileStorageDidAddItem.matches(action)) {
-        return [...state, action.file];
+        return [...state, metadataToInfo(action.file)];
     }
 
     if (fileStorageDidChangeItem.matches(action)) {
-        return [...state].map((f) => (f.uuid === action.file.uuid ? action.file : f));
+        // We only care about UUID and the path. UUID can't change so if the
+        // path didn't change, there is nothing to do.
+        if (action.oldFile.path === action.file.path) {
+            return state;
+        }
+
+        return state.map((f) =>
+            f.id === action.file.uuid ? metadataToInfo(action.file) : f,
+        );
     }
 
     if (fileStorageDidRemoveItem.matches(action)) {
-        return [...state].filter((value) => value.uuid !== action.file.uuid);
+        return state.filter((value) => value.id !== action.file.uuid);
     }
 
     return state;

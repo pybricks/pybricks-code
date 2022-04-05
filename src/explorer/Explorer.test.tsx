@@ -6,7 +6,6 @@ import { cleanup } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { testRender, uuid } from '../../test';
-import { FileMetadata } from '../fileStorage/actions';
 import Explorer from './Explorer';
 import {
     explorerArchiveAllFiles,
@@ -15,6 +14,7 @@ import {
     explorerImportFiles,
     explorerRenameFile,
 } from './actions';
+import { ExplorerFileInfo } from './reducers';
 
 afterEach(async () => {
     jest.restoreAllMocks();
@@ -22,10 +22,9 @@ afterEach(async () => {
     localStorage.clear();
 });
 
-const testFile: FileMetadata = {
-    uuid: uuid(0),
-    path: 'test.file',
-    sha256: '',
+const testFile: ExplorerFileInfo = {
+    id: uuid(0),
+    name: 'test.file',
 };
 
 describe('archive button', () => {
