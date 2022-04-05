@@ -101,6 +101,37 @@ export const explorerDidFailToCreateNewFile = createAction((error: Error) => ({
 }));
 
 /**
+ * Request to activate a file (open or bring to foreground if already open).
+ * @param fileName The file name.
+ */
+export const explorerActivateFile = createAction((fileName: string) => ({
+    type: 'explorer.action.activateFile',
+    fileName,
+}));
+
+/**
+ * Indicates that {@link explorerActivateFile} succeeded.
+ * @param fileName The file name.
+ */
+export const explorerDidActivateFile = createAction((fileName: string) => ({
+    type: 'explorer.action.didActivateFile',
+    fileName,
+}));
+
+/**
+ * Indicates that {@link explorerActivateFile} failed.
+ * @param fileName The file name.
+ * @param error The error that was raised.
+ */
+export const explorerDidFailToActivateFile = createAction(
+    (fileName: string, error: Error) => ({
+        type: 'explorer.action.didFailToActivateFile',
+        fileName,
+        error,
+    }),
+);
+
+/**
  * Action that requests to rename a file.
  * @param fileName The file name.
  */

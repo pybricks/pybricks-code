@@ -27,3 +27,33 @@ export const editorGetValueResponse = createAction((id: number, value: string) =
     id,
     value,
 }));
+/**
+ * Request to activate a file (open or bring to foreground if already open).
+ * @param fileName The file name.
+ */
+export const editorActivateFile = createAction((fileName: string) => ({
+    type: 'editor.action.activateFile',
+    fileName,
+}));
+
+/**
+ * Indicates that {@link editorActivateFile} succeeded.
+ * @param fileName The file name.
+ */
+export const editorDidActivateFile = createAction((fileName: string) => ({
+    type: 'editor.action.didActivateFile',
+    fileName,
+}));
+
+/**
+ * Indicates that {@link editorActivateFile} failed.
+ * @param fileName The file name.
+ * @param error The error that was raised.
+ */
+export const editorDidFailToActivateFile = createAction(
+    (fileName: string, error: Error) => ({
+        type: 'editor.action.didFailToActivateFile',
+        fileName,
+        error,
+    }),
+);

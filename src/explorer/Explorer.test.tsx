@@ -8,6 +8,7 @@ import React from 'react';
 import { testRender, uuid } from '../../test';
 import Explorer from './Explorer';
 import {
+    explorerActivateFile,
     explorerArchiveAllFiles,
     explorerDeleteFile,
     explorerExportFile,
@@ -81,22 +82,16 @@ describe('new file button', () => {
 });
 
 describe('tree item', () => {
-    it('should dispatch action when button is clicked', async () => {
+    it('should dispatch action when clicked', async () => {
         const [explorer, dispatch] = testRender(<Explorer />, {
             explorer: { files: [testFile] },
         });
 
-        expect(
-            explorer.queryByRole('dialog', { name: "Rename 'test.file'" }),
-        ).toBeNull();
+        const treeItem = explorer.getByRole('treeitem', { name: 'test.file' });
 
-        // NB: this button is intentionally not accessible (by role) since
-        // there is a keyboard shortcut.
-        const button = explorer.getByTitle('Rename test.file');
+        userEvent.click(treeItem);
 
-        userEvent.click(button);
-
-        expect(dispatch).toHaveBeenCalledWith(explorerRenameFile('test.file'));
+        expect(dispatch).toHaveBeenCalledWith(explorerActivateFile('test.file'));
     });
 
     it('should dispatch action when key is pressed', async () => {
@@ -104,69 +99,98 @@ describe('tree item', () => {
             explorer: { files: [testFile] },
         });
 
-        expect(
-            explorer.queryByRole('dialog', { name: "Rename 'test.file'" }),
-        ).toBeNull();
-
         const treeItem = explorer.getByRole('treeitem', { name: 'test.file' });
 
         userEvent.click(treeItem);
-        userEvent.keyboard('{f2}');
+        userEvent.keyboard('{enter}');
 
-        expect(dispatch).toHaveBeenCalledWith(explorerRenameFile('test.file'));
+        expect(dispatch).toHaveBeenCalledWith(explorerActivateFile('test.file'));
     });
 
-    it('should dispatch delete action when button is clicked', async () => {
-        const [explorer, dispatch] = testRender(<Explorer />, {
-            explorer: { files: [testFile] },
+    describe('rename', () => {
+        it('should dispatch action when button is clicked', async () => {
+            const [explorer, dispatch] = testRender(<Explorer />, {
+                explorer: { files: [testFile] },
+            });
+
+            // NB: this button is intentionally not accessible (by role) since
+            // there is a keyboard shortcut.
+            const button = explorer.getByTitle('Rename test.file');
+
+            userEvent.click(button);
+
+            expect(dispatch).toHaveBeenCalledWith(explorerRenameFile('test.file'));
         });
 
-        // NB: this button is intentionally not accessible (by role) since
-        // there is a keyboard shortcut.
-        const button = explorer.getByTitle('Delete test.file');
+        it('should dispatch action when key is pressed', async () => {
+            const [explorer, dispatch] = testRender(<Explorer />, {
+                explorer: { files: [testFile] },
+            });
 
-        userEvent.click(button);
+            const treeItem = explorer.getByRole('treeitem', { name: 'test.file' });
 
-        expect(dispatch).toHaveBeenCalledWith(explorerDeleteFile('test.file'));
+            userEvent.click(treeItem);
+            userEvent.keyboard('{f2}');
+
+            expect(dispatch).toHaveBeenCalledWith(explorerRenameFile('test.file'));
+        });
     });
 
-    it('should dispatch delete action when key is pressed', async () => {
-        const [explorer, dispatch] = testRender(<Explorer />, {
-            explorer: { files: [testFile] },
+    describe('export', () => {
+        it('should dispatch export action when button is clicked', async () => {
+            const [explorer, dispatch] = testRender(<Explorer />, {
+                explorer: { files: [testFile] },
+            });
+
+            // NB: this button is intentionally not accessible (by role) since
+            // there is a keyboard shortcut.
+            const button = explorer.getByTitle('Export test.file');
+
+            userEvent.click(button);
+
+            expect(dispatch).toHaveBeenCalledWith(explorerExportFile('test.file'));
         });
 
-        const treeItem = explorer.getByRole('treeitem', { name: 'test.file' });
+        it('should dispatch export action when key is pressed', async () => {
+            const [explorer, dispatch] = testRender(<Explorer />, {
+                explorer: { files: [testFile] },
+            });
 
-        userEvent.click(treeItem);
-        userEvent.keyboard('{del}');
+            const treeItem = explorer.getByRole('treeitem', { name: 'test.file' });
 
-        expect(dispatch).toHaveBeenCalledWith(explorerDeleteFile('test.file'));
+            userEvent.click(treeItem);
+            userEvent.keyboard('{ctrl}e');
+
+            expect(dispatch).toHaveBeenCalledWith(explorerExportFile('test.file'));
+        });
     });
 
-    it('should dispatch export action when button is clicked', async () => {
-        const [explorer, dispatch] = testRender(<Explorer />, {
-            explorer: { files: [testFile] },
+    describe('delete', () => {
+        it('should dispatch delete action when button is clicked', async () => {
+            const [explorer, dispatch] = testRender(<Explorer />, {
+                explorer: { files: [testFile] },
+            });
+
+            // NB: this button is intentionally not accessible (by role) since
+            // there is a keyboard shortcut.
+            const button = explorer.getByTitle('Delete test.file');
+
+            userEvent.click(button);
+
+            expect(dispatch).toHaveBeenCalledWith(explorerDeleteFile('test.file'));
         });
 
-        // NB: this button is intentionally not accessible (by role) since
-        // there is a keyboard shortcut.
-        const button = explorer.getByTitle('Export test.file');
+        it('should dispatch delete action when key is pressed', async () => {
+            const [explorer, dispatch] = testRender(<Explorer />, {
+                explorer: { files: [testFile] },
+            });
 
-        userEvent.click(button);
+            const treeItem = explorer.getByRole('treeitem', { name: 'test.file' });
 
-        expect(dispatch).toHaveBeenCalledWith(explorerExportFile('test.file'));
-    });
+            userEvent.click(treeItem);
+            userEvent.keyboard('{del}');
 
-    it('should dispatch export action when key is pressed', async () => {
-        const [explorer, dispatch] = testRender(<Explorer />, {
-            explorer: { files: [testFile] },
+            expect(dispatch).toHaveBeenCalledWith(explorerDeleteFile('test.file'));
         });
-
-        const treeItem = explorer.getByRole('treeitem', { name: 'test.file' });
-
-        userEvent.click(treeItem);
-        userEvent.keyboard('{ctrl}e');
-
-        expect(dispatch).toHaveBeenCalledWith(explorerExportFile('test.file'));
     });
 });

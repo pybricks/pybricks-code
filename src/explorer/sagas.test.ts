@@ -6,6 +6,11 @@ import { FileWithHandle } from 'browser-fs-access';
 import { mock } from 'jest-mock-extended';
 import { AsyncSaga } from '../../test';
 import {
+    editorActivateFile,
+    editorDidActivateFile,
+    editorDidFailToActivateFile,
+} from '../editor/actions';
+import {
     fileStorageDidDumpAllFiles,
     fileStorageDidFailToDumpAllFiles,
     fileStorageDidFailToReadFile,
@@ -21,11 +26,14 @@ import {
 import { pythonFileExtension } from '../pybricksMicropython/lib';
 import {
     Hub,
+    explorerActivateFile,
     explorerArchiveAllFiles,
     explorerCreateNewFile,
+    explorerDidActivateFile,
     explorerDidArchiveAllFiles,
     explorerDidCreateNewFile,
     explorerDidExportFile,
+    explorerDidFailToActivateFile,
     explorerDidFailToArchiveAllFiles,
     explorerDidFailToExportFile,
     explorerDidFailToImportFiles,
@@ -176,6 +184,39 @@ describe('handleExplorerCreateNewFile', () => {
 
         await expect(saga.take()).resolves.toEqual(explorerDidCreateNewFile());
 
+        await saga.end();
+    });
+});
+
+describe('handleExplorerActivateFile', () => {
+    let saga: AsyncSaga;
+
+    beforeEach(async () => {
+        saga = new AsyncSaga(explorer);
+
+        saga.put(explorerActivateFile('test.file'));
+
+        await expect(saga.take()).resolves.toEqual(editorActivateFile('test.file'));
+    });
+
+    it('should propagate error', async () => {
+        const testError = new Error('test error');
+        saga.put(editorDidFailToActivateFile('test.file', testError));
+
+        await expect(saga.take()).resolves.toEqual(
+            explorerDidFailToActivateFile('test.file', testError),
+        );
+    });
+
+    it('should propagate success', async () => {
+        saga.put(editorDidActivateFile('test.file'));
+
+        await expect(saga.take()).resolves.toEqual(
+            explorerDidActivateFile('test.file'),
+        );
+    });
+
+    afterEach(async () => {
         await saga.end();
     });
 });

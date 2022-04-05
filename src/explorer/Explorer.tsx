@@ -28,6 +28,7 @@ import { isMacOS } from '../utils/os';
 import { preventBrowserNativeContextMenu } from '../utils/react';
 import { TreeItemContext, TreeItemData, renderers } from '../utils/tree-renderer';
 import {
+    explorerActivateFile,
     explorerArchiveAllFiles,
     explorerDeleteFile,
     explorerExportFile,
@@ -336,6 +337,8 @@ const FileTree: React.VoidFunctionComponent<FileTreeProps> = ({ i18n }) => {
         [treeId, focusedItem],
     );
 
+    const dispatch = useDispatch();
+
     return (
         <ControlledTreeEnvironment<FileTreeItemData>
             {...renderers}
@@ -346,6 +349,9 @@ const FileTree: React.VoidFunctionComponent<FileTreeProps> = ({ i18n }) => {
             liveDescriptors={liveDescriptors}
             canRename={false} // we implement our own rename handler
             onFocusItem={(item) => setFocusedItem(item.index)}
+            onPrimaryAction={(item) =>
+                dispatch(explorerActivateFile(item.data.fileName))
+            }
         >
             <div className="pb-explorer-file-tree">
                 <Tree

@@ -12,6 +12,11 @@ import {
     takeEvery,
     takeLatest,
 } from 'typed-redux-saga/macro';
+import {
+    editorActivateFile,
+    editorDidActivateFile,
+    editorDidFailToActivateFile,
+} from '../editor/actions';
 import { getPybricksMicroPythonFileTemplate } from '../editor/pybricksMicroPython';
 import {
     fileStorageDidDumpAllFiles,
@@ -37,11 +42,14 @@ import {
 import { RootState } from '../reducers';
 import { defined, ensureError, timestamp } from '../utils';
 import {
+    explorerActivateFile,
     explorerArchiveAllFiles,
     explorerCreateNewFile,
+    explorerDidActivateFile,
     explorerDidArchiveAllFiles,
     explorerDidCreateNewFile,
     explorerDidExportFile,
+    explorerDidFailToActivateFile,
     explorerDidFailToArchiveAllFiles,
     explorerDidFailToCreateNewFile,
     explorerDidFailToExportFile,
@@ -192,6 +200,39 @@ function* handleExplorerCreateNewFile(
     }
 }
 
+/**
+ * Connects user triggered action to editor module.
+ * @param action
+ */
+function* handleExplorerActivateFile(
+    action: ReturnType<typeof explorerActivateFile>,
+): Generator {
+    yield* put(editorActivateFile(action.fileName));
+
+    const { didActivate, didFailToActivate } = yield* race({
+        didActivate: take(
+            editorDidActivateFile.when((a) => a.fileName === action.fileName),
+        ),
+        didFailToActivate: take(
+            editorDidFailToActivateFile.when((a) => a.fileName === action.fileName),
+        ),
+    });
+
+    if (didFailToActivate) {
+        yield* put(
+            explorerDidFailToActivateFile(
+                didFailToActivate.fileName,
+                didFailToActivate.error,
+            ),
+        );
+        return;
+    }
+
+    defined(didActivate);
+
+    yield* put(explorerDidActivateFile(didActivate.fileName));
+}
+
 /** Connects user initiate rename file actions to the rename file dialog. */
 function* handleExplorerRenameFile(
     action: ReturnType<typeof explorerRenameFile>,
@@ -273,6 +314,7 @@ export default function* (): Generator {
     yield* takeEvery(explorerArchiveAllFiles, handleExplorerArchiveAllFiles);
     yield* takeEvery(explorerImportFiles, handleExplorerImportFiles);
     yield* takeEvery(explorerCreateNewFile, handleExplorerCreateNewFile);
+    yield* takeEvery(explorerActivateFile, handleExplorerActivateFile);
     // takeLatest should ensure that if we trigger a new rename before the
     // previous one is finished, the old one will be canceled. We don't expect
     // this to happen in practice though.
