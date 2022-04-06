@@ -20,6 +20,7 @@ export function assert(condition: boolean, message: string): asserts condition {
  */
 export function defined<T>(obj: T): asserts obj is NonNullable<T> {
     assert(obj !== undefined, 'undefined object');
+    assert(obj !== null, 'null object');
 }
 
 export type Maybe<T> = [T?, Error?];
