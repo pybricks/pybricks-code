@@ -13,7 +13,7 @@ export const editorDidCreate = createAction(() => ({
  * @param id A unique identifier for this request.
  */
 export const editorGetValueRequest = createAction((id: number) => ({
-    type: 'editor,action.getCurrentScriptRequest',
+    type: 'editor.action.getCurrentScriptRequest',
     id,
 }));
 
@@ -23,7 +23,7 @@ export const editorGetValueRequest = createAction((id: number) => ({
  * @param value The current editor contents.
  */
 export const editorGetValueResponse = createAction((id: number, value: string) => ({
-    type: 'editor,action.getCurrentScriptResponse',
+    type: 'editor.action.getCurrentScriptResponse',
     id,
     value,
 }));
