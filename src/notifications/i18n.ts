@@ -6,6 +6,7 @@
 export enum I18nId {
     AppNoUpdateFound = 'app.noUpdateFound',
     CopyErrorMessage = 'copyErrorMessage',
+    TechnicalInfo = 'technicalInfo',
     ReportBug = 'reportBug',
     BleUnexpectedError = 'ble.unexpectedError',
     BleGattPermission = 'ble.gattPermission',
