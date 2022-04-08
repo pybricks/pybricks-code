@@ -164,3 +164,24 @@ export const explorerDeleteFile = createAction((fileName: string) => ({
     type: 'explorer.action.deleteFile',
     fileName,
 }));
+
+/**
+ * Action that indicates that {@link explorerDeleteFile} succeeded.
+ * @param fileName The file name.
+ */
+export const explorerDidDeleteFile = createAction((fileName: string) => ({
+    type: 'explorer.action.didDeleteFile',
+    fileName,
+}));
+
+/**
+ * Action that indicates that {@link explorerDeleteFile} failed.
+ * @param fileName The file name.
+ */
+export const explorerDidFailToDeleteFile = createAction(
+    (fileName: string, error: Error) => ({
+        type: 'explorer.action.didFailToDeleteFile',
+        fileName,
+        error,
+    }),
+);

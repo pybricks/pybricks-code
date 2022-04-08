@@ -17,13 +17,10 @@
         "failedToSaveFile": "Failed to save the program."
     },
     "explorer": {
-        "deleteFile": {
-            "message": "The file {fileName} will be permanently deleted. This cannot be undone.",
-            "action": "Delete"
-        },
         "failedToImportFiles": "Failed to import file(s).",
         "failedToCreate": "Failed to create file.",
         "failedToExport": "Failed to export file.",
+        "failedToDelete": "Failed to delete file.",
         "failedToArchive": "Failed to archive files.'"
     },
     "fileStorage": {

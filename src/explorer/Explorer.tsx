@@ -37,6 +37,7 @@ import {
     explorerImportFiles,
     explorerRenameFile,
 } from './actions';
+import DeleteFileAlert from './deleteFileAlert/DeleteFileAlert';
 import { I18nId } from './i18n';
 import NewFileWizard from './newFileWizard/NewFileWizard';
 import RenameFileDialog from './renameFileDialog/RenameFileDialog';
@@ -380,6 +381,7 @@ const Explorer: React.VFC = () => {
             <FileTree i18n={i18n} />
             <NewFileWizard />
             <RenameFileDialog />
+            <DeleteFileAlert />
         </div>
     );
 };

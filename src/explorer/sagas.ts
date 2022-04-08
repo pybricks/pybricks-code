@@ -14,17 +14,23 @@ import {
 } from 'typed-redux-saga/macro';
 import {
     editorActivateFile,
+    editorCloseFile,
     editorDidActivateFile,
+    editorDidCloseFile,
     editorDidFailToActivateFile,
 } from '../editor/actions';
 import { getPybricksMicroPythonFileTemplate } from '../editor/pybricksMicroPython';
 import {
+    fileStorageDeleteFile,
+    fileStorageDidDeleteFile,
     fileStorageDidDumpAllFiles,
+    fileStorageDidFailToDeleteFile,
     fileStorageDidFailToDumpAllFiles,
     fileStorageDidFailToReadFile,
     fileStorageDidFailToRenameFile,
     fileStorageDidFailToWriteFile,
     fileStorageDidReadFile,
+    fileStorageDidRemoveItem,
     fileStorageDidRenameFile,
     fileStorageDidWriteFile,
     fileStorageDumpAllFiles,
@@ -45,13 +51,16 @@ import {
     explorerActivateFile,
     explorerArchiveAllFiles,
     explorerCreateNewFile,
+    explorerDeleteFile,
     explorerDidActivateFile,
     explorerDidArchiveAllFiles,
     explorerDidCreateNewFile,
+    explorerDidDeleteFile,
     explorerDidExportFile,
     explorerDidFailToActivateFile,
     explorerDidFailToArchiveAllFiles,
     explorerDidFailToCreateNewFile,
+    explorerDidFailToDeleteFile,
     explorerDidFailToExportFile,
     explorerDidFailToImportFiles,
     explorerDidFailToRenameFile,
@@ -61,6 +70,11 @@ import {
     explorerImportFiles,
     explorerRenameFile,
 } from './actions';
+import {
+    deleteFileAlertDidAccept,
+    deleteFileAlertDidCancel,
+    deleteFileAlertShow,
+} from './deleteFileAlert/actions';
 import {
     newFileWizardDidAccept,
     newFileWizardDidCancel,
@@ -328,6 +342,56 @@ function* handleExplorerExportFile(
     }
 }
 
+function* handleExplorerDeleteFile(action: ReturnType<typeof explorerDeleteFile>) {
+    try {
+        yield* put(deleteFileAlertShow(action.fileName));
+
+        const { didCancel, didRemove } = yield* race({
+            didAccept: take(deleteFileAlertDidAccept),
+            didCancel: take(deleteFileAlertDidCancel),
+            didRemove: take(
+                fileStorageDidRemoveItem.when((a) => a.file.path === action.fileName),
+            ),
+        });
+
+        if (didCancel) {
+            throw new DOMException('user canceled', 'AbortError');
+        }
+
+        // automatically cancel the dialog, if the file was removed, e.g. it was
+        // deleted in a different window
+        if (didRemove) {
+            yield* put(deleteFileAlertDidCancel());
+            throw new DOMException('file was removed', 'AbortError');
+        }
+
+        // at this point we know the user accepted
+
+        // have to close editor before deleting, otherwise we get "in use" error
+        yield* put(editorCloseFile(action.fileName));
+        yield* take(editorDidCloseFile.when((a) => a.fileName === action.fileName));
+
+        yield* put(fileStorageDeleteFile(action.fileName));
+
+        const { didFailToDelete } = yield* race({
+            didDelete: take(
+                fileStorageDidDeleteFile.when((a) => a.path === action.fileName),
+            ),
+            didFailToDelete: take(
+                fileStorageDidFailToDeleteFile.when((a) => a.path === action.fileName),
+            ),
+        });
+
+        if (didFailToDelete) {
+            throw didFailToDelete.error;
+        }
+
+        yield* put(explorerDidDeleteFile(action.fileName));
+    } catch (err) {
+        yield* put(explorerDidFailToDeleteFile(action.fileName, ensureError(err)));
+    }
+}
+
 export default function* (): Generator {
     yield* takeEvery(explorerArchiveAllFiles, handleExplorerArchiveAllFiles);
     yield* takeEvery(explorerImportFiles, handleExplorerImportFiles);
@@ -338,4 +402,5 @@ export default function* (): Generator {
     // this to happen in practice though.
     yield* takeLatest(explorerRenameFile, handleExplorerRenameFile);
     yield* takeLatest(explorerExportFile, handleExplorerExportFile);
+    yield* takeLatest(explorerDeleteFile, handleExplorerDeleteFile);
 }

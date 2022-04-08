@@ -9,7 +9,7 @@ import { Replacements } from '@shopify/react-i18n';
 import React from 'react';
 import { channel } from 'redux-saga';
 import * as semver from 'semver';
-import { delay, getContext, put, race, take, takeEvery } from 'typed-redux-saga/macro';
+import { delay, getContext, put, take, takeEvery } from 'typed-redux-saga/macro';
 import { appDidCheckForUpdate, appReload } from '../app/actions';
 import { appName } from '../app/constants';
 import { bleDIServiceDidReceiveFirmwareRevision } from '../ble-device-info-service/actions';
@@ -19,17 +19,13 @@ import {
 } from '../ble/actions';
 import { editorDidFailToOpenFile } from '../editor/actions';
 import {
-    explorerDeleteFile,
     explorerDidFailToArchiveAllFiles,
     explorerDidFailToCreateNewFile,
+    explorerDidFailToDeleteFile,
     explorerDidFailToExportFile,
     explorerDidFailToImportFiles,
 } from '../explorer/actions';
-import {
-    fileStorageDeleteFile,
-    fileStorageDidFailToInitialize,
-    fileStorageDidRemoveItem,
-} from '../fileStorage/actions';
+import { fileStorageDidFailToInitialize } from '../fileStorage/actions';
 import { FailToFinishReasonType, didFailToFinish } from '../firmware/actions';
 import {
     BootloaderConnectionFailureReason,
@@ -399,41 +395,6 @@ function* showFileStorageFailToArchive(
     yield* showUnexpectedError(I18nId.ExplorerFailedToArchive, action.error);
 }
 
-function* showDeleteFileWarning(action: ReturnType<typeof explorerDeleteFile>) {
-    const ch = channel<React.MouseEvent<HTMLElement>>();
-    const userAction = dispatchAction(I18nId.ExplorerDeleteFileAction, ch.put, 'trash');
-
-    // TODO: this should probably not be a singleton
-    yield* showSingleton(
-        Level.Warning,
-        I18nId.ExplorerDeleteFileMessage,
-        {
-            fileName: React.createElement('strong', undefined, action.fileName),
-        },
-        userAction,
-        ch.close,
-    );
-
-    // task is terminated here if channel is closed (triggered by closing the notification)
-    const { didRemoveFile } = yield* race({
-        userActionEvent: take(ch),
-        didRemoveFile: take(
-            fileStorageDidRemoveItem.when((a) => a.file.path === action.fileName),
-        ),
-    });
-
-    // if the file was removed by other means while the notification was being
-    // shown, close the notification
-    if (didRemoveFile) {
-        const { toaster } = yield* getContext<NotificationContext>('notification');
-        toaster.dismiss(I18nId.ExplorerDeleteFileMessage);
-        return;
-    }
-
-    // this only runs if userAction is dispatched
-    yield* put(fileStorageDeleteFile(action.fileName));
-}
-
 function* showExplorerFailToImportFiles(
     action: ReturnType<typeof explorerDidFailToImportFiles>,
 ): Generator {
@@ -474,6 +435,19 @@ function* showEditorDidFailToOpenFile(
     yield* showUnexpectedError(I18nId.EditorFailedToOpenFile, action.error);
 }
 
+function* showExplorerFailToDelete(
+    action: ReturnType<typeof explorerDidFailToDeleteFile>,
+): Generator {
+    if (action.error.name === 'AbortError') {
+        // user clicked cancel button - not an error
+        return;
+    }
+
+    // TODO: add a specific error message for when file in use (e.g. open in another window)
+
+    yield* showUnexpectedError(I18nId.ExplorerFailedToDelete, action.error);
+}
+
 export default function* (): Generator {
     yield* takeEvery(bleDeviceDidFailToConnect, showBleDeviceDidFailToConnectError);
     yield* takeEvery(bootloaderDidFailToConnect, showBootloaderDidFailToConnectError);
@@ -486,9 +460,9 @@ export default function* (): Generator {
     yield* takeEvery(bleDIServiceDidReceiveFirmwareRevision, checkVersion);
     yield* takeEvery(fileStorageDidFailToInitialize, showFileStorageFailToInitialize);
     yield* takeEvery(explorerDidFailToArchiveAllFiles, showFileStorageFailToArchive);
-    yield* takeEvery(explorerDeleteFile, showDeleteFileWarning);
     yield* takeEvery(explorerDidFailToImportFiles, showExplorerFailToImportFiles);
     yield* takeEvery(explorerDidFailToCreateNewFile, showExplorerFailToCreateFile);
     yield* takeEvery(explorerDidFailToExportFile, showExplorerFailToExport);
+    yield* takeEvery(explorerDidFailToDeleteFile, showExplorerFailToDelete);
     yield* takeEvery(editorDidFailToOpenFile, showEditorDidFailToOpenFile);
 }

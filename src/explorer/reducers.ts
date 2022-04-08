@@ -10,6 +10,7 @@ import {
     fileStorageDidRemoveItem,
 } from '../fileStorage/actions';
 
+import deleteFileAlert from './deleteFileAlert/reducers';
 import newFileWizard from './newFileWizard/reducers';
 import renameFileDialog from './renameFileDialog/reducers';
 
@@ -52,4 +53,9 @@ const files: Reducer<readonly ExplorerFileInfo[]> = (state = [], action) => {
     return state;
 };
 
-export default combineReducers({ files, newFileWizard, renameFileDialog });
+export default combineReducers({
+    files,
+    deleteFileAlert,
+    newFileWizard,
+    renameFileDialog,
+});

@@ -4,18 +4,24 @@
 import * as browserFsAccess from 'browser-fs-access';
 import { FileWithHandle } from 'browser-fs-access';
 import { mock } from 'jest-mock-extended';
-import { AsyncSaga } from '../../test';
+import { AsyncSaga, uuid } from '../../test';
 import {
     editorActivateFile,
+    editorCloseFile,
     editorDidActivateFile,
+    editorDidCloseFile,
     editorDidFailToActivateFile,
 } from '../editor/actions';
 import {
+    fileStorageDeleteFile,
+    fileStorageDidDeleteFile,
     fileStorageDidDumpAllFiles,
+    fileStorageDidFailToDeleteFile,
     fileStorageDidFailToDumpAllFiles,
     fileStorageDidFailToReadFile,
     fileStorageDidFailToRenameFile,
     fileStorageDidReadFile,
+    fileStorageDidRemoveItem,
     fileStorageDidRenameFile,
     fileStorageDidWriteFile,
     fileStorageDumpAllFiles,
@@ -28,13 +34,16 @@ import {
     explorerActivateFile,
     explorerArchiveAllFiles,
     explorerCreateNewFile,
+    explorerDeleteFile,
     explorerDidActivateFile,
     explorerDidArchiveAllFiles,
     explorerDidCreateNewFile,
+    explorerDidDeleteFile,
     explorerDidExportFile,
     explorerDidFailToActivateFile,
     explorerDidFailToArchiveAllFiles,
     explorerDidFailToCreateNewFile,
+    explorerDidFailToDeleteFile,
     explorerDidFailToExportFile,
     explorerDidFailToImportFiles,
     explorerDidFailToRenameFile,
@@ -44,6 +53,11 @@ import {
     explorerImportFiles,
     explorerRenameFile,
 } from './actions';
+import {
+    deleteFileAlertDidAccept,
+    deleteFileAlertDidCancel,
+    deleteFileAlertShow,
+} from './deleteFileAlert/actions';
 import {
     Hub,
     newFileWizardDidAccept,
@@ -337,6 +351,76 @@ describe('handleExplorerExportFile', () => {
             await expect(saga.take()).resolves.toEqual(
                 explorerDidFailToExportFile(testFile, testError),
             );
+        });
+    });
+
+    afterEach(async () => {
+        await saga.end();
+    });
+});
+
+describe('handleExplorerDeleteFile', () => {
+    let saga: AsyncSaga;
+    const testFile = 'test.file';
+
+    beforeEach(async () => {
+        saga = new AsyncSaga(explorer);
+
+        saga.put(explorerDeleteFile(testFile));
+
+        await expect(saga.take()).resolves.toEqual(deleteFileAlertShow(testFile));
+    });
+
+    it('should fail with AbortError if canceled', async () => {
+        saga.put(deleteFileAlertDidCancel());
+
+        await expect(saga.take()).resolves.toEqual(
+            explorerDidFailToDeleteFile(
+                testFile,
+                new DOMException('user canceled', 'AbortError'),
+            ),
+        );
+    });
+
+    it('should fail with AbortError if file was removed before user accept/cancel', async () => {
+        saga.put(
+            fileStorageDidRemoveItem({ path: testFile, uuid: uuid(0), sha256: '' }),
+        );
+
+        // should programmatically cancel the dialog
+        await expect(saga.take()).resolves.toEqual(deleteFileAlertDidCancel());
+
+        await expect(saga.take()).resolves.toEqual(
+            explorerDidFailToDeleteFile(
+                testFile,
+                new DOMException('file was removed', 'AbortError'),
+            ),
+        );
+    });
+
+    describe('accepted', () => {
+        beforeEach(async () => {
+            saga.put(deleteFileAlertDidAccept());
+
+            // should close the editor first
+            await expect(saga.take()).resolves.toEqual(editorCloseFile(testFile));
+            saga.put(editorDidCloseFile(testFile));
+
+            // then delete the file
+            await expect(saga.take()).resolves.toEqual(fileStorageDeleteFile(testFile));
+        });
+
+        it('should propagate error', async () => {
+            const testError = new Error('test error');
+            saga.put(fileStorageDidFailToDeleteFile(testFile, testError));
+            await expect(saga.take()).resolves.toEqual(
+                explorerDidFailToDeleteFile(testFile, testError),
+            );
+        });
+
+        it('should succeed', async () => {
+            saga.put(fileStorageDidDeleteFile(testFile));
+            await expect(saga.take()).resolves.toEqual(explorerDidDeleteFile(testFile));
         });
     });
 

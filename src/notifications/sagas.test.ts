@@ -9,7 +9,7 @@ import {
 } from '@pybricks/firmware';
 import { I18nManager } from '@shopify/react-i18n';
 import { AnyAction } from 'redux';
-import { AsyncSaga, uuid } from '../../test';
+import { AsyncSaga } from '../../test';
 import { appDidCheckForUpdate } from '../app/actions';
 import { bleDIServiceDidReceiveFirmwareRevision } from '../ble-device-info-service/actions';
 import {
@@ -18,17 +18,13 @@ import {
 } from '../ble/actions';
 import { editorDidFailToOpenFile } from '../editor/actions';
 import {
-    explorerDeleteFile,
     explorerDidFailToArchiveAllFiles,
     explorerDidFailToCreateNewFile,
+    explorerDidFailToDeleteFile,
     explorerDidFailToExportFile,
     explorerDidFailToImportFiles,
 } from '../explorer/actions';
-import {
-    fileStorageDeleteFile,
-    fileStorageDidFailToInitialize,
-    fileStorageDidRemoveItem,
-} from '../fileStorage/actions';
+import { fileStorageDidFailToInitialize } from '../fileStorage/actions';
 import {
     FailToFinishReasonType,
     HubError,
@@ -117,6 +113,7 @@ test.each([
     explorerDidFailToImportFiles(new Error('test error')),
     explorerDidFailToCreateNewFile(new Error('test error')),
     explorerDidFailToExportFile('test.file', new Error('test error')),
+    explorerDidFailToDeleteFile('test.file', new Error('test error')),
     editorDidFailToOpenFile('test.file', new Error('test error')),
 ])('actions that should show notification: %o', async (action: AnyAction) => {
     const { toaster, saga } = createTestToasterSaga();
@@ -141,6 +138,10 @@ test.each([
     explorerDidFailToImportFiles(new DOMException('test message', 'AbortError')),
     explorerDidFailToCreateNewFile(new DOMException('test message', 'AbortError')),
     explorerDidFailToExportFile(
+        'test.file',
+        new DOMException('test message', 'AbortError'),
+    ),
+    explorerDidFailToDeleteFile(
         'test.file',
         new DOMException('test message', 'AbortError'),
     ),
@@ -171,59 +172,3 @@ test.each([[didCompile(new Uint8Array()), I18nId.MpyError]])(
         await saga.end();
     },
 );
-
-describe('delete file saga', () => {
-    it('should not delete the file if the user closes the notification', async () => {
-        const { toaster, saga } = createTestToasterSaga();
-
-        saga.put(explorerDeleteFile('test.file'));
-
-        toaster.dismiss(I18nId.ExplorerDeleteFileMessage);
-
-        await saga.end();
-    });
-
-    it('should delete the file if the user clicks the delete button', async () => {
-        const { toaster, saga } = createTestToasterSaga();
-
-        saga.put(explorerDeleteFile('test.file'));
-
-        const toast = toaster
-            .getToasts()
-            .find((t) => t.key === I18nId.ExplorerDeleteFileMessage);
-
-        expect(toast).toBeDefined();
-        expect(toast?.action).toBeDefined();
-        expect(toast?.action?.onClick).toBeDefined();
-
-        toast?.action?.onClick?.call(
-            toast?.action,
-            {} as React.MouseEvent<HTMLElement>,
-        );
-
-        const action = await saga.take();
-        expect(action).toEqual(fileStorageDeleteFile('test.file'));
-
-        await saga.end();
-    });
-
-    it('should close automatically if the file is deleted without user action', async () => {
-        const { toaster, saga } = createTestToasterSaga();
-
-        saga.put(explorerDeleteFile('test.file'));
-
-        expect(
-            toaster.getToasts().find((t) => t.key === I18nId.ExplorerDeleteFileMessage),
-        ).toBeDefined();
-
-        saga.put(
-            fileStorageDidRemoveItem({ uuid: uuid(0), path: 'test.file', sha256: '' }),
-        );
-
-        expect(
-            toaster.getToasts().find((t) => t.key === I18nId.ExplorerDeleteFileMessage),
-        ).toBeUndefined();
-
-        await saga.end();
-    });
-});

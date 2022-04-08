@@ -1,0 +1,7 @@
+{
+    "message": "The file '{fileName}' will be permanently deleted. This cannot be undone.",
+    "action": {
+        "accept": "Delete",
+        "cancel": "Keep"
+    }
+}
