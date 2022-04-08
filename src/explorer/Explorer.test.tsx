@@ -115,6 +115,9 @@ describe('tree item', () => {
             userEvent.click(button);
 
             expect(dispatch).toHaveBeenCalledWith(explorerRenameFile('test.file'));
+
+            // should not propagate to treeitem
+            expect(dispatch).toHaveBeenCalledTimes(1);
         });
 
         it('should dispatch action when key is pressed', async () => {
@@ -144,6 +147,9 @@ describe('tree item', () => {
             userEvent.click(button);
 
             expect(dispatch).toHaveBeenCalledWith(explorerExportFile('test.file'));
+
+            // should not propagate to treeitem
+            expect(dispatch).toHaveBeenCalledTimes(1);
         });
 
         it('should dispatch export action when key is pressed', async () => {
@@ -173,6 +179,9 @@ describe('tree item', () => {
             userEvent.click(button);
 
             expect(dispatch).toHaveBeenCalledWith(explorerDeleteFile('test.file'));
+
+            // should not propagate to treeitem
+            expect(dispatch).toHaveBeenCalledTimes(1);
         });
 
         it('should dispatch delete action when key is pressed', async () => {

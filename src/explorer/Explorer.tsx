@@ -61,6 +61,15 @@ const ActionButton: React.VoidFunctionComponent<ActionButtonProps> = ({
     focusable,
     onClick,
 }) => {
+    const handleClick = useCallback<React.MouseEventHandler>(
+        (e) => {
+            // prevent click on treeitem too
+            e.stopPropagation();
+            onClick();
+        },
+        [onClick],
+    );
+
     return (
         <Button
             icon={icon}
@@ -68,7 +77,7 @@ const ActionButton: React.VoidFunctionComponent<ActionButtonProps> = ({
             disabled={disabled}
             tabIndex={focusable === false ? -1 : undefined}
             onFocus={focusable === false ? (e) => e.preventDefault() : undefined}
-            onClick={onClick}
+            onClick={handleClick}
         />
     );
 };
