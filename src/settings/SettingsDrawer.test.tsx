@@ -24,19 +24,6 @@ describe('showDocs setting switch', () => {
         userEvent.click(showDocs);
         expect(showDocs).not.toBeChecked();
     });
-
-    it('should have global keyboard shortcut', async () => {
-        const [settings] = testRender(
-            <SettingsDrawer isOpen={true} onClose={() => undefined} />,
-        );
-
-        const showDocs = settings.getByLabelText('Documentation');
-        expect(showDocs).toBeChecked();
-
-        userEvent.keyboard('{ctrl}d{/ctrl}');
-
-        await waitFor(() => expect(showDocs).not.toBeChecked());
-    });
 });
 
 describe('darkMode setting switch', () => {

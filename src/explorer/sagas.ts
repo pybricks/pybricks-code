@@ -13,9 +13,12 @@ import {
 } from '../editor/actions';
 import { getPybricksMicroPythonFileTemplate } from '../editor/pybricksMicroPython';
 import {
+    fileStorageCopyFile,
     fileStorageDeleteFile,
+    fileStorageDidCopyFile,
     fileStorageDidDeleteFile,
     fileStorageDidDumpAllFiles,
+    fileStorageDidFailToCopyFile,
     fileStorageDidFailToDeleteFile,
     fileStorageDidFailToDumpAllFiles,
     fileStorageDidFailToReadFile,
@@ -45,14 +48,17 @@ import {
     explorerDidArchiveAllFiles,
     explorerDidCreateNewFile,
     explorerDidDeleteFile,
+    explorerDidDuplicateFile,
     explorerDidExportFile,
     explorerDidFailToActivateFile,
     explorerDidFailToArchiveAllFiles,
     explorerDidFailToCreateNewFile,
     explorerDidFailToDeleteFile,
+    explorerDidFailToDuplicateFile,
     explorerDidFailToExportFile,
     explorerDidFailToImportFiles,
     explorerDidImportFiles,
+    explorerDuplicateFile,
     explorerExportFile,
     explorerImportFiles,
 } from './actions';
@@ -61,6 +67,11 @@ import {
     deleteFileAlertDidCancel,
     deleteFileAlertShow,
 } from './deleteFileAlert/actions';
+import {
+    duplicateFileDialogDidAccept,
+    duplicateFileDialogDidCancel,
+    duplicateFileDialogShow,
+} from './duplicateFileDialog/actions';
 import {
     newFileWizardDidAccept,
     newFileWizardDidCancel,
@@ -246,6 +257,48 @@ function* handleExplorerActivateFile(
     yield* put(explorerDidActivateFile(didActivate.fileName));
 }
 
+/** Connects user initiate duplicate file actions to the duplicate file dialog. */
+function* handleExplorerDuplicateFile(
+    action: ReturnType<typeof explorerDuplicateFile>,
+): Generator {
+    try {
+        yield* put(duplicateFileDialogShow(action.fileName));
+
+        const { didAccept, didCancel } = yield* race({
+            didAccept: take(duplicateFileDialogDidAccept),
+            didCancel: take(duplicateFileDialogDidCancel),
+        });
+
+        if (didCancel) {
+            throw new DOMException('user canceled', 'AbortError');
+        }
+
+        defined(didAccept);
+
+        // REVISIT: if editor is not flushed to storage right away, we would
+        // need to check for open editors here
+
+        yield* put(fileStorageCopyFile(action.fileName, didAccept.newName));
+
+        const { didFailToCopy } = yield* race({
+            didCopy: take(
+                fileStorageDidCopyFile.when((a) => a.path === action.fileName),
+            ),
+            didFailToCopy: take(
+                fileStorageDidFailToCopyFile.when((a) => a.path === action.fileName),
+            ),
+        });
+
+        if (didFailToCopy) {
+            throw didFailToCopy.error;
+        }
+
+        yield* put(explorerDidDuplicateFile(action.fileName));
+    } catch (err) {
+        yield* put(explorerDidFailToDuplicateFile(action.fileName, ensureError(err)));
+    }
+}
+
 function* handleExplorerExportFile(
     action: ReturnType<typeof explorerExportFile>,
 ): Generator {
@@ -341,6 +394,7 @@ export default function* (): Generator {
     yield* takeEvery(explorerImportFiles, handleExplorerImportFiles);
     yield* takeEvery(explorerCreateNewFile, handleExplorerCreateNewFile);
     yield* takeEvery(explorerActivateFile, handleExplorerActivateFile);
+    yield* takeEvery(explorerDuplicateFile, handleExplorerDuplicateFile);
     yield* takeEvery(explorerExportFile, handleExplorerExportFile);
     yield* takeEvery(explorerDeleteFile, handleExplorerDeleteFile);
 }

@@ -19,6 +19,7 @@
     "explorer": {
         "failedToImportFiles": "Failed to import file(s).",
         "failedToCreate": "Failed to create file.",
+        "failedToDuplicate": "Failed to duplicate file.",
         "failedToExport": "Failed to export file.",
         "failedToDelete": "Failed to delete file.",
         "failedToArchive": "Failed to archive files.'"

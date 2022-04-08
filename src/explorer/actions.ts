@@ -103,6 +103,37 @@ export const explorerDidFailToActivateFile = createAction(
 );
 
 /**
+ * Action that requests to duplicate a file.
+ * @param fileName The file name.
+ */
+export const explorerDuplicateFile = createAction((fileName: string) => ({
+    type: 'explorer.action.duplicateFile',
+    fileName,
+}));
+
+/**
+ * Action that indicates that {@link explorerDuplicateFile} succeeded.
+ * @param fileName The file name.
+ */
+export const explorerDidDuplicateFile = createAction((fileName: string) => ({
+    type: 'explorer.action.didDuplicateFile',
+    fileName,
+}));
+
+/**
+ * Action that indicates that {@link explorerDuplicateFile} failed.
+ * @param fileName The file name.
+ * @param err The error.
+ */
+export const explorerDidFailToDuplicateFile = createAction(
+    (fileName: string, error: Error) => ({
+        type: 'explorer.action.didFailToDuplicateFile',
+        fileName,
+        error,
+    }),
+);
+
+/**
  * Request to export (download) a file.
  * @param fileName The file name.
  */

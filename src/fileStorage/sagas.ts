@@ -20,12 +20,15 @@ import {
     FileOpenMode,
     UUID,
     fileStorageClose,
+    fileStorageCopyFile,
     fileStorageDeleteFile,
     fileStorageDidAddItem,
     fileStorageDidChangeItem,
     fileStorageDidClose,
+    fileStorageDidCopyFile,
     fileStorageDidDeleteFile,
     fileStorageDidDumpAllFiles,
+    fileStorageDidFailToCopyFile,
     fileStorageDidFailToDeleteFile,
     fileStorageDidFailToDumpAllFiles,
     fileStorageDidFailToInitialize,
@@ -481,6 +484,66 @@ function* handleWriteFile(action: ReturnType<typeof fileStorageWriteFile>): Gene
     }
 }
 
+function* handleCopyFile(
+    db: FileStorageDb,
+    action: ReturnType<typeof fileStorageCopyFile>,
+): Generator {
+    try {
+        yield* call(() =>
+            navigator.locks.request(
+                lockNameForPath(action.newPath),
+                { ifAvailable: true },
+                async (lock) => {
+                    if (lock === null) {
+                        throw new Error(`file '${action.newPath}' is in use`);
+                    }
+
+                    await db.transaction('rw', db.metadata, db._contents, async () => {
+                        const metadata = await db.metadata
+                            .where('path')
+                            .equals(action.path)
+                            .first();
+
+                        if (!metadata) {
+                            throw new Error(`file '${action.path}' does not exist`);
+                        }
+
+                        if (
+                            await db.metadata
+                                .where('path')
+                                .equals(action.newPath)
+                                .first()
+                        ) {
+                            throw new Error(`file '${action.newPath}' already exists`);
+                        }
+
+                        await db.metadata.add((<Omit<FileMetadata, 'uuid'>>{
+                            ...metadata,
+                            uuid: undefined,
+                            path: action.newPath,
+                        }) as FileMetadata);
+
+                        const contents = await db._contents.get(metadata.path);
+
+                        // istanbul ignore if: should not be reachable
+                        if (!contents) {
+                            throw new Error(
+                                `bug: missing file content for ${metadata.path}`,
+                            );
+                        }
+
+                        await db._contents.add({ ...contents, path: action.newPath });
+                    });
+                },
+            ),
+        );
+
+        yield* put(fileStorageDidCopyFile(action.path));
+    } catch (err) {
+        yield* put(fileStorageDidFailToCopyFile(action.path, ensureError(err)));
+    }
+}
+
 /**
  * Deletes a file from storage.
  * @param db The database instance.
@@ -690,6 +753,7 @@ function* initialize(): Generator {
         yield* takeEvery(fileStorageWrite, handleWrite, db, openFds);
         yield* takeEvery(fileStorageReadFile, handleReadFile);
         yield* takeEvery(fileStorageWriteFile, handleWriteFile);
+        yield* takeEvery(fileStorageCopyFile, handleCopyFile, db);
         yield* takeEvery(fileStorageDeleteFile, handleDeleteFile, db);
         yield* takeEvery(fileStorageRenameFile, handleRenameFile, db);
         yield* takeEvery(fileStorageDumpAllFiles, handleDumpAllFiles, db);

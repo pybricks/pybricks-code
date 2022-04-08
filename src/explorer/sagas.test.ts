@@ -13,9 +13,12 @@ import {
     editorDidFailToActivateFile,
 } from '../editor/actions';
 import {
+    fileStorageCopyFile,
     fileStorageDeleteFile,
+    fileStorageDidCopyFile,
     fileStorageDidDeleteFile,
     fileStorageDidDumpAllFiles,
+    fileStorageDidFailToCopyFile,
     fileStorageDidFailToDeleteFile,
     fileStorageDidFailToDumpAllFiles,
     fileStorageDidFailToReadFile,
@@ -36,14 +39,17 @@ import {
     explorerDidArchiveAllFiles,
     explorerDidCreateNewFile,
     explorerDidDeleteFile,
+    explorerDidDuplicateFile,
     explorerDidExportFile,
     explorerDidFailToActivateFile,
     explorerDidFailToArchiveAllFiles,
     explorerDidFailToCreateNewFile,
     explorerDidFailToDeleteFile,
+    explorerDidFailToDuplicateFile,
     explorerDidFailToExportFile,
     explorerDidFailToImportFiles,
     explorerDidImportFiles,
+    explorerDuplicateFile,
     explorerExportFile,
     explorerImportFiles,
 } from './actions';
@@ -52,6 +58,11 @@ import {
     deleteFileAlertDidCancel,
     deleteFileAlertShow,
 } from './deleteFileAlert/actions';
+import {
+    duplicateFileDialogDidAccept,
+    duplicateFileDialogDidCancel,
+    duplicateFileDialogShow,
+} from './duplicateFileDialog/actions';
 import {
     Hub,
     newFileWizardDidAccept,
@@ -245,6 +256,61 @@ describe('handleExplorerActivateFile', () => {
         await expect(saga.take()).resolves.toEqual(
             explorerDidActivateFile('test.file'),
         );
+    });
+
+    afterEach(async () => {
+        await saga.end();
+    });
+});
+
+describe('handleExplorerDuplicateFile', () => {
+    let saga: AsyncSaga;
+
+    beforeEach(async () => {
+        saga = new AsyncSaga(explorer);
+
+        saga.put(explorerDuplicateFile('old.file'));
+
+        await expect(saga.take()).resolves.toEqual(duplicateFileDialogShow('old.file'));
+    });
+
+    it('should dispatch action if canceled', async () => {
+        saga.put(duplicateFileDialogDidCancel());
+
+        await expect(saga.take()).resolves.toEqual(
+            explorerDidFailToDuplicateFile(
+                'old.file',
+                new DOMException('user canceled', 'AbortError'),
+            ),
+        );
+    });
+
+    describe('user accepted', () => {
+        beforeEach(async () => {
+            saga.put(duplicateFileDialogDidAccept('old.file', 'new.file'));
+
+            await expect(saga.take()).resolves.toEqual(
+                fileStorageCopyFile('old.file', 'new.file'),
+            );
+        });
+
+        it('should propagate failure', async () => {
+            const testError = new Error('test error');
+
+            saga.put(fileStorageDidFailToCopyFile('old.file', testError));
+
+            await expect(saga.take()).resolves.toEqual(
+                explorerDidFailToDuplicateFile('old.file', testError),
+            );
+        });
+
+        it('should dispatch action on fileStorageDuplicateFile success', async () => {
+            saga.put(fileStorageDidCopyFile('old.file'));
+
+            await expect(saga.take()).resolves.toEqual(
+                explorerDidDuplicateFile('old.file'),
+            );
+        });
     });
 
     afterEach(async () => {

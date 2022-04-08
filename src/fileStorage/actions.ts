@@ -262,6 +262,39 @@ export const fileStorageDidFailToWriteFile = createAction(
 );
 
 /**
+ * Request to copy a file from storage.
+ * @param path: The path of the file to be copied.
+ * @param newPath: The path of the new file to be created.
+ */
+export const fileStorageCopyFile = createAction((path: string, newPath: string) => ({
+    type: 'fileStorage.action.copyFile',
+    path,
+    newPath,
+}));
+
+/**
+ * Indicates that {@link fileStorageCopyFile} succeeded.
+ * @param path: The file path.
+ */
+export const fileStorageDidCopyFile = createAction((path: string) => ({
+    type: 'fileStorage.action.didCopyFile',
+    path,
+}));
+
+/**
+ *  Indicates that {@link fileStorageCopyFile} failed.
+ * @param path: The file path.
+ * @param error The error.
+ */
+export const fileStorageDidFailToCopyFile = createAction(
+    (path: string, error: Error) => ({
+        type: 'fileStorage.action.didFailToCopyFile',
+        path,
+        error,
+    }),
+);
+
+/**
  * Request to delete a file from storage.
  * @param path: The file path.
  */

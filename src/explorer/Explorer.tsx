@@ -33,10 +33,12 @@ import {
     explorerArchiveAllFiles,
     explorerCreateNewFile,
     explorerDeleteFile,
+    explorerDuplicateFile,
     explorerExportFile,
     explorerImportFiles,
 } from './actions';
 import DeleteFileAlert from './deleteFileAlert/DeleteFileAlert';
+import DuplicateFileDialog from './duplicateFileDialog/DuplicateFileDialog';
 import { I18nId } from './i18n';
 import NewFileWizard from './newFileWizard/NewFileWizard';
 
@@ -107,6 +109,12 @@ const FileActionButtonGroup: React.VoidFunctionComponent<ActionButtonGroupProps>
             className="pb-explorer-file-action-button-group"
             minimal={true}
         >
+            <ActionButton
+                icon="duplicate"
+                tooltip={i18n.translate(I18nId.TreeItemDuplicateTooltip, { fileName })}
+                focusable={false}
+                onClick={() => dispatch(explorerDuplicateFile(fileName))}
+            />
             <ActionButton
                 // NB: the "import" icon has an arrow pointing down, which is
                 // what we want here since import is analogous to download
@@ -182,6 +190,10 @@ function useLiveDescriptors(i18n: I18n): LiveDescriptors {
                         { key: '{keybinding:primaryAction}' },
                     )}</li>
                     <li>${i18n.translate(
+                        I18nId.TreeLiveDescriptorIntroKeybindingsDuplicate,
+                        { key: `${isMacOS() ? 'cmd' : 'ctrl'}+d` },
+                    )}</li>
+                    <li>${i18n.translate(
                         I18nId.TreeLiveDescriptorIntroKeybindingsExport,
                         { key: `${isMacOS() ? 'cmd' : 'ctrl'}+e` },
                     )}</li>
@@ -216,6 +228,13 @@ const renderTreeContainer: typeof renderers.renderTreeContainer = (props) => {
     const hotKeyActive =
         isActiveTree; /* && !dnd.isProgrammaticallyDragging && !isRenaming */
 
+    const handleDuplicateKeyDown = useCallback(() => {
+        if (focusedItem !== undefined) {
+            const fileName = environment.getItemTitle(environment.items[focusedItem]);
+            dispatch(explorerDuplicateFile(fileName));
+        }
+    }, [environment]);
+
     const handleDeleteKeyDown = useCallback(() => {
         if (focusedItem !== undefined) {
             const fileName = environment.getItemTitle(environment.items[focusedItem]);
@@ -233,10 +252,19 @@ const renderTreeContainer: typeof renderers.renderTreeContainer = (props) => {
     const hotkeys = useMemo<readonly HotkeyConfig[]>(
         () => [
             {
+                combo: 'mod+d',
+                label: 'Duplicate',
+                disabled: !hotKeyActive,
+                preventDefault: true,
+                stopPropagation: true,
+                onKeyDown: handleDuplicateKeyDown,
+            },
+            {
                 combo: 'del',
                 label: 'Delete',
                 disabled: !hotKeyActive,
                 preventDefault: true,
+                stopPropagation: true,
                 onKeyDown: handleDeleteKeyDown,
             },
             {
@@ -244,6 +272,7 @@ const renderTreeContainer: typeof renderers.renderTreeContainer = (props) => {
                 label: 'Export',
                 disabled: !hotKeyActive,
                 preventDefault: true,
+                stopPropagation: true,
                 onKeyDown: handleExportKeyDown,
             },
         ],
@@ -354,6 +383,7 @@ const Explorer: React.VFC = () => {
             <Divider />
             <FileTree i18n={i18n} />
             <NewFileWizard />
+            <DuplicateFileDialog />
             <DeleteFileAlert />
         </div>
     );

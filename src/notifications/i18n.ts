@@ -18,6 +18,7 @@ export enum I18nId {
     ExplorerFailedToImportFiles = 'explorer.failedToImportFiles',
     ExplorerFailedToCreate = 'explorer.failedToCreate',
     ExplorerFailedToDelete = 'explorer.failedToDelete',
+    ExplorerFailedToDuplicate = 'explorer.failedToDuplicate',
     ExplorerFailedToExport = 'explorer.failedToExport',
     ExplorerFailedToArchive = 'explorer.failedToArchive',
     FileStorageFailedToInitialize = 'fileStorage.failedToInitialize',

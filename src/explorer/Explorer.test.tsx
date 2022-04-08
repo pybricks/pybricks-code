@@ -11,6 +11,7 @@ import {
     explorerArchiveAllFiles,
     explorerCreateNewFile,
     explorerDeleteFile,
+    explorerDuplicateFile,
     explorerExportFile,
     explorerImportFiles,
 } from './actions';
@@ -99,6 +100,38 @@ describe('tree item', () => {
         userEvent.keyboard('{enter}');
 
         expect(dispatch).toHaveBeenCalledWith(explorerActivateFile('test.file'));
+    });
+
+    describe('duplicate', () => {
+        it('should dispatch action when button is clicked', async () => {
+            const [explorer, dispatch] = testRender(<Explorer />, {
+                explorer: { files: [testFile] },
+            });
+
+            // NB: this button is intentionally not accessible (by role) since
+            // there is a keyboard shortcut.
+            const button = explorer.getByTitle('Duplicate test.file');
+
+            userEvent.click(button);
+
+            expect(dispatch).toHaveBeenCalledWith(explorerDuplicateFile('test.file'));
+
+            // should not propagate to treeitem
+            expect(dispatch).toHaveBeenCalledTimes(1);
+        });
+
+        it('should dispatch action when key is pressed', async () => {
+            const [explorer, dispatch] = testRender(<Explorer />, {
+                explorer: { files: [testFile] },
+            });
+
+            const treeItem = explorer.getByRole('treeitem', { name: 'test.file' });
+
+            userEvent.click(treeItem);
+            userEvent.keyboard('{ctrl}d');
+
+            expect(dispatch).toHaveBeenCalledWith(explorerDuplicateFile('test.file'));
+        });
     });
 
     describe('export', () => {

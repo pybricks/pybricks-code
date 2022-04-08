@@ -22,6 +22,7 @@ import {
     explorerDidFailToArchiveAllFiles,
     explorerDidFailToCreateNewFile,
     explorerDidFailToDeleteFile,
+    explorerDidFailToDuplicateFile,
     explorerDidFailToExportFile,
     explorerDidFailToImportFiles,
 } from '../explorer/actions';
@@ -417,6 +418,17 @@ function* showExplorerFailToCreateFile(
     yield* showUnexpectedError(I18nId.ExplorerFailedToCreate, action.error);
 }
 
+function* showExplorerFailToDuplicate(
+    action: ReturnType<typeof explorerDidFailToDuplicateFile>,
+): Generator {
+    if (action.error.name === 'AbortError') {
+        // user clicked cancel button - not an error
+        return;
+    }
+
+    yield* showUnexpectedError(I18nId.ExplorerFailedToDuplicate, action.error);
+}
+
 function* showExplorerFailToExport(
     action: ReturnType<typeof explorerDidFailToExportFile>,
 ): Generator {
@@ -462,6 +474,7 @@ export default function* (): Generator {
     yield* takeEvery(explorerDidFailToArchiveAllFiles, showFileStorageFailToArchive);
     yield* takeEvery(explorerDidFailToImportFiles, showExplorerFailToImportFiles);
     yield* takeEvery(explorerDidFailToCreateNewFile, showExplorerFailToCreateFile);
+    yield* takeEvery(explorerDidFailToDuplicateFile, showExplorerFailToDuplicate);
     yield* takeEvery(explorerDidFailToExportFile, showExplorerFailToExport);
     yield* takeEvery(explorerDidFailToDeleteFile, showExplorerFailToDelete);
     yield* takeEvery(editorDidFailToOpenFile, showEditorDidFailToOpenFile);

@@ -141,6 +141,20 @@ const App: React.VFC = () => {
         return () => document.body.classList.remove(Classes.DARK);
     }, [isDarkMode]);
 
+    useEffect(() => {
+        const listener = (e: KeyboardEvent) => {
+            // prevent default browser keyboard shortcuts that we use
+            // NB: some of these like 'n' and 'w' cannot be prevented when
+            // running "in the browser"
+            if (e.ctrlKey && ['d', 'n', 's', 'w'].includes(e.key)) {
+                e.preventDefault();
+            }
+        };
+
+        addEventListener('keydown', listener);
+        return () => removeEventListener('keydown', listener);
+    }, []);
+
     return (
         <div className="pb-app h-100 w-100 p-absolute">
             <Toolbar />

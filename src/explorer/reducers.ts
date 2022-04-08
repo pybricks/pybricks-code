@@ -11,6 +11,7 @@ import {
 } from '../fileStorage/actions';
 
 import deleteFileAlert from './deleteFileAlert/reducers';
+import duplicateFileDialog from './duplicateFileDialog/reducers';
 import newFileWizard from './newFileWizard/reducers';
 import renameFileDialog from './renameFileDialog/reducers';
 
@@ -55,6 +56,7 @@ const files: Reducer<readonly ExplorerFileInfo[]> = (state = [], action) => {
 
 export default combineReducers({
     files,
+    duplicateFileDialog,
     deleteFileAlert,
     newFileWizard,
     renameFileDialog,

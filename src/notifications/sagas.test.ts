@@ -21,6 +21,7 @@ import {
     explorerDidFailToArchiveAllFiles,
     explorerDidFailToCreateNewFile,
     explorerDidFailToDeleteFile,
+    explorerDidFailToDuplicateFile,
     explorerDidFailToExportFile,
     explorerDidFailToImportFiles,
 } from '../explorer/actions';
@@ -112,6 +113,7 @@ test.each([
     explorerDidFailToArchiveAllFiles(new Error('test error')),
     explorerDidFailToImportFiles(new Error('test error')),
     explorerDidFailToCreateNewFile(new Error('test error')),
+    explorerDidFailToDuplicateFile('test.file', new Error('test error')),
     explorerDidFailToExportFile('test.file', new Error('test error')),
     explorerDidFailToDeleteFile('test.file', new Error('test error')),
     editorDidFailToOpenFile('test.file', new Error('test error')),
@@ -137,6 +139,10 @@ test.each([
     explorerDidFailToArchiveAllFiles(new DOMException('test message', 'AbortError')),
     explorerDidFailToImportFiles(new DOMException('test message', 'AbortError')),
     explorerDidFailToCreateNewFile(new DOMException('test message', 'AbortError')),
+    explorerDidFailToDuplicateFile(
+        'test.file',
+        new DOMException('test message', 'AbortError'),
+    ),
     explorerDidFailToExportFile(
         'test.file',
         new DOMException('test message', 'AbortError'),

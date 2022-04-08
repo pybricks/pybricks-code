@@ -15,11 +15,10 @@ import {
     Intent,
     Label,
     Switch,
-    useHotkeys,
 } from '@blueprintjs/core';
 import { Tooltip2 } from '@blueprintjs/popover2';
 import { useI18n } from '@shopify/react-i18n';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useTernaryDarkMode } from 'usehooks-ts';
 import AboutDialog from '../about/AboutDialog';
@@ -52,11 +51,8 @@ const SettingsDrawer: React.VoidFunctionComponent<SettingsProps> = ({
     isOpen,
     onClose,
 }) => {
-    const {
-        isSettingShowDocsEnabled,
-        setIsSettingShowDocsEnabled,
-        toggleIsSettingShowDocsEnabled,
-    } = useSettingIsShowDocsEnabled();
+    const { isSettingShowDocsEnabled, setIsSettingShowDocsEnabled } =
+        useSettingIsShowDocsEnabled();
     const [isAboutDialogOpen, setIsAboutDialogOpen] = useState(false);
     const { isDarkMode, setTernaryDarkMode } = useTernaryDarkMode();
 
@@ -78,21 +74,6 @@ const SettingsDrawer: React.VoidFunctionComponent<SettingsProps> = ({
 
     // istanbul ignore next: babel-loader rewrites this line
     const [i18n] = useI18n();
-
-    const hotkeys = useMemo(
-        () => [
-            {
-                combo: 'mod+d',
-                label: i18n.translate(I18nId.AppearanceDocumentationTooltip),
-                global: true,
-                preventDefault: true,
-                onKeyDown: toggleIsSettingShowDocsEnabled,
-            },
-        ],
-        [i18n, toggleIsSettingShowDocsEnabled],
-    );
-
-    useHotkeys(hotkeys);
 
     // HACK: set additional attributes that are not supported via Drawer props
     const handleDrawerOpening = useCallback<(node: HTMLElement) => void>((n) => {

@@ -11,12 +11,15 @@ import {
     FileMetadata,
     FileOpenMode,
     fileStorageClose,
+    fileStorageCopyFile,
     fileStorageDeleteFile,
     fileStorageDidAddItem,
     fileStorageDidChangeItem,
     fileStorageDidClose,
+    fileStorageDidCopyFile,
     fileStorageDidDeleteFile,
     fileStorageDidDumpAllFiles,
+    fileStorageDidFailToCopyFile,
     fileStorageDidFailToDeleteFile,
     fileStorageDidFailToDumpAllFiles,
     fileStorageDidFailToInitialize,
@@ -537,6 +540,78 @@ describe('writeFile', () => {
                 fileStorageDidWriteFile('test.file'),
             );
         });
+    });
+
+    afterEach(async () => {
+        await saga.end();
+    });
+});
+
+describe('copyFile', () => {
+    let saga: AsyncSaga;
+    let testFile: FileMetadata;
+
+    beforeEach(async () => {
+        saga = new AsyncSaga(fileStorage);
+
+        await expect(saga.take()).resolves.toEqual(fileStorageDidInitialize([]));
+        [testFile] = await setUpTestFile(saga);
+    });
+
+    it('should fail if file does not exist', async () => {
+        saga.put(fileStorageCopyFile('other.file', 'new.file'));
+
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageDidFailToCopyFile(
+                'other.file',
+                new Error("file 'other.file' does not exist"),
+            ),
+        );
+    });
+
+    it('should fail if new file is open', async () => {
+        saga.put(fileStorageOpen('new.file', 'w'));
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageDidOpen('new.file', 1 as FD),
+        );
+
+        saga.put(fileStorageCopyFile('test.file', 'new.file'));
+
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageDidFailToCopyFile(
+                'test.file',
+                new Error("file 'new.file' is in use"),
+            ),
+        );
+    });
+
+    it('should fail if new file exists', async () => {
+        saga.put(fileStorageOpen('new.file', 'w'));
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageDidOpen('new.file', 1 as FD),
+        );
+
+        saga.put(fileStorageClose(1 as FD));
+        await expect(saga.take()).resolves.toEqual(fileStorageDidClose(1 as FD));
+
+        saga.put(fileStorageCopyFile('test.file', 'new.file'));
+
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageDidFailToCopyFile(
+                'test.file',
+                new Error("file 'new.file' already exists"),
+            ),
+        );
+    });
+
+    it('should copy file', async () => {
+        saga.put(fileStorageCopyFile('test.file', 'new.file'));
+
+        await expect(saga.take()).resolves.toEqual(fileStorageDidCopyFile('test.file'));
+
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageDidAddItem({ ...testFile, uuid: uuid(1), path: 'new.file' }),
+        );
     });
 
     afterEach(async () => {
