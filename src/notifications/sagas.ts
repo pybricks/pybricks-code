@@ -448,6 +448,11 @@ function* showExplorerFailToImportFiles(
 function* showExplorerFailToCreateFile(
     action: ReturnType<typeof explorerDidFailToCreateNewFile>,
 ): Generator {
+    if (action.error.name === 'AbortError') {
+        // user clicked cancel button - not an error
+        return;
+    }
+
     yield* showUnexpectedError(I18nId.ExplorerFailedToCreate, action.error);
 }
 

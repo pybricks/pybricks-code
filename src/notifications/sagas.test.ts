@@ -139,6 +139,7 @@ test.each([
     bleDIServiceDidReceiveFirmwareRevision(firmwareVersion),
     explorerDidFailToArchiveAllFiles(new DOMException('test message', 'AbortError')),
     explorerDidFailToImportFiles(new DOMException('test message', 'AbortError')),
+    explorerDidFailToCreateNewFile(new DOMException('test message', 'AbortError')),
     explorerDidFailToExportFile(
         'test.file',
         new DOMException('test message', 'AbortError'),

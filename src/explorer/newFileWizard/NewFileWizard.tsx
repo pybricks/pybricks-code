@@ -10,7 +10,7 @@ import {
     RadioGroup,
 } from '@blueprintjs/core';
 import { useI18n } from '@shopify/react-i18n';
-import React, { useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import {
     FileNameValidationResult,
@@ -18,28 +18,20 @@ import {
     validateFileName,
 } from '../../pybricksMicropython/lib';
 import { useSelector } from '../../reducers';
+import { useUniqueId } from '../../utils/react';
 import FileNameFormGroup from '../fileNameFormGroup/FileNameFormGroup';
-import { Hub, explorerCreateNewFile } from './../actions';
+import { Hub, newFileWizardDidAccept, newFileWizardDidCancel } from './actions';
 import { I18nId } from './i18n';
 
 // This should be set to the most commonly used hub.
 const defaultHub = Hub.Technic;
 
-type NewFileWizardProps = {
-    /** Controls if the dialog is open. */
-    readonly isOpen: boolean;
-    /** Called when the dialog is closed. */
-    readonly onClose: () => void;
-};
-
-const NewFileWizard: React.VoidFunctionComponent<NewFileWizardProps> = ({
-    isOpen,
-    onClose,
-}) => {
+const NewFileWizard: React.VoidFunctionComponent = () => {
     // istanbul ignore next: babel-loader rewrites this line
     const [i18n] = useI18n();
     const dispatch = useDispatch();
 
+    const isOpen = useSelector((s) => s.explorer.newFileWizard.isOpen);
     const [fileName, setFileName] = useState('');
     const files = useSelector((s) => s.explorer.files);
     const fileNameValidation = validateFileName(
@@ -51,6 +43,20 @@ const NewFileWizard: React.VoidFunctionComponent<NewFileWizardProps> = ({
 
     const fileNameInputRef = useRef<HTMLInputElement>(null);
 
+    const handleSubmit = useCallback<React.FormEventHandler>(
+        (e) => {
+            e.preventDefault();
+            dispatch(newFileWizardDidAccept(fileName, pythonFileExtension, hubType));
+        },
+        [dispatch, fileName, pythonFileExtension, hubType],
+    );
+
+    const handleClose = useCallback(() => {
+        dispatch(newFileWizardDidCancel());
+    }, [dispatch]);
+
+    const acceptButtonLabelId = useUniqueId('pybricks-explorer');
+
     return (
         <Dialog
             icon="plus"
@@ -58,51 +64,50 @@ const NewFileWizard: React.VoidFunctionComponent<NewFileWizardProps> = ({
             isOpen={isOpen}
             onOpening={() => setFileName('')}
             onOpened={() => fileNameInputRef.current?.focus()}
-            onClose={onClose}
+            onClose={handleClose}
         >
-            <div className={Classes.DIALOG_BODY}>
-                <FileNameFormGroup
-                    fileName={fileName}
-                    fileExtension={pythonFileExtension}
-                    validationResult={fileNameValidation}
-                    inputRef={fileNameInputRef}
-                    onChange={setFileName}
-                />
-                <FormGroup label={i18n.translate(I18nId.SmartHubLabel)}>
-                    <RadioGroup
-                        selectedValue={hubType}
-                        onChange={(e) => setHubType(e.currentTarget.value as Hub)}
-                    >
-                        <Radio value={Hub.Move}>BOOST Move Hub</Radio>
-                        <Radio value={Hub.City}>City Hub</Radio>
-                        <Radio value={Hub.Technic}>Technic Hub</Radio>
-                        <Radio value={Hub.Prime}>SPIKE Prime</Radio>
-                        <Radio value={Hub.Essential}>SPIKE Essential</Radio>
-                        <Radio value={Hub.Inventor}>MINDSTORMS Robot Inventor</Radio>
-                    </RadioGroup>
-                </FormGroup>
-            </div>
-            <div className={Classes.DIALOG_FOOTER}>
-                <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-                    <Button
-                        aria-label="Create"
-                        intent="primary"
-                        disabled={fileNameValidation !== FileNameValidationResult.IsOk}
-                        onClick={() => {
-                            onClose();
-                            dispatch(
-                                explorerCreateNewFile(
-                                    fileName,
-                                    pythonFileExtension,
-                                    hubType,
-                                ),
-                            );
-                        }}
-                    >
-                        {i18n.translate(I18nId.ActionCreate)}
-                    </Button>
+            <form onSubmit={handleSubmit}>
+                <div className={Classes.DIALOG_BODY}>
+                    <FileNameFormGroup
+                        fileName={fileName}
+                        fileExtension={pythonFileExtension}
+                        validationResult={fileNameValidation}
+                        inputRef={fileNameInputRef}
+                        onChange={setFileName}
+                    />
+                    <FormGroup label={i18n.translate(I18nId.SmartHubLabel)}>
+                        <RadioGroup
+                            selectedValue={hubType}
+                            onChange={(e) => setHubType(e.currentTarget.value as Hub)}
+                        >
+                            <Radio value={Hub.Move}>BOOST Move Hub</Radio>
+                            <Radio value={Hub.City}>City Hub</Radio>
+                            <Radio value={Hub.Technic}>Technic Hub</Radio>
+                            <Radio value={Hub.Prime}>SPIKE Prime</Radio>
+                            <Radio value={Hub.Essential}>SPIKE Essential</Radio>
+                            <Radio value={Hub.Inventor}>
+                                MINDSTORMS Robot Inventor
+                            </Radio>
+                        </RadioGroup>
+                    </FormGroup>
                 </div>
-            </div>
+                <div className={Classes.DIALOG_FOOTER}>
+                    <div className={Classes.DIALOG_FOOTER_ACTIONS}>
+                        <Button
+                            aria-labelledby={acceptButtonLabelId}
+                            intent="primary"
+                            disabled={
+                                fileNameValidation !== FileNameValidationResult.IsOk
+                            }
+                            type="submit"
+                        >
+                            <span id={acceptButtonLabelId}>
+                                {i18n.translate(I18nId.ActionCreate)}
+                            </span>
+                        </Button>
+                    </div>
+                </div>
+            </form>
         </Dialog>
     );
 };

@@ -3,6 +3,7 @@
 
 // A file explorer control.
 
+import './explorer.scss';
 import {
     Button,
     ButtonGroup,
@@ -30,6 +31,7 @@ import { TreeItemContext, TreeItemData, renderers } from '../utils/tree-renderer
 import {
     explorerActivateFile,
     explorerArchiveAllFiles,
+    explorerCreateNewFile,
     explorerDeleteFile,
     explorerExportFile,
     explorerImportFiles,
@@ -38,7 +40,6 @@ import {
 import { I18nId } from './i18n';
 import NewFileWizard from './newFileWizard/NewFileWizard';
 import RenameFileDialog from './renameFileDialog/RenameFileDialog';
-import './explorer.scss';
 
 type ActionButtonProps = {
     /** The icon to use for the button. */
@@ -131,7 +132,6 @@ type HeaderProps = {
 };
 
 const Header: React.VoidFunctionComponent<HeaderProps> = ({ i18n }) => {
-    const [isNewFileWizardOpen, setIsNewFileWizardOpen] = useState(false);
     const dispatch = useDispatch();
     const files = useSelector((s) => s.explorer.files);
 
@@ -155,11 +155,7 @@ const Header: React.VoidFunctionComponent<HeaderProps> = ({ i18n }) => {
                 <ActionButton
                     icon="plus"
                     tooltip={i18n.translate(I18nId.HeaderAddNewTooltip)}
-                    onClick={() => setIsNewFileWizardOpen(true)}
-                />
-                <NewFileWizard
-                    isOpen={isNewFileWizardOpen}
-                    onClose={() => setIsNewFileWizardOpen(false)}
+                    onClick={() => dispatch(explorerCreateNewFile())}
                 />
             </ButtonGroup>
         </div>
@@ -373,6 +369,7 @@ const Explorer: React.VFC = () => {
             <Header i18n={i18n} />
             <Divider />
             <FileTree i18n={i18n} />
+            <NewFileWizard />
             <RenameFileDialog />
         </div>
     );

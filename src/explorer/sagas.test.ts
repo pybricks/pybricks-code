@@ -25,7 +25,6 @@ import {
 } from '../fileStorage/actions';
 import { pythonFileExtension } from '../pybricksMicropython/lib';
 import {
-    Hub,
     explorerActivateFile,
     explorerArchiveAllFiles,
     explorerCreateNewFile,
@@ -35,6 +34,7 @@ import {
     explorerDidExportFile,
     explorerDidFailToActivateFile,
     explorerDidFailToArchiveAllFiles,
+    explorerDidFailToCreateNewFile,
     explorerDidFailToExportFile,
     explorerDidFailToImportFiles,
     explorerDidFailToRenameFile,
@@ -44,6 +44,12 @@ import {
     explorerImportFiles,
     explorerRenameFile,
 } from './actions';
+import {
+    Hub,
+    newFileWizardDidAccept,
+    newFileWizardDidCancel,
+    newFileWizardShow,
+} from './newFileWizard/actions';
 import {
     renameFileDialogDidAccept,
     renameFileDialogDidCancel,
@@ -159,10 +165,28 @@ describe('handleExplorerImportFiles', () => {
 });
 
 describe('handleExplorerCreateNewFile', () => {
-    it('should dispatch fileStorage action', async () => {
-        const saga = new AsyncSaga(explorer);
+    let saga: AsyncSaga;
 
-        saga.put(explorerCreateNewFile('test', pythonFileExtension, Hub.Technic));
+    beforeEach(async () => {
+        saga = new AsyncSaga(explorer);
+
+        saga.put(explorerCreateNewFile());
+
+        await expect(saga.take()).resolves.toEqual(newFileWizardShow());
+    });
+
+    it('should dispatch error when canceled', async () => {
+        saga.put(newFileWizardDidCancel());
+
+        await expect(saga.take()).resolves.toEqual(
+            explorerDidFailToCreateNewFile(
+                new DOMException('user canceled', 'AbortError'),
+            ),
+        );
+    });
+
+    it('should dispatch fileStorage action', async () => {
+        saga.put(newFileWizardDidAccept('test', pythonFileExtension, Hub.Technic));
 
         await expect(saga.take()).resolves.toMatchInlineSnapshot(`
             Object {
@@ -182,8 +206,12 @@ describe('handleExplorerCreateNewFile', () => {
 
         saga.put(fileStorageDidWriteFile('test.py'));
 
-        await expect(saga.take()).resolves.toEqual(explorerDidCreateNewFile());
+        await expect(saga.take()).resolves.toEqual(editorActivateFile('test.py'));
 
+        await expect(saga.take()).resolves.toEqual(explorerDidCreateNewFile());
+    });
+
+    afterEach(async () => {
         await saga.end();
     });
 });

@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2022 The Pybricks Authors
 
-import { getByLabelText, waitFor } from '@testing-library/dom';
 import { cleanup } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
@@ -10,6 +9,7 @@ import Explorer from './Explorer';
 import {
     explorerActivateFile,
     explorerArchiveAllFiles,
+    explorerCreateNewFile,
     explorerDeleteFile,
     explorerExportFile,
     explorerImportFiles,
@@ -66,18 +66,13 @@ describe('import file button', () => {
 });
 
 describe('new file button', () => {
-    it('should show new file wizard', async () => {
-        const [explorer] = testRender(<Explorer />);
+    it('should dispatch action when clicked', async () => {
+        const [explorer, dispatch] = testRender(<Explorer />);
 
         const button = explorer.getByTitle('Create a new file');
 
         userEvent.click(button);
-
-        const dialog = explorer.getByRole('dialog', { name: 'Create a new file' });
-        expect(dialog).toBeVisible();
-
-        userEvent.click(getByLabelText(dialog, 'Close'));
-        await waitFor(() => expect(dialog).not.toBeVisible());
+        expect(dispatch).toHaveBeenCalledWith(explorerCreateNewFile());
     });
 });
 

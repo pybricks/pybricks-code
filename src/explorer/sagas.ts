@@ -62,6 +62,11 @@ import {
     explorerRenameFile,
 } from './actions';
 import {
+    newFileWizardDidAccept,
+    newFileWizardDidCancel,
+    newFileWizardShow,
+} from './newFileWizard/actions';
+import {
     renameFileDialogDidAccept,
     renameFileDialogDidCancel,
     renameFileDialogShow,
@@ -170,16 +175,27 @@ function* handleExplorerImportFiles(): Generator {
     }
 }
 
-function* handleExplorerCreateNewFile(
-    action: ReturnType<typeof explorerCreateNewFile>,
-): Generator {
+function* handleExplorerCreateNewFile(): Generator {
     try {
-        const fileName = `${action.fileName}${action.fileExtension}`;
+        yield* put(newFileWizardShow());
+
+        const { didAccept, didCancel } = yield* race({
+            didAccept: take(newFileWizardDidAccept),
+            didCancel: take(newFileWizardDidCancel),
+        });
+
+        if (didCancel) {
+            throw new DOMException('user canceled', 'AbortError');
+        }
+
+        defined(didAccept);
+
+        const fileName = `${didAccept.fileName}${didAccept.fileExtension}`;
 
         yield* put(
             fileStorageWriteFile(
                 fileName,
-                getPybricksMicroPythonFileTemplate(action.hub) || '',
+                getPybricksMicroPythonFileTemplate(didAccept.hubType) || '',
             ),
         );
 
@@ -193,6 +209,8 @@ function* handleExplorerCreateNewFile(
         if (didFailToWrite) {
             throw didFailToWrite.error;
         }
+
+        yield* put(editorActivateFile(fileName));
 
         yield* put(explorerDidCreateNewFile());
     } catch (err) {
