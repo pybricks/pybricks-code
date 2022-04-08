@@ -7,6 +7,9 @@
 
 import { monaco } from 'react-monaco-editor';
 
+/** The Pybricks MicroPython language identifier. */
+export const pybricksMicroPythonId = 'pybricks-micropython';
+
 export const conf: monaco.languages.LanguageConfiguration = {
     comments: {
         lineComment: '#',

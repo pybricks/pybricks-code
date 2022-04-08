@@ -17,6 +17,7 @@ import {
     BleDeviceFailToConnectReasonType,
     didFailToConnect as bleDeviceDidFailToConnect,
 } from '../ble/actions';
+import { editorDidFailToOpenFile } from '../editor/actions';
 import {
     explorerDeleteFile,
     explorerDidFailToArchiveAllFiles,
@@ -461,6 +462,13 @@ function* showExplorerFailToExport(
     yield* showUnexpectedError(I18nId.ExplorerFailedToExport, action.error);
 }
 
+function* showEditorDidFailToOpenFile(
+    action: ReturnType<typeof explorerDidFailToExportFile>,
+): Generator {
+    // TODO: add a better error message for the case where a file is already in use
+    yield* showUnexpectedError(I18nId.EditorFailedToOpenFile, action.error);
+}
+
 export default function* (): Generator {
     yield* takeEvery(bleDeviceDidFailToConnect, showBleDeviceDidFailToConnectError);
     yield* takeEvery(bootloaderDidFailToConnect, showBootloaderDidFailToConnectError);
@@ -477,4 +485,5 @@ export default function* (): Generator {
     yield* takeEvery(explorerDidFailToImportFiles, showExplorerFailToImportFiles);
     yield* takeEvery(explorerDidFailToCreateNewFile, showExplorerFailToCreateFile);
     yield* takeEvery(explorerDidFailToExportFile, showExplorerFailToExport);
+    yield* takeEvery(editorDidFailToOpenFile, showEditorDidFailToOpenFile);
 }

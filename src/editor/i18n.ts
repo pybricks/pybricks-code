@@ -12,4 +12,6 @@ export enum I18nId {
     SelectAll = 'selectAll',
     Undo = 'undo',
     Redo = 'redo',
+    CloseFileTooltip = 'closeFile.tooltip',
+    ContextMenuLabel = 'contextMenu.label',
 }

@@ -27,6 +27,59 @@ export const editorGetValueResponse = createAction((id: number, value: string) =
     id,
     value,
 }));
+
+/**
+ * Requests to open a file in the editor.
+ * @param fileName the file name.
+ */
+export const editorOpenFile = createAction((fileName: string) => ({
+    type: 'editor.action.openFile',
+    fileName,
+}));
+
+/**
+ * Indicates that {@link editorOpenFile} succeeded.
+ * @param fileName the file name.
+ */
+export const editorDidOpenFile = createAction((fileName: string) => ({
+    type: 'editor.action.didOpenFile',
+    fileName,
+}));
+
+/**
+ * Indicates that {@link editorOpenFile} failed.
+ * @param fileName the file name.
+ * @param error the error.
+ */
+export const editorDidFailToOpenFile = createAction(
+    (fileName: string, error: Error) => ({
+        type: 'editor.action.didFailToOpenFile',
+        fileName,
+        error,
+    }),
+);
+
+/**
+ * Requests to close a file in the editor.
+ * @param fileName the file name.
+ */
+export const editorCloseFile = createAction((fileName: string) => ({
+    type: 'editor.action.closeFile',
+    fileName,
+}));
+
+/**
+ * Indicates that {@link editorCloseFile} completed.
+ *
+ * Unlike most actions, this does not have a "did fail" counterpart.
+ *
+ * @param fileName the file name.
+ */
+export const editorDidCloseFile = createAction((fileName: string) => ({
+    type: 'editor.action.didCloseFile',
+    fileName,
+}));
+
 /**
  * Request to activate a file (open or bring to foreground if already open).
  * @param fileName The file name.

@@ -6,5 +6,7 @@
     "paste": "Paste",
     "selectAll": "Select All",
     "undo": "Undo",
-    "redo": "Redo"
+    "redo": "Redo",
+    "closeFile": { "tooltip": "Close {fileName}" },
+    "contextMenu": { "label": "Editor context menu" }
 }

@@ -13,6 +13,7 @@ export enum I18nId {
     BleGattServiceNotFound = 'ble.gattServiceNotFound',
     BleNoWebBluetooth = 'ble.noWebBluetooth',
     BleNoBluetooth = 'ble.noBluetooth',
+    EditorFailedToOpenFile = 'editor.failedToOpenFile',
     EditorFailedToSaveFile = 'editor.failedToSaveFile',
     ExplorerDeleteFileMessage = 'explorer.deleteFile.message',
     ExplorerDeleteFileAction = 'explorer.deleteFile.action',

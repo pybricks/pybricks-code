@@ -54,6 +54,11 @@ const specialCases: Record<string, string> = {
 };
 
 function addWhichToKeyboardEvent(e: KeyboardEvent) {
+    // blueprints and testing-library both don't do this one
+    if (e.key === 'ContextMenu') {
+        return;
+    }
+
     const blueprintsKeyName = specialCases[e.key] ?? e.key.toLowerCase();
     let which = 0;
 
@@ -65,7 +70,7 @@ function addWhichToKeyboardEvent(e: KeyboardEvent) {
     }
 
     if (which === 0) {
-        console.warn('unsupported key:', e.key);
+        console.warn('unsupported key:', e.key, e.code);
     }
 
     Object.defineProperty(e, 'which', { value: which });

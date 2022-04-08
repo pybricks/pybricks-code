@@ -13,6 +13,7 @@
         "unexpectedError": "Unexpected error while trying to connect: {errorMessage}"
     },
     "editor": {
+        "failedToOpenFile": "Failed to open file.",
         "failedToSaveFile": "Failed to save the program."
     },
     "explorer": {

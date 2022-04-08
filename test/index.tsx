@@ -80,6 +80,13 @@ export class AsyncSaga {
         }
     }
 
+    /**
+     * Cancel the saga. Useful for testing task cancellation.
+     */
+    public cancel(): void {
+        this.task.cancel();
+    }
+
     public async end(): Promise<void> {
         this.task.cancel();
         await this.task.toPromise();

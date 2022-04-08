@@ -16,6 +16,7 @@ import {
     BleDeviceFailToConnectReasonType,
     didFailToConnect as bleDidFailToConnect,
 } from '../ble/actions';
+import { editorDidFailToOpenFile } from '../editor/actions';
 import {
     explorerDeleteFile,
     explorerDidFailToArchiveAllFiles,
@@ -116,6 +117,7 @@ test.each([
     explorerDidFailToImportFiles(new Error('test error')),
     explorerDidFailToCreateNewFile(new Error('test error')),
     explorerDidFailToExportFile('test.file', new Error('test error')),
+    editorDidFailToOpenFile('test.file', new Error('test error')),
 ])('actions that should show notification: %o', async (action: AnyAction) => {
     const { toaster, saga } = createTestToasterSaga();
 

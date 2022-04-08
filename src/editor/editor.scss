@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2021 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 
 // Custom styling for the Editor control.
 
@@ -21,6 +21,14 @@
 
 .#{$ns}-dark .pb-editor-placeholder {
     color: $pt-dark-text-color-muted;
+}
+
+.pb-editor-tab {
+    padding: 3px;
+}
+
+.pb-editor-tabs {
+    padding: 3px 6px;
 }
 
 .pb-editor-placeholder {
