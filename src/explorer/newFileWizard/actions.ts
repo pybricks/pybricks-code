@@ -24,10 +24,19 @@ export enum Hub {
     Essential = 'essentialhub',
 }
 
+/**
+ * Requests to show the new file wizard dialog.
+ */
 export const newFileWizardShow = createAction(() => ({
     type: 'explorer.newFileWizard.action.show',
 }));
 
+/**
+ * Indicates that the use accepted the new file wizard dialog.
+ * @param fileName The user-provided file name.
+ * @param fileExtension The user-provided file extension.
+ * @param hubType The user-provided hub type.
+ */
 export const newFileWizardDidAccept = createAction(
     (fileName: string, fileExtension: SupportedFileExtension, hubType: Hub) => ({
         type: 'explorer.newFileWizard.action.didAccept',
@@ -37,6 +46,9 @@ export const newFileWizardDidAccept = createAction(
     }),
 );
 
+/**
+ * Indicates that the use accepted the new file wizard dialog.
+ */
 export const newFileWizardDidCancel = createAction(() => ({
     type: 'explorer.newFileWizard.action.didCancel',
 }));
