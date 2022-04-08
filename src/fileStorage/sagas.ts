@@ -233,8 +233,8 @@ function* handleOpen(
                         return metadata.uuid;
                     }
 
-                    // if reading, do not create a new file
-                    if (action.mode === 'r') {
+                    // don't create a new file if we were not asked to
+                    if (!action.create) {
                         return;
                     }
 
@@ -394,7 +394,7 @@ function* handleWrite(
  */
 function* handleReadFile(action: ReturnType<typeof fileStorageReadFile>): Generator {
     try {
-        yield* put(fileStorageOpen(action.path, 'r'));
+        yield* put(fileStorageOpen(action.path, 'r', false));
 
         const { didOpen, didFailToOpen } = yield* race({
             didOpen: take(fileStorageDidOpen.when((a) => a.path === action.path)),
@@ -441,11 +441,14 @@ function* handleReadFile(action: ReturnType<typeof fileStorageReadFile>): Genera
 
 /**
  * Handle open, write, close action.
+ *
+ * If the file does not exist, a new file will be created.
+ *
  * @param action The action that triggered this saga.
  */
 function* handleWriteFile(action: ReturnType<typeof fileStorageWriteFile>): Generator {
     try {
-        yield* put(fileStorageOpen(action.path, 'w'));
+        yield* put(fileStorageOpen(action.path, 'w', true));
 
         const { didOpen, didFailToOpen } = yield* race({
             didOpen: take(fileStorageDidOpen.when((a) => a.path === action.path)),

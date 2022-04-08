@@ -81,12 +81,16 @@ export const fileStorageDidRemoveItem = createAction((file: FileMetadata) => ({
  * Action that requests to open a file in storage.
  * @param path The file path.
  * @param mode 'r' to open for reading or 'w' to open for writing.
+ * @param create If true, create the file if it does not exist.
  */
-export const fileStorageOpen = createAction((path: string, mode: FileOpenMode) => ({
-    type: 'fileStorage.action.Open',
-    path,
-    mode,
-}));
+export const fileStorageOpen = createAction(
+    (path: string, mode: FileOpenMode, create: boolean) => ({
+        type: 'fileStorage.action.Open',
+        path,
+        mode,
+        create,
+    }),
+);
 
 /**
  * Action that indicates that {@link fileStorageOpen} succeeded.

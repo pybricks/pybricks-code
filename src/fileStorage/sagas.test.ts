@@ -89,7 +89,7 @@ async function setUpTestFile(saga: AsyncSaga): Promise<[FileMetadata, string]> {
 
     const emptyFile: FileMetadata = { ...testFile, sha256: emptyFileSha256 };
 
-    saga.put(fileStorageOpen(testFilePath, 'w'));
+    saga.put(fileStorageOpen(testFilePath, 'w', true));
 
     const didOpen = await saga.take();
 
@@ -165,7 +165,7 @@ describe('open', () => {
     });
 
     it('should fail to open for reading if file does not exist', async () => {
-        saga.put(fileStorageOpen('test.file', 'r'));
+        saga.put(fileStorageOpen('test.file', 'r', false));
 
         await expect(saga.take()).resolves.toEqual(
             fileStorageDidFailToOpen(
@@ -177,7 +177,7 @@ describe('open', () => {
 
     describe('should open file for writing if file does not exist', () => {
         beforeEach(async () => {
-            saga.put(fileStorageOpen('test.file', 'w'));
+            saga.put(fileStorageOpen('test.file', 'w', true));
 
             await expect(saga.take()).resolves.toEqual(
                 fileStorageDidOpen('test.file', 0 as FD),
@@ -194,7 +194,7 @@ describe('open', () => {
 
         describe('should fail to open if file is already open for writing', () => {
             it.each<FileOpenMode>(['r', 'w'])('mode: %o', async (mode) => {
-                saga.put(fileStorageOpen('test.file', mode));
+                saga.put(fileStorageOpen('test.file', mode, true));
 
                 await expect(saga.take()).resolves.toEqual(
                     fileStorageDidFailToOpen(
@@ -218,7 +218,7 @@ describe('open', () => {
         });
 
         it.each<FileOpenMode>(['r', 'w'])('mode: %o', async (mode) => {
-            saga.put(fileStorageOpen('test.file', mode));
+            saga.put(fileStorageOpen('test.file', mode, false));
 
             await expect(saga.take()).resolves.toEqual(
                 fileStorageDidOpen('test.file', 1 as FD),
@@ -229,13 +229,13 @@ describe('open', () => {
     it('should allow multiple readers', async () => {
         await setUpTestFile(saga);
 
-        saga.put(fileStorageOpen('test.file', 'r'));
+        saga.put(fileStorageOpen('test.file', 'r', false));
 
         await expect(saga.take()).resolves.toEqual(
             fileStorageDidOpen('test.file', 1 as FD),
         );
 
-        saga.put(fileStorageOpen('test.file', 'r'));
+        saga.put(fileStorageOpen('test.file', 'r', false));
 
         await expect(saga.take()).resolves.toEqual(
             fileStorageDidOpen('test.file', 2 as FD),
@@ -245,13 +245,13 @@ describe('open', () => {
     it('should fail to open for writing if already open for reading', async () => {
         await setUpTestFile(saga);
 
-        saga.put(fileStorageOpen('test.file', 'r'));
+        saga.put(fileStorageOpen('test.file', 'r', false));
 
         await expect(saga.take()).resolves.toEqual(
             fileStorageDidOpen('test.file', 1 as FD),
         );
 
-        saga.put(fileStorageOpen('test.file', 'w'));
+        saga.put(fileStorageOpen('test.file', 'w', false));
 
         await expect(saga.take()).resolves.toEqual(
             fileStorageDidFailToOpen(
@@ -262,7 +262,7 @@ describe('open', () => {
     });
 
     it('should allow calling close multiple times', async () => {
-        saga.put(fileStorageOpen('test.file', 'w'));
+        saga.put(fileStorageOpen('test.file', 'w', true));
 
         await expect(saga.take()).resolves.toEqual(
             fileStorageDidOpen('test.file', 0 as FD),
@@ -302,7 +302,7 @@ describe('read', () => {
         it.each<FileOpenMode>(['r', 'w'])('mode: %o', async (mode) => {
             const [, contents] = await setUpTestFile(saga);
 
-            saga.put(fileStorageOpen('test.file', mode));
+            saga.put(fileStorageOpen('test.file', mode, false));
 
             await expect(saga.take()).resolves.toEqual(
                 fileStorageDidOpen('test.file', 1 as FD),
@@ -320,7 +320,7 @@ describe('read', () => {
         it.each<FileOpenMode>(['r', 'w'])('mode: %o', async (mode) => {
             await setUpTestFile(saga);
 
-            saga.put(fileStorageOpen('test.file', mode));
+            saga.put(fileStorageOpen('test.file', mode, false));
 
             await expect(saga.take()).resolves.toEqual(
                 fileStorageDidOpen('test.file', 1 as FD),
@@ -357,7 +357,7 @@ describe('write', () => {
     it('should write a file open for writing', async () => {
         await setUpTestFile(saga);
 
-        saga.put(fileStorageOpen('test.file', 'w'));
+        saga.put(fileStorageOpen('test.file', 'w', false));
 
         await expect(saga.take()).resolves.toEqual(
             fileStorageDidOpen('test.file', 1 as FD),
@@ -371,7 +371,7 @@ describe('write', () => {
     it('should fail to write a file open for reading', async () => {
         await setUpTestFile(saga);
 
-        saga.put(fileStorageOpen('test.file', 'r'));
+        saga.put(fileStorageOpen('test.file', 'r', false));
 
         await expect(saga.take()).resolves.toEqual(
             fileStorageDidOpen('test.file', 1 as FD),
@@ -391,7 +391,7 @@ describe('write', () => {
         it.each<FileOpenMode>(['r', 'w'])('mode: %o', async (mode) => {
             await setUpTestFile(saga);
 
-            saga.put(fileStorageOpen('test.file', mode));
+            saga.put(fileStorageOpen('test.file', mode, false));
 
             await expect(saga.take()).resolves.toEqual(
                 fileStorageDidOpen('test.file', 1 as FD),
@@ -426,7 +426,9 @@ describe('readFile', () => {
 
         saga.put(fileStorageReadFile('test.file'));
 
-        await expect(saga.take()).resolves.toEqual(fileStorageOpen('test.file', 'r'));
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageOpen('test.file', 'r', false),
+        );
     });
 
     it('should forward open error', async () => {
@@ -491,7 +493,9 @@ describe('writeFile', () => {
 
         saga.put(fileStorageWriteFile('test.file', contents));
 
-        await expect(saga.take()).resolves.toEqual(fileStorageOpen('test.file', 'w'));
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageOpen('test.file', 'w', true),
+        );
     });
 
     it('should forward open error', async () => {
@@ -570,7 +574,7 @@ describe('copyFile', () => {
     });
 
     it('should fail if new file is open', async () => {
-        saga.put(fileStorageOpen('new.file', 'w'));
+        saga.put(fileStorageOpen('new.file', 'w', true));
         await expect(saga.take()).resolves.toEqual(
             fileStorageDidOpen('new.file', 1 as FD),
         );
@@ -586,7 +590,7 @@ describe('copyFile', () => {
     });
 
     it('should fail if new file exists', async () => {
-        saga.put(fileStorageOpen('new.file', 'w'));
+        saga.put(fileStorageOpen('new.file', 'w', true));
         await expect(saga.take()).resolves.toEqual(
             fileStorageDidOpen('new.file', 1 as FD),
         );
@@ -642,7 +646,7 @@ describe('deleteFile', () => {
     });
 
     it('should fail if file is open', async () => {
-        saga.put(fileStorageOpen('test.file', 'r'));
+        saga.put(fileStorageOpen('test.file', 'r', false));
 
         await expect(saga.take()).resolves.toEqual(
             fileStorageDidOpen('test.file', 1 as FD),
@@ -696,7 +700,7 @@ describe('renameFile', () => {
     });
 
     it('should fail if file is open', async () => {
-        saga.put(fileStorageOpen('test.file', 'r'));
+        saga.put(fileStorageOpen('test.file', 'r', false));
 
         await expect(saga.take()).resolves.toEqual(
             fileStorageDidOpen('test.file', 1 as FD),
@@ -715,7 +719,7 @@ describe('renameFile', () => {
         // there are two paths here that result in the same error
         // the first is if the file is open, e.g. in another tab
 
-        saga.put(fileStorageOpen(newPath, 'w'));
+        saga.put(fileStorageOpen(newPath, 'w', true));
 
         await expect(saga.take()).resolves.toEqual(
             fileStorageDidOpen(newPath, 1 as FD),

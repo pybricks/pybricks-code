@@ -78,7 +78,7 @@ function* handleEditorOpenFile(
     let closeRequested = false;
 
     try {
-        yield* put(fileStorageOpen(action.fileName, 'w'));
+        yield* put(fileStorageOpen(action.fileName, 'w', false));
 
         const { didOpen, didFailToOpen } = yield* race({
             didOpen: take(fileStorageDidOpen.when((a) => a.path === action.fileName)),

@@ -82,7 +82,7 @@ describe('per-editor sagas', () => {
             saga.put(editorOpenFile('test.file'));
 
             await expect(saga.take()).resolves.toEqual(
-                fileStorageOpen('test.file', 'w'),
+                fileStorageOpen('test.file', 'w', false),
             );
         });
 
