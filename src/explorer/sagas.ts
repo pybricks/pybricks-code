@@ -3,15 +3,7 @@
 
 import { fileOpen, fileSave } from 'browser-fs-access';
 import JSZip from 'jszip';
-import {
-    call,
-    put,
-    race,
-    select,
-    take,
-    takeEvery,
-    takeLatest,
-} from 'typed-redux-saga/macro';
+import { call, put, race, select, take, takeEvery } from 'typed-redux-saga/macro';
 import {
     editorActivateFile,
     editorCloseFile,
@@ -27,15 +19,12 @@ import {
     fileStorageDidFailToDeleteFile,
     fileStorageDidFailToDumpAllFiles,
     fileStorageDidFailToReadFile,
-    fileStorageDidFailToRenameFile,
     fileStorageDidFailToWriteFile,
     fileStorageDidReadFile,
     fileStorageDidRemoveItem,
-    fileStorageDidRenameFile,
     fileStorageDidWriteFile,
     fileStorageDumpAllFiles,
     fileStorageReadFile,
-    fileStorageRenameFile,
     fileStorageWriteFile,
 } from '../fileStorage/actions';
 import {
@@ -63,12 +52,9 @@ import {
     explorerDidFailToDeleteFile,
     explorerDidFailToExportFile,
     explorerDidFailToImportFiles,
-    explorerDidFailToRenameFile,
     explorerDidImportFiles,
-    explorerDidRenameFile,
     explorerExportFile,
     explorerImportFiles,
-    explorerRenameFile,
 } from './actions';
 import {
     deleteFileAlertDidAccept,
@@ -80,11 +66,6 @@ import {
     newFileWizardDidCancel,
     newFileWizardShow,
 } from './newFileWizard/actions';
-import {
-    renameFileDialogDidAccept,
-    renameFileDialogDidCancel,
-    renameFileDialogShow,
-} from './renameFileDialog/actions';
 
 function* handleExplorerArchiveAllFiles(): Generator {
     try {
@@ -265,43 +246,6 @@ function* handleExplorerActivateFile(
     yield* put(explorerDidActivateFile(didActivate.fileName));
 }
 
-/** Connects user initiate rename file actions to the rename file dialog. */
-function* handleExplorerRenameFile(
-    action: ReturnType<typeof explorerRenameFile>,
-): Generator {
-    yield* put(renameFileDialogShow(action.fileName));
-
-    const { accepted, canceled } = yield* race({
-        accepted: take(renameFileDialogDidAccept),
-        canceled: take(renameFileDialogDidCancel),
-    });
-
-    if (canceled) {
-        yield* put(explorerDidFailToRenameFile());
-        return;
-    }
-
-    defined(accepted);
-
-    yield* put(fileStorageRenameFile(action.fileName, accepted.newName));
-
-    const didRename = yield* race({
-        succeeded: take(
-            fileStorageDidRenameFile.when((a) => a.fileName === action.fileName),
-        ),
-        failed: take(
-            fileStorageDidFailToRenameFile.when((a) => a.fileName === action.fileName),
-        ),
-    });
-
-    if (didRename.failed) {
-        yield* put(explorerDidFailToRenameFile());
-        return;
-    }
-
-    yield* put(explorerDidRenameFile());
-}
-
 function* handleExplorerExportFile(
     action: ReturnType<typeof explorerExportFile>,
 ): Generator {
@@ -397,10 +341,6 @@ export default function* (): Generator {
     yield* takeEvery(explorerImportFiles, handleExplorerImportFiles);
     yield* takeEvery(explorerCreateNewFile, handleExplorerCreateNewFile);
     yield* takeEvery(explorerActivateFile, handleExplorerActivateFile);
-    // takeLatest should ensure that if we trigger a new rename before the
-    // previous one is finished, the old one will be canceled. We don't expect
-    // this to happen in practice though.
-    yield* takeLatest(explorerRenameFile, handleExplorerRenameFile);
-    yield* takeLatest(explorerExportFile, handleExplorerExportFile);
-    yield* takeLatest(explorerDeleteFile, handleExplorerDeleteFile);
+    yield* takeEvery(explorerExportFile, handleExplorerExportFile);
+    yield* takeEvery(explorerDeleteFile, handleExplorerDeleteFile);
 }

@@ -35,12 +35,10 @@ import {
     explorerDeleteFile,
     explorerExportFile,
     explorerImportFiles,
-    explorerRenameFile,
 } from './actions';
 import DeleteFileAlert from './deleteFileAlert/DeleteFileAlert';
 import { I18nId } from './i18n';
 import NewFileWizard from './newFileWizard/NewFileWizard';
-import RenameFileDialog from './renameFileDialog/RenameFileDialog';
 
 type ActionButtonProps = {
     /** The icon to use for the button. */
@@ -109,12 +107,6 @@ const FileActionButtonGroup: React.VoidFunctionComponent<ActionButtonGroupProps>
             className="pb-explorer-file-action-button-group"
             minimal={true}
         >
-            <ActionButton
-                icon="edit"
-                tooltip={i18n.translate(I18nId.TreeItemRenameTooltip, { fileName })}
-                focusable={false}
-                onClick={() => dispatch(explorerRenameFile(fileName))}
-            />
             <ActionButton
                 // NB: the "import" icon has an arrow pointing down, which is
                 // what we want here since import is analogous to download
@@ -190,10 +182,6 @@ function useLiveDescriptors(i18n: I18n): LiveDescriptors {
                         { key: '{keybinding:primaryAction}' },
                     )}</li>
                     <li>${i18n.translate(
-                        I18nId.TreeLiveDescriptorIntroKeybindingsRename,
-                        { key: 'f2' },
-                    )}</li>
-                    <li>${i18n.translate(
                         I18nId.TreeLiveDescriptorIntroKeybindingsExport,
                         { key: `${isMacOS() ? 'cmd' : 'ctrl'}+e` },
                     )}</li>
@@ -228,13 +216,6 @@ const renderTreeContainer: typeof renderers.renderTreeContainer = (props) => {
     const hotKeyActive =
         isActiveTree; /* && !dnd.isProgrammaticallyDragging && !isRenaming */
 
-    const handleRenameKeyDown = useCallback(() => {
-        if (focusedItem !== undefined) {
-            const fileName = environment.getItemTitle(environment.items[focusedItem]);
-            dispatch(explorerRenameFile(fileName));
-        }
-    }, [environment]);
-
     const handleDeleteKeyDown = useCallback(() => {
         if (focusedItem !== undefined) {
             const fileName = environment.getItemTitle(environment.items[focusedItem]);
@@ -251,13 +232,6 @@ const renderTreeContainer: typeof renderers.renderTreeContainer = (props) => {
 
     const hotkeys = useMemo<readonly HotkeyConfig[]>(
         () => [
-            {
-                combo: 'f2',
-                label: 'Rename',
-                disabled: !hotKeyActive,
-                preventDefault: true,
-                onKeyDown: handleRenameKeyDown,
-            },
             {
                 combo: 'del',
                 label: 'Delete',
@@ -380,7 +354,6 @@ const Explorer: React.VFC = () => {
             <Divider />
             <FileTree i18n={i18n} />
             <NewFileWizard />
-            <RenameFileDialog />
             <DeleteFileAlert />
         </div>
     );
