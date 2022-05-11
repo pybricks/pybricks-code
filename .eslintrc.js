@@ -31,6 +31,7 @@ module.exports = {
     },
     ignorePatterns: [
         'config/**/*.js',
+        'scripts/*.js',
         'test/env.js',
         '.eslintrc.js',
         '.prettierrc.js',
