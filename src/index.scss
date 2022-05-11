@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2022 The Pybricks Authors
 
+@use 'sass:math';
 @import './variables.scss';
 @import '~normalize.css';
 @import '~@blueprintjs/core/src/blueprint.scss';
@@ -109,5 +110,5 @@ a.#{$ns}-button {
 // don't take up so much space when there is no caret
 .#{$ns}-tree-node-caret-none {
     // $pt-grid-size / 2 matches padding on .#{$ns}-tree-node-conent
-    min-width: $pt-grid-size / 2;
+    min-width: math.div($pt-grid-size, 2);
 }
