@@ -4,6 +4,9 @@ const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
 const resolve = require('resolve');
+const CopyPlugin = require('copy-webpack-plugin');
+const LicensePlugin = require('license-webpack-plugin').LicenseWebpackPlugin;
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const InlineChunkHtmlPlugin = require('react-dev-utils/InlineChunkHtmlPlugin');
@@ -293,7 +296,8 @@ module.exports = function (webpackEnv) {
       ],
     },
     resolve: {
-      // This allows you to set a fallback for where webpack should look for modules.
+      // work around emscripten referencing node.js modules
+      fallback: { crypto: false, fs: false, path: false },
       // We placed these paths second because we want `node_modules` to "win"
       // if there are any conflicts. This matches Node resolution mechanism.
       // https://github.com/facebook/create-react-app/issues/253
@@ -421,6 +425,7 @@ module.exports = function (webpackEnv) {
                 ],
                 
                 plugins: [
+                  require.resolve('@shopify/react-i18n/babel'),
                   isEnvDevelopment &&
                     shouldUseReactRefresh &&
                     require.resolve('react-refresh/babel'),
@@ -543,6 +548,16 @@ module.exports = function (webpackEnv) {
                 'sass-loader'
               ),
             },
+            // Adds support for wasm that runs as an application.
+            // https://github.com/webpack/webpack/issues/7352
+            {
+              test: /\.wasm$/,
+              type: 'javascript/auto',
+              loader: 'file-loader',
+              options: {
+                name: 'static/[name].[hash:8].[ext]',
+              },
+            },
             // "file" loader makes sure those assets get served by WebpackDevServer.
             // When you `import` an asset, you get its (virtual) filename.
             // In production, they would get copied to the `build` folder.
@@ -563,6 +578,34 @@ module.exports = function (webpackEnv) {
       ].filter(Boolean),
     },
     plugins: [
+      new CopyPlugin({
+        patterns: [
+          {
+            from: 'public/manifest.json',
+            transform(content, path) {
+              return content
+                .toString()
+                .replace(
+                  /%\w+%/g,
+                  (m) => process.env[m.slice(1, m.length - 1)] || '',
+                );
+            },
+          },
+        ],
+      }),
+      new CopyPlugin({
+        patterns: [
+          {
+            from: 'node_modules/@pybricks/ide-docs/html',
+            to: 'static/docs',
+          },
+        ],
+      }),
+      new LicensePlugin(require('./licenses')),
+      new MonacoWebpackPlugin({
+        languages: ['python'],
+        filename: '[name].worker.[contenthash].js',
+      }),
       // Generates an `index.html` file with the <script> injected.
       new HtmlWebpackPlugin(
         Object.assign(

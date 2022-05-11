@@ -30,6 +30,7 @@ module.exports = {
         react: { version: 'detect' },
     },
     ignorePatterns: [
+        'config/**/*.js',
         'test/env.js',
         '.eslintrc.js',
         '.prettierrc.js',

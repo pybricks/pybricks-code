@@ -1,14 +1,13 @@
-// Configuration file to override create-react-app.
-//
-// https://github.com/gsoft-inc/craco/blob/master/packages/craco/README.md#configuration
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2021-2022 The Pybricks Authors
 
-const { addBeforeLoader, loaderByName } = require('@craco/craco');
-const CopyPlugin = require('copy-webpack-plugin');
-const LicensePlugin = require('license-webpack-plugin').LicenseWebpackPlugin;
-const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
+// This module provides the license config object for LicenseWebpackPlugin.
+
 const satisfies = require('spdx-satisfies');
 const path = require('path');
 const fs = require('fs');
+
+const projectDir = path.resolve(__dirname, '..');
 
 // Permissive licenses can be added here. We would like to avoid copyleft.
 const approvedLicenses = ['0BSD', 'Apache-2.0', 'BSD-3-Clause', 'ISC', 'MIT'];
@@ -26,12 +25,15 @@ function personToString(person) {
     }
 
     let str = person.name;
+
     if (person.email) {
         str += ` <${person.email}>`;
     }
+
     if (person.url) {
         str += ` (${person.url})`;
     }
+    
     return str;
 }
 
@@ -39,7 +41,7 @@ function personToString(person) {
 // license here e.g. from the README.
 
 const dexieLicense = fs.readFileSync(
-    path.join(__dirname, 'node_modules', 'dexie', 'LICENSE'),
+    path.join(projectDir, 'node_modules', 'dexie', 'LICENSE'),
     { encoding: 'utf-8' },
 );
 
@@ -214,124 +216,32 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.`,
 };
 
 module.exports = {
-    babel: {
-        plugins: ['@shopify/react-i18n/babel'],
+    outputFilename: 'static/oss-licenses.json',
+    perChunkOutput: false,
+    renderLicenses: (modules) => {
+        return JSON.stringify(
+            modules
+                .map((m) => ({
+                    name: m.packageJson.name,
+                    version: m.packageJson.version,
+                    author: personToString(m.packageJson.author),
+                    license: m.licenseId,
+                    licenseText: m.licenseText,
+                }))
+                .sort((a, b) => a.name.localeCompare(b.name, 'en')),
+        );
     },
-    webpack: {
-        plugins: [
-            new CopyPlugin({
-                patterns: [
-                    {
-                        from: 'public/manifest.json',
-                        transform(content, path) {
-                            return content
-                                .toString()
-                                .replace(
-                                    /%\w+%/g,
-                                    (m) => process.env[m.slice(1, m.length - 1)] || '',
-                                );
-                        },
-                    },
-                ],
-            }),
-            new CopyPlugin({
-                patterns: [
-                    {
-                        from: 'node_modules/@pybricks/ide-docs/html',
-                        to: 'static/docs',
-                    },
-                ],
-            }),
-            new LicensePlugin({
-                outputFilename: 'static/oss-licenses.json',
-                perChunkOutput: false,
-                renderLicenses: (modules) => {
-                    return JSON.stringify(
-                        modules
-                            .map((m) => ({
-                                name: m.packageJson.name,
-                                version: m.packageJson.version,
-                                author: personToString(m.packageJson.author),
-                                license: m.licenseId,
-                                licenseText: m.licenseText,
-                            }))
-                            .sort((a, b) => a.name.localeCompare(b.name, 'en')),
-                    );
-                },
-                licenseTextOverrides,
-                additionalModules: [
-                    { name: '@pybricks/pybricks-code', directory: __dirname },
-                    {
-                        name: '@pybricks/ide-docs',
-                        directory: path.join(
-                            __dirname,
-                            'node_modules',
-                            '@pybricks',
-                            'ide-docs',
-                        ),
-                    },
-                ],
-                unacceptableLicenseTest: (licenseType) =>
-                    !satisfies(licenseType, `(${approvedLicenses.join(' OR ')})`),
-                handleMissingLicenseText: (packageName, licenseType) => {
-                    throw new Error(
-                        `missing license text for ${packageName} (${licenseType})`,
-                    );
-                },
-            }),
-            new MonacoWebpackPlugin({
-                languages: ['python'],
-                filename: '[name].worker.[contenthash].js',
-            }),
-        ],
-    },
-    plugins: [
+    licenseTextOverrides,
+    additionalModules: [
+        { name: '@pybricks/pybricks-code', directory: projectDir },
         {
-            plugin: {
-                overrideWebpackConfig: ({
-                    webpackConfig,
-                    cracoConfig,
-                    pluginOptions,
-                    context: { env, paths },
-                }) => {
-                    // work around @shopify/* webpack compatibility
-                    // https://github.com/Shopify/quilt/issues/1722#issuecomment-789883471
-                    webpackConfig.module.rules.push({
-                        test: /\.mjs$/,
-                        include: /node_modules/,
-                        type: 'javascript/auto',
-                    });
-
-                    // work around default handling of .wasm files
-                    // https://github.com/webpack/webpack/issues/7352
-                    addBeforeLoader(webpackConfig, loaderByName('file-loader'), {
-                        test: /\.wasm$/,
-                        type: 'javascript/auto',
-                        loader: 'file-loader',
-                        options: {
-                            name: 'static/[name].[hash:8].[ext]',
-                        },
-                    });
-
-                    return webpackConfig;
-                },
-                overrideJestConfig: ({
-                    jestConfig,
-                    cracoConfig,
-                    pluginOptions,
-                    context: { env, paths, resolve, rootDir },
-                }) => {
-                    const index = jestConfig.transformIgnorePatterns.indexOf(
-                        '[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs|cjs|ts|tsx)$',
-                    );
-                    // https://github.com/react-monaco-editor/react-monaco-editor/issues/306#issuecomment-701025628
-                    // https://github.com/GoogleChromeLabs/browser-fs-access/issues/42
-                    jestConfig.transformIgnorePatterns[index] =
-                        '[/\\\\]node_modules[/\\\\](?!(monaco-editor|react-monaco-editor|browser-fs-access)[/\\\\]).+\\.(js|jsx|mjs|cjs|ts|tsx)$';
-                    return jestConfig;
-                },
-            },
-            options: {},
+            name: '@pybricks/ide-docs',
+            directory: path.join(projectDir, 'node_modules', '@pybricks', 'ide-docs'),
         },
     ],
+    unacceptableLicenseTest: (licenseType) =>
+        !satisfies(licenseType, `(${approvedLicenses.join(' OR ')})`),
+    handleMissingLicenseText: (packageName, licenseType) => {
+        throw new Error(`missing license text for ${packageName} (${licenseType})`);
+    },
 };

@@ -16,6 +16,7 @@ const hasJsxRuntime = (() => {
 })();
 
 module.exports = babelJest.createTransformer({
+  plugins: ['@shopify/react-i18n/babel'],
   presets: [
     [
       require.resolve('babel-preset-react-app'),
