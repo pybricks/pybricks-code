@@ -1,19 +1,7 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2021 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 
-@import '~@blueprintjs/core/lib/scss/variables.scss';
+$toolbar-height: 72px;
+$status-bar-height: 30px;
 
-// override variables here
-// See https://blueprintjs.com/docs/#core/variables
-
-$pt-font-size: $pt-grid-size * 1.6;
-$pt-font-size-large: $pt-grid-size * 1.8;
-$pt-font-size-small: $pt-grid-size * 1.4;
-
-$pb-toolbar-height: 72px;
-$pb-status-bar-height: 30px;
-
-$pb-pybricks-blue: #0088ce;
-$pt-app-background-color: #e8e8e8;
-$pt-intent-primary: $pb-pybricks-blue;
-$pt-outline-color: rgba($pb-pybricks-blue, 0.6);
+$pybricks-blue: #0088ce;

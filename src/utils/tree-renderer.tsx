@@ -6,7 +6,6 @@
 // based on https://github.com/lukasbach/react-complex-tree/blob/239fb0c5f49f3c24e307142fb3d7e828440c3f55/packages/blueprintjs-renderers/src/renderers.tsx
 // Copyright (c) 2021 Lukas Bach
 
-import './tree-renderer.scss';
 import {
     Button,
     Classes,
@@ -44,7 +43,7 @@ export const renderers: Omit<
 > = {
     renderTreeContainer: (props) => (
         <div
-            className={cx(Classes.TREE, 'pb-focus-manager-ignore')}
+            className={cx(Classes.TREE, Classes.FOCUS_STYLE_MANAGER_IGNORE)}
             {...props.containerProps}
         >
             {props.children}

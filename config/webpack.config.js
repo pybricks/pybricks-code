@@ -182,15 +182,6 @@ module.exports = function (webpackEnv) {
           loader: require.resolve(preProcessor),
           options: {
             sourceMap: true,
-            sassOptions: {
-              functions: {
-                  // https://github.com/palantir/blueprint/issues/4759#issuecomment-1112218581
-                  "svg-icon($path, $selectors: null)": require("@vgrid/sass-inline-svg")("blueprints-icons", {
-                    optimize: true,
-                    encodingFormat: "uri",
-                }),
-              }
-            }
           },
         }
       );

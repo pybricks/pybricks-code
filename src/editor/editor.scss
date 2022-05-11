@@ -3,7 +3,7 @@
 
 // Custom styling for the Editor control.
 
-@import '../variables.scss';
+@use '@blueprintjs/core/lib/scss/variables' as bp;
 
 // add "BETA" watermark
 
@@ -19,8 +19,8 @@
     pointer-events: none;
 }
 
-.#{$ns}-dark .pb-editor-placeholder {
-    color: $pt-dark-text-color-muted;
+.#{bp.$ns}-dark .pb-editor-placeholder {
+    color: bp.$pt-dark-text-color-muted;
 }
 
 .pb-editor-tab {
@@ -34,7 +34,7 @@
 .pb-editor-placeholder {
     pointer-events: none;
     width: max-content;
-    color: $pt-text-color-muted;
+    color: bp.$pt-text-color-muted;
     font-style: italic;
     padding-left: 4px;
 }

@@ -1,16 +1,17 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2021 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 
 // Custom styling for the Toolbar control.
 
-@import '../variables.scss';
+@use '@blueprintjs/core/lib/scss/variables' as bp;
+@use '../variables' as pb;
 
 .pb-toolbar {
-    height: $pb-toolbar-height;
-    padding: 0 $pt-grid-size * 1.5;
+    height: pb.$toolbar-height;
+    padding: 0 bp.$pt-grid-size * 1.5;
     position: relative;
     width: 100%;
-    z-index: $pt-z-index-content;
+    z-index: bp.$pt-z-index-content;
 }
 
 .pb-toolbar * {
@@ -23,18 +24,18 @@
 
     &.pb-align-left {
         float: left;
-        margin-right: $pt-grid-size * 2;
+        margin-right: bp.$pt-grid-size * 2;
     }
 
     &.pb-align-right {
         float: right;
-        margin-left: $pt-grid-size * 2;
+        margin-left: bp.$pt-grid-size * 2;
     }
 }
 
 // make small buttons more square and slightly smaller
 @media screen and (max-width: 700px) {
-    .pb-toolbar .#{$ns}-button {
+    .pb-toolbar .#{bp.$ns}-button {
         padding: 5px;
     }
 }

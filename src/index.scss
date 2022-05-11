@@ -1,11 +1,16 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2022 The Pybricks Authors
 
+// css files
+@use 'normalize.css/normalize';
+@use '@blueprintjs/core/lib/css/blueprint';
+@use '@blueprintjs/popover2/lib/css/blueprint-popover2';
+
+// sass files
+@use 'sass:color';
 @use 'sass:math';
-@import './variables.scss';
-@import '~normalize.css';
-@import '~@blueprintjs/core/src/blueprint.scss';
-@import '~@blueprintjs/popover2/src/blueprint-popover2.scss';
+@use 'variables' as pb;
+@use '@blueprintjs/core/lib/scss/variables' as bp;
 
 :root {
     --pb-vh: 100vh;
@@ -37,78 +42,101 @@ body {
 
 // global style tweaks
 
-.#{$ns}-toast {
+.#{bp.$ns}-toast {
     user-select: text;
     max-width: 700px;
 }
 
-.#{$ns}-button {
+.#{bp.$ns}-button {
     user-select: none;
+
+    &.#{bp.$ns}-intent-primary {
+        background-color: pb.$pybricks-blue;
+
+        &:hover {
+            background-color: color.adjust(pb.$pybricks-blue, $lightness: -5%);
+        }
+
+        &:disabled,
+        &.#{bp.$ns}-disabled {
+            background-color: rgba(pb.$pybricks-blue, 0.5);
+        }
+    }
+
+    &-text > img {
+        display: block;
+    }
+
+    &-group:not(.#{bp.$ns}-minimal) {
+        & > .#{bp.$ns}-popover-wrapper:not(:last-child) .#{bp.$ns}-button,
+        & > .#{bp.$ns}-button:not(:last-child) {
+            margin-right: 0px;
+        }
+    }
 }
 
-a.#{$ns}-button {
+a.#{bp.$ns}-button {
     text-align: left;
 }
 
-.#{$ns}-button-text > img {
-    display: block;
-}
-
-.#{$ns}-button-group:not(.#{$ns}-minimal)
-    > .#{$ns}-popover-wrapper:not(:last-child)
-    .#{$ns}-button,
-.#{$ns}-button-group:not(.#{$ns}-minimal) > .#{$ns}-button:not(:last-child) {
-    margin-right: 0px;
-}
-
-.#{$ns}-dialog-footer-actions {
+.#{bp.$ns}-dialog-footer-actions {
     flex-wrap: wrap;
     row-gap: 10px;
 }
+.#{bp.$ns}-control {
+    & input:checked ~ .#{bp.$ns}-control-indicator,
+    &.#{bp.$ns}-switch input:checked ~ .#{bp.$ns}-control-indicator {
+        background-color: pb.$pybricks-blue;
 
-.#{$ns}-form-group > .#{$ns}-label {
+        .#{bp.$ns}-dark & {
+            background-color: pb.$pybricks-blue;
+        }
+    }
+}
+
+.#{bp.$ns}-form-group > .#{bp.$ns}-label {
     font-weight: bolder;
 }
 
-::-webkit-scrollbar {
-    width: 16px;
-}
-
-.#{$ns}-dark ::-webkit-scrollbar-track {
-    background: $pt-dark-app-background-color;
-}
-
-::-webkit-scrollbar-track {
-    background: $pt-app-background-color;
-}
-
-.#{$ns}-dark ::-webkit-scrollbar-thumb {
-    border-color: $pt-dark-app-background-color;
-    background: $pt-dark-icon-color;
-}
-
-::-webkit-scrollbar-thumb {
-    border-width: 3px;
-    border-style: solid;
-    border-radius: 8px;
-    border-color: $pt-app-background-color;
-    background: $pt-icon-color;
-}
-
-.#{$ns}-dark ::-webkit-scrollbar-thumb:hover {
-    background: $pt-dark-icon-color-hover;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: $pt-icon-color-hover;
-}
-
-.#{$ns}-input-group .#{$ns}-icon {
+.#{bp.$ns}-input-group .#{bp.$ns}-icon {
     margin: 7px;
 }
 
 // don't take up so much space when there is no caret
-.#{$ns}-tree-node-caret-none {
-    // $pt-grid-size / 2 matches padding on .#{$ns}-tree-node-conent
-    min-width: math.div($pt-grid-size, 2);
+.#{bp.$ns}-tree-node-caret-none {
+    // $pt-grid-size / 2 matches padding on .#{bp.$ns}-tree-node-conent
+    min-width: math.div(bp.$pt-grid-size, 2);
+}
+
+::-webkit-scrollbar {
+    width: 16px;
+
+    &-track {
+        background: bp.$pt-app-background-color;
+
+        .#{bp.$ns}-dark & {
+            background: bp.$pt-dark-app-background-color;
+        }
+    }
+
+    &-thumb {
+        border-width: 3px;
+        border-style: solid;
+        border-radius: 8px;
+        border-color: bp.$pt-app-background-color;
+        background: bp.$pt-icon-color;
+
+        &:hover {
+            background: bp.$pt-icon-color-hover;
+        }
+
+        .#{bp.$ns}-dark & {
+            border-color: bp.$pt-dark-app-background-color;
+            background: bp.$pt-dark-icon-color;
+
+            &:hover {
+                background: bp.$pt-dark-icon-color-hover;
+            }
+        }
+    }
 }
