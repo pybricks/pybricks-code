@@ -3,11 +3,6 @@
 
 @use '@blueprintjs/core/lib/scss/variables' as bp;
 
-.pb-explorer-file-tree {
-    // to allow for focus outline
-    padding: 6px;
-}
-
 // reveal file action buttons on hover
 .#{bp.$ns}-tree-node-content:not(:hover) .pb-explorer-file-action-button-group {
     display: none;

@@ -410,7 +410,7 @@ const Editor: React.VFC = () => {
     );
 
     return (
-        <div className="h-100" onContextMenu={preventBrowserNativeContextMenu}>
+        <div className="pb-editor" onContextMenu={preventBrowserNativeContextMenu}>
             <EditorTabs onChange={() => editor?.focus()} i18n={i18n} />
             <ResizeSensor2 onResize={() => editor?.layout()}>
                 <ContextMenu2

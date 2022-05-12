@@ -1,7 +1,33 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2022 The Pybricks Authors
 
-$toolbar-height: 72px;
+@use 'sass:color';
+@use '@blueprintjs/core/lib/scss/variables' as bp;
+
 $status-bar-height: 30px;
 
+// point at which we change the UI for narrow screens
+$narrow-screen-limit: 700px;
+
+// Official Pybricks branding color.
 $pybricks-blue: #0088ce;
+
+/**
+ * Adjusts the background contrast by $background-adjust (usually a percent).
+ *
+ * The light theme will be made darker by that amount and the dark theme will
+ * be made lighter.
+ */
+@mixin background-contrast($background-adjust) {
+    background-color: color.adjust(
+        bp.$pt-app-background-color,
+        $lightness: -$background-adjust
+    );
+
+    .#{bp.$ns}-dark & {
+        background-color: color.adjust(
+            bp.$pt-dark-app-background-color,
+            $lightness: $background-adjust
+        );
+    }
+}

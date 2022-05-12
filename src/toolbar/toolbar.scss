@@ -7,11 +7,16 @@
 @use '../variables' as pb;
 
 .pb-toolbar {
-    height: pb.$toolbar-height;
-    padding: 0 bp.$pt-grid-size * 1.5;
-    position: relative;
-    width: 100%;
+    padding: bp.$pt-grid-size bp.$pt-grid-size * 1.5;
     z-index: bp.$pt-z-index-content;
+
+    // make small buttons more square and slightly smaller (some of this is
+    // done in react)
+    @media screen and (max-width: pb.$narrow-screen-limit) {
+        .#{bp.$ns}-button {
+            padding: 5px;
+        }
+    }
 }
 
 .pb-toolbar * {
@@ -20,7 +25,6 @@
 
 .pb-toolbar-group {
     align-items: center;
-    height: 100%;
 
     &.pb-align-left {
         float: left;
@@ -30,20 +34,5 @@
     &.pb-align-right {
         float: right;
         margin-left: bp.$pt-grid-size * 2;
-    }
-}
-
-// make small buttons more square and slightly smaller
-@media screen and (max-width: 700px) {
-    .pb-toolbar .#{bp.$ns}-button {
-        padding: 5px;
-    }
-}
-
-// this is the point where the buttons start wrapping to 2 rows so we need to
-// adjust the height so that they stay in the toolbar
-@media screen and (max-width: 350px) {
-    .pb-toolbar-group {
-        height: 50%;
     }
 }

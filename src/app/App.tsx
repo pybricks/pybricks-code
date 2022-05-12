@@ -5,8 +5,10 @@ import { Classes } from '@blueprintjs/core';
 import React, { useEffect, useState } from 'react';
 import SplitterLayout from 'react-splitter-layout';
 import { useLocalStorage, useTernaryDarkMode } from 'usehooks-ts';
+import { Activity, useActivities } from '../activities/Activities';
 import Editor from '../editor/Editor';
 import Explorer from '../explorer/Explorer';
+import Settings from '../settings/Settings';
 import { useSettingIsShowDocsEnabled } from '../settings/hooks';
 import StatusBar from '../status-bar/StatusBar';
 import Terminal from '../terminal/Terminal';
@@ -155,16 +157,20 @@ const App: React.VFC = () => {
         return () => removeEventListener('keydown', listener);
     }, []);
 
+    const [selectedActivity, activitiesComponent] = useActivities();
+
     return (
         <div className="pb-app h-100 w-100 p-absolute">
-            <Toolbar />
-            <div
-                className="pb-app-body"
-                style={{ display: 'grid', gridTemplateColumns: '250px auto' }}
-            >
-                <Explorer />
+            <div className="pb-app-body">
+                {activitiesComponent}
+                {selectedActivity !== Activity.None && (
+                    <div className="pb-app-activity-view">
+                        {selectedActivity === Activity.Explorer && <Explorer />}
+                        {selectedActivity === Activity.Settings && <Settings />}
+                    </div>
+                )}
                 {/* need a container with position: relative; for SplitterLayout since it uses position: absolute; */}
-                <div style={{ position: 'relative' }}>
+                <div className="pb-app-main" style={{ position: 'relative' }}>
                     <SplitterLayout
                         customClassName={
                             isSettingShowDocsEnabled ? 'pb-show-docs' : 'pb-hide-docs'
@@ -181,7 +187,10 @@ const App: React.VFC = () => {
                             secondaryInitialSize={terminalSplit}
                             onSecondaryPaneSizeChange={setTerminalSplit}
                         >
-                            <Editor />
+                            <div className="pb-app-editor">
+                                <Toolbar />
+                                <Editor />
+                            </div>
                             <div className="pb-app-terminal-padding h-100">
                                 <Terminal />
                             </div>

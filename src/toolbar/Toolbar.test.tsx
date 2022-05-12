@@ -1,33 +1,48 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2022 The Pybricks Authors
 
-import { getByLabelText, waitFor } from '@testing-library/dom';
 import React from 'react';
 import { testRender } from '../../test';
 import Toolbar from './Toolbar';
 
-describe('settings button', () => {
-    it('should open settings drawer', async () => {
+describe('toolbar', () => {
+    it('should have bluetooth button', () => {
         const [toolbar] = testRender(<Toolbar />);
 
-        const settingButton = toolbar.getByLabelText('Settings');
+        const runButton = toolbar.getByRole('button', { name: 'Bluetooth' });
 
-        expect(
-            toolbar.queryByRole('dialog', {
-                name: 'Settings & Help',
-            }),
-        ).toBeNull();
+        expect(runButton).toBeDefined();
+    });
 
-        settingButton.click();
+    it('should have flash button', () => {
+        const [toolbar] = testRender(<Toolbar />);
 
-        const settingsDrawer = toolbar.getByRole('dialog', {
-            name: 'Settings & Help',
-        });
+        const runButton = toolbar.getByRole('button', { name: 'Flash' });
 
-        expect(settingsDrawer).toBeVisible();
+        expect(runButton).toBeDefined();
+    });
 
-        getByLabelText(settingsDrawer, 'Close').click();
+    it('should have run button', () => {
+        const [toolbar] = testRender(<Toolbar />);
 
-        await waitFor(() => expect(settingsDrawer).not.toBeVisible());
+        const runButton = toolbar.getByRole('button', { name: 'Run' });
+
+        expect(runButton).toBeDefined();
+    });
+
+    it('should have stop button', () => {
+        const [toolbar] = testRender(<Toolbar />);
+
+        const runButton = toolbar.getByRole('button', { name: 'Stop' });
+
+        expect(runButton).toBeDefined();
+    });
+
+    it('should have repl button', () => {
+        const [toolbar] = testRender(<Toolbar />);
+
+        const runButton = toolbar.getByRole('button', { name: 'REPL' });
+
+        expect(runButton).toBeDefined();
     });
 });

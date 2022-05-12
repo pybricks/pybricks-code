@@ -51,15 +51,19 @@ body {
     user-select: none;
 
     &.#{bp.$ns}-intent-primary {
-        background-color: pb.$pybricks-blue;
+        background: pb.$pybricks-blue;
+
+        &.#{bp.$ns}-minimal {
+            background: none;
+        }
 
         &:hover {
-            background-color: color.adjust(pb.$pybricks-blue, $lightness: -5%);
+            background: color.adjust(pb.$pybricks-blue, $lightness: -5%);
         }
 
         &:disabled,
         &.#{bp.$ns}-disabled {
-            background-color: rgba(pb.$pybricks-blue, 0.5);
+            background: rgba(pb.$pybricks-blue, 0.5);
         }
     }
 

@@ -5,7 +5,7 @@ import { cleanup, getByLabelText, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { testRender } from '../../test';
-import SettingsDrawer from './SettingsDrawer';
+import Settings from './Settings';
 
 afterEach(() => {
     cleanup();
@@ -14,9 +14,7 @@ afterEach(() => {
 
 describe('showDocs setting switch', () => {
     it('should toggle setting', async () => {
-        const [settings] = testRender(
-            <SettingsDrawer isOpen={true} onClose={() => undefined} />,
-        );
+        const [settings] = testRender(<Settings />);
 
         const showDocs = settings.getByLabelText('Documentation');
         expect(showDocs).toBeChecked();
@@ -28,9 +26,7 @@ describe('showDocs setting switch', () => {
 
 describe('darkMode setting switch', () => {
     it('should toggle setting', async () => {
-        const [settings] = testRender(
-            <SettingsDrawer isOpen={true} onClose={() => undefined} />,
-        );
+        const [settings] = testRender(<Settings />);
 
         const darkMode = settings.getByLabelText('Dark mode');
         expect(darkMode).not.toBeChecked();
@@ -45,11 +41,10 @@ describe('darkMode setting switch', () => {
         expect(localStorage.getItem('usehooks-ts-ternary-dark-mode')).toBe('"light"');
     });
 });
+
 describe('flashCurrentProgram setting switch', () => {
     it('should toggle the setting', () => {
-        const [settings] = testRender(
-            <SettingsDrawer isOpen={true} onClose={() => undefined} />,
-        );
+        const [settings] = testRender(<Settings />);
 
         expect(localStorage.getItem('setting.flashCurrentProgram')).toBe(null);
 
@@ -66,9 +61,7 @@ describe('hubName setting', () => {
         // old settings did not use json format, so lack quotes
         localStorage.setItem('setting.hubName', 'old name');
 
-        const [settings] = testRender(
-            <SettingsDrawer isOpen={true} onClose={() => undefined} />,
-        );
+        const [settings] = testRender(<Settings />);
 
         const textBox = settings.getByLabelText('Hub name');
 
@@ -76,9 +69,7 @@ describe('hubName setting', () => {
     });
 
     it('should update the setting', () => {
-        const [settings] = testRender(
-            <SettingsDrawer isOpen={true} onClose={() => undefined} />,
-        );
+        const [settings] = testRender(<Settings />);
 
         expect(localStorage.getItem('setting.hubName')).toBe(null);
 
@@ -91,9 +82,7 @@ describe('hubName setting', () => {
 
 describe('about dialog', () => {
     it('should open the dialog when the button is clicked', async () => {
-        const [settings] = testRender(
-            <SettingsDrawer isOpen={true} onClose={() => undefined} />,
-        );
+        const [settings] = testRender(<Settings />);
 
         const appName = process.env.REACT_APP_NAME;
 
