@@ -13,6 +13,7 @@ import {
     Tab,
     TabId,
     Tabs,
+    Text,
 } from '@blueprintjs/core';
 import { ContextMenu2, ResizeSensor2 } from '@blueprintjs/popover2';
 import { I18n, useI18n } from '@shopify/react-i18n';
@@ -202,25 +203,44 @@ const EditorTabs: React.VoidFunctionComponent<EditorTabsProps> = ({
 
     const labelId = useUniqueId('pb-editor');
 
+    // close tab when delete key is pressed
+    const handleKeyDown = useCallback(
+        (e: React.KeyboardEvent, fileName: string) => {
+            if (e.key === 'Delete') {
+                dispatch(editorCloseFile(fileName));
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        },
+        [dispatch],
+    );
+
     return (
         <Tabs
-            className="pb-editor-tabs"
+            className="pb-editor-tablist"
             selectedTabId={activeFile}
             onChange={handleChange}
         >
             {openFiles.map((fileName, i) => (
                 <Tab
-                    className="pb-editor-tab"
+                    className="pb-editor-tablist-tab"
                     aria-labelledby={`${labelId}.${i}`}
                     key={i}
                     id={fileName}
+                    onKeyDown={(e) => handleKeyDown(e, fileName)}
                 >
-                    <span id={`${labelId}.${i}`}>{fileName}</span>
+                    <Text tagName="span" id={`${labelId}.${i}`} ellipsize={true}>
+                        {fileName}
+                    </Text>
                     <Button
                         title={i18n.translate(I18nId.CloseFileTooltip, { fileName })}
                         minimal={true}
                         small={true}
                         icon={'cross'}
+                        // tabs are closed with delete button by keyboard, so
+                        // don't focus the close button
+                        tabIndex={-1}
+                        onFocus={(e) => e.preventDefault()}
                         onClick={(e) => {
                             dispatch(editorCloseFile(fileName));
                             // prevent triggering Tabs onChange
@@ -414,7 +434,8 @@ const Editor: React.VFC = () => {
             <EditorTabs onChange={() => editor?.focus()} i18n={i18n} />
             <ResizeSensor2 onResize={() => editor?.layout()}>
                 <ContextMenu2
-                    className="h-100"
+                    className="pb-editor-tabpanel"
+                    role="tabpanel"
                     // NB: we have to create a new context menu each time it is
                     // shown in order to get some state, like canUndo and canRedo
                     // that don't have events to monitor changes.

@@ -13,7 +13,7 @@ import { editorActivateFile, editorCloseFile } from './actions';
 
 describe('Editor', () => {
     describe('tabs', () => {
-        it('should dispatch action when tab is clicked', async () => {
+        it('should dispatch activate action when tab is clicked', async () => {
             const [editor, dispatch] = testRender(<Editor />, {
                 editor: { openFiles: ['test.file'] },
             });
@@ -23,12 +23,38 @@ describe('Editor', () => {
             expect(dispatch).toHaveBeenCalledWith(editorActivateFile('test.file'));
         });
 
-        it('should dispatch action when close button is clicked', async () => {
+        it.each(['enter', 'space'])(
+            'should dispatch activate action when % button is pressed',
+            async (button) => {
+                const [editor, dispatch] = testRender(<Editor />, {
+                    editor: { openFiles: ['test.file'] },
+                });
+
+                userEvent.type(
+                    editor.getByRole('tab', { name: 'test.file' }),
+                    `{${button}}`,
+                );
+
+                expect(dispatch).toHaveBeenCalledWith(editorActivateFile('test.file'));
+            },
+        );
+
+        it('should dispatch close action when close button is clicked', async () => {
             const [editor, dispatch] = testRender(<Editor />, {
                 editor: { openFiles: ['test.file'] },
             });
 
             userEvent.click(editor.getByRole('button', { name: 'Close test.file' }));
+
+            expect(dispatch).toHaveBeenCalledWith(editorCloseFile('test.file'));
+        });
+
+        it('should dispatch close action when delete button is pressed', async () => {
+            const [editor, dispatch] = testRender(<Editor />, {
+                editor: { openFiles: ['test.file'] },
+            });
+
+            userEvent.type(editor.getByRole('tab', { name: 'test.file' }), '{delete}');
 
             expect(dispatch).toHaveBeenCalledWith(editorCloseFile('test.file'));
         });
