@@ -97,6 +97,14 @@ describe('handleExplorerArchiveAllFiles', () => {
             );
         });
 
+        it('should fail if there are no files in storage', async () => {
+            saga.put(fileStorageDidDumpAllFiles([]));
+
+            await expect(saga.take()).resolves.toEqual(
+                explorerDidFailToArchiveAllFiles(new Error('no files')),
+            );
+        });
+
         describe('should continue when fileStorage succeeds', () => {
             beforeEach(async () => {
                 saga.put(

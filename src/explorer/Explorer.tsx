@@ -46,8 +46,6 @@ type ActionButtonProps = {
     icon: IconName;
     /** The tooltip/title text. */
     tooltip: string;
-    /** If provided, controls button disabled state. */
-    disabled?: boolean;
     /** If false, prevent focus. Default is true. */
     focusable?: boolean;
     /** Callback for button click event. */
@@ -57,7 +55,6 @@ type ActionButtonProps = {
 const ActionButton: React.VoidFunctionComponent<ActionButtonProps> = ({
     icon,
     tooltip,
-    disabled,
     focusable,
     onClick,
 }) => {
@@ -74,7 +71,6 @@ const ActionButton: React.VoidFunctionComponent<ActionButtonProps> = ({
         <Button
             icon={icon}
             title={tooltip}
-            disabled={disabled}
             tabIndex={focusable === false ? -1 : undefined}
             onFocus={focusable === false ? (e) => e.preventDefault() : undefined}
             onClick={handleClick}
@@ -142,7 +138,6 @@ type HeaderProps = {
 
 const Header: React.VoidFunctionComponent<HeaderProps> = ({ i18n }) => {
     const dispatch = useDispatch();
-    const files = useSelector((s) => s.explorer.files);
 
     return (
         <div className="pb-explorer-header">
@@ -154,7 +149,6 @@ const Header: React.VoidFunctionComponent<HeaderProps> = ({ i18n }) => {
                 <ActionButton
                     icon="archive"
                     tooltip={i18n.translate(I18nId.HeaderToolbarExportAll)}
-                    disabled={files.length === 0}
                     onClick={() => dispatch(explorerArchiveAllFiles())}
                 />
                 <ActionButton

@@ -29,7 +29,7 @@ const testFile: ExplorerFileInfo = {
 };
 
 describe('archive button', () => {
-    it('should be enabled if there are files', () => {
+    it('should dispatch action when clicked', () => {
         const [explorer, dispatch] = testRender(<Explorer />, {
             explorer: { files: [testFile] },
         });
@@ -39,18 +39,6 @@ describe('archive button', () => {
 
         userEvent.click(button);
         expect(dispatch).toHaveBeenCalledWith(explorerArchiveAllFiles());
-    });
-
-    it('should be disabled if there are no files', () => {
-        const [explorer, dispatch] = testRender(<Explorer />, {
-            explorer: { files: [] },
-        });
-
-        const button = explorer.getByTitle('Backup all files');
-        expect(button).toBeDisabled();
-
-        userEvent.click(button);
-        expect(dispatch).not.toHaveBeenCalled();
     });
 });
 

@@ -93,6 +93,10 @@ function* handleExplorerArchiveAllFiles(): Generator {
 
         defined(didDump);
 
+        if (didDump.files.length === 0) {
+            throw new Error('no files');
+        }
+
         const zip = new JSZip();
 
         for (const f of didDump.files) {
