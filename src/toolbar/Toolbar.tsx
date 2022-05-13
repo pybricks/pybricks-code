@@ -3,7 +3,6 @@
 
 import { ButtonGroup } from '@blueprintjs/core';
 import React from 'react';
-import { preventBrowserNativeContextMenu } from '../utils/react';
 import BluetoothButton from './buttons/bluetooth/BluetoothButton';
 import FlashButton from './buttons/flash/FlashButton';
 import ReplButton from './buttons/repl/ReplButton';
@@ -14,11 +13,7 @@ import './toolbar.scss';
 
 const Toolbar: React.VFC = (_props) => {
     return (
-        <div
-            role="toolbar"
-            onContextMenu={preventBrowserNativeContextMenu}
-            className="pb-toolbar"
-        >
+        <div role="toolbar" className="pb-toolbar">
             <ButtonGroup className="pb-toolbar-group pb-align-left">
                 <FlashButton />
                 <BluetoothButton />

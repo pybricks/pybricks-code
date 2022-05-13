@@ -3,13 +3,6 @@
 import React, { useState } from 'react';
 import { createCountFunc } from './iter';
 
-/**
- * Callback that can be passed to onContextMenu event handlers to prevent
- * the native browser context menu from being shown.
- */
-export const preventBrowserNativeContextMenu: React.MouseEventHandler = (e) =>
-    e.preventDefault();
-
 /** Style to disable pointer events. */
 export const pointerEventsNone: React.CSSProperties = { pointerEvents: 'none' };
 

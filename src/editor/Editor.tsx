@@ -34,7 +34,7 @@ import { compile } from '../mpy/actions';
 import { useSelector } from '../reducers';
 import { useSettingIsShowDocsEnabled } from '../settings/hooks';
 import { isMacOS } from '../utils/os';
-import { preventBrowserNativeContextMenu, useUniqueId } from '../utils/react';
+import { useUniqueId } from '../utils/react';
 import { editorActivateFile, editorCloseFile } from './actions';
 import { I18nId } from './i18n';
 import * as pybricksMicroPython from './pybricksMicroPython';
@@ -430,7 +430,7 @@ const Editor: React.VFC = () => {
     );
 
     return (
-        <div className="pb-editor" onContextMenu={preventBrowserNativeContextMenu}>
+        <div className="pb-editor">
             <EditorTabs onChange={() => editor?.focus()} i18n={i18n} />
             <ResizeSensor2 onResize={() => editor?.layout()}>
                 <ContextMenu2

@@ -26,7 +26,6 @@ import {
 import { useDispatch } from 'react-redux';
 import { useSelector } from '../reducers';
 import { isMacOS } from '../utils/os';
-import { preventBrowserNativeContextMenu } from '../utils/react';
 import { TreeItemContext, TreeItemData, renderers } from '../utils/tree-renderer';
 import {
     explorerActivateFile,
@@ -378,7 +377,7 @@ const Explorer: React.VFC = () => {
     const [i18n] = useI18n();
 
     return (
-        <div className="h-100" onContextMenu={preventBrowserNativeContextMenu}>
+        <div className="h-100">
             <Header i18n={i18n} />
             <Divider />
             <FileTree i18n={i18n} />

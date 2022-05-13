@@ -1,20 +1,12 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2021-2022 The Pybricks Authors
 
-import { fireEvent, waitFor } from '@testing-library/react';
+import { waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { testRender } from '../../test';
 import { BleConnectionState } from '../ble/reducers';
 import StatusBar from './StatusBar';
-
-it('should prevent browser context menu', () => {
-    const [statusBar] = testRender(<StatusBar />, {
-        ble: { connection: BleConnectionState.Disconnected, deviceName: '' },
-    });
-
-    expect(fireEvent.contextMenu(statusBar.getByRole('status'))).toBe(false);
-});
 
 it('should show popover when hub name is clicked', async () => {
     const testHubName = 'Test hub';
