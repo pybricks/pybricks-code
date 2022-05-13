@@ -126,10 +126,10 @@ const OpenFileButton: React.VoidFunctionComponent<OpenFileButtonProps> = ({
                         />
                     ) : (
                         <img
+                            aria-hidden={true}
                             width={`${buttonSize}px`}
                             height={`${buttonSize}px`}
                             src={icon}
-                            alt={label}
                         />
                     )}
                 </Button>

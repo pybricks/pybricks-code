@@ -109,10 +109,10 @@ const ActionButton: React.VoidFunctionComponent<ActionButtonProps> = ({
                         />
                     ) : (
                         <img
+                            aria-hidden={true}
                             width={`${buttonSize}px`}
                             height={`${buttonSize}px`}
                             src={icon}
-                            alt={label}
                         />
                     )}
                 </Button>
