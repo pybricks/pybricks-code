@@ -7,3 +7,10 @@
 .#{bp.$ns}-tree-node-content:not(:hover) .pb-explorer-file-action-button-group {
     display: none;
 }
+
+.pb-explorer {
+    &-header {
+        display: flex;
+        justify-content: flex-end;
+    }
+}

@@ -1,8 +1,11 @@
 {
     "header": {
-        "exportAllTooltip": "Backup all files",
-        "importTooltip": "Import a file",
-        "addNewTooltip": "Create a new file"
+        "toolbar": {
+            "title": "File Actions",
+            "exportAll": "Backup all files",
+            "import": "Import a file",
+            "addNew": "Create a new file"
+        }
     },
     "tree": {
         "label": "File Explorer",

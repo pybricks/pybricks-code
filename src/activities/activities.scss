@@ -4,17 +4,25 @@
 @use '@blueprintjs/core/lib/scss/variables' as bp;
 @use '../variables' as pb;
 
-.pb-activities {
-    & .#{bp.$ns}-tab-list {
-        @include pb.background-contrast(6%);
-    }
-
-    // override bluetprintjs styles
-    .#{bp.$ns}-tabs.#{bp.$ns}-vertical > .#{bp.$ns}-tab-list &-tablist-tab {
+// override bluetprintjs styles
+.#{bp.$ns}-tabs.#{bp.$ns}-vertical > {
+    & .#{bp.$ns}-tab-list .pb-activities-tablist-tab {
         margin: bp.$pt-grid-size * 0.6;
         padding: unset;
         width: unset;
         line-height: unset;
+    }
+
+    & .pb-activities-tabview {
+        padding-left: bp.$pt-grid-size;
+    }
+}
+
+.pb-activities {
+    // TODO: submit upstream patch to allow setting tablist class
+    &-tablist,
+    & .#{bp.$ns}-tab-list {
+        @include pb.background-contrast(6%);
     }
 
     &-tabview {

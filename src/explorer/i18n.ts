@@ -4,9 +4,10 @@
 // Explorer translation keys.
 
 export enum I18nId {
-    HeaderExportAllTooltip = 'header.exportAllTooltip',
-    HeaderImportTooltip = 'header.importTooltip',
-    HeaderAddNewTooltip = 'header.addNewTooltip',
+    HeaderToolbarTitle = 'header.toolbar.title',
+    HeaderToolbarExportAll = 'header.toolbar.exportAll',
+    HeaderToolbarImport = 'header.toolbar.import',
+    HeaderToolbarAddNew = 'header.toolbar.addNew',
     TreeLabel = 'tree.label',
     TreeLiveDescriptorIntroAccessibilityGuide = 'tree.liveDescriptor.intro.accessibilityGuide',
     TreeLiveDescriptorIntroNavigation = 'tree.liveDescriptor.intro.navigation',

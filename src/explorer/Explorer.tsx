@@ -145,11 +145,15 @@ const Header: React.VoidFunctionComponent<HeaderProps> = ({ i18n }) => {
     const files = useSelector((s) => s.explorer.files);
 
     return (
-        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <ButtonGroup minimal={true}>
+        <div className="pb-explorer-header">
+            <ButtonGroup
+                minimal={true}
+                role="toolbar"
+                aria-label={i18n.translate(I18nId.HeaderToolbarTitle)}
+            >
                 <ActionButton
                     icon="archive"
-                    tooltip={i18n.translate(I18nId.HeaderExportAllTooltip)}
+                    tooltip={i18n.translate(I18nId.HeaderToolbarExportAll)}
                     disabled={files.length === 0}
                     onClick={() => dispatch(explorerArchiveAllFiles())}
                 />
@@ -158,12 +162,12 @@ const Header: React.VoidFunctionComponent<HeaderProps> = ({ i18n }) => {
                     // what we want here since import is analogous to upload
                     // even though this is the "import" action
                     icon="export"
-                    tooltip={i18n.translate(I18nId.HeaderImportTooltip)}
+                    tooltip={i18n.translate(I18nId.HeaderToolbarImport)}
                     onClick={() => dispatch(explorerImportFiles())}
                 />
                 <ActionButton
                     icon="plus"
-                    tooltip={i18n.translate(I18nId.HeaderAddNewTooltip)}
+                    tooltip={i18n.translate(I18nId.HeaderToolbarAddNew)}
                     onClick={() => dispatch(explorerCreateNewFile())}
                 />
             </ButtonGroup>
@@ -377,7 +381,7 @@ const Explorer: React.VFC = () => {
     const [i18n] = useI18n();
 
     return (
-        <div className="h-100">
+        <div className="pb-explorer">
             <Header i18n={i18n} />
             <Divider />
             <FileTree i18n={i18n} />

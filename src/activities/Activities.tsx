@@ -75,6 +75,32 @@ const Activities: React.VoidFunctionComponent = () => {
         firstTab.setAttribute('tabindex', '0');
     }, [tabsRef, selectedActivity]);
 
+    // HACK: hoist html title attribute from icon to tab
+
+    useEffect(() => {
+        // @ts-expect-error: using private property
+        const tablist: HTMLDivElement = tabsRef.current?.tablistElement;
+
+        // istanbul-ignore-if: should not happen
+        if (!tablist) {
+            return;
+        }
+
+        for (const element of tablist.getElementsByClassName(
+            'pb-activities-tablist-tab',
+        )) {
+            const title = element.firstElementChild?.getAttribute('title');
+
+            // istanbul-ignore-if: should not happen
+            if (!title) {
+                continue;
+            }
+
+            element.setAttribute('title', title);
+            element.firstElementChild?.removeAttribute('title');
+        }
+    }, [tabsRef]);
+
     return (
         <Tabs
             aria-label={i18n.translate(I18nId.Title)}
