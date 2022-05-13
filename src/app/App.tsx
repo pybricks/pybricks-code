@@ -5,10 +5,8 @@ import { Classes } from '@blueprintjs/core';
 import React, { useEffect, useState } from 'react';
 import SplitterLayout from 'react-splitter-layout';
 import { useLocalStorage, useTernaryDarkMode } from 'usehooks-ts';
-import { Activity, useActivities } from '../activities/Activities';
+import Activities from '../activities/Activities';
 import Editor from '../editor/Editor';
-import Explorer from '../explorer/Explorer';
-import Settings from '../settings/Settings';
 import { useSettingIsShowDocsEnabled } from '../settings/hooks';
 import StatusBar from '../status-bar/StatusBar';
 import Terminal from '../terminal/Terminal';
@@ -157,18 +155,13 @@ const App: React.VFC = () => {
         return () => removeEventListener('keydown', listener);
     }, []);
 
-    const [selectedActivity, activitiesComponent] = useActivities();
-
     return (
-        <div className="pb-app h-100 w-100 p-absolute">
+        <div
+            className="pb-app h-100 w-100 p-absolute"
+            onContextMenu={(e) => e.preventDefault()}
+        >
             <div className="pb-app-body">
-                {activitiesComponent}
-                {selectedActivity !== Activity.None && (
-                    <div className="pb-app-activity-view">
-                        {selectedActivity === Activity.Explorer && <Explorer />}
-                        {selectedActivity === Activity.Settings && <Settings />}
-                    </div>
-                )}
+                <Activities />
                 {/* need a container with position: relative; for SplitterLayout since it uses position: absolute; */}
                 <div className="pb-app-main" style={{ position: 'relative' }}>
                     <SplitterLayout

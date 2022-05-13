@@ -21,39 +21,6 @@
     display: flex;
     flex-direction: row;
 
-    $switcher-width: 50px;
-
-    .pb-activity-tablist {
-        width: $switcher-width;
-        $padding: bp.$pt-grid-size * 0.5;
-        padding: $padding;
-        gap: $padding;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        @include pb.background-contrast(6%);
-    }
-
-    .pb-app-activity-view {
-        width: 250px;
-        overflow: hidden;
-        padding: bp.$pt-grid-size;
-
-        // on small screens, make the activity view an overlay instead of inline
-        @media screen and (max-width: pb.$narrow-screen-limit) {
-            position: absolute;
-            top: 0px;
-            left: $switcher-width;
-            height: 100%;
-            z-index: bp.$pt-z-index-overlay;
-            background-color: bp.$pt-app-background-color;
-
-            .#{bp.$ns}-dark & {
-                background-color: bp.$pt-dark-app-background-color;
-            }
-        }
-    }
-
     .pb-app-main {
         min-width: 0;
         flex: 1 1 auto;

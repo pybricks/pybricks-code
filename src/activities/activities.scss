@@ -1,0 +1,35 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2022 The Pybricks Authors
+
+@use '@blueprintjs/core/lib/scss/variables' as bp;
+@use '../variables' as pb;
+
+.pb-activities {
+    & .#{bp.$ns}-tab-list {
+        @include pb.background-contrast(6%);
+    }
+
+    // override bluetprintjs styles
+    .#{bp.$ns}-tabs.#{bp.$ns}-vertical > .#{bp.$ns}-tab-list &-tablist-tab {
+        margin: bp.$pt-grid-size * 0.6;
+        padding: unset;
+        width: unset;
+        line-height: unset;
+    }
+
+    &-tabview {
+        width: bp.$pt-grid-size * 25;
+        padding: bp.$pt-grid-size;
+        @include pb.background-contrast(0%);
+
+        // on small screens, make the activity view an overlay instead of inline
+        @media screen and (max-width: pb.$narrow-screen-limit) {
+            position: absolute;
+            top: 0px;
+            // FIXME: this should be a variable
+            left: 47px;
+            height: 100%;
+            z-index: bp.$pt-z-index-overlay;
+        }
+    }
+}

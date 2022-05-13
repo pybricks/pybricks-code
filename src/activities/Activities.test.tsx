@@ -4,9 +4,8 @@
 import { cleanup } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
-import { useIsFirstRender } from 'usehooks-ts';
 import { testRender } from '../../test';
-import { Activity, useActivities } from './Activities';
+import Activities, { Activity } from './Activities';
 
 afterEach(() => {
     cleanup();
@@ -14,27 +13,9 @@ afterEach(() => {
     localStorage.clear();
 });
 
-type TestActivityProps = {
-    expectedActivity: Activity;
-};
-
-const TestActivity: React.VoidFunctionComponent<TestActivityProps> = ({
-    expectedActivity,
-}) => {
-    const [selectedActivity, activitiesComponent] = useActivities();
-
-    if (useIsFirstRender()) {
-        expect(selectedActivity).toBe(expectedActivity);
-    }
-
-    return activitiesComponent;
-};
-
 describe('Activities', () => {
     it('should select explorer by default', () => {
-        const [activities] = testRender(
-            <TestActivity expectedActivity={Activity.Explorer} />,
-        );
+        const [activities] = testRender(<Activities />);
 
         const tab = activities.getByRole('tab', { name: 'File Explorer' });
 
@@ -47,9 +28,7 @@ describe('Activities', () => {
             JSON.stringify(Activity.Settings),
         );
 
-        const [activities] = testRender(
-            <TestActivity expectedActivity={Activity.Settings} />,
-        );
+        const [activities] = testRender(<Activities />);
 
         const tab = activities.getByRole('tab', { name: 'Settings & Help' });
 
@@ -57,9 +36,7 @@ describe('Activities', () => {
     });
 
     it('should select none when clicking already selected tab', () => {
-        const [activities] = testRender(
-            <TestActivity expectedActivity={Activity.Explorer} />,
-        );
+        const [activities] = testRender(<Activities />);
 
         const explorerTab = activities.getByRole('tab', { name: 'File Explorer' });
 
@@ -78,9 +55,7 @@ describe('Activities', () => {
     });
 
     it('should select new tab when clicking not already selected tab', () => {
-        const [activities] = testRender(
-            <TestActivity expectedActivity={Activity.Explorer} />,
-        );
+        const [activities] = testRender(<Activities />);
 
         const explorerTab = activities.getByRole('tab', { name: 'File Explorer' });
         const settingsTab = activities.getByRole('tab', { name: 'Settings & Help' });
