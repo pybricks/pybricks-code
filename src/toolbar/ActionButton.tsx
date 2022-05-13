@@ -12,7 +12,6 @@ import {
 import { Tooltip2 } from '@blueprintjs/popover2';
 import React, { useEffect, useMemo, useState } from 'react';
 import { tooltipDelay } from '../app/constants';
-import { pointerEventsNone } from '../utils/react';
 
 const smallScreenThreshold = 700;
 
@@ -101,7 +100,6 @@ const ActionButton: React.VoidFunctionComponent<ActionButtonProps> = ({
                     intent={Intent.PRIMARY}
                     onClick={onAction}
                     disabled={enabled === false}
-                    style={enabled === false ? pointerEventsNone : undefined}
                 >
                     {showProgress ? (
                         <Spinner
@@ -115,7 +113,6 @@ const ActionButton: React.VoidFunctionComponent<ActionButtonProps> = ({
                             height={`${buttonSize}px`}
                             src={icon}
                             alt={label}
-                            style={pointerEventsNone}
                         />
                     )}
                 </Button>

@@ -1,10 +1,7 @@
 // helper functions for React components
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { createCountFunc } from './iter';
-
-/** Style to disable pointer events. */
-export const pointerEventsNone: React.CSSProperties = { pointerEvents: 'none' };
 
 const nextId = createCountFunc();
 

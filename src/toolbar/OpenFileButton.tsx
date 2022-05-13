@@ -6,7 +6,6 @@ import { Tooltip2 } from '@blueprintjs/popover2';
 import React, { useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { tooltipDelay } from '../app/constants';
-import { pointerEventsNone } from '../utils/react';
 
 const smallScreenThreshold = 700;
 export interface OpenFileButtonProps {
@@ -115,7 +114,6 @@ const OpenFileButton: React.VoidFunctionComponent<OpenFileButtonProps> = ({
                         'aria-haspopup': undefined,
                         intent: Intent.PRIMARY,
                         disabled: enabled === false,
-                        style: enabled === false ? pointerEventsNone : undefined,
                         onClick: onClick,
                     })}
                 >
@@ -132,7 +130,6 @@ const OpenFileButton: React.VoidFunctionComponent<OpenFileButtonProps> = ({
                             height={`${buttonSize}px`}
                             src={icon}
                             alt={label}
-                            style={pointerEventsNone}
                         />
                     )}
                 </Button>
