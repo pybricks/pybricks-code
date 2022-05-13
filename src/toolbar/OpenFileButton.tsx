@@ -111,6 +111,8 @@ const OpenFileButton: React.VoidFunctionComponent<OpenFileButtonProps> = ({
                         refKey: 'elementRef',
                         elementRef: tooltipTargetRef as IRef<HTMLButtonElement>,
                         ...tooltipTargetProps,
+                        // https://github.com/palantir/blueprint/pull/5300
+                        'aria-haspopup': undefined,
                         intent: Intent.PRIMARY,
                         disabled: enabled === false,
                         style: enabled === false ? pointerEventsNone : undefined,

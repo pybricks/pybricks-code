@@ -96,6 +96,8 @@ const ActionButton: React.VoidFunctionComponent<ActionButtonProps> = ({
                     aria-label={label}
                     elementRef={tooltipTargetRef as IRef<HTMLButtonElement>}
                     {...tooltipTargetProps}
+                    // https://github.com/palantir/blueprint/pull/5300
+                    aria-haspopup={undefined}
                     intent={Intent.PRIMARY}
                     onClick={onAction}
                     disabled={enabled === false}
