@@ -1,0 +1,23 @@
+diff --git a/openBrowser.js b/openBrowser.js
+index babdc9b854ed1c8ba0d2d08d10b4c6b1d91c3c34..0776cb10c027f9ca5f162060944c2a18618660d0 100644
+--- a/openBrowser.js
++++ b/openBrowser.js
+@@ -115,15 +115,12 @@ function startBrowserProcess(browser, url, args) {
+     browser = undefined;
+   }
+ 
+-  // If there are arguments, they must be passed as array with the browser
+-  if (typeof browser === 'string' && args.length > 0) {
+-    browser = [browser].concat(args);
+-  }
+-
+   // Fallback to open
+   // (It will always open new tab)
+   try {
+-    var options = { app: browser, wait: false, url: true };
++    var options = {
++      app: { name: browser, arguments: args },
++    };
+     open(url, options).catch(() => {}); // Prevent `unhandledRejection` error.
+     return true;
+   } catch (err) {
