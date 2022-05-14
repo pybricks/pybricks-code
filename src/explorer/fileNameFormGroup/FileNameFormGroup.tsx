@@ -97,7 +97,7 @@ const FileNameFormGroup: React.VoidFunctionComponent<FileNameFormGroupProps> = (
                 value={fileName}
                 inputRef={inputRef}
                 intent={fileNameIntent}
-                rightElement={<Tag>{fileExtension}</Tag>}
+                rightElement={<Tag aria-hidden>{fileExtension}</Tag>}
                 onChange={(e) => onChange(e.target.value)}
             />
         </FormGroup>
