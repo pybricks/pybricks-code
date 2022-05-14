@@ -7,11 +7,13 @@ import { useDispatch } from 'react-redux';
 import { downloadAndRun } from '../../../hub/actions';
 import { HubRuntimeState } from '../../../hub/reducers';
 import { useSelector } from '../../../reducers';
-import ActionButton from '../../ActionButton';
+import ActionButton, { ActionButtonProps } from '../../ActionButton';
 import { I18nId } from './i18n';
 import icon from './icon.svg';
 
-const RunButton: React.VFC = () => {
+type RunButtonProps = Pick<ActionButtonProps, 'elementRef'>;
+
+const RunButton: React.VoidFunctionComponent<RunButtonProps> = ({ elementRef }) => {
     const downloadProgress = useSelector((s) => s.hub.downloadProgress);
     const runtime = useSelector((s) => s.hub.runtime);
     const isEditorReady = useSelector((s) => s.editor.isReady);
@@ -36,6 +38,7 @@ const RunButton: React.VFC = () => {
             enabled={isEditorReady && runtime === HubRuntimeState.Idle}
             showProgress={runtime === HubRuntimeState.Loading}
             progress={downloadProgress === null ? undefined : downloadProgress}
+            elementRef={elementRef}
             onAction={() => dispatch(downloadAndRun())}
         />
     );

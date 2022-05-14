@@ -3,14 +3,14 @@
 
 import {
     Button,
-    IRef,
     Intent,
     Spinner,
     SpinnerSize,
+    mergeRefs,
     useHotkeys,
 } from '@blueprintjs/core';
 import { Tooltip2 } from '@blueprintjs/popover2';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { RefObject, useEffect, useMemo, useState } from 'react';
 import { tooltipDelay } from '../app/constants';
 
 const smallScreenThreshold = 700;
@@ -30,6 +30,8 @@ export interface ActionButtonProps {
     readonly showProgress?: boolean;
     /** The progress value (0 to 1) or undefined for indeterminate progress. */
     readonly progress?: number;
+    /** Reference to the <button> HTML element. */
+    readonly elementRef?: RefObject<HTMLButtonElement>;
     /** Callback that is called when the button is activated (clicked). */
     readonly onAction: () => void;
 }
@@ -42,6 +44,7 @@ const ActionButton: React.VoidFunctionComponent<ActionButtonProps> = ({
     enabled,
     showProgress,
     progress,
+    elementRef,
     onAction,
 }) => {
     const [isSmallScreen, setIsSmallScreen] = useState(
@@ -93,7 +96,10 @@ const ActionButton: React.VoidFunctionComponent<ActionButtonProps> = ({
             }) => (
                 <Button
                     aria-label={label}
-                    elementRef={tooltipTargetRef as IRef<HTMLButtonElement>}
+                    elementRef={mergeRefs<HTMLButtonElement>(
+                        elementRef ?? null,
+                        tooltipTargetRef,
+                    )}
                     {...tooltipTargetProps}
                     // https://github.com/palantir/blueprint/pull/5300
                     aria-haspopup={undefined}

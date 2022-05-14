@@ -13,11 +13,13 @@ import {
     useSettingFlashCurrentProgram,
     useSettingHubName,
 } from '../../../settings/hooks';
-import OpenFileButton from '../../../toolbar/OpenFileButton';
+import OpenFileButton, { OpenFileButtonProps } from '../../../toolbar/OpenFileButton';
 import { I18nId } from './i18n';
 import icon from './icon.svg';
 
-const FlashButton: React.VFC = () => {
+type FlashButtonProps = Pick<OpenFileButtonProps, 'elementRef'>;
+
+const FlashButton: React.VoidFunctionComponent<FlashButtonProps> = ({ elementRef }) => {
     const bootloaderConnection = useSelector((s) => s.bootloader.connection);
     const bleConnection = useSelector((s) => s.ble.connection);
     const flashing = useSelector((s) => s.firmware.flashing);
@@ -47,6 +49,7 @@ const FlashButton: React.VFC = () => {
             }
             showProgress={flashing}
             progress={progress === null ? undefined : progress}
+            elementRef={elementRef}
             onFile={(data) =>
                 dispatch(
                     flashFirmware(data, isSettingFlashCurrentProgramEnabled, hubName),

@@ -8,12 +8,16 @@ import { toggleBluetooth } from '../../../ble/actions';
 import { BleConnectionState } from '../../../ble/reducers';
 import { BootloaderConnectionState } from '../../../lwp3-bootloader/reducers';
 import { useSelector } from '../../../reducers';
-import ActionButton from '../../ActionButton';
+import ActionButton, { ActionButtonProps } from '../../ActionButton';
 import connectedIcon from './connected.svg';
 import disconnectedIcon from './disconnected.svg';
 import { I18nId } from './i18n';
 
-const BluetoothButton: React.VFC = () => {
+type BluetoothButtonProps = Pick<ActionButtonProps, 'elementRef'>;
+
+const BluetoothButton: React.VoidFunctionComponent<BluetoothButtonProps> = ({
+    elementRef,
+}) => {
     const bootloaderConnection = useSelector((s) => s.bootloader.connection);
     const bleConnection = useSelector((s) => s.ble.connection);
 
@@ -34,6 +38,7 @@ const BluetoothButton: React.VFC = () => {
             icon={isDisconnected ? disconnectedIcon : connectedIcon}
             enabled={isDisconnected || bleConnection === BleConnectionState.Connected}
             showProgress={bleConnection === BleConnectionState.Connecting}
+            elementRef={elementRef}
             onAction={() => dispatch(toggleBluetooth())}
         />
     );

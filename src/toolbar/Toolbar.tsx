@@ -2,7 +2,9 @@
 // Copyright (c) 2020-2022 The Pybricks Authors
 
 import { ButtonGroup } from '@blueprintjs/core';
-import React from 'react';
+import React, { useRef } from 'react';
+import UtilsToolbar from '../utils/Toolbar';
+import { useRovingTabIndex } from '../utils/react';
 import BluetoothButton from './buttons/bluetooth/BluetoothButton';
 import FlashButton from './buttons/flash/FlashButton';
 import ReplButton from './buttons/repl/ReplButton';
@@ -11,19 +13,33 @@ import StopButton from './buttons/stop/StopButton';
 
 import './toolbar.scss';
 
-const Toolbar: React.VFC = (_props) => {
+const Toolbar: React.VFC = () => {
+    const flashButtonRef = useRef<HTMLButtonElement>(null);
+    const bluetoothButtonRef = useRef<HTMLButtonElement>(null);
+    const runButtonRef = useRef<HTMLButtonElement>(null);
+    const stopButtonRef = useRef<HTMLButtonElement>(null);
+    const replButtonRef = useRef<HTMLButtonElement>(null);
+
+    const moveFocus = useRovingTabIndex(
+        flashButtonRef,
+        bluetoothButtonRef,
+        runButtonRef,
+        stopButtonRef,
+        replButtonRef,
+    );
+
     return (
-        <div role="toolbar" className="pb-toolbar">
+        <UtilsToolbar className="pb-toolbar" onKeyboard={moveFocus}>
             <ButtonGroup className="pb-toolbar-group pb-align-left">
-                <FlashButton />
-                <BluetoothButton />
+                <FlashButton elementRef={flashButtonRef} />
+                <BluetoothButton elementRef={bluetoothButtonRef} />
             </ButtonGroup>
             <ButtonGroup className="pb-toolbar-group pb-align-left">
-                <RunButton />
-                <StopButton />
-                <ReplButton />
+                <RunButton elementRef={runButtonRef} />
+                <StopButton elementRef={stopButtonRef} />
+                <ReplButton elementRef={replButtonRef} />
             </ButtonGroup>
-        </div>
+        </UtilsToolbar>
     );
 };
 

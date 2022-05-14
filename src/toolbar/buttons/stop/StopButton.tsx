@@ -7,11 +7,13 @@ import { useDispatch } from 'react-redux';
 import { stop } from '../../../hub/actions';
 import { HubRuntimeState } from '../../../hub/reducers';
 import { useSelector } from '../../../reducers';
-import ActionButton from '../../ActionButton';
+import ActionButton, { ActionButtonProps } from '../../ActionButton';
 import { I18nId } from './i18n';
 import icon from './icon.svg';
 
-const StopButton: React.VFC = () => {
+type StopButtonProps = Pick<ActionButtonProps, 'elementRef'>;
+
+const StopButton: React.VoidFunctionComponent<StopButtonProps> = ({ elementRef }) => {
     const runtime = useSelector((s) => s.hub.runtime);
     const keyboardShortcut = 'F6';
 
@@ -26,6 +28,7 @@ const StopButton: React.VFC = () => {
             tooltip={i18n.translate(I18nId.Tooltip, { key: keyboardShortcut })}
             icon={icon}
             enabled={runtime === HubRuntimeState.Running}
+            elementRef={elementRef}
             onAction={() => dispatch(stop())}
         />
     );

@@ -7,11 +7,13 @@ import { useDispatch } from 'react-redux';
 import { repl } from '../../../hub/actions';
 import { HubRuntimeState } from '../../../hub/reducers';
 import { useSelector } from '../../../reducers';
-import ActionButton from '../../ActionButton';
+import ActionButton, { ActionButtonProps } from '../../ActionButton';
 import { I18nId } from './i18n';
 import icon from './icon.svg';
 
-const ReplButton: React.VFC = () => {
+type ReplButtonProps = Pick<ActionButtonProps, 'elementRef'>;
+
+const ReplButton: React.VoidFunctionComponent<ReplButtonProps> = ({ elementRef }) => {
     // istanbul ignore next: babel-loader rewrites this line
     const [i18n] = useI18n();
     const dispatch = useDispatch();
@@ -25,6 +27,7 @@ const ReplButton: React.VFC = () => {
             tooltip={i18n.translate(I18nId.Tooltip)}
             icon={icon}
             enabled={enabled}
+            elementRef={elementRef}
             onAction={action}
         />
     );

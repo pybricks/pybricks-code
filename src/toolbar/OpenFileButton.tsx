@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2022 The Pybricks Authors
 
-import { Button, IRef, Intent, Spinner, SpinnerSize } from '@blueprintjs/core';
+import { Button, Intent, Spinner, SpinnerSize, mergeRefs } from '@blueprintjs/core';
 import { Tooltip2 } from '@blueprintjs/popover2';
-import React, { useEffect, useState } from 'react';
+import React, { RefObject, useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { tooltipDelay } from '../app/constants';
 
@@ -23,6 +23,8 @@ export interface OpenFileButtonProps {
     readonly showProgress?: boolean;
     /** The progress value (0 to 1) for the progress spinner. */
     readonly progress?: number;
+    /** Reference to the <button> HTML element. */
+    readonly elementRef?: RefObject<HTMLButtonElement>;
     /** Callback that is called when a file has been selected and opened for reading. */
     readonly onFile: (data: ArrayBuffer) => void;
     /** Callback that is called when a file has been rejected (e.g. bad file extension). */
@@ -42,6 +44,7 @@ const OpenFileButton: React.VoidFunctionComponent<OpenFileButtonProps> = ({
     enabled,
     showProgress,
     progress,
+    elementRef,
     onFile,
     onReject,
     onClick,
@@ -108,7 +111,10 @@ const OpenFileButton: React.VoidFunctionComponent<OpenFileButtonProps> = ({
                     {...getRootProps({
                         'aria-label': label,
                         refKey: 'elementRef',
-                        elementRef: tooltipTargetRef as IRef<HTMLButtonElement>,
+                        elementRef: mergeRefs<HTMLButtonElement>(
+                            elementRef ?? null,
+                            tooltipTargetRef,
+                        ),
                         ...tooltipTargetProps,
                         // https://github.com/palantir/blueprint/pull/5300
                         'aria-haspopup': undefined,
