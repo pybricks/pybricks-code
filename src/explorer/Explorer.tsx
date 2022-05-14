@@ -13,7 +13,7 @@ import {
     useHotkeys,
 } from '@blueprintjs/core';
 import { I18n, useI18n } from '@shopify/react-i18n';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { RefObject, useCallback, useMemo, useRef, useState } from 'react';
 import {
     ControlledTreeEnvironment,
     LiveDescriptors,
@@ -25,7 +25,9 @@ import {
 } from 'react-complex-tree';
 import { useDispatch } from 'react-redux';
 import { useSelector } from '../reducers';
+import Toolbar from '../utils/Toolbar';
 import { isMacOS } from '../utils/os';
+import { useRovingTabIndex } from '../utils/react';
 import { TreeItemContext, TreeItemData, renderers } from '../utils/tree-renderer';
 import {
     explorerActivateFile,
@@ -48,6 +50,8 @@ type ActionButtonProps = {
     tooltip: string;
     /** If false, prevent focus. Default is true. */
     focusable?: boolean;
+    /** Reference to the `<button>` HTML element. */
+    elementRef?: RefObject<HTMLButtonElement>;
     /** Callback for button click event. */
     onClick: () => void;
 };
@@ -56,6 +60,7 @@ const ActionButton: React.VoidFunctionComponent<ActionButtonProps> = ({
     icon,
     tooltip,
     focusable,
+    elementRef,
     onClick,
 }) => {
     const handleClick = useCallback<React.MouseEventHandler>(
@@ -72,6 +77,7 @@ const ActionButton: React.VoidFunctionComponent<ActionButtonProps> = ({
             icon={icon}
             title={tooltip}
             tabIndex={focusable === false ? -1 : undefined}
+            elementRef={elementRef}
             onFocus={focusable === false ? (e) => e.preventDefault() : undefined}
             onClick={handleClick}
         />
@@ -137,18 +143,28 @@ type HeaderProps = {
 };
 
 const Header: React.VoidFunctionComponent<HeaderProps> = ({ i18n }) => {
+    const archiveButtonRef = useRef<HTMLButtonElement>(null);
+    const exportButtonRef = useRef<HTMLButtonElement>(null);
+    const newButtonRef = useRef<HTMLButtonElement>(null);
     const dispatch = useDispatch();
 
+    const moveFocus = useRovingTabIndex(
+        archiveButtonRef,
+        exportButtonRef,
+        newButtonRef,
+    );
+
     return (
-        <div className="pb-explorer-header">
-            <ButtonGroup
-                minimal={true}
-                role="toolbar"
-                aria-label={i18n.translate(I18nId.HeaderToolbarTitle)}
-            >
+        <Toolbar
+            className="pb-explorer-header-toolbar"
+            aria-label={i18n.translate(I18nId.HeaderToolbarTitle)}
+            onKeyboard={moveFocus}
+        >
+            <ButtonGroup minimal={true}>
                 <ActionButton
                     icon="archive"
                     tooltip={i18n.translate(I18nId.HeaderToolbarExportAll)}
+                    elementRef={archiveButtonRef}
                     onClick={() => dispatch(explorerArchiveAllFiles())}
                 />
                 <ActionButton
@@ -157,15 +173,17 @@ const Header: React.VoidFunctionComponent<HeaderProps> = ({ i18n }) => {
                     // even though this is the "import" action
                     icon="export"
                     tooltip={i18n.translate(I18nId.HeaderToolbarImport)}
+                    elementRef={exportButtonRef}
                     onClick={() => dispatch(explorerImportFiles())}
                 />
                 <ActionButton
                     icon="plus"
                     tooltip={i18n.translate(I18nId.HeaderToolbarAddNew)}
+                    elementRef={newButtonRef}
                     onClick={() => dispatch(explorerCreateNewFile())}
                 />
             </ButtonGroup>
-        </div>
+        </Toolbar>
     );
 };
 
