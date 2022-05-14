@@ -7,25 +7,26 @@ import {
     ButtonGroup,
     ControlGroup,
     FormGroup,
+    IRef,
     Icon,
     InputGroup,
     Intent,
     Label,
     Switch,
 } from '@blueprintjs/core';
-import { Tooltip2 } from '@blueprintjs/popover2';
+import { Classes as Classes2, Popover2 } from '@blueprintjs/popover2';
 import { useI18n } from '@shopify/react-i18n';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useTernaryDarkMode } from 'usehooks-ts';
 import AboutDialog from '../about/AboutDialog';
 import { appCheckForUpdate, appReload, appShowInstallPrompt } from '../app/actions';
 import {
+    appName,
     pybricksBugReportsUrl,
     pybricksGitterUrl,
     pybricksProjectsUrl,
     pybricksSupportUrl,
-    tooltipDelay,
 } from '../app/constants';
 import { pseudolocalize } from '../i18n';
 import { useSelector } from '../reducers';
@@ -38,6 +39,43 @@ import {
 } from './hooks';
 import { I18nId } from './i18n';
 import './settings.scss';
+
+type HelpButtonProps = {
+    label: string;
+    content: string | JSX.Element;
+};
+
+const HelpButton: React.VoidFunctionComponent<HelpButtonProps> = ({
+    label,
+    content,
+}) => {
+    const handleOpening = useCallback((node: HTMLElement) => {
+        // role must match aria-haspopup
+        node.setAttribute('role', 'dialog');
+    }, []);
+
+    return (
+        <Popover2
+            onOpening={handleOpening}
+            placement="right"
+            shouldReturnFocusOnClose
+            popoverClassName={Classes2.POPOVER2_CONTENT_SIZING}
+            content={content}
+            renderTarget={({ isOpen, ref, ...targetProps }) => (
+                <Button
+                    aria-label={label}
+                    aria-expanded={isOpen}
+                    minimal
+                    icon="help"
+                    elementRef={ref as IRef<HTMLButtonElement>}
+                    {...targetProps}
+                    // override targetProps
+                    aria-haspopup="dialog"
+                />
+            )}
+        />
+    );
+};
 
 const Settings: React.VoidFunctionComponent = () => {
     const { isSettingShowDocsEnabled, setIsSettingShowDocsEnabled } =
@@ -65,7 +103,7 @@ const Settings: React.VoidFunctionComponent = () => {
     const [i18n] = useI18n();
 
     return (
-        <div aria-label={i18n.translate(I18nId.Title)}>
+        <div className="pb-settings" aria-label={i18n.translate(I18nId.Title)}>
             <FormGroup
                 label={i18n.translate(I18nId.AppearanceTitle)}
                 helperText={i18n.translate(I18nId.AppearanceZoomHelp, {
@@ -73,13 +111,7 @@ const Settings: React.VoidFunctionComponent = () => {
                     out: <span>{isMacOS() ? 'Cmd' : 'Ctrl'}--</span>,
                 })}
             >
-                <Tooltip2
-                    content={i18n.translate(I18nId.AppearanceDocumentationTooltip)}
-                    rootBoundary="document"
-                    placement="left"
-                    targetTagName="div"
-                    hoverOpenDelay={tooltipDelay}
-                >
+                <ControlGroup>
                     <Switch
                         label={i18n.translate(I18nId.AppearanceDocumentationLabel)}
                         checked={isSettingShowDocsEnabled}
@@ -89,14 +121,14 @@ const Settings: React.VoidFunctionComponent = () => {
                             )
                         }
                     />
-                </Tooltip2>
-                <Tooltip2
-                    content={i18n.translate(I18nId.AppearanceDarkModeTooltip)}
-                    rootBoundary="document"
-                    placement="left"
-                    targetTagName="div"
-                    hoverOpenDelay={tooltipDelay}
-                >
+                    <HelpButton
+                        label={i18n.translate(I18nId.AppearanceDocumentationHelpLabel)}
+                        content={i18n.translate(
+                            I18nId.AppearanceDocumentationHelpContent,
+                        )}
+                    />
+                </ControlGroup>
+                <ControlGroup>
                     <Switch
                         label={i18n.translate(I18nId.AppearanceDarkModeLabel)}
                         checked={isDarkMode}
@@ -108,16 +140,14 @@ const Settings: React.VoidFunctionComponent = () => {
                             )
                         }
                     />
-                </Tooltip2>
+                    <HelpButton
+                        label={i18n.translate(I18nId.AppearanceDarkModeHelpLabel)}
+                        content={i18n.translate(I18nId.AppearanceDarkModeHelpContent)}
+                    />
+                </ControlGroup>
             </FormGroup>
             <FormGroup label={i18n.translate(I18nId.FirmwareTitle)}>
-                <Tooltip2
-                    content={i18n.translate(I18nId.FirmwareCurrentProgramTooltip)}
-                    rootBoundary="document"
-                    placement="left"
-                    targetTagName="div"
-                    hoverOpenDelay={tooltipDelay}
-                >
+                <ControlGroup>
                     <Switch
                         label={i18n.translate(I18nId.FirmwareCurrentProgramLabel)}
                         checked={isFlashCurrentProgramEnabled}
@@ -127,46 +157,38 @@ const Settings: React.VoidFunctionComponent = () => {
                             )
                         }
                     />
-                </Tooltip2>
-                <ControlGroup vertical={true}>
-                    <Tooltip2
-                        content={i18n.translate(I18nId.FirmwareHubNameTooltip)}
-                        rootBoundary="document"
-                        placement="left"
-                        targetTagName="div"
-                        hoverOpenDelay={tooltipDelay}
-                        openOnTargetFocus={false}
-                    >
-                        <Label htmlFor="hub-name-input">
-                            {i18n.translate(I18nId.FirmwareHubNameLabel)}
-                        </Label>
-                    </Tooltip2>
+                    <HelpButton
+                        label={i18n.translate(I18nId.FirmwareCurrentProgramHelpLabel)}
+                        content={i18n.translate(
+                            I18nId.FirmwareCurrentProgramHelpContent,
+                            { appName },
+                        )}
+                    />
+                </ControlGroup>
+                <Label htmlFor="hub-name-input">
+                    {i18n.translate(I18nId.FirmwareHubNameLabel)}
+                </Label>
+                <ControlGroup>
                     <InputGroup
                         id="hub-name-input"
                         value={hubName}
                         onChange={(e) => setHubName(e.currentTarget.value)}
                         onMouseOver={(e) => e.preventDefault()}
-                        className="pb-hub-name-input"
                         intent={isHubNameValid ? Intent.NONE : Intent.DANGER}
                         placeholder="Pybricks Hub"
                         rightElement={
                             isHubNameValid ? undefined : (
-                                <Tooltip2
-                                    content={i18n.translate(
-                                        I18nId.FirmwareHubNameErrorTooltip,
-                                    )}
-                                    rootBoundary="document"
-                                    placement="bottom"
-                                    targetTagName="div"
-                                >
-                                    <Icon
-                                        icon="error"
-                                        intent={Intent.DANGER}
-                                        itemType="div"
-                                    />
-                                </Tooltip2>
+                                <Icon
+                                    icon="error"
+                                    intent={Intent.DANGER}
+                                    itemType="div"
+                                />
                             )
                         }
+                    />
+                    <HelpButton
+                        label={i18n.translate(I18nId.FirmwareHubNameHelpLabel)}
+                        content={i18n.translate(I18nId.FirmwareHubNameHelpContent)}
                     />
                 </ControlGroup>
             </FormGroup>

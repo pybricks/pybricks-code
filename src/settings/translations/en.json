@@ -4,11 +4,17 @@
         "title": "Appearance",
         "documentation": {
             "label": "Documentation",
-            "tooltip": "Show or hide the documentation pane."
+            "help": {
+                "label": "Show help for documentation toggle.",
+                "content": "Enable to show the documentation and disable to hide the documentation."
+            }
         },
-        "dark-mode": {
+        "darkMode": {
             "label": "Dark mode",
-            "tooltip": "Enable or disable dark mode."
+            "help": {
+                "label": "Show help for dark mode toggle.",
+                "content": "Enable to set theme to dark mode and disable to set theme to light mode."
+            }
         },
         "zoom": {
             "help": "Use {in} and {out} to zoom."
@@ -16,16 +22,20 @@
     },
     "firmware": {
         "title": "Firmware",
-        "flash-current-program": {
+        "flashCurrentProgram": {
             "label": "Include current program",
-            "tooltip": "Select to include your program when installing the firmware."
-        },
-        "hub-name": {
-            "label": "Hub name",
-            "tooltip": "Hub name to use when flashing the firmware.",
-            "error": {
-                "tooltip": "The name is too long."
+            "help": {
+                "label": "Show help for include current program toggle.",
+                "content": "Enable to include your program when flashing the firmware or disable to use the default program. Flashing your program along with the firmware will allow you to run your program without being connected to {appName}"
             }
+        },
+        "hubName": {
+            "label": "Hub name",
+            "help": {
+                "label": "Show help on hub name input",
+                "content": "Enter a name here to customize the hub name when flashing the firmware. This name will be used in the Bluetooth advertising data and can be used to identify the hub when connecting."
+            },
+            "error": "The name is too long."
         }
     },
     "help": {

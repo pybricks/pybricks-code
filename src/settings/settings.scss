@@ -5,7 +5,14 @@
 
 @use '@blueprintjs/core/lib/scss/variables' as bp;
 
-.pb-hub-name-input .#{bp.$ns}-input {
-    width: 200px;
-    margin-left: 8px;
+.pb-settings {
+    .#{bp.$ns}-control-group {
+        .#{bp.$ns}-button {
+            margin-bottom: 3px;
+        }
+
+        .#{bp.$ns}-input-group {
+            width: bp.$pt-grid-size * 20;
+        }
+    }
 }
