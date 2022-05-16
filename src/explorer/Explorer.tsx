@@ -349,7 +349,7 @@ const FileTree: React.VoidFunctionComponent<FileTreeProps> = ({ i18n }) => {
                     },
                 } as Record<TreeItemIndex, FileTreeItem>,
             ),
-        [files],
+        [i18n, files],
     );
 
     const getItemTitle = useCallback((item: FileTreeItem) => item.data.fileName, []);
