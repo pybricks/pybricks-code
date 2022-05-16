@@ -4,6 +4,7 @@
 import { FocusStyleManager } from '@blueprintjs/core';
 import { I18nContext } from '@shopify/react-i18n';
 import React from 'react';
+import { OverlayProvider } from 'react-aria';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { applyMiddleware, createStore } from 'redux';
@@ -53,7 +54,9 @@ ReactDOM.render(
         <Provider store={store}>
             <I18nContext.Provider value={i18nManager}>
                 <ViewHeightSensor />
-                <App />
+                <OverlayProvider>
+                    <App />
+                </OverlayProvider>
             </I18nContext.Provider>
         </Provider>
     </React.StrictMode>,

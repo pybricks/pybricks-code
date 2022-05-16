@@ -3,20 +3,17 @@
 
 import {
     AnchorButton,
-    Button,
     ButtonGroup,
     ControlGroup,
     FormGroup,
-    IRef,
     Icon,
     InputGroup,
     Intent,
     Label,
     Switch,
 } from '@blueprintjs/core';
-import { Classes as Classes2, Popover2 } from '@blueprintjs/popover2';
 import { useI18n } from '@shopify/react-i18n';
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useTernaryDarkMode } from 'usehooks-ts';
 import AboutDialog from '../about/AboutDialog';
@@ -28,6 +25,8 @@ import {
     pybricksProjectsUrl,
     pybricksSupportUrl,
 } from '../app/constants';
+import { Button } from '../components/Button';
+import HelpButton from '../components/HelpButton';
 import { pseudolocalize } from '../i18n';
 import { useSelector } from '../reducers';
 import ExternalLinkIcon from '../utils/ExternalLinkIcon';
@@ -39,43 +38,6 @@ import {
 } from './hooks';
 import { I18nId } from './i18n';
 import './settings.scss';
-
-type HelpButtonProps = {
-    label: string;
-    content: string | JSX.Element;
-};
-
-const HelpButton: React.VoidFunctionComponent<HelpButtonProps> = ({
-    label,
-    content,
-}) => {
-    const handleOpening = useCallback((node: HTMLElement) => {
-        // role must match aria-haspopup
-        node.setAttribute('role', 'dialog');
-    }, []);
-
-    return (
-        <Popover2
-            onOpening={handleOpening}
-            placement="right"
-            shouldReturnFocusOnClose
-            popoverClassName={Classes2.POPOVER2_CONTENT_SIZING}
-            content={content}
-            renderTarget={({ isOpen, ref, ...targetProps }) => (
-                <Button
-                    aria-label={label}
-                    aria-expanded={isOpen}
-                    minimal
-                    icon="help"
-                    elementRef={ref as IRef<HTMLButtonElement>}
-                    {...targetProps}
-                    // override targetProps
-                    aria-haspopup="dialog"
-                />
-            )}
-        />
-    );
-};
 
 const Settings: React.VoidFunctionComponent = () => {
     const { isSettingShowDocsEnabled, setIsSettingShowDocsEnabled } =
@@ -103,7 +65,7 @@ const Settings: React.VoidFunctionComponent = () => {
     const [i18n] = useI18n();
 
     return (
-        <div className="pb-settings" aria-label={i18n.translate(I18nId.Title)}>
+        <div className="pb-settings">
             <FormGroup
                 label={i18n.translate(I18nId.AppearanceTitle)}
                 helperText={i18n.translate(I18nId.AppearanceZoomHelp, {
@@ -122,10 +84,10 @@ const Settings: React.VoidFunctionComponent = () => {
                         }
                     />
                     <HelpButton
-                        label={i18n.translate(I18nId.AppearanceDocumentationHelpLabel)}
-                        content={i18n.translate(
-                            I18nId.AppearanceDocumentationHelpContent,
+                        helpForLabel={i18n.translate(
+                            I18nId.AppearanceDocumentationLabel,
                         )}
+                        content={i18n.translate(I18nId.AppearanceDocumentationHelp)}
                     />
                 </ControlGroup>
                 <ControlGroup>
@@ -141,8 +103,8 @@ const Settings: React.VoidFunctionComponent = () => {
                         }
                     />
                     <HelpButton
-                        label={i18n.translate(I18nId.AppearanceDarkModeHelpLabel)}
-                        content={i18n.translate(I18nId.AppearanceDarkModeHelpContent)}
+                        helpForLabel={i18n.translate(I18nId.AppearanceDarkModeLabel)}
+                        content={i18n.translate(I18nId.AppearanceDarkModeHelp)}
                     />
                 </ControlGroup>
             </FormGroup>
@@ -158,11 +120,12 @@ const Settings: React.VoidFunctionComponent = () => {
                         }
                     />
                     <HelpButton
-                        label={i18n.translate(I18nId.FirmwareCurrentProgramHelpLabel)}
-                        content={i18n.translate(
-                            I18nId.FirmwareCurrentProgramHelpContent,
-                            { appName },
+                        helpForLabel={i18n.translate(
+                            I18nId.FirmwareCurrentProgramLabel,
                         )}
+                        content={i18n.translate(I18nId.FirmwareCurrentProgramHelp, {
+                            appName,
+                        })}
                     />
                 </ControlGroup>
                 <Label htmlFor="hub-name-input">
@@ -187,8 +150,8 @@ const Settings: React.VoidFunctionComponent = () => {
                         }
                     />
                     <HelpButton
-                        label={i18n.translate(I18nId.FirmwareHubNameHelpLabel)}
-                        content={i18n.translate(I18nId.FirmwareHubNameHelpContent)}
+                        helpForLabel={i18n.translate(I18nId.FirmwareHubNameLabel)}
+                        content={i18n.translate(I18nId.FirmwareHubNameHelp)}
                     />
                 </ControlGroup>
             </FormGroup>
@@ -233,36 +196,37 @@ const Settings: React.VoidFunctionComponent = () => {
                 <ButtonGroup minimal={true} vertical={true} alignText="left">
                     {hasUnresolvedInstallPrompt && (
                         <Button
+                            label={i18n.translate(I18nId.AppInstallLabel)}
                             icon="add"
-                            onClick={() => dispatch(appShowInstallPrompt())}
+                            onPress={() => dispatch(appShowInstallPrompt())}
                             loading={promptingInstall}
-                        >
-                            {i18n.translate(I18nId.AppInstallLabel)}
-                        </Button>
+                        />
                     )}
-                    {isServiceWorkerRegistered && !updateAvailable && (
+                    {(process.env.NODE_ENV === 'development' ||
+                        (isServiceWorkerRegistered && !updateAvailable)) && (
                         <Button
+                            label={i18n.translate(I18nId.AppCheckForUpdateLabel)}
                             icon="refresh"
-                            onClick={() => dispatch(appCheckForUpdate())}
+                            onPress={() => dispatch(appCheckForUpdate())}
                             loading={checkingForUpdate}
-                        >
-                            {i18n.translate(I18nId.AppCheckForUpdateLabel)}
-                        </Button>
+                        />
                     )}
-                    {isServiceWorkerRegistered && updateAvailable && (
-                        <Button icon="refresh" onClick={() => dispatch(appReload())}>
-                            {i18n.translate(I18nId.AppRestartLabel)}
-                        </Button>
+                    {(process.env.NODE_ENV === 'development' ||
+                        (isServiceWorkerRegistered && updateAvailable)) && (
+                        <Button
+                            label={i18n.translate(I18nId.AppRestartLabel)}
+                            icon="refresh"
+                            onPress={() => dispatch(appReload())}
+                        />
                     )}
                     <Button
+                        label={i18n.translate(I18nId.AppAboutLabel)}
                         icon="info-sign"
-                        onClick={() => {
+                        onPress={() => {
                             setIsAboutDialogOpen(true);
                             return true;
                         }}
-                    >
-                        {i18n.translate(I18nId.AppAboutLabel)}
-                    </Button>
+                    />
                 </ButtonGroup>
             </FormGroup>
             {process.env.NODE_ENV === 'development' && (

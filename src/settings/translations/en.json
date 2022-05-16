@@ -4,17 +4,11 @@
         "title": "Appearance",
         "documentation": {
             "label": "Documentation",
-            "help": {
-                "label": "Show help for documentation toggle.",
-                "content": "Enable to show the documentation and disable to hide the documentation."
-            }
+            "help": "Enable to show the documentation and disable to hide the documentation."
         },
         "darkMode": {
             "label": "Dark mode",
-            "help": {
-                "label": "Show help for dark mode toggle.",
-                "content": "Enable to set theme to dark mode and disable to set theme to light mode."
-            }
+            "help": "Enable to set theme to dark mode and disable to set theme to light mode."
         },
         "zoom": {
             "help": "Use {in} and {out} to zoom."
@@ -24,17 +18,11 @@
         "title": "Firmware",
         "flashCurrentProgram": {
             "label": "Include current program",
-            "help": {
-                "label": "Show help for include current program toggle.",
-                "content": "Enable to include your program when flashing the firmware or disable to use the default program. Flashing your program along with the firmware will allow you to run your program without being connected to {appName}"
-            }
+            "help": "Enable to include your program when flashing the firmware or disable to use the default program. Flashing your program along with the firmware will allow you to run your program without being connected to {appName}"
         },
         "hubName": {
             "label": "Hub name",
-            "help": {
-                "label": "Show help on hub name input",
-                "content": "Enter a name here to customize the hub name when flashing the firmware. This name will be used in the Bluetooth advertising data and can be used to identify the hub when connecting."
-            },
+            "help": "Enter a name here to customize the hub name when flashing the firmware. This name will be used in the Bluetooth advertising data and can be used to identify the hub when connecting.",
             "error": "The name is too long."
         }
     },

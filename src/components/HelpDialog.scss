@@ -1,0 +1,39 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2022 The Pybricks Authors
+
+@use '@blueprintjs/core/lib/scss/variables' as bp;
+
+.#{bp.$ns}-popover2-open.#{bp.$ns}-popover2-placement-right {
+    animation: open-right 0.25s;
+}
+
+.#{bp.$ns}-popover2-close.#{bp.$ns}-popover2-placement-right {
+    animation: close-right 0.25s;
+}
+
+@mixin start-right {
+    // starts with 0 size aligned to the left edge
+    transform: translateX(-50%) scale(0);
+}
+
+@mixin end {
+    transform: translateX(0%) scale(1);
+}
+
+@keyframes open-right {
+    from {
+        @include start-right;
+    }
+    to {
+        @include end;
+    }
+}
+
+@keyframes close-right {
+    from {
+        @include end;
+    }
+    to {
+        @include start-right;
+    }
+}

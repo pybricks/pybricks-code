@@ -112,6 +112,11 @@ a.#{bp.$ns}-button {
     min-width: math.div(bp.$pt-grid-size, 2);
 }
 
+.#{bp.$ns}-focus-disabled :focus.#{bp.$ns}-focus-style-manager-ignore {
+    outline: bp.$pt-outline-color auto 2px !important;
+    outline-offset: 2px !important;
+}
+
 ::-webkit-scrollbar {
     width: 16px;
 
