@@ -7,10 +7,38 @@
 @use '../variables' as pb;
 
 .pb-app {
+    width: 100%;
+    height: 100%;
     background-color: bp.$pt-app-background-color;
 
     .#{bp.$ns}-dark & {
         background-color: bp.$pt-dark-app-background-color;
+    }
+
+    &-activities {
+        display: flex;
+        @include pb.focus-within();
+    }
+
+    &-terminal {
+        height: 100%;
+        padding-left: 8px;
+        background-color: white;
+        @include pb.focus-within();
+
+        .#{bp.$ns}-dark & {
+            background-color: black;
+        }
+    }
+
+    &-docs {
+        height: 100%;
+
+        &-drag-helper {
+            height: 100%;
+            width: 100%;
+            position: absolute;
+        }
     }
 }
 
@@ -50,15 +78,6 @@
 
 .splitter-layout .layout-pane {
     overflow: hidden;
-}
-
-.pb-app-terminal-padding {
-    padding-left: 10px;
-    background-color: white;
-
-    .#{bp.$ns}-dark & {
-        background-color: black;
-    }
 }
 
 // hide the docs and resize separator

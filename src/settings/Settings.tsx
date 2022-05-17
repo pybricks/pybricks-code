@@ -137,6 +137,7 @@ const Settings: React.VoidFunctionComponent = () => {
                         value={hubName}
                         onChange={(e) => setHubName(e.currentTarget.value)}
                         onMouseOver={(e) => e.preventDefault()}
+                        onMouseDown={(e) => e.stopPropagation()}
                         intent={isHubNameValid ? Intent.NONE : Intent.DANGER}
                         placeholder="Pybricks Hub"
                         rightElement={

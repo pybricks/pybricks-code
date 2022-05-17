@@ -16,24 +16,44 @@
     --pb-vh: 100vh;
 }
 
+// use :focus-visible instead of :focus (so we don't need blueprint.js focus style manager)
+
+:focus {
+    outline: none;
+}
+
+.#{bp.$ns}-control input:focus ~ .#{bp.$ns}-control-indicator {
+    outline: none;
+
+    .#{bp.$ns}-dark & {
+        outline: none;
+    }
+}
+
+// show focus for tree nodes even if mouse click it
+.#{bp.$ns}-tree-node:focus,
+// react-aria managed focus visibility
+.pb-focus-ring,
+// broswer managed focus visibility
+:focus-visible:not(.pb-focus-managed) {
+    @include pb.focus-outline(0);
+}
+
+// these controls need extra separation for better visibility
+.#{bp.$ns}-control input:focus-visible ~ .#{bp.$ns}-control-indicator {
+    @include pb.focus-outline(2px);
+}
+
 body {
     // no scrolling of the page
     overflow: hidden;
     user-select: none;
 }
 
-// Utility classes
+// Utility classes - do not use these in new code!
 
 .h-100 {
     height: 100%;
-}
-
-.w-100 {
-    width: 100%;
-}
-
-.p-absolute {
-    position: absolute;
 }
 
 .no-wrap {
@@ -112,11 +132,7 @@ a.#{bp.$ns}-button {
     min-width: math.div(bp.$pt-grid-size, 2);
 }
 
-.#{bp.$ns}-focus-disabled :focus.#{bp.$ns}-focus-style-manager-ignore {
-    outline: bp.$pt-outline-color auto 2px !important;
-    outline-offset: 2px !important;
-}
-
+// make scrollbars fit our style
 ::-webkit-scrollbar {
     width: 16px;
 

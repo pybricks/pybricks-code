@@ -2,7 +2,14 @@
 // Copyright (c) 2020-2022 The Pybricks Authors
 
 import { Classes } from '@blueprintjs/core';
-import React, { useEffect, useState } from 'react';
+import { getFocusableTreeWalker } from '@react-aria/focus';
+import React, {
+    FocusEventHandler,
+    MouseEventHandler,
+    useCallback,
+    useEffect,
+    useState,
+} from 'react';
 import SplitterLayout from 'react-splitter-layout';
 import { useLocalStorage, useTernaryDarkMode } from 'usehooks-ts';
 import Activities from '../activities/Activities';
@@ -155,13 +162,57 @@ const App: React.VFC = () => {
         return () => removeEventListener('keydown', listener);
     }, []);
 
+    // keep track of last focused element in the activities area and restore
+    // focus to that element if any non-interactive area is clicked
+
+    const [lastActivitiesFocusChild, setLastActivitiesFocusChild] =
+        useState<HTMLElement | null>(null);
+
+    const handleFocus = useCallback<FocusEventHandler>(
+        (e) => {
+            if (e.target instanceof HTMLElement) {
+                setLastActivitiesFocusChild(e.target);
+            }
+        },
+        [setLastActivitiesFocusChild],
+    );
+
+    const handleActivitiesMouseDown = useCallback<MouseEventHandler<HTMLDivElement>>(
+        (e) => {
+            if (
+                lastActivitiesFocusChild &&
+                e.currentTarget.contains(lastActivitiesFocusChild)
+            ) {
+                // if the last focused child exists and it is still inside of
+                // the activities area, focus it
+                lastActivitiesFocusChild.focus();
+            } else {
+                // otherwise, focus the first focusable element
+                const walker = getFocusableTreeWalker(e.currentTarget);
+                const first = walker.nextNode();
+
+                if (first instanceof HTMLElement) {
+                    first.focus();
+                }
+            }
+
+            // prevent document body from getting focus
+            e.stopPropagation();
+            e.preventDefault();
+        },
+        [lastActivitiesFocusChild],
+    );
+
     return (
-        <div
-            className="pb-app h-100 w-100 p-absolute"
-            onContextMenu={(e) => e.preventDefault()}
-        >
+        <div className="pb-app" onContextMenu={(e) => e.preventDefault()}>
             <div className="pb-app-body">
-                <Activities />
+                <div
+                    className="pb-app-activities"
+                    onFocus={handleFocus}
+                    onMouseDown={handleActivitiesMouseDown}
+                >
+                    <Activities />
+                </div>
                 {/* need a container with position: relative; for SplitterLayout since it uses position: absolute; */}
                 <div className="pb-app-main" style={{ position: 'relative' }}>
                     <SplitterLayout
@@ -184,12 +235,12 @@ const App: React.VFC = () => {
                                 <Toolbar />
                                 <Editor />
                             </div>
-                            <div className="pb-app-terminal-padding h-100">
+                            <div className="pb-app-terminal">
                                 <Terminal />
                             </div>
                         </SplitterLayout>
-                        <div className="h-100 w-100">
-                            {isDragging && <div className="h-100 w-100 p-absolute" />}
+                        <div className="pb-app-docs">
+                            {isDragging && <div className="pb-app-docs-drag-helper" />}
                             <Docs />
                         </div>
                     </SplitterLayout>

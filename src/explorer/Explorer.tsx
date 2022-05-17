@@ -80,6 +80,7 @@ const ActionButton: React.VoidFunctionComponent<ActionButtonProps> = ({
             elementRef={elementRef}
             onFocus={focusable === false ? (e) => e.preventDefault() : undefined}
             onClick={handleClick}
+            onMouseDown={(e) => e.stopPropagation()}
         />
     );
 };

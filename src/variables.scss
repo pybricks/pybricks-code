@@ -12,6 +12,9 @@ $narrow-screen-limit: 700px;
 // Official Pybricks branding color.
 $pybricks-blue: #0088ce;
 
+// blueprint doesn't define this
+$pt-dark-outline-color: rgba(bp.$blue5, 0.6);
+
 /**
  * Adjusts the background contrast by $background-adjust (usually a percent).
  *
@@ -29,5 +32,33 @@ $pybricks-blue: #0088ce;
             bp.$pt-dark-app-background-color,
             $lightness: $background-adjust
         );
+    }
+}
+
+// This is usually used with :focus-visible, but can be use with :focus if
+// we wan't focust to be visible, even on mouse click.
+@mixin focus-outline($offset) {
+    outline: bp.$pt-outline-color solid 2px;
+    outline-offset: $offset;
+
+    .#{bp.$ns}-dark & {
+        outline: bp.$pt-outline-color solid 2px;
+        outline-offset: $offset;
+    }
+}
+
+// add a focus ring when focus is within a container
+@mixin focus-within() {
+    position: relative;
+
+    &:focus-within::after {
+        content: '';
+        pointer-events: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        @include focus-outline(-3px);
     }
 }

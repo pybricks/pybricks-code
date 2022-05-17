@@ -123,6 +123,7 @@ const Activities: React.VoidFunctionComponent = () => {
                 }
                 panel={<Explorer />}
                 panelClassName="pb-activities-tabview"
+                onMouseDown={(e) => e.stopPropagation()}
             />
             <Tab
                 aria-label={i18n.translate(I18nId.Settings)}
@@ -137,6 +138,7 @@ const Activities: React.VoidFunctionComponent = () => {
                 }
                 panel={<Settings />}
                 panelClassName="pb-activities-tabview"
+                onMouseDown={(e) => e.stopPropagation()}
             />
         </Tabs>
     );

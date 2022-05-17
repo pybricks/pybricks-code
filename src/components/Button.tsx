@@ -20,7 +20,7 @@ type ButtonProps = {
     minimal?: boolean;
     /** Icon that will be displayed to the left of the button content. */
     icon: IconName;
-    /** A refernece to the underlying <button> HTML element. */
+    /** A reference to the underlying <button> HTML element. */
     elementRef?: React.ForwardedRef<HTMLButtonElement>;
     /** Called when the button is pressed. */
     onPress?: () => void;
@@ -56,10 +56,10 @@ export const Button: React.VoidFunctionComponent<ButtonProps> = ({
 
     return (
         <>
-            {/* The blueprint focus manage doesn't always get it right, so we ignore it. */}
-            <FocusRing focusRingClass={Classes.FOCUS_STYLE_MANAGER_IGNORE}>
+            {/* useButton() breaks the native browser :focus-visible :-/ */}
+            <FocusRing focusRingClass="pb-focus-ring">
                 <button
-                    className={classNames(Classes.BUTTON, {
+                    className={classNames(Classes.BUTTON, 'pb-focus-managed', {
                         [Classes.ACTIVE]: isPressed,
                         [Classes.LOADING]: loading,
                         [Classes.MINIMAL]: minimal,
@@ -84,7 +84,7 @@ export const Button: React.VoidFunctionComponent<ButtonProps> = ({
                     )}
                 </button>
             </FocusRing>
-            {/* This can't be inside the buttton element, otherwise it messes up the styling */}
+            {/* This can't be inside the button element, otherwise it messes up the styling */}
             {description && (
                 <div id={descriptionId} hidden>
                     {description}

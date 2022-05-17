@@ -72,6 +72,7 @@ export const renderers: Omit<
                     (props.context.isSelected || props.context.isDraggingOver) &&
                         Classes.TREE_NODE_SELECTED,
                 )}
+                onMouseDown={(e) => e.stopPropagation()}
                 {...props.context.itemContainerWithChildrenProps}
                 {...props.context.interactiveElementProps}
             >
