@@ -2,7 +2,7 @@
 // Copyright (c) 2022 The Pybricks Authors
 
 import React, { AriaAttributes, KeyboardEventHandler, useCallback } from 'react';
-import { FocusAction } from './react';
+import { FocusAction } from '../../utils/react';
 
 type ToolbarProps = Pick<AriaAttributes, 'aria-label' | 'aria-labelledby'> & {
     /** CSS class name for the tooltip element. */

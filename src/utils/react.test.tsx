@@ -5,7 +5,7 @@ import { cleanup } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React, { useRef } from 'react';
 import { testRender } from '../../test';
-import Toolbar from './Toolbar';
+import Toolbar from '../components/toolbar/Toolbar';
 import { useRovingTabIndex } from './react';
 
 afterEach(() => {

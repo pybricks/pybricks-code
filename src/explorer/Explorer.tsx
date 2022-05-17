@@ -24,8 +24,8 @@ import {
     useTreeEnvironment,
 } from 'react-complex-tree';
 import { useDispatch } from 'react-redux';
+import Toolbar from '../components/toolbar/Toolbar';
 import { useSelector } from '../reducers';
-import Toolbar from '../utils/Toolbar';
 import { isMacOS } from '../utils/os';
 import { useRovingTabIndex } from '../utils/react';
 import { TreeItemContext, TreeItemData, renderers } from '../utils/tree-renderer';

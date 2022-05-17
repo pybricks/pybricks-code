@@ -3,7 +3,7 @@
 
 import { ButtonGroup } from '@blueprintjs/core';
 import React, { useRef } from 'react';
-import UtilsToolbar from '../utils/Toolbar';
+import UtilsToolbar from '../components/toolbar/Toolbar';
 import { useRovingTabIndex } from '../utils/react';
 import BluetoothButton from './buttons/bluetooth/BluetoothButton';
 import FlashButton from './buttons/flash/FlashButton';
