@@ -11,6 +11,7 @@ import {
 } from '@blueprintjs/core';
 import { useI18n } from '@shopify/react-i18n';
 import React, { useCallback, useRef, useState } from 'react';
+import { useId } from 'react-aria';
 import { useDispatch } from 'react-redux';
 import { useFileStorageMetadata } from '../../fileStorage/hooks';
 import {
@@ -19,7 +20,6 @@ import {
     validateFileName,
 } from '../../pybricksMicropython/lib';
 import { useSelector } from '../../reducers';
-import { useUniqueId } from '../../utils/react';
 import FileNameFormGroup from '../fileNameFormGroup/FileNameFormGroup';
 import { Hub, newFileWizardDidAccept, newFileWizardDidCancel } from './actions';
 import { I18nId } from './i18n';
@@ -56,7 +56,7 @@ const NewFileWizard: React.VoidFunctionComponent = () => {
         dispatch(newFileWizardDidCancel());
     }, [dispatch]);
 
-    const acceptButtonLabelId = useUniqueId('pybricks-explorer');
+    const acceptButtonLabelId = useId();
 
     return (
         <Dialog

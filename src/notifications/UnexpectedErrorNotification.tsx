@@ -7,7 +7,7 @@ import './UnexpectedErrorNotification.scss';
 import { AnchorButton, Button, ButtonGroup, Collapse, Intent } from '@blueprintjs/core';
 import { useI18n } from '@shopify/react-i18n';
 import React, { useState } from 'react';
-import { useUniqueId } from '../utils/react';
+import { useId } from 'react-aria';
 import { I18nId } from './i18n';
 
 type UnexpectedErrorNotificationProps = {
@@ -21,7 +21,7 @@ const UnexpectedErrorNotification: React.VoidFunctionComponent<
     // istanbul ignore next: babel-loader rewrites this line
     const [i18n] = useI18n();
     const [isExpanded, setIsExpanded] = useState(false);
-    const labelId = useUniqueId('pb-notification');
+    const labelId = useId();
 
     return (
         <>

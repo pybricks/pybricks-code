@@ -20,6 +20,7 @@ import { I18n, useI18n } from '@shopify/react-i18n';
 import tomorrowNightEightiesTheme from 'monaco-themes/themes/Tomorrow-Night-Eighties.json';
 import xcodeTheme from 'monaco-themes/themes/Xcode_default.json';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useId } from 'react-aria';
 import MonacoEditor, {
     ChangeHandler,
     EditorDidMount,
@@ -34,7 +35,6 @@ import { compile } from '../mpy/actions';
 import { useSelector } from '../reducers';
 import { useSettingIsShowDocsEnabled } from '../settings/hooks';
 import { isMacOS } from '../utils/os';
-import { useUniqueId } from '../utils/react';
 import { editorActivateFile, editorCloseFile } from './actions';
 import { I18nId } from './i18n';
 import * as pybricksMicroPython from './pybricksMicroPython';
@@ -94,7 +94,7 @@ type EditorContextMenuItemProps = Readonly<{
 const EditorContextMenuItem: React.VoidFunctionComponent<
     EditorContextMenuItemProps
 > = ({ label, icon, keyboardShortcut, disabled, editor, editorAction }) => {
-    const labelId = useUniqueId('pb-editor');
+    const labelId = useId();
 
     return (
         <MenuItem
@@ -201,7 +201,7 @@ const EditorTabs: React.VoidFunctionComponent<EditorTabsProps> = ({
         [dispatch, onChange],
     );
 
-    const labelId = useUniqueId('pb-editor');
+    const labelId = useId();
 
     // close tab when delete key is pressed
     const handleKeyDown = useCallback(
