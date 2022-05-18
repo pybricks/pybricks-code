@@ -12,7 +12,9 @@ afterEach(() => {
 });
 
 it('should dispatch action when clicked', () => {
-    const [button, dispatch] = testRender(<BluetoothButton />);
+    const [button, dispatch] = testRender(
+        <BluetoothButton id="test-bluetooth-button" />,
+    );
 
     button.getByRole('button', { name: 'Bluetooth' }).click();
 

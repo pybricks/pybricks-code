@@ -1,14 +1,17 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2022 The Pybricks Authors
 
-import { Button, Intent, Spinner, SpinnerSize, mergeRefs } from '@blueprintjs/core';
+import { Button, IRef, Intent, Spinner, SpinnerSize } from '@blueprintjs/core';
 import { Tooltip2 } from '@blueprintjs/popover2';
-import React, { RefObject, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { tooltipDelay } from '../app/constants';
+import { useToolbarItemFocus } from '../components/toolbar/aria';
 
 const smallScreenThreshold = 700;
 export interface OpenFileButtonProps {
+    /** A DOM id for this button. */
+    readonly id: string;
     /** A unique label for each instance. */
     readonly label: string;
     /** The accepted file extension */
@@ -23,8 +26,6 @@ export interface OpenFileButtonProps {
     readonly showProgress?: boolean;
     /** The progress value (0 to 1) for the progress spinner. */
     readonly progress?: number;
-    /** Reference to the <button> HTML element. */
-    readonly elementRef?: RefObject<HTMLButtonElement>;
     /** Callback that is called when a file has been selected and opened for reading. */
     readonly onFile: (data: ArrayBuffer) => void;
     /** Callback that is called when a file has been rejected (e.g. bad file extension). */
@@ -37,6 +38,7 @@ export interface OpenFileButtonProps {
  * Button that opens a file chooser dialog or accepts files dropped on it.
  */
 const OpenFileButton: React.VoidFunctionComponent<OpenFileButtonProps> = ({
+    id,
     label,
     fileExtension,
     tooltip,
@@ -44,7 +46,6 @@ const OpenFileButton: React.VoidFunctionComponent<OpenFileButtonProps> = ({
     enabled,
     showProgress,
     progress,
-    elementRef,
     onFile,
     onReject,
     onClick,
@@ -97,6 +98,8 @@ const OpenFileButton: React.VoidFunctionComponent<OpenFileButtonProps> = ({
         },
     });
 
+    const { toolbarItemFocusProps, excludeFromTabOrder } = useToolbarItemFocus({ id });
+
     return (
         <Tooltip2
             content={tooltip}
@@ -109,18 +112,18 @@ const OpenFileButton: React.VoidFunctionComponent<OpenFileButtonProps> = ({
             }) => (
                 <Button
                     {...getRootProps({
+                        id,
                         'aria-label': label,
                         refKey: 'elementRef',
-                        elementRef: mergeRefs<HTMLButtonElement>(
-                            elementRef ?? null,
-                            tooltipTargetRef,
-                        ),
+                        elementRef: tooltipTargetRef as IRef<HTMLButtonElement>,
                         ...tooltipTargetProps,
                         // https://github.com/palantir/blueprint/pull/5300
                         'aria-haspopup': undefined,
                         intent: Intent.PRIMARY,
                         disabled: enabled === false,
-                        onClick: onClick,
+                        onClick,
+                        ...toolbarItemFocusProps,
+                        tabIndex: excludeFromTabOrder ? -1 : 0,
                     })}
                 >
                     <input {...getInputProps()} />

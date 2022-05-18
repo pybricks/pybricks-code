@@ -13,7 +13,7 @@ afterEach(() => {
 });
 
 it('should dispatch action when clicked', () => {
-    const [button, dispatch] = testRender(<StopButton />, {
+    const [button, dispatch] = testRender(<StopButton id="test-stop-button" />, {
         hub: { runtime: HubRuntimeState.Running },
     });
 

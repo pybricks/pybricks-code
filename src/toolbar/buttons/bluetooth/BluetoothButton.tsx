@@ -13,11 +13,9 @@ import connectedIcon from './connected.svg';
 import disconnectedIcon from './disconnected.svg';
 import { I18nId } from './i18n';
 
-type BluetoothButtonProps = Pick<ActionButtonProps, 'elementRef'>;
+type BluetoothButtonProps = Pick<ActionButtonProps, 'id'>;
 
-const BluetoothButton: React.VoidFunctionComponent<BluetoothButtonProps> = ({
-    elementRef,
-}) => {
+const BluetoothButton: React.VoidFunctionComponent<BluetoothButtonProps> = ({ id }) => {
     const bootloaderConnection = useSelector((s) => s.bootloader.connection);
     const bleConnection = useSelector((s) => s.ble.connection);
 
@@ -31,6 +29,7 @@ const BluetoothButton: React.VoidFunctionComponent<BluetoothButtonProps> = ({
 
     return (
         <ActionButton
+            id={id}
             label={i18n.translate(I18nId.Label)}
             tooltip={i18n.translate(
                 isDisconnected ? I18nId.TooltipConnect : I18nId.TooltipDisconnect,
@@ -38,7 +37,6 @@ const BluetoothButton: React.VoidFunctionComponent<BluetoothButtonProps> = ({
             icon={isDisconnected ? disconnectedIcon : connectedIcon}
             enabled={isDisconnected || bleConnection === BleConnectionState.Connected}
             showProgress={bleConnection === BleConnectionState.Connecting}
-            elementRef={elementRef}
             onAction={() => dispatch(toggleBluetooth())}
         />
     );

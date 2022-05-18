@@ -3,19 +3,22 @@
 
 import {
     Button,
+    IRef,
     Intent,
     Spinner,
     SpinnerSize,
-    mergeRefs,
     useHotkeys,
 } from '@blueprintjs/core';
 import { Tooltip2 } from '@blueprintjs/popover2';
-import React, { RefObject, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { tooltipDelay } from '../app/constants';
+import { useToolbarItemFocus } from '../components/toolbar/aria';
 
 const smallScreenThreshold = 700;
 
 export interface ActionButtonProps {
+    /** The DOM id for this instance. */
+    id: string;
     /** A unique label for each instance. */
     readonly label: string;
     /** Keyboard shortcut. */
@@ -30,13 +33,12 @@ export interface ActionButtonProps {
     readonly showProgress?: boolean;
     /** The progress value (0 to 1) or undefined for indeterminate progress. */
     readonly progress?: number;
-    /** Reference to the <button> HTML element. */
-    readonly elementRef?: RefObject<HTMLButtonElement>;
     /** Callback that is called when the button is activated (clicked). */
     readonly onAction: () => void;
 }
 
 const ActionButton: React.VoidFunctionComponent<ActionButtonProps> = ({
+    id,
     label,
     keyboardShortcut,
     tooltip,
@@ -44,7 +46,6 @@ const ActionButton: React.VoidFunctionComponent<ActionButtonProps> = ({
     enabled,
     showProgress,
     progress,
-    elementRef,
     onAction,
 }) => {
     const [isSmallScreen, setIsSmallScreen] = useState(
@@ -84,6 +85,8 @@ const ActionButton: React.VoidFunctionComponent<ActionButtonProps> = ({
 
     useHotkeys(hotkeys);
 
+    const { toolbarItemFocusProps, excludeFromTabOrder } = useToolbarItemFocus({ id });
+
     return (
         <Tooltip2
             content={tooltip}
@@ -95,17 +98,17 @@ const ActionButton: React.VoidFunctionComponent<ActionButtonProps> = ({
                 ...tooltipTargetProps
             }) => (
                 <Button
+                    id={id}
                     aria-label={label}
-                    elementRef={mergeRefs<HTMLButtonElement>(
-                        elementRef ?? null,
-                        tooltipTargetRef,
-                    )}
+                    elementRef={tooltipTargetRef as IRef<HTMLButtonElement>}
                     {...tooltipTargetProps}
                     // https://github.com/palantir/blueprint/pull/5300
                     aria-haspopup={undefined}
                     intent={Intent.PRIMARY}
                     onClick={onAction}
                     disabled={enabled === false}
+                    {...toolbarItemFocusProps}
+                    tabIndex={excludeFromTabOrder ? -1 : 0}
                 >
                     {showProgress ? (
                         <Spinner

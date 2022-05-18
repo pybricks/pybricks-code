@@ -12,7 +12,7 @@ afterEach(() => {
 });
 
 it('should dispatch action when clicked', () => {
-    const [button, dispatch] = testRender(<FlashButton />);
+    const [button, dispatch] = testRender(<FlashButton id="test-flash-button" />);
 
     button.getByRole('button', { name: 'Flash' }).click();
 

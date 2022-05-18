@@ -13,7 +13,8 @@ import {
     useHotkeys,
 } from '@blueprintjs/core';
 import { I18n, useI18n } from '@shopify/react-i18n';
-import React, { RefObject, useCallback, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
+import { useId } from 'react-aria';
 import {
     ControlledTreeEnvironment,
     LiveDescriptors,
@@ -24,10 +25,10 @@ import {
     useTreeEnvironment,
 } from 'react-complex-tree';
 import { useDispatch } from 'react-redux';
-import Toolbar from '../components/toolbar/Toolbar';
+import { Toolbar } from '../components/toolbar/Toolbar';
+import { useToolbarItemFocus } from '../components/toolbar/aria';
 import { useSelector } from '../reducers';
 import { isMacOS } from '../utils/os';
-import { useRovingTabIndex } from '../utils/react';
 import { TreeItemContext, TreeItemData, renderers } from '../utils/tree-renderer';
 import {
     explorerActivateFile,
@@ -44,23 +45,20 @@ import { I18nId } from './i18n';
 import NewFileWizard from './newFileWizard/NewFileWizard';
 
 type ActionButtonProps = {
+    /** The DOM id for this instance. */
+    id: string;
     /** The icon to use for the button. */
     icon: IconName;
     /** The tooltip/title text. */
     tooltip: string;
-    /** If false, prevent focus. Default is true. */
-    focusable?: boolean;
-    /** Reference to the `<button>` HTML element. */
-    elementRef?: RefObject<HTMLButtonElement>;
     /** Callback for button click event. */
     onClick: () => void;
 };
 
 const ActionButton: React.VoidFunctionComponent<ActionButtonProps> = ({
+    id,
     icon,
     tooltip,
-    focusable,
-    elementRef,
     onClick,
 }) => {
     const handleClick = useCallback<React.MouseEventHandler>(
@@ -72,15 +70,16 @@ const ActionButton: React.VoidFunctionComponent<ActionButtonProps> = ({
         [onClick],
     );
 
+    const { toolbarItemFocusProps, excludeFromTabOrder } = useToolbarItemFocus({ id });
+
     return (
         <Button
+            id={id}
             icon={icon}
             title={tooltip}
-            tabIndex={focusable === false ? -1 : undefined}
-            elementRef={elementRef}
-            onFocus={focusable === false ? (e) => e.preventDefault() : undefined}
             onClick={handleClick}
-            onMouseDown={(e) => e.stopPropagation()}
+            {...toolbarItemFocusProps}
+            tabIndex={excludeFromTabOrder ? -1 : 0}
         />
     );
 };
@@ -105,35 +104,43 @@ const FileActionButtonGroup: React.VoidFunctionComponent<ActionButtonGroupProps>
 
     const fileName = environment.getItemTitle(item);
 
+    const duplicateButtonId = useId();
+    const exportButtonId = useId();
+    const deleteButtonId = useId();
+
     return (
         <ButtonGroup
             aria-hidden={true}
             className="pb-explorer-file-action-button-group"
             minimal={true}
         >
-            <ActionButton
-                icon="duplicate"
-                tooltip={i18n.translate(I18nId.TreeItemDuplicateTooltip, { fileName })}
-                focusable={false}
-                onClick={() => dispatch(explorerDuplicateFile(fileName))}
-            />
-            <ActionButton
-                // NB: the "import" icon has an arrow pointing down, which is
-                // what we want here since import is analogous to download
-                // and it also matches the direction of the arrow on the
-                // archive icon which is also used to indicate an export/
-                // download operation
-                icon="import"
-                tooltip={i18n.translate(I18nId.TreeItemExportTooltip, { fileName })}
-                focusable={false}
-                onClick={() => dispatch(explorerExportFile(fileName))}
-            />
-            <ActionButton
-                icon="trash"
-                tooltip={i18n.translate(I18nId.TreeItemDeleteTooltip, { fileName })}
-                focusable={false}
-                onClick={() => dispatch(explorerDeleteFile(fileName))}
-            />
+            <Toolbar firstFocusableItemId={duplicateButtonId}>
+                <ActionButton
+                    id={duplicateButtonId}
+                    icon="duplicate"
+                    tooltip={i18n.translate(I18nId.TreeItemDuplicateTooltip, {
+                        fileName,
+                    })}
+                    onClick={() => dispatch(explorerDuplicateFile(fileName))}
+                />
+                <ActionButton
+                    id={exportButtonId}
+                    // NB: the "import" icon has an arrow pointing down, which is
+                    // what we want here since import is analogous to download
+                    // and it also matches the direction of the arrow on the
+                    // archive icon which is also used to indicate an export/
+                    // download operation
+                    icon="import"
+                    tooltip={i18n.translate(I18nId.TreeItemExportTooltip, { fileName })}
+                    onClick={() => dispatch(explorerExportFile(fileName))}
+                />
+                <ActionButton
+                    id={deleteButtonId}
+                    icon="trash"
+                    tooltip={i18n.translate(I18nId.TreeItemDeleteTooltip, { fileName })}
+                    onClick={() => dispatch(explorerDeleteFile(fileName))}
+                />
+            </Toolbar>
         </ButtonGroup>
     );
 };
@@ -144,43 +151,37 @@ type HeaderProps = {
 };
 
 const Header: React.VoidFunctionComponent<HeaderProps> = ({ i18n }) => {
-    const archiveButtonRef = useRef<HTMLButtonElement>(null);
-    const exportButtonRef = useRef<HTMLButtonElement>(null);
-    const newButtonRef = useRef<HTMLButtonElement>(null);
+    const archiveButtonId = useId();
+    const exportButtonId = useId();
+    const newButtonId = useId();
     const dispatch = useDispatch();
-
-    const moveFocus = useRovingTabIndex(
-        archiveButtonRef,
-        exportButtonRef,
-        newButtonRef,
-    );
 
     return (
         <Toolbar
             className="pb-explorer-header-toolbar"
             aria-label={i18n.translate(I18nId.HeaderToolbarTitle)}
-            onKeyboard={moveFocus}
+            firstFocusableItemId={archiveButtonId}
         >
             <ButtonGroup minimal={true}>
                 <ActionButton
+                    id={archiveButtonId}
                     icon="archive"
                     tooltip={i18n.translate(I18nId.HeaderToolbarExportAll)}
-                    elementRef={archiveButtonRef}
                     onClick={() => dispatch(explorerArchiveAllFiles())}
                 />
                 <ActionButton
+                    id={exportButtonId}
                     // NB: the "export" icon has an arrow pointing up, which is
                     // what we want here since import is analogous to upload
                     // even though this is the "import" action
                     icon="export"
                     tooltip={i18n.translate(I18nId.HeaderToolbarImport)}
-                    elementRef={exportButtonRef}
                     onClick={() => dispatch(explorerImportFiles())}
                 />
                 <ActionButton
+                    id={newButtonId}
                     icon="plus"
                     tooltip={i18n.translate(I18nId.HeaderToolbarAddNew)}
-                    elementRef={newButtonRef}
                     onClick={() => dispatch(explorerCreateNewFile())}
                 />
             </ButtonGroup>

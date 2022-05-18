@@ -1,18 +1,19 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2022 The Pybricks Authors
 
-import React, { AriaAttributes, KeyboardEventHandler, useCallback } from 'react';
-import { FocusAction } from '../../utils/react';
+import React from 'react';
+import { FocusScope } from 'react-aria';
+import { useToolbar } from './aria';
+import { ToolbarStateContext, useToolbarState } from './state';
+import { AriaToolbarProps } from './types';
 
-type ToolbarProps = Pick<AriaAttributes, 'aria-label' | 'aria-labelledby'> & {
+type ToolbarProps = Pick<
+    AriaToolbarProps,
+    'aria-label' | 'aria-labelledby' | 'firstFocusableItemId'
+> & {
     /** CSS class name for the tooltip element. */
     className?: string;
-    /** Indicates that the toolbar has a vertical orientation. */
-    vertical?: boolean;
-    /** Called when a keyboard event occurs. */
-    onKeyboard?: (action: FocusAction) => void;
 };
-
 /**
  * An accessible toolbar component.
  *
@@ -21,49 +22,16 @@ type ToolbarProps = Pick<AriaAttributes, 'aria-label' | 'aria-labelledby'> & {
  *
  * https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/toolbar_role
  */
-const Toolbar: React.FunctionComponent<ToolbarProps> = ({
-    children,
-    vertical,
-    onKeyboard,
-    ...divProps
-}) => {
-    const handleKeyDown = useCallback<KeyboardEventHandler<HTMLDivElement>>(
-        (e) => {
-            // ignore all key presses with modifiers
-            if (e.altKey || e.ctrlKey || e.shiftKey || e.metaKey) {
-                return;
-            }
-
-            if (e.key === (vertical ? 'ArrowUp' : 'ArrowLeft')) {
-                onKeyboard?.(FocusAction.MovePrev);
-            } else if (e.key === (vertical ? 'ArrowDown' : 'ArrowRight')) {
-                onKeyboard?.(FocusAction.MoveNext);
-            } else if (e.key === 'Home') {
-                onKeyboard?.(FocusAction.MoveFirst);
-            } else if (e.key === 'End') {
-                onKeyboard?.(FocusAction.MoveLast);
-            } else {
-                // allow everything else to propagate.
-                return;
-            }
-
-            // we consumed the key press
-            e.preventDefault();
-            e.stopPropagation();
-        },
-        [vertical, onKeyboard],
-    );
+export const Toolbar: React.FunctionComponent<ToolbarProps> = (props) => {
+    const { className, children } = props;
+    const state = useToolbarState(props);
+    const { toolbarProps } = useToolbar(props);
 
     return (
-        <div
-            role="toolbar"
-            aria-orientation={vertical ? 'vertical' : undefined}
-            {...divProps}
-            onKeyDown={handleKeyDown}
-        >
-            {children}
+        <div className={className} {...toolbarProps}>
+            <ToolbarStateContext.Provider value={state}>
+                <FocusScope>{children}</FocusScope>
+            </ToolbarStateContext.Provider>
         </div>
     );
 };
-
-export default Toolbar;

@@ -17,9 +17,9 @@ import OpenFileButton, { OpenFileButtonProps } from '../../../toolbar/OpenFileBu
 import { I18nId } from './i18n';
 import icon from './icon.svg';
 
-type FlashButtonProps = Pick<OpenFileButtonProps, 'elementRef'>;
+type FlashButtonProps = Pick<OpenFileButtonProps, 'id'>;
 
-const FlashButton: React.VoidFunctionComponent<FlashButtonProps> = ({ elementRef }) => {
+const FlashButton: React.VoidFunctionComponent<FlashButtonProps> = ({ id }) => {
     const bootloaderConnection = useSelector((s) => s.bootloader.connection);
     const bleConnection = useSelector((s) => s.ble.connection);
     const flashing = useSelector((s) => s.firmware.flashing);
@@ -33,6 +33,7 @@ const FlashButton: React.VoidFunctionComponent<FlashButtonProps> = ({ elementRef
 
     return (
         <OpenFileButton
+            id={id}
             label={i18n.translate(I18nId.Label)}
             fileExtension=".zip"
             icon={icon}
@@ -49,7 +50,6 @@ const FlashButton: React.VoidFunctionComponent<FlashButtonProps> = ({ elementRef
             }
             showProgress={flashing}
             progress={progress === null ? undefined : progress}
-            elementRef={elementRef}
             onFile={(data) =>
                 dispatch(
                     flashFirmware(data, isSettingFlashCurrentProgramEnabled, hubName),

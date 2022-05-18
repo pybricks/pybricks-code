@@ -2,9 +2,9 @@
 // Copyright (c) 2020-2022 The Pybricks Authors
 
 import { ButtonGroup } from '@blueprintjs/core';
-import React, { useRef } from 'react';
-import UtilsToolbar from '../components/toolbar/Toolbar';
-import { useRovingTabIndex } from '../utils/react';
+import React from 'react';
+import { useId } from 'react-aria';
+import { Toolbar as UtilsToolbar } from '../components/toolbar/Toolbar';
 import BluetoothButton from './buttons/bluetooth/BluetoothButton';
 import FlashButton from './buttons/flash/FlashButton';
 import ReplButton from './buttons/repl/ReplButton';
@@ -14,30 +14,22 @@ import StopButton from './buttons/stop/StopButton';
 import './toolbar.scss';
 
 const Toolbar: React.VFC = () => {
-    const flashButtonRef = useRef<HTMLButtonElement>(null);
-    const bluetoothButtonRef = useRef<HTMLButtonElement>(null);
-    const runButtonRef = useRef<HTMLButtonElement>(null);
-    const stopButtonRef = useRef<HTMLButtonElement>(null);
-    const replButtonRef = useRef<HTMLButtonElement>(null);
-
-    const moveFocus = useRovingTabIndex(
-        flashButtonRef,
-        bluetoothButtonRef,
-        runButtonRef,
-        stopButtonRef,
-        replButtonRef,
-    );
+    const flashButtonId = useId();
+    const bluetoothButtonId = useId();
+    const runButtonId = useId();
+    const stopButtonId = useId();
+    const replButtonId = useId();
 
     return (
-        <UtilsToolbar className="pb-toolbar" onKeyboard={moveFocus}>
+        <UtilsToolbar className="pb-toolbar" firstFocusableItemId={flashButtonId}>
             <ButtonGroup className="pb-toolbar-group pb-align-left">
-                <FlashButton elementRef={flashButtonRef} />
-                <BluetoothButton elementRef={bluetoothButtonRef} />
+                <FlashButton id={flashButtonId} />
+                <BluetoothButton id={bluetoothButtonId} />
             </ButtonGroup>
             <ButtonGroup className="pb-toolbar-group pb-align-left">
-                <RunButton elementRef={runButtonRef} />
-                <StopButton elementRef={stopButtonRef} />
-                <ReplButton elementRef={replButtonRef} />
+                <RunButton id={runButtonId} />
+                <StopButton id={stopButtonId} />
+                <ReplButton id={replButtonId} />
             </ButtonGroup>
         </UtilsToolbar>
     );

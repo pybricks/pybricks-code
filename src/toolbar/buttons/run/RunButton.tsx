@@ -11,9 +11,9 @@ import ActionButton, { ActionButtonProps } from '../../ActionButton';
 import { I18nId } from './i18n';
 import icon from './icon.svg';
 
-type RunButtonProps = Pick<ActionButtonProps, 'elementRef'>;
+type RunButtonProps = Pick<ActionButtonProps, 'id'>;
 
-const RunButton: React.VoidFunctionComponent<RunButtonProps> = ({ elementRef }) => {
+const RunButton: React.VoidFunctionComponent<RunButtonProps> = ({ id }) => {
     const downloadProgress = useSelector((s) => s.hub.downloadProgress);
     const runtime = useSelector((s) => s.hub.runtime);
     const isEditorReady = useSelector((s) => s.editor.isReady);
@@ -25,6 +25,7 @@ const RunButton: React.VoidFunctionComponent<RunButtonProps> = ({ elementRef }) 
 
     return (
         <ActionButton
+            id={id}
             label={i18n.translate(I18nId.Label)}
             keyboardShortcut={keyboardShortcut}
             tooltip={
@@ -38,7 +39,6 @@ const RunButton: React.VoidFunctionComponent<RunButtonProps> = ({ elementRef }) 
             enabled={isEditorReady && runtime === HubRuntimeState.Idle}
             showProgress={runtime === HubRuntimeState.Loading}
             progress={downloadProgress === null ? undefined : downloadProgress}
-            elementRef={elementRef}
             onAction={() => dispatch(downloadAndRun())}
         />
     );

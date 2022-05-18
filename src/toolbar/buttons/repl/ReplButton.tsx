@@ -11,9 +11,9 @@ import ActionButton, { ActionButtonProps } from '../../ActionButton';
 import { I18nId } from './i18n';
 import icon from './icon.svg';
 
-type ReplButtonProps = Pick<ActionButtonProps, 'elementRef'>;
+type ReplButtonProps = Pick<ActionButtonProps, 'id'>;
 
-const ReplButton: React.VoidFunctionComponent<ReplButtonProps> = ({ elementRef }) => {
+const ReplButton: React.VoidFunctionComponent<ReplButtonProps> = ({ id }) => {
     // istanbul ignore next: babel-loader rewrites this line
     const [i18n] = useI18n();
     const dispatch = useDispatch();
@@ -23,11 +23,11 @@ const ReplButton: React.VoidFunctionComponent<ReplButtonProps> = ({ elementRef }
 
     return (
         <ActionButton
+            id={id}
             label={i18n.translate(I18nId.Label)}
             tooltip={i18n.translate(I18nId.Tooltip)}
             icon={icon}
             enabled={enabled}
-            elementRef={elementRef}
             onAction={action}
         />
     );
