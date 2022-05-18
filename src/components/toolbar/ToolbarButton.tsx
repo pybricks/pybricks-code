@@ -3,7 +3,7 @@
 
 import { Classes } from '@blueprintjs/core';
 import { mergeProps } from '@react-aria/utils';
-import { AriaButtonProps } from '@react-types/button';
+import type { AriaButtonProps } from '@react-types/button';
 import classNames from 'classnames';
 import React, { useRef } from 'react';
 import { FocusRing, useButton } from 'react-aria';

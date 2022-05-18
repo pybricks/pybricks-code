@@ -2,7 +2,6 @@
 // Copyright (c) 2022 The Pybricks Authors
 
 /// <reference types="node" />
-/// <reference types="react" />
 /// <reference types="react-dom" />
 
 declare namespace NodeJS {
