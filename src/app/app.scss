@@ -22,6 +22,7 @@
 
     &-terminal {
         height: 100%;
+        padding-top: 8px;
         padding-left: 8px;
         background-color: white;
         @include pb.focus-within();
