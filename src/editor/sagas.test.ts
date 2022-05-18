@@ -5,16 +5,10 @@ import { mock } from 'jest-mock-extended';
 import { monaco } from 'react-monaco-editor';
 import { AsyncSaga } from '../../test';
 import {
-    FD,
-    fileStorageClose,
-    fileStorageDidClose,
-    fileStorageDidFailToOpen,
-    fileStorageDidFailToRead,
+    fileStorageDidFailToReadFile,
     fileStorageDidInitialize,
-    fileStorageDidOpen,
-    fileStorageDidRead,
-    fileStorageOpen,
-    fileStorageRead,
+    fileStorageDidReadFile,
+    fileStorageReadFile,
 } from '../fileStorage/actions';
 import {
     editorActivateFile,
@@ -82,14 +76,14 @@ describe('per-editor sagas', () => {
             saga.put(editorOpenFile('test.file'));
 
             await expect(saga.take()).resolves.toEqual(
-                fileStorageOpen('test.file', 'w', false),
+                fileStorageReadFile('test.file'),
             );
         });
 
-        it('should propagate error from fileStorageOpen', async () => {
+        it('should propagate error from fileStorageReadFile', async () => {
             const testError = new Error('test error');
 
-            saga.put(fileStorageDidFailToOpen('test.file', testError));
+            saga.put(fileStorageDidFailToReadFile('test.file', testError));
 
             await expect(saga.take()).resolves.toEqual(
                 editorDidFailToOpenFile('test.file', testError),
@@ -98,82 +92,48 @@ describe('per-editor sagas', () => {
             expect(OpenFileManager.prototype.add).not.toHaveBeenCalled();
         });
 
-        describe('open succeeded', () => {
+        describe('read succeeded', () => {
+            let model: monaco.editor.ITextModel;
+
             beforeEach(async () => {
-                saga.put(fileStorageDidOpen('test.file', 0 as FD));
-                await expect(saga.take()).resolves.toEqual(fileStorageRead(0 as FD));
-            });
+                monaco.editor.onDidCreateModel((m) => (model = m));
 
-            it('should propagate error from fileStorageRead', async () => {
-                const testError = new Error('test error');
+                saga.put(fileStorageDidReadFile('test.file', ''));
 
-                saga.put(fileStorageDidFailToRead(0 as FD, testError));
-
-                // file handle should be closed before editorDidFailToOpenFile
-                await expect(saga.take()).resolves.toEqual(fileStorageClose(0 as FD));
-                saga.put(fileStorageDidClose(0 as FD));
+                expect(model).toBeDefined();
 
                 await expect(saga.take()).resolves.toEqual(
-                    editorDidFailToOpenFile('test.file', testError),
+                    editorDidOpenFile('test.file'),
                 );
 
-                expect(OpenFileManager.prototype.add).not.toHaveBeenCalled();
+                expect(OpenFileManager.prototype.add).toHaveBeenCalled();
+                expect(OpenFileManager.prototype.remove).not.toHaveBeenCalled();
             });
 
-            describe('read succeeded', () => {
-                let model: monaco.editor.ITextModel;
+            it('should close file if task is canceled', async () => {
+                jest.spyOn(model, 'dispose');
 
-                beforeEach(async () => {
-                    monaco.editor.onDidCreateModel((m) => (model = m));
+                saga.cancel();
 
-                    saga.put(fileStorageDidRead(0 as FD, ''));
+                // model should be disposed before fileStorageClose
+                expect(model.dispose).toHaveBeenCalled();
+                expect(OpenFileManager.prototype.remove).toHaveBeenCalled();
 
-                    expect(model).toBeDefined();
+                // editorDidCloseFile is not called since we did not put editorCloseFile
+            });
 
-                    await expect(saga.take()).resolves.toEqual(
-                        editorDidOpenFile('test.file'),
-                    );
+            it('should close when requested', async () => {
+                jest.spyOn(model, 'dispose');
 
-                    expect(OpenFileManager.prototype.add).toHaveBeenCalled();
-                    expect(OpenFileManager.prototype.remove).not.toHaveBeenCalled();
-                });
+                saga.put(editorCloseFile('test.file'));
 
-                it('should close file if task is canceled', async () => {
-                    jest.spyOn(model, 'dispose');
+                // model should be disposed before fileStorageClose
+                expect(model.dispose).toHaveBeenCalled();
+                expect(OpenFileManager.prototype.remove).toHaveBeenCalled();
 
-                    saga.cancel();
-
-                    // model should be disposed before fileStorageClose
-                    expect(model.dispose).toHaveBeenCalled();
-                    expect(OpenFileManager.prototype.remove).toHaveBeenCalled();
-
-                    await expect(saga.take()).resolves.toEqual(
-                        fileStorageClose(0 as FD),
-                    );
-                    saga.put(fileStorageDidClose(0 as FD));
-
-                    // editorDidCloseFile is not called since we did not put editorCloseFile
-                });
-
-                it('should close when requested', async () => {
-                    jest.spyOn(model, 'dispose');
-
-                    saga.put(editorCloseFile('test.file'));
-
-                    // model should be disposed before fileStorageClose
-                    expect(model.dispose).toHaveBeenCalled();
-                    expect(OpenFileManager.prototype.remove).toHaveBeenCalled();
-
-                    // file handle should be closed before editorDidCloseFile
-                    await expect(saga.take()).resolves.toEqual(
-                        fileStorageClose(0 as FD),
-                    );
-                    saga.put(fileStorageDidClose(0 as FD));
-
-                    await expect(saga.take()).resolves.toEqual(
-                        editorDidCloseFile('test.file'),
-                    );
-                });
+                await expect(saga.take()).resolves.toEqual(
+                    editorDidCloseFile('test.file'),
+                );
             });
         });
     });

@@ -3,7 +3,6 @@
 
 import dexieObservable from 'dexie-observable';
 import { monaco } from 'react-monaco-editor';
-import { FD } from '../fileStorage/actions';
 
 // HACK: Using window.name to detect page reloads vs. tab duplication.
 // window.name will persist across page reloads but will be set back to ''
@@ -129,8 +128,6 @@ export class ActiveFileHistoryManager {
 }
 
 export type OpenFileInfo = {
-    /** The file descriptor. */
-    readonly fd: FD;
     /** The model. */
     readonly model: monaco.editor.ITextModel;
     /** The view state. */
@@ -142,7 +139,6 @@ export class OpenFileManager {
 
     public add(
         fileName: string,
-        fd: FD,
         model: monaco.editor.ITextModel,
         viewState: monaco.editor.ICodeEditorViewState | null,
     ): void {
@@ -151,7 +147,7 @@ export class OpenFileManager {
             throw new Error(`bug: key '${fileName}' already exists in the mpa`);
         }
 
-        this.map.set(fileName, { fd, model, viewState });
+        this.map.set(fileName, { model, viewState });
     }
 
     public remove(fileName: string): void {

@@ -3,7 +3,6 @@
 
 import { mock } from 'jest-mock-extended';
 import { monaco } from 'react-monaco-editor';
-import { FD } from '../fileStorage/actions';
 import { ActiveFileHistoryManager, OpenFileInfo, OpenFileManager } from './lib';
 
 afterEach(() => {
@@ -98,11 +97,10 @@ describe('OpenFileManager', () => {
 
         const model = mock<monaco.editor.ITextModel>();
 
-        manager.add('test.file', 0 as FD, model, null);
+        manager.add('test.file', model, null);
 
         expect(manager.has('test.file')).toBeTruthy();
         expect(manager.get('test.file')).toEqual(<OpenFileInfo>{
-            fd: 0 as FD,
             model,
             viewState: null,
         });
@@ -122,7 +120,7 @@ describe('OpenFileManager', () => {
         const model = mock<monaco.editor.ITextModel>();
         const viewState = mock<monaco.editor.ICodeEditorViewState>();
 
-        manager.add('test.file', 0 as FD, model, viewState);
+        manager.add('test.file', model, viewState);
 
         expect(manager.get('test.file')).toHaveProperty('viewState', viewState);
 

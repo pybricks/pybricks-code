@@ -14,15 +14,10 @@ import {
     takeEvery,
 } from 'typed-redux-saga/macro';
 import {
-    fileStorageClose,
-    fileStorageDidClose,
-    fileStorageDidFailToOpen,
-    fileStorageDidFailToRead,
+    fileStorageDidFailToReadFile,
     fileStorageDidInitialize,
-    fileStorageDidOpen,
-    fileStorageDidRead,
-    fileStorageOpen,
-    fileStorageRead,
+    fileStorageDidReadFile,
+    fileStorageReadFile,
 } from '../fileStorage/actions';
 import { RootState } from '../reducers';
 import { defined, ensureError } from '../utils';
@@ -78,30 +73,19 @@ function* handleEditorOpenFile(
     let closeRequested = false;
 
     try {
-        yield* put(fileStorageOpen(action.fileName, 'w', false));
-
-        const { didOpen, didFailToOpen } = yield* race({
-            didOpen: take(fileStorageDidOpen.when((a) => a.path === action.fileName)),
-            didFailToOpen: take(
-                fileStorageDidFailToOpen.when((a) => a.path === action.fileName),
-            ),
-        });
-
-        if (didFailToOpen) {
-            throw didFailToOpen.error;
-        }
-
-        defined(didOpen);
-
         const defer: Array<() => void> = [];
 
         try {
-            yield* put(fileStorageRead(didOpen.fd));
+            yield* put(fileStorageReadFile(action.fileName));
 
             const { didRead, didFailToRead } = yield* race({
-                didRead: take(fileStorageDidRead.when((a) => a.fd === didOpen.fd)),
+                didRead: take(
+                    fileStorageDidReadFile.when((a) => a.path === action.fileName),
+                ),
                 didFailToRead: take(
-                    fileStorageDidFailToRead.when((a) => a.fd === didOpen.fd),
+                    fileStorageDidFailToReadFile.when(
+                        (a) => a.path === action.fileName,
+                    ),
                 ),
             });
 
@@ -120,7 +104,7 @@ function* handleEditorOpenFile(
 
             // TODO: get viewState from fileStorage
 
-            openFiles.add(action.fileName, didOpen.fd, model, null);
+            openFiles.add(action.fileName, model, null);
             defer.push(() => openFiles.remove(action.fileName));
 
             yield* put(editorDidOpenFile(action.fileName));
@@ -132,9 +116,6 @@ function* handleEditorOpenFile(
             for (const callback of defer.reverse()) {
                 callback();
             }
-
-            yield* put(fileStorageClose(didOpen.fd));
-            yield* take(fileStorageDidClose.when((a) => a.fd === didOpen.fd));
 
             // only send the did close action if the corresponding action requested it
             if (closeRequested) {
