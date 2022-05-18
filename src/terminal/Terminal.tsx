@@ -133,29 +133,29 @@ const Terminal: React.FC = (_props) => {
         };
     }, [isDarkMode]);
 
-    const handleKeyDownEvent = (e: KeyboardEvent): void => {
-        // implement CTRL+SHIFT+C keyboard shortcut for copying text from terminal
-        if (e.key === 'C' && e.ctrlKey && e.shiftKey && !e.altKey && !e.metaKey) {
-            // this would otherwise open up debug console in web browser
-            e.preventDefault();
-
-            if (
-                document.hasFocus() &&
-                document.activeElement ===
-                    terminalRef.current?.getElementsByClassName(
-                        'xterm-helper-textarea',
-                    )[0] &&
-                xterm.hasSelection()
-            ) {
-                navigator.clipboard.writeText(xterm.getSelection());
-            }
-        }
-    };
-
     useEffect(() => {
-        window.addEventListener('keydown', handleKeyDownEvent);
-        return () => window.removeEventListener('keydown', handleKeyDownEvent);
-    }, [handleKeyDownEvent]);
+        const handleKeyDown = (e: KeyboardEvent): void => {
+            // implement CTRL+SHIFT+C keyboard shortcut for copying text from terminal
+            if (e.key === 'C' && e.ctrlKey && e.shiftKey && !e.altKey && !e.metaKey) {
+                // this would otherwise open up debug console in web browser
+                e.preventDefault();
+
+                if (
+                    document.hasFocus() &&
+                    document.activeElement ===
+                        terminalRef.current?.getElementsByClassName(
+                            'xterm-helper-textarea',
+                        )[0] &&
+                    xterm.hasSelection()
+                ) {
+                    navigator.clipboard.writeText(xterm.getSelection());
+                }
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [terminalRef, xterm]);
 
     // wire shared context to terminal output
     useEffect(() => {
