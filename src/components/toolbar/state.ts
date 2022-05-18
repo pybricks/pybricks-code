@@ -2,7 +2,7 @@
 // Copyright (c) 2022 The Pybricks Authors
 
 import { createContext, useState } from 'react';
-import { ToolbarProps } from './types';
+import type { ToolbarProps } from './types';
 
 export type ToolbarState = Readonly<{
     /** The DOM id of the most recently focused item. */

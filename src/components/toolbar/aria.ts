@@ -11,7 +11,7 @@ import {
 } from 'react';
 import { FocusScope, mergeProps, useFocusManager } from 'react-aria';
 import { ToolbarStateContext } from './state';
-import { AriaToolbarProps } from './types';
+import type { AriaToolbarProps } from './types';
 
 // for doc comment link
 FocusScope;

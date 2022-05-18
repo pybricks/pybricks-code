@@ -5,7 +5,7 @@ import React from 'react';
 import { FocusScope } from 'react-aria';
 import { useToolbar } from './aria';
 import { ToolbarStateContext, useToolbarState } from './state';
-import { AriaToolbarProps } from './types';
+import type { AriaToolbarProps } from './types';
 
 type ToolbarProps = Pick<
     AriaToolbarProps,
