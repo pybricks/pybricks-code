@@ -115,6 +115,10 @@ const Terminal: React.FC = (_props) => {
         xterm.open(terminalRef.current);
         fitAddon.fit();
 
+        // HACK: remove tabindex from main xterm element, otherwise it takes
+        // two tabs to get to the text area
+        xterm.element?.removeAttribute('tabindex');
+
         return () => xterm.dispose();
     }, [xterm]);
 
