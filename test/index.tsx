@@ -8,7 +8,7 @@ import React, { ReactElement } from 'react';
 import { Provider } from 'react-redux';
 import { AnyAction, DeepPartial, PreloadedState, createStore } from 'redux';
 import { END, MulticastChannel, Saga, Task, runSaga, stdChannel } from 'redux-saga';
-import { UUID } from '../src/fileStorage/actions';
+import { UUID } from '../src/fileStorage';
 import { RootState, rootReducer } from '../src/reducers';
 import { RootSagaContext } from '../src/sagas';
 

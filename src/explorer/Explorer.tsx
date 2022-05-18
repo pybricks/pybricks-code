@@ -27,7 +27,7 @@ import {
 import { useDispatch } from 'react-redux';
 import { Toolbar } from '../components/toolbar/Toolbar';
 import { useToolbarItemFocus } from '../components/toolbar/aria';
-import { useSelector } from '../reducers';
+import { useFileStorageMetadata } from '../fileStorage/hooks';
 import { isMacOS } from '../utils/os';
 import { TreeItemContext, TreeItemData, renderers } from '../utils/tree-renderer';
 import {
@@ -308,7 +308,7 @@ type FileTreeProps = {
 
 const FileTree: React.VoidFunctionComponent<FileTreeProps> = ({ i18n }) => {
     const [focusedItem, setFocusedItem] = useState<TreeItemIndex>();
-    const files = useSelector((s) => s.explorer.files);
+    const files = useFileStorageMetadata() ?? [];
     const liveDescriptors = useLiveDescriptors(i18n);
 
     const rootItemIndex = 'root';
@@ -317,12 +317,12 @@ const FileTree: React.VoidFunctionComponent<FileTreeProps> = ({ i18n }) => {
         () =>
             files.reduce(
                 (obj, file) => {
-                    const index = file.id;
+                    const index = file.uuid;
 
                     obj[index] = {
                         index,
                         data: {
-                            fileName: file.name,
+                            fileName: file.path,
                             icon: 'document',
                             secondaryLabel: (
                                 <TreeItemContext.Consumer>
@@ -344,10 +344,7 @@ const FileTree: React.VoidFunctionComponent<FileTreeProps> = ({ i18n }) => {
                         index: rootItemIndex,
                         data: { fileName: '/' },
                         hasChildren: true,
-                        children: [...files]
-                            // REVISIT: consider using Intl.Collator() for i18n.locale
-                            .sort((a, b) => a.name.localeCompare(b.name))
-                            .map((n) => n.id),
+                        children: [...files].map((f) => f.uuid),
                     },
                 } as Record<TreeItemIndex, FileTreeItem>,
             ),

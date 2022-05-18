@@ -2590,6 +2590,7 @@ __metadata:
     css-minimizer-webpack-plugin: ^3.2.0
     dexie: ^3.2.1
     dexie-observable: ^4.0.0-beta.13
+    dexie-react-hooks: ^1.1.1
     dotenv: ^10.0.0
     dotenv-expand: ^5.1.0
     eslint: ^7.31.0
@@ -7350,6 +7351,17 @@ __metadata:
   peerDependencies:
     dexie: ^3.0.2 || ^4.0.0-alpha.1
   checksum: 1f80f6308cebde83d63681babeccc110d170be2a6715ff7129695c949e808fec0ef8bee851ffa27c59f0888baf79fc82fd9ae74e02e1b2d2b8a6bcd247703084
+  languageName: node
+  linkType: hard
+
+"dexie-react-hooks@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "dexie-react-hooks@npm:1.1.1"
+  peerDependencies:
+    "@types/react": ">=16"
+    dexie: ">=3.1.0-alpha.1 <5.0.0"
+    react: ">=16"
+  checksum: 09e1b1d4ebc248d103eb13c8f77733f4c140478350d2b8f3989af2fedb45e0d4ae7a07df9281ade162a3264ff621db35899b47d6edf5bf532ba22d571f6f1496
   languageName: node
   linkType: hard
 

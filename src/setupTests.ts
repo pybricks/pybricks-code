@@ -16,6 +16,8 @@ import {
 // @ts-expect-error no typings
 import matchMediaPolyfill from 'mq-polyfill';
 
+jest.mock('./fileStorage/hooks');
+
 //https://stackoverflow.com/a/66515427/1976323
 matchMediaPolyfill(window);
 

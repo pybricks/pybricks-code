@@ -12,6 +12,7 @@ import {
 import { useI18n } from '@shopify/react-i18n';
 import React, { useCallback, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { useFileStorageMetadata } from '../../fileStorage/hooks';
 import {
     FileNameValidationResult,
     pythonFileExtension,
@@ -33,11 +34,11 @@ const NewFileWizard: React.VoidFunctionComponent = () => {
 
     const isOpen = useSelector((s) => s.explorer.newFileWizard.isOpen);
     const [fileName, setFileName] = useState('');
-    const files = useSelector((s) => s.explorer.files);
+    const files = useFileStorageMetadata() ?? [];
     const fileNameValidation = validateFileName(
         fileName,
         pythonFileExtension,
-        files.map((f) => f.name),
+        files.map((f) => f.path),
     );
     const [hubType, setHubType] = useState(defaultHub);
 

@@ -124,6 +124,7 @@ const licenseTextOverrides = {
     '@shopify/react-hooks': shopifyLicense,
     '@shopify/react-i18n': shopifyLicense,
     'dexie-observable': dexieLicense,
+    'dexie-react-hooks': dexieLicense,
     'bn.js': fedorIndutnyLicense(2015),
     brorand: fedorIndutnyLicense(2014),
     'des.js': fedorIndutnyLicense(2015),

@@ -8,13 +8,10 @@ import { AsyncSaga, uuid } from '../../test';
 import { createCountFunc } from '../utils/iter';
 import {
     FD,
-    FileMetadata,
     FileOpenMode,
     fileStorageClose,
     fileStorageCopyFile,
     fileStorageDeleteFile,
-    fileStorageDidAddItem,
-    fileStorageDidChangeItem,
     fileStorageDidClose,
     fileStorageDidCopyFile,
     fileStorageDidDeleteFile,
@@ -33,7 +30,6 @@ import {
     fileStorageDidOpen,
     fileStorageDidRead,
     fileStorageDidReadFile,
-    fileStorageDidRemoveItem,
     fileStorageDidRenameFile,
     fileStorageDidWrite,
     fileStorageDidWriteFile,
@@ -46,10 +42,7 @@ import {
     fileStorageWriteFile,
 } from './actions';
 import fileStorage from './sagas';
-
-/** SHA256 hash of '' */
-const emptyFileSha256 =
-    'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855';
+import { FileMetadata, FileStorageDb } from '.';
 
 beforeEach(() => {
     // deterministic UUID generator for repeatable tests
@@ -61,7 +54,7 @@ afterEach(async () => {
     jest.restoreAllMocks();
 
     await new Promise((resolve, reject) => {
-        const request = indexedDB.deleteDatabase('pybricks.fileStorage');
+        const request = indexedDB.deleteDatabase('test');
         request.addEventListener('success', resolve);
         request.addEventListener('error', reject);
     });
@@ -87,8 +80,6 @@ async function setUpTestFile(saga: AsyncSaga): Promise<[FileMetadata, string]> {
         sha256: testFileContentsSha256,
     };
 
-    const emptyFile: FileMetadata = { ...testFile, sha256: emptyFileSha256 };
-
     saga.put(fileStorageOpen(testFilePath, 'w', true));
 
     const didOpen = await saga.take();
@@ -97,14 +88,9 @@ async function setUpTestFile(saga: AsyncSaga): Promise<[FileMetadata, string]> {
         fail(didOpen);
     }
 
-    await expect(saga.take()).resolves.toEqual(fileStorageDidAddItem(emptyFile));
-
     saga.put(fileStorageWrite(didOpen.fd, testFileContents));
 
     await expect(saga.take()).resolves.toEqual(fileStorageDidWrite(didOpen.fd));
-    await expect(saga.take()).resolves.toEqual(
-        fileStorageDidChangeItem(emptyFile, testFile),
-    );
 
     saga.put(fileStorageClose(didOpen.fd));
 
@@ -124,7 +110,9 @@ describe('initialize', () => {
         localStorage.setItem(oldProgramKey, oldProgramContents);
         expect(localStorage.getItem(oldProgramKey)).toBe(oldProgramContents);
 
-        const saga = new AsyncSaga(fileStorage);
+        const saga = new AsyncSaga(fileStorage, {
+            fileStorage: new FileStorageDb('test'),
+        });
 
         // initialization should remove the localStorage entry and add add it to
         // new storage backend
@@ -145,7 +133,9 @@ describe('initialize', () => {
             throw testError;
         });
 
-        const saga = new AsyncSaga(fileStorage);
+        const saga = new AsyncSaga(fileStorage, {
+            fileStorage: new FileStorageDb('test'),
+        });
 
         await expect(saga.take()).resolves.toEqual(
             fileStorageDidFailToInitialize(testError),
@@ -159,7 +149,7 @@ describe('open', () => {
     let saga: AsyncSaga;
 
     beforeEach(async () => {
-        saga = new AsyncSaga(fileStorage);
+        saga = new AsyncSaga(fileStorage, { fileStorage: new FileStorageDb('test') });
 
         await expect(saga.take()).resolves.toEqual(fileStorageDidInitialize([]));
     });
@@ -181,14 +171,6 @@ describe('open', () => {
 
             await expect(saga.take()).resolves.toEqual(
                 fileStorageDidOpen('test.file', 0 as FD),
-            );
-
-            await expect(saga.take()).resolves.toEqual(
-                fileStorageDidAddItem({
-                    uuid: uuid(0),
-                    path: 'test.file',
-                    sha256: emptyFileSha256,
-                }),
             );
         });
 
@@ -268,14 +250,6 @@ describe('open', () => {
             fileStorageDidOpen('test.file', 0 as FD),
         );
 
-        await expect(saga.take()).resolves.toEqual(
-            fileStorageDidAddItem({
-                uuid: uuid(0),
-                path: 'test.file',
-                sha256: emptyFileSha256,
-            }),
-        );
-
         saga.put(fileStorageClose(0 as FD));
 
         await expect(saga.take()).resolves.toEqual(fileStorageDidClose(0 as FD));
@@ -294,7 +268,7 @@ describe('read', () => {
     let saga: AsyncSaga;
 
     beforeEach(async () => {
-        saga = new AsyncSaga(fileStorage);
+        saga = new AsyncSaga(fileStorage, { fileStorage: new FileStorageDb('test') });
         await expect(saga.take()).resolves.toEqual(fileStorageDidInitialize([]));
     });
 
@@ -350,7 +324,7 @@ describe('write', () => {
     let saga: AsyncSaga;
 
     beforeEach(async () => {
-        saga = new AsyncSaga(fileStorage);
+        saga = new AsyncSaga(fileStorage, { fileStorage: new FileStorageDb('test') });
         await expect(saga.take()).resolves.toEqual(fileStorageDidInitialize([]));
     });
 
@@ -421,7 +395,7 @@ describe('readFile', () => {
     let saga: AsyncSaga;
 
     beforeEach(async () => {
-        saga = new AsyncSaga(fileStorage);
+        saga = new AsyncSaga(fileStorage, { fileStorage: new FileStorageDb('test') });
         await expect(saga.take()).resolves.toEqual(fileStorageDidInitialize([]));
 
         saga.put(fileStorageReadFile('test.file'));
@@ -488,7 +462,7 @@ describe('writeFile', () => {
     const contents = 'test write file contents';
 
     beforeEach(async () => {
-        saga = new AsyncSaga(fileStorage);
+        saga = new AsyncSaga(fileStorage, { fileStorage: new FileStorageDb('test') });
         await expect(saga.take()).resolves.toEqual(fileStorageDidInitialize([]));
 
         saga.put(fileStorageWriteFile('test.file', contents));
@@ -553,13 +527,12 @@ describe('writeFile', () => {
 
 describe('copyFile', () => {
     let saga: AsyncSaga;
-    let testFile: FileMetadata;
 
     beforeEach(async () => {
-        saga = new AsyncSaga(fileStorage);
+        saga = new AsyncSaga(fileStorage, { fileStorage: new FileStorageDb('test') });
 
         await expect(saga.take()).resolves.toEqual(fileStorageDidInitialize([]));
-        [testFile] = await setUpTestFile(saga);
+        await setUpTestFile(saga);
     });
 
     it('should fail if file does not exist', async () => {
@@ -612,10 +585,6 @@ describe('copyFile', () => {
         saga.put(fileStorageCopyFile('test.file', 'new.file'));
 
         await expect(saga.take()).resolves.toEqual(fileStorageDidCopyFile('test.file'));
-
-        await expect(saga.take()).resolves.toEqual(
-            fileStorageDidAddItem({ ...testFile, uuid: uuid(1), path: 'new.file' }),
-        );
     });
 
     afterEach(async () => {
@@ -625,13 +594,12 @@ describe('copyFile', () => {
 
 describe('deleteFile', () => {
     let saga: AsyncSaga;
-    let testFile: FileMetadata;
 
     beforeEach(async () => {
-        saga = new AsyncSaga(fileStorage);
+        saga = new AsyncSaga(fileStorage, { fileStorage: new FileStorageDb('test') });
 
         await expect(saga.take()).resolves.toEqual(fileStorageDidInitialize([]));
-        [testFile] = await setUpTestFile(saga);
+        await setUpTestFile(saga);
     });
 
     it('should fail if file does not exist', async () => {
@@ -667,8 +635,6 @@ describe('deleteFile', () => {
         await expect(saga.take()).resolves.toEqual(
             fileStorageDidDeleteFile('test.file'),
         );
-
-        await expect(saga.take()).resolves.toEqual(fileStorageDidRemoveItem(testFile));
     });
 
     afterEach(async () => {
@@ -682,7 +648,7 @@ describe('renameFile', () => {
     const newPath = 'new.file';
 
     beforeEach(async () => {
-        saga = new AsyncSaga(fileStorage);
+        saga = new AsyncSaga(fileStorage, { fileStorage: new FileStorageDb('test') });
 
         await expect(saga.take()).resolves.toEqual(fileStorageDidInitialize([]));
         [testFile] = await setUpTestFile(saga);
@@ -724,13 +690,6 @@ describe('renameFile', () => {
         await expect(saga.take()).resolves.toEqual(
             fileStorageDidOpen(newPath, 1 as FD),
         );
-        await expect(saga.take()).resolves.toEqual(
-            fileStorageDidAddItem({
-                uuid: uuid(1),
-                path: newPath,
-                sha256: emptyFileSha256,
-            }),
-        );
 
         saga.put(fileStorageRenameFile('test.file', newPath));
 
@@ -760,14 +719,8 @@ describe('renameFile', () => {
     it('should change file', async () => {
         saga.put(fileStorageRenameFile(testFile.path, newPath));
 
-        const newMetadata: FileMetadata = { ...testFile, path: newPath };
-
         await expect(saga.take()).resolves.toEqual(
             fileStorageDidRenameFile(testFile.path),
-        );
-
-        await expect(saga.take()).resolves.toEqual(
-            fileStorageDidChangeItem(testFile, newMetadata),
         );
     });
 
@@ -782,7 +735,7 @@ describe('dump all files', () => {
     let testFileContents: string;
 
     beforeEach(async () => {
-        saga = new AsyncSaga(fileStorage);
+        saga = new AsyncSaga(fileStorage, { fileStorage: new FileStorageDb('test') });
 
         await expect(saga.take()).resolves.toEqual(fileStorageDidInitialize([]));
         [testFile, testFileContents] = await setUpTestFile(saga);

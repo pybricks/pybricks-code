@@ -5,6 +5,7 @@ import { Button, Classes, Dialog } from '@blueprintjs/core';
 import { useI18n } from '@shopify/react-i18n';
 import React, { useCallback, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { useFileStorageMetadata } from '../../fileStorage/hooks';
 import {
     FileNameValidationResult,
     validateFileName,
@@ -24,11 +25,11 @@ const RenameFileDialog: React.VFC = () => {
     const [baseName, extension] = oldName.split(/(\.\w+)$/);
 
     const [newName, setNewName] = useState(baseName);
-    const files = useSelector((s) => s.explorer.files);
+    const files = useFileStorageMetadata() ?? [];
     const result = validateFileName(
         newName,
         extension,
-        files.map((f) => f.name),
+        files.map((f) => f.path),
     );
 
     const inputRef = useRef<HTMLInputElement>(null);

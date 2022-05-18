@@ -9,7 +9,7 @@ import ble from './ble/sagas';
 import editor from './editor/sagas';
 import errorLog from './error-log/sagas';
 import explorer from './explorer/sagas';
-import fileStorage from './fileStorage/sagas';
+import fileStorage, { FileStorageSageContext } from './fileStorage/sagas';
 import flashFirmware from './firmware/sagas';
 import hub from './hub/sagas';
 import lwp3BootloaderProtocol from './lwp3-bootloader/sagas';
@@ -44,5 +44,6 @@ export default function* (): Generator {
  */
 export type RootSagaContext = {
     nextMessageId: () => number;
-} & NotificationSagaContext &
+} & FileStorageSageContext &
+    NotificationSagaContext &
     TerminalSagaContext;

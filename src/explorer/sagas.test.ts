@@ -4,7 +4,7 @@
 import * as browserFsAccess from 'browser-fs-access';
 import { FileWithHandle } from 'browser-fs-access';
 import { mock } from 'jest-mock-extended';
-import { AsyncSaga, uuid } from '../../test';
+import { AsyncSaga } from '../../test';
 import {
     editorActivateFile,
     editorCloseFile,
@@ -23,7 +23,6 @@ import {
     fileStorageDidFailToDumpAllFiles,
     fileStorageDidFailToReadFile,
     fileStorageDidReadFile,
-    fileStorageDidRemoveItem,
     fileStorageDidWriteFile,
     fileStorageDumpAllFiles,
     fileStorageReadFile,
@@ -395,22 +394,6 @@ describe('handleExplorerDeleteFile', () => {
             explorerDidFailToDeleteFile(
                 testFile,
                 new DOMException('user canceled', 'AbortError'),
-            ),
-        );
-    });
-
-    it('should fail with AbortError if file was removed before user accept/cancel', async () => {
-        saga.put(
-            fileStorageDidRemoveItem({ path: testFile, uuid: uuid(0), sha256: '' }),
-        );
-
-        // should programmatically cancel the dialog
-        await expect(saga.take()).resolves.toEqual(deleteFileAlertDidCancel());
-
-        await expect(saga.take()).resolves.toEqual(
-            explorerDidFailToDeleteFile(
-                testFile,
-                new DOMException('file was removed', 'AbortError'),
             ),
         );
     });

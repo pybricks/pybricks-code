@@ -1,29 +1,24 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2022 The Pybricks Authors
 
-import Dexie, { Table } from 'dexie';
 import {
-    ICreateChange,
-    IDatabaseChange,
-    IDeleteChange,
-    IUpdateChange,
-} from 'dexie-observable/api';
-import 'dexie-observable';
-import { eventChannel } from 'redux-saga';
-import { call, fork, put, race, take, takeEvery } from 'typed-redux-saga/macro';
+    call,
+    fork,
+    getContext,
+    put,
+    race,
+    take,
+    takeEvery,
+} from 'typed-redux-saga/macro';
 import { defined, ensureError } from '../utils';
 import { sha256Digest } from '../utils/crypto';
 import { createCountFunc } from '../utils/iter';
 import {
     FD,
-    FileMetadata,
     FileOpenMode,
-    UUID,
     fileStorageClose,
     fileStorageCopyFile,
     fileStorageDeleteFile,
-    fileStorageDidAddItem,
-    fileStorageDidChangeItem,
     fileStorageDidClose,
     fileStorageDidCopyFile,
     fileStorageDidDeleteFile,
@@ -42,7 +37,6 @@ import {
     fileStorageDidOpen,
     fileStorageDidRead,
     fileStorageDidReadFile,
-    fileStorageDidRemoveItem,
     fileStorageDidRenameFile,
     fileStorageDidWrite,
     fileStorageDidWriteFile,
@@ -54,115 +48,18 @@ import {
     fileStorageWrite,
     fileStorageWriteFile,
 } from './actions';
+import { FileMetadata, FileStorageDb, UUID } from '.';
 
-// HACK: we have to redefine DatabaseChangeType since it is a const enum
-// https://ncjamieson.com/dont-export-const-enums
-const enum DatabaseChangeType {
-    Create = 1,
-    Update = 2,
-    Delete = 3,
-}
-
-/** Type discriminator for {@link ICreateChange} */
-function isCreateChange(change: IDatabaseChange): change is ICreateChange {
-    return change.type === Number(DatabaseChangeType.Create);
-}
-
-/** Type discriminator for {@link IUpdateChange} */
-function isUpdateChange(change: IDatabaseChange): change is IUpdateChange {
-    return change.type === Number(DatabaseChangeType.Update);
-}
-
-/** Type discriminator for {@link IDeleteChange} */
-function isDeleteChange(change: IDatabaseChange): change is IDeleteChange {
-    return change.type === Number(DatabaseChangeType.Delete);
-}
-
-/** Type discriminator for {@link ICreateChange} of {@link FileMetadata} */
-function isFileMetadataCreateChange(
-    change: ICreateChange,
-): change is Omit<ICreateChange, 'key' | 'obj'> & { key: string; obj: FileMetadata } {
-    return change.table === 'metadata';
-}
-
-/** Type discriminator for {@link IUpdateChange} of {@link FileMetadata} */
-function isFileMetadataUpdateChange(change: IUpdateChange): change is Omit<
-    IUpdateChange,
-    'key' | 'obj' | 'oldObj'
-> & {
-    key: string;
-    obj: FileMetadata;
-    oldObj: FileMetadata;
-} {
-    return change.table === 'metadata';
-}
-
-/** Type discriminator for {@link IDeleteChange} of {@link FileMetadata} */
-function isFileMetaDataDeleteChange(change: IDeleteChange): change is Omit<
-    IDeleteChange,
-    'key' | 'oldObj'
-> & {
-    key: string;
-    oldObj: FileMetadata;
-} {
-    return change.table === 'metadata';
-}
-
-/** Database contents table data type. */
-type FileContents = {
-    /** The path of the file in storage. */
-    path: string;
-    /** The contents of the file. */
-    contents: string;
-};
+export type FileStorageSageContext = { fileStorage: FileStorageDb };
 
 /** Map for keeping track of open file descriptors. */
 type OpenFdMap = Map<FD, { mode: FileOpenMode; uuid: UUID }>;
-
-class FileStorageDb extends Dexie {
-    metadata!: Table<FileMetadata, UUID>;
-    // NB: This table starts with an underscore to hide it from Dexie observable.
-    // In the future we may change this to use File Access API or some other
-    // storage, so we don't want to rely on the file contents being included
-    // with the metadata.
-    _contents!: Table<FileContents, string>;
-
-    constructor() {
-        super('pybricks.fileStorage');
-        this.version(1).stores({
-            metadata: '$$uuid, &path, sha256',
-            _contents: 'path, contents',
-        });
-    }
-}
 
 /**
  * Creates a namespaced lock name for the given path.
  */
 function lockNameForPath(path: string): string {
     return `pybricks.fileStorage:${path}`;
-}
-
-/**
- * Converts localForage change events to redux actions.
- * @param changes The list of changes from the 'changed' event.
- */
-function* handleFileStorageDidChange(changes: IDatabaseChange[]): Generator {
-    for (const change of changes) {
-        if (isCreateChange(change)) {
-            if (isFileMetadataCreateChange(change)) {
-                yield* put(fileStorageDidAddItem(change.obj));
-            }
-        } else if (isUpdateChange(change)) {
-            if (isFileMetadataUpdateChange(change)) {
-                yield* put(fileStorageDidChangeItem(change.oldObj, change.obj));
-            }
-        } else if (isDeleteChange(change)) {
-            if (isFileMetaDataDeleteChange(change)) {
-                yield* put(fileStorageDidRemoveItem(change.oldObj));
-            }
-        }
-    }
 }
 
 /**
@@ -706,7 +603,7 @@ function* initialize(): Generator {
     const defer = new Array<(...args: unknown[]) => unknown>();
 
     try {
-        const db = new FileStorageDb();
+        const db = yield* getContext<FileStorageDb>('fileStorage');
 
         // migrate from old storage
 
@@ -735,21 +632,11 @@ function* initialize(): Generator {
         yield* call(() => db.open());
         defer.push(() => db.close());
 
-        // wire storage observable to redux-sagas
-
-        const changesChan = eventChannel<IDatabaseChange[]>((emit) => {
-            db.on('changes').subscribe(emit);
-            return () => db.on('changes').unsubscribe(emit);
-        });
-
-        defer.push(() => changesChan.close());
-
         // subscribe to events
 
         const nextFd = createCountFunc() as () => FD;
         const openFds: OpenFdMap = new Map();
 
-        yield* takeEvery(changesChan, handleFileStorageDidChange);
         yield* takeEvery(fileStorageOpen, handleOpen, db, nextFd, openFds);
         yield* takeEvery(fileStorageClose, handleClose, openFds);
         yield* takeEvery(fileStorageRead, handleRead, db, openFds);

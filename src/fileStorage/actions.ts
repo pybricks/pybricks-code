@@ -2,29 +2,13 @@
 // Copyright (c) 2022 The Pybricks Authors
 
 import { createAction } from '../actions';
+import { FileMetadata } from '.';
 
 /** File open modes. */
 export type FileOpenMode = 'r' | 'w';
 
 /** Type to avoid mixing up file descriptor with number. */
 export type FD = number & { _fdBrand: undefined };
-
-/** Type to avoid mixing UUID with regular string. */
-export type UUID = string & { _uuidBrand: undefined };
-
-/**
- * Database metadata table data type.
- *
- * IMPORTANT: if this type is changed, we need to modify the database schema to match
- */
-export type FileMetadata = Readonly<{
-    /** A globally unique identifier that serves a a file handle. */
-    uuid: UUID;
-    /** The path of the file in storage. */
-    path: string;
-    /** The SHA256 hash of the file contents. */
-    sha256: string;
-}>;
 
 /**
  * Action that indicates that the storage backend is ready to use.
@@ -44,37 +28,6 @@ export const fileStorageDidInitialize = createAction(
 export const fileStorageDidFailToInitialize = createAction((error: Error) => ({
     type: 'fileStorage.action.didFailToInitialize',
     error,
-}));
-
-/**
- * Action that indicates that an item in the storage was created by us or in another tab.
- * @param file The file metadata.
- */
-export const fileStorageDidAddItem = createAction((file: FileMetadata) => ({
-    type: 'fileStorage.action.didAddItem',
-    file,
-}));
-
-/**
- * Action that indicates that an item in the storage was  changed by us or in another tab.
- * @param file The old file metadata.
- * @param file The file metadata.
- */
-export const fileStorageDidChangeItem = createAction(
-    (oldFile: FileMetadata, file: FileMetadata) => ({
-        type: 'fileStorage.action.didChangeItem',
-        oldFile,
-        file,
-    }),
-);
-
-/**
- * Action that indicates that an item in the storage was removed by us or in another tab.
- * @param file The file metadata.
- */
-export const fileStorageDidRemoveItem = createAction((file: FileMetadata) => ({
-    type: 'fileStorage.action.didRemoveItem',
-    file,
 }));
 
 /**

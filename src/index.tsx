@@ -12,6 +12,7 @@ import createSagaMiddleware from 'redux-saga';
 import './index.scss';
 import App from './app/App';
 import { appVersion } from './app/constants';
+import { db } from './fileStorage/context';
 import { i18nManager } from './i18n';
 import * as I18nToaster from './notifications/I18nToaster';
 import { rootReducer } from './reducers';
@@ -28,6 +29,7 @@ const sagaMiddleware = createSagaMiddleware<RootSagaContext>({
         nextMessageId: createCountFunc(),
         notification: { toaster },
         terminal: defaultTerminalContext,
+        fileStorage: db,
     },
 });
 

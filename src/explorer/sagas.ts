@@ -3,7 +3,7 @@
 
 import { fileOpen, fileSave } from 'browser-fs-access';
 import JSZip from 'jszip';
-import { call, put, race, select, take, takeEvery } from 'typed-redux-saga/macro';
+import { call, put, race, take, takeEvery } from 'typed-redux-saga/macro';
 import {
     editorActivateFile,
     editorCloseFile,
@@ -24,7 +24,6 @@ import {
     fileStorageDidFailToReadFile,
     fileStorageDidFailToWriteFile,
     fileStorageDidReadFile,
-    fileStorageDidRemoveItem,
     fileStorageDidWriteFile,
     fileStorageDumpAllFiles,
     fileStorageReadFile,
@@ -37,7 +36,6 @@ import {
     pythonFileMimeType,
     validateFileName,
 } from '../pybricksMicropython/lib';
-import { RootState } from '../reducers';
 import { defined, ensureError, timestamp } from '../utils';
 import {
     explorerActivateFile,
@@ -143,13 +141,8 @@ function* handleExplorerImportFiles(): Generator {
             const text = yield* call(() => file.text());
 
             const [baseName] = file.name.split(pythonFileExtensionRegex);
-            const existingFiles = yield* select((s: RootState) => s.explorer.files);
 
-            const result = validateFileName(
-                baseName,
-                pythonFileExtension,
-                existingFiles.map((f) => f.name),
-            );
+            const result = validateFileName(baseName, pythonFileExtension, []);
 
             if (result != FileNameValidationResult.IsOk) {
                 // TODO: validate file name and allow user to rename or skip
@@ -347,23 +340,13 @@ function* handleExplorerDeleteFile(action: ReturnType<typeof explorerDeleteFile>
     try {
         yield* put(deleteFileAlertShow(action.fileName));
 
-        const { didCancel, didRemove } = yield* race({
+        const { didCancel } = yield* race({
             didAccept: take(deleteFileAlertDidAccept),
             didCancel: take(deleteFileAlertDidCancel),
-            didRemove: take(
-                fileStorageDidRemoveItem.when((a) => a.file.path === action.fileName),
-            ),
         });
 
         if (didCancel) {
             throw new DOMException('user canceled', 'AbortError');
-        }
-
-        // automatically cancel the dialog, if the file was removed, e.g. it was
-        // deleted in a different window
-        if (didRemove) {
-            yield* put(deleteFileAlertDidCancel());
-            throw new DOMException('file was removed', 'AbortError');
         }
 
         // at this point we know the user accepted
