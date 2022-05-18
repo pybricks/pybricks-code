@@ -160,7 +160,7 @@ function* handleEditorActivateFile(
 
         const file = openFiles.get(action.fileName);
 
-        // istanbul ignore if: this should alway be available after editorDidOpenFile
+        // istanbul ignore if: this should always be available after editorDidOpenFile
         if (file === undefined) {
             throw new Error('bug: could not get file from openFiles');
         }
