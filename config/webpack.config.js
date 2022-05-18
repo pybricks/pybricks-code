@@ -337,6 +337,8 @@ module.exports = function (webpackEnv) {
           babelRuntimeEntry,
           babelRuntimeEntryHelpers,
           babelRuntimeRegenerator,
+          require.resolve('@babel/runtime/regenerator'),
+          require.resolve('@babel/runtime/helpers/esm/objectSpread2'),
         ]),
       ],
     },
