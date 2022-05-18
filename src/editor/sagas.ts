@@ -95,11 +95,18 @@ function* handleEditorOpenFile(
 
             defined(didRead);
 
-            const model = monaco.editor.createModel(
-                didRead.contents,
-                pybricksMicroPythonId,
-                monaco.Uri.from({ scheme: 'pybricksCode', path: action.fileName }),
-            );
+            const modelUri = monaco.Uri.from({
+                scheme: 'pybricksCode',
+                path: action.fileName,
+            });
+
+            const model =
+                monaco.editor.getModel(modelUri) ??
+                monaco.editor.createModel(
+                    didRead.contents,
+                    pybricksMicroPythonId,
+                    modelUri,
+                );
             defer.push(() => model.dispose());
 
             // TODO: get viewState from fileStorage
