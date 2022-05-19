@@ -2,9 +2,10 @@
 // Copyright (c) 2022 The Pybricks Authors
 
 import { monaco } from 'react-monaco-editor';
-import { eventChannel } from 'redux-saga';
+import { EventChannel, buffers, eventChannel } from 'redux-saga';
 import {
     SagaGenerator,
+    delay,
     fork,
     getContext,
     put,
@@ -18,6 +19,7 @@ import {
     fileStorageDidInitialize,
     fileStorageDidReadFile,
     fileStorageReadFile,
+    fileStorageWriteFile,
 } from '../fileStorage/actions';
 import { RootState } from '../reducers';
 import { defined, ensureError } from '../utils';
@@ -66,6 +68,24 @@ function* handleEditorGetValueRequest(
     yield* put(editorGetValueResponse(action.id, editor.getValue()));
 }
 
+/** Handle changes to the model. */
+function* handleModelDidChange(
+    ms: number,
+    chan: EventChannel<monaco.editor.IModelContentChangedEvent>,
+    model: monaco.editor.ITextModel,
+): Generator {
+    for (;;) {
+        yield* take(chan);
+        const value = model.getValue();
+        // when the model changes, save it to storage.
+        yield* put(fileStorageWriteFile(model.uri.fsPath, value));
+        // failures are ignored
+
+        // throttle the writes so we don't do it too often while user is typing quickly
+        yield* delay(ms);
+    }
+}
+
 function* handleEditorOpenFile(
     openFiles: OpenFileManager,
     action: ReturnType<typeof editorOpenFile>,
@@ -76,7 +96,12 @@ function* handleEditorOpenFile(
         const defer: Array<() => void> = [];
 
         try {
-            yield* put(fileStorageReadFile(action.fileName));
+            const modelUri = monaco.Uri.from({
+                scheme: 'pybricksCode',
+                path: action.fileName,
+            });
+
+            yield* put(fileStorageReadFile(modelUri.fsPath));
 
             const { didRead, didFailToRead } = yield* race({
                 didRead: take(
@@ -95,19 +120,26 @@ function* handleEditorOpenFile(
 
             defined(didRead);
 
-            const modelUri = monaco.Uri.from({
-                scheme: 'pybricksCode',
-                path: action.fileName,
-            });
-
-            const model =
-                monaco.editor.getModel(modelUri) ??
-                monaco.editor.createModel(
-                    didRead.contents,
-                    pybricksMicroPythonId,
-                    modelUri,
-                );
+            const model = monaco.editor.createModel(
+                didRead.contents,
+                pybricksMicroPythonId,
+                modelUri,
+            );
             defer.push(() => model.dispose());
+
+            // NB: the throttle effect doesn't work with event channels, so we
+            // emulate the effect by using a buffer with size of one here...
+            const didChangeModelChan =
+                eventChannel<monaco.editor.IModelContentChangedEvent>((emit) => {
+                    const subscription = model.onDidChangeContent((e) => emit(e));
+                    return () => subscription.dispose();
+                }, buffers.sliding(1));
+
+            defer.push(() => didChangeModelChan.close());
+
+            // ... and then fork to function that looks like
+            // https://github.com/redux-saga/redux-saga/issues/620#issuecomment-259161095
+            yield* fork(handleModelDidChange, 1000, didChangeModelChan, model);
 
             // TODO: get viewState from fileStorage
 

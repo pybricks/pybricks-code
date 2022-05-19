@@ -22,7 +22,6 @@ import xcodeTheme from 'monaco-themes/themes/Xcode_default.json';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useId } from 'react-aria';
 import MonacoEditor, {
-    ChangeHandler,
     EditorDidMount,
     EditorWillUnmount,
     monaco,
@@ -30,7 +29,6 @@ import MonacoEditor, {
 import { useDispatch } from 'react-redux';
 import { useTernaryDarkMode } from 'usehooks-ts';
 import { IDisposable } from 'xterm';
-import { fileStorageWriteFile } from '../fileStorage/actions';
 import { compile } from '../mpy/actions';
 import { useSelector } from '../reducers';
 import { useSettingIsShowDocsEnabled } from '../settings/hooks';
@@ -402,12 +400,6 @@ const Editor: React.VFC = () => {
         setEditor(undefined);
     }, [setEditor]);
 
-    const handleChange = useCallback<ChangeHandler>(
-        // REVISIT: need to ensure we have exclusive access to file
-        (v) => dispatch(fileStorageWriteFile('main.py', v)),
-        [dispatch],
-    );
-
     const popoverProps = useMemo<IOverlayLifecycleProps>(
         () => ({
             onOpened: (e) => {
@@ -447,7 +439,6 @@ const Editor: React.VFC = () => {
                         options={options}
                         editorDidMount={handleEditorDidMount}
                         editorWillUnmount={handleEditorWillUnmount}
-                        onChange={handleChange}
                     />
                 </ContextMenu2>
             </ResizeSensor2>
