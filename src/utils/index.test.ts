@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 
-import { assert, defined, ensureError, hex, maybe, timestamp } from '.';
+import { acquireLock, assert, defined, ensureError, hex, maybe, timestamp } from '.';
 
 test('assert', () => {
     const assertTrue = jest.fn(() => assert(true, 'should not throw'));
@@ -60,5 +60,95 @@ describe('timestamp', () => {
 
     it('should not contain letters', () => {
         expect(timestamp()).not.toMatch(/[A-Za-z]/);
+    });
+});
+
+describe('acquireLock', () => {
+    it.each([true, false])('should acquire lock when shared is %o', async () => {
+        const releaseLock = await acquireLock('test');
+        try {
+            expect(releaseLock).toBeDefined();
+        } finally {
+            await releaseLock?.();
+        }
+    });
+
+    it.each([true, false])(
+        'should fail to acquire exclusive second lock when first lock shared is %o',
+        async (shared) => {
+            const releaseLock = await acquireLock('test', shared);
+            try {
+                const releaseLock2 = await acquireLock('test');
+                try {
+                    expect(releaseLock2).toBeUndefined();
+                } finally {
+                    await releaseLock2?.();
+                }
+            } finally {
+                await releaseLock?.();
+            }
+        },
+    );
+
+    it('should acquire shared second lock when first lock is shared', async () => {
+        const releaseLock = await acquireLock('test', true);
+        try {
+            const releaseLock2 = await acquireLock('test', true);
+            try {
+                expect(releaseLock2).toBeDefined();
+            } finally {
+                await releaseLock2?.();
+            }
+        } finally {
+            await releaseLock?.();
+        }
+    });
+
+    it('should fail to acquire shared second lock when first lock is exclusive', async () => {
+        const releaseLock = await acquireLock('test');
+        try {
+            const releaseLock2 = await acquireLock('test', true);
+            try {
+                expect(releaseLock2).toBeUndefined();
+            } finally {
+                await releaseLock2?.();
+            }
+        } finally {
+            await releaseLock?.();
+        }
+    });
+
+    it('should acquire second lock when first lock is released', async () => {
+        const releaseLock = await acquireLock('test');
+        try {
+            expect(releaseLock).toBeDefined();
+        } finally {
+            await releaseLock?.();
+        }
+
+        const releaseLock2 = await acquireLock('test');
+        try {
+            expect(releaseLock2).toBeDefined();
+        } finally {
+            await releaseLock2?.();
+        }
+    });
+
+    it('should fail to acquire second lock when first lock is released but release is not awaited', async () => {
+        const releaseLock = await acquireLock('test');
+        try {
+            expect(releaseLock).toBeDefined();
+            // not awaited!
+            releaseLock?.();
+
+            const releaseLock2 = await acquireLock('test');
+            try {
+                expect(releaseLock2).toBeUndefined();
+            } finally {
+                await releaseLock2?.();
+            }
+        } finally {
+            await releaseLock?.();
+        }
     });
 });

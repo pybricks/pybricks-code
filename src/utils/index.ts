@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2021 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 
 /**
  * Asserts that an assumption is true. This is used to detect programmer errors
@@ -74,4 +74,59 @@ export function timestamp(): string {
         .replace('T', '_')
         .replaceAll(':', '-')
         .replace(/\..*$/, '');
+}
+
+/**
+ * Helper function to wrap navigator.locks in a promise so that it can be used
+ * in code where using it natively doesn't work well (e.g. in sagas). Care must
+ * be taken so that all code paths (including exceptions) release the lock.
+ *
+ * To release the lock, await the returned release function. When the release
+ * function resolves, the lock will no longer be held.
+ *
+ * @param name The name of the lock.
+ * @param shared If true, the lock will be share (e.g. for reading), otherwise
+ * the lock will be exclusive (e.g. for writing).
+ * @returns A release function if the lock was acquired or nothing if the lock
+ * was already held exclusively by someone else.
+ */
+export async function acquireLock(
+    name: string,
+    shared?: boolean,
+): Promise<(() => Promise<void>) | void> {
+    let lockWaiter: Promise<void>;
+
+    const release = await new Promise<(() => void) | void>((resolve, reject) => {
+        lockWaiter = navigator.locks
+            .request(
+                name,
+                {
+                    ifAvailable: true,
+                    mode: shared ? 'shared' : 'exclusive',
+                },
+                (lock) => {
+                    // if the locks is already held, lock will be null here
+                    if (lock === null) {
+                        resolve();
+                        return;
+                    }
+
+                    // Now we own the lock and it will be held until the returned
+                    // promise is resolved.
+                    return new Promise<void>((resolve2) => resolve(resolve2));
+                },
+            )
+            .catch(reject);
+    });
+
+    if (!release) {
+        return;
+    }
+
+    return async () => {
+        // trigger the release
+        release();
+        // then wait until the release is complete and the lock is no longer held
+        await lockWaiter;
+    };
 }

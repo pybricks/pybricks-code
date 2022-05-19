@@ -10,7 +10,7 @@ import {
     take,
     takeEvery,
 } from 'typed-redux-saga/macro';
-import { defined, ensureError } from '../utils';
+import { acquireLock, defined, ensureError } from '../utils';
 import { sha256Digest } from '../utils/crypto';
 import { createCountFunc } from '../utils/iter';
 import {
@@ -77,36 +77,12 @@ function* handleOpen(
 ): Generator {
     try {
         const fd = nextFd();
-        let lockWaiter: Promise<void>;
 
-        const close = yield* call(
-            () =>
-                new Promise<(() => void) | void>((resolve, reject) => {
-                    lockWaiter = navigator.locks
-                        .request(
-                            lockNameForPath(action.path),
-                            {
-                                ifAvailable: true,
-                                mode: action.mode === 'w' ? 'exclusive' : 'shared',
-                            },
-                            (lock) => {
-                                if (lock === null) {
-                                    resolve();
-                                    return;
-                                }
-
-                                // capture a promise new resolve function that will be used
-                                // to release the lock later
-                                return new Promise<void>((resolve2) =>
-                                    resolve(resolve2),
-                                );
-                            },
-                        )
-                        .catch(reject);
-                }),
+        const releaseLock = yield* call(() =>
+            acquireLock(lockNameForPath(action.path), action.mode !== 'w'),
         );
 
-        if (!close) {
+        if (!releaseLock) {
             throw new Error(`file '${action.path}' is already in use`);
         }
 
@@ -162,10 +138,9 @@ function* handleOpen(
             isCloseExplicitlyRequested = true;
         } finally {
             openFds.delete(fd);
-            close();
 
             // this ensures that the lock is released before we send the action
-            yield* call(() => lockWaiter);
+            yield* call(() => releaseLock());
 
             // Post fileStorageDidClose only if fileStorageClose was received.
             // If the task is canceled or fails, we don't want this extra action.
