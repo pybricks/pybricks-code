@@ -16,7 +16,11 @@ const hasJsxRuntime = (() => {
 })();
 
 module.exports = babelJest.createTransformer({
-  plugins: ['@shopify/react-i18n/babel'],
+  plugins: [
+    ['@babel/plugin-transform-typescript', {
+      allowDeclareFields: true
+    }], 
+    '@shopify/react-i18n/babel'],
   presets: [
     [
       require.resolve('babel-preset-react-app'),

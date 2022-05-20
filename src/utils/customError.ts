@@ -2,6 +2,8 @@
 // Copyright (c) 2022 The Pybricks Authors
 
 export class CustomError<T extends string> extends Error {
+    declare name: T;
+
     public constructor(name: T, message: string, cause?: Error) {
         super(message, { cause });
         this.name = name;

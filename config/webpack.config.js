@@ -427,6 +427,9 @@ module.exports = function (webpackEnv) {
                 ],
                 
                 plugins: [
+                  [require.resolve('@babel/plugin-transform-typescript'), {
+                    allowDeclareFields: true
+                  }], 
                   require.resolve('@shopify/react-i18n/babel'),
                   isEnvDevelopment &&
                     shouldUseReactRefresh &&
