@@ -3,7 +3,6 @@
 
 import { Menu, MenuDivider, MenuItem, ResizeSensor } from '@blueprintjs/core';
 import { ContextMenu2, ContextMenu2ContentProps } from '@blueprintjs/popover2';
-import { useI18n } from '@shopify/react-i18n';
 import React, { useContext, useEffect, useMemo, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { useTernaryDarkMode } from 'usehooks-ts';
@@ -12,7 +11,7 @@ import { FitAddon } from 'xterm-addon-fit';
 import { isMacOS } from '../utils/os';
 import { TerminalContext } from './TerminalContext';
 import { receiveData } from './actions';
-import { I18nId } from './i18n';
+import { I18nId, useI18n } from './i18n';
 
 import 'xterm/css/xterm.css';
 
@@ -54,8 +53,7 @@ function createContextMenu(
     xterm: XTerm,
 ): (props: ContextMenu2ContentProps) => JSX.Element {
     const contextMenu = (_props: ContextMenu2ContentProps): JSX.Element => {
-        // istanbul ignore next: babel-loader rewrites this line
-        const [i18n] = useI18n();
+        const i18n = useI18n();
 
         return (
             <Menu>

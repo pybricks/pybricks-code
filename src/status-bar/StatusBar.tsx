@@ -3,11 +3,10 @@
 
 import { Button, Intent, ProgressBar } from '@blueprintjs/core';
 import { Classes as Classes2, Popover2, Popover2Props } from '@blueprintjs/popover2';
-import { I18n, useI18n } from '@shopify/react-i18n';
 import React from 'react';
 import { BleConnectionState } from '../ble/reducers';
 import { useSelector } from '../reducers';
-import { I18nId } from './i18n';
+import { I18nId, useI18n } from './i18n';
 
 import './status-bar.scss';
 
@@ -16,12 +15,8 @@ const commonPopoverProps: Partial<Popover2Props> = {
     placement: 'top',
 };
 
-type HubInfoButtonProps = {
-    /** Translation context. */
-    i18n: I18n;
-};
-
-const HubInfoButton: React.VoidFunctionComponent<HubInfoButtonProps> = ({ i18n }) => {
+const HubInfoButton: React.VoidFunctionComponent = () => {
+    const i18n = useI18n();
     const deviceName = useSelector((s) => s.ble.deviceName);
     const deviceType = useSelector((s) => s.ble.deviceType);
     const deviceFirmwareVersion = useSelector((s) => s.ble.deviceFirmwareVersion);
@@ -65,14 +60,8 @@ const HubInfoButton: React.VoidFunctionComponent<HubInfoButtonProps> = ({ i18n }
     );
 };
 
-type BatteryIndicatorProps = {
-    /** Translation context. */
-    i18n: I18n;
-};
-
-const BatteryIndicator: React.VoidFunctionComponent<BatteryIndicatorProps> = ({
-    i18n,
-}) => {
+const BatteryIndicator: React.VoidFunctionComponent = () => {
+    const i18n = useI18n();
     const charging = useSelector((s) => s.ble.deviceBatteryCharging);
     const lowBatteryWarning = useSelector((s) => s.ble.deviceLowBatteryWarning);
 
@@ -106,17 +95,14 @@ const BatteryIndicator: React.VoidFunctionComponent<BatteryIndicatorProps> = ({
 };
 
 const StatusBar: React.VFC = (_props) => {
-    // istanbul ignore next: babel-loader rewrites this line
-    const [i18n] = useI18n();
-
     const connection = useSelector((s) => s.ble.connection);
 
     return (
         <div className="pb-status-bar" role="status" aria-live="off">
             {connection === BleConnectionState.Connected && (
                 <>
-                    <HubInfoButton i18n={i18n} />
-                    <BatteryIndicator i18n={i18n} />
+                    <HubInfoButton />
+                    <BatteryIndicator />
                 </>
             )}
         </div>

@@ -5,7 +5,6 @@
 
 import { AnchorButton, Button, Classes, Dialog } from '@blueprintjs/core';
 import { firmwareVersion } from '@pybricks/firmware';
-import { useI18n } from '@shopify/react-i18n';
 import React, { useState } from 'react';
 import {
     appName,
@@ -17,7 +16,7 @@ import {
 } from '../app/constants';
 import LicenseDialog from '../licenses/LicenseDialog';
 import ExternalLinkIcon from '../utils/ExternalLinkIcon';
-import { I18nId } from './i18n';
+import { I18nId, useI18n } from './i18n';
 
 import './about.scss';
 
@@ -29,8 +28,7 @@ const AboutDialog: React.VoidFunctionComponent<AboutDialogProps> = ({
 }) => {
     const [isLicenseDialogOpen, setIsLicenseDialogOpen] = useState(false);
 
-    // istanbul ignore next: babel-loader rewrites this line
-    const [i18n] = useI18n();
+    const i18n = useI18n();
 
     return (
         <Dialog

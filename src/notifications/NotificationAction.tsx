@@ -3,9 +3,9 @@
 
 // provides translation for notification text
 
-import { Replacements, useI18n } from '@shopify/react-i18n';
+import { Replacements } from '@shopify/react-i18n';
 import React from 'react';
-import { I18nId } from './i18n';
+import { I18nId, useI18n } from './i18n';
 
 type NotificationActionProps = {
     messageId: I18nId;
@@ -16,8 +16,7 @@ const NotificationAction: React.VoidFunctionComponent<NotificationActionProps> =
     messageId,
     replacements,
 }) => {
-    // istanbul ignore next: babel-loader rewrites this line
-    const [i18n] = useI18n();
+    const i18n = useI18n();
 
     return <>{i18n.translate(messageId, replacements)}</>;
 };

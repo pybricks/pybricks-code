@@ -2,18 +2,16 @@
 // Copyright (c) 2022 The Pybricks Authors
 
 import { Alert, Classes, Intent } from '@blueprintjs/core';
-import { useI18n } from '@shopify/react-i18n';
 import React, { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from '../../reducers';
 import { deleteFileAlertDidAccept, deleteFileAlertDidCancel } from './actions';
-import { I18nId } from './i18n';
+import { I18nId, useI18n } from './i18n';
 
 const DeleteFileAlert: React.VoidFunctionComponent = () => {
     const { isOpen, fileName } = useSelector((s) => s.explorer.deleteFileAlert);
     const dispatch = useDispatch();
-    // istanbul ignore next: babel rewrites this line
-    const [i18n] = useI18n();
+    const i18n = useI18n();
 
     // a11y: focus primary button when dialog is opened
     const handleOpened = useCallback((node: HTMLElement) => {

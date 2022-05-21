@@ -1,14 +1,13 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2022 The Pybricks Authors
 
-import { useI18n } from '@shopify/react-i18n';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { downloadAndRun } from '../../../hub/actions';
 import { HubRuntimeState } from '../../../hub/reducers';
 import { useSelector } from '../../../reducers';
 import ActionButton, { ActionButtonProps } from '../../ActionButton';
-import { I18nId } from './i18n';
+import { I18nId, useI18n } from './i18n';
 import icon from './icon.svg';
 
 type RunButtonProps = Pick<ActionButtonProps, 'id'>;
@@ -19,8 +18,7 @@ const RunButton: React.VoidFunctionComponent<RunButtonProps> = ({ id }) => {
     const isEditorReady = useSelector((s) => s.editor.isReady);
     const keyboardShortcut = 'F5';
 
-    // istanbul ignore next: babel-loader rewrites this line
-    const [i18n] = useI18n();
+    const i18n = useI18n();
     const dispatch = useDispatch();
 
     return (

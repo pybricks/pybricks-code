@@ -3,12 +3,11 @@
 
 import './activities.scss';
 import { Icon, Tab, Tabs } from '@blueprintjs/core';
-import { useI18n } from '@shopify/react-i18n';
 import React, { useCallback, useEffect, useRef } from 'react';
 import { useLocalStorage } from 'usehooks-ts';
 import Explorer from '../explorer/Explorer';
 import Settings from '../settings/Settings';
-import { I18nId } from './i18n';
+import { I18nId, useI18n } from './i18n';
 
 /** Indicates the selected activity. */
 export enum Activity {
@@ -24,8 +23,7 @@ export enum Activity {
  * React component that acts as a tab control to select activities.
  */
 const Activities: React.VoidFunctionComponent = () => {
-    // istanbul ignore next: babel-loader rewrites this line
-    const [i18n] = useI18n();
+    const i18n = useI18n();
 
     const [selectedActivity, setSelectedActivity] = useLocalStorage(
         'activities.selectedActivity',

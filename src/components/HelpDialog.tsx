@@ -8,7 +8,6 @@ import {
     POPOVER_ARROW_SVG_SIZE,
     Popover2Arrow,
 } from '@blueprintjs/popover2/lib/cjs/popover2Arrow';
-import { useI18n } from '@shopify/react-i18n';
 import classNames from 'classnames';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
@@ -21,7 +20,7 @@ import {
     useOverlay,
 } from 'react-aria';
 import { usePopper } from 'react-popper';
-import { I18nId } from './i18n';
+import { I18nId, useI18n } from './i18n';
 
 type HelpDialogProps = {
     /** The title of the dialog. */
@@ -45,8 +44,7 @@ const HelpDialog: React.FunctionComponent<HelpDialogProps> = ({
     onAnimationEnd,
     children,
 }) => {
-    // istanbul ignore next: babel-loader rewrites this line
-    const [i18n] = useI18n();
+    const i18n = useI18n();
 
     // this is the dialog element and the popper element
     const ref = useRef<HTMLDivElement>(null);

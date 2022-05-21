@@ -2,16 +2,13 @@
 // Copyright (c) 2022 The Pybricks Authors
 
 import { Classes, FormGroup, InputGroup, Intent, Tag } from '@blueprintjs/core';
-import { I18n, useI18n } from '@shopify/react-i18n';
 import React from 'react';
 import { FileNameValidationResult } from '../../pybricksMicropython/lib';
-import { I18nId } from './i18n';
+import { I18nId, useI18n } from './i18n';
 
 type FileNameHelpTextProps = {
     /** The result of the file name validation. */
     validation: FileNameValidationResult;
-    /** Translation context. */
-    i18n: I18n;
 };
 
 /**
@@ -19,8 +16,9 @@ type FileNameHelpTextProps = {
  */
 const FileNameHelpText: React.VoidFunctionComponent<FileNameHelpTextProps> = ({
     validation,
-    i18n,
 }) => {
+    const i18n = useI18n();
+
     switch (validation) {
         case FileNameValidationResult.IsOk:
             return <>{i18n.translate(I18nId.HelpTextIsOk)}</>;
@@ -78,8 +76,7 @@ const FileNameFormGroup: React.VoidFunctionComponent<FileNameFormGroupProps> = (
     inputRef,
     onChange,
 }) => {
-    // istanbul ignore next: babel-loader rewrites this line
-    const [i18n] = useI18n();
+    const i18n = useI18n();
 
     const fileNameIntent =
         validationResult === FileNameValidationResult.IsOk
@@ -90,7 +87,7 @@ const FileNameFormGroup: React.VoidFunctionComponent<FileNameFormGroupProps> = (
         <FormGroup
             label={i18n.translate(I18nId.Label)}
             intent={fileNameIntent}
-            subLabel={<FileNameHelpText validation={validationResult} i18n={i18n} />}
+            subLabel={<FileNameHelpText validation={validationResult} />}
         >
             <InputGroup
                 aria-label="File name"

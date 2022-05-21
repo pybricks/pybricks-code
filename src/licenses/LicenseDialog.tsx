@@ -11,7 +11,6 @@ import {
     NonIdealState,
     Spinner,
 } from '@blueprintjs/core';
-import { I18n, useI18n } from '@shopify/react-i18n';
 import React, { useCallback, useMemo, useState } from 'react';
 import {
     ControlledTreeEnvironment,
@@ -23,7 +22,7 @@ import {
 import { useFetch } from 'usehooks-ts';
 import { appName } from '../app/constants';
 import { TreeItemData, renderers } from '../utils/tree-renderer';
-import { I18nId } from './i18n';
+import { I18nId, useI18n } from './i18n';
 
 import './license.scss';
 
@@ -40,14 +39,12 @@ type LicenseList = ReadonlyArray<LicenseInfo>;
 type LicenseListPanelProps = {
     /** Called when item is clicked. */
     onItemClick(info?: LicenseInfo): void;
-    /** Translation context. */
-    i18n: I18n;
 };
 
 const LicenseListPanel: React.VoidFunctionComponent<LicenseListPanelProps> = ({
     onItemClick,
-    i18n,
 }) => {
+    const i18n = useI18n();
     const { data, error } = useFetch<LicenseList>('static/oss-licenses.json');
     const [focusedItem, setFocusedItem] = useState<TreeItemIndex>();
     const [activeItem, setActiveItem] = useState<TreeItemIndex>();
@@ -124,12 +121,12 @@ const LicenseListPanel: React.VoidFunctionComponent<LicenseListPanelProps> = ({
 type LicenseInfoPanelProps = {
     /** The license info to show or undefined if no license info is selected. */
     licenseInfo: LicenseInfo | undefined;
-    /** Translation context. */
-    i18n: I18n;
 };
 
 const LicenseInfoPanel = React.forwardRef<HTMLDivElement, LicenseInfoPanelProps>(
-    ({ licenseInfo, i18n }, ref) => {
+    ({ licenseInfo }, ref) => {
+        const i18n = useI18n();
+
         return (
             <div className="pb-license-info" ref={ref}>
                 {licenseInfo === undefined ? (
@@ -182,9 +179,7 @@ const LicenseDialog: React.VoidFunctionComponent<LicenseDialogProps> = ({
 }) => {
     const [licenseInfo, setLicenseInfo] = useState<LicenseInfo | undefined>(undefined);
     const infoDiv = React.useRef<HTMLDivElement>(null);
-
-    // istanbul ignore next: babel-loader rewrites this line
-    const [i18n] = useI18n();
+    const i18n = useI18n();
 
     return (
         <Dialog
@@ -205,13 +200,8 @@ const LicenseDialog: React.VoidFunctionComponent<LicenseDialogProps> = ({
                             infoDiv.current?.scrollTo(0, 0);
                             setLicenseInfo(info);
                         }}
-                        i18n={i18n}
                     />
-                    <LicenseInfoPanel
-                        licenseInfo={licenseInfo}
-                        ref={infoDiv}
-                        i18n={i18n}
-                    />
+                    <LicenseInfoPanel licenseInfo={licenseInfo} ref={infoDiv} />
                 </Callout>
             </div>
         </Dialog>

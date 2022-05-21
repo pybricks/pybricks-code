@@ -2,10 +2,9 @@
 // Copyright (c) 2022 The Pybricks Authors
 
 import { Intent } from '@blueprintjs/core';
-import { useI18n } from '@shopify/react-i18n';
 import React from 'react';
 import { CreateToast } from '../../i18nToaster';
-import { I18nId } from './i18n';
+import { I18nId, useI18n } from './i18n';
 
 type FileInUseAlertProps = {
     fileName: string;
@@ -14,8 +13,7 @@ type FileInUseAlertProps = {
 const FileInUseAlert: React.VoidFunctionComponent<FileInUseAlertProps> = ({
     fileName,
 }) => {
-    // istanbul ignore next: babel-loader rewrites this line
-    const [i18n] = useI18n();
+    const i18n = useI18n();
     return <>{i18n.translate(I18nId.FileInUseMessage, { fileName })}</>;
 };
 

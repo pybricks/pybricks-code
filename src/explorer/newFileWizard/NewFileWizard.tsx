@@ -9,7 +9,6 @@ import {
     Radio,
     RadioGroup,
 } from '@blueprintjs/core';
-import { useI18n } from '@shopify/react-i18n';
 import React, { useCallback, useRef, useState } from 'react';
 import { useId } from 'react-aria';
 import { useDispatch } from 'react-redux';
@@ -22,14 +21,13 @@ import {
 import { useSelector } from '../../reducers';
 import FileNameFormGroup from '../fileNameFormGroup/FileNameFormGroup';
 import { Hub, newFileWizardDidAccept, newFileWizardDidCancel } from './actions';
-import { I18nId } from './i18n';
+import { I18nId, useI18n } from './i18n';
 
 // This should be set to the most commonly used hub.
 const defaultHub = Hub.Technic;
 
 const NewFileWizard: React.VoidFunctionComponent = () => {
-    // istanbul ignore next: babel-loader rewrites this line
-    const [i18n] = useI18n();
+    const i18n = useI18n();
     const dispatch = useDispatch();
 
     const isOpen = useSelector((s) => s.explorer.newFileWizard.isOpen);

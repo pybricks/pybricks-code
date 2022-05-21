@@ -12,7 +12,6 @@ import {
     Label,
     Switch,
 } from '@blueprintjs/core';
-import { useI18n } from '@shopify/react-i18n';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useTernaryDarkMode } from 'usehooks-ts';
@@ -36,7 +35,7 @@ import {
     useSettingHubName,
     useSettingIsShowDocsEnabled,
 } from './hooks';
-import { I18nId } from './i18n';
+import { I18nId, useI18n } from './i18n';
 import './settings.scss';
 
 const Settings: React.VoidFunctionComponent = () => {
@@ -61,8 +60,7 @@ const Settings: React.VoidFunctionComponent = () => {
 
     const dispatch = useDispatch();
 
-    // istanbul ignore next: babel-loader rewrites this line
-    const [i18n] = useI18n();
+    const i18n = useI18n();
 
     return (
         <div className="pb-settings">

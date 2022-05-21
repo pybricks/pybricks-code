@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2022 The Pybricks Authors
 
-import { useI18n } from '@shopify/react-i18n';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { toggleBluetooth } from '../../../ble/actions';
@@ -11,7 +10,7 @@ import { useSelector } from '../../../reducers';
 import ActionButton, { ActionButtonProps } from '../../ActionButton';
 import connectedIcon from './connected.svg';
 import disconnectedIcon from './disconnected.svg';
-import { I18nId } from './i18n';
+import { I18nId, useI18n } from './i18n';
 
 type BluetoothButtonProps = Pick<ActionButtonProps, 'id'>;
 
@@ -23,8 +22,7 @@ const BluetoothButton: React.VoidFunctionComponent<BluetoothButtonProps> = ({ id
         bootloaderConnection === BootloaderConnectionState.Disconnected &&
         bleConnection === BleConnectionState.Disconnected;
 
-    // istanbul ignore next: babel-loader rewrites this line
-    const [i18n] = useI18n();
+    const i18n = useI18n();
     const dispatch = useDispatch();
 
     return (

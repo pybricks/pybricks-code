@@ -16,7 +16,6 @@ import {
     Text,
 } from '@blueprintjs/core';
 import { ContextMenu2, ResizeSensor2 } from '@blueprintjs/popover2';
-import { I18n, useI18n } from '@shopify/react-i18n';
 import tomorrowNightEightiesTheme from 'monaco-themes/themes/Tomorrow-Night-Eighties.json';
 import xcodeTheme from 'monaco-themes/themes/Xcode_default.json';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
@@ -34,7 +33,7 @@ import { useSelector } from '../reducers';
 import { useSettingIsShowDocsEnabled } from '../settings/hooks';
 import { isMacOS } from '../utils/os';
 import { editorActivateFile, editorCloseFile } from './actions';
-import { I18nId } from './i18n';
+import { I18nId, useI18n } from './i18n';
 import * as pybricksMicroPython from './pybricksMicroPython';
 import { pybricksMicroPythonId } from './pybricksMicroPython';
 import { UntitledHintContribution } from './untitledHint';
@@ -114,14 +113,12 @@ const EditorContextMenuItem: React.VoidFunctionComponent<
 type EditorContextMenuProps = {
     /** The editor. */
     editor: monaco.editor.IStandaloneCodeEditor | undefined;
-    /** Translation context. */
-    i18n: I18n;
 };
 
 const EditorContextMenu: React.VoidFunctionComponent<EditorContextMenuProps> = ({
     editor,
-    i18n,
 }) => {
+    const i18n = useI18n();
     const selection = editor?.getSelection();
     const hasSelection = selection && !selection.isEmpty();
 
@@ -179,17 +176,13 @@ const EditorContextMenu: React.VoidFunctionComponent<EditorContextMenuProps> = (
 type EditorTabsProps = Readonly<{
     /** Called when the selected tab changes. */
     onChange?: () => void;
-    /** Translation context. */
-    i18n: I18n;
 }>;
 
-const EditorTabs: React.VoidFunctionComponent<EditorTabsProps> = ({
-    onChange,
-    i18n,
-}) => {
+const EditorTabs: React.VoidFunctionComponent<EditorTabsProps> = ({ onChange }) => {
     const openFiles = useSelector((s) => s.editor.openFiles);
     const activeFile = useSelector((s) => s.editor.activeFile);
     const dispatch = useDispatch();
+    const i18n = useI18n();
 
     const handleChange = useCallback(
         (newTabId: TabId) => {
@@ -301,8 +294,7 @@ const Editor: React.VFC = () => {
     const { toggleIsSettingShowDocsEnabled } = useSettingIsShowDocsEnabled();
     const { isDarkMode } = useTernaryDarkMode();
 
-    // istanbul ignore next: babel-loader rewrites this line
-    const [i18n] = useI18n();
+    const i18n = useI18n();
 
     const options = useMemo<monaco.editor.IStandaloneEditorConstructionOptions>(
         () => ({
@@ -423,7 +415,7 @@ const Editor: React.VFC = () => {
 
     return (
         <div className="pb-editor">
-            <EditorTabs onChange={() => editor?.focus()} i18n={i18n} />
+            <EditorTabs onChange={() => editor?.focus()} />
             <ResizeSensor2 onResize={() => editor?.layout()}>
                 <ContextMenu2
                     className="pb-editor-tabpanel"
@@ -431,7 +423,7 @@ const Editor: React.VFC = () => {
                     // NB: we have to create a new context menu each time it is
                     // shown in order to get some state, like canUndo and canRedo
                     // that don't have events to monitor changes.
-                    content={() => <EditorContextMenu editor={editor} i18n={i18n} />}
+                    content={() => <EditorContextMenu editor={editor} />}
                     popoverProps={popoverProps}
                 >
                     <MonacoEditor

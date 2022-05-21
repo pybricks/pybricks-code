@@ -2,7 +2,6 @@
 // Copyright (c) 2022 The Pybricks Authors
 
 import { Button, Classes, Dialog } from '@blueprintjs/core';
-import { useI18n } from '@shopify/react-i18n';
 import React, { useCallback, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useFileStorageMetadata } from '../../fileStorage/hooks';
@@ -13,11 +12,10 @@ import {
 import { useSelector } from '../../reducers';
 import FileNameFormGroup from '../fileNameFormGroup/FileNameFormGroup';
 import { duplicateFileDialogDidAccept, duplicateFileDialogDidCancel } from './actions';
-import { I18nId } from './i18n';
+import { I18nId, useI18n } from './i18n';
 
 const DuplicateFileDialog: React.VFC = () => {
-    // istanbul ignore next: babel-loader rewrites this line
-    const [i18n] = useI18n();
+    const i18n = useI18n();
     const dispatch = useDispatch();
     const isOpen = useSelector((s) => s.explorer.duplicateFileDialog.isOpen);
     const oldName = useSelector((s) => s.explorer.duplicateFileDialog.fileName);

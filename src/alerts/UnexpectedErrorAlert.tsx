@@ -3,11 +3,10 @@
 
 import './UnexpectedErrorAlert.scss';
 import { AnchorButton, Button, ButtonGroup, Collapse, Intent } from '@blueprintjs/core';
-import { useI18n } from '@shopify/react-i18n';
 import React, { useState } from 'react';
 import { useId } from 'react-aria';
 import { CreateToast } from '../i18nToaster';
-import { I18nId } from './i18n';
+import { I18nId, useI18n } from './i18n';
 
 type UnexpectedErrorAlertProps = {
     error: Error;
@@ -16,8 +15,7 @@ type UnexpectedErrorAlertProps = {
 const UnexpectedErrorAlert: React.VoidFunctionComponent<UnexpectedErrorAlertProps> = ({
     error,
 }) => {
-    // istanbul ignore next: babel-loader rewrites this line
-    const [i18n] = useI18n();
+    const i18n = useI18n();
     const [isExpanded, setIsExpanded] = useState(false);
     const labelId = useId();
 

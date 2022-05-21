@@ -12,7 +12,6 @@ import {
     IconName,
     useHotkeys,
 } from '@blueprintjs/core';
-import { I18n, useI18n } from '@shopify/react-i18n';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useId } from 'react-aria';
 import {
@@ -41,7 +40,7 @@ import {
 } from './actions';
 import DeleteFileAlert from './deleteFileAlert/DeleteFileAlert';
 import DuplicateFileDialog from './duplicateFileDialog/DuplicateFileDialog';
-import { I18nId } from './i18n';
+import { I18nId, useI18n } from './i18n';
 import NewFileWizard from './newFileWizard/NewFileWizard';
 
 type ActionButtonProps = {
@@ -91,14 +90,12 @@ type FileTreeItem = TreeItem<FileTreeItemData>;
 type ActionButtonGroupProps = {
     /** The name of the file (displayed to user) */
     item: TreeItem;
-    /** Translation context. */
-    i18n: I18n;
 };
 
 const FileActionButtonGroup: React.VoidFunctionComponent<ActionButtonGroupProps> = ({
     item,
-    i18n,
 }) => {
+    const i18n = useI18n();
     const dispatch = useDispatch();
     const environment = useTreeEnvironment();
 
@@ -145,16 +142,12 @@ const FileActionButtonGroup: React.VoidFunctionComponent<ActionButtonGroupProps>
     );
 };
 
-type HeaderProps = {
-    /** Translation context. */
-    i18n: I18n;
-};
-
-const Header: React.VoidFunctionComponent<HeaderProps> = ({ i18n }) => {
+const Header: React.VoidFunctionComponent = () => {
     const archiveButtonId = useId();
     const exportButtonId = useId();
     const newButtonId = useId();
     const dispatch = useDispatch();
+    const i18n = useI18n();
 
     return (
         <Toolbar
@@ -191,9 +184,10 @@ const Header: React.VoidFunctionComponent<HeaderProps> = ({ i18n }) => {
 
 /**
  * Accessibility live descriptors.
- * @param i18n Translation context.
  */
-function useLiveDescriptors(i18n: I18n): LiveDescriptors {
+function useLiveDescriptors(): LiveDescriptors {
+    const i18n = useI18n();
+
     return useMemo(
         () => ({
             introduction: `
@@ -301,15 +295,10 @@ const renderTreeContainer: typeof renderers.renderTreeContainer = (props) => {
     return <div onKeyDown={handleKeyDown}>{renderers.renderTreeContainer(props)}</div>;
 };
 
-type FileTreeProps = {
-    /** Translation context. */
-    i18n: I18n;
-};
-
-const FileTree: React.VoidFunctionComponent<FileTreeProps> = ({ i18n }) => {
+const FileTree: React.VoidFunctionComponent = () => {
     const [focusedItem, setFocusedItem] = useState<TreeItemIndex>();
     const files = useFileStorageMetadata() ?? [];
-    const liveDescriptors = useLiveDescriptors(i18n);
+    const liveDescriptors = useLiveDescriptors();
 
     const rootItemIndex = 'root';
 
@@ -326,12 +315,7 @@ const FileTree: React.VoidFunctionComponent<FileTreeProps> = ({ i18n }) => {
                             icon: 'document',
                             secondaryLabel: (
                                 <TreeItemContext.Consumer>
-                                    {(item) => (
-                                        <FileActionButtonGroup
-                                            item={item}
-                                            i18n={i18n}
-                                        />
-                                    )}
+                                    {(item) => <FileActionButtonGroup item={item} />}
                                 </TreeItemContext.Consumer>
                             ),
                         },
@@ -348,7 +332,7 @@ const FileTree: React.VoidFunctionComponent<FileTreeProps> = ({ i18n }) => {
                     },
                 } as Record<TreeItemIndex, FileTreeItem>,
             ),
-        [i18n, files],
+        [files],
     );
 
     const getItemTitle = useCallback((item: FileTreeItem) => item.data.fileName, []);
@@ -361,6 +345,7 @@ const FileTree: React.VoidFunctionComponent<FileTreeProps> = ({ i18n }) => {
     );
 
     const dispatch = useDispatch();
+    const i18n = useI18n();
 
     return (
         <ControlledTreeEnvironment<FileTreeItemData>
@@ -388,14 +373,11 @@ const FileTree: React.VoidFunctionComponent<FileTreeProps> = ({ i18n }) => {
 };
 
 const Explorer: React.VFC = () => {
-    // istanbul ignore next: babel-loader rewrites this line
-    const [i18n] = useI18n();
-
     return (
         <div className="pb-explorer">
-            <Header i18n={i18n} />
+            <Header />
             <Divider />
-            <FileTree i18n={i18n} />
+            <FileTree />
             <NewFileWizard />
             <DuplicateFileDialog />
             <DeleteFileAlert />

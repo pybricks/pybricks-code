@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2022 The Pybricks Authors
 
-import { useI18n } from '@shopify/react-i18n';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { BleConnectionState } from '../../../ble/reducers';
@@ -14,7 +13,7 @@ import {
     useSettingHubName,
 } from '../../../settings/hooks';
 import OpenFileButton, { OpenFileButtonProps } from '../../../toolbar/OpenFileButton';
-import { I18nId } from './i18n';
+import { I18nId, useI18n } from './i18n';
 import icon from './icon.svg';
 
 type FlashButtonProps = Pick<OpenFileButtonProps, 'id'>;
@@ -27,8 +26,7 @@ const FlashButton: React.VoidFunctionComponent<FlashButtonProps> = ({ id }) => {
     const [isSettingFlashCurrentProgramEnabled] = useSettingFlashCurrentProgram();
     const { hubName } = useSettingHubName();
 
-    // istanbul ignore next: babel-loader rewrites this line
-    const [i18n] = useI18n();
+    const i18n = useI18n();
     const dispatch = useDispatch();
 
     return (

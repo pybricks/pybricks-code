@@ -2,13 +2,12 @@
 // Copyright (c) 2022 The Pybricks Authors
 
 import { Classes } from '@blueprintjs/core';
-import { useI18n } from '@shopify/react-i18n';
 import React, { useCallback, useEffect, useState } from 'react';
 import { OverlayContainer } from 'react-aria';
 import { useBoolean } from 'usehooks-ts';
 import { Button } from './Button';
 import HelpDialog from './HelpDialog';
-import { I18nId } from './i18n';
+import { I18nId, useI18n } from './i18n';
 
 type HelpButtonProps = {
     /** The label of the control this button provides help for. */
@@ -21,8 +20,7 @@ const HelpButton: React.VoidFunctionComponent<HelpButtonProps> = ({
     helpForLabel,
     content,
 }) => {
-    // istanbul ignore next: babel-loader rewrites this line
-    const [i18n] = useI18n();
+    const i18n = useI18n();
 
     const {
         value: isDialogOpen,
