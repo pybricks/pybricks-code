@@ -39,5 +39,9 @@
             height: 100%;
             z-index: bp.$pt-z-index-overlay;
         }
+
+        .#{bp.$ns}-control {
+            max-width: bp.$pt-grid-size * 20;
+        }
     }
 }
