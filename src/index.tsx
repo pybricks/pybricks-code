@@ -14,7 +14,7 @@ import App from './app/App';
 import { appVersion } from './app/constants';
 import { db } from './fileStorage/context';
 import { i18nManager } from './i18n';
-import * as I18nToaster from './notifications/I18nToaster';
+import * as I18nToaster from './i18nToaster';
 import { rootReducer } from './reducers';
 import reportWebVitals from './reportWebVitals';
 import rootSaga, { RootSagaContext } from './sagas';
@@ -30,6 +30,7 @@ const sagaMiddleware = createSagaMiddleware<RootSagaContext>({
         notification: { toaster },
         terminal: defaultTerminalContext,
         fileStorage: db,
+        toaster,
     },
 });
 

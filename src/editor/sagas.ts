@@ -5,6 +5,7 @@ import { monaco } from 'react-monaco-editor';
 import { EventChannel, buffers, eventChannel } from 'redux-saga';
 import {
     SagaGenerator,
+    call,
     delay,
     fork,
     getContext,
@@ -22,7 +23,7 @@ import {
     fileStorageWriteFile,
 } from '../fileStorage/actions';
 import { RootState } from '../reducers';
-import { defined, ensureError } from '../utils';
+import { acquireLock, defined, ensureError } from '../utils';
 import {
     editorActivateFile,
     editorCloseFile,
@@ -36,6 +37,7 @@ import {
     editorGetValueResponse,
     editorOpenFile,
 } from './actions';
+import { EditorError } from './error';
 import { ActiveFileHistoryManager, OpenFileManager } from './lib';
 import { pybricksMicroPythonId } from './pybricksMicroPython';
 
@@ -93,13 +95,26 @@ function* handleEditorOpenFile(
     let closeRequested = false;
 
     try {
-        const defer: Array<() => void> = [];
+        const defer: Array<() => void | Promise<void>> = [];
 
         try {
             const modelUri = monaco.Uri.from({
                 scheme: 'pybricksCode',
                 path: action.fileName,
             });
+
+            const releaseLock = yield* call(() =>
+                acquireLock(`pybricks.editor+${modelUri}`),
+            );
+
+            if (!releaseLock) {
+                throw new EditorError(
+                    'FileInUse',
+                    'the file is already open in another editor',
+                );
+            }
+
+            defer.push(releaseLock);
 
             yield* put(fileStorageReadFile(modelUri.fsPath));
 

@@ -75,32 +75,19 @@ export const explorerDidFailToCreateNewFile = createAction((error: Error) => ({
  * Request to activate a file (open or bring to foreground if already open).
  * @param fileName The file name.
  */
-export const explorerActivateFile = createAction((fileName: string) => ({
-    type: 'explorer.action.activateFile',
+export const explorerUserActivateFile = createAction((fileName: string) => ({
+    type: 'explorer.user.action.activateFile',
     fileName,
 }));
 
 /**
- * Indicates that {@link explorerActivateFile} succeeded.
+ * Indicates that {@link explorerUserActivateFile} completed.
  * @param fileName The file name.
  */
-export const explorerDidActivateFile = createAction((fileName: string) => ({
-    type: 'explorer.action.didActivateFile',
+export const explorerUserDidActivateFile = createAction((fileName: string) => ({
+    type: 'explorer.user.action.didActivateFile',
     fileName,
 }));
-
-/**
- * Indicates that {@link explorerActivateFile} failed.
- * @param fileName The file name.
- * @param error The error that was raised.
- */
-export const explorerDidFailToActivateFile = createAction(
-    (fileName: string, error: Error) => ({
-        type: 'explorer.action.didFailToActivateFile',
-        fileName,
-        error,
-    }),
-);
 
 /**
  * Action that requests to duplicate a file.

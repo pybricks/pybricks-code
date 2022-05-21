@@ -31,13 +31,13 @@ import { useFileStorageMetadata } from '../fileStorage/hooks';
 import { isMacOS } from '../utils/os';
 import { TreeItemContext, TreeItemData, renderers } from '../utils/tree-renderer';
 import {
-    explorerActivateFile,
     explorerArchiveAllFiles,
     explorerCreateNewFile,
     explorerDeleteFile,
     explorerDuplicateFile,
     explorerExportFile,
     explorerImportFiles,
+    explorerUserActivateFile,
 } from './actions';
 import DeleteFileAlert from './deleteFileAlert/DeleteFileAlert';
 import DuplicateFileDialog from './duplicateFileDialog/DuplicateFileDialog';
@@ -373,7 +373,7 @@ const FileTree: React.VoidFunctionComponent<FileTreeProps> = ({ i18n }) => {
             canRename={false} // we implement our own rename handler
             onFocusItem={(item) => setFocusedItem(item.index)}
             onPrimaryAction={(item) =>
-                dispatch(explorerActivateFile(item.data.fileName))
+                dispatch(explorerUserActivateFile(item.data.fileName))
             }
         >
             <div className="pb-explorer-file-tree">

@@ -10,6 +10,7 @@ import {
     fileStorageDidReadFile,
     fileStorageReadFile,
 } from '../fileStorage/actions';
+import { acquireLock } from '../utils';
 import {
     editorActivateFile,
     editorCloseFile,
@@ -21,6 +22,7 @@ import {
     editorDidOpenFile,
     editorOpenFile,
 } from './actions';
+import { EditorError, EditorErrorName } from './error';
 import { ActiveFileHistoryManager, OpenFileInfo, OpenFileManager } from './lib';
 import editor from './sagas';
 
@@ -51,6 +53,22 @@ it('should activate files from storage', async () => {
     await saga.end();
 });
 
+/**
+ * Asymmetric matcher for matching errors by name while ignoring the message.
+ * @param name The name to match.
+ * @returns An asymmetric matcher cast to an EditorError so that it can be
+ * passed to action functions.
+ */
+function expectEditorError(name: EditorErrorName): EditorError {
+    const matcher: jest.AsymmetricMatcher & Record<string, unknown> = {
+        $$typeof: Symbol.for('jest.asymmetricMatcher'),
+        asymmetricMatch: (other) => other instanceof EditorError && other.name === name,
+        toAsymmetricMatcher: () => `[EditorError: ${name}]`,
+    };
+
+    return matcher as unknown as EditorError;
+}
+
 describe('per-editor sagas', () => {
     let saga: AsyncSaga;
     let monacoEditor: monaco.editor.IStandaloneCodeEditor;
@@ -70,70 +88,92 @@ describe('per-editor sagas', () => {
     });
 
     describe('handleEditorOpenFile', () => {
-        beforeEach(async () => {
-            jest.spyOn(OpenFileManager.prototype, 'add');
-            jest.spyOn(OpenFileManager.prototype, 'remove');
-            saga.put(editorOpenFile('test.file'));
-
-            await expect(saga.take()).resolves.toEqual(
-                fileStorageReadFile('test.file'),
+        it('should fail if file is already in use', async () => {
+            const releaseLock = await acquireLock(
+                'pybricks.editor+pybricksCode:test.file',
             );
+            expect(releaseLock).toBeDefined();
+
+            try {
+                saga.put(editorOpenFile('test.file'));
+
+                await expect(saga.take()).resolves.toEqual(
+                    editorDidFailToOpenFile(
+                        'test.file',
+                        expectEditorError('FileInUse'),
+                    ),
+                );
+            } finally {
+                await releaseLock?.();
+            }
         });
 
-        it('should propagate error from fileStorageReadFile', async () => {
-            const testError = new Error('test error');
-
-            saga.put(fileStorageDidFailToReadFile('test.file', testError));
-
-            await expect(saga.take()).resolves.toEqual(
-                editorDidFailToOpenFile('test.file', testError),
-            );
-
-            expect(OpenFileManager.prototype.add).not.toHaveBeenCalled();
-        });
-
-        describe('read succeeded', () => {
-            let model: monaco.editor.ITextModel;
-
+        describe('not already in use', () => {
             beforeEach(async () => {
-                monaco.editor.onDidCreateModel((m) => (model = m));
-
-                saga.put(fileStorageDidReadFile('test.file', ''));
-
-                expect(model).toBeDefined();
+                jest.spyOn(OpenFileManager.prototype, 'add');
+                jest.spyOn(OpenFileManager.prototype, 'remove');
+                saga.put(editorOpenFile('test.file'));
 
                 await expect(saga.take()).resolves.toEqual(
-                    editorDidOpenFile('test.file'),
+                    fileStorageReadFile('test.file'),
                 );
-
-                expect(OpenFileManager.prototype.add).toHaveBeenCalled();
-                expect(OpenFileManager.prototype.remove).not.toHaveBeenCalled();
             });
 
-            it('should close file if task is canceled', async () => {
-                jest.spyOn(model, 'dispose');
+            it('should propagate error from fileStorageReadFile', async () => {
+                const testError = new Error('test error');
 
-                saga.cancel();
-
-                // model should be disposed before fileStorageClose
-                expect(model.dispose).toHaveBeenCalled();
-                expect(OpenFileManager.prototype.remove).toHaveBeenCalled();
-
-                // editorDidCloseFile is not called since we did not put editorCloseFile
-            });
-
-            it('should close when requested', async () => {
-                jest.spyOn(model, 'dispose');
-
-                saga.put(editorCloseFile('test.file'));
-
-                // model should be disposed before fileStorageClose
-                expect(model.dispose).toHaveBeenCalled();
-                expect(OpenFileManager.prototype.remove).toHaveBeenCalled();
+                saga.put(fileStorageDidFailToReadFile('test.file', testError));
 
                 await expect(saga.take()).resolves.toEqual(
-                    editorDidCloseFile('test.file'),
+                    editorDidFailToOpenFile('test.file', testError),
                 );
+
+                expect(OpenFileManager.prototype.add).not.toHaveBeenCalled();
+            });
+
+            describe('read succeeded', () => {
+                let model: monaco.editor.ITextModel;
+
+                beforeEach(async () => {
+                    monaco.editor.onDidCreateModel((m) => (model = m));
+
+                    saga.put(fileStorageDidReadFile('test.file', ''));
+
+                    expect(model).toBeDefined();
+
+                    await expect(saga.take()).resolves.toEqual(
+                        editorDidOpenFile('test.file'),
+                    );
+
+                    expect(OpenFileManager.prototype.add).toHaveBeenCalled();
+                    expect(OpenFileManager.prototype.remove).not.toHaveBeenCalled();
+                });
+
+                it('should close file if task is canceled', async () => {
+                    jest.spyOn(model, 'dispose');
+
+                    saga.cancel();
+
+                    // model should be disposed before fileStorageClose
+                    expect(model.dispose).toHaveBeenCalled();
+                    expect(OpenFileManager.prototype.remove).toHaveBeenCalled();
+
+                    // editorDidCloseFile is not called since we did not put editorCloseFile
+                });
+
+                it('should close when requested', async () => {
+                    jest.spyOn(model, 'dispose');
+
+                    saga.put(editorCloseFile('test.file'));
+
+                    // model should be disposed before fileStorageClose
+                    expect(model.dispose).toHaveBeenCalled();
+                    expect(OpenFileManager.prototype.remove).toHaveBeenCalled();
+
+                    await expect(saga.take()).resolves.toEqual(
+                        editorDidCloseFile('test.file'),
+                    );
+                });
             });
         });
     });

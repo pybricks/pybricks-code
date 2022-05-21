@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021 The Pybricks Authors
+// Copyright (c) 2021-2022 The Pybricks Authors
 
-import { IToaster, Toaster } from '@blueprintjs/core';
+import { IToastProps, IToaster, Toaster } from '@blueprintjs/core';
 import { I18nContext, I18nManager } from '@shopify/react-i18n';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -34,3 +34,24 @@ export function create(i18n: I18nManager): IToaster {
 
     return toaster.current;
 }
+
+/**
+ * Template type alert callbacks.
+ *
+ * This is called when an alert is dismissed.
+ *
+ * @param action: The action that the user selected. This is usually 'dismiss'.
+ */
+export type ToastActionHandler<A extends string> = (action: A) => void;
+
+/**
+ * Template type for all toast creation functions for alert components.
+ *
+ * @param onAction A callback that is called when the toast is dismissed.
+ * @param props Additional properties required by this toast, if any (usually
+ * replacements for translations).
+ */
+export type CreateToast<
+    P extends Record<string, unknown> = never,
+    A extends string = 'dismiss',
+> = (onAction: ToastActionHandler<A>, props: P) => IToastProps;

@@ -1,23 +1,21 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021-2022 The Pybricks Authors
+// Copyright (c) 2022 The Pybricks Authors
 
-// Provides special notification contents for unexpected errors.
-
-import './UnexpectedErrorNotification.scss';
+import './UnexpectedErrorAlert.scss';
 import { AnchorButton, Button, ButtonGroup, Collapse, Intent } from '@blueprintjs/core';
 import { useI18n } from '@shopify/react-i18n';
 import React, { useState } from 'react';
 import { useId } from 'react-aria';
+import { CreateToast } from '../i18nToaster';
 import { I18nId } from './i18n';
 
-type UnexpectedErrorNotificationProps = {
-    messageId: I18nId;
-    err: Error;
+type UnexpectedErrorAlertProps = {
+    error: Error;
 };
 
-const UnexpectedErrorNotification: React.VoidFunctionComponent<
-    UnexpectedErrorNotificationProps
-> = ({ messageId, err }) => {
+const UnexpectedErrorAlert: React.VoidFunctionComponent<UnexpectedErrorAlertProps> = ({
+    error,
+}) => {
     // istanbul ignore next: babel-loader rewrites this line
     const [i18n] = useI18n();
     const [isExpanded, setIsExpanded] = useState(false);
@@ -25,7 +23,7 @@ const UnexpectedErrorNotification: React.VoidFunctionComponent<
 
     return (
         <>
-            <p>{i18n.translate(messageId, { errorMessage: err.message })}</p>
+            <p>{i18n.translate(I18nId.Message, { errorMessage: error.message })}</p>
             <span>
                 <Button
                     aria-labelledby={labelId}
@@ -37,7 +35,7 @@ const UnexpectedErrorNotification: React.VoidFunctionComponent<
                 <span id={labelId}>{i18n.translate(I18nId.TechnicalInfo)}</span>
             </span>
             <Collapse isOpen={isExpanded}>
-                <pre className="pb-notification-stack-trace">{err.stack}</pre>
+                <pre className="pb-alerts-stack-trace">{error.stack}</pre>
             </Collapse>
             <div>
                 <ButtonGroup minimal={true} fill={true}>
@@ -46,7 +44,7 @@ const UnexpectedErrorNotification: React.VoidFunctionComponent<
                         icon="duplicate"
                         onClick={() =>
                             navigator.clipboard.writeText(
-                                `\`\`\`\n${err.stack || err.message}\n\`\`\``,
+                                `\`\`\`\n${error.stack || error.message}\n\`\`\``,
                             )
                         }
                     >
@@ -57,7 +55,7 @@ const UnexpectedErrorNotification: React.VoidFunctionComponent<
                         icon="virus"
                         href={`https://github.com/pybricks/support/issues?q=${encodeURIComponent(
                             'is:issue',
-                        )}+${encodeURIComponent(err.message)}`}
+                        )}+${encodeURIComponent(error.message)}`}
                         target="_blank"
                     >
                         {i18n.translate(I18nId.ReportBug)}
@@ -68,4 +66,11 @@ const UnexpectedErrorNotification: React.VoidFunctionComponent<
     );
 };
 
-export default UnexpectedErrorNotification;
+export const unexpectedError: CreateToast<{ error: Error }> = (onAction, { error }) => {
+    return {
+        message: <UnexpectedErrorAlert error={error} />,
+        icon: 'error',
+        intent: Intent.DANGER,
+        onDismiss: () => onAction('dismiss'),
+    };
+};

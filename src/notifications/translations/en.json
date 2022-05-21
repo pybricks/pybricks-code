@@ -1,7 +1,4 @@
 {
-    "copyErrorMessage": "Copy Error Message",
-    "technicalInfo": "Expand for detailed technical information",
-    "reportBug": "Report Bug",
     "app": {
         "noUpdateFound": "{appName} is already up to date."
     },

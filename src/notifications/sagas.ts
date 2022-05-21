@@ -10,6 +10,7 @@ import React from 'react';
 import { channel } from 'redux-saga';
 import * as semver from 'semver';
 import { delay, getContext, put, take, takeEvery } from 'typed-redux-saga/macro';
+import { getAlertProps } from '../alerts';
 import { appDidCheckForUpdate, appReload } from '../app/actions';
 import { appName } from '../app/constants';
 import { bleDIServiceDidReceiveFirmwareRevision } from '../ble-device-info-service/actions';
@@ -18,6 +19,7 @@ import {
     didFailToConnect as bleDeviceDidFailToConnect,
 } from '../ble/actions';
 import { editorDidFailToOpenFile } from '../editor/actions';
+import { EditorError } from '../editor/error';
 import {
     explorerDidFailToArchiveAllFiles,
     explorerDidFailToCreateNewFile,
@@ -37,7 +39,6 @@ import { serviceWorkerDidUpdate } from '../service-worker/actions';
 import { pythonVersionToSemver } from '../utils/version';
 import NotificationAction from './NotificationAction';
 import NotificationMessage from './NotificationMessage';
-import UnexpectedErrorNotification from './UnexpectedErrorNotification';
 import { add as addNotification } from './actions';
 import { I18nId } from './i18n';
 
@@ -159,14 +160,15 @@ function* showSingleton(
 }
 
 /** Shows a special notification for unexpected errors. */
-function* showUnexpectedError(messageId: I18nId, err: Error): Generator {
+function* showUnexpectedError(messageId: I18nId, error: Error): Generator {
     const { toaster } = yield* getContext<NotificationContext>('notification');
-    toaster.show({
-        intent: mapIntent(Level.Error),
-        icon: mapIcon(Level.Error),
-        message: React.createElement(UnexpectedErrorNotification, { messageId, err }),
-        timeout: 0,
-    });
+    const key = `alerts.unexpectedError.${messageId}`;
+
+    toaster.show(
+        getAlertProps('alerts', 'unexpectedError', () => toaster.dismiss(key), {
+            error,
+        }),
+    );
 }
 
 function* showBleDeviceDidFailToConnectError(
@@ -441,9 +443,12 @@ function* showExplorerFailToExport(
 }
 
 function* showEditorDidFailToOpenFile(
-    action: ReturnType<typeof explorerDidFailToExportFile>,
+    action: ReturnType<typeof editorDidFailToOpenFile>,
 ): Generator {
-    // TODO: add a better error message for the case where a file is already in use
+    if (action.error instanceof EditorError && action.error.name === 'FileInUse') {
+        return;
+    }
+
     yield* showUnexpectedError(I18nId.EditorFailedToOpenFile, action.error);
 }
 

@@ -9,13 +9,13 @@ import { FileMetadata } from '../fileStorage';
 import { useFileStorageMetadata } from '../fileStorage/hooks';
 import Explorer from './Explorer';
 import {
-    explorerActivateFile,
     explorerArchiveAllFiles,
     explorerCreateNewFile,
     explorerDeleteFile,
     explorerDuplicateFile,
     explorerExportFile,
     explorerImportFiles,
+    explorerUserActivateFile,
 } from './actions';
 
 afterEach(async () => {
@@ -74,7 +74,7 @@ describe('tree item', () => {
 
         userEvent.click(treeItem);
 
-        expect(dispatch).toHaveBeenCalledWith(explorerActivateFile('test.file'));
+        expect(dispatch).toHaveBeenCalledWith(explorerUserActivateFile('test.file'));
     });
 
     it('should dispatch action when key is pressed', async () => {
@@ -86,7 +86,7 @@ describe('tree item', () => {
         userEvent.click(treeItem);
         userEvent.keyboard('{enter}');
 
-        expect(dispatch).toHaveBeenCalledWith(explorerActivateFile('test.file'));
+        expect(dispatch).toHaveBeenCalledWith(explorerUserActivateFile('test.file'));
     });
 
     describe('duplicate', () => {

@@ -5,6 +5,7 @@ import * as browserFsAccess from 'browser-fs-access';
 import { FileWithHandle } from 'browser-fs-access';
 import { mock } from 'jest-mock-extended';
 import { AsyncSaga } from '../../test';
+import { alertsShowAlert } from '../alerts/actions';
 import {
     editorActivateFile,
     editorCloseFile,
@@ -12,6 +13,7 @@ import {
     editorDidCloseFile,
     editorDidFailToActivateFile,
 } from '../editor/actions';
+import { EditorError } from '../editor/error';
 import {
     fileStorageCopyFile,
     fileStorageDeleteFile,
@@ -30,17 +32,14 @@ import {
 } from '../fileStorage/actions';
 import { pythonFileExtension } from '../pybricksMicropython/lib';
 import {
-    explorerActivateFile,
     explorerArchiveAllFiles,
     explorerCreateNewFile,
     explorerDeleteFile,
-    explorerDidActivateFile,
     explorerDidArchiveAllFiles,
     explorerDidCreateNewFile,
     explorerDidDeleteFile,
     explorerDidDuplicateFile,
     explorerDidExportFile,
-    explorerDidFailToActivateFile,
     explorerDidFailToArchiveAllFiles,
     explorerDidFailToCreateNewFile,
     explorerDidFailToDeleteFile,
@@ -51,6 +50,8 @@ import {
     explorerDuplicateFile,
     explorerExportFile,
     explorerImportFiles,
+    explorerUserActivateFile,
+    explorerUserDidActivateFile,
 } from './actions';
 import {
     deleteFileAlertDidAccept,
@@ -243,25 +244,40 @@ describe('handleExplorerActivateFile', () => {
     beforeEach(async () => {
         saga = new AsyncSaga(explorer);
 
-        saga.put(explorerActivateFile('test.file'));
+        saga.put(explorerUserActivateFile('test.file'));
 
         await expect(saga.take()).resolves.toEqual(editorActivateFile('test.file'));
     });
 
-    it('should propagate error', async () => {
+    it('should alert file in use error', async () => {
+        const testError = new EditorError('FileInUse', 'test error');
+        saga.put(editorDidFailToActivateFile('test.file', testError));
+
+        await expect(saga.take()).resolves.toEqual(
+            alertsShowAlert('explorer', 'fileInUse', { fileName: 'test.file' }),
+        );
+        await expect(saga.take()).resolves.toEqual(
+            explorerUserDidActivateFile('test.file'),
+        );
+    });
+
+    it('should alert unexpected error', async () => {
         const testError = new Error('test error');
         saga.put(editorDidFailToActivateFile('test.file', testError));
 
         await expect(saga.take()).resolves.toEqual(
-            explorerDidFailToActivateFile('test.file', testError),
+            alertsShowAlert('alerts', 'unexpectedError', { error: testError }),
+        );
+        await expect(saga.take()).resolves.toEqual(
+            explorerUserDidActivateFile('test.file'),
         );
     });
 
-    it('should propagate success', async () => {
+    it('should notify success', async () => {
         saga.put(editorDidActivateFile('test.file'));
 
         await expect(saga.take()).resolves.toEqual(
-            explorerDidActivateFile('test.file'),
+            explorerUserDidActivateFile('test.file'),
         );
     });
 

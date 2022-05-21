@@ -4,6 +4,7 @@
 import { fileOpen, fileSave } from 'browser-fs-access';
 import JSZip from 'jszip';
 import { call, put, race, take, takeEvery } from 'typed-redux-saga/macro';
+import { alertsShowAlert } from '../alerts/actions';
 import {
     editorActivateFile,
     editorCloseFile,
@@ -11,6 +12,7 @@ import {
     editorDidCloseFile,
     editorDidFailToActivateFile,
 } from '../editor/actions';
+import { EditorError } from '../editor/error';
 import { getPybricksMicroPythonFileTemplate } from '../editor/pybricksMicroPython';
 import {
     fileStorageCopyFile,
@@ -38,17 +40,14 @@ import {
 } from '../pybricksMicropython/lib';
 import { defined, ensureError, timestamp } from '../utils';
 import {
-    explorerActivateFile,
     explorerArchiveAllFiles,
     explorerCreateNewFile,
     explorerDeleteFile,
-    explorerDidActivateFile,
     explorerDidArchiveAllFiles,
     explorerDidCreateNewFile,
     explorerDidDeleteFile,
     explorerDidDuplicateFile,
     explorerDidExportFile,
-    explorerDidFailToActivateFile,
     explorerDidFailToArchiveAllFiles,
     explorerDidFailToCreateNewFile,
     explorerDidFailToDeleteFile,
@@ -59,6 +58,8 @@ import {
     explorerDuplicateFile,
     explorerExportFile,
     explorerImportFiles,
+    explorerUserActivateFile,
+    explorerUserDidActivateFile,
 } from './actions';
 import {
     deleteFileAlertDidAccept,
@@ -226,11 +227,11 @@ function* handleExplorerCreateNewFile(): Generator {
  * @param action
  */
 function* handleExplorerActivateFile(
-    action: ReturnType<typeof explorerActivateFile>,
+    action: ReturnType<typeof explorerUserActivateFile>,
 ): Generator {
     yield* put(editorActivateFile(action.fileName));
 
-    const { didActivate, didFailToActivate } = yield* race({
+    const { didFailToActivate } = yield* race({
         didActivate: take(
             editorDidActivateFile.when((a) => a.fileName === action.fileName),
         ),
@@ -240,18 +241,23 @@ function* handleExplorerActivateFile(
     });
 
     if (didFailToActivate) {
-        yield* put(
-            explorerDidFailToActivateFile(
-                didFailToActivate.fileName,
-                didFailToActivate.error,
-            ),
-        );
-        return;
+        if (
+            didFailToActivate.error instanceof EditorError &&
+            didFailToActivate.error.name === 'FileInUse'
+        ) {
+            yield* put(
+                alertsShowAlert('explorer', 'fileInUse', { fileName: action.fileName }),
+            );
+        } else {
+            yield* put(
+                alertsShowAlert('alerts', 'unexpectedError', {
+                    error: didFailToActivate.error,
+                }),
+            );
+        }
     }
 
-    defined(didActivate);
-
-    yield* put(explorerDidActivateFile(didActivate.fileName));
+    yield* put(explorerUserDidActivateFile(action.fileName));
 }
 
 /** Connects user initiate duplicate file actions to the duplicate file dialog. */
@@ -380,7 +386,7 @@ export default function* (): Generator {
     yield* takeEvery(explorerArchiveAllFiles, handleExplorerArchiveAllFiles);
     yield* takeEvery(explorerImportFiles, handleExplorerImportFiles);
     yield* takeEvery(explorerCreateNewFile, handleExplorerCreateNewFile);
-    yield* takeEvery(explorerActivateFile, handleExplorerActivateFile);
+    yield* takeEvery(explorerUserActivateFile, handleExplorerActivateFile);
     yield* takeEvery(explorerDuplicateFile, handleExplorerDuplicateFile);
     yield* takeEvery(explorerExportFile, handleExplorerExportFile);
     yield* takeEvery(explorerDeleteFile, handleExplorerDeleteFile);

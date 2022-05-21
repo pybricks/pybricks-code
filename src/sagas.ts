@@ -2,6 +2,7 @@
 // Copyright (c) 2020-2022 The Pybricks Authors
 
 import { all, put } from 'typed-redux-saga/macro';
+import alerts, { AlertsSagaContext } from './alerts/sagas';
 import { didStart } from './app/actions';
 import app from './app/sagas';
 import blePybricksService from './ble-pybricks-service/sagas';
@@ -21,6 +22,7 @@ import terminal, { TerminalSagaContext } from './terminal/sagas';
 /* istanbul ignore next */
 export default function* (): Generator {
     yield* all([
+        alerts(),
         app(),
         blePybricksService(),
         ble(),
@@ -44,6 +46,7 @@ export default function* (): Generator {
  */
 export type RootSagaContext = {
     nextMessageId: () => number;
-} & FileStorageSageContext &
+} & AlertsSagaContext &
+    FileStorageSageContext &
     NotificationSagaContext &
     TerminalSagaContext;

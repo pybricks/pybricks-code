@@ -32,6 +32,7 @@ import {
     MetadataProblem,
     didFailToFinish,
 } from '../firmware/actions';
+import * as i18nToaster from '../i18nToaster';
 import {
     BootloaderConnectionFailureReason,
     didFailToConnect as bootloaderDidFailToConnect,
@@ -41,14 +42,13 @@ import {
     serviceWorkerDidSucceed,
     serviceWorkerDidUpdate,
 } from '../service-worker/actions';
-import * as I18nToaster from './I18nToaster';
 import { add } from './actions';
 import { I18nId } from './i18n';
 import notification from './sagas';
 
 function createTestToasterSaga(): { toaster: IToaster; saga: AsyncSaga } {
     const i18n = new I18nManager({ locale: 'en' });
-    const toaster = I18nToaster.create(i18n);
+    const toaster = i18nToaster.create(i18n);
 
     jest.spyOn(toaster, 'clear');
     jest.spyOn(toaster, 'dismiss');
