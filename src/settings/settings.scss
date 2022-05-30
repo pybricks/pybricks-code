@@ -15,4 +15,8 @@
             width: bp.$pt-grid-size * 20;
         }
     }
+
+    & .#{bp.$ns}-control {
+        max-width: bp.$pt-grid-size * 20;
+    }
 }
