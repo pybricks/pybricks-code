@@ -36,12 +36,14 @@ import {
     explorerDuplicateFile,
     explorerExportFile,
     explorerImportFiles,
+    explorerRenameFile,
     explorerUserActivateFile,
 } from './actions';
 import DeleteFileAlert from './deleteFileAlert/DeleteFileAlert';
 import DuplicateFileDialog from './duplicateFileDialog/DuplicateFileDialog';
 import { I18nId, useI18n } from './i18n';
 import NewFileWizard from './newFileWizard/NewFileWizard';
+import RenameFileDialog from './renameFileDialog/RenameFileDialog';
 
 type ActionButtonProps = {
     /** The DOM id for this instance. */
@@ -101,6 +103,7 @@ const FileActionButtonGroup: React.VoidFunctionComponent<ActionButtonGroupProps>
 
     const fileName = environment.getItemTitle(item);
 
+    const renameButtonId = useId();
     const duplicateButtonId = useId();
     const exportButtonId = useId();
     const deleteButtonId = useId();
@@ -112,6 +115,12 @@ const FileActionButtonGroup: React.VoidFunctionComponent<ActionButtonGroupProps>
             minimal={true}
         >
             <Toolbar firstFocusableItemId={duplicateButtonId}>
+                <ActionButton
+                    id={renameButtonId}
+                    icon="edit"
+                    tooltip={i18n.translate(I18nId.TreeItemRenameTooltip, { fileName })}
+                    onClick={() => dispatch(explorerRenameFile(fileName))}
+                />
                 <ActionButton
                     id={duplicateButtonId}
                     icon="duplicate"
@@ -201,6 +210,10 @@ function useLiveDescriptors(): LiveDescriptors {
                         { key: '{keybinding:primaryAction}' },
                     )}</li>
                     <li>${i18n.translate(
+                        I18nId.TreeLiveDescriptorIntroKeybindingsRename,
+                        { key: 'f2' },
+                    )}</li>
+                    <li>${i18n.translate(
                         I18nId.TreeLiveDescriptorIntroKeybindingsDuplicate,
                         { key: `${isMacOS() ? 'cmd' : 'ctrl'}+d` },
                     )}</li>
@@ -239,6 +252,13 @@ const renderTreeContainer: typeof renderers.renderTreeContainer = (props) => {
     const hotKeyActive =
         isActiveTree; /* && !dnd.isProgrammaticallyDragging && !isRenaming */
 
+    const handleRenameKeyDown = useCallback(() => {
+        if (focusedItem !== undefined) {
+            const fileName = environment.getItemTitle(environment.items[focusedItem]);
+            dispatch(explorerRenameFile(fileName));
+        }
+    }, [environment]);
+
     const handleDuplicateKeyDown = useCallback(() => {
         if (focusedItem !== undefined) {
             const fileName = environment.getItemTitle(environment.items[focusedItem]);
@@ -262,6 +282,14 @@ const renderTreeContainer: typeof renderers.renderTreeContainer = (props) => {
 
     const hotkeys = useMemo<readonly HotkeyConfig[]>(
         () => [
+            {
+                combo: 'f2',
+                label: 'Rename',
+                disabled: !hotKeyActive,
+                preventDefault: true,
+                stopPropagation: true,
+                onKeyDown: handleRenameKeyDown,
+            },
             {
                 combo: 'mod+d',
                 label: 'Duplicate',
@@ -379,6 +407,7 @@ const Explorer: React.VFC = () => {
             <Divider />
             <FileTree />
             <NewFileWizard />
+            <RenameFileDialog />
             <DuplicateFileDialog />
             <DeleteFileAlert />
         </div>

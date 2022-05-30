@@ -24,11 +24,14 @@ import {
     fileStorageDidFailToDeleteFile,
     fileStorageDidFailToDumpAllFiles,
     fileStorageDidFailToReadFile,
+    fileStorageDidFailToRenameFile,
     fileStorageDidFailToWriteFile,
     fileStorageDidReadFile,
+    fileStorageDidRenameFile,
     fileStorageDidWriteFile,
     fileStorageDumpAllFiles,
     fileStorageReadFile,
+    fileStorageRenameFile,
     fileStorageWriteFile,
 } from '../fileStorage/actions';
 import {
@@ -54,10 +57,13 @@ import {
     explorerDidFailToDuplicateFile,
     explorerDidFailToExportFile,
     explorerDidFailToImportFiles,
+    explorerDidFailToRenameFile,
     explorerDidImportFiles,
+    explorerDidRenameFile,
     explorerDuplicateFile,
     explorerExportFile,
     explorerImportFiles,
+    explorerRenameFile,
     explorerUserActivateFile,
     explorerUserDidActivateFile,
 } from './actions';
@@ -76,6 +82,11 @@ import {
     newFileWizardDidCancel,
     newFileWizardShow,
 } from './newFileWizard/actions';
+import {
+    renameFileDialogDidAccept,
+    renameFileDialogDidCancel,
+    renameFileDialogShow,
+} from './renameFileDialog/actions';
 
 function* handleExplorerArchiveAllFiles(): Generator {
     try {
@@ -302,6 +313,43 @@ function* handleExplorerDuplicateFile(
     }
 }
 
+/** Connects user initiate rename file actions to the rename file dialog. */
+function* handleExplorerRenameFile(
+    action: ReturnType<typeof explorerRenameFile>,
+): Generator {
+    yield* put(renameFileDialogShow(action.fileName));
+
+    const { accepted, canceled } = yield* race({
+        accepted: take(renameFileDialogDidAccept),
+        canceled: take(renameFileDialogDidCancel),
+    });
+
+    if (canceled) {
+        yield* put(explorerDidFailToRenameFile());
+        return;
+    }
+
+    defined(accepted);
+
+    yield* put(fileStorageRenameFile(action.fileName, accepted.newName));
+
+    const didRename = yield* race({
+        succeeded: take(
+            fileStorageDidRenameFile.when((a) => a.fileName === action.fileName),
+        ),
+        failed: take(
+            fileStorageDidFailToRenameFile.when((a) => a.fileName === action.fileName),
+        ),
+    });
+
+    if (didRename.failed) {
+        yield* put(explorerDidFailToRenameFile());
+        return;
+    }
+
+    yield* put(explorerDidRenameFile());
+}
+
 function* handleExplorerExportFile(
     action: ReturnType<typeof explorerExportFile>,
 ): Generator {
@@ -387,6 +435,7 @@ export default function* (): Generator {
     yield* takeEvery(explorerImportFiles, handleExplorerImportFiles);
     yield* takeEvery(explorerCreateNewFile, handleExplorerCreateNewFile);
     yield* takeEvery(explorerUserActivateFile, handleExplorerActivateFile);
+    yield* takeEvery(explorerRenameFile, handleExplorerRenameFile);
     yield* takeEvery(explorerDuplicateFile, handleExplorerDuplicateFile);
     yield* takeEvery(explorerExportFile, handleExplorerExportFile);
     yield* takeEvery(explorerDeleteFile, handleExplorerDeleteFile);

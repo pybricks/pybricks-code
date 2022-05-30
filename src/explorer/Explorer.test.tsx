@@ -15,6 +15,7 @@ import {
     explorerDuplicateFile,
     explorerExportFile,
     explorerImportFiles,
+    explorerRenameFile,
     explorerUserActivateFile,
 } from './actions';
 
@@ -116,6 +117,36 @@ describe('tree item', () => {
             userEvent.keyboard('{ctrl}d');
 
             expect(dispatch).toHaveBeenCalledWith(explorerDuplicateFile('test.file'));
+        });
+    });
+
+    describe('rename', () => {
+        it('should dispatch action when button is clicked', async () => {
+            jest.mocked(useFileStorageMetadata).mockReturnValue([testFile]);
+            const [explorer, dispatch] = testRender(<Explorer />);
+
+            // NB: this button is intentionally not accessible (by role) since
+            // there is a keyboard shortcut.
+            const button = explorer.getByTitle('Rename test.file');
+
+            userEvent.click(button);
+
+            expect(dispatch).toHaveBeenCalledWith(explorerRenameFile('test.file'));
+
+            // should not propagate to treeitem
+            expect(dispatch).toHaveBeenCalledTimes(1);
+        });
+
+        it('should dispatch action when key is pressed', async () => {
+            jest.mocked(useFileStorageMetadata).mockReturnValue([testFile]);
+            const [explorer, dispatch] = testRender(<Explorer />);
+
+            const treeItem = explorer.getByRole('treeitem', { name: 'test.file' });
+
+            userEvent.click(treeItem);
+            userEvent.keyboard('{f2}');
+
+            expect(dispatch).toHaveBeenCalledWith(explorerRenameFile('test.file'));
         });
     });
 

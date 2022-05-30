@@ -12,8 +12,7 @@ import {
 import { useSelector } from '../../reducers';
 import FileNameFormGroup from '../fileNameFormGroup/FileNameFormGroup';
 import { renameFileDialogDidAccept, renameFileDialogDidCancel } from './actions';
-import { useI18n } from './i18n';
-import { I18nId } from './i18n';
+import { I18nId, useI18n } from './i18n';
 
 const RenameFileDialog: React.VFC = () => {
     const i18n = useI18n();
