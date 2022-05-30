@@ -95,6 +95,7 @@ const FileNameFormGroup: React.VoidFunctionComponent<FileNameFormGroupProps> = (
                 inputRef={inputRef}
                 intent={fileNameIntent}
                 rightElement={<Tag aria-hidden>{fileExtension}</Tag>}
+                onMouseDown={(e) => e.stopPropagation()}
                 onChange={(e) => onChange(e.target.value)}
             />
         </FormGroup>
