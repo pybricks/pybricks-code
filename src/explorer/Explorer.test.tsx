@@ -29,6 +29,7 @@ const testFile: FileMetadata = {
     uuid: uuid(0),
     path: 'test.file',
     sha256: '',
+    viewState: null,
 };
 
 describe('archive button', () => {
@@ -75,7 +76,9 @@ describe('tree item', () => {
 
         userEvent.click(treeItem);
 
-        expect(dispatch).toHaveBeenCalledWith(explorerUserActivateFile('test.file'));
+        expect(dispatch).toHaveBeenCalledWith(
+            explorerUserActivateFile('test.file', uuid(0)),
+        );
     });
 
     it('should dispatch action when key is pressed', async () => {
@@ -87,7 +90,9 @@ describe('tree item', () => {
         userEvent.click(treeItem);
         userEvent.keyboard('{enter}');
 
-        expect(dispatch).toHaveBeenCalledWith(explorerUserActivateFile('test.file'));
+        expect(dispatch).toHaveBeenCalledWith(
+            explorerUserActivateFile('test.file', uuid(0)),
+        );
     });
 
     describe('duplicate', () => {
@@ -191,7 +196,9 @@ describe('tree item', () => {
 
             userEvent.click(button);
 
-            expect(dispatch).toHaveBeenCalledWith(explorerDeleteFile('test.file'));
+            expect(dispatch).toHaveBeenCalledWith(
+                explorerDeleteFile('test.file', uuid(0)),
+            );
 
             // should not propagate to treeitem
             expect(dispatch).toHaveBeenCalledTimes(1);
@@ -206,7 +213,9 @@ describe('tree item', () => {
             userEvent.click(treeItem);
             userEvent.keyboard('{del}');
 
-            expect(dispatch).toHaveBeenCalledWith(explorerDeleteFile('test.file'));
+            expect(dispatch).toHaveBeenCalledWith(
+                explorerDeleteFile('test.file', uuid(0)),
+            );
         });
     });
 });

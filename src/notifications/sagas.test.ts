@@ -9,7 +9,7 @@ import {
 } from '@pybricks/firmware';
 import { I18nManager } from '@shopify/react-i18n';
 import { AnyAction } from 'redux';
-import { AsyncSaga } from '../../test';
+import { AsyncSaga, uuid } from '../../test';
 import { appDidCheckForUpdate } from '../app/actions';
 import { bleDIServiceDidReceiveFirmwareRevision } from '../ble-device-info-service/actions';
 import {
@@ -17,6 +17,7 @@ import {
     didFailToConnect as bleDidFailToConnect,
 } from '../ble/actions';
 import { editorDidFailToOpenFile } from '../editor/actions';
+import { EditorError } from '../editor/error';
 import {
     explorerDidFailToArchiveAllFiles,
     explorerDidFailToCreateNewFile,
@@ -116,7 +117,7 @@ test.each([
     explorerDidFailToDuplicateFile('test.file', new Error('test error')),
     explorerDidFailToExportFile('test.file', new Error('test error')),
     explorerDidFailToDeleteFile('test.file', new Error('test error')),
-    editorDidFailToOpenFile('test.file', new Error('test error')),
+    editorDidFailToOpenFile(uuid(0), new Error('test error')),
 ])('actions that should show notification: %o', async (action: AnyAction) => {
     const { toaster, saga } = createTestToasterSaga();
 
@@ -151,6 +152,7 @@ test.each([
         'test.file',
         new DOMException('test message', 'AbortError'),
     ),
+    editorDidFailToOpenFile(uuid(0), new EditorError('FileInUse', 'test error')),
 ])('actions that should not show a notification: %o', async (action: AnyAction) => {
     const { toaster, saga } = createTestToasterSaga();
 

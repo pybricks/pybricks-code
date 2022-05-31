@@ -3,12 +3,14 @@
 
 import { mock } from 'jest-mock-extended';
 import { monaco } from 'react-monaco-editor';
-import { AsyncSaga } from '../../test';
+import { AsyncSaga, uuid } from '../../test';
 import {
-    fileStorageDidFailToReadFile,
+    fileStorageDidFailToLoadTextFile,
     fileStorageDidInitialize,
-    fileStorageDidReadFile,
-    fileStorageReadFile,
+    fileStorageDidLoadTextFile,
+    fileStorageLoadTextFile,
+    fileStorageStoreTextFileValue,
+    fileStorageStoreTextFileViewState,
 } from '../fileStorage/actions';
 import { acquireLock } from '../utils';
 import {
@@ -28,6 +30,9 @@ import editor from './sagas';
 
 jest.mock('./lib');
 
+const testFileUuid = uuid(0);
+const newTestFileUuid = uuid(1);
+
 afterEach(() => {
     jest.resetAllMocks();
     sessionStorage.clear();
@@ -37,7 +42,7 @@ it('should activate files from storage', async () => {
     jest.spyOn(
         ActiveFileHistoryManager.prototype,
         'getFromStorage',
-    ).mockReturnValueOnce(['test.file'].values());
+    ).mockReturnValueOnce([testFileUuid].values());
 
     const saga = new AsyncSaga(editor);
 
@@ -48,7 +53,7 @@ it('should activate files from storage', async () => {
     await expect(saga.take()).resolves.toEqual(editorDidCreate());
 
     // other editor actions on create should take place after editorDidCreate()
-    await expect(saga.take()).resolves.toEqual(editorActivateFile('test.file'));
+    await expect(saga.take()).resolves.toEqual(editorActivateFile(testFileUuid));
 
     await saga.end();
 });
@@ -90,16 +95,16 @@ describe('per-editor sagas', () => {
     describe('handleEditorOpenFile', () => {
         it('should fail if file is already in use', async () => {
             const releaseLock = await acquireLock(
-                'pybricks.editor+pybricksCode:test.file',
+                `pybricks.editor+pybricksCode:${testFileUuid}`,
             );
             expect(releaseLock).toBeDefined();
 
             try {
-                saga.put(editorOpenFile('test.file'));
+                saga.put(editorOpenFile(testFileUuid));
 
                 await expect(saga.take()).resolves.toEqual(
                     editorDidFailToOpenFile(
-                        'test.file',
+                        testFileUuid,
                         expectEditorError('FileInUse'),
                     ),
                 );
@@ -112,20 +117,20 @@ describe('per-editor sagas', () => {
             beforeEach(async () => {
                 jest.spyOn(OpenFileManager.prototype, 'add');
                 jest.spyOn(OpenFileManager.prototype, 'remove');
-                saga.put(editorOpenFile('test.file'));
+                saga.put(editorOpenFile(testFileUuid));
 
                 await expect(saga.take()).resolves.toEqual(
-                    fileStorageReadFile('test.file'),
+                    fileStorageLoadTextFile(testFileUuid),
                 );
             });
 
-            it('should propagate error from fileStorageReadFile', async () => {
+            it('should propagate error from fileStorageLoadTextFile', async () => {
                 const testError = new Error('test error');
 
-                saga.put(fileStorageDidFailToReadFile('test.file', testError));
+                saga.put(fileStorageDidFailToLoadTextFile(testFileUuid, testError));
 
                 await expect(saga.take()).resolves.toEqual(
-                    editorDidFailToOpenFile('test.file', testError),
+                    editorDidFailToOpenFile(testFileUuid, testError),
                 );
 
                 expect(OpenFileManager.prototype.add).not.toHaveBeenCalled();
@@ -137,12 +142,12 @@ describe('per-editor sagas', () => {
                 beforeEach(async () => {
                     monaco.editor.onDidCreateModel((m) => (model = m));
 
-                    saga.put(fileStorageDidReadFile('test.file', ''));
+                    saga.put(fileStorageDidLoadTextFile(testFileUuid, '', null));
 
                     expect(model).toBeDefined();
 
                     await expect(saga.take()).resolves.toEqual(
-                        editorDidOpenFile('test.file'),
+                        editorDidOpenFile(testFileUuid),
                     );
 
                     expect(OpenFileManager.prototype.add).toHaveBeenCalled();
@@ -164,14 +169,22 @@ describe('per-editor sagas', () => {
                 it('should close when requested', async () => {
                     jest.spyOn(model, 'dispose');
 
-                    saga.put(editorCloseFile('test.file'));
+                    saga.put(editorCloseFile(testFileUuid));
+
+                    // file is saved on close
+                    await expect(saga.take()).resolves.toEqual(
+                        fileStorageStoreTextFileValue(testFileUuid, ''),
+                    );
+                    await expect(saga.take()).resolves.toEqual(
+                        fileStorageStoreTextFileViewState(testFileUuid, null),
+                    );
 
                     // model should be disposed before fileStorageClose
                     expect(model.dispose).toHaveBeenCalled();
                     expect(OpenFileManager.prototype.remove).toHaveBeenCalled();
 
                     await expect(saga.take()).resolves.toEqual(
-                        editorDidCloseFile('test.file'),
+                        editorDidCloseFile(testFileUuid),
                     );
                 });
             });
@@ -182,16 +195,18 @@ describe('per-editor sagas', () => {
         describe('file is not already open', () => {
             beforeEach(async () => {
                 jest.spyOn(OpenFileManager.prototype, 'has').mockReturnValueOnce(false);
-                saga.put(editorActivateFile('test.file'));
-                await expect(saga.take()).resolves.toEqual(editorOpenFile('test.file'));
+                saga.put(editorActivateFile(testFileUuid));
+                await expect(saga.take()).resolves.toEqual(
+                    editorOpenFile(testFileUuid),
+                );
             });
 
             it('should propagate error if open fails', async () => {
                 const testError = new Error('test error');
-                saga.put(editorDidFailToOpenFile('test.file', testError));
+                saga.put(editorDidFailToOpenFile(testFileUuid, testError));
 
                 await expect(saga.take()).resolves.toEqual(
-                    editorDidFailToActivateFile('test.file', testError),
+                    editorDidFailToActivateFile(testFileUuid, testError),
                 );
             });
 
@@ -205,16 +220,18 @@ describe('per-editor sagas', () => {
                 );
                 jest.spyOn(OpenFileManager.prototype, 'updateViewState');
 
-                saga.put(editorDidOpenFile('test.file'));
+                saga.put(editorDidOpenFile(testFileUuid));
 
                 // changes should be made before editorDidActivateFile
-                expect(OpenFileManager.prototype.updateViewState).toHaveBeenCalled();
+                expect(
+                    OpenFileManager.prototype.updateViewState,
+                ).not.toHaveBeenCalled();
                 expect(monacoEditor.setModel).toHaveBeenCalled();
                 expect(monacoEditor.restoreViewState).toHaveBeenCalled();
                 expect(ActiveFileHistoryManager.prototype.push).toHaveBeenCalled();
 
                 await expect(saga.take()).resolves.toEqual(
-                    editorDidActivateFile('test.file'),
+                    editorDidActivateFile(testFileUuid),
                 );
             });
         });
@@ -229,17 +246,19 @@ describe('per-editor sagas', () => {
                 jest.spyOn(monacoEditor, 'getModel').mockReturnValueOnce(null);
                 jest.spyOn(monacoEditor, 'setModel').mockReturnValueOnce();
                 jest.spyOn(monacoEditor, 'restoreViewState').mockReturnValueOnce();
-                saga.put(editorActivateFile('test.file'));
+                saga.put(editorActivateFile(testFileUuid));
             });
 
             it('should set the model and update sessionStorage', async () => {
                 // changes should be made before editorDidActivateFile
                 expect(monacoEditor.setModel).toHaveBeenCalled();
                 expect(monacoEditor.restoreViewState).toHaveBeenCalled();
-                expect(OpenFileManager.prototype.updateViewState).toHaveBeenCalled();
+                expect(
+                    OpenFileManager.prototype.updateViewState,
+                ).not.toHaveBeenCalled();
 
                 await expect(saga.take()).resolves.toEqual(
-                    editorDidActivateFile('test.file'),
+                    editorDidActivateFile(testFileUuid),
                 );
             });
         });
@@ -248,21 +267,23 @@ describe('per-editor sagas', () => {
     describe('handleEditorDidCloseFile', () => {
         it('should activate a new file if closed file was currently active', async () => {
             jest.spyOn(ActiveFileHistoryManager.prototype, 'pop').mockReturnValueOnce(
-                'new.file',
+                newTestFileUuid,
             );
 
-            saga.put(editorDidCloseFile('test.file'));
+            saga.put(editorDidCloseFile(testFileUuid));
 
             expect(ActiveFileHistoryManager.prototype.pop).toHaveBeenCalled();
-            await expect(saga.take()).resolves.toEqual(editorActivateFile('new.file'));
+            await expect(saga.take()).resolves.toEqual(
+                editorActivateFile(newTestFileUuid),
+            );
         });
 
-        it('should do nothing if closed file was not currently active', () => {
+        it('should do nothing if closed file was not currently active', async () => {
             jest.spyOn(ActiveFileHistoryManager.prototype, 'pop').mockReturnValueOnce(
                 undefined,
             );
 
-            saga.put(editorDidCloseFile('test.file'));
+            saga.put(editorDidCloseFile(testFileUuid));
 
             expect(ActiveFileHistoryManager.prototype.pop).toHaveBeenCalled();
         });

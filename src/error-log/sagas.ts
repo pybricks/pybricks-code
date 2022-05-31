@@ -8,6 +8,7 @@ import {
     BleDeviceFailToConnectReasonType,
     didFailToConnect as bleDeviceDidFailToConnect,
 } from '../ble/actions';
+import { fileStorageDidFailToStoreTextFileValue } from '../fileStorage/actions';
 import {
     BootloaderConnectionFailureReason,
     didError as bootloaderDidError,
@@ -46,10 +47,20 @@ function handleBootloaderDidError(action: ReturnType<typeof bootloaderDidError>)
     console.error(action.err);
 }
 
+function handleFileStorageDidFailToStoreTextFileValue(
+    action: ReturnType<typeof fileStorageDidFailToStoreTextFileValue>,
+): void {
+    console.error(action.error);
+}
+
 export default function* (): Generator {
     yield* takeEvery(bleDeviceDidFailToConnect, handleBleDeviceDidFailToConnect);
     yield* takeEvery(pybricksEventProtocolError, handlePybricksEventProtocolError);
     yield* takeEvery(bleUartDidFailToWrite, handleBleUartDidFailToWrite);
     yield* takeEvery(bootloaderDidFailToConnect, handleBootloaderDidFailToConnect);
     yield* takeEvery(bootloaderDidError, handleBootloaderDidError);
+    yield* takeEvery(
+        fileStorageDidFailToStoreTextFileValue,
+        handleFileStorageDidFailToStoreTextFileValue,
+    );
 }

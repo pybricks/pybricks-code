@@ -3,6 +3,7 @@
 
 import 'dexie-observable';
 import Dexie, { Table } from 'dexie';
+import type { monaco } from 'react-monaco-editor';
 
 /** Type to avoid mixing UUID with regular string. */
 export type UUID = string & { _uuidBrand: undefined };
@@ -19,6 +20,8 @@ export type FileMetadata = Readonly<{
     path: string;
     /** The SHA256 hash of the file contents. */
     sha256: string;
+    /** The text editor view state. */
+    viewState: monaco.editor.ICodeEditorViewState | null;
 }>;
 
 /**
@@ -44,7 +47,7 @@ export class FileStorageDb extends Dexie {
     constructor(databaseName: string) {
         super(databaseName);
         this.version(1).stores({
-            metadata: '$$uuid, &path, sha256',
+            metadata: '$$uuid, &path, sha256, viewState',
             _contents: 'path, contents',
         });
     }

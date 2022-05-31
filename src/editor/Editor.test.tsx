@@ -6,28 +6,43 @@ import { RenderResult, cleanup, fireEvent, waitFor } from '@testing-library/reac
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { monaco } from 'react-monaco-editor';
-import { testRender } from '../../test';
+import { testRender, uuid } from '../../test';
+import { FileMetadata } from '../fileStorage';
+import { useFileStorageMetadata, useFileStoragePath } from '../fileStorage/hooks';
 import { defined } from '../utils';
 import Editor from './Editor';
 import { editorActivateFile, editorCloseFile } from './actions';
 
+const testFile: FileMetadata = {
+    uuid: uuid(0),
+    path: 'test.file',
+    sha256: '',
+    viewState: null,
+};
+
 describe('Editor', () => {
     describe('tabs', () => {
         it('should dispatch activate action when tab is clicked', async () => {
+            jest.mocked(useFileStorageMetadata).mockReturnValue([testFile]);
+            jest.mocked(useFileStoragePath).mockReturnValue(testFile.path);
+
             const [editor, dispatch] = testRender(<Editor />, {
-                editor: { openFiles: ['test.file'] },
+                editor: { openFileUuids: [testFile.uuid] },
             });
 
             userEvent.click(editor.getByRole('tab', { name: 'test.file' }));
 
-            expect(dispatch).toHaveBeenCalledWith(editorActivateFile('test.file'));
+            expect(dispatch).toHaveBeenCalledWith(editorActivateFile(testFile.uuid));
         });
 
         it.each(['enter', 'space'])(
             'should dispatch activate action when % button is pressed',
             async (button) => {
+                jest.mocked(useFileStorageMetadata).mockReturnValue([testFile]);
+                jest.mocked(useFileStoragePath).mockReturnValue(testFile.path);
+
                 const [editor, dispatch] = testRender(<Editor />, {
-                    editor: { openFiles: ['test.file'] },
+                    editor: { openFileUuids: [testFile.uuid] },
                 });
 
                 userEvent.type(
@@ -35,28 +50,36 @@ describe('Editor', () => {
                     `{${button}}`,
                 );
 
-                expect(dispatch).toHaveBeenCalledWith(editorActivateFile('test.file'));
+                expect(dispatch).toHaveBeenCalledWith(
+                    editorActivateFile(testFile.uuid),
+                );
             },
         );
 
         it('should dispatch close action when close button is clicked', async () => {
+            jest.mocked(useFileStorageMetadata).mockReturnValue([testFile]);
+            jest.mocked(useFileStoragePath).mockReturnValue(testFile.path);
+
             const [editor, dispatch] = testRender(<Editor />, {
-                editor: { openFiles: ['test.file'] },
+                editor: { openFileUuids: [testFile.uuid] },
             });
 
             userEvent.click(editor.getByRole('button', { name: 'Close test.file' }));
 
-            expect(dispatch).toHaveBeenCalledWith(editorCloseFile('test.file'));
+            expect(dispatch).toHaveBeenCalledWith(editorCloseFile(testFile.uuid));
         });
 
         it('should dispatch close action when delete button is pressed', async () => {
+            jest.mocked(useFileStorageMetadata).mockReturnValue([testFile]);
+            jest.mocked(useFileStoragePath).mockReturnValue(testFile.path);
+
             const [editor, dispatch] = testRender(<Editor />, {
-                editor: { openFiles: ['test.file'] },
+                editor: { openFileUuids: [testFile.uuid] },
             });
 
             userEvent.type(editor.getByRole('tab', { name: 'test.file' }), '{delete}');
 
-            expect(dispatch).toHaveBeenCalledWith(editorCloseFile('test.file'));
+            expect(dispatch).toHaveBeenCalledWith(editorCloseFile(testFile.uuid));
         });
     });
 

@@ -2,6 +2,7 @@
 // Copyright (c) 2022 The Pybricks Authors
 
 import { createAction } from '../actions';
+import { UUID } from '../fileStorage';
 
 /** Action that indicates that a code editor was created. */
 export const editorDidCreate = createAction(() => ({
@@ -30,42 +31,40 @@ export const editorGetValueResponse = createAction((id: number, value: string) =
 
 /**
  * Requests to open a file in the editor.
- * @param fileName the file name.
+ * @param uuid The file UUID.
  */
-export const editorOpenFile = createAction((fileName: string) => ({
+export const editorOpenFile = createAction((uuid: UUID) => ({
     type: 'editor.action.openFile',
-    fileName,
+    uuid,
 }));
 
 /**
  * Indicates that {@link editorOpenFile} succeeded.
- * @param fileName the file name.
+ * @param uuid The file UUID.
  */
-export const editorDidOpenFile = createAction((fileName: string) => ({
+export const editorDidOpenFile = createAction((uuid: UUID) => ({
     type: 'editor.action.didOpenFile',
-    fileName,
+    uuid,
 }));
 
 /**
  * Indicates that {@link editorOpenFile} failed.
- * @param fileName the file name.
+ * @param uuid The file UUID.
  * @param error the error.
  */
-export const editorDidFailToOpenFile = createAction(
-    (fileName: string, error: Error) => ({
-        type: 'editor.action.didFailToOpenFile',
-        fileName,
-        error,
-    }),
-);
+export const editorDidFailToOpenFile = createAction((uuid: UUID, error: Error) => ({
+    type: 'editor.action.didFailToOpenFile',
+    uuid,
+    error,
+}));
 
 /**
  * Requests to close a file in the editor.
- * @param fileName the file name.
+ * @param uuid The file UUID.
  */
-export const editorCloseFile = createAction((fileName: string) => ({
+export const editorCloseFile = createAction((uuid: UUID) => ({
     type: 'editor.action.closeFile',
-    fileName,
+    uuid,
 }));
 
 /**
@@ -73,40 +72,38 @@ export const editorCloseFile = createAction((fileName: string) => ({
  *
  * Unlike most actions, this does not have a "did fail" counterpart.
  *
- * @param fileName the file name.
+ * @param uuid The file UUID.
  */
-export const editorDidCloseFile = createAction((fileName: string) => ({
+export const editorDidCloseFile = createAction((uuid: UUID) => ({
     type: 'editor.action.didCloseFile',
-    fileName,
+    uuid,
 }));
 
 /**
  * Request to activate a file (open or bring to foreground if already open).
- * @param fileName The file name.
+ * @param uuid The file UUID.
  */
-export const editorActivateFile = createAction((fileName: string) => ({
+export const editorActivateFile = createAction((uuid: UUID) => ({
     type: 'editor.action.activateFile',
-    fileName,
+    uuid,
 }));
 
 /**
  * Indicates that {@link editorActivateFile} succeeded.
- * @param fileName The file name.
+ * @param uuid The file UUID.
  */
-export const editorDidActivateFile = createAction((fileName: string) => ({
+export const editorDidActivateFile = createAction((uuid: UUID) => ({
     type: 'editor.action.didActivateFile',
-    fileName,
+    uuid,
 }));
 
 /**
  * Indicates that {@link editorActivateFile} failed.
- * @param fileName The file name.
+ * @param uuid The file UUID.
  * @param error The error that was raised.
  */
-export const editorDidFailToActivateFile = createAction(
-    (fileName: string, error: Error) => ({
-        type: 'editor.action.didFailToActivateFile',
-        fileName,
-        error,
-    }),
-);
+export const editorDidFailToActivateFile = createAction((uuid: UUID, error: Error) => ({
+    type: 'editor.action.didFailToActivateFile',
+    uuid,
+    error,
+}));

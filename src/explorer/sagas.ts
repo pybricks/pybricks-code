@@ -214,7 +214,7 @@ function* handleExplorerCreateNewFile(): Generator {
             ),
         );
 
-        const { didFailToWrite } = yield* race({
+        const { didWrite, didFailToWrite } = yield* race({
             didWrite: take(fileStorageDidWriteFile.when((a) => a.path === fileName)),
             didFailToWrite: take(
                 fileStorageDidFailToWriteFile.when((a) => a.path === fileName),
@@ -225,7 +225,9 @@ function* handleExplorerCreateNewFile(): Generator {
             throw didFailToWrite.error;
         }
 
-        yield* put(editorActivateFile(fileName));
+        defined(didWrite);
+
+        yield* put(editorActivateFile(didWrite.uuid));
 
         yield* put(explorerDidCreateNewFile());
     } catch (err) {
@@ -240,14 +242,12 @@ function* handleExplorerCreateNewFile(): Generator {
 function* handleExplorerActivateFile(
     action: ReturnType<typeof explorerUserActivateFile>,
 ): Generator {
-    yield* put(editorActivateFile(action.fileName));
+    yield* put(editorActivateFile(action.uuid));
 
     const { didFailToActivate } = yield* race({
-        didActivate: take(
-            editorDidActivateFile.when((a) => a.fileName === action.fileName),
-        ),
+        didActivate: take(editorDidActivateFile.when((a) => a.uuid === action.uuid)),
         didFailToActivate: take(
-            editorDidFailToActivateFile.when((a) => a.fileName === action.fileName),
+            editorDidFailToActivateFile.when((a) => a.uuid === action.uuid),
         ),
     });
 
@@ -406,8 +406,8 @@ function* handleExplorerDeleteFile(action: ReturnType<typeof explorerDeleteFile>
         // at this point we know the user accepted
 
         // have to close editor before deleting, otherwise we get "in use" error
-        yield* put(editorCloseFile(action.fileName));
-        yield* take(editorDidCloseFile.when((a) => a.fileName === action.fileName));
+        yield* put(editorCloseFile(action.uuid));
+        yield* take(editorDidCloseFile.when((a) => a.uuid === action.uuid));
 
         yield* put(fileStorageDeleteFile(action.fileName));
 

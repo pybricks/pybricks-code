@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2022 The Pybricks Authors
 
+import Dexie from 'dexie';
 import {
     call,
     fork,
@@ -27,24 +28,33 @@ import {
     fileStorageDidFailToDeleteFile,
     fileStorageDidFailToDumpAllFiles,
     fileStorageDidFailToInitialize,
+    fileStorageDidFailToLoadTextFile,
     fileStorageDidFailToOpen,
     fileStorageDidFailToRead,
     fileStorageDidFailToReadFile,
     fileStorageDidFailToRenameFile,
+    fileStorageDidFailToStoreTextFileValue,
+    fileStorageDidFailToStoreTextFileViewState,
     fileStorageDidFailToWrite,
     fileStorageDidFailToWriteFile,
     fileStorageDidInitialize,
+    fileStorageDidLoadTextFile,
     fileStorageDidOpen,
     fileStorageDidRead,
     fileStorageDidReadFile,
     fileStorageDidRenameFile,
+    fileStorageDidStoreTextFileValue,
+    fileStorageDidStoreTextFileViewState,
     fileStorageDidWrite,
     fileStorageDidWriteFile,
     fileStorageDumpAllFiles,
+    fileStorageLoadTextFile,
     fileStorageOpen,
     fileStorageRead,
     fileStorageReadFile,
     fileStorageRenameFile,
+    fileStorageStoreTextFileValue,
+    fileStorageStoreTextFileViewState,
     fileStorageWrite,
     fileStorageWriteFile,
 } from './actions';
@@ -115,6 +125,7 @@ function* handleOpen(
                     const key = await db.metadata.add((<Omit<FileMetadata, 'uuid'>>{
                         path: action.path,
                         sha256,
+                        viewState: null,
                     }) as FileMetadata);
 
                     await db._contents.put({ path: action.path, contents });
@@ -131,7 +142,7 @@ function* handleOpen(
 
             openFds.set(fd, { mode: action.mode, uuid });
 
-            yield* put(fileStorageDidOpen(action.path, fd));
+            yield* put(fileStorageDidOpen(action.path, uuid, fd));
 
             yield* take(fileStorageClose.when((a) => a.fd === fd));
 
@@ -353,7 +364,7 @@ function* handleWriteFile(action: ReturnType<typeof fileStorageWriteFile>): Gene
             yield* take(fileStorageDidClose.when((a) => a.fd === didOpen.fd));
         }
 
-        yield* put(fileStorageDidWriteFile(action.path));
+        yield* put(fileStorageDidWriteFile(action.path, didOpen.uuid));
     } catch (err) {
         yield* put(fileStorageDidFailToWriteFile(action.path, ensureError(err)));
     }
@@ -571,6 +582,91 @@ function* handleDumpAllFiles(db: FileStorageDb): Generator {
     }
 }
 
+function* handleLoadTextFile(
+    db: FileStorageDb,
+    action: ReturnType<typeof fileStorageLoadTextFile>,
+): Generator {
+    try {
+        const { value, viewState } = yield* call(() =>
+            db.transaction('r', db.metadata, db._contents, async () => {
+                const metadata = await db.metadata.get(action.uuid);
+
+                if (!metadata) {
+                    throw new Error(`file with uuid '${action.uuid}' not found`);
+                }
+
+                const content = await db._contents.get(metadata.path);
+
+                if (!content) {
+                    throw new Error(`content for file '${metadata.path}' not found`);
+                }
+
+                return { value: content.contents, viewState: metadata.viewState };
+            }),
+        );
+
+        yield* put(fileStorageDidLoadTextFile(action.uuid, value, viewState));
+    } catch (err) {
+        yield* put(fileStorageDidFailToLoadTextFile(action.uuid, ensureError(err)));
+    }
+}
+
+function* handleStoreTextFileValue(
+    db: FileStorageDb,
+    action: ReturnType<typeof fileStorageStoreTextFileValue>,
+): Generator {
+    try {
+        yield* call(() =>
+            db.transaction('rw', db.metadata, db._contents, async () => {
+                const metadata = await db.metadata.get(action.uuid);
+
+                if (!metadata) {
+                    throw new Error(`file with uuid '${action.uuid}' not found`);
+                }
+
+                const sha256 = await Dexie.waitFor(sha256Digest(action.value));
+
+                await db.metadata.update(metadata.uuid, { sha256 });
+
+                await db._contents.put({ path: metadata.path, contents: action.value });
+            }),
+        );
+
+        yield* put(fileStorageDidStoreTextFileValue(action.uuid));
+    } catch (err) {
+        yield* put(
+            fileStorageDidFailToStoreTextFileValue(action.uuid, ensureError(err)),
+        );
+    }
+}
+
+function* handleStoreTextFileViewState(
+    db: FileStorageDb,
+    action: ReturnType<typeof fileStorageStoreTextFileViewState>,
+): Generator {
+    try {
+        yield* call(() =>
+            db.transaction('rw', db.metadata, async () => {
+                const metadata = await db.metadata.get(action.uuid);
+
+                if (!metadata) {
+                    throw new Error(`file with uuid '${action.uuid}' not found`);
+                }
+
+                await db.metadata.update(metadata.uuid, {
+                    viewState: action.viewState,
+                });
+            }),
+        );
+
+        yield* put(fileStorageDidStoreTextFileViewState(action.uuid));
+    } catch (err) {
+        yield* put(
+            fileStorageDidFailToStoreTextFileViewState(action.uuid, ensureError(err)),
+        );
+    }
+}
+
 /**
  * Initializes the storage backend.
  */
@@ -595,6 +691,7 @@ function* initialize(): Generator {
                     await db.metadata.add((<Omit<FileMetadata, 'uuid'>>{
                         path: 'main.py',
                         sha256,
+                        viewState: null,
                     }) as FileMetadata);
 
                     await db._contents.add({ path: 'main.py', contents: oldProgram });
@@ -622,6 +719,13 @@ function* initialize(): Generator {
         yield* takeEvery(fileStorageDeleteFile, handleDeleteFile, db);
         yield* takeEvery(fileStorageRenameFile, handleRenameFile, db);
         yield* takeEvery(fileStorageDumpAllFiles, handleDumpAllFiles, db);
+        yield* takeEvery(fileStorageLoadTextFile, handleLoadTextFile, db);
+        yield* takeEvery(fileStorageStoreTextFileValue, handleStoreTextFileValue, db);
+        yield* takeEvery(
+            fileStorageStoreTextFileViewState,
+            handleStoreTextFileViewState,
+            db,
+        );
 
         const files = yield* call(() => db.metadata.toArray());
 

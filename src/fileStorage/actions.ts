@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2022 The Pybricks Authors
 
+import type { monaco } from 'react-monaco-editor';
 import { createAction } from '../actions';
-import { FileMetadata } from '.';
+import { FileMetadata, UUID } from '.';
 
 /** File open modes. */
 export type FileOpenMode = 'r' | 'w';
@@ -48,11 +49,13 @@ export const fileStorageOpen = createAction(
 /**
  * Action that indicates that {@link fileStorageOpen} succeeded.
  * @param path The file path.
+ * @param uuid The UUID of the file metadata.
  * @param fd The file descriptor.
  */
-export const fileStorageDidOpen = createAction((path: string, fd: FD) => ({
+export const fileStorageDidOpen = createAction((path: string, uuid: UUID, fd: FD) => ({
     type: 'fileStorage.action.DidOpen',
     path,
+    uuid,
     fd,
 }));
 
@@ -199,10 +202,12 @@ export const fileStorageWriteFile = createAction((path: string, contents: string
 /**
  * Indicates that {@link fileStorageWriteFile} succeeded.
  * @param path: The file path.
+ * @param uuid: The UUID of the file metadata.
  */
-export const fileStorageDidWriteFile = createAction((path: string) => ({
+export const fileStorageDidWriteFile = createAction((path: string, uuid: UUID) => ({
     type: 'fileStorage.action.didWriteFile',
     path,
+    uuid,
 }));
 
 /**
@@ -341,3 +346,71 @@ export const fileStorageDidFailToDumpAllFiles = createAction((error: Error) => (
     type: 'fileStorage.action.didFailToDumpAllFiles',
     error,
 }));
+
+export const fileStorageLoadTextFile = createAction((uuid: UUID) => ({
+    type: 'fileStorage.action.loadTextFile',
+    uuid,
+}));
+
+export const fileStorageDidLoadTextFile = createAction(
+    (
+        uuid: UUID,
+        value: string,
+        viewState: monaco.editor.ICodeEditorViewState | null,
+    ) => ({
+        type: 'fileStorage.action.didLoadTextFile',
+        uuid,
+        value,
+        viewState,
+    }),
+);
+
+export const fileStorageDidFailToLoadTextFile = createAction(
+    (uuid: UUID, error: Error) => ({
+        type: 'fileStorage.action.didFailToLoadTextFile',
+        uuid,
+        error,
+    }),
+);
+
+export const fileStorageStoreTextFileValue = createAction(
+    (uuid: UUID, value: string) => ({
+        type: 'fileStorage.action.storeTextFileValue',
+        uuid,
+        value,
+    }),
+);
+
+export const fileStorageDidStoreTextFileValue = createAction((uuid: UUID) => ({
+    type: 'fileStorage.action.didStoreTextFileValue',
+    uuid,
+}));
+
+export const fileStorageDidFailToStoreTextFileValue = createAction(
+    (uuid: UUID, error: Error) => ({
+        type: 'fileStorage.action.didFailToStoreTextFileValue',
+        uuid,
+        error,
+    }),
+);
+
+export const fileStorageStoreTextFileViewState = createAction(
+    (uuid: UUID, viewState: monaco.editor.ICodeEditorViewState | null) => ({
+        type: 'fileStorage.action.storeTextFileViewState',
+        uuid,
+        viewState,
+    }),
+);
+
+export const fileStorageDidStoreTextFileViewState = createAction((uuid: UUID) => ({
+    type: 'fileStorage.action.didStoreTextFileViewState',
+    uuid,
+}));
+
+export const fileStorageDidFailToStoreTextFileViewState = createAction(
+    (uuid: UUID, error: Error) => ({
+        type: 'fileStorage.action.didFailToStoreTextFileViewState',
+        uuid,
+        error,
+    }),
+);

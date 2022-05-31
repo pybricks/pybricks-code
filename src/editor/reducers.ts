@@ -2,6 +2,7 @@
 // Copyright (c) 2022 The Pybricks Authors
 
 import { Reducer, combineReducers } from 'redux';
+import { UUID } from '../fileStorage';
 import {
     editorDidActivateFile,
     editorDidCloseFile,
@@ -19,29 +20,33 @@ const isReady: Reducer<boolean> = (state = false, action) => {
 };
 
 /**
- * Indicates which file out of {@link openFiles} is the currently active file.
+ * Indicates which file out of {@link openFileUuids} is the currently active file.
  *
- * If {@link activeFile} is not in {@link openFiles}, then there is no active file.
+ * If {@link activeFileUuid} is not in {@link openFileUuids}, then there is no active file.
  */
-const activeFile: Reducer<string> = (state = '', action) => {
+const activeFileUuid: Reducer<UUID | null> = (state = null, action) => {
     if (editorDidActivateFile.matches(action)) {
-        return action.fileName;
+        return action.uuid;
     }
 
     return state;
 };
 
 /** A list of open files in the order they should be displayed to the user. */
-const openFiles: Reducer<readonly string[]> = (state = [], action) => {
+const openFileUuids: Reducer<readonly UUID[]> = (state = [], action) => {
     if (editorDidOpenFile.matches(action)) {
-        return [...state, action.fileName];
+        return [...state, action.uuid];
     }
 
     if (editorDidCloseFile.matches(action)) {
-        return state.filter((f) => f !== action.fileName);
+        return state.filter((f) => f !== action.uuid);
     }
 
     return state;
 };
 
-export default combineReducers({ isReady, activeFile, openFiles });
+export default combineReducers({
+    isReady,
+    activeFileUuid,
+    openFileUuids,
+});

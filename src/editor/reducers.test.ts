@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2022 The Pybricks Authors
 
+import { uuid } from '../../test';
 import {
     editorDidActivateFile,
     editorDidCloseFile,
@@ -10,6 +11,8 @@ import {
 import reducers from './reducers';
 
 type State = ReturnType<typeof reducers>;
+
+const testUuid = uuid(0);
 
 describe('isReady', () => {
     it('should change state when editor is created', () => {
@@ -22,9 +25,9 @@ describe('isReady', () => {
 describe('activeFile', () => {
     it('should change state when a file is activated', () => {
         expect(
-            reducers({ activeFile: '' } as State, editorDidActivateFile('test.file'))
-                .activeFile,
-        ).toBe('test.file');
+            reducers({ activeFileUuid: null } as State, editorDidActivateFile(testUuid))
+                .activeFileUuid,
+        ).toBe(testUuid);
     });
 });
 
@@ -32,18 +35,18 @@ describe('openFiles', () => {
     it('should change state when a file is opened', () => {
         expect(
             reducers(
-                { openFiles: [] as readonly string[] } as State,
-                editorDidOpenFile('test.file'),
-            ).openFiles,
-        ).toEqual(['test.file']);
+                { openFileUuids: [] as readonly string[] } as State,
+                editorDidOpenFile(testUuid),
+            ).openFileUuids,
+        ).toEqual([testUuid]);
     });
 
     it('should change state when a file is closed', () => {
         expect(
             reducers(
-                { openFiles: ['test.file'] as readonly string[] } as State,
-                editorDidCloseFile('test.file'),
-            ).openFiles,
+                { openFileUuids: [testUuid] as readonly string[] } as State,
+                editorDidCloseFile(testUuid),
+            ).openFileUuids,
         ).toEqual([]);
     });
 });

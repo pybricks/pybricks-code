@@ -2,8 +2,14 @@
 // Copyright (c) 2022 The Pybricks Authors
 
 import { mock } from 'jest-mock-extended';
-import { monaco } from 'react-monaco-editor';
+import type { monaco } from 'react-monaco-editor';
+import { uuid } from '../../test';
 import { ActiveFileHistoryManager, OpenFileInfo, OpenFileManager } from './lib';
+
+const testFileUuid = uuid(0);
+const oneFileUuid = uuid(1);
+const twoFileUuid = uuid(2);
+const threeFileUuid = uuid(3);
 
 afterEach(() => {
     sessionStorage.clear();
@@ -18,73 +24,73 @@ describe('ActiveFileHistoryManager', () => {
     it('should return history from sessionStorage', () => {
         sessionStorage.setItem(
             `editor.activeFileHistory.${window.name}.test`,
-            '["one.file","two.file"]',
+            `["${oneFileUuid}","${twoFileUuid}"]`,
         );
 
         const manager = new ActiveFileHistoryManager('test');
-        expect([...manager.getFromStorage()]).toEqual(['one.file', 'two.file']);
+        expect([...manager.getFromStorage()]).toEqual([oneFileUuid, twoFileUuid]);
     });
 
     it('should save to sessionStorage', () => {
         const manager = new ActiveFileHistoryManager('test');
 
-        manager.push('one.file');
-        manager.push('two.file');
+        manager.push(oneFileUuid);
+        manager.push(twoFileUuid);
 
         expect(
             sessionStorage.getItem(`editor.activeFileHistory.${window.name}.test`),
-        ).toEqual('["one.file","two.file"]');
+        ).toEqual(`["${oneFileUuid}","${twoFileUuid}"]`);
     });
 
     it('should reorder existing files', () => {
         const manager = new ActiveFileHistoryManager('test');
 
-        manager.push('one.file');
-        manager.push('two.file');
-        manager.push('one.file');
+        manager.push(oneFileUuid);
+        manager.push(twoFileUuid);
+        manager.push(oneFileUuid);
 
         expect(
             sessionStorage.getItem(`editor.activeFileHistory.${window.name}.test`),
-        ).toEqual('["two.file","one.file"]');
+        ).toEqual(`["${twoFileUuid}","${oneFileUuid}"]`);
     });
 
     it('should known when active file was popped', () => {
         const manager = new ActiveFileHistoryManager('test');
 
-        manager.push('one.file');
-        manager.push('two.file');
+        manager.push(oneFileUuid);
+        manager.push(twoFileUuid);
 
-        expect(manager.pop('two.file')).toBe('one.file');
+        expect(manager.pop(twoFileUuid)).toBe(oneFileUuid);
 
         expect(
             sessionStorage.getItem(`editor.activeFileHistory.${window.name}.test`),
-        ).toEqual('["one.file"]');
+        ).toEqual(`["${oneFileUuid}"]`);
     });
 
     it('should known when not active file was popped', () => {
         const manager = new ActiveFileHistoryManager('test');
 
-        manager.push('one.file');
-        manager.push('two.file');
+        manager.push(oneFileUuid);
+        manager.push(twoFileUuid);
 
-        expect(manager.pop('one.file')).toBe(undefined);
+        expect(manager.pop(oneFileUuid)).toBe(undefined);
 
         expect(
             sessionStorage.getItem(`editor.activeFileHistory.${window.name}.test`),
-        ).toEqual('["two.file"]');
+        ).toEqual(`["${twoFileUuid}"]`);
     });
 
     it('should known when never active file was popped', () => {
         const manager = new ActiveFileHistoryManager('test');
 
-        manager.push('one.file');
-        manager.push('two.file');
+        manager.push(oneFileUuid);
+        manager.push(twoFileUuid);
 
-        expect(manager.pop('three.file')).toBe(undefined);
+        expect(manager.pop(threeFileUuid)).toBe(undefined);
 
         expect(
             sessionStorage.getItem(`editor.activeFileHistory.${window.name}.test`),
-        ).toEqual('["one.file","two.file"]');
+        ).toEqual(`["${oneFileUuid}","${twoFileUuid}"]`);
     });
 });
 
@@ -92,40 +98,40 @@ describe('OpenFileManager', () => {
     it('should add and remove files', () => {
         const manager = new OpenFileManager();
 
-        expect(manager.has('test.file')).toBeFalsy();
-        expect(manager.get('test.file')).toBeUndefined();
+        expect(manager.has(testFileUuid)).toBeFalsy();
+        expect(manager.get(testFileUuid)).toBeUndefined();
 
         const model = mock<monaco.editor.ITextModel>();
 
-        manager.add('test.file', model, null);
+        manager.add(testFileUuid, model, null);
 
-        expect(manager.has('test.file')).toBeTruthy();
-        expect(manager.get('test.file')).toEqual(<OpenFileInfo>{
+        expect(manager.has(testFileUuid)).toBeTruthy();
+        expect(manager.get(testFileUuid)).toEqual(<OpenFileInfo>{
             model,
             viewState: null,
         });
 
-        manager.remove('test.file');
+        manager.remove(testFileUuid);
 
-        expect(manager.has('test.file')).toBeFalsy();
-        expect(manager.get('test.file')).toBeUndefined();
+        expect(manager.has(testFileUuid)).toBeFalsy();
+        expect(manager.get(testFileUuid)).toBeUndefined();
     });
 
     it('should update viewState', () => {
         const manager = new OpenFileManager();
 
         // does not fail if key does not exist
-        manager.updateViewState('test.file', null);
+        manager.updateViewState(testFileUuid, null);
 
         const model = mock<monaco.editor.ITextModel>();
         const viewState = mock<monaco.editor.ICodeEditorViewState>();
 
-        manager.add('test.file', model, viewState);
+        manager.add(testFileUuid, model, viewState);
 
-        expect(manager.get('test.file')).toHaveProperty('viewState', viewState);
+        expect(manager.get(testFileUuid)).toHaveProperty('viewState', viewState);
 
-        manager.updateViewState('test.file', null);
+        manager.updateViewState(testFileUuid, null);
 
-        expect(manager.get('test.file')).toHaveProperty('viewState', null);
+        expect(manager.get(testFileUuid)).toHaveProperty('viewState', null);
     });
 });

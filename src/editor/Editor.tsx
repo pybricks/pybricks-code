@@ -18,7 +18,7 @@ import {
 import { ContextMenu2, ResizeSensor2 } from '@blueprintjs/popover2';
 import tomorrowNightEightiesTheme from 'monaco-themes/themes/Tomorrow-Night-Eighties.json';
 import xcodeTheme from 'monaco-themes/themes/Xcode_default.json';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useId } from 'react-aria';
 import MonacoEditor, {
     EditorDidMount,
@@ -28,6 +28,8 @@ import MonacoEditor, {
 import { useDispatch } from 'react-redux';
 import { useTernaryDarkMode } from 'usehooks-ts';
 import { IDisposable } from 'xterm';
+import { UUID } from '../fileStorage';
+import { useFileStoragePath } from '../fileStorage/hooks';
 import { compile } from '../mpy/actions';
 import { useSelector } from '../reducers';
 import { useSettingIsShowDocsEnabled } from '../settings/hooks';
@@ -173,20 +175,77 @@ const EditorContextMenu: React.VoidFunctionComponent<EditorContextMenuProps> = (
     );
 };
 
+type FileNameProps = {
+    /** The DOM ID. */
+    id: string;
+    /** The file UUID. */
+    uuid: UUID;
+    /** Called when the file name changes. */
+    onNameChanged: () => void;
+};
+
+const TabLabel: React.VoidFunctionComponent<FileNameProps> = ({
+    id,
+    uuid,
+    onNameChanged,
+}) => {
+    const fileName = useFileStoragePath(uuid);
+
+    useEffect(() => {
+        onNameChanged?.();
+    }, [fileName, onNameChanged]);
+
+    return (
+        <Text tagName="span" id={id} ellipsize={true}>
+            {fileName}
+        </Text>
+    );
+};
+
+type TabCloseButtonProps = {
+    /** The file UUID. */
+    uuid: UUID;
+};
+
+const TabCloseButton: React.VoidFunctionComponent<TabCloseButtonProps> = ({ uuid }) => {
+    const fileName = useFileStoragePath(uuid) ?? '';
+    const dispatch = useDispatch();
+    const i18n = useI18n();
+
+    return (
+        <Button
+            title={i18n.translate(I18nId.CloseFileTooltip, {
+                fileName,
+            })}
+            minimal={true}
+            small={true}
+            icon={'cross'}
+            // tabs are closed with delete button by keyboard, so
+            // don't focus the close button
+            tabIndex={-1}
+            onFocus={(e) => e.preventDefault()}
+            onClick={(e) => {
+                dispatch(editorCloseFile(uuid));
+                // prevent triggering Tabs onChange
+                e.stopPropagation();
+            }}
+        />
+    );
+};
+
 type EditorTabsProps = Readonly<{
     /** Called when the selected tab changes. */
     onChange?: () => void;
 }>;
 
 const EditorTabs: React.VoidFunctionComponent<EditorTabsProps> = ({ onChange }) => {
-    const openFiles = useSelector((s) => s.editor.openFiles);
-    const activeFile = useSelector((s) => s.editor.activeFile);
+    const openFiles = useSelector((s) => s.editor.openFileUuids);
+    const activeFile = useSelector((s) => s.editor.activeFileUuid);
     const dispatch = useDispatch();
-    const i18n = useI18n();
 
     const handleChange = useCallback(
         (newTabId: TabId) => {
-            dispatch(editorActivateFile(newTabId as string));
+            dispatch(editorActivateFile(newTabId as UUID));
             onChange?.();
         },
         [dispatch, onChange],
@@ -196,9 +255,9 @@ const EditorTabs: React.VoidFunctionComponent<EditorTabsProps> = ({ onChange }) 
 
     // close tab when delete key is pressed
     const handleKeyDown = useCallback(
-        (e: React.KeyboardEvent, fileName: string) => {
+        (e: React.KeyboardEvent, uuid: UUID) => {
             if (e.key === 'Delete') {
-                dispatch(editorCloseFile(fileName));
+                dispatch(editorCloseFile(uuid));
                 e.preventDefault();
                 e.stopPropagation();
             }
@@ -206,38 +265,35 @@ const EditorTabs: React.VoidFunctionComponent<EditorTabsProps> = ({ onChange }) 
         [dispatch],
     );
 
+    const tabsRef = useRef<Tabs>(null);
+
+    // HACK: call private Tabs method to fix selection indicator animation when
+    // a file is renamed
+    const handleNameChanged = useCallback(() => {
+        tabsRef.current?.['moveSelectionIndicator']();
+    }, [tabsRef]);
+
     return (
         <Tabs
             className="pb-editor-tablist"
-            selectedTabId={activeFile}
+            selectedTabId={activeFile || undefined}
+            ref={tabsRef}
             onChange={handleChange}
         >
-            {openFiles.map((fileName, i) => (
+            {openFiles.map((uuid) => (
                 <Tab
                     className="pb-editor-tablist-tab"
-                    aria-labelledby={`${labelId}.${i}`}
-                    key={i}
-                    id={fileName}
-                    onKeyDown={(e) => handleKeyDown(e, fileName)}
+                    aria-labelledby={`${labelId}.${uuid}`}
+                    key={uuid}
+                    id={uuid}
+                    onKeyDown={(e) => handleKeyDown(e, uuid)}
                 >
-                    <Text tagName="span" id={`${labelId}.${i}`} ellipsize={true}>
-                        {fileName}
-                    </Text>
-                    <Button
-                        title={i18n.translate(I18nId.CloseFileTooltip, { fileName })}
-                        minimal={true}
-                        small={true}
-                        icon={'cross'}
-                        // tabs are closed with delete button by keyboard, so
-                        // don't focus the close button
-                        tabIndex={-1}
-                        onFocus={(e) => e.preventDefault()}
-                        onClick={(e) => {
-                            dispatch(editorCloseFile(fileName));
-                            // prevent triggering Tabs onChange
-                            e.stopPropagation();
-                        }}
+                    <TabLabel
+                        id={`${labelId}.${uuid}`}
+                        uuid={uuid}
+                        onNameChanged={handleNameChanged}
                     />
+                    <TabCloseButton uuid={uuid} />
                 </Tab>
             ))}
         </Tabs>

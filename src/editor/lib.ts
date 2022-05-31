@@ -2,7 +2,8 @@
 // Copyright (c) 2022 The Pybricks Authors
 
 import dexieObservable from 'dexie-observable';
-import { monaco } from 'react-monaco-editor';
+import type { monaco } from 'react-monaco-editor';
+import { UUID } from '../fileStorage';
 
 // HACK: Using window.name to detect page reloads vs. tab duplication.
 // window.name will persist across page reloads but will be set back to ''
@@ -24,7 +25,7 @@ if (window.name === '') {
  * duplicated windows.
  */
 export class ActiveFileHistoryManager {
-    private readonly history = new Array<string>();
+    private readonly history = new Array<UUID>();
     private readonly storageKey: string;
 
     public constructor(id: string) {
@@ -43,7 +44,7 @@ export class ActiveFileHistoryManager {
      * {@link ActiveFileHistoryManager} has been created to get the old values
      * from the previous window reload.
      */
-    public *getFromStorage(): IterableIterator<string> {
+    public *getFromStorage(): IterableIterator<UUID> {
         try {
             const savedActiveFileHistory = JSON.parse(
                 sessionStorage.getItem(this.storageKey) || '[]',
@@ -66,7 +67,7 @@ export class ActiveFileHistoryManager {
                     continue;
                 }
 
-                yield item;
+                yield <UUID>item;
             }
         } catch (err) {
             // istanbul ignore next: not a critical error
@@ -77,16 +78,16 @@ export class ActiveFileHistoryManager {
     /**
      * Pushes a file on top of the stack. If the file was already in the stack,
      * it is moved to the top.
-     * @param fileName: the file name
+     * @param uuid: The file UUID.
      */
-    public push(fileName: string): void {
-        const index = this.history.indexOf(fileName);
+    public push(uuid: UUID): void {
+        const index = this.history.indexOf(uuid);
 
         if (index >= 0) {
             this.history.splice(index, 1);
         }
 
-        this.history.push(fileName);
+        this.history.push(uuid);
 
         try {
             sessionStorage.setItem(this.storageKey, JSON.stringify(this.history));
@@ -100,20 +101,20 @@ export class ActiveFileHistoryManager {
      * Pops an item from the list.
      *
      * The item is not necessarily the (top) active item.
-     * @param fileName The file to remove.
-     * @returns The new active file if {@link fileName} was the active file or
-     * undefined if {@link fileName} was not the active file (or not in the
+     * @param uuid The UUID of the file to remove.
+     * @returns The new active file if {@link uuid} was the active file or
+     * undefined if {@link uuid} was not the active file (or not in the
      * the history at all.)
      */
-    public pop(fileName: string): string | undefined {
-        const index = this.history.indexOf(fileName);
+    public pop(uuid: UUID): UUID | undefined {
+        const index = this.history.indexOf(uuid);
 
         if (index < 0) {
             // the file is not in history
             return undefined;
         }
 
-        const wasActiveFile = this.history.at(-1) === fileName;
+        const wasActiveFile = this.history.at(-1) === uuid;
         this.history.splice(index, 1);
 
         try {
@@ -135,44 +136,64 @@ export type OpenFileInfo = {
 };
 
 export class OpenFileManager {
-    private readonly map: Map<string, OpenFileInfo> = new Map();
+    private readonly map: Map<UUID, OpenFileInfo> = new Map();
 
+    /**
+     * Adds a new file to the list of open files.
+     * @param uuid The file UUID.
+     * @param model The text editor model.
+     * @param viewState The text editor view state.
+     */
     public add(
-        fileName: string,
+        uuid: UUID,
         model: monaco.editor.ITextModel,
         viewState: monaco.editor.ICodeEditorViewState | null,
     ): void {
         // istanbul ignore if: bug if hit
-        if (this.map.has(fileName)) {
-            throw new Error(`bug: key '${fileName}' already exists in the mpa`);
+        if (this.map.has(uuid)) {
+            throw new Error(`bug: key '${uuid}' already exists in the map`);
         }
 
-        this.map.set(fileName, { model, viewState });
-    }
-
-    public remove(fileName: string): void {
-        this.map.delete(fileName);
-    }
-
-    public has(fileName: string): boolean {
-        return this.map.has(fileName);
-    }
-
-    public get(fileName: string): OpenFileInfo | undefined {
-        return this.map.get(fileName);
+        this.map.set(uuid, { model, viewState });
     }
 
     /**
-     * Modifies the view state of {@link fileName} if it is present, otherwise
+     * Removes a file from the list of open files.
+     * @param uuid The file UUID.
+     */
+    public remove(uuid: UUID): void {
+        this.map.delete(uuid);
+    }
+
+    /**
+     * Tests if {@link uuid} is in the list of open files.
+     * @param uuid The file UUID.
+     * @returns `true` if the file is already open, otherwise `false`.
+     */
+    public has(uuid: UUID): boolean {
+        return this.map.has(uuid);
+    }
+
+    /**
+     * Gets the info for {@link uuid}.
+     * @param uuid The file UUID.
+     * @returns The file info or `undefined` if the file is not in the list.
+     */
+    public get(uuid: UUID): OpenFileInfo | undefined {
+        return this.map.get(uuid);
+    }
+
+    /**
+     * Modifies the view state of {@link uuid} if it is present, otherwise
      * does nothing.
-     * @param fileName The lookup key.
+     * @param uuid The lookup key.
      * @param viewState The new view state.
      */
     public updateViewState(
-        fileName: string,
+        uuid: UUID,
         viewState: monaco.editor.ICodeEditorViewState | null,
     ): void {
-        const info = this.map.get(fileName);
+        const info = this.map.get(uuid);
 
         if (!info) {
             return;

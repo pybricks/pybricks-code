@@ -4,7 +4,7 @@
 import * as browserFsAccess from 'browser-fs-access';
 import { FileWithHandle } from 'browser-fs-access';
 import { mock } from 'jest-mock-extended';
-import { AsyncSaga } from '../../test';
+import { AsyncSaga, uuid } from '../../test';
 import { alertsShowAlert } from '../alerts/actions';
 import {
     editorActivateFile,
@@ -174,7 +174,7 @@ describe('handleExplorerImportFiles', () => {
             fileStorageWriteFile(testFileName, testFileContents),
         );
 
-        saga.put(fileStorageDidWriteFile(testFileName));
+        saga.put(fileStorageDidWriteFile(testFileName, uuid(0)));
 
         await expect(saga.take()).resolves.toEqual(explorerDidImportFiles());
 
@@ -237,9 +237,9 @@ describe('handleExplorerCreateNewFile', () => {
             }
         `);
 
-        saga.put(fileStorageDidWriteFile('test.py'));
+        saga.put(fileStorageDidWriteFile('test.py', uuid(0)));
 
-        await expect(saga.take()).resolves.toEqual(editorActivateFile('test.py'));
+        await expect(saga.take()).resolves.toEqual(editorActivateFile(uuid(0)));
 
         await expect(saga.take()).resolves.toEqual(explorerDidCreateNewFile());
     });
@@ -255,14 +255,14 @@ describe('handleExplorerActivateFile', () => {
     beforeEach(async () => {
         saga = new AsyncSaga(explorer);
 
-        saga.put(explorerUserActivateFile('test.file'));
+        saga.put(explorerUserActivateFile('test.file', uuid(0)));
 
-        await expect(saga.take()).resolves.toEqual(editorActivateFile('test.file'));
+        await expect(saga.take()).resolves.toEqual(editorActivateFile(uuid(0)));
     });
 
     it('should alert file in use error', async () => {
         const testError = new EditorError('FileInUse', 'test error');
-        saga.put(editorDidFailToActivateFile('test.file', testError));
+        saga.put(editorDidFailToActivateFile(uuid(0), testError));
 
         await expect(saga.take()).resolves.toEqual(
             alertsShowAlert('explorer', 'fileInUse', { fileName: 'test.file' }),
@@ -274,7 +274,7 @@ describe('handleExplorerActivateFile', () => {
 
     it('should alert unexpected error', async () => {
         const testError = new Error('test error');
-        saga.put(editorDidFailToActivateFile('test.file', testError));
+        saga.put(editorDidFailToActivateFile(uuid(0), testError));
 
         await expect(saga.take()).resolves.toEqual(
             alertsShowAlert('alerts', 'unexpectedError', { error: testError }),
@@ -285,7 +285,7 @@ describe('handleExplorerActivateFile', () => {
     });
 
     it('should notify success', async () => {
-        saga.put(editorDidActivateFile('test.file'));
+        saga.put(editorDidActivateFile(uuid(0)));
 
         await expect(saga.take()).resolves.toEqual(
             explorerUserDidActivateFile('test.file'),
@@ -455,7 +455,7 @@ describe('handleExplorerDeleteFile', () => {
     beforeEach(async () => {
         saga = new AsyncSaga(explorer);
 
-        saga.put(explorerDeleteFile(testFile));
+        saga.put(explorerDeleteFile(testFile, uuid(0)));
 
         await expect(saga.take()).resolves.toEqual(deleteFileAlertShow(testFile));
     });
@@ -476,8 +476,8 @@ describe('handleExplorerDeleteFile', () => {
             saga.put(deleteFileAlertDidAccept());
 
             // should close the editor first
-            await expect(saga.take()).resolves.toEqual(editorCloseFile(testFile));
-            saga.put(editorDidCloseFile(testFile));
+            await expect(saga.take()).resolves.toEqual(editorCloseFile(uuid(0)));
+            saga.put(editorDidCloseFile(uuid(0)));
 
             // then delete the file
             await expect(saga.take()).resolves.toEqual(fileStorageDeleteFile(testFile));

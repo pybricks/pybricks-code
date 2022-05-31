@@ -2,6 +2,7 @@
 // Copyright (c) 2022 The Pybricks Authors
 
 import { createAction } from '../actions';
+import { UUID } from '../fileStorage';
 /**
  * Request to archive (download) all files in the store.
  */
@@ -74,11 +75,15 @@ export const explorerDidFailToCreateNewFile = createAction((error: Error) => ({
 /**
  * Request to activate a file (open or bring to foreground if already open).
  * @param fileName The file name.
+ * @param uuid The file metadata UUID.
  */
-export const explorerUserActivateFile = createAction((fileName: string) => ({
-    type: 'explorer.user.action.activateFile',
-    fileName,
-}));
+export const explorerUserActivateFile = createAction(
+    (fileName: string, uuid: UUID) => ({
+        type: 'explorer.user.action.activateFile',
+        fileName,
+        uuid,
+    }),
+);
 
 /**
  * Indicates that {@link explorerUserActivateFile} completed.
@@ -177,10 +182,12 @@ export const explorerDidFailToExportFile = createAction(
 /**
  * Action that requests to delete a file.
  * @param fileName The file name.
+ * @param uuid The file metadata UUID.
  */
-export const explorerDeleteFile = createAction((fileName: string) => ({
+export const explorerDeleteFile = createAction((fileName: string, uuid: UUID) => ({
     type: 'explorer.action.deleteFile',
     fileName,
+    uuid,
 }));
 
 /**

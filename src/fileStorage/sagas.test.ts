@@ -78,6 +78,7 @@ async function setUpTestFile(saga: AsyncSaga): Promise<[FileMetadata, string]> {
         uuid: testFileId,
         path: testFilePath,
         sha256: testFileContentsSha256,
+        viewState: null,
     };
 
     saga.put(fileStorageOpen(testFilePath, 'w', true));
@@ -118,7 +119,12 @@ describe('initialize', () => {
         // new storage backend
         await expect(saga.take()).resolves.toEqual(
             fileStorageDidInitialize([
-                { uuid: uuid(0), path: 'main.py', sha256: oldProgramContentsSha256 },
+                {
+                    uuid: uuid(0),
+                    path: 'main.py',
+                    sha256: oldProgramContentsSha256,
+                    viewState: null,
+                },
             ]),
         );
         expect(localStorage.getItem(oldProgramKey)).toBeNull();
@@ -170,7 +176,7 @@ describe('open', () => {
             saga.put(fileStorageOpen('test.file', 'w', true));
 
             await expect(saga.take()).resolves.toEqual(
-                fileStorageDidOpen('test.file', 0 as FD),
+                fileStorageDidOpen('test.file', uuid(0), 0 as FD),
             );
         });
 
@@ -203,7 +209,7 @@ describe('open', () => {
             saga.put(fileStorageOpen('test.file', mode, false));
 
             await expect(saga.take()).resolves.toEqual(
-                fileStorageDidOpen('test.file', 1 as FD),
+                fileStorageDidOpen('test.file', uuid(0), 1 as FD),
             );
         });
     });
@@ -214,13 +220,13 @@ describe('open', () => {
         saga.put(fileStorageOpen('test.file', 'r', false));
 
         await expect(saga.take()).resolves.toEqual(
-            fileStorageDidOpen('test.file', 1 as FD),
+            fileStorageDidOpen('test.file', uuid(0), 1 as FD),
         );
 
         saga.put(fileStorageOpen('test.file', 'r', false));
 
         await expect(saga.take()).resolves.toEqual(
-            fileStorageDidOpen('test.file', 2 as FD),
+            fileStorageDidOpen('test.file', uuid(0), 2 as FD),
         );
     });
 
@@ -230,7 +236,7 @@ describe('open', () => {
         saga.put(fileStorageOpen('test.file', 'r', false));
 
         await expect(saga.take()).resolves.toEqual(
-            fileStorageDidOpen('test.file', 1 as FD),
+            fileStorageDidOpen('test.file', uuid(0), 1 as FD),
         );
 
         saga.put(fileStorageOpen('test.file', 'w', false));
@@ -247,7 +253,7 @@ describe('open', () => {
         saga.put(fileStorageOpen('test.file', 'w', true));
 
         await expect(saga.take()).resolves.toEqual(
-            fileStorageDidOpen('test.file', 0 as FD),
+            fileStorageDidOpen('test.file', uuid(0), 0 as FD),
         );
 
         saga.put(fileStorageClose(0 as FD));
@@ -279,7 +285,7 @@ describe('read', () => {
             saga.put(fileStorageOpen('test.file', mode, false));
 
             await expect(saga.take()).resolves.toEqual(
-                fileStorageDidOpen('test.file', 1 as FD),
+                fileStorageDidOpen('test.file', uuid(0), 1 as FD),
             );
 
             saga.put(fileStorageRead(1 as FD));
@@ -297,7 +303,7 @@ describe('read', () => {
             saga.put(fileStorageOpen('test.file', mode, false));
 
             await expect(saga.take()).resolves.toEqual(
-                fileStorageDidOpen('test.file', 1 as FD),
+                fileStorageDidOpen('test.file', uuid(0), 1 as FD),
             );
 
             saga.put(fileStorageClose(1 as FD));
@@ -334,7 +340,7 @@ describe('write', () => {
         saga.put(fileStorageOpen('test.file', 'w', false));
 
         await expect(saga.take()).resolves.toEqual(
-            fileStorageDidOpen('test.file', 1 as FD),
+            fileStorageDidOpen('test.file', uuid(0), 1 as FD),
         );
 
         saga.put(fileStorageWrite(1 as FD, 'new contents'));
@@ -348,7 +354,7 @@ describe('write', () => {
         saga.put(fileStorageOpen('test.file', 'r', false));
 
         await expect(saga.take()).resolves.toEqual(
-            fileStorageDidOpen('test.file', 1 as FD),
+            fileStorageDidOpen('test.file', uuid(0), 1 as FD),
         );
 
         saga.put(fileStorageWrite(1 as FD, 'new contents'));
@@ -368,7 +374,7 @@ describe('write', () => {
             saga.put(fileStorageOpen('test.file', mode, false));
 
             await expect(saga.take()).resolves.toEqual(
-                fileStorageDidOpen('test.file', 1 as FD),
+                fileStorageDidOpen('test.file', uuid(0), 1 as FD),
             );
 
             saga.put(fileStorageClose(1 as FD));
@@ -416,7 +422,7 @@ describe('readFile', () => {
 
     describe('should open file', () => {
         beforeEach(async () => {
-            saga.put(fileStorageDidOpen('test.file', 0 as FD));
+            saga.put(fileStorageDidOpen('test.file', uuid(0), 0 as FD));
 
             await expect(saga.take()).resolves.toEqual(fileStorageRead(0 as FD));
         });
@@ -483,7 +489,7 @@ describe('writeFile', () => {
 
     describe('should open file', () => {
         beforeEach(async () => {
-            saga.put(fileStorageDidOpen('test.file', 0 as FD));
+            saga.put(fileStorageDidOpen('test.file', uuid(0), 0 as FD));
 
             await expect(saga.take()).resolves.toEqual(
                 fileStorageWrite(0 as FD, contents),
@@ -515,7 +521,7 @@ describe('writeFile', () => {
             saga.put(fileStorageDidClose(0 as FD));
 
             await expect(saga.take()).resolves.toEqual(
-                fileStorageDidWriteFile('test.file'),
+                fileStorageDidWriteFile('test.file', uuid(0)),
             );
         });
     });
@@ -549,7 +555,7 @@ describe('copyFile', () => {
     it('should fail if new file is open', async () => {
         saga.put(fileStorageOpen('new.file', 'w', true));
         await expect(saga.take()).resolves.toEqual(
-            fileStorageDidOpen('new.file', 1 as FD),
+            fileStorageDidOpen('new.file', uuid(1), 1 as FD),
         );
 
         saga.put(fileStorageCopyFile('test.file', 'new.file'));
@@ -565,7 +571,7 @@ describe('copyFile', () => {
     it('should fail if new file exists', async () => {
         saga.put(fileStorageOpen('new.file', 'w', true));
         await expect(saga.take()).resolves.toEqual(
-            fileStorageDidOpen('new.file', 1 as FD),
+            fileStorageDidOpen('new.file', uuid(1), 1 as FD),
         );
 
         saga.put(fileStorageClose(1 as FD));
@@ -617,7 +623,7 @@ describe('deleteFile', () => {
         saga.put(fileStorageOpen('test.file', 'r', false));
 
         await expect(saga.take()).resolves.toEqual(
-            fileStorageDidOpen('test.file', 1 as FD),
+            fileStorageDidOpen('test.file', uuid(0), 1 as FD),
         );
         saga.put(fileStorageDeleteFile('test.file'));
 
@@ -669,7 +675,7 @@ describe('renameFile', () => {
         saga.put(fileStorageOpen('test.file', 'r', false));
 
         await expect(saga.take()).resolves.toEqual(
-            fileStorageDidOpen('test.file', 1 as FD),
+            fileStorageDidOpen('test.file', uuid(0), 1 as FD),
         );
         saga.put(fileStorageRenameFile('test.file', newPath));
 
@@ -688,7 +694,7 @@ describe('renameFile', () => {
         saga.put(fileStorageOpen(newPath, 'w', true));
 
         await expect(saga.take()).resolves.toEqual(
-            fileStorageDidOpen(newPath, 1 as FD),
+            fileStorageDidOpen(newPath, uuid(1), 1 as FD),
         );
 
         saga.put(fileStorageRenameFile('test.file', newPath));

@@ -26,6 +26,7 @@ import {
 import { useDispatch } from 'react-redux';
 import { Toolbar } from '../components/toolbar/Toolbar';
 import { useToolbarItemFocus } from '../components/toolbar/aria';
+import { UUID } from '../fileStorage';
 import { useFileStorageMetadata } from '../fileStorage/hooks';
 import { isMacOS } from '../utils/os';
 import { TreeItemContext, TreeItemData, renderers } from '../utils/tree-renderer';
@@ -147,7 +148,9 @@ const FileActionButtonGroup: React.VoidFunctionComponent<ActionButtonGroupProps>
                     id={deleteButtonId}
                     icon="trash"
                     tooltip={i18n.translate(I18nId.TreeItemDeleteTooltip, { fileName })}
-                    onClick={() => dispatch(explorerDeleteFile(fileName))}
+                    onClick={() =>
+                        dispatch(explorerDeleteFile(fileName, item.index as UUID))
+                    }
                 />
             </Toolbar>
         </ButtonGroup>
@@ -272,7 +275,7 @@ const renderTreeContainer: typeof renderers.renderTreeContainer = (props) => {
     const handleDeleteKeyDown = useCallback(() => {
         if (focusedItem !== undefined) {
             const fileName = environment.getItemTitle(environment.items[focusedItem]);
-            dispatch(explorerDeleteFile(fileName));
+            dispatch(explorerDeleteFile(fileName, focusedItem as UUID));
         }
     }, [environment]);
 
@@ -389,7 +392,9 @@ const FileTree: React.VoidFunctionComponent = () => {
             canRename={false} // we implement our own rename handler
             onFocusItem={(item) => setFocusedItem(item.index)}
             onPrimaryAction={(item) =>
-                dispatch(explorerUserActivateFile(item.data.fileName))
+                dispatch(
+                    explorerUserActivateFile(item.data.fileName, item.index as UUID),
+                )
             }
         >
             <div className="pb-explorer-file-tree">
