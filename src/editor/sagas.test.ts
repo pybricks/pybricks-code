@@ -10,7 +10,6 @@ import {
     fileStorageDidLoadTextFile,
     fileStorageLoadTextFile,
     fileStorageStoreTextFileValue,
-    fileStorageStoreTextFileViewState,
 } from '../fileStorage/actions';
 import { acquireLock } from '../utils';
 import {
@@ -174,9 +173,6 @@ describe('per-editor sagas', () => {
                     // file is saved on close
                     await expect(saga.take()).resolves.toEqual(
                         fileStorageStoreTextFileValue(testFileUuid, ''),
-                    );
-                    await expect(saga.take()).resolves.toEqual(
-                        fileStorageStoreTextFileViewState(testFileUuid, null),
                     );
 
                     // model should be disposed before fileStorageClose

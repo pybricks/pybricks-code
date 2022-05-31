@@ -18,8 +18,10 @@ import {
 import { UUID } from '../fileStorage';
 import {
     fileStorageDidFailToLoadTextFile,
+    fileStorageDidFailToStoreTextFileViewState,
     fileStorageDidInitialize,
     fileStorageDidLoadTextFile,
+    fileStorageDidStoreTextFileViewState,
     fileStorageLoadTextFile,
     fileStorageStoreTextFileValue,
     fileStorageStoreTextFileViewState,
@@ -175,14 +177,9 @@ function* handleEditorOpenFile(
                 openFiles.updateViewState(action.uuid, editor.saveViewState());
             }
 
-            // save the file contents and view state on close
+            // save the file contents on close since the change watcher is
+            // throttled and the latest changes may not have been saved yet
             yield* put(fileStorageStoreTextFileValue(action.uuid, model.getValue()));
-            yield* put(
-                fileStorageStoreTextFileViewState(
-                    action.uuid,
-                    openFiles.get(action.uuid)?.viewState ?? null,
-                ),
-            );
         } finally {
             for (const callback of defer.reverse()) {
                 callback();
@@ -265,26 +262,29 @@ function* handleEditorDidCloseFile(
 }
 
 /**
- * Monitor browser document visibility and save active file if visibility is lost.
+ * Monitors the editor for any possible view state change and stores the state
+ * with the associated file when the state changes.
  */
-function* monitorDocumentVisibility(editor: monaco.editor.ICodeEditor): Generator {
-    const ch = eventChannel<Event>((emit) => {
-        // document visibility is the most reliable way to monitor end of "session".
-        // https://developer.mozilla.org/en-US/docs/Web/API/Document/visibilitychange_event
-        document.addEventListener('visibilitychange', emit);
-        return () => document.removeEventListener('visibilitychange', emit);
-    });
+function* monitorViewState(editor: monaco.editor.ICodeEditor): Generator {
+    const ch = eventChannel<
+        | monaco.editor.ICursorPositionChangedEvent
+        | monaco.editor.ICursorSelectionChangedEvent
+        | monaco.IScrollEvent
+    >((emit) => {
+        const subscriptions = new Array<monaco.IDisposable>();
+
+        // there isn't a single view state change event, so this should be
+        // all of the events that can trigger a state change
+        subscriptions.push(editor.onDidChangeCursorPosition(emit));
+        subscriptions.push(editor.onDidChangeCursorSelection(emit));
+        subscriptions.push(editor.onDidScrollChange(emit));
+
+        return () => subscriptions.forEach((s) => s.dispose());
+    }, buffers.sliding(1));
 
     try {
         for (;;) {
             yield* take(ch);
-
-            if (document.visibilityState !== 'hidden') {
-                // remove the backup so that we don't risk writing over newer
-                // data with older data from the backup
-                sessionStorage.removeItem('editor.backup');
-                continue;
-            }
 
             const model = editor.getModel();
 
@@ -292,23 +292,20 @@ function* monitorDocumentVisibility(editor: monaco.editor.ICodeEditor): Generato
                 continue;
             }
 
-            // This is a last-ditch effort to save the user state when the page
-            // "closes" (reload, background on mobile, etc.). We can't write to
-            // indexeddb here since it is async and won't complete the transaction
-            // before the page stops running.
-            try {
-                sessionStorage.setItem(
-                    'editor.backup',
-                    JSON.stringify({
-                        uuid: model.uri.path,
-                        value: model.getValue(),
-                        viewState: editor.saveViewState(),
-                    }),
-                );
-            } catch (err) {
-                // istanbul ignore next: not critical if this fails
-                console.error(err);
-            }
+            const uuid = model.uri.path as UUID;
+
+            yield* put(fileStorageStoreTextFileViewState(uuid, editor.saveViewState()));
+
+            yield* race({
+                didStore: take(
+                    fileStorageDidStoreTextFileViewState.when((a) => a.uuid === uuid),
+                ),
+                didFailToStore: take(
+                    fileStorageDidFailToStoreTextFileViewState.when(
+                        (a) => a.uuid === uuid,
+                    ),
+                ),
+            });
         }
     } finally {
         ch.close();
@@ -339,25 +336,9 @@ function* handleDidCreateEditor(editor: monaco.editor.ICodeEditor): Generator {
         activeFileHistory,
     );
     yield* takeEvery(editorDidCloseFile, handleEditorDidCloseFile, activeFileHistory);
-    yield* fork(monitorDocumentVisibility, editor);
+    yield* fork(monitorViewState, editor);
 
     yield* put(editorDidCreate());
-
-    const backup = (() => {
-        try {
-            const item = sessionStorage.getItem('editor.backup');
-
-            if (!item) {
-                return null;
-            }
-
-            sessionStorage.removeItem('editor.backup');
-
-            return JSON.parse(item);
-        } catch {
-            return null;
-        }
-    })();
 
     // this should restore all previously open files in the same order
     // the were last used (which may be different from the order in which
@@ -365,32 +346,15 @@ function* handleDidCreateEditor(editor: monaco.editor.ICodeEditor): Generator {
     for (const item of activeFileHistory.getFromStorage()) {
         yield* put(editorActivateFile(item));
 
-        const { didActivate } = yield* race({
+        yield* race({
             didActivate: take(editorDidActivateFile.when((a) => a.uuid === item)),
             didFailToActivate: take(
                 editorDidFailToActivateFile.when((a) => a.uuid === item),
             ),
         });
 
-        if (didActivate && didActivate.uuid === backup.uuid) {
-            if (backup.value) {
-                try {
-                    editor.getModel()?.setValue(backup.value);
-                } catch (err) {
-                    // istanbul ignore next: not critical if this fails
-                    console.error(err);
-                }
-            }
-
-            if (backup.viewState) {
-                try {
-                    editor.restoreViewState(backup.viewState);
-                } catch (err) {
-                    // istanbul ignore next: not critical if this fails
-                    console.error(err);
-                }
-            }
-        }
+        // Errors are ignored here since we don't want to pester the user with
+        // error messages.
     }
 }
 
