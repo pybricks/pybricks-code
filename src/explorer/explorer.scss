@@ -3,14 +3,26 @@
 
 @use '@blueprintjs/core/lib/scss/variables' as bp;
 
-// reveal file action buttons on hover
-.#{bp.$ns}-tree-node-content:not(:hover) .pb-explorer-file-action-button-group {
-    display: none;
-}
-
 .pb-explorer {
     &-header-toolbar {
         display: flex;
         justify-content: flex-end;
+    }
+
+    &-file-tree {
+        // don't need extra padding around toolbar
+        & .#{bp.$ns}-tree-node-secondary-label {
+            padding: unset;
+        }
+
+        // reveal file action toolbar on hover
+        .#{bp.$ns}-tree-node-content:not(:hover) &-action-button-group {
+            display: none;
+        }
+
+        // fix layout since we are nesting toolbar in button group
+        &-action-toolbar {
+            display: inline-flex;
+        }
     }
 }

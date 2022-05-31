@@ -111,10 +111,13 @@ const FileActionButtonGroup: React.VoidFunctionComponent<ActionButtonGroupProps>
     return (
         <ButtonGroup
             aria-hidden={true}
-            className="pb-explorer-file-action-button-group"
+            className="pb-explorer-file-tree-action-button-group"
             minimal={true}
         >
-            <Toolbar firstFocusableItemId={duplicateButtonId}>
+            <Toolbar
+                className="pb-explorer-file-tree-action-toolbar"
+                firstFocusableItemId={duplicateButtonId}
+            >
                 <ActionButton
                     id={renameButtonId}
                     icon="edit"
