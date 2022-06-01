@@ -23,8 +23,5 @@ jobs:
         git diff --exit-code
     - run: yarn test
     - run: yarn coverage
-    - name: Coveralls
-      uses: coverallsapp/github-action@v1.1.2
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+    - uses: codecov/codecov-action@v2
     - run: yarn build
