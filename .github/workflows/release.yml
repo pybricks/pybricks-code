@@ -22,6 +22,8 @@ jobs:
     - run: yarn install
     - run: yarn coverage
     - uses: codecov/codecov-action@v2
+      with:
+        directory: coverage
     - name: Build
       run: yarn build
     - name: Install lftp
