@@ -5,7 +5,7 @@
 ## [Unreleased]
 
 ### Added
-- Added multi-file support.
+- Added multi-file support ([support#418], [support#465]).
 
 ### Changed
 - Moved settings.
@@ -15,6 +15,8 @@
 - Fix tooltips not closing when expected ([pybricks-code#275]).
 
 [pybricks-code#275]: https://github.com/pybricks/pybricks-code/issues/275
+[support#418]: https://github.com/pybricks/support/issues/418
+[support#465]: https://github.com/pybricks/support/issues/465
 
 ## [1.2.0-beta.1] - 2021-12-27
 
