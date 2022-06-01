@@ -2277,7 +2277,6 @@ __metadata:
     "@types/node": ^16.11.7
     "@types/react": ^16.14.24
     "@types/react-dom": ^16.9.14
-    "@types/react-redux": ^7.1.23
     "@types/react-splitter-layout": ^3.0.2
     "@types/redux-logger": ^3.0.9
     "@types/semver": ^7.3.9
@@ -4191,7 +4190,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/hoist-non-react-statics@npm:^3.0.1, @types/hoist-non-react-statics@npm:^3.3.0, @types/hoist-non-react-statics@npm:^3.3.1":
+"@types/hoist-non-react-statics@npm:^3.0.1, @types/hoist-non-react-statics@npm:^3.3.1":
   version: 3.3.1
   resolution: "@types/hoist-non-react-statics@npm:3.3.1"
   dependencies:
@@ -4344,18 +4343,6 @@ __metadata:
   dependencies:
     "@types/react": ^16
   checksum: 68a4ee88f7a56cdbfbca24b1936b9aa5dad8b40ffbf1f047ddf990454aec6e0c9da2a01c9ae87045e95236602061646c90d02f01281533e14f1970687873030f
-  languageName: node
-  linkType: hard
-
-"@types/react-redux@npm:^7.1.23":
-  version: 7.1.23
-  resolution: "@types/react-redux@npm:7.1.23"
-  dependencies:
-    "@types/hoist-non-react-statics": ^3.3.0
-    "@types/react": "*"
-    hoist-non-react-statics: ^3.3.0
-    redux: ^4.0.0
-  checksum: 7cedb0f20806ce67255f676fab2d4d9534c12705d43636df95224cfa77fdf5a2e792dc76c6e072c02cad1c88030aea822c14f36fe85d459b898ee68fcff6f05c
   languageName: node
   linkType: hard
 

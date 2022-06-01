@@ -26,7 +26,6 @@
         "@types/node": "^16.11.7",
         "@types/react": "^16.14.24",
         "@types/react-dom": "^16.9.14",
-        "@types/react-redux": "^7.1.23",
         "@types/react-splitter-layout": "^3.0.2",
         "@types/redux-logger": "^3.0.9",
         "@types/semver": "^7.3.9",
