@@ -1,13 +1,47 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2021 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 
-@import './variables.scss';
-@import '~normalize.css';
-@import '~@blueprintjs/core/src/blueprint.scss';
-@import '~@blueprintjs/popover2/src/blueprint-popover2.scss';
+// css files
+@use 'normalize.css/normalize';
+@use '@blueprintjs/core/lib/css/blueprint';
+@use '@blueprintjs/popover2/lib/css/blueprint-popover2';
+
+// sass files
+@use 'sass:color';
+@use 'sass:math';
+@use 'variables' as pb;
+@use '@blueprintjs/core/lib/scss/variables' as bp;
 
 :root {
     --pb-vh: 100vh;
+}
+
+// use :focus-visible instead of :focus (so we don't need blueprint.js focus style manager)
+
+:focus {
+    outline: none;
+}
+
+.#{bp.$ns}-control input:focus ~ .#{bp.$ns}-control-indicator {
+    outline: none;
+
+    .#{bp.$ns}-dark & {
+        outline: none;
+    }
+}
+
+// show focus for tree nodes even if mouse click it
+.#{bp.$ns}-tree-node:focus,
+// react-aria managed focus visibility
+.pb-focus-ring,
+// broswer managed focus visibility
+:focus-visible:not(.pb-focus-managed) {
+    @include pb.focus-outline(0);
+}
+
+// these controls need extra separation for better visibility
+.#{bp.$ns}-control input:focus-visible ~ .#{bp.$ns}-control-indicator {
+    @include pb.focus-outline(2px);
 }
 
 body {
@@ -16,18 +50,10 @@ body {
     user-select: none;
 }
 
-// Utility classes
+// Utility classes - do not use these in new code!
 
 .h-100 {
     height: 100%;
-}
-
-.w-100 {
-    width: 100%;
-}
-
-.p-absolute {
-    position: absolute;
 }
 
 .no-wrap {
@@ -36,65 +62,106 @@ body {
 
 // global style tweaks
 
-.#{$ns}-toast {
+.#{bp.$ns}-toast {
     user-select: text;
     max-width: 700px;
 }
 
-.#{$ns}-button {
+.#{bp.$ns}-button {
     user-select: none;
+
+    &.#{bp.$ns}-intent-primary {
+        background: pb.$pybricks-blue;
+
+        &.#{bp.$ns}-minimal {
+            background: none;
+        }
+
+        &:hover {
+            background: color.adjust(pb.$pybricks-blue, $lightness: -5%);
+        }
+
+        &:disabled,
+        &.#{bp.$ns}-disabled {
+            background: rgba(pb.$pybricks-blue, 0.5);
+        }
+    }
+
+    &-text > img {
+        display: block;
+    }
+
+    &-group:not(.#{bp.$ns}-minimal) {
+        & > .#{bp.$ns}-popover-wrapper:not(:last-child) .#{bp.$ns}-button,
+        & > .#{bp.$ns}-button:not(:last-child) {
+            margin-right: 0px;
+        }
+    }
 }
 
-a.#{$ns}-button {
+a.#{bp.$ns}-button {
     text-align: left;
 }
 
-.#{$ns}-button-text > img {
-    display: block;
-}
-
-.#{$ns}-dialog-footer-actions {
+.#{bp.$ns}-dialog-footer-actions {
     flex-wrap: wrap;
     row-gap: 10px;
 }
+.#{bp.$ns}-control {
+    & input:checked ~ .#{bp.$ns}-control-indicator,
+    &.#{bp.$ns}-switch input:checked ~ .#{bp.$ns}-control-indicator {
+        background-color: pb.$pybricks-blue;
 
-.#{$ns}-form-group > .#{$ns}-label {
+        .#{bp.$ns}-dark & {
+            background-color: pb.$pybricks-blue;
+        }
+    }
+}
+
+.#{bp.$ns}-form-group > .#{bp.$ns}-label {
     font-weight: bolder;
 }
 
+.#{bp.$ns}-input-group .#{bp.$ns}-icon {
+    margin: 7px;
+}
+
+// don't take up so much space when there is no caret
+.#{bp.$ns}-tree-node-caret-none {
+    // $pt-grid-size / 2 matches padding on .#{bp.$ns}-tree-node-conent
+    min-width: math.div(bp.$pt-grid-size, 2);
+}
+
+// make scrollbars fit our style
 ::-webkit-scrollbar {
     width: 16px;
-}
 
-.#{$ns}-dark ::-webkit-scrollbar-track {
-    background: $pt-dark-app-background-color;
-}
+    &-track {
+        background: bp.$pt-app-background-color;
 
-::-webkit-scrollbar-track {
-    background: $pt-app-background-color;
-}
+        .#{bp.$ns}-dark & {
+            background: bp.$pt-dark-app-background-color;
+        }
+    }
 
-.#{$ns}-dark ::-webkit-scrollbar-thumb {
-    border-color: $pt-dark-app-background-color;
-    background: $pt-dark-icon-color;
-}
+    &-thumb {
+        border-width: 3px;
+        border-style: solid;
+        border-radius: 8px;
+        border-color: bp.$pt-app-background-color;
+        background: bp.$pt-icon-color;
 
-::-webkit-scrollbar-thumb {
-    border-width: 3px;
-    border-style: solid;
-    border-radius: 8px;
-    border-color: $pt-app-background-color;
-    background: $pt-icon-color;
-}
+        &:hover {
+            background: bp.$pt-icon-color-hover;
+        }
 
-.#{$ns}-dark ::-webkit-scrollbar-thumb:hover {
-    background: $pt-dark-icon-color-hover;
-}
+        .#{bp.$ns}-dark & {
+            border-color: bp.$pt-dark-app-background-color;
+            background: bp.$pt-dark-icon-color;
 
-::-webkit-scrollbar-thumb:hover {
-    background: $pt-icon-color-hover;
-}
-
-.#{$ns}-input-group .#{$ns}-icon {
-    margin: 7px;
+            &:hover {
+                background: bp.$pt-dark-icon-color-hover;
+            }
+        }
+    }
 }

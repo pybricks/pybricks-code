@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2021 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 
 import {
     Button,
@@ -10,23 +10,21 @@ import {
     useHotkeys,
 } from '@blueprintjs/core';
 import { Tooltip2 } from '@blueprintjs/popover2';
-import { useI18n } from '@shopify/react-i18n';
 import React, { useEffect, useMemo, useState } from 'react';
 import { tooltipDelay } from '../app/constants';
-import { TooltipId } from './i18n';
-import en from './i18n.en.json';
+import { useToolbarItemFocus } from '../components/toolbar/aria';
 
 const smallScreenThreshold = 700;
 
 export interface ActionButtonProps {
-    /** A unique id for each instance. */
-    readonly id: string;
+    /** The DOM id for this instance. */
+    id: string;
+    /** A unique label for each instance. */
+    readonly label: string;
     /** Keyboard shortcut. */
     readonly keyboardShortcut?: string;
     /** Tooltip text that appears when hovering over the button. */
-    readonly tooltip: TooltipId;
-    /** Tooltip text that appears when hovering over the button and @showProgress is true. */
-    readonly progressTooltip?: TooltipId;
+    readonly tooltip: string;
     /** Icon shown on the button. */
     readonly icon: string;
     /** When true or undefined, the button is enabled. */
@@ -39,9 +37,17 @@ export interface ActionButtonProps {
     readonly onAction: () => void;
 }
 
-const ActionButton: React.FC<ActionButtonProps> = (props) => {
-    const [i18n] = useI18n({ id: 'actionButton', translations: { en }, fallback: en });
-
+const ActionButton: React.VoidFunctionComponent<ActionButtonProps> = ({
+    id,
+    label,
+    keyboardShortcut,
+    tooltip,
+    icon,
+    enabled,
+    showProgress,
+    progress,
+    onAction,
+}) => {
     const [isSmallScreen, setIsSmallScreen] = useState(
         window.innerWidth <= smallScreenThreshold,
     );
@@ -56,19 +62,8 @@ const ActionButton: React.FC<ActionButtonProps> = (props) => {
 
     const buttonSize = isSmallScreen ? SpinnerSize.SMALL : SpinnerSize.STANDARD;
 
-    const tooltipText =
-        props.showProgress && props.progressTooltip
-            ? i18n.translate(props.progressTooltip, {
-                  percent:
-                      props.progress === undefined
-                          ? ''
-                          : i18n.formatPercentage(props.progress),
-              })
-            : i18n.translate(props.tooltip) +
-              (props.keyboardShortcut ? ` (${props.keyboardShortcut})` : '');
-
     const hotkeys = useMemo(() => {
-        if (!props.keyboardShortcut) {
+        if (!keyboardShortcut) {
             return [];
         }
 
@@ -77,22 +72,24 @@ const ActionButton: React.FC<ActionButtonProps> = (props) => {
                 global: true,
                 allowInInput: true,
                 preventDefault: true,
-                combo: props.keyboardShortcut.replaceAll('-', '+'),
-                label: i18n.translate(props.tooltip),
+                combo: keyboardShortcut.replaceAll('-', '+'),
+                label,
                 onKeyDown: () => {
-                    if (props.enabled) {
-                        props.onAction();
+                    if (enabled) {
+                        onAction();
                     }
                 },
             },
         ];
-    }, [props, i18n]);
+    }, [keyboardShortcut, tooltip, enabled, label, onAction]);
 
     useHotkeys(hotkeys);
 
+    const { toolbarItemFocusProps, excludeFromTabOrder } = useToolbarItemFocus({ id });
+
     return (
         <Tooltip2
-            content={tooltipText}
+            content={tooltip}
             placement="bottom"
             hoverOpenDelay={tooltipDelay}
             renderTarget={({
@@ -101,32 +98,30 @@ const ActionButton: React.FC<ActionButtonProps> = (props) => {
                 ...tooltipTargetProps
             }) => (
                 <Button
+                    id={id}
+                    aria-label={label}
                     elementRef={tooltipTargetRef as IRef<HTMLButtonElement>}
                     {...tooltipTargetProps}
+                    // https://github.com/palantir/blueprint/pull/5300
+                    aria-haspopup={undefined}
                     intent={Intent.PRIMARY}
-                    onMouseDown={(e) => {
-                        // prevent focus from mouse click
-                        e.preventDefault();
-                    }}
-                    onClick={() => props.onAction()}
-                    disabled={props.enabled === false}
-                    style={
-                        props.enabled === false ? { pointerEvents: 'none' } : undefined
-                    }
+                    onClick={onAction}
+                    disabled={enabled === false}
+                    {...toolbarItemFocusProps}
+                    tabIndex={excludeFromTabOrder ? -1 : 0}
                 >
-                    {props.showProgress ? (
+                    {showProgress ? (
                         <Spinner
-                            value={props.progress}
+                            value={progress}
                             intent={Intent.PRIMARY}
                             size={buttonSize}
                         />
                     ) : (
                         <img
+                            aria-hidden={true}
                             width={`${buttonSize}px`}
                             height={`${buttonSize}px`}
-                            src={props.icon}
-                            alt={props.id}
-                            style={{ pointerEvents: 'none' }}
+                            src={icon}
                         />
                     )}
                 </Button>

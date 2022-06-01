@@ -29,11 +29,3 @@ export function isMacOS(): boolean {
 export function isWindows(): boolean {
     return /win/i.test(navigator.platform);
 }
-
-/**
- * Tests if the OS is set to dark mode.
- * @returns: `true` if dark mode should be preferred, otherwise `false`.
- */
-export function prefersDarkMode(): boolean {
-    return window.matchMedia('(prefers-color-scheme: dark)').matches;
-}

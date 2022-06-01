@@ -1,23 +1,23 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2021 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 
 import { Button, IRef, Intent, Spinner, SpinnerSize } from '@blueprintjs/core';
 import { Tooltip2 } from '@blueprintjs/popover2';
-import { useI18n } from '@shopify/react-i18n';
 import React, { useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { tooltipDelay } from '../app/constants';
-import { TooltipId } from './i18n';
-import en from './i18n.en.json';
+import { useToolbarItemFocus } from '../components/toolbar/aria';
 
 const smallScreenThreshold = 700;
 export interface OpenFileButtonProps {
-    /** A unique id for each instance. */
+    /** A DOM id for this button. */
     readonly id: string;
+    /** A unique label for each instance. */
+    readonly label: string;
     /** The accepted file extension */
     readonly fileExtension: string;
     /** Tooltip text that appears when hovering over the button. */
-    readonly tooltip: TooltipId;
+    readonly tooltip: string;
     /** Icon shown on the button. */
     readonly icon: string;
     /** When true or undefined, the button is enabled. */
@@ -37,13 +37,19 @@ export interface OpenFileButtonProps {
 /**
  * Button that opens a file chooser dialog or accepts files dropped on it.
  */
-const OpenFileButton: React.FC<OpenFileButtonProps> = (props) => {
-    const [i18n] = useI18n({
-        id: 'openFileButton',
-        translations: { en },
-        fallback: en,
-    });
-
+const OpenFileButton: React.VoidFunctionComponent<OpenFileButtonProps> = ({
+    id,
+    label,
+    fileExtension,
+    tooltip,
+    icon,
+    enabled,
+    showProgress,
+    progress,
+    onFile,
+    onReject,
+    onClick,
+}) => {
     const [isSmallScreen, setIsSmallScreen] = useState(
         window.innerWidth <= smallScreenThreshold,
     );
@@ -59,11 +65,11 @@ const OpenFileButton: React.FC<OpenFileButtonProps> = (props) => {
     const buttonSize = isSmallScreen ? SpinnerSize.SMALL : SpinnerSize.STANDARD;
 
     const { getRootProps, getInputProps } = useDropzone({
-        accept: props.fileExtension,
+        accept: fileExtension,
         // using File System Access API is blocked by https://github.com/react-dropzone/react-dropzone/issues/1141
         useFsAccessApi: false,
         multiple: false,
-        noClick: props.onClick !== undefined,
+        noClick: onClick !== undefined,
         onDropAccepted: (acceptedFiles) => {
             // should only be one file since multiple={false}
             acceptedFiles.forEach((f) => {
@@ -79,7 +85,7 @@ const OpenFileButton: React.FC<OpenFileButtonProps> = (props) => {
                     if (typeof binaryStr === 'string') {
                         throw Error('Unexpected string binaryStr');
                     }
-                    props.onFile(binaryStr);
+                    onFile(binaryStr);
                 };
                 reader.readAsArrayBuffer(f);
             });
@@ -87,24 +93,16 @@ const OpenFileButton: React.FC<OpenFileButtonProps> = (props) => {
         onDropRejected: (fileRejections) => {
             // should only be one file since multiple={false}
             fileRejections.forEach((r) => {
-                props.onReject(r.file);
+                onReject(r.file);
             });
         },
     });
 
+    const { toolbarItemFocusProps, excludeFromTabOrder } = useToolbarItemFocus({ id });
+
     return (
         <Tooltip2
-            content={i18n.translate(
-                props.tooltip,
-                props.tooltip === TooltipId.FlashProgress
-                    ? {
-                          percent:
-                              props.progress === undefined
-                                  ? ''
-                                  : i18n.formatPercentage(props.progress),
-                      }
-                    : undefined,
-            )}
+            content={tooltip}
             placement="bottom"
             hoverOpenDelay={tooltipDelay}
             renderTarget={({
@@ -114,36 +112,33 @@ const OpenFileButton: React.FC<OpenFileButtonProps> = (props) => {
             }) => (
                 <Button
                     {...getRootProps({
+                        id,
+                        'aria-label': label,
                         refKey: 'elementRef',
                         elementRef: tooltipTargetRef as IRef<HTMLButtonElement>,
                         ...tooltipTargetProps,
+                        // https://github.com/palantir/blueprint/pull/5300
+                        'aria-haspopup': undefined,
                         intent: Intent.PRIMARY,
-                        disabled: props.enabled === false,
-                        style:
-                            props.enabled === false
-                                ? { pointerEvents: 'none' }
-                                : undefined,
-                        onMouseDown: (e) => {
-                            // prevent focus from mouse click
-                            e.preventDefault();
-                        },
-                        onClick: props.onClick,
+                        disabled: enabled === false,
+                        onClick,
+                        ...toolbarItemFocusProps,
+                        tabIndex: excludeFromTabOrder ? -1 : 0,
                     })}
                 >
                     <input {...getInputProps()} />
-                    {props.showProgress ? (
+                    {showProgress ? (
                         <Spinner
-                            value={props.progress}
+                            value={progress}
                             intent={Intent.PRIMARY}
                             size={buttonSize}
                         />
                     ) : (
                         <img
+                            aria-hidden={true}
                             width={`${buttonSize}px`}
                             height={`${buttonSize}px`}
-                            src={props.icon}
-                            alt={props.id}
-                            style={{ pointerEvents: 'none' }}
+                            src={icon}
                         />
                     )}
                 </Button>

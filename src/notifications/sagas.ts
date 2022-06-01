@@ -10,35 +10,47 @@ import React from 'react';
 import { channel } from 'redux-saga';
 import * as semver from 'semver';
 import { delay, getContext, put, take, takeEvery } from 'typed-redux-saga/macro';
-import { didCheckForUpdate, reload } from '../app/actions';
+import { getAlertProps } from '../alerts';
+import { appDidCheckForUpdate, appReload } from '../app/actions';
 import { appName } from '../app/constants';
 import { bleDIServiceDidReceiveFirmwareRevision } from '../ble-device-info-service/actions';
 import {
     BleDeviceFailToConnectReasonType,
     didFailToConnect as bleDeviceDidFailToConnect,
 } from '../ble/actions';
-import { didFailToSaveAs } from '../editor/actions';
+import { editorDidFailToOpenFile } from '../editor/actions';
+import { EditorError } from '../editor/error';
 import {
-    fileStorageDidFailToInitialize,
-    fileStorageDidFailToReadFile,
-    fileStorageDidFailToWriteFile,
-} from '../fileStorage/actions';
+    explorerDidFailToArchiveAllFiles,
+    explorerDidFailToCreateNewFile,
+    explorerDidFailToDeleteFile,
+    explorerDidFailToDuplicateFile,
+    explorerDidFailToExportFile,
+    explorerDidFailToImportFiles,
+} from '../explorer/actions';
+import { fileStorageDidFailToInitialize } from '../fileStorage/actions';
 import { FailToFinishReasonType, didFailToFinish } from '../firmware/actions';
 import {
     BootloaderConnectionFailureReason,
     didFailToConnect as bootloaderDidFailToConnect,
 } from '../lwp3-bootloader/actions';
 import { didCompile, didFailToCompile } from '../mpy/actions';
-import { didUpdate as serviceWorkerDidUpdate } from '../service-worker/actions';
+import { serviceWorkerDidUpdate } from '../service-worker/actions';
 import { pythonVersionToSemver } from '../utils/version';
 import NotificationAction from './NotificationAction';
 import NotificationMessage from './NotificationMessage';
-import UnexpectedErrorNotification from './UnexpectedErrorNotification';
 import { add as addNotification } from './actions';
-import { MessageId } from './i18n';
+import { I18nId } from './i18n';
 
 type NotificationContext = {
     toaster: IToaster;
+};
+
+/**
+ * Partial saga context type for context used in the notification sagas.
+ */
+export type NotificationSagaContext = {
+    notification: NotificationContext;
 };
 
 /** Severity level of notification. */
@@ -90,7 +102,7 @@ function helpAction(helpUrl: string): ActionProps & LinkProps {
 }
 
 function dispatchAction(
-    messageId: MessageId,
+    messageId: I18nId,
     onClick: (event: React.MouseEvent<HTMLElement>) => void,
     icon?: IconName,
 ): ActionProps {
@@ -112,7 +124,7 @@ function dispatchAction(
  */
 function* showSingleton(
     level: Level,
-    messageId: MessageId,
+    messageId: I18nId,
     replacements?: Replacements,
     action?: ActionProps & LinkProps,
     onDismiss?: (didTimeoutExpire: boolean) => void,
@@ -148,14 +160,15 @@ function* showSingleton(
 }
 
 /** Shows a special notification for unexpected errors. */
-function* showUnexpectedError(messageId: MessageId, err: Error): Generator {
+function* showUnexpectedError(messageId: I18nId, error: Error): Generator {
     const { toaster } = yield* getContext<NotificationContext>('notification');
-    toaster.show({
-        intent: mapIntent(Level.Error),
-        icon: mapIcon(Level.Error),
-        message: React.createElement(UnexpectedErrorNotification, { messageId, err }),
-        timeout: 0,
-    });
+    const key = `alerts.unexpectedError.${messageId}`;
+
+    toaster.show(
+        getAlertProps('alerts', 'unexpectedError', () => toaster.dismiss(key), {
+            error,
+        }),
+    );
 }
 
 function* showBleDeviceDidFailToConnectError(
@@ -163,28 +176,28 @@ function* showBleDeviceDidFailToConnectError(
 ): Generator {
     switch (action.reason) {
         case BleDeviceFailToConnectReasonType.NoGatt:
-            yield* showSingleton(Level.Error, MessageId.BleGattPermission);
+            yield* showSingleton(Level.Error, I18nId.BleGattPermission);
             break;
 
         case BleDeviceFailToConnectReasonType.NoPybricksService:
-            yield* showSingleton(Level.Error, MessageId.BleGattServiceNotFound, {
+            yield* showSingleton(Level.Error, I18nId.BleGattServiceNotFound, {
                 serviceName: 'Pybricks',
                 hubName: 'Pybricks Hub',
             });
             break;
         case BleDeviceFailToConnectReasonType.NoDeviceInfoService:
-            yield* showSingleton(Level.Error, MessageId.BleGattServiceNotFound, {
+            yield* showSingleton(Level.Error, I18nId.BleGattServiceNotFound, {
                 serviceName: 'Device Information',
                 hubName: 'Pybricks Hub',
             });
             break;
         case BleDeviceFailToConnectReasonType.NoBluetooth:
-            yield* showSingleton(Level.Error, MessageId.BleNoBluetooth);
+            yield* showSingleton(Level.Error, I18nId.BleNoBluetooth);
             break;
         case BleDeviceFailToConnectReasonType.NoWebBluetooth:
             yield* showSingleton(
                 Level.Error,
-                MessageId.BleNoWebBluetooth,
+                I18nId.BleNoWebBluetooth,
                 undefined,
                 helpAction(
                     'https://github.com/WebBluetoothCG/web-bluetooth/blob/master/implementation-status.md',
@@ -192,7 +205,7 @@ function* showBleDeviceDidFailToConnectError(
             );
             break;
         case BleDeviceFailToConnectReasonType.Unknown:
-            yield* showUnexpectedError(MessageId.BleUnexpectedError, action.err);
+            yield* showUnexpectedError(I18nId.BleUnexpectedError, action.err);
             break;
     }
 }
@@ -202,7 +215,7 @@ function* showBootloaderDidFailToConnectError(
 ): Generator {
     switch (action.reason) {
         case BootloaderConnectionFailureReason.GattServiceNotFound:
-            yield* showSingleton(Level.Error, MessageId.BleGattServiceNotFound, {
+            yield* showSingleton(Level.Error, I18nId.BleGattServiceNotFound, {
                 serviceName: 'LEGO Bootloader',
                 hubName: 'LEGO Bootloader',
             });
@@ -210,7 +223,7 @@ function* showBootloaderDidFailToConnectError(
         case BootloaderConnectionFailureReason.NoWebBluetooth:
             yield* showSingleton(
                 Level.Error,
-                MessageId.BleNoWebBluetooth,
+                I18nId.BleNoWebBluetooth,
                 undefined,
                 helpAction(
                     'https://github.com/WebBluetoothCG/web-bluetooth/blob/master/implementation-status.md',
@@ -218,23 +231,12 @@ function* showBootloaderDidFailToConnectError(
             );
             break;
         case BootloaderConnectionFailureReason.NoBluetooth:
-            yield* showSingleton(Level.Error, MessageId.BleNoBluetooth);
+            yield* showSingleton(Level.Error, I18nId.BleNoBluetooth);
             break;
         case BootloaderConnectionFailureReason.Unknown:
-            yield* showUnexpectedError(MessageId.BleUnexpectedError, action.err);
+            yield* showUnexpectedError(I18nId.BleUnexpectedError, action.err);
             break;
     }
-}
-
-function* showEditorFailToSaveFile(
-    action: ReturnType<typeof didFailToSaveAs>,
-): Generator {
-    if (action.err.name === 'AbortError') {
-        // user clicked cancel button - not an error
-        return;
-    }
-
-    yield* showUnexpectedError(MessageId.EditorFailedToSaveFile, action.err);
 }
 
 function* showFlashFirmwareError(
@@ -242,58 +244,55 @@ function* showFlashFirmwareError(
 ): Generator {
     switch (action.reason.reason) {
         case FailToFinishReasonType.TimedOut:
-            yield* showSingleton(Level.Error, MessageId.FlashFirmwareTimedOut);
+            yield* showSingleton(Level.Error, I18nId.FlashFirmwareTimedOut);
             break;
         case FailToFinishReasonType.BleError:
-            yield* showUnexpectedError(
-                MessageId.FlashFirmwareBleError,
-                action.reason.err,
-            );
+            yield* showUnexpectedError(I18nId.FlashFirmwareBleError, action.reason.err);
             break;
         case FailToFinishReasonType.Disconnected:
-            yield* showSingleton(Level.Error, MessageId.FlashFirmwareDisconnected);
+            yield* showSingleton(Level.Error, I18nId.FlashFirmwareDisconnected);
             break;
         case FailToFinishReasonType.HubError:
-            yield* showSingleton(Level.Error, MessageId.FlashFirmwareHubError);
+            yield* showSingleton(Level.Error, I18nId.FlashFirmwareHubError);
             // istanbul ignore next
             if (process.env.NODE_ENV !== 'test') {
                 console.error(action.reason.hubError);
             }
             break;
         case FailToFinishReasonType.NoFirmware:
-            yield* showSingleton(Level.Error, MessageId.FlashFirmwareUnsupportedDevice);
+            yield* showSingleton(Level.Error, I18nId.FlashFirmwareUnsupportedDevice);
             break;
         case FailToFinishReasonType.DeviceMismatch:
-            yield* showSingleton(Level.Error, MessageId.FlashFirmwareDeviceMismatch);
+            yield* showSingleton(Level.Error, I18nId.FlashFirmwareDeviceMismatch);
             break;
         case FailToFinishReasonType.FailedToFetch:
-            yield* showSingleton(Level.Error, MessageId.FlashFirmwareFailToFetch, {
+            yield* showSingleton(Level.Error, I18nId.FlashFirmwareFailToFetch, {
                 status: action.reason.response.statusText,
             });
             break;
         case FailToFinishReasonType.ZipError:
-            yield* showSingleton(Level.Error, MessageId.FlashFirmwareBadZipFile);
+            yield* showSingleton(Level.Error, I18nId.FlashFirmwareBadZipFile);
             // istanbul ignore next
             if (process.env.NODE_ENV !== 'test') {
                 console.error(action.reason.err);
             }
             break;
         case FailToFinishReasonType.BadMetadata:
-            yield* showSingleton(Level.Error, MessageId.FlashFirmwareBadMetadata);
+            yield* showSingleton(Level.Error, I18nId.FlashFirmwareBadMetadata);
             // istanbul ignore next
             if (process.env.NODE_ENV !== 'test') {
                 console.error(action.reason.property, action.reason.problem);
             }
             break;
         case FailToFinishReasonType.FailedToCompile:
-            yield* showSingleton(Level.Error, MessageId.FlashFirmwareCompileError);
+            yield* showSingleton(Level.Error, I18nId.FlashFirmwareCompileError);
             break;
         case FailToFinishReasonType.FirmwareSize:
-            yield* showSingleton(Level.Error, MessageId.FlashFirmwareSizeTooBig);
+            yield* showSingleton(Level.Error, I18nId.FlashFirmwareSizeTooBig);
             break;
         case FailToFinishReasonType.Unknown:
             yield* showUnexpectedError(
-                MessageId.FlashFirmwareUnexpectedError,
+                I18nId.FlashFirmwareUnexpectedError,
                 action.reason.err,
             );
             break;
@@ -302,11 +301,11 @@ function* showFlashFirmwareError(
 
 function* dismissCompilerError(): Generator {
     const { toaster } = yield* getContext<NotificationContext>('notification');
-    toaster.dismiss(MessageId.MpyError);
+    toaster.dismiss(I18nId.MpyError);
 }
 
 function* showCompilerError(action: ReturnType<typeof didFailToCompile>): Generator {
-    yield* showSingleton(Level.Error, MessageId.MpyError, {
+    yield* showSingleton(Level.Error, I18nId.MpyError, {
         errorMessage: React.createElement(
             'pre',
             { style: { whiteSpace: 'pre-wrap', wordBreak: 'keep-all' } },
@@ -327,18 +326,16 @@ function* handleAddNotification(action: ReturnType<typeof addNotification>): Gen
     });
 }
 
-function* showServiceWorkerUpdate(
-    action: ReturnType<typeof serviceWorkerDidUpdate>,
-): Generator {
+function* showServiceWorkerUpdate(): Generator {
     const ch = channel<React.MouseEvent<HTMLElement>>();
     const userAction = dispatchAction(
-        MessageId.ServiceWorkerUpdateAction,
+        I18nId.ServiceWorkerUpdateAction,
         ch.put,
         'refresh',
     );
     yield* showSingleton(
         Level.Info,
-        MessageId.ServiceWorkerUpdateMessage,
+        I18nId.ServiceWorkerUpdateMessage,
         {
             appName,
             action: React.createElement('strong', undefined, userAction.text),
@@ -349,12 +346,12 @@ function* showServiceWorkerUpdate(
 
     yield* take(ch);
 
-    yield* put(reload(action.registration));
+    yield* put(appReload());
 }
 
-function* showNoUpdateInfo(action: ReturnType<typeof didCheckForUpdate>): Generator {
+function* showNoUpdateInfo(action: ReturnType<typeof appDidCheckForUpdate>): Generator {
     if (action.updateFound) {
-        // this will be handled by ServiceWorkerActionType.DidUpdate action
+        // this will be handled by serviceWorkerDidUpdate action
         return;
     }
 
@@ -363,7 +360,7 @@ function* showNoUpdateInfo(action: ReturnType<typeof didCheckForUpdate>): Genera
         intent: mapIntent(Level.Info),
         icon: mapIcon(Level.Info),
         message: React.createElement(NotificationMessage, {
-            messageId: MessageId.AppNoUpdateFound,
+            messageId: I18nId.AppNoUpdateFound,
             replacements: { appName },
         }),
     });
@@ -380,40 +377,110 @@ function* checkVersion(
             `>=${pythonVersionToSemver(firmwareVersion)}`,
         )
     ) {
-        yield* showSingleton(Level.Error, MessageId.CheckFirmwareTooOld);
+        yield* showSingleton(Level.Error, I18nId.CheckFirmwareTooOld);
     }
 }
 
 function* showFileStorageFailToInitialize(
     action: ReturnType<typeof fileStorageDidFailToInitialize>,
 ): Generator {
-    yield* showUnexpectedError(MessageId.FileStorageFailedToInitialize, action.error);
+    yield* showUnexpectedError(I18nId.FileStorageFailedToInitialize, action.error);
 }
 
-function* showFileStorageFailToRead(
-    action: ReturnType<typeof fileStorageDidFailToReadFile>,
+function* showFileStorageFailToArchive(
+    action: ReturnType<typeof explorerDidFailToArchiveAllFiles>,
 ): Generator {
-    yield* showUnexpectedError(MessageId.FileStorageFailedToRead, action.error);
+    if (action.error.name === 'AbortError') {
+        // user clicked cancel button - not an error
+        return;
+    }
+
+    yield* showUnexpectedError(I18nId.ExplorerFailedToArchive, action.error);
 }
 
-function* showFileStorageFailToWrite(
-    action: ReturnType<typeof fileStorageDidFailToWriteFile>,
+function* showExplorerFailToImportFiles(
+    action: ReturnType<typeof explorerDidFailToImportFiles>,
 ): Generator {
-    yield* showUnexpectedError(MessageId.FileStorageFailedToWrite, action.error);
+    if (action.error.name === 'AbortError') {
+        // user clicked cancel button - not an error
+        return;
+    }
+
+    yield* showUnexpectedError(I18nId.ExplorerFailedToImportFiles, action.error);
+}
+
+function* showExplorerFailToCreateFile(
+    action: ReturnType<typeof explorerDidFailToCreateNewFile>,
+): Generator {
+    if (action.error.name === 'AbortError') {
+        // user clicked cancel button - not an error
+        return;
+    }
+
+    yield* showUnexpectedError(I18nId.ExplorerFailedToCreate, action.error);
+}
+
+function* showExplorerFailToDuplicate(
+    action: ReturnType<typeof explorerDidFailToDuplicateFile>,
+): Generator {
+    if (action.error.name === 'AbortError') {
+        // user clicked cancel button - not an error
+        return;
+    }
+
+    yield* showUnexpectedError(I18nId.ExplorerFailedToDuplicate, action.error);
+}
+
+function* showExplorerFailToExport(
+    action: ReturnType<typeof explorerDidFailToExportFile>,
+): Generator {
+    if (action.error.name === 'AbortError') {
+        // user clicked cancel button - not an error
+        return;
+    }
+
+    yield* showUnexpectedError(I18nId.ExplorerFailedToExport, action.error);
+}
+
+function* showEditorDidFailToOpenFile(
+    action: ReturnType<typeof editorDidFailToOpenFile>,
+): Generator {
+    if (action.error instanceof EditorError && action.error.name === 'FileInUse') {
+        return;
+    }
+
+    yield* showUnexpectedError(I18nId.EditorFailedToOpenFile, action.error);
+}
+
+function* showExplorerFailToDelete(
+    action: ReturnType<typeof explorerDidFailToDeleteFile>,
+): Generator {
+    if (action.error.name === 'AbortError') {
+        // user clicked cancel button - not an error
+        return;
+    }
+
+    // TODO: add a specific error message for when file in use (e.g. open in another window)
+
+    yield* showUnexpectedError(I18nId.ExplorerFailedToDelete, action.error);
 }
 
 export default function* (): Generator {
     yield* takeEvery(bleDeviceDidFailToConnect, showBleDeviceDidFailToConnectError);
     yield* takeEvery(bootloaderDidFailToConnect, showBootloaderDidFailToConnectError);
-    yield* takeEvery(didFailToSaveAs, showEditorFailToSaveFile);
     yield* takeEvery(didFailToFinish, showFlashFirmwareError);
     yield* takeEvery(didCompile, dismissCompilerError);
     yield* takeEvery(didFailToCompile, showCompilerError);
     yield* takeEvery(addNotification, handleAddNotification);
     yield* takeEvery(serviceWorkerDidUpdate, showServiceWorkerUpdate);
-    yield* takeEvery(didCheckForUpdate, showNoUpdateInfo);
+    yield* takeEvery(appDidCheckForUpdate, showNoUpdateInfo);
     yield* takeEvery(bleDIServiceDidReceiveFirmwareRevision, checkVersion);
     yield* takeEvery(fileStorageDidFailToInitialize, showFileStorageFailToInitialize);
-    yield* takeEvery(fileStorageDidFailToReadFile, showFileStorageFailToRead);
-    yield* takeEvery(fileStorageDidFailToWriteFile, showFileStorageFailToWrite);
+    yield* takeEvery(explorerDidFailToArchiveAllFiles, showFileStorageFailToArchive);
+    yield* takeEvery(explorerDidFailToImportFiles, showExplorerFailToImportFiles);
+    yield* takeEvery(explorerDidFailToCreateNewFile, showExplorerFailToCreateFile);
+    yield* takeEvery(explorerDidFailToDuplicateFile, showExplorerFailToDuplicate);
+    yield* takeEvery(explorerDidFailToExportFile, showExplorerFailToExport);
+    yield* takeEvery(explorerDidFailToDeleteFile, showExplorerFailToDelete);
+    yield* takeEvery(editorDidFailToOpenFile, showEditorDidFailToOpenFile);
 }

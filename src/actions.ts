@@ -44,9 +44,10 @@ type Matchable<F extends ActionCreationFunction<A>, A extends AnyAction> = F &
  * @param actionCreator The action creation function.
  * @returns actionCreator with type property and match method added.
  */
-export function createAction<F extends ActionCreationFunction<A>, A extends AnyAction>(
-    actionCreator: F,
-): Matchable<F, A> {
+export function createAction<
+    F extends ActionCreationFunction<A>,
+    A extends AnyAction = ReturnType<F>,
+>(actionCreator: F): Matchable<F, A> {
     // create a default action so we can get the type string.
     const type = actionCreator().type;
 

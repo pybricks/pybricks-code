@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021 The Pybricks Authors
+// Copyright (c) 2021-2022 The Pybricks Authors
 
-@import '../variables.scss';
+@use '@blueprintjs/core/lib/scss/variables' as bp;
 
 span.pb-external-link {
     white-space: nowrap;
 }
 
 // override some button magic in case this is used in a button
-.#{$ns}-button .pb-external-link .#{$ns}-icon:first-child:last-child {
+.#{bp.$ns}-button .pb-external-link .#{bp.$ns}-icon:first-child:last-child {
     margin: 0;
 }

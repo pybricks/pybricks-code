@@ -1,19 +1,17 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2021 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 
 import { Menu, MenuDivider, MenuItem, ResizeSensor } from '@blueprintjs/core';
 import { ContextMenu2, ContextMenu2ContentProps } from '@blueprintjs/popover2';
-import { useI18n } from '@shopify/react-i18n';
 import React, { useContext, useEffect, useMemo, useRef } from 'react';
 import { useDispatch } from 'react-redux';
+import { useTernaryDarkMode } from 'usehooks-ts';
 import { Terminal as XTerm } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
-import { useSelector } from '../reducers';
 import { isMacOS } from '../utils/os';
 import { TerminalContext } from './TerminalContext';
 import { receiveData } from './actions';
-import { TerminalStringId } from './i18n';
-import en from './i18n.en.json';
+import { I18nId, useI18n } from './i18n';
 
 import 'xterm/css/xterm.css';
 
@@ -55,7 +53,7 @@ function createContextMenu(
     xterm: XTerm,
 ): (props: ContextMenu2ContentProps) => JSX.Element {
     const contextMenu = (_props: ContextMenu2ContentProps): JSX.Element => {
-        const [i18n] = useI18n({ id: 'terminal', translations: { en }, fallback: en });
+        const i18n = useI18n();
 
         return (
             <Menu>
@@ -66,7 +64,7 @@ function createContextMenu(
                             navigator.clipboard.writeText(selected);
                         }
                     }}
-                    text={i18n.translate(TerminalStringId.Copy)}
+                    text={i18n.translate(I18nId.Copy)}
                     icon="duplicate"
                     label={isMacOS() ? 'Cmd-C' : 'Ctrl-Shift-C'}
                     disabled={!xterm.hasSelection()}
@@ -75,19 +73,19 @@ function createContextMenu(
                     onClick={async (): Promise<void> => {
                         xterm.paste(await navigator.clipboard.readText());
                     }}
-                    text={i18n.translate(TerminalStringId.Paste)}
+                    text={i18n.translate(I18nId.Paste)}
                     icon="clipboard"
                     label={isMacOS() ? 'Cmd-V' : 'Ctrl-V'}
                 />
                 <MenuItem
                     onClick={() => xterm.selectAll()}
-                    text={i18n.translate(TerminalStringId.SelectAll)}
+                    text={i18n.translate(I18nId.SelectAll)}
                     icon="blank"
                 />
                 <MenuDivider />
                 <MenuItem
                     onClick={(): void => xterm.clear()}
-                    text={i18n.translate(TerminalStringId.Clear)}
+                    text={i18n.translate(I18nId.Clear)}
                     icon="trash"
                 />
             </Menu>
@@ -100,7 +98,7 @@ function createContextMenu(
 const Terminal: React.FC = (_props) => {
     const { xterm, fitAddon } = useMemo(createXTerm, [createXTerm]);
     const terminalRef = useRef<HTMLDivElement>(null);
-    const darkMode = useSelector((s) => s.settings.darkMode);
+    const { isDarkMode } = useTernaryDarkMode();
     const dispatch = useDispatch();
     const terminalStream = useContext(TerminalContext);
 
@@ -115,43 +113,47 @@ const Terminal: React.FC = (_props) => {
         xterm.open(terminalRef.current);
         fitAddon.fit();
 
+        // HACK: remove tabindex from main xterm element, otherwise it takes
+        // two tabs to get to the text area
+        xterm.element?.removeAttribute('tabindex');
+
         return () => xterm.dispose();
     }, [xterm]);
 
-    // wire up darkMode to terminal
+    // wire up isDarkMode to terminal
     useEffect(() => {
         xterm.options.theme = {
-            background: darkMode ? 'black' : 'white',
-            foreground: darkMode ? 'white' : 'black',
-            cursor: darkMode ? 'white' : 'black',
+            background: isDarkMode ? 'black' : 'white',
+            foreground: isDarkMode ? 'white' : 'black',
+            cursor: isDarkMode ? 'white' : 'black',
             // transparency is needed to work around https://github.com/xtermjs/xterm.js/issues/2808
-            selection: darkMode ? 'rgb(81,81,81,0.5)' : 'rgba(181,213,255,0.5)', // this should match AceEditor theme
+            selection: isDarkMode ? 'rgb(81,81,81,0.5)' : 'rgba(181,213,255,0.5)', // this should match AceEditor theme
         };
-    }, [darkMode]);
-
-    const handleKeyDownEvent = (e: KeyboardEvent): void => {
-        // implement CTRL+SHIFT+C keyboard shortcut for copying text from terminal
-        if (e.key === 'C' && e.ctrlKey && e.shiftKey && !e.altKey && !e.metaKey) {
-            // this would otherwise open up debug console in web browser
-            e.preventDefault();
-
-            if (
-                document.hasFocus() &&
-                document.activeElement ===
-                    terminalRef.current?.getElementsByClassName(
-                        'xterm-helper-textarea',
-                    )[0] &&
-                xterm.hasSelection()
-            ) {
-                navigator.clipboard.writeText(xterm.getSelection());
-            }
-        }
-    };
+    }, [isDarkMode]);
 
     useEffect(() => {
-        window.addEventListener('keydown', handleKeyDownEvent);
-        return () => window.removeEventListener('keydown', handleKeyDownEvent);
-    }, [handleKeyDownEvent]);
+        const handleKeyDown = (e: KeyboardEvent): void => {
+            // implement CTRL+SHIFT+C keyboard shortcut for copying text from terminal
+            if (e.key === 'C' && e.ctrlKey && e.shiftKey && !e.altKey && !e.metaKey) {
+                // this would otherwise open up debug console in web browser
+                e.preventDefault();
+
+                if (
+                    document.hasFocus() &&
+                    document.activeElement ===
+                        terminalRef.current?.getElementsByClassName(
+                            'xterm-helper-textarea',
+                        )[0] &&
+                    xterm.hasSelection()
+                ) {
+                    navigator.clipboard.writeText(xterm.getSelection());
+                }
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [terminalRef, xterm]);
 
     // wire shared context to terminal output
     useEffect(() => {

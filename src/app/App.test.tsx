@@ -1,27 +1,45 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021 The Pybricks Authors
+// Copyright (c) 2021-2022 The Pybricks Authors
 
-import { I18nContext, I18nManager } from '@shopify/react-i18n';
-import { render } from '@testing-library/react';
-import { mock } from 'jest-mock-extended';
+import { cleanup } from '@testing-library/react';
 import React from 'react';
-import { Provider } from 'react-redux';
-import { Store } from 'redux';
-import { RootState } from '../reducers';
+import { testRender } from '../../test';
 import App from './App';
 
+beforeAll(() => {
+    // this lets us use jest.spyOn with window.innerWidth
+    const defaultInnerWidth = window.innerWidth;
+    Object.defineProperty(window, 'innerWidth', {
+        get: () => defaultInnerWidth,
+    });
+});
+
+afterEach(() => {
+    cleanup();
+    jest.resetAllMocks();
+    localStorage.clear();
+});
+
 it.each([false, true])('should render', (darkMode) => {
-    const store = mock<Store<RootState>>({
-        getState: () => mock<RootState>({ settings: { darkMode } }),
+    localStorage.setItem(
+        'usehooks-ts-ternary-dark-mode',
+        JSON.stringify(darkMode ? 'dark' : 'light'),
+    );
+    testRender(<App />);
+});
+
+describe('documentation pane', () => {
+    it('should show by default on large screens', () => {
+        jest.spyOn(window, 'innerWidth', 'get').mockReturnValue(1024);
+        testRender(<App />);
+        expect(document.querySelector('.pb-show-docs')).not.toBeNull();
+        expect(document.querySelector('.pb-hide-docs')).toBeNull();
     });
 
-    const i18n = new I18nManager({ locale: 'en' });
-
-    render(
-        <Provider store={store}>
-            <I18nContext.Provider value={i18n}>
-                <App />
-            </I18nContext.Provider>
-        </Provider>,
-    );
+    it('should hide by default on small screens', () => {
+        jest.spyOn(window, 'innerWidth', 'get').mockReturnValue(800);
+        testRender(<App />);
+        expect(document.querySelector('.pb-show-docs')).toBeNull();
+        expect(document.querySelector('.pb-hide-docs')).not.toBeNull();
+    });
 });

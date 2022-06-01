@@ -18,13 +18,20 @@
             "name": "Debug Tests",
             "type": "node",
             "request": "launch",
-            "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/react-scripts",
+            "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/craco",
             "env": { "CI": "true" },
             "args": ["test", "--runInBand", "--no-cache", "--env=./test/env.js"],
             "cwd": "${workspaceRoot}",
             "protocol": "inspector",
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen"
+        },
+        {
+            "name": "Attach by Process ID",
+            "processId": "${command:PickProcess}",
+            "request": "attach",
+            "skipFiles": ["<node_internals>/**"],
+            "type": "pwa-node"
         }
     ]
 }

@@ -7,35 +7,59 @@ import {
     FirmwareReaderErrorCode,
     firmwareVersion,
 } from '@pybricks/firmware';
+import { I18nManager } from '@shopify/react-i18n';
 import { AnyAction } from 'redux';
-import { AsyncSaga } from '../../test';
-import { didCheckForUpdate } from '../app/actions';
+import { AsyncSaga, uuid } from '../../test';
+import { appDidCheckForUpdate } from '../app/actions';
 import { bleDIServiceDidReceiveFirmwareRevision } from '../ble-device-info-service/actions';
 import {
     BleDeviceFailToConnectReasonType,
     didFailToConnect as bleDidFailToConnect,
 } from '../ble/actions';
-import { didFailToSaveAs } from '../editor/actions';
+import { editorDidFailToOpenFile } from '../editor/actions';
+import { EditorError } from '../editor/error';
 import {
-    fileStorageDidFailToInitialize,
-    fileStorageDidFailToReadFile,
-    fileStorageDidFailToWriteFile,
-} from '../fileStorage/actions';
+    explorerDidFailToArchiveAllFiles,
+    explorerDidFailToCreateNewFile,
+    explorerDidFailToDeleteFile,
+    explorerDidFailToDuplicateFile,
+    explorerDidFailToExportFile,
+    explorerDidFailToImportFiles,
+} from '../explorer/actions';
+import { fileStorageDidFailToInitialize } from '../fileStorage/actions';
 import {
     FailToFinishReasonType,
     HubError,
     MetadataProblem,
     didFailToFinish,
 } from '../firmware/actions';
+import * as i18nToaster from '../i18nToaster';
 import {
     BootloaderConnectionFailureReason,
     didFailToConnect as bootloaderDidFailToConnect,
 } from '../lwp3-bootloader/actions';
 import { didCompile, didFailToCompile } from '../mpy/actions';
-import { didSucceed, didUpdate } from '../service-worker/actions';
+import {
+    serviceWorkerDidSucceed,
+    serviceWorkerDidUpdate,
+} from '../service-worker/actions';
 import { add } from './actions';
-import { MessageId } from './i18n';
+import { I18nId } from './i18n';
 import notification from './sagas';
+
+function createTestToasterSaga(): { toaster: IToaster; saga: AsyncSaga } {
+    const i18n = new I18nManager({ locale: 'en' });
+    const toaster = i18nToaster.create(i18n);
+
+    jest.spyOn(toaster, 'clear');
+    jest.spyOn(toaster, 'dismiss');
+    jest.spyOn(toaster, 'getToasts');
+    jest.spyOn(toaster, 'show');
+
+    const saga = new AsyncSaga(notification, { notification: { toaster } });
+
+    return { toaster, saga };
+}
 
 test.each([
     bleDidFailToConnect({ reason: BleDeviceFailToConnectReasonType.NoWebBluetooth }),
@@ -58,7 +82,7 @@ test.each([
     didFailToCompile(['reason']),
     add('warning', 'message'),
     add('error', 'message', 'url'),
-    didUpdate({} as ServiceWorkerRegistration),
+    serviceWorkerDidUpdate(),
     didFailToFinish(FailToFinishReasonType.TimedOut),
     didFailToFinish(
         FailToFinishReasonType.BleError,
@@ -84,32 +108,24 @@ test.each([
     didFailToFinish(FailToFinishReasonType.FailedToCompile),
     didFailToFinish(FailToFinishReasonType.FirmwareSize),
     didFailToFinish(FailToFinishReasonType.Unknown, new Error('test error')),
-    didCheckForUpdate(false),
+    appDidCheckForUpdate(false),
     bleDIServiceDidReceiveFirmwareRevision('3.0.0'),
-    didFailToSaveAs(new DOMException('test message', 'NotAllowedError')),
     fileStorageDidFailToInitialize(new Error('test error')),
-    fileStorageDidFailToReadFile('test.file', new Error('test error')),
-    fileStorageDidFailToWriteFile('test.file', new Error('test error')),
+    explorerDidFailToArchiveAllFiles(new Error('test error')),
+    explorerDidFailToImportFiles(new Error('test error')),
+    explorerDidFailToCreateNewFile(new Error('test error')),
+    explorerDidFailToDuplicateFile('test.file', new Error('test error')),
+    explorerDidFailToExportFile('test.file', new Error('test error')),
+    explorerDidFailToDeleteFile('test.file', new Error('test error')),
+    editorDidFailToOpenFile(uuid(0), new Error('test error')),
 ])('actions that should show notification: %o', async (action: AnyAction) => {
-    const getToasts = jest.fn().mockReturnValue([]);
-    const show = jest.fn();
-    const dismiss = jest.fn();
-    const clear = jest.fn();
-
-    const toaster: IToaster = {
-        getToasts,
-        show,
-        dismiss,
-        clear,
-    };
-
-    const saga = new AsyncSaga(notification, {}, { notification: { toaster } });
+    const { toaster, saga } = createTestToasterSaga();
 
     saga.put(action);
 
-    expect(show).toBeCalled();
-    expect(dismiss).not.toBeCalled();
-    expect(clear).not.toBeCalled();
+    expect(toaster.show).toBeCalled();
+    expect(toaster.dismiss).not.toBeCalled();
+    expect(toaster.clear).not.toBeCalled();
 
     await saga.end();
 });
@@ -118,57 +134,48 @@ test.each([
     bleDidFailToConnect({ reason: BleDeviceFailToConnectReasonType.Canceled }),
     bootloaderDidFailToConnect(BootloaderConnectionFailureReason.Canceled),
     didFailToFinish(FailToFinishReasonType.FailedToConnect),
-    didSucceed({} as ServiceWorkerRegistration),
-    didCheckForUpdate(true),
+    serviceWorkerDidSucceed(),
+    appDidCheckForUpdate(true),
     bleDIServiceDidReceiveFirmwareRevision(firmwareVersion),
-    didFailToSaveAs(new DOMException('test message', 'AbortError')),
+    explorerDidFailToArchiveAllFiles(new DOMException('test message', 'AbortError')),
+    explorerDidFailToImportFiles(new DOMException('test message', 'AbortError')),
+    explorerDidFailToCreateNewFile(new DOMException('test message', 'AbortError')),
+    explorerDidFailToDuplicateFile(
+        'test.file',
+        new DOMException('test message', 'AbortError'),
+    ),
+    explorerDidFailToExportFile(
+        'test.file',
+        new DOMException('test message', 'AbortError'),
+    ),
+    explorerDidFailToDeleteFile(
+        'test.file',
+        new DOMException('test message', 'AbortError'),
+    ),
+    editorDidFailToOpenFile(uuid(0), new EditorError('FileInUse', 'test error')),
 ])('actions that should not show a notification: %o', async (action: AnyAction) => {
-    const getToasts = jest.fn().mockReturnValue([]);
-    const show = jest.fn();
-    const dismiss = jest.fn();
-    const clear = jest.fn();
-
-    const toaster: IToaster = {
-        getToasts,
-        show,
-        dismiss,
-        clear,
-    };
-
-    const saga = new AsyncSaga(notification, {}, { notification: { toaster } });
+    const { toaster, saga } = createTestToasterSaga();
 
     saga.put(action);
 
-    expect(getToasts).not.toBeCalled();
-    expect(show).not.toBeCalled();
-    expect(dismiss).not.toBeCalled();
-    expect(clear).not.toBeCalled();
+    expect(toaster.getToasts).not.toBeCalled();
+    expect(toaster.show).not.toBeCalled();
+    expect(toaster.dismiss).not.toBeCalled();
+    expect(toaster.clear).not.toBeCalled();
 
     await saga.end();
 });
 
-test.each([[didCompile(new Uint8Array()), MessageId.MpyError]])(
+test.each([[didCompile(new Uint8Array()), I18nId.MpyError]])(
     'actions that should close a notification: %o',
     async (action: AnyAction, key: string) => {
-        const getToasts = jest.fn().mockReturnValue([]);
-        const show = jest.fn();
-        const dismiss = jest.fn();
-        const clear = jest.fn();
-
-        const toaster: IToaster = {
-            getToasts,
-            show,
-            dismiss,
-            clear,
-        };
-
-        const saga = new AsyncSaga(notification, {}, { notification: { toaster } });
+        const { toaster, saga } = createTestToasterSaga();
 
         saga.put(action);
 
-        expect(show).not.toBeCalled();
-        expect(dismiss).toBeCalledWith(key);
-        expect(clear).not.toBeCalled();
+        expect(toaster.show).not.toBeCalled();
+        expect(toaster.dismiss).toBeCalledWith(key);
+        expect(toaster.clear).not.toBeCalled();
 
         await saga.end();
     },

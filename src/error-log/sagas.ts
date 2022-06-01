@@ -8,7 +8,7 @@ import {
     BleDeviceFailToConnectReasonType,
     didFailToConnect as bleDeviceDidFailToConnect,
 } from '../ble/actions';
-import { didFailToFetchList } from '../licenses/actions';
+import { fileStorageDidFailToStoreTextFileValue } from '../fileStorage/actions';
 import {
     BootloaderConnectionFailureReason,
     didError as bootloaderDidError,
@@ -47,10 +47,10 @@ function handleBootloaderDidError(action: ReturnType<typeof bootloaderDidError>)
     console.error(action.err);
 }
 
-function handleLicenseDidFailToFetch(
-    action: ReturnType<typeof didFailToFetchList>,
+function handleFileStorageDidFailToStoreTextFileValue(
+    action: ReturnType<typeof fileStorageDidFailToStoreTextFileValue>,
 ): void {
-    console.error(`Failed to fetch licenses: ${action.reason.statusText}`);
+    console.error(action.error);
 }
 
 export default function* (): Generator {
@@ -59,5 +59,8 @@ export default function* (): Generator {
     yield* takeEvery(bleUartDidFailToWrite, handleBleUartDidFailToWrite);
     yield* takeEvery(bootloaderDidFailToConnect, handleBootloaderDidFailToConnect);
     yield* takeEvery(bootloaderDidError, handleBootloaderDidError);
-    yield* takeEvery(didFailToFetchList, handleLicenseDidFailToFetch);
+    yield* takeEvery(
+        fileStorageDidFailToStoreTextFileValue,
+        handleFileStorageDidFailToStoreTextFileValue,
+    );
 }

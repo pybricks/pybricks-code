@@ -6,12 +6,11 @@ import { Reducer, combineReducers } from 'redux';
 import app from './app/reducers';
 import ble from './ble/reducers';
 import editor from './editor/reducers';
+import explorer from './explorer/reducers';
 import fileStorage from './fileStorage/reducers';
 import firmware from './firmware/reducers';
 import hub from './hub/reducers';
-import licenses from './licenses/reducers';
 import bootloader from './lwp3-bootloader/reducers';
-import settings from './settings/reducers';
 
 /**
  * Root reducer for redux store.
@@ -21,11 +20,10 @@ export const rootReducer = combineReducers({
     bootloader,
     ble,
     editor,
+    explorer,
     fileStorage,
     firmware,
     hub,
-    licenses,
-    settings,
 });
 
 /**

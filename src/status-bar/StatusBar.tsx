@@ -1,14 +1,12 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2021 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 
 import { Button, Intent, ProgressBar } from '@blueprintjs/core';
 import { Classes as Classes2, Popover2, Popover2Props } from '@blueprintjs/popover2';
-import { useI18n } from '@shopify/react-i18n';
 import React from 'react';
 import { BleConnectionState } from '../ble/reducers';
 import { useSelector } from '../reducers';
-import { MessageId } from './i18n';
-import en from './i18n.en.json';
+import { I18nId, useI18n } from './i18n';
 
 import './status-bar.scss';
 
@@ -17,12 +15,11 @@ const commonPopoverProps: Partial<Popover2Props> = {
     placement: 'top',
 };
 
-const HubInfoButton: React.VFC = (_props) => {
+const HubInfoButton: React.VoidFunctionComponent = () => {
+    const i18n = useI18n();
     const deviceName = useSelector((s) => s.ble.deviceName);
     const deviceType = useSelector((s) => s.ble.deviceType);
     const deviceFirmwareVersion = useSelector((s) => s.ble.deviceFirmwareVersion);
-
-    const [i18n] = useI18n({ id: 'statusBar', translations: { en }, fallback: en });
 
     return (
         <Popover2
@@ -33,23 +30,21 @@ const HubInfoButton: React.VFC = (_props) => {
                         <tr>
                             <td>
                                 <strong>
-                                    {i18n.translate(MessageId.HubInfoConnectedTo)}
+                                    {i18n.translate(I18nId.HubInfoConnectedTo)}
                                 </strong>
                             </td>
                             <td>{deviceName}</td>
                         </tr>
                         <tr>
                             <td>
-                                <strong>
-                                    {i18n.translate(MessageId.HubInfoHubType)}
-                                </strong>
+                                <strong>{i18n.translate(I18nId.HubInfoHubType)}</strong>
                             </td>
                             <td>{deviceType}</td>
                         </tr>
                         <tr>
                             <td>
                                 <strong>
-                                    {i18n.translate(MessageId.HubInfoFirmware)}
+                                    {i18n.translate(I18nId.HubInfoFirmware)}
                                 </strong>
                             </td>
                             <td>v{deviceFirmwareVersion}</td>
@@ -58,22 +53,17 @@ const HubInfoButton: React.VFC = (_props) => {
                 </table>
             }
         >
-            <Button
-                title={i18n.translate(MessageId.HubInfoTitle)}
-                minimal={true}
-                onMouseDown={(e) => e.preventDefault()}
-            >
+            <Button title={i18n.translate(I18nId.HubInfoTitle)} minimal={true}>
                 {deviceName}
             </Button>
         </Popover2>
     );
 };
 
-const BatteryIndicator: React.VFC = (_props) => {
+const BatteryIndicator: React.VoidFunctionComponent = () => {
+    const i18n = useI18n();
     const charging = useSelector((s) => s.ble.deviceBatteryCharging);
     const lowBatteryWarning = useSelector((s) => s.ble.deviceLowBatteryWarning);
-
-    const [i18n] = useI18n({ id: 'statusBar', translations: { en }, fallback: en });
 
     return (
         <Popover2
@@ -81,13 +71,13 @@ const BatteryIndicator: React.VFC = (_props) => {
             content={
                 <span className="no-wrap">
                     {i18n.translate(
-                        lowBatteryWarning ? MessageId.BatteryLow : MessageId.BatteryOk,
+                        lowBatteryWarning ? I18nId.BatteryLow : I18nId.BatteryOk,
                     )}
                 </span>
             }
         >
             <div
-                title={i18n.translate(MessageId.BatteryTitle)}
+                title={i18n.translate(I18nId.BatteryTitle)}
                 className="pb-battery-indicator"
                 style={{ cursor: 'pointer' }}
             >
@@ -108,12 +98,7 @@ const StatusBar: React.VFC = (_props) => {
     const connection = useSelector((s) => s.ble.connection);
 
     return (
-        <div
-            className="pb-status-bar"
-            role="status"
-            aria-live="off"
-            onContextMenu={(e): void => e.preventDefault()}
-        >
+        <div className="pb-status-bar" role="status" aria-live="off">
             {connection === BleConnectionState.Connected && (
                 <>
                     <HubInfoButton />

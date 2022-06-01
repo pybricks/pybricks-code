@@ -1,19 +1,64 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2021 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 
-@import '~@blueprintjs/core/lib/scss/variables.scss';
+@use 'sass:color';
+@use '@blueprintjs/core/lib/scss/variables' as bp;
 
-// override variables here
-// See https://blueprintjs.com/docs/#core/variables
+$status-bar-height: 30px;
 
-$pt-font-size: $pt-grid-size * 1.6;
-$pt-font-size-large: $pt-grid-size * 1.8;
-$pt-font-size-small: $pt-grid-size * 1.4;
+// point at which we change the UI for narrow screens
+$narrow-screen-limit: 700px;
 
-$pb-toolbar-height: 72px;
-$pb-status-bar-height: 30px;
+// Official Pybricks branding color.
+$pybricks-blue: #0088ce;
 
-$pb-pybricks-blue: #0088ce;
-$pt-app-background-color: #e8e8e8;
-$pt-intent-primary: $pb-pybricks-blue;
-$pt-outline-color: rgba($pb-pybricks-blue, 0.6);
+// blueprint doesn't define this
+$pt-dark-outline-color: rgba(bp.$blue5, 0.6);
+
+/**
+ * Adjusts the background contrast by $background-adjust (usually a percent).
+ *
+ * The light theme will be made darker by that amount and the dark theme will
+ * be made lighter.
+ */
+@mixin background-contrast($background-adjust) {
+    background-color: color.adjust(
+        bp.$pt-app-background-color,
+        $lightness: -$background-adjust
+    );
+
+    .#{bp.$ns}-dark & {
+        background-color: color.adjust(
+            bp.$pt-dark-app-background-color,
+            $lightness: $background-adjust
+        );
+    }
+}
+
+// This is usually used with :focus-visible, but can be use with :focus if
+// we wan't focust to be visible, even on mouse click.
+@mixin focus-outline($offset) {
+    outline: bp.$pt-outline-color solid 2px;
+    outline-offset: $offset;
+
+    .#{bp.$ns}-dark & {
+        outline: bp.$pt-outline-color solid 2px;
+        outline-offset: $offset;
+    }
+}
+
+// add a focus ring when focus is within a container
+@mixin focus-within() {
+    position: relative;
+
+    &:focus-within::after {
+        content: '';
+        pointer-events: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        @include focus-outline(-3px);
+    }
+}

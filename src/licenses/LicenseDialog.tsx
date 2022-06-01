@@ -1,104 +1,170 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021 The Pybricks Authors
+// Copyright (c) 2021-2022 The Pybricks Authors
 
 // The license dialog
 
 import {
-    Button,
-    ButtonGroup,
     Callout,
     Card,
     Classes,
     Dialog,
     NonIdealState,
+    Spinner,
 } from '@blueprintjs/core';
-import { useI18n } from '@shopify/react-i18n';
-import React from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useCallback, useMemo, useState } from 'react';
+import {
+    ControlledTreeEnvironment,
+    Tree,
+    TreeItem,
+    TreeItemIndex,
+    TreeViewState,
+} from 'react-complex-tree';
+import { useFetch } from 'usehooks-ts';
 import { appName } from '../app/constants';
-import { useSelector } from '../reducers';
-import { fetchList, select } from './actions';
-import { LicenseStringId } from './i18n';
-import en from './i18n.en.json';
-import { LicenseInfo } from './reducers';
+import { TreeItemData, renderers } from '../utils/tree-renderer';
+import { I18nId, useI18n } from './i18n';
 
 import './license.scss';
 
+interface LicenseInfo extends TreeItemData {
+    readonly name: string;
+    readonly version: string;
+    readonly author: string | undefined;
+    readonly license: string;
+    readonly licenseText: string;
+}
+
+type LicenseList = ReadonlyArray<LicenseInfo>;
+
 type LicenseListPanelProps = {
-    onItemClick(info: LicenseInfo): void;
+    /** Called when item is clicked. */
+    onItemClick(info?: LicenseInfo): void;
 };
 
-const LicenseListPanel: React.VoidFunctionComponent<LicenseListPanelProps> = (
-    props,
-) => {
-    const licenseList = useSelector((s) => s.licenses.list);
+const LicenseListPanel: React.VoidFunctionComponent<LicenseListPanelProps> = ({
+    onItemClick,
+}) => {
+    const i18n = useI18n();
+    const { data, error } = useFetch<LicenseList>('static/oss-licenses.json');
+    const [focusedItem, setFocusedItem] = useState<TreeItemIndex>();
+    const [activeItem, setActiveItem] = useState<TreeItemIndex>();
+
+    const contents = useMemo(() => {
+        if (!data) {
+            return undefined;
+        }
+
+        return data.reduce(
+            (obj, info, i) => {
+                obj[i] = {
+                    index: i,
+                    data: info,
+                };
+
+                return obj;
+            },
+            {
+                root: {
+                    index: 'root',
+                    data: {} as LicenseInfo,
+                    hasChildren: true,
+                    children: data.map((_info, i) => i),
+                },
+            } as Record<TreeItemIndex, TreeItem<LicenseInfo>>,
+        );
+    }, [data]);
+
+    const handlePrimaryAction = useCallback(
+        (item: TreeItem<LicenseInfo>) => {
+            setActiveItem(item.index);
+            onItemClick(item.data);
+        },
+        [onItemClick],
+    );
+
+    const viewState = useMemo<TreeViewState>(
+        () => ({
+            'pb-license-list': {
+                focusedItem,
+                // REVISIT: it would be nice if there was an active item separate
+                // from using selected items.
+                selectedItems: activeItem === undefined ? undefined : [activeItem],
+            },
+        }),
+        [focusedItem, activeItem],
+    );
 
     return (
         <div className="pb-license-list">
-            {licenseList === null ? (
-                // TODO: this should be translated and hooked to
-                // state indicating if download is in progress
-                // or there was an actual failure.
-                <NonIdealState>Failed to load license data.</NonIdealState>
+            {contents === undefined ? (
+                <NonIdealState>
+                    {error ? i18n.translate(I18nId.ErrorFetchFailed) : <Spinner />}
+                </NonIdealState>
             ) : (
-                <ButtonGroup minimal={true} vertical={true} alignText="left">
-                    {licenseList.map((info, i) => (
-                        <Button key={i} onClick={() => props.onItemClick(info)}>
-                            {info.name}
-                        </Button>
-                    ))}
-                </ButtonGroup>
+                <ControlledTreeEnvironment<LicenseInfo>
+                    {...renderers}
+                    items={contents}
+                    getItemTitle={(item) => item.data.name}
+                    viewState={viewState}
+                    canRename={false}
+                    showLiveDescription={false}
+                    onFocusItem={(item) => setFocusedItem(item.index)}
+                    onPrimaryAction={handlePrimaryAction}
+                >
+                    <Tree treeId="pb-license-list" rootItem="root" />
+                </ControlledTreeEnvironment>
             )}
         </div>
     );
 };
 
-const LicenseInfoPanel = React.forwardRef<HTMLDivElement>((_props, ref) => {
-    const licenseInfo = useSelector((s) => s.licenses.selected);
+type LicenseInfoPanelProps = {
+    /** The license info to show or undefined if no license info is selected. */
+    licenseInfo: LicenseInfo | undefined;
+};
 
-    const [i18n] = useI18n({ id: 'license', translations: { en }, fallback: en });
+const LicenseInfoPanel = React.forwardRef<HTMLDivElement, LicenseInfoPanelProps>(
+    ({ licenseInfo }, ref) => {
+        const i18n = useI18n();
 
-    return (
-        <div className="pb-license-info" ref={ref}>
-            {licenseInfo == null ? (
-                <NonIdealState>
-                    {i18n.translate(LicenseStringId.SelectPackageHelp)}
-                </NonIdealState>
-            ) : (
-                <div>
-                    <Card>
-                        <p>
-                            <strong>
-                                {i18n.translate(LicenseStringId.PackageLabel)}
-                            </strong>{' '}
-                            {licenseInfo.name}{' '}
-                            <span className={Classes.TEXT_MUTED}>
-                                v{licenseInfo.version}
-                            </span>
-                        </p>
-                        {licenseInfo.author && (
+        return (
+            <div className="pb-license-info" ref={ref}>
+                {licenseInfo === undefined ? (
+                    <NonIdealState>
+                        {i18n.translate(I18nId.SelectPackageHelp)}
+                    </NonIdealState>
+                ) : (
+                    <div>
+                        <Card>
                             <p>
-                                <strong>
-                                    {i18n.translate(LicenseStringId.AuthorLabel)}
-                                </strong>{' '}
-                                {licenseInfo.author}
+                                <strong>{i18n.translate(I18nId.PackageLabel)}</strong>{' '}
+                                {licenseInfo.name}{' '}
+                                <span className={Classes.TEXT_MUTED}>
+                                    v{licenseInfo.version}
+                                </span>
                             </p>
-                        )}
-                        <p>
-                            <strong>
-                                {i18n.translate(LicenseStringId.LicenseLabel)}
-                            </strong>{' '}
-                            {licenseInfo.license}
-                        </p>
-                    </Card>
-                    <div className="pb-license-text">
-                        <pre>{licenseInfo.licenseText}</pre>
+                            {licenseInfo.author && (
+                                <p>
+                                    <strong>
+                                        {i18n.translate(I18nId.AuthorLabel)}
+                                    </strong>{' '}
+                                    {licenseInfo.author}
+                                </p>
+                            )}
+                            <p>
+                                <strong>{i18n.translate(I18nId.LicenseLabel)}</strong>{' '}
+                                {licenseInfo.license}
+                            </p>
+                        </Card>
+                        <div className="pb-license-text">
+                            <pre>{licenseInfo.licenseText}</pre>
+                        </div>
                     </div>
-                </div>
-            )}
-        </div>
-    );
-});
+                )}
+            </div>
+        );
+    },
+);
 
 LicenseInfoPanel.displayName = 'LicenseInfoPanel';
 
@@ -107,23 +173,24 @@ type LicenseDialogProps = {
     onClose(): void;
 };
 
-const LicenseDialog: React.VoidFunctionComponent<LicenseDialogProps> = (props) => {
+const LicenseDialog: React.VoidFunctionComponent<LicenseDialogProps> = ({
+    isOpen,
+    onClose,
+}) => {
+    const [licenseInfo, setLicenseInfo] = useState<LicenseInfo | undefined>(undefined);
     const infoDiv = React.useRef<HTMLDivElement>(null);
-
-    const dispatch = useDispatch();
-
-    const [i18n] = useI18n({ id: 'license', translations: { en }, fallback: en });
+    const i18n = useI18n();
 
     return (
         <Dialog
-            title={i18n.translate(LicenseStringId.Title)}
-            onOpening={() => dispatch(fetchList())}
             className="pb-license-dialog"
-            {...props}
+            title={i18n.translate(I18nId.Title)}
+            isOpen={isOpen}
+            onClose={onClose}
         >
             <div className={Classes.DIALOG_BODY}>
                 <Callout className={Classes.INTENT_PRIMARY} icon="info-sign">
-                    {i18n.translate(LicenseStringId.Description, {
+                    {i18n.translate(I18nId.Description, {
                         name: appName,
                     })}
                 </Callout>
@@ -131,10 +198,10 @@ const LicenseDialog: React.VoidFunctionComponent<LicenseDialogProps> = (props) =
                     <LicenseListPanel
                         onItemClick={(info) => {
                             infoDiv.current?.scrollTo(0, 0);
-                            dispatch(select(info));
+                            setLicenseInfo(info);
                         }}
                     />
-                    <LicenseInfoPanel ref={infoDiv} />
+                    <LicenseInfoPanel licenseInfo={licenseInfo} ref={infoDiv} />
                 </Callout>
             </div>
         </Dialog>

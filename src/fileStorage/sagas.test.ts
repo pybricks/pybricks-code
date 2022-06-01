@@ -1,88 +1,777 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2022 The Pybricks Authors
 
-import { AsyncSaga } from '../../test';
+import 'fake-indexeddb/auto';
+import Dexie from 'dexie';
+import 'dexie-observable';
+import { AsyncSaga, uuid } from '../../test';
+import { createCountFunc } from '../utils/iter';
 import {
-    fileStorageDidChangeItem,
+    FD,
+    FileOpenMode,
+    fileStorageClose,
+    fileStorageCopyFile,
+    fileStorageDeleteFile,
+    fileStorageDidClose,
+    fileStorageDidCopyFile,
+    fileStorageDidDeleteFile,
+    fileStorageDidDumpAllFiles,
+    fileStorageDidFailToCopyFile,
+    fileStorageDidFailToDeleteFile,
+    fileStorageDidFailToDumpAllFiles,
+    fileStorageDidFailToInitialize,
+    fileStorageDidFailToOpen,
+    fileStorageDidFailToRead,
     fileStorageDidFailToReadFile,
+    fileStorageDidFailToRenameFile,
+    fileStorageDidFailToWrite,
+    fileStorageDidFailToWriteFile,
     fileStorageDidInitialize,
+    fileStorageDidOpen,
+    fileStorageDidRead,
     fileStorageDidReadFile,
+    fileStorageDidRenameFile,
+    fileStorageDidWrite,
     fileStorageDidWriteFile,
+    fileStorageDumpAllFiles,
+    fileStorageOpen,
+    fileStorageRead,
     fileStorageReadFile,
+    fileStorageRenameFile,
+    fileStorageWrite,
     fileStorageWriteFile,
 } from './actions';
 import fileStorage from './sagas';
+import { FileMetadata, FileStorageDb } from '.';
 
 beforeEach(() => {
-    // localForge uses localStorage as backend in test environment, so we need
-    // to start with a clean slate in each test
+    // deterministic UUID generator for repeatable tests
+    const nextId = createCountFunc();
+    Dexie.Observable.createUUID = () => uuid(nextId());
+});
+
+afterEach(async () => {
+    jest.restoreAllMocks();
+
+    await new Promise((resolve, reject) => {
+        const request = indexedDB.deleteDatabase('test');
+        request.addEventListener('success', resolve);
+        request.addEventListener('error', reject);
+    });
+
     localStorage.clear();
 });
 
-it('should migrate old program from local storage during initialization', async () => {
-    const oldProgramKey = 'program';
-    const oldProgramContents = '# test program';
-
-    // add item to localStorage to simulate an existing program
-    localStorage.setItem(oldProgramKey, oldProgramContents);
-    expect(localStorage.getItem(oldProgramKey)).toBe(oldProgramContents);
-
-    const saga = new AsyncSaga(fileStorage);
-
-    // initialization should remove the localStorage entry
-    let action = await saga.take();
-    expect(action).toEqual(fileStorageDidInitialize());
-    expect(localStorage.getItem(oldProgramKey)).toBeNull();
-
-    // and add it to the new storage backend
-    action = await saga.take();
-    expect(action).toEqual(fileStorageDidChangeItem('main.py'));
-
-    await saga.end();
-});
-
-it('should read and write files', async () => {
-    const saga = new AsyncSaga(fileStorage);
-
-    let action = await saga.take();
-
-    expect(action).toEqual(fileStorageDidInitialize());
-
-    const testFileName = 'test.file';
+/**
+ * helper function that writes test file to storage for later use in a test
+ * @param saga The saga.
+ * @returns The test file metadata and test file contents.
+ */
+async function setUpTestFile(saga: AsyncSaga): Promise<[FileMetadata, string]> {
+    const testFilePath = 'test.file';
+    const testFileId = uuid(0);
     const testFileContents = 'test file contents';
+    const testFileContentsSha256 =
+        'c4fa968a745586faaa030054f51fb1cafd5e9ae25fa6b137ac6477715fdc81b1';
 
-    // test writing a file
-    saga.put(fileStorageWriteFile(testFileName, testFileContents));
+    const testFile: FileMetadata = {
+        uuid: testFileId,
+        path: testFilePath,
+        sha256: testFileContentsSha256,
+        viewState: null,
+    };
 
-    // writing file triggers response
-    action = await saga.take();
-    expect(action).toEqual(fileStorageDidWriteFile(testFileName));
+    saga.put(fileStorageOpen(testFilePath, 'w', true));
 
-    // and as a side-effect, triggers item change as well
-    action = await saga.take();
-    expect(action).toEqual(fileStorageDidChangeItem(testFileName));
+    const didOpen = await saga.take();
 
-    // test reading the same file back
-    saga.put(fileStorageReadFile(testFileName));
+    if (!fileStorageDidOpen.matches(didOpen)) {
+        fail(didOpen);
+    }
 
-    action = await saga.take();
-    expect(action).toEqual(fileStorageDidReadFile(testFileName, testFileContents));
+    saga.put(fileStorageWrite(didOpen.fd, testFileContents));
 
-    await saga.end();
+    await expect(saga.take()).resolves.toEqual(fileStorageDidWrite(didOpen.fd));
+
+    saga.put(fileStorageClose(didOpen.fd));
+
+    await expect(saga.take()).resolves.toEqual(fileStorageDidClose(didOpen.fd));
+
+    return [testFile, testFileContents];
+}
+
+describe('initialize', () => {
+    it('should migrate old program from local storage during initialization', async () => {
+        const oldProgramKey = 'program';
+        const oldProgramContents = '# test program';
+        const oldProgramContentsSha256 =
+            '31c21eb39c9276341d9364f6d4bcac46a4aa3768bc2626f8aa742c46e3e0fdd6';
+
+        // add item to localStorage to simulate an existing program
+        localStorage.setItem(oldProgramKey, oldProgramContents);
+        expect(localStorage.getItem(oldProgramKey)).toBe(oldProgramContents);
+
+        const saga = new AsyncSaga(fileStorage, {
+            fileStorage: new FileStorageDb('test'),
+        });
+
+        // initialization should remove the localStorage entry and add add it to
+        // new storage backend
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageDidInitialize([
+                {
+                    uuid: uuid(0),
+                    path: 'main.py',
+                    sha256: oldProgramContentsSha256,
+                    viewState: null,
+                },
+            ]),
+        );
+        expect(localStorage.getItem(oldProgramKey)).toBeNull();
+
+        await saga.end();
+    });
+
+    it('should catch error', async () => {
+        const testError = new Error('test error');
+
+        jest.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
+            throw testError;
+        });
+
+        const saga = new AsyncSaga(fileStorage, {
+            fileStorage: new FileStorageDb('test'),
+        });
+
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageDidFailToInitialize(testError),
+        );
+
+        await saga.end();
+    });
 });
 
-it('should dispatch fail action if file does not exist', async () => {
-    const saga = new AsyncSaga(fileStorage);
+describe('open', () => {
+    let saga: AsyncSaga;
 
-    let action = await saga.take();
-    expect(action).toEqual(fileStorageDidInitialize());
+    beforeEach(async () => {
+        saga = new AsyncSaga(fileStorage, { fileStorage: new FileStorageDb('test') });
 
-    const testFileName = 'test.file';
+        await expect(saga.take()).resolves.toEqual(fileStorageDidInitialize([]));
+    });
 
-    saga.put(fileStorageReadFile(testFileName));
+    it('should fail to open for reading if file does not exist', async () => {
+        saga.put(fileStorageOpen('test.file', 'r', false));
 
-    action = await saga.take();
-    expect(fileStorageDidFailToReadFile.matches(action)).toBeTruthy();
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageDidFailToOpen(
+                'test.file',
+                new Error("file 'test.file' does not exist"),
+            ),
+        );
+    });
 
-    await saga.end();
+    describe('should open file for writing if file does not exist', () => {
+        beforeEach(async () => {
+            saga.put(fileStorageOpen('test.file', 'w', true));
+
+            await expect(saga.take()).resolves.toEqual(
+                fileStorageDidOpen('test.file', uuid(0), 0 as FD),
+            );
+        });
+
+        describe('should fail to open if file is already open for writing', () => {
+            it.each<FileOpenMode>(['r', 'w'])('mode: %o', async (mode) => {
+                saga.put(fileStorageOpen('test.file', mode, true));
+
+                await expect(saga.take()).resolves.toEqual(
+                    fileStorageDidFailToOpen(
+                        'test.file',
+                        new Error("file 'test.file' is already in use"),
+                    ),
+                );
+            });
+        });
+
+        afterEach(async () => {
+            saga.put(fileStorageClose(0 as FD));
+
+            await expect(saga.take()).resolves.toEqual(fileStorageDidClose(0 as FD));
+        });
+    });
+
+    describe('should open file if file exists', () => {
+        beforeEach(async () => {
+            await setUpTestFile(saga);
+        });
+
+        it.each<FileOpenMode>(['r', 'w'])('mode: %o', async (mode) => {
+            saga.put(fileStorageOpen('test.file', mode, false));
+
+            await expect(saga.take()).resolves.toEqual(
+                fileStorageDidOpen('test.file', uuid(0), 1 as FD),
+            );
+        });
+    });
+
+    it('should allow multiple readers', async () => {
+        await setUpTestFile(saga);
+
+        saga.put(fileStorageOpen('test.file', 'r', false));
+
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageDidOpen('test.file', uuid(0), 1 as FD),
+        );
+
+        saga.put(fileStorageOpen('test.file', 'r', false));
+
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageDidOpen('test.file', uuid(0), 2 as FD),
+        );
+    });
+
+    it('should fail to open for writing if already open for reading', async () => {
+        await setUpTestFile(saga);
+
+        saga.put(fileStorageOpen('test.file', 'r', false));
+
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageDidOpen('test.file', uuid(0), 1 as FD),
+        );
+
+        saga.put(fileStorageOpen('test.file', 'w', false));
+
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageDidFailToOpen(
+                'test.file',
+                new Error("file 'test.file' is already in use"),
+            ),
+        );
+    });
+
+    it('should allow calling close multiple times', async () => {
+        saga.put(fileStorageOpen('test.file', 'w', true));
+
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageDidOpen('test.file', uuid(0), 0 as FD),
+        );
+
+        saga.put(fileStorageClose(0 as FD));
+
+        await expect(saga.take()).resolves.toEqual(fileStorageDidClose(0 as FD));
+
+        saga.put(fileStorageClose(0 as FD));
+
+        await expect(saga.take()).resolves.toEqual(fileStorageDidClose(0 as FD));
+    });
+
+    afterEach(async () => {
+        await saga.end();
+    });
+});
+
+describe('read', () => {
+    let saga: AsyncSaga;
+
+    beforeEach(async () => {
+        saga = new AsyncSaga(fileStorage, { fileStorage: new FileStorageDb('test') });
+        await expect(saga.take()).resolves.toEqual(fileStorageDidInitialize([]));
+    });
+
+    describe('should read an open file', () => {
+        it.each<FileOpenMode>(['r', 'w'])('mode: %o', async (mode) => {
+            const [, contents] = await setUpTestFile(saga);
+
+            saga.put(fileStorageOpen('test.file', mode, false));
+
+            await expect(saga.take()).resolves.toEqual(
+                fileStorageDidOpen('test.file', uuid(0), 1 as FD),
+            );
+
+            saga.put(fileStorageRead(1 as FD));
+
+            await expect(saga.take()).resolves.toEqual(
+                fileStorageDidRead(1 as FD, contents),
+            );
+        });
+    });
+
+    describe('should fail to read a closed file', () => {
+        it.each<FileOpenMode>(['r', 'w'])('mode: %o', async (mode) => {
+            await setUpTestFile(saga);
+
+            saga.put(fileStorageOpen('test.file', mode, false));
+
+            await expect(saga.take()).resolves.toEqual(
+                fileStorageDidOpen('test.file', uuid(0), 1 as FD),
+            );
+
+            saga.put(fileStorageClose(1 as FD));
+
+            await expect(saga.take()).resolves.toEqual(fileStorageDidClose(1 as FD));
+
+            saga.put(fileStorageRead(1 as FD));
+
+            await expect(saga.take()).resolves.toEqual(
+                fileStorageDidFailToRead(
+                    1 as FD,
+                    new Error('file descriptor 1 is not open'),
+                ),
+            );
+        });
+    });
+
+    afterEach(async () => {
+        await saga.end();
+    });
+});
+
+describe('write', () => {
+    let saga: AsyncSaga;
+
+    beforeEach(async () => {
+        saga = new AsyncSaga(fileStorage, { fileStorage: new FileStorageDb('test') });
+        await expect(saga.take()).resolves.toEqual(fileStorageDidInitialize([]));
+    });
+
+    it('should write a file open for writing', async () => {
+        await setUpTestFile(saga);
+
+        saga.put(fileStorageOpen('test.file', 'w', false));
+
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageDidOpen('test.file', uuid(0), 1 as FD),
+        );
+
+        saga.put(fileStorageWrite(1 as FD, 'new contents'));
+
+        await expect(saga.take()).resolves.toEqual(fileStorageDidWrite(1 as FD));
+    });
+
+    it('should fail to write a file open for reading', async () => {
+        await setUpTestFile(saga);
+
+        saga.put(fileStorageOpen('test.file', 'r', false));
+
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageDidOpen('test.file', uuid(0), 1 as FD),
+        );
+
+        saga.put(fileStorageWrite(1 as FD, 'new contents'));
+
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageDidFailToWrite(
+                1 as FD,
+                new Error('file descriptor 1 is not open for writing'),
+            ),
+        );
+    });
+
+    describe('should fail to write a closed file', () => {
+        it.each<FileOpenMode>(['r', 'w'])('mode: %o', async (mode) => {
+            await setUpTestFile(saga);
+
+            saga.put(fileStorageOpen('test.file', mode, false));
+
+            await expect(saga.take()).resolves.toEqual(
+                fileStorageDidOpen('test.file', uuid(0), 1 as FD),
+            );
+
+            saga.put(fileStorageClose(1 as FD));
+
+            await expect(saga.take()).resolves.toEqual(fileStorageDidClose(1 as FD));
+
+            saga.put(fileStorageWrite(1 as FD, 'new contents'));
+
+            await expect(saga.take()).resolves.toEqual(
+                fileStorageDidFailToWrite(
+                    1 as FD,
+                    new Error('file descriptor 1 is not open'),
+                ),
+            );
+        });
+    });
+
+    afterEach(async () => {
+        await saga.end();
+    });
+});
+
+describe('readFile', () => {
+    let saga: AsyncSaga;
+
+    beforeEach(async () => {
+        saga = new AsyncSaga(fileStorage, { fileStorage: new FileStorageDb('test') });
+        await expect(saga.take()).resolves.toEqual(fileStorageDidInitialize([]));
+
+        saga.put(fileStorageReadFile('test.file'));
+
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageOpen('test.file', 'r', false),
+        );
+    });
+
+    it('should forward open error', async () => {
+        const error = new Error('open test file failed');
+        saga.put(fileStorageDidFailToOpen('test.file', error));
+
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageDidFailToReadFile('test.file', error),
+        );
+    });
+
+    describe('should open file', () => {
+        beforeEach(async () => {
+            saga.put(fileStorageDidOpen('test.file', uuid(0), 0 as FD));
+
+            await expect(saga.take()).resolves.toEqual(fileStorageRead(0 as FD));
+        });
+
+        it('should forward read error', async () => {
+            const error = new Error('test fail to read');
+            saga.put(fileStorageDidFailToRead(0 as FD, error));
+
+            // file should be closed before we get fileStorageDidFailToReadFile
+
+            await expect(saga.take()).resolves.toEqual(fileStorageClose(0 as FD));
+
+            saga.put(fileStorageDidClose(0 as FD));
+
+            await expect(saga.take()).resolves.toEqual(
+                fileStorageDidFailToReadFile('test.file', error),
+            );
+        });
+
+        it('should return file contents', async () => {
+            const contents = 'test read contents';
+            saga.put(fileStorageDidRead(0 as FD, contents));
+
+            // file should be closed before we get fileStorageDidReadFile
+
+            await expect(saga.take()).resolves.toEqual(fileStorageClose(0 as FD));
+
+            saga.put(fileStorageDidClose(0 as FD));
+
+            await expect(saga.take()).resolves.toEqual(
+                fileStorageDidReadFile('test.file', contents),
+            );
+        });
+    });
+
+    afterEach(async () => {
+        await saga.end();
+    });
+});
+
+describe('writeFile', () => {
+    let saga: AsyncSaga;
+    const contents = 'test write file contents';
+
+    beforeEach(async () => {
+        saga = new AsyncSaga(fileStorage, { fileStorage: new FileStorageDb('test') });
+        await expect(saga.take()).resolves.toEqual(fileStorageDidInitialize([]));
+
+        saga.put(fileStorageWriteFile('test.file', contents));
+
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageOpen('test.file', 'w', true),
+        );
+    });
+
+    it('should forward open error', async () => {
+        const error = new Error('open test file failed');
+        saga.put(fileStorageDidFailToOpen('test.file', error));
+
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageDidFailToWriteFile('test.file', error),
+        );
+    });
+
+    describe('should open file', () => {
+        beforeEach(async () => {
+            saga.put(fileStorageDidOpen('test.file', uuid(0), 0 as FD));
+
+            await expect(saga.take()).resolves.toEqual(
+                fileStorageWrite(0 as FD, contents),
+            );
+        });
+
+        it('should forward write error', async () => {
+            const error = new Error('test fail to write');
+            saga.put(fileStorageDidFailToWrite(0 as FD, error));
+
+            // file should be closed before we get fileStorageDidFailToWriteFile
+
+            await expect(saga.take()).resolves.toEqual(fileStorageClose(0 as FD));
+
+            saga.put(fileStorageDidClose(0 as FD));
+
+            await expect(saga.take()).resolves.toEqual(
+                fileStorageDidFailToWriteFile('test.file', error),
+            );
+        });
+
+        it('should return', async () => {
+            saga.put(fileStorageDidWrite(0 as FD));
+
+            // file should be closed before we get fileStorageDidWriteFile
+
+            await expect(saga.take()).resolves.toEqual(fileStorageClose(0 as FD));
+
+            saga.put(fileStorageDidClose(0 as FD));
+
+            await expect(saga.take()).resolves.toEqual(
+                fileStorageDidWriteFile('test.file', uuid(0)),
+            );
+        });
+    });
+
+    afterEach(async () => {
+        await saga.end();
+    });
+});
+
+describe('copyFile', () => {
+    let saga: AsyncSaga;
+
+    beforeEach(async () => {
+        saga = new AsyncSaga(fileStorage, { fileStorage: new FileStorageDb('test') });
+
+        await expect(saga.take()).resolves.toEqual(fileStorageDidInitialize([]));
+        await setUpTestFile(saga);
+    });
+
+    it('should fail if file does not exist', async () => {
+        saga.put(fileStorageCopyFile('other.file', 'new.file'));
+
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageDidFailToCopyFile(
+                'other.file',
+                new Error("file 'other.file' does not exist"),
+            ),
+        );
+    });
+
+    it('should fail if new file is open', async () => {
+        saga.put(fileStorageOpen('new.file', 'w', true));
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageDidOpen('new.file', uuid(1), 1 as FD),
+        );
+
+        saga.put(fileStorageCopyFile('test.file', 'new.file'));
+
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageDidFailToCopyFile(
+                'test.file',
+                new Error("file 'new.file' is in use"),
+            ),
+        );
+    });
+
+    it('should fail if new file exists', async () => {
+        saga.put(fileStorageOpen('new.file', 'w', true));
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageDidOpen('new.file', uuid(1), 1 as FD),
+        );
+
+        saga.put(fileStorageClose(1 as FD));
+        await expect(saga.take()).resolves.toEqual(fileStorageDidClose(1 as FD));
+
+        saga.put(fileStorageCopyFile('test.file', 'new.file'));
+
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageDidFailToCopyFile(
+                'test.file',
+                new Error("file 'new.file' already exists"),
+            ),
+        );
+    });
+
+    it('should copy file', async () => {
+        saga.put(fileStorageCopyFile('test.file', 'new.file'));
+
+        await expect(saga.take()).resolves.toEqual(fileStorageDidCopyFile('test.file'));
+    });
+
+    afterEach(async () => {
+        await saga.end();
+    });
+});
+
+describe('deleteFile', () => {
+    let saga: AsyncSaga;
+
+    beforeEach(async () => {
+        saga = new AsyncSaga(fileStorage, { fileStorage: new FileStorageDb('test') });
+
+        await expect(saga.take()).resolves.toEqual(fileStorageDidInitialize([]));
+        await setUpTestFile(saga);
+    });
+
+    it('should fail if file does not exist', async () => {
+        saga.put(fileStorageDeleteFile('other.file'));
+
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageDidFailToDeleteFile(
+                'other.file',
+                new Error("file 'other.file' does not exist"),
+            ),
+        );
+    });
+
+    it('should fail if file is open', async () => {
+        saga.put(fileStorageOpen('test.file', 'r', false));
+
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageDidOpen('test.file', uuid(0), 1 as FD),
+        );
+        saga.put(fileStorageDeleteFile('test.file'));
+
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageDidFailToDeleteFile(
+                'test.file',
+                new Error("file 'test.file' is in use"),
+            ),
+        );
+    });
+
+    it('should remove file', async () => {
+        saga.put(fileStorageDeleteFile('test.file'));
+
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageDidDeleteFile('test.file'),
+        );
+    });
+
+    afterEach(async () => {
+        await saga.end();
+    });
+});
+
+describe('renameFile', () => {
+    let saga: AsyncSaga;
+    let testFile: FileMetadata;
+    const newPath = 'new.file';
+
+    beforeEach(async () => {
+        saga = new AsyncSaga(fileStorage, { fileStorage: new FileStorageDb('test') });
+
+        await expect(saga.take()).resolves.toEqual(fileStorageDidInitialize([]));
+        [testFile] = await setUpTestFile(saga);
+    });
+
+    it('should fail if file does not exist', async () => {
+        saga.put(fileStorageRenameFile('other.file', newPath));
+
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageDidFailToRenameFile(
+                'other.file',
+                new Error("file 'other.file' does not exist"),
+            ),
+        );
+    });
+
+    it('should fail if file is open', async () => {
+        saga.put(fileStorageOpen('test.file', 'r', false));
+
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageDidOpen('test.file', uuid(0), 1 as FD),
+        );
+        saga.put(fileStorageRenameFile('test.file', newPath));
+
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageDidFailToRenameFile(
+                'test.file',
+                new Error("file 'test.file' is in use"),
+            ),
+        );
+    });
+
+    it('should fail if new path already exists', async () => {
+        // there are two paths here that result in the same error
+        // the first is if the file is open, e.g. in another tab
+
+        saga.put(fileStorageOpen(newPath, 'w', true));
+
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageDidOpen(newPath, uuid(1), 1 as FD),
+        );
+
+        saga.put(fileStorageRenameFile('test.file', newPath));
+
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageDidFailToRenameFile(
+                'test.file',
+                new Error("file 'new.file' already exists"),
+            ),
+        );
+
+        // the second is if the file is not open but still exists in storage
+
+        saga.put(fileStorageClose(1 as FD));
+
+        await expect(saga.take()).resolves.toEqual(fileStorageDidClose(1 as FD));
+
+        saga.put(fileStorageRenameFile('test.file', newPath));
+
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageDidFailToRenameFile(
+                'test.file',
+                new Error("file 'new.file' already exists"),
+            ),
+        );
+    });
+
+    it('should change file', async () => {
+        saga.put(fileStorageRenameFile(testFile.path, newPath));
+
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageDidRenameFile(testFile.path),
+        );
+    });
+
+    afterEach(async () => {
+        await saga.end();
+    });
+});
+
+describe('dump all files', () => {
+    let saga: AsyncSaga;
+    let testFile: FileMetadata;
+    let testFileContents: string;
+
+    beforeEach(async () => {
+        saga = new AsyncSaga(fileStorage, { fileStorage: new FileStorageDb('test') });
+
+        await expect(saga.take()).resolves.toEqual(fileStorageDidInitialize([]));
+        [testFile, testFileContents] = await setUpTestFile(saga);
+    });
+
+    it('should archive file', async () => {
+        saga.put(fileStorageDumpAllFiles());
+
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageDidDumpAllFiles([
+                { path: testFile.path, contents: testFileContents },
+            ]),
+        );
+    });
+
+    it('should catch error', async () => {
+        const testError = new Error('test error');
+
+        jest.spyOn(Dexie.prototype, 'transaction').mockImplementation(() => {
+            throw testError;
+        });
+
+        saga.put(fileStorageDumpAllFiles());
+
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageDidFailToDumpAllFiles(testError),
+        );
+    });
+
+    afterEach(async () => {
+        await saga.end();
+    });
 });

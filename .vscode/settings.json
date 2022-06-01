@@ -19,5 +19,37 @@
         "javascriptreact",
         "typescript",
         "typescriptreact"
-    ]
+    ],
+    "psi-header.config": {
+        "forceToTop": true,
+        "blankLinesAfter": 1,
+        "spacesBetweenYears": false,
+        "license": "MIT",
+        "copyrightHolder": "The Pybricks Authors",
+        "creationDateZero": "now"
+    },
+    "psi-header.templates": [
+        {
+            "language": "*",
+            "template": [
+                "SPDX-License-Identifier: <<spdxid>>",
+                "Copyright (c) <<yeartoyear(fc!P,now)>> <<copyrightholder>>"
+            ]
+        }
+    ],
+    "psi-header.lang-config": [
+        {
+            "language": "*",
+            "begin": "",
+            "end": "",
+            "prefix": "// "
+        }
+    ],
+    "psi-header.changes-tracking": {
+        "isActive": true,
+        "autoHeader": "manualSave",
+        "enforceHeader": true,
+        "include": ["scss", "typescript", "typescriptreact"],
+        "replace": ["Copyright"]
+    }
 }

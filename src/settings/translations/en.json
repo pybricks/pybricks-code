@@ -1,0 +1,60 @@
+{
+    "title": "Settings & Help",
+    "appearance": {
+        "title": "Appearance",
+        "documentation": {
+            "label": "Documentation",
+            "help": "Enable to show the documentation and disable to hide the documentation."
+        },
+        "darkMode": {
+            "label": "Dark mode",
+            "help": "Enable to set theme to dark mode and disable to set theme to light mode."
+        },
+        "zoom": {
+            "help": "Use {in} and {out} to zoom."
+        }
+    },
+    "firmware": {
+        "title": "Firmware",
+        "flashCurrentProgram": {
+            "label": "Include current program",
+            "help": "Enable to include your program when flashing the firmware or disable to use the default program. Flashing your program along with the firmware will allow you to run your program without being connected to {appName}"
+        },
+        "hubName": {
+            "label": "Hub name",
+            "help": "Enter a name here to customize the hub name when flashing the firmware. This name will be used in the Bluetooth advertising data and can be used to identify the hub when connecting.",
+            "error": "The name is too long."
+        }
+    },
+    "help": {
+        "title": "Help",
+        "projects": {
+            "label": "Example Projects"
+        },
+        "support": {
+            "label": "Support"
+        },
+        "chat": {
+            "label": "Chat"
+        },
+        "bugs": {
+            "label": "Bug Reports"
+        }
+    },
+    "app": {
+        "title": "App",
+        "offlineUseHelp": "Ready for offline use.",
+        "install": {
+            "label": "Install as App"
+        },
+        "checkForUpdate": {
+            "label": "Check for Update"
+        },
+        "restart": {
+            "label": "Restart to Install Update"
+        },
+        "about": {
+            "label": "About"
+        }
+    }
+}

@@ -29,5 +29,12 @@ module.exports = {
     settings: {
         react: { version: 'detect' },
     },
-    ignorePatterns: ['test/env.js'],
+    ignorePatterns: [
+        'config/**/*.js',
+        'scripts/*.js',
+        'test/env.js',
+        '.eslintrc.js',
+        '.prettierrc.js',
+        'craco.config.js',
+    ],
 };

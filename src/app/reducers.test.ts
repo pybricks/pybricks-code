@@ -1,16 +1,18 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021 The Pybricks Authors
+// Copyright (c) 2021-2022 The Pybricks Authors
 
 import { AnyAction } from 'redux';
-import { didSucceed, didUpdate } from '../service-worker/actions';
-import { BeforeInstallPromptEvent } from '../utils/dom';
 import {
-    checkForUpdate,
-    didBeforeInstallPrompt,
-    didCheckForUpdate,
+    serviceWorkerDidSucceed,
+    serviceWorkerDidUpdate,
+} from '../service-worker/actions';
+import {
+    appCheckForUpdate,
+    appDidCheckForUpdate,
+    appDidReceiveBeforeInstallPrompt,
+    appDidResolveInstallPrompt,
+    appShowInstallPrompt,
     didInstall,
-    didInstallPrompt,
-    installPrompt,
 } from './actions';
 import reducers from './reducers';
 
@@ -19,90 +21,105 @@ type State = ReturnType<typeof reducers>;
 test('initial state', () => {
     expect(reducers(undefined, {} as AnyAction)).toMatchInlineSnapshot(`
         Object {
-          "beforeInstallPrompt": null,
           "checkingForUpdate": false,
+          "hasUnresolvedInstallPrompt": false,
+          "isServiceWorkerRegistered": false,
           "promptingInstall": false,
           "readyForOfflineUse": false,
-          "serviceWorker": null,
           "updateAvailable": false,
         }
     `);
 });
 
-test('serviceWorker', () => {
-    const registration = {} as ServiceWorkerRegistration;
-    expect(
-        reducers({ serviceWorker: null } as State, didSucceed(registration))
-            .serviceWorker,
-    ).toBe(registration);
+describe('isServiceWorkerRegistered', () => {
+    it('should be true when service worker registration succeeds', () => {
+        expect(
+            reducers(
+                { isServiceWorkerRegistered: false } as State,
+                serviceWorkerDidSucceed(),
+            ).isServiceWorkerRegistered,
+        ).toBe(true);
+    });
 });
 
 test('checkingForUpdate', () => {
     expect(
-        reducers(
-            { checkingForUpdate: false } as State,
-            checkForUpdate({} as ServiceWorkerRegistration),
-        ).checkingForUpdate,
-    ).toBe(true);
-    expect(
-        reducers({ checkingForUpdate: false } as State, didCheckForUpdate(true))
-            .checkingForUpdate,
-    ).toBe(false);
-    expect(
-        reducers({ checkingForUpdate: true } as State, didCheckForUpdate(true))
+        reducers({ checkingForUpdate: false } as State, appCheckForUpdate())
             .checkingForUpdate,
     ).toBe(true);
     expect(
-        reducers({ checkingForUpdate: true } as State, didCheckForUpdate(false))
+        reducers({ checkingForUpdate: false } as State, appDidCheckForUpdate(true))
             .checkingForUpdate,
     ).toBe(false);
     expect(
-        reducers(
-            { checkingForUpdate: true } as State,
-            didUpdate({} as ServiceWorkerRegistration),
-        ).checkingForUpdate,
+        reducers({ checkingForUpdate: true } as State, appDidCheckForUpdate(true))
+            .checkingForUpdate,
+    ).toBe(true);
+    expect(
+        reducers({ checkingForUpdate: true } as State, appDidCheckForUpdate(false))
+            .checkingForUpdate,
+    ).toBe(false);
+    expect(
+        reducers({ checkingForUpdate: true } as State, serviceWorkerDidUpdate())
+            .checkingForUpdate,
     ).toBe(false);
 });
 
 test('updateAvailable', () => {
     expect(
-        reducers(
-            { updateAvailable: false } as State,
-            didUpdate({} as ServiceWorkerRegistration),
-        ).updateAvailable,
+        reducers({ updateAvailable: false } as State, serviceWorkerDidUpdate())
+            .updateAvailable,
     ).toBe(true);
 });
 
-test('beforeInstallPrompt', () => {
-    const event = {} as BeforeInstallPromptEvent;
-    expect(
-        reducers({ beforeInstallPrompt: null } as State, didBeforeInstallPrompt(event))
-            .beforeInstallPrompt,
-    ).toBe(event);
-    expect(
-        reducers({ beforeInstallPrompt: event } as State, didInstall())
-            .beforeInstallPrompt,
-    ).toBe(null);
+describe('hasUnresolvedInstallPrompt', () => {
+    it('should be true after BeforeInstallPromptEvent is received', () => {
+        expect(
+            reducers(
+                { hasUnresolvedInstallPrompt: false } as State,
+                appDidReceiveBeforeInstallPrompt(),
+            ).hasUnresolvedInstallPrompt,
+        ).toBe(true);
+    });
+
+    it('should be false after the app was successfully installed', () => {
+        expect(
+            reducers({ hasUnresolvedInstallPrompt: true } as State, didInstall())
+                .hasUnresolvedInstallPrompt,
+        ).toBe(false);
+    });
 });
 
-test('promptingInstall', () => {
-    expect(
-        reducers(
-            { promptingInstall: false } as State,
-            installPrompt({} as BeforeInstallPromptEvent),
-        ).promptingInstall,
-    ).toBe(true);
-    expect(
-        reducers({ promptingInstall: true } as State, didInstallPrompt())
-            .promptingInstall,
-    ).toBe(false);
+describe('promptingInstall', () => {
+    it('should be true when action requesting to show install prompt is seen', () => {
+        expect(
+            reducers({ promptingInstall: false } as State, appShowInstallPrompt())
+                .promptingInstall,
+        ).toBe(true);
+    });
+
+    it('should be false when user accepts the prompt', () => {
+        expect(
+            reducers(
+                { promptingInstall: true } as State,
+                appDidResolveInstallPrompt({ outcome: 'accepted', platform: 'web' }),
+            ).promptingInstall,
+        ).toBe(false);
+    });
+
+    it('should be false when user dismisses the prompt', () => {
+        expect(
+            reducers(
+                { promptingInstall: true } as State,
+                appDidResolveInstallPrompt({ outcome: 'dismissed', platform: 'web' }),
+            ).promptingInstall,
+        ).toBe(false);
+    });
 });
 
 test('readyForOfflineUse', () => {
     expect(
-        reducers(
-            { readyForOfflineUse: false } as State,
-            didSucceed({} as ServiceWorkerRegistration),
-        ).readyForOfflineUse,
+        reducers({ readyForOfflineUse: false } as State, serviceWorkerDidSucceed())
+            .readyForOfflineUse,
     ).toBe(true);
 });

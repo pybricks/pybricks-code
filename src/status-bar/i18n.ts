@@ -1,9 +1,17 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021 The Pybricks Authors
+// Copyright (c) 2021-2022 The Pybricks Authors
 //
 // Status bar translation keys.
 
-export enum MessageId {
+import { I18n, useI18n as useShopifyI18n } from '@shopify/react-i18n';
+
+export function useI18n(): I18n {
+    // istanbul ignore next: babel-loader rewrites this line
+    const [i18n] = useShopifyI18n();
+    return i18n;
+}
+
+export enum I18nId {
     BatteryTitle = 'battery.title',
     BatteryLow = 'battery.low',
     BatteryOk = 'battery.ok',

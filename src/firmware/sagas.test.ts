@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021 The Pybricks Authors
+// Copyright (c) 2021-2022 The Pybricks Authors
 
 import {
     FirmwareMetadata,
@@ -76,20 +76,13 @@ describe('flashFirmware', () => {
                 new Response(await zip.generateAsync({ type: 'blob' })),
             );
 
-            const saga = new AsyncSaga(
-                flashFirmware,
-                {
-                    bootloader: { connection: BootloaderConnectionState.Disconnected },
-                    settings: { flashCurrentProgram: false, hubName: 'test name' },
-                },
-                {
-                    nextMessageId: createCountFunc(),
-                },
-            );
+            const saga = new AsyncSaga(flashFirmware, {
+                nextMessageId: createCountFunc(),
+            });
 
             // saga is triggered by this action
 
-            saga.put(flashFirmwareAction(null));
+            saga.put(flashFirmwareAction(null, false, 'test name'));
 
             // first step is to connect to the hub bootloader
 
@@ -228,20 +221,13 @@ describe('flashFirmware', () => {
                 new Response(await zip.generateAsync({ type: 'blob' })),
             );
 
-            const saga = new AsyncSaga(
-                flashFirmware,
-                {
-                    bootloader: { connection: BootloaderConnectionState.Disconnected },
-                    settings: { flashCurrentProgram: false },
-                },
-                {
-                    nextMessageId: createCountFunc(),
-                },
-            );
+            const saga = new AsyncSaga(flashFirmware, {
+                nextMessageId: createCountFunc(),
+            });
 
             // saga is triggered by this action
 
-            saga.put(flashFirmwareAction(null));
+            saga.put(flashFirmwareAction(null, false, ''));
 
             // first step is to connect to the hub bootloader
 
@@ -284,20 +270,13 @@ describe('flashFirmware', () => {
                 new Response(await zip.generateAsync({ type: 'blob' })),
             );
 
-            const saga = new AsyncSaga(
-                flashFirmware,
-                {
-                    bootloader: { connection: BootloaderConnectionState.Disconnected },
-                    settings: { flashCurrentProgram: false },
-                },
-                {
-                    nextMessageId: createCountFunc(),
-                },
-            );
+            const saga = new AsyncSaga(flashFirmware, {
+                nextMessageId: createCountFunc(),
+            });
 
             // saga is triggered by this action
 
-            saga.put(flashFirmwareAction(null));
+            saga.put(flashFirmwareAction(null, false, ''));
 
             // first step is to connect to the hub bootloader
 
@@ -358,20 +337,13 @@ describe('flashFirmware', () => {
                 new Response(await zip.generateAsync({ type: 'blob' })),
             );
 
-            const saga = new AsyncSaga(
-                flashFirmware,
-                {
-                    bootloader: { connection: BootloaderConnectionState.Disconnected },
-                    settings: { flashCurrentProgram: false },
-                },
-                {
-                    nextMessageId: createCountFunc(),
-                },
-            );
+            const saga = new AsyncSaga(flashFirmware, {
+                nextMessageId: createCountFunc(),
+            });
 
             // saga is triggered by this action
 
-            saga.put(flashFirmwareAction(null));
+            saga.put(flashFirmwareAction(null, false, ''));
 
             // first step is to connect to the hub bootloader
 
@@ -428,20 +400,13 @@ describe('flashFirmware', () => {
                 new Response(await zip.generateAsync({ type: 'blob' })),
             );
 
-            const saga = new AsyncSaga(
-                flashFirmware,
-                {
-                    bootloader: { connection: BootloaderConnectionState.Disconnected },
-                    settings: { flashCurrentProgram: false },
-                },
-                {
-                    nextMessageId: createCountFunc(),
-                },
-            );
+            const saga = new AsyncSaga(flashFirmware, {
+                nextMessageId: createCountFunc(),
+            });
 
             // saga is triggered by this action
 
-            saga.put(flashFirmwareAction(null));
+            saga.put(flashFirmwareAction(null, false, ''));
 
             // first step is to connect to the hub bootloader
 
@@ -501,20 +466,13 @@ describe('flashFirmware', () => {
                 new Response(await zip.generateAsync({ type: 'blob' })),
             );
 
-            const saga = new AsyncSaga(
-                flashFirmware,
-                {
-                    bootloader: { connection: BootloaderConnectionState.Disconnected },
-                    settings: { flashCurrentProgram: false },
-                },
-                {
-                    nextMessageId: createCountFunc(),
-                },
-            );
+            const saga = new AsyncSaga(flashFirmware, {
+                nextMessageId: createCountFunc(),
+            });
 
             // saga is triggered by this action
 
-            saga.put(flashFirmwareAction(null));
+            saga.put(flashFirmwareAction(null, false, ''));
 
             // first step is to connect to the hub bootloader
 
@@ -567,20 +525,13 @@ describe('flashFirmware', () => {
             const response = new Response(undefined, { status: 404 });
             jest.spyOn(window, 'fetch').mockResolvedValueOnce(response);
 
-            const saga = new AsyncSaga(
-                flashFirmware,
-                {
-                    bootloader: { connection: BootloaderConnectionState.Disconnected },
-                    settings: { flashCurrentProgram: false },
-                },
-                {
-                    nextMessageId: createCountFunc(),
-                },
-            );
+            const saga = new AsyncSaga(flashFirmware, {
+                nextMessageId: createCountFunc(),
+            });
 
             // saga is triggered by this action
 
-            saga.put(flashFirmwareAction(null));
+            saga.put(flashFirmwareAction(null, false, ''));
 
             // first step is to connect to the hub bootloader
 
@@ -639,20 +590,13 @@ describe('flashFirmware', () => {
                 new Response(await zip.generateAsync({ type: 'blob' })),
             );
 
-            const saga = new AsyncSaga(
-                flashFirmware,
-                {
-                    bootloader: { connection: BootloaderConnectionState.Disconnected },
-                    settings: { flashCurrentProgram: false },
-                },
-                {
-                    nextMessageId: createCountFunc(),
-                },
-            );
+            const saga = new AsyncSaga(flashFirmware, {
+                nextMessageId: createCountFunc(),
+            });
 
             // saga is triggered by this action
 
-            saga.put(flashFirmwareAction(null));
+            saga.put(flashFirmwareAction(null, false, ''));
 
             // first step is to connect to the hub bootloader
 
@@ -727,20 +671,13 @@ describe('flashFirmware', () => {
                 new Response(await zip.generateAsync({ type: 'blob' })),
             );
 
-            const saga = new AsyncSaga(
-                flashFirmware,
-                {
-                    bootloader: { connection: BootloaderConnectionState.Disconnected },
-                    settings: { flashCurrentProgram: false },
-                },
-                {
-                    nextMessageId: createCountFunc(),
-                },
-            );
+            const saga = new AsyncSaga(flashFirmware, {
+                nextMessageId: createCountFunc(),
+            });
 
             // saga is triggered by this action
 
-            saga.put(flashFirmwareAction(null));
+            saga.put(flashFirmwareAction(null, false, ''));
 
             // first step is to connect to the hub bootloader
 
@@ -799,20 +736,13 @@ describe('flashFirmware', () => {
                 new Response(await zip.generateAsync({ type: 'blob' })),
             );
 
-            const saga = new AsyncSaga(
-                flashFirmware,
-                {
-                    bootloader: { connection: BootloaderConnectionState.Disconnected },
-                    settings: { flashCurrentProgram: false },
-                },
-                {
-                    nextMessageId: createCountFunc(),
-                },
-            );
+            const saga = new AsyncSaga(flashFirmware, {
+                nextMessageId: createCountFunc(),
+            });
 
             // saga is triggered by this action
 
-            saga.put(flashFirmwareAction(null));
+            saga.put(flashFirmwareAction(null, false, ''));
 
             // first step is to connect to the hub bootloader
 
@@ -900,20 +830,13 @@ describe('flashFirmware', () => {
                 new Response(await zip.generateAsync({ type: 'blob' })),
             );
 
-            const saga = new AsyncSaga(
-                flashFirmware,
-                {
-                    bootloader: { connection: BootloaderConnectionState.Disconnected },
-                    settings: { flashCurrentProgram: false },
-                },
-                {
-                    nextMessageId: createCountFunc(),
-                },
-            );
+            const saga = new AsyncSaga(flashFirmware, {
+                nextMessageId: createCountFunc(),
+            });
 
             // saga is triggered by this action
 
-            saga.put(flashFirmwareAction(null));
+            saga.put(flashFirmwareAction(null, false, ''));
 
             // first step is to connect to the hub bootloader
 
@@ -1010,20 +933,13 @@ describe('flashFirmware', () => {
                 new Response(await zip.generateAsync({ type: 'blob' })),
             );
 
-            const saga = new AsyncSaga(
-                flashFirmware,
-                {
-                    bootloader: { connection: BootloaderConnectionState.Disconnected },
-                    settings: { flashCurrentProgram: false },
-                },
-                {
-                    nextMessageId: createCountFunc(),
-                },
-            );
+            const saga = new AsyncSaga(flashFirmware, {
+                nextMessageId: createCountFunc(),
+            });
 
             // saga is triggered by this action
 
-            saga.put(flashFirmwareAction(null));
+            saga.put(flashFirmwareAction(null, false, ''));
 
             // first step is to connect to the hub bootloader
 
@@ -1160,20 +1076,13 @@ describe('flashFirmware', () => {
                 new Response(await zip.generateAsync({ type: 'blob' })),
             );
 
-            const saga = new AsyncSaga(
-                flashFirmware,
-                {
-                    bootloader: { connection: BootloaderConnectionState.Disconnected },
-                    settings: { flashCurrentProgram: false },
-                },
-                {
-                    nextMessageId: createCountFunc(),
-                },
-            );
+            const saga = new AsyncSaga(flashFirmware, {
+                nextMessageId: createCountFunc(),
+            });
 
             // saga is triggered by this action
 
-            saga.put(flashFirmwareAction(null));
+            saga.put(flashFirmwareAction(null, false, ''));
 
             // first step is to connect to the hub bootloader
 
@@ -1308,21 +1217,18 @@ describe('flashFirmware', () => {
             zip.file('main.py', 'print("test")');
             zip.file('ReadMe_OSS.txt', 'test');
 
-            const saga = new AsyncSaga(
-                flashFirmware,
-                {
-                    bootloader: { connection: BootloaderConnectionState.Disconnected },
-                    settings: { flashCurrentProgram: false },
-                },
-                {
-                    nextMessageId: createCountFunc(),
-                },
-            );
+            const saga = new AsyncSaga(flashFirmware, {
+                nextMessageId: createCountFunc(),
+            });
 
             // saga is triggered by this action
 
             saga.put(
-                flashFirmwareAction(await zip.generateAsync({ type: 'arraybuffer' })),
+                flashFirmwareAction(
+                    await zip.generateAsync({ type: 'arraybuffer' }),
+                    false,
+                    '',
+                ),
             );
 
             // the first step is to compile main.py to .mpy
@@ -1459,21 +1365,18 @@ describe('flashFirmware', () => {
             zip.file('main.py', 'print("test")');
             zip.file('ReadMe_OSS.txt', 'test');
 
-            const saga = new AsyncSaga(
-                flashFirmware,
-                {
-                    bootloader: { connection: BootloaderConnectionState.Disconnected },
-                    settings: { flashCurrentProgram: false },
-                },
-                {
-                    nextMessageId: createCountFunc(),
-                },
-            );
+            const saga = new AsyncSaga(flashFirmware, {
+                nextMessageId: createCountFunc(),
+            });
 
             // saga is triggered by this action
 
             saga.put(
-                flashFirmwareAction(await zip.generateAsync({ type: 'arraybuffer' })),
+                flashFirmwareAction(
+                    await zip.generateAsync({ type: 'arraybuffer' }),
+                    false,
+                    '',
+                ),
             );
 
             // should get failure due to missing file
@@ -1509,21 +1412,18 @@ describe('flashFirmware', () => {
             zip.file('main.py', 'print("test")');
             zip.file('ReadMe_OSS.txt', 'test');
 
-            const saga = new AsyncSaga(
-                flashFirmware,
-                {
-                    bootloader: { connection: BootloaderConnectionState.Disconnected },
-                    settings: { flashCurrentProgram: false },
-                },
-                {
-                    nextMessageId: createCountFunc(),
-                },
-            );
+            const saga = new AsyncSaga(flashFirmware, {
+                nextMessageId: createCountFunc(),
+            });
 
             // saga is triggered by this action
 
             saga.put(
-                flashFirmwareAction(await zip.generateAsync({ type: 'arraybuffer' })),
+                flashFirmwareAction(
+                    await zip.generateAsync({ type: 'arraybuffer' }),
+                    false,
+                    '',
+                ),
             );
 
             // should get failure due to unsupported mpy-cross version
@@ -1558,21 +1458,18 @@ describe('flashFirmware', () => {
             zip.file('main.py', 'print("test")');
             zip.file('ReadMe_OSS.txt', 'test');
 
-            const saga = new AsyncSaga(
-                flashFirmware,
-                {
-                    bootloader: { connection: BootloaderConnectionState.Disconnected },
-                    settings: { flashCurrentProgram: false },
-                },
-                {
-                    nextMessageId: createCountFunc(),
-                },
-            );
+            const saga = new AsyncSaga(flashFirmware, {
+                nextMessageId: createCountFunc(),
+            });
 
             // saga is triggered by this action
 
             saga.put(
-                flashFirmwareAction(await zip.generateAsync({ type: 'arraybuffer' })),
+                flashFirmwareAction(
+                    await zip.generateAsync({ type: 'arraybuffer' }),
+                    false,
+                    '',
+                ),
             );
 
             // the first step is to compile main.py to .mpy
@@ -1620,21 +1517,18 @@ describe('flashFirmware', () => {
             zip.file('main.py', 'print("test")');
             zip.file('ReadMe_OSS.txt', 'test');
 
-            const saga = new AsyncSaga(
-                flashFirmware,
-                {
-                    bootloader: { connection: BootloaderConnectionState.Disconnected },
-                    settings: { flashCurrentProgram: false },
-                },
-                {
-                    nextMessageId: createCountFunc(),
-                },
-            );
+            const saga = new AsyncSaga(flashFirmware, {
+                nextMessageId: createCountFunc(),
+            });
 
             // saga is triggered by this action
 
             saga.put(
-                flashFirmwareAction(await zip.generateAsync({ type: 'arraybuffer' })),
+                flashFirmwareAction(
+                    await zip.generateAsync({ type: 'arraybuffer' }),
+                    false,
+                    '',
+                ),
             );
 
             // the first step is to compile main.py to .mpy
@@ -1683,21 +1577,18 @@ describe('flashFirmware', () => {
             zip.file('main.py', 'print("test")');
             zip.file('ReadMe_OSS.txt', 'test');
 
-            const saga = new AsyncSaga(
-                flashFirmware,
-                {
-                    bootloader: { connection: BootloaderConnectionState.Disconnected },
-                    settings: { flashCurrentProgram: false },
-                },
-                {
-                    nextMessageId: createCountFunc(),
-                },
-            );
+            const saga = new AsyncSaga(flashFirmware, {
+                nextMessageId: createCountFunc(),
+            });
 
             // saga is triggered by this action
 
             saga.put(
-                flashFirmwareAction(await zip.generateAsync({ type: 'arraybuffer' })),
+                flashFirmwareAction(
+                    await zip.generateAsync({ type: 'arraybuffer' }),
+                    false,
+                    '',
+                ),
             );
 
             // the first step is to compile main.py to .mpy
@@ -1749,21 +1640,18 @@ describe('flashFirmware', () => {
             zip.file('main.py', 'print("test")');
             zip.file('ReadMe_OSS.txt', 'test');
 
-            const saga = new AsyncSaga(
-                flashFirmware,
-                {
-                    bootloader: { connection: BootloaderConnectionState.Disconnected },
-                    settings: { flashCurrentProgram: false },
-                },
-                {
-                    nextMessageId: createCountFunc(),
-                },
-            );
+            const saga = new AsyncSaga(flashFirmware, {
+                nextMessageId: createCountFunc(),
+            });
 
             // saga is triggered by this action
 
             saga.put(
-                flashFirmwareAction(await zip.generateAsync({ type: 'arraybuffer' })),
+                flashFirmwareAction(
+                    await zip.generateAsync({ type: 'arraybuffer' }),
+                    false,
+                    '',
+                ),
             );
 
             // the first step is to compile main.py to .mpy
@@ -1840,23 +1728,13 @@ describe('flashFirmware', () => {
             new Response(await zip.generateAsync({ type: 'blob' })),
         );
 
-        const editor = {
-            getValue: () => 'print("test")',
-        };
-
-        const saga = new AsyncSaga(
-            flashFirmware,
-            {
-                bootloader: { connection: BootloaderConnectionState.Disconnected },
-                editor: { current: editor },
-                settings: { flashCurrentProgram: true },
-            },
-            { nextMessageId: createCountFunc() },
-        );
+        const saga = new AsyncSaga(flashFirmware, {
+            nextMessageId: createCountFunc(),
+        });
 
         // saga is triggered by this action
 
-        saga.put(flashFirmwareAction(null));
+        saga.put(flashFirmwareAction(null, false, ''));
 
         // first step is to connect to the hub bootloader
 

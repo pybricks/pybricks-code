@@ -1,11 +1,22 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021 The Pybricks Authors
+// Copyright (c) 2021-2022 The Pybricks Authors
 
 // Custom styling for the settings controls.
 
-@import '../variables.scss';
+@use '@blueprintjs/core/lib/scss/variables' as bp;
 
-.pb-hub-name-input .#{$ns}-input {
-    width: 200px;
-    margin-left: 8px;
+.pb-settings {
+    .#{bp.$ns}-control-group {
+        .#{bp.$ns}-button {
+            margin-bottom: 3px;
+        }
+
+        .#{bp.$ns}-input-group {
+            width: bp.$pt-grid-size * 20;
+        }
+    }
+
+    & .#{bp.$ns}-control {
+        max-width: bp.$pt-grid-size * 20;
+    }
 }

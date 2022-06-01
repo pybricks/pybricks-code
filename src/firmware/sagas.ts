@@ -25,6 +25,7 @@ import {
     take,
     takeEvery,
 } from 'typed-redux-saga/macro';
+import { editorGetValue } from '../editor/sagas';
 import {
     checksumRequest,
     checksumResponse,
@@ -171,6 +172,7 @@ function* firmwareIterator(data: DataView, maxSize: number): Generator<number> {
 function* loadFirmware(
     data: ArrayBuffer,
     program: string | undefined,
+    hubName: string,
 ): SagaGenerator<{ firmware: Uint8Array; deviceId: HubType }> {
     const [reader, readerErr] = yield* call(() => maybe(FirmwareReader.load(data)));
 
@@ -236,8 +238,6 @@ function* loadFirmware(
 
     // if the firmware supports it, we can set a custom hub name
     if (metadata['max-hub-name-size']) {
-        const hubName = yield* select((s: RootState) => s.settings.hubName);
-
         // empty string means use default name (don't write over firmware)
         if (hubName) {
             firmware.set(encodeHubName(hubName, metadata), metadata['hub-name-offset']);
@@ -275,24 +275,16 @@ function* handleFlashFirmware(action: ReturnType<typeof flashFirmware>): Generat
 
         let program: string | undefined = undefined;
 
-        const flashCurrentProgram = yield* select(
-            (s: RootState) => s.settings.flashCurrentProgram,
-        );
-
-        if (flashCurrentProgram) {
-            const editor = yield* select((s: RootState) => s.editor.current);
-
-            // istanbul ignore if: it is a bug to dispatch this action with no current editor
-            if (editor === null) {
-                console.error('flashFirmware: No current editor');
-                return;
-            }
-
-            program = editor.getValue();
+        if (action.flashCurrentProgram) {
+            program = yield* editorGetValue();
         }
 
         if (action.data !== null) {
-            ({ firmware, deviceId } = yield* loadFirmware(action.data, program));
+            ({ firmware, deviceId } = yield* loadFirmware(
+                action.data,
+                program,
+                action.hubName,
+            ));
         }
 
         yield* put(connect());
@@ -334,7 +326,11 @@ function* handleFlashFirmware(action: ReturnType<typeof flashFirmware>): Generat
             }
 
             const data = yield* call(() => response.arrayBuffer());
-            ({ firmware, deviceId } = yield* loadFirmware(data, program));
+            ({ firmware, deviceId } = yield* loadFirmware(
+                data,
+                program,
+                action.hubName,
+            ));
 
             if (deviceId !== undefined && info.hubType !== deviceId) {
                 yield* put(didFailToFinish(FailToFinishReasonType.DeviceMismatch));

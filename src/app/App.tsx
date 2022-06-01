@@ -1,24 +1,29 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2021 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 
 import { Classes } from '@blueprintjs/core';
-import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { getFocusableTreeWalker } from '@react-aria/focus';
+import React, {
+    FocusEventHandler,
+    MouseEventHandler,
+    useCallback,
+    useEffect,
+    useState,
+} from 'react';
 import SplitterLayout from 'react-splitter-layout';
+import { useLocalStorage, useTernaryDarkMode } from 'usehooks-ts';
+import Activities from '../activities/Activities';
 import Editor from '../editor/Editor';
-import { useSelector } from '../reducers';
-import { toggleBoolean } from '../settings/actions';
-import { BooleanSettingId } from '../settings/defaults';
+import { useSettingIsShowDocsEnabled } from '../settings/hooks';
 import StatusBar from '../status-bar/StatusBar';
 import Terminal from '../terminal/Terminal';
 import Toolbar from '../toolbar/Toolbar';
 import { isMacOS } from '../utils/os';
-
 import 'react-splitter-layout/lib/index.css';
 import './app.scss';
 
-const Docs: React.FunctionComponent = (_props) => {
-    const dispatch = useDispatch();
+const Docs: React.VFC = () => {
+    const { setIsSettingShowDocsEnabled } = useSettingIsShowDocsEnabled();
 
     return (
         <iframe
@@ -103,7 +108,9 @@ const Docs: React.FunctionComponent = (_props) => {
                         e.key == 'd'
                     ) {
                         e.preventDefault();
-                        dispatch(toggleBoolean(BooleanSettingId.ShowDocs));
+                        // since the iframe is only visible when docs are shown
+                        // the only action is to hide the docs
+                        setIsSettingShowDocsEnabled(false);
                     }
                 });
 
@@ -113,7 +120,7 @@ const Docs: React.FunctionComponent = (_props) => {
             }}
             src="static/docs/index.html"
             allowFullScreen={true}
-            title="docs"
+            role="documentation"
             width="100%"
             height="100%"
             frameBorder="none"
@@ -121,60 +128,124 @@ const Docs: React.FunctionComponent = (_props) => {
     );
 };
 
-const App: React.FunctionComponent = (_props) => {
-    const darkMode = useSelector((s): boolean => s.settings.darkMode);
-    const showDocs = useSelector((s): boolean => s.settings.showDocs);
+const App: React.VFC = () => {
+    const { isDarkMode } = useTernaryDarkMode();
+    const { isSettingShowDocsEnabled } = useSettingIsShowDocsEnabled();
     const [isDragging, setIsDragging] = useState(false);
 
-    // darkMode class has to be applied to body element, otherwise it won't
+    const [docsSplit, setDocsSplit] = useLocalStorage('app-docs-split', 30);
+    const [terminalSplit, setTerminalSplit] = useLocalStorage('app-terminal-split', 30);
+
+    // Classes.DARK has to be applied to body element, otherwise it won't
     // affect portals
     useEffect(() => {
-        if (!darkMode) {
+        if (!isDarkMode) {
             // no class for light mode, so nothing to do
             return;
         }
 
         document.body.classList.add(Classes.DARK);
         return () => document.body.classList.remove(Classes.DARK);
-    }, [darkMode]);
+    }, [isDarkMode]);
+
+    useEffect(() => {
+        const listener = (e: KeyboardEvent) => {
+            // prevent default browser keyboard shortcuts that we use
+            // NB: some of these like 'n' and 'w' cannot be prevented when
+            // running "in the browser"
+            if (e.ctrlKey && ['d', 'n', 's', 'w'].includes(e.key)) {
+                e.preventDefault();
+            }
+        };
+
+        addEventListener('keydown', listener);
+        return () => removeEventListener('keydown', listener);
+    }, []);
+
+    // keep track of last focused element in the activities area and restore
+    // focus to that element if any non-interactive area is clicked
+
+    const [lastActivitiesFocusChild, setLastActivitiesFocusChild] =
+        useState<HTMLElement | null>(null);
+
+    const handleFocus = useCallback<FocusEventHandler>(
+        (e) => {
+            if (e.target instanceof HTMLElement) {
+                setLastActivitiesFocusChild(e.target);
+            }
+        },
+        [setLastActivitiesFocusChild],
+    );
+
+    const handleActivitiesMouseDown = useCallback<MouseEventHandler<HTMLDivElement>>(
+        (e) => {
+            if (
+                lastActivitiesFocusChild &&
+                e.currentTarget.contains(lastActivitiesFocusChild)
+            ) {
+                // if the last focused child exists and it is still inside of
+                // the activities area, focus it
+                lastActivitiesFocusChild.focus();
+            } else {
+                // otherwise, focus the first focusable element
+                const walker = getFocusableTreeWalker(e.currentTarget);
+                const first = walker.nextNode();
+
+                if (first instanceof HTMLElement) {
+                    first.focus();
+                }
+            }
+
+            // prevent document body from getting focus
+            e.stopPropagation();
+            e.preventDefault();
+        },
+        [lastActivitiesFocusChild],
+    );
 
     return (
-        <div className="pb-app h-100 w-100 p-absolute">
-            <Toolbar />
-            <SplitterLayout
-                customClassName={`pb-app-body ${
-                    showDocs ? 'pb-show-docs' : 'pb-hide-docs'
-                }`}
-                onDragStart={(): void => setIsDragging(true)}
-                onDragEnd={(): void => setIsDragging(false)}
-                percentage={true}
-                secondaryInitialSize={Number(
-                    localStorage.getItem('app-docs-split') || 30,
-                )}
-                onSecondaryPaneSizeChange={(value): void =>
-                    localStorage.setItem('app-docs-split', String(value))
-                }
-            >
-                <SplitterLayout
-                    vertical={true}
-                    percentage={true}
-                    secondaryInitialSize={Number(
-                        localStorage.getItem('app-terminal-split') || 30,
-                    )}
-                    onSecondaryPaneSizeChange={(value): void =>
-                        localStorage.setItem('app-terminal-split', String(value))
-                    }
+        <div className="pb-app" onContextMenu={(e) => e.preventDefault()}>
+            <div className="pb-app-body">
+                <div
+                    className="pb-app-activities"
+                    onFocus={handleFocus}
+                    onMouseDown={handleActivitiesMouseDown}
                 >
-                    <Editor />
-                    <div className="pb-app-terminal-padding h-100">
-                        <Terminal />
-                    </div>
-                </SplitterLayout>
-                <div className="h-100 w-100">
-                    {isDragging && <div className="h-100 w-100 p-absolute" />}
-                    <Docs />
+                    <Activities />
                 </div>
-            </SplitterLayout>
+                {/* need a container with position: relative; for SplitterLayout since it uses position: absolute; */}
+                <div className="pb-app-main" style={{ position: 'relative' }}>
+                    <SplitterLayout
+                        customClassName={
+                            isSettingShowDocsEnabled ? 'pb-show-docs' : 'pb-hide-docs'
+                        }
+                        onDragStart={(): void => setIsDragging(true)}
+                        onDragEnd={(): void => setIsDragging(false)}
+                        percentage={true}
+                        secondaryInitialSize={docsSplit}
+                        onSecondaryPaneSizeChange={setDocsSplit}
+                    >
+                        <SplitterLayout
+                            vertical={true}
+                            percentage={true}
+                            secondaryInitialSize={terminalSplit}
+                            onSecondaryPaneSizeChange={setTerminalSplit}
+                        >
+                            <div className="pb-app-editor">
+                                <Toolbar />
+                                <Editor />
+                            </div>
+                            <div className="pb-app-terminal">
+                                <Terminal />
+                            </div>
+                        </SplitterLayout>
+                        <div className="pb-app-docs">
+                            {isDragging && <div className="pb-app-docs-drag-helper" />}
+                            <Docs />
+                        </div>
+                    </SplitterLayout>
+                </div>
+            </div>
             <StatusBar />
         </div>
     );

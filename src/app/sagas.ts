@@ -2,17 +2,77 @@
 // Copyright (c) 2021-2022 The Pybricks Authors
 
 import { eventChannel } from 'redux-saga';
-import { call, fork, put, take, takeEvery } from 'typed-redux-saga/macro';
+import { call, delay, fork, put, take, takeEvery } from 'typed-redux-saga/macro';
+import {
+    serviceWorkerDidSucceed,
+    serviceWorkerDidUpdate,
+} from '../service-worker/actions';
+import * as serviceWorkerRegistration from '../serviceWorkerRegistration';
 import { BeforeInstallPromptEvent } from '../utils/dom';
 import {
-    checkForUpdate,
-    didBeforeInstallPrompt,
-    didCheckForUpdate,
+    appCheckForUpdate,
+    appDidCheckForUpdate,
+    appDidReceiveBeforeInstallPrompt,
+    appDidResolveInstallPrompt,
+    appReload,
+    appShowInstallPrompt,
     didInstall,
-    didInstallPrompt,
-    installPrompt,
-    reload,
 } from './actions';
+
+/**
+ * Handles appReload actions.
+ *
+ * Must be called (forked) with serviceWorkerRegistration context set.
+ */
+function* handleAppReload(registration: ServiceWorkerRegistration): Generator {
+    yield* call(() => registration.unregister());
+
+    location.reload();
+}
+
+/**
+ * Handles appCheckForUpdate actions.
+ *
+ * Must be called (forked) with serviceWorkerRegistration context set.
+ */
+function* handleAppCheckForUpdate(registration: ServiceWorkerRegistration): Generator {
+    yield* call(() => registration.update());
+    const updateFound = registration.installing !== null;
+    yield* put(appDidCheckForUpdate(updateFound));
+}
+
+/**
+ * Marshals CRA serviceWorkerRegistration to saga.
+ */
+function* monitorServiceWorkerRegistration(): Generator {
+    const chan = eventChannel<{
+        isUpdate: boolean;
+        registration: ServiceWorkerRegistration;
+    }>((emit) => {
+        serviceWorkerRegistration.register({
+            onSuccess: (r) => emit({ isUpdate: false, registration: r }),
+            onUpdate: (r) => emit({ isUpdate: true, registration: r }),
+        });
+
+        // istanbul ignore next: never unregistered
+        return () => serviceWorkerRegistration.unregister();
+    });
+
+    // HACK: is assumed that this will only be called at most two times, once
+    // with isUpdate === false and after that, once with isUpdate === true.
+    while (true) {
+        const { isUpdate, registration } = yield* take(chan);
+
+        if (isUpdate) {
+            yield* put(serviceWorkerDidUpdate());
+        } else {
+            yield* takeEvery(appReload, handleAppReload, registration);
+            yield* takeEvery(appCheckForUpdate, handleAppCheckForUpdate, registration);
+
+            yield* put(serviceWorkerDidSucceed());
+        }
+    }
+}
 
 function* monitorAppInstalled(): Generator {
     const chan = eventChannel<Event>((emit) => {
@@ -31,6 +91,15 @@ function* monitorAppInstalled(): Generator {
     }
 }
 
+function* handleBeforeInstallPromptEvent(event: BeforeInstallPromptEvent): Generator {
+    // wait for user to request to install the app - may never happen
+    yield* take(appShowInstallPrompt);
+
+    yield* call(() => event.prompt());
+    const choice = yield* call(() => event.userChoice);
+    yield* put(appDidResolveInstallPrompt(choice));
+}
+
 function* monitorBeforeInstallPrompt(): Generator {
     const chan = eventChannel<BeforeInstallPromptEvent>((emit) => {
         const listener = (e: BeforeInstallPromptEvent) => {
@@ -43,33 +112,31 @@ function* monitorBeforeInstallPrompt(): Generator {
         return () => window.removeEventListener('beforeinstallprompt', listener);
     });
 
+    // in theory, the before install prompt event should only happen once, so
+    // we don't bother canceling the forked task when another event is received
     while (true) {
         const event = yield* take(chan);
-        yield* put(didBeforeInstallPrompt(event));
+        yield* fork(handleBeforeInstallPromptEvent, event);
+        yield* put(appDidReceiveBeforeInstallPrompt());
     }
 }
 
-function* handleReload(action: ReturnType<typeof reload>): Generator {
-    yield* call(() => action.registration.unregister());
-    location.reload();
-}
-
-function* handleCheckForUpdate(action: ReturnType<typeof checkForUpdate>): Generator {
-    yield* call(() => action.registration.update());
-    const updateFound = action.registration.installing !== null;
-    yield* put(didCheckForUpdate(updateFound));
-}
-
-function* handleInstallPrompt(action: ReturnType<typeof installPrompt>): Generator {
-    yield* call(() => action.event.prompt());
-    yield* call(() => action.event.userChoice);
-    yield* put(didInstallPrompt());
+// istabul ignore next: for dev envionemnt only
+function* fakeCheckForUpdate(): Generator {
+    console.warn('checking for updates is not supported in developemnt mode');
+    // let this "busy" indication spin for a it
+    yield* delay(3000);
+    // then indicate we are already up-to-date
+    yield* put(appDidCheckForUpdate(false));
 }
 
 export default function* app(): Generator {
+    yield* fork(monitorServiceWorkerRegistration);
     yield* fork(monitorAppInstalled);
     yield* fork(monitorBeforeInstallPrompt);
-    yield* takeEvery(reload, handleReload);
-    yield* takeEvery(checkForUpdate, handleCheckForUpdate);
-    yield* takeEvery(installPrompt, handleInstallPrompt);
+
+    // istabul ignore if: for dev envionemnt only
+    if (process.env.NODE_ENV === 'development') {
+        yield* takeEvery(appCheckForUpdate, fakeCheckForUpdate);
+    }
 }

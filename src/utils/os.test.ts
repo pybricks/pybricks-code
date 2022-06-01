@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2021 The Pybricks Authors
 
-import { isAndroid, isMacOS, isWindows, prefersDarkMode } from './os';
+import { isAndroid, isMacOS, isWindows } from './os';
 
 afterEach(() => {
     jest.resetAllMocks();
@@ -37,20 +37,5 @@ describe('isWindows', () => {
     test('is false', () => {
         jest.spyOn(navigator, 'platform', 'get').mockReturnValue('MacIntel');
         expect(isWindows()).toBeFalsy();
-    });
-});
-
-describe('prefersDarkMode', () => {
-    test('is true', () => {
-        jest.spyOn(window, 'matchMedia').mockReturnValue({
-            matches: true,
-        } as MediaQueryList);
-        expect(prefersDarkMode()).toBeTruthy();
-    });
-    test('is false', () => {
-        jest.spyOn(window, 'matchMedia').mockReturnValue({
-            matches: false,
-        } as MediaQueryList);
-        expect(prefersDarkMode()).toBeFalsy();
     });
 });

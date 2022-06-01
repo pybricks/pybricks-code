@@ -1,128 +1,378 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2022 The Pybricks Authors
+// Copyright (c) 2022 The Pybricks Authors
 
-import FileSaver from 'file-saver';
+import { monaco } from 'react-monaco-editor';
+import { EventChannel, buffers, eventChannel } from 'redux-saga';
 import {
+    SagaGenerator,
     call,
+    delay,
+    fork,
+    getContext,
     put,
     race,
     select,
     take,
     takeEvery,
-    takeLatest,
 } from 'typed-redux-saga/macro';
+import { UUID } from '../fileStorage';
 import {
-    fileStorageDidFailToReadFile,
+    fileStorageDidFailToLoadTextFile,
+    fileStorageDidFailToStoreTextFileViewState,
     fileStorageDidInitialize,
-    fileStorageDidReadFile,
-    fileStorageReadFile,
+    fileStorageDidLoadTextFile,
+    fileStorageDidStoreTextFileViewState,
+    fileStorageLoadTextFile,
+    fileStorageStoreTextFileValue,
+    fileStorageStoreTextFileViewState,
 } from '../fileStorage/actions';
 import { RootState } from '../reducers';
-import { ensureError } from '../utils';
-import { didFailToSaveAs, didSaveAs, open, saveAs, setEditSession } from './actions';
+import { acquireLock, defined, ensureError } from '../utils';
+import {
+    editorActivateFile,
+    editorCloseFile,
+    editorDidActivateFile,
+    editorDidCloseFile,
+    editorDidCreate,
+    editorDidFailToActivateFile,
+    editorDidFailToOpenFile,
+    editorDidOpenFile,
+    editorGetValueRequest,
+    editorGetValueResponse,
+    editorOpenFile,
+} from './actions';
+import { EditorError } from './error';
+import { ActiveFileHistoryManager, OpenFileManager } from './lib';
+import { pybricksMicroPythonId } from './pybricksMicroPython';
 
-const decoder = new TextDecoder();
+/**
+ * Saga that gets the current value from the editor.
+ * @returns The value.
+ * @throws Error if editor.isReady state is false.
+ */
+export function* editorGetValue(): SagaGenerator<string> {
+    const nextMessageId = yield* getContext<() => number>('nextMessageId');
 
-function* handleOpen(action: ReturnType<typeof open>): Generator {
-    const editor = yield* select((s: RootState) => s.editor.current);
+    const isReady = yield* select((s: RootState) => s.editor.isReady);
 
-    // istanbul ignore next: it is a bug to dispatch this action with no current editor
-    if (editor === null) {
-        console.error('open: No current editor');
-        return;
+    if (!isReady) {
+        throw new Error('editorGetValue() called before editor.isReady');
     }
 
-    const text = decoder.decode(action.data);
-    editor.setValue(text);
+    const request = yield* put(editorGetValueRequest(nextMessageId()));
+    const response = yield* take(
+        editorGetValueResponse.when((a) => a.id === request.id),
+    );
+
+    return response.value;
 }
 
-function* handleSaveAs(): Generator {
-    const editor = yield* select((s: RootState) => s.editor.current);
+function* handleEditorGetValueRequest(
+    editor: monaco.editor.ICodeEditor,
+    action: ReturnType<typeof editorGetValueRequest>,
+): Generator {
+    yield* put(editorGetValueResponse(action.id, editor.getValue()));
+}
 
-    // istanbul ignore next: it is a bug to dispatch this action with no current editor
-    if (editor === null) {
-        console.error('saveAs: No current editor');
-        return;
+/** Handle changes to the model. */
+function* handleModelDidChange(
+    ms: number,
+    chan: EventChannel<monaco.editor.IModelContentChangedEvent>,
+    model: monaco.editor.ITextModel,
+): Generator {
+    for (;;) {
+        yield* take(chan);
+        const value = model.getValue();
+        // when the model changes, save it to storage.
+        yield* put(fileStorageStoreTextFileValue(model.uri.path as UUID, value));
+        // failures are ignored
+
+        // throttle the writes so we don't do it too often while user is typing quickly
+        yield* delay(ms);
     }
+}
 
-    const data = editor.getValue();
-    const blob = new Blob([data], { type: 'text/x-python;charset=utf-8' });
+function* handleEditorOpenFile(
+    editor: monaco.editor.ICodeEditor,
+    openFiles: OpenFileManager,
+    action: ReturnType<typeof editorOpenFile>,
+): Generator {
+    let closeRequested = false;
 
-    if (window.showSaveFilePicker) {
-        // This uses https://wicg.github.io/file-system-access which is not
-        // available in all browsers
+    try {
+        const defer: Array<() => void | Promise<void>> = [];
+
         try {
-            const handle = yield* call(() =>
-                window.showSaveFilePicker({
-                    suggestedName: 'main.py',
-                    types: [
-                        {
-                            accept: { 'text/x-python': '.py' },
-                            // TODO: translate description
-                            description: 'Python Files',
-                        },
-                    ],
-                }),
+            const modelUri = monaco.Uri.from({
+                scheme: 'pybricksCode',
+                path: action.uuid,
+            });
+
+            const releaseLock = yield* call(() =>
+                acquireLock(`pybricks.editor+${modelUri}`),
             );
 
-            const writeable = yield* call(() => handle.createWritable());
-            yield* call(() => writeable.write(blob));
-            yield* call(() => writeable.close());
-        } catch (err) {
-            yield* put(didFailToSaveAs(ensureError(err)));
-            return;
-        }
-    } else {
-        // this is a fallback to use the standard browser download mechanism
-        try {
-            FileSaver.saveAs(blob, 'main.py');
-        } catch (err) {
-            yield* put(didFailToSaveAs(ensureError(err)));
-            return;
-        }
-    }
+            if (!releaseLock) {
+                throw new EditorError(
+                    'FileInUse',
+                    'the file is already open in another editor',
+                );
+            }
 
-    yield* put(didSaveAs());
+            defer.push(releaseLock);
+
+            yield* put(fileStorageLoadTextFile(action.uuid));
+
+            const { didLoad, didFailToLoad } = yield* race({
+                didLoad: take(
+                    fileStorageDidLoadTextFile.when((a) => a.uuid === action.uuid),
+                ),
+                didFailToLoad: take(
+                    fileStorageDidFailToLoadTextFile.when(
+                        (a) => a.uuid === action.uuid,
+                    ),
+                ),
+            });
+
+            if (didFailToLoad) {
+                throw didFailToLoad.error;
+            }
+
+            defined(didLoad);
+
+            const model = monaco.editor.createModel(
+                didLoad.value,
+                pybricksMicroPythonId,
+                modelUri,
+            );
+            defer.push(() => model.dispose());
+
+            // NB: the throttle effect doesn't work with event channels, so we
+            // emulate the effect by using a buffer with size of one here...
+            const didChangeModelChan =
+                eventChannel<monaco.editor.IModelContentChangedEvent>((emit) => {
+                    const subscription = model.onDidChangeContent((e) => emit(e));
+                    return () => subscription.dispose();
+                }, buffers.sliding(1));
+
+            defer.push(() => didChangeModelChan.close());
+
+            // ... and then fork to function that looks like
+            // https://github.com/redux-saga/redux-saga/issues/620#issuecomment-259161095
+            yield* fork(handleModelDidChange, 1000, didChangeModelChan, model);
+
+            openFiles.add(action.uuid, model, didLoad.viewState);
+            defer.push(() => openFiles.remove(action.uuid));
+
+            yield* put(editorDidOpenFile(action.uuid));
+
+            yield* take(editorCloseFile.when((a) => a.uuid === action.uuid));
+
+            closeRequested = true;
+
+            // if the file is the currently active file, the view state will
+            // be out of sync, so we need to update it here before saving to
+            // storage
+            if (editor.getModel() === model) {
+                openFiles.updateViewState(action.uuid, editor.saveViewState());
+            }
+
+            // save the file contents on close since the change watcher is
+            // throttled and the latest changes may not have been saved yet
+            yield* put(fileStorageStoreTextFileValue(action.uuid, model.getValue()));
+        } finally {
+            for (const callback of defer.reverse()) {
+                callback();
+            }
+
+            // only send the did close action if the corresponding action requested it
+            if (closeRequested) {
+                yield* put(editorDidCloseFile(action.uuid));
+            }
+        }
+    } catch (err) {
+        yield* put(editorDidFailToOpenFile(action.uuid, ensureError(err)));
+    }
 }
 
-function* handleSetEditSession(action: ReturnType<typeof setEditSession>): Generator {
-    if (action.editSession === null) {
-        // there is not current edit session, nothing to do
-        return;
+function* handleEditorActivateFile(
+    editor: monaco.editor.ICodeEditor,
+    openFiles: OpenFileManager,
+    activeFileHistory: ActiveFileHistoryManager,
+    action: ReturnType<typeof editorActivateFile>,
+): Generator {
+    try {
+        if (!openFiles.has(action.uuid)) {
+            yield* put(editorOpenFile(action.uuid));
+
+            const { didFailToOpen } = yield* race({
+                didOpen: take(editorDidOpenFile.when((a) => a.uuid == action.uuid)),
+                didFailToOpen: take(
+                    editorDidFailToOpenFile.when((a) => a.uuid == action.uuid),
+                ),
+            });
+
+            if (didFailToOpen) {
+                throw didFailToOpen.error;
+            }
+        }
+
+        const file = openFiles.get(action.uuid);
+
+        // istanbul ignore if: this should always be available after editorDidOpenFile
+        if (file === undefined) {
+            throw new Error('bug: could not get file from openFiles');
+        }
+
+        // save the current view state for later activation
+        const oldModel = editor.getModel();
+
+        if (oldModel) {
+            openFiles.updateViewState(
+                oldModel.uri.path as UUID,
+                editor.saveViewState(),
+            );
+        }
+
+        editor.setModel(file.model);
+        editor.restoreViewState(file.viewState);
+        activeFileHistory.push(action.uuid);
+
+        yield* put(editorDidActivateFile(action.uuid));
+    } catch (err) {
+        yield* put(editorDidFailToActivateFile(action.uuid, ensureError(err)));
     }
+}
 
-    // ensure storage has been initialized
+function* handleEditorDidCloseFile(
+    activeFileHistory: ActiveFileHistoryManager,
+    action: ReturnType<typeof editorDidCloseFile>,
+): Generator {
+    // handleEditorOpenFile handles most of the closing of files.
+    // Here we only need to handle removing the closed file from the active
+    // file history.
 
-    const isStorageInitialized = yield* select(
+    const newActiveFile = activeFileHistory.pop(action.uuid);
+
+    // if the closed file was the active file, we need to activate a new file
+    // otherwise there will be no active file
+    if (newActiveFile) {
+        yield* put(editorActivateFile(newActiveFile));
+    }
+}
+
+/**
+ * Monitors the editor for any possible view state change and stores the state
+ * with the associated file when the state changes.
+ */
+function* monitorViewState(editor: monaco.editor.ICodeEditor): Generator {
+    const ch = eventChannel<
+        | monaco.editor.ICursorPositionChangedEvent
+        | monaco.editor.ICursorSelectionChangedEvent
+        | monaco.IScrollEvent
+    >((emit) => {
+        const subscriptions = new Array<monaco.IDisposable>();
+
+        // there isn't a single view state change event, so this should be
+        // all of the events that can trigger a state change
+        subscriptions.push(editor.onDidChangeCursorPosition(emit));
+        subscriptions.push(editor.onDidChangeCursorSelection(emit));
+        subscriptions.push(editor.onDidScrollChange(emit));
+
+        return () => subscriptions.forEach((s) => s.dispose());
+    }, buffers.sliding(1));
+
+    try {
+        for (;;) {
+            yield* take(ch);
+
+            const model = editor.getModel();
+
+            if (!model) {
+                continue;
+            }
+
+            const uuid = model.uri.path as UUID;
+
+            yield* put(fileStorageStoreTextFileViewState(uuid, editor.saveViewState()));
+
+            yield* race({
+                didStore: take(
+                    fileStorageDidStoreTextFileViewState.when((a) => a.uuid === uuid),
+                ),
+                didFailToStore: take(
+                    fileStorageDidFailToStoreTextFileViewState.when(
+                        (a) => a.uuid === uuid,
+                    ),
+                ),
+            });
+        }
+    } finally {
+        ch.close();
+    }
+}
+
+function* handleDidCreateEditor(editor: monaco.editor.ICodeEditor): Generator {
+    // first, we need to be sure that file storage is ready
+
+    const isFileStorageInitialized = yield* select(
         (s: RootState) => s.fileStorage.isInitialized,
     );
 
-    if (!isStorageInitialized) {
+    if (!isFileStorageInitialized) {
         yield* take(fileStorageDidInitialize);
     }
 
-    // TODO: get current file from state
-    const currentFileName = 'main.py';
+    const openFiles = new OpenFileManager();
+    const activeFileHistory = new ActiveFileHistoryManager(editor.getId());
 
-    // TODO: implement locking to ensure exclusive access to file
+    yield* takeEvery(editorGetValueRequest, handleEditorGetValueRequest, editor);
+    yield* takeEvery(editorOpenFile, handleEditorOpenFile, editor, openFiles);
+    yield* takeEvery(
+        editorActivateFile,
+        handleEditorActivateFile,
+        editor,
+        openFiles,
+        activeFileHistory,
+    );
+    yield* takeEvery(editorDidCloseFile, handleEditorDidCloseFile, activeFileHistory);
+    yield* fork(monitorViewState, editor);
 
-    yield* put(fileStorageReadFile(currentFileName));
-    const { result } = yield* race({
-        result: take(
-            fileStorageDidReadFile.when((a) => a.fileName === currentFileName),
-        ),
-        error: take(
-            fileStorageDidFailToReadFile.when((a) => a.fileName === currentFileName),
-        ),
+    yield* put(editorDidCreate());
+
+    // this should restore all previously open files in the same order
+    // the were last used (which may be different from the order in which
+    // they were originally opened)
+    for (const item of activeFileHistory.getFromStorage()) {
+        yield* put(editorActivateFile(item));
+
+        yield* race({
+            didActivate: take(editorDidActivateFile.when((a) => a.uuid === item)),
+            didFailToActivate: take(
+                editorDidFailToActivateFile.when((a) => a.uuid === item),
+            ),
+        });
+
+        // Errors are ignored here since we don't want to pester the user with
+        // error messages.
+    }
+}
+
+function* monitorEditors(): Generator {
+    const ch = eventChannel<monaco.editor.ICodeEditor>((emit) => {
+        const subscription = monaco.editor.onDidCreateEditor(emit);
+        return () => subscription.dispose();
     });
 
-    if (result) {
-        action.editSession?.setValue(result.fileContents);
+    try {
+        yield* takeEvery(ch, handleDidCreateEditor);
+
+        yield* take('__never__');
+    } finally {
+        ch.close();
     }
 }
 
 export default function* (): Generator {
-    yield* takeEvery(open, handleOpen);
-    yield* takeEvery(saveAs, handleSaveAs);
-    yield* takeLatest(setEditSession, handleSetEditSession);
+    yield* fork(monitorEditors);
 }

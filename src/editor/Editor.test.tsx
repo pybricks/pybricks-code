@@ -1,102 +1,194 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021 The Pybricks Authors
+// Copyright (c) 2021-2022 The Pybricks Authors
 
-import { I18nContext, I18nManager } from '@shopify/react-i18n';
-import {
-    fireEvent,
-    render,
-    screen,
-    waitFor,
-    waitForElementToBeRemoved,
-} from '@testing-library/react';
+import { Classes } from '@blueprintjs/core';
+import { RenderResult, cleanup, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
-import { Provider } from 'react-redux';
-import { Store } from 'redux';
+import { monaco } from 'react-monaco-editor';
+import { testRender, uuid } from '../../test';
+import { FileMetadata } from '../fileStorage';
+import { useFileStorageMetadata, useFileStoragePath } from '../fileStorage/hooks';
+import { defined } from '../utils';
 import Editor from './Editor';
+import { editorActivateFile, editorCloseFile } from './actions';
 
-function getTextArea(): HTMLTextAreaElement {
-    // the textarea in ace editor doesn't actually have any contents, but
-    // it gets the focus for input.
-    return screen.getByDisplayValue('') as HTMLTextAreaElement;
-}
+const testFile: FileMetadata = {
+    uuid: uuid(0),
+    path: 'test.file',
+    sha256: '',
+    viewState: null,
+};
 
-it('should focus the text area', () => {
-    const store = {
-        getState: jest.fn(() => ({
-            editor: { current: null },
-            settings: { darkMode: false, showDocs: false },
-        })),
-        dispatch: jest.fn(),
-        subscribe: jest.fn(),
-    } as unknown as Store;
-    const i18n = new I18nManager({ locale: 'en' });
-    render(
-        <Provider store={store}>
-            <I18nContext.Provider value={i18n}>
-                <Editor />
-            </I18nContext.Provider>
-        </Provider>,
-    );
+describe('Editor', () => {
+    describe('tabs', () => {
+        it('should dispatch activate action when tab is clicked', async () => {
+            jest.mocked(useFileStorageMetadata).mockReturnValue([testFile]);
+            jest.mocked(useFileStoragePath).mockReturnValue(testFile.path);
 
-    expect(getTextArea()).toHaveFocus();
-});
+            const [editor, dispatch] = testRender(<Editor />, {
+                editor: { openFileUuids: [testFile.uuid] },
+            });
 
-describe('context menu', () => {
-    it('should show the context menu', async () => {
-        const store = {
-            getState: jest.fn(() => ({
-                editor: { current: null },
-                settings: { darkMode: false, showDocs: false },
-            })),
-            dispatch: jest.fn(),
-            subscribe: jest.fn(),
-        } as unknown as Store;
-        const i18n = new I18nManager({ locale: 'en' });
+            userEvent.click(editor.getByRole('tab', { name: 'test.file' }));
 
-        render(
-            <Provider store={store}>
-                <I18nContext.Provider value={i18n}>
-                    <Editor />
-                </I18nContext.Provider>
-            </Provider>,
+            expect(dispatch).toHaveBeenCalledWith(editorActivateFile(testFile.uuid));
+        });
+
+        it.each(['enter', 'space'])(
+            'should dispatch activate action when % button is pressed',
+            async (button) => {
+                jest.mocked(useFileStorageMetadata).mockReturnValue([testFile]);
+                jest.mocked(useFileStoragePath).mockReturnValue(testFile.path);
+
+                const [editor, dispatch] = testRender(<Editor />, {
+                    editor: { openFileUuids: [testFile.uuid] },
+                });
+
+                userEvent.type(
+                    editor.getByRole('tab', { name: 'test.file' }),
+                    `{${button}}`,
+                );
+
+                expect(dispatch).toHaveBeenCalledWith(
+                    editorActivateFile(testFile.uuid),
+                );
+            },
         );
 
-        fireEvent.contextMenu(screen.getByText('Write your program here...'));
+        it('should dispatch close action when close button is clicked', async () => {
+            jest.mocked(useFileStorageMetadata).mockReturnValue([testFile]);
+            jest.mocked(useFileStoragePath).mockReturnValue(testFile.path);
 
-        await waitFor(() => {
-            expect(screen.getByText('Copy')).toBeInTheDocument();
+            const [editor, dispatch] = testRender(<Editor />, {
+                editor: { openFileUuids: [testFile.uuid] },
+            });
+
+            userEvent.click(editor.getByRole('button', { name: 'Close test.file' }));
+
+            expect(dispatch).toHaveBeenCalledWith(editorCloseFile(testFile.uuid));
+        });
+
+        it('should dispatch close action when delete button is pressed', async () => {
+            jest.mocked(useFileStorageMetadata).mockReturnValue([testFile]);
+            jest.mocked(useFileStoragePath).mockReturnValue(testFile.path);
+
+            const [editor, dispatch] = testRender(<Editor />, {
+                editor: { openFileUuids: [testFile.uuid] },
+            });
+
+            userEvent.type(editor.getByRole('tab', { name: 'test.file' }), '{delete}');
+
+            expect(dispatch).toHaveBeenCalledWith(editorCloseFile(testFile.uuid));
         });
     });
 
-    it('should hide the context menu when Escape is pressed', async () => {
-        const store = {
-            getState: jest.fn(() => ({
-                editor: { current: null },
-                settings: { darkMode: false, showDocs: false },
-            })),
-            dispatch: jest.fn(),
-            subscribe: jest.fn(),
-        } as unknown as Store;
-        const i18n = new I18nManager({ locale: 'en' });
+    describe('context menu', () => {
+        let editor: RenderResult;
+        let code: monaco.editor.ICodeEditor;
 
-        render(
-            <Provider store={store}>
-                <I18nContext.Provider value={i18n}>
-                    <Editor />
-                </I18nContext.Provider>
-            </Provider>,
-        );
+        beforeEach(async () => {
+            const didCreate = new Promise<monaco.editor.ICodeEditor>((resolve) =>
+                monaco.editor.onDidCreateEditor(resolve),
+            );
 
-        fireEvent.contextMenu(screen.getByText('Write your program here...'));
+            [editor] = testRender(<Editor />);
+            code = await didCreate;
 
-        expect(screen.getByText('Copy')).toBeInTheDocument();
+            code.setModel(monaco.editor.createModel('test'));
 
-        userEvent.type(screen.getByText('Copy'), '{esc}');
+            expect(
+                editor.queryByRole('menu', { name: 'Editor context menu' }),
+            ).toBeNull();
+        });
 
-        await waitForElementToBeRemoved(() => screen.queryByText('Copy'));
+        describe('keyboard interaction', () => {
+            let contextMenu: HTMLElement;
 
-        // editor should be focused after context menu closes
-        expect(document.activeElement).toBe(getTextArea());
+            beforeEach(async () => {
+                // HACK: monaco editor uses deprecated event fields (keyCode),
+                // so regular userEvent.type() doesn't work. testing library
+                // doesn't have ContextMenu in its keymap either.
+                fireEvent(
+                    editor.getByRole('textbox', { name: /^Editor content/ }),
+                    new KeyboardEvent('keydown', {
+                        key: 'ContextMenu',
+                        code: 'ContextMenu',
+                        keyCode: 93,
+                    }),
+                );
+
+                contextMenu = await editor.findByRole('menu', {
+                    name: 'Editor context menu',
+                });
+
+                expect(contextMenu).toBeInTheDocument();
+
+                // a11y: first item in menu should be focused when menu opens
+                await waitFor(() =>
+                    expect(
+                        editor.getByRole('menuitem', { name: 'Copy' }),
+                    ).toHaveFocus(),
+                );
+            });
+
+            it('should hide the context menu when Escape is pressed', async () => {
+                userEvent.keyboard('{esc}');
+
+                await waitFor(() => expect(contextMenu).not.toBeInTheDocument());
+
+                // editor should be focused after context menu closes
+                expect(
+                    editor.getByRole('textbox', { name: /^Editor content/ }),
+                ).toHaveFocus();
+            });
+        });
+
+        describe('mouse interaction', () => {
+            let contextMenu: HTMLElement;
+
+            beforeEach(async () => {
+                userEvent.click(
+                    editor.getByRole('textbox', { name: /^Editor content/ }),
+                    {
+                        button: 2,
+                    },
+                );
+
+                contextMenu = await editor.findByRole('menu', {
+                    name: 'Editor context menu',
+                });
+
+                expect(contextMenu).toBeInTheDocument();
+
+                // a11y: first item in menu should be focused when menu opens
+                await waitFor(() =>
+                    expect(
+                        editor.getByRole('menuitem', { name: 'Copy' }),
+                    ).toHaveFocus(),
+                );
+            });
+
+            it('should hide the context menu when clicking away', async () => {
+                const overlay = document
+                    .getElementsByClassName(Classes.OVERLAY_BACKDROP)
+                    .item(0);
+
+                defined(overlay);
+
+                userEvent.click(overlay);
+
+                await waitFor(() => expect(contextMenu).not.toBeInTheDocument());
+
+                // editor should be focused after context menu closes
+                expect(
+                    editor.getByRole('textbox', { name: /^Editor content/ }),
+                ).toHaveFocus();
+            });
+        });
+    });
+
+    afterEach(() => {
+        cleanup();
     });
 });

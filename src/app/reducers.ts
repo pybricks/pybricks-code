@@ -4,34 +4,34 @@
 // Manages state the app in general.
 
 import { Reducer, combineReducers } from 'redux';
-import { didSucceed, didUpdate } from '../service-worker/actions';
-import { BeforeInstallPromptEvent } from '../utils/dom';
 import {
-    checkForUpdate,
-    didBeforeInstallPrompt,
-    didCheckForUpdate,
+    serviceWorkerDidSucceed,
+    serviceWorkerDidUpdate,
+} from '../service-worker/actions';
+import {
+    appCheckForUpdate,
+    appDidCheckForUpdate,
+    appDidReceiveBeforeInstallPrompt,
+    appDidResolveInstallPrompt,
+    appShowInstallPrompt,
     didInstall,
-    didInstallPrompt,
-    installPrompt,
 } from './actions';
 
-const serviceWorker: Reducer<ServiceWorkerRegistration | null> = (
-    state = null,
-    action,
-) => {
-    if (didSucceed.matches(action)) {
-        return action.registration;
+/** Indicates that the service worker was successfully registered. */
+const isServiceWorkerRegistered: Reducer<boolean> = (state = false, action) => {
+    if (serviceWorkerDidSucceed.matches(action)) {
+        return true;
     }
 
     return state;
 };
 
 const checkingForUpdate: Reducer<boolean> = (state = false, action) => {
-    if (checkForUpdate.matches(action)) {
+    if (appCheckForUpdate.matches(action)) {
         return true;
     }
 
-    if (didCheckForUpdate.matches(action)) {
+    if (appDidCheckForUpdate.matches(action)) {
         if (!action.updateFound) {
             return false;
         }
@@ -39,7 +39,7 @@ const checkingForUpdate: Reducer<boolean> = (state = false, action) => {
         return state;
     }
 
-    if (didUpdate.matches(action)) {
+    if (serviceWorkerDidUpdate.matches(action)) {
         return false;
     }
 
@@ -47,34 +47,36 @@ const checkingForUpdate: Reducer<boolean> = (state = false, action) => {
 };
 
 const updateAvailable: Reducer<boolean> = (state = false, action) => {
-    if (didUpdate.matches(action)) {
+    if (serviceWorkerDidUpdate.matches(action)) {
         return true;
     }
 
     return state;
 };
 
-const beforeInstallPrompt: Reducer<BeforeInstallPromptEvent | null> = (
-    state = null,
-    action,
-) => {
-    if (didBeforeInstallPrompt.matches(action)) {
-        return action.event;
+/**
+ * Indicates that the app has received the BeforeInstallPromptEvent but the
+ * app has not been installed yet.
+ */
+const hasUnresolvedInstallPrompt: Reducer<boolean> = (state = false, action) => {
+    if (appDidReceiveBeforeInstallPrompt.matches(action)) {
+        return true;
     }
 
     if (didInstall.matches(action)) {
-        return null;
+        return false;
     }
 
     return state;
 };
 
+/** Indicates that the browser install prompt is active. */
 const promptingInstall: Reducer<boolean> = (state = false, action) => {
-    if (installPrompt.matches(action)) {
+    if (appShowInstallPrompt.matches(action)) {
         return true;
     }
 
-    if (didInstallPrompt.matches(action)) {
+    if (appDidResolveInstallPrompt.matches(action)) {
         return false;
     }
 
@@ -82,7 +84,7 @@ const promptingInstall: Reducer<boolean> = (state = false, action) => {
 };
 
 const readyForOfflineUse: Reducer<boolean> = (state = false, action) => {
-    if (didSucceed.matches(action)) {
+    if (serviceWorkerDidSucceed.matches(action)) {
         return true;
     }
 
@@ -90,10 +92,10 @@ const readyForOfflineUse: Reducer<boolean> = (state = false, action) => {
 };
 
 export default combineReducers({
-    serviceWorker,
+    isServiceWorkerRegistered,
     checkingForUpdate,
     updateAvailable,
-    beforeInstallPrompt,
+    hasUnresolvedInstallPrompt,
     promptingInstall,
     readyForOfflineUse,
 });

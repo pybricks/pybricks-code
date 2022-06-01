@@ -7,6 +7,9 @@
 
 import { monaco } from 'react-monaco-editor';
 
+/** The Pybricks MicroPython language identifier. */
+export const pybricksMicroPythonId = 'pybricks-micropython';
+
 export const conf: monaco.languages.LanguageConfiguration = {
     comments: {
         lineComment: '#',
@@ -253,42 +256,57 @@ export const language = <monaco.languages.IMonarchLanguage>{
     },
 };
 
-function template(hubName: string, devices: string[]): string {
-    return `from pybricks.hubs import ${hubName}
-from pybricks.pupdevices import ${devices.join(', ')}
+/**
+ * Creates a new template for the given parameters.
+ *
+ * @param hubClassName The hub class name, e.g. `"MoveHub"`.
+ * @param deviceClassNames A list of device class names, e.g. `["Motor"]`.
+ * @returns The template.
+ */
+function createTemplate(hubClassName: string, deviceClassNames: string[]): string {
+    return `from pybricks.hubs import ${hubClassName}
+from pybricks.pupdevices import ${deviceClassNames.join(', ')}
 from pybricks.parameters import Button, Color, Direction, Port, Stop
 from pybricks.robotics import DriveBase
 from pybricks.tools import wait, StopWatch
 
-hub = ${hubName}()
+hub = ${hubClassName}()
 
 `;
 }
 
+type HubLabel =
+    | 'movehub'
+    | 'cityhub'
+    | 'technichub'
+    | 'inventorhub'
+    | 'primehub'
+    | 'essentialhub';
+
 const templateSnippets: Array<
     Required<
         Pick<monaco.languages.CompletionItem, 'label' | 'documentation' | 'insertText'>
-    > & { label: string }
+    > & { label: HubLabel }
 > = [
     {
         label: 'technichub',
         documentation: 'Template for Technic hub program.',
-        insertText: template('TechnicHub', ['Motor']),
+        insertText: createTemplate('TechnicHub', ['Motor']),
     },
     {
         label: 'cityhub',
         documentation: 'Template for City hub program.',
-        insertText: template('CityHub', ['DCMotor', 'Light']),
+        insertText: createTemplate('CityHub', ['DCMotor', 'Light']),
     },
     {
         label: 'movehub',
         documentation: 'Template for BOOST Move hub program.',
-        insertText: template('MoveHub', ['Motor', 'ColorDistanceSensor']),
+        insertText: createTemplate('MoveHub', ['Motor', 'ColorDistanceSensor']),
     },
     {
         label: 'inventorhub',
         documentation: 'Template for MINDSTORMS Robot Inventor hub program.',
-        insertText: template('InventorHub', [
+        insertText: createTemplate('InventorHub', [
             'Motor',
             'ColorSensor',
             'UltrasonicSensor',
@@ -297,7 +315,7 @@ const templateSnippets: Array<
     {
         label: 'primehub',
         documentation: 'Template for SPIKE Prime program.',
-        insertText: template('PrimeHub', [
+        insertText: createTemplate('PrimeHub', [
             'Motor',
             'ColorSensor',
             'UltrasonicSensor',
@@ -307,13 +325,21 @@ const templateSnippets: Array<
     {
         label: 'essentialhub',
         documentation: 'Template for SPIKE Essential program.',
-        insertText: template('EssentialHub', [
+        insertText: createTemplate('EssentialHub', [
             'Motor',
             'ColorSensor',
             'ColorLightMatrix',
         ]),
     },
 ];
+
+/**
+ * Gets the template text for a Pybricks MicroPython file.
+ * @param hub The hub label.
+ */
+export function getPybricksMicroPythonFileTemplate(hub: HubLabel): string | undefined {
+    return templateSnippets.find((t) => t.label === hub)?.insertText;
+}
 
 export const templateSnippetCompletions = <monaco.languages.CompletionItemProvider>{
     provideCompletionItems: (model, position, _context, _token) => {

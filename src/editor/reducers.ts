@@ -1,16 +1,52 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2022 The Pybricks Authors
+// Copyright (c) 2022 The Pybricks Authors
 
-import { monaco } from 'react-monaco-editor';
 import { Reducer, combineReducers } from 'redux';
-import { setEditSession } from './actions';
+import { UUID } from '../fileStorage';
+import {
+    editorDidActivateFile,
+    editorDidCloseFile,
+    editorDidCreate,
+    editorDidOpenFile,
+} from './actions';
 
-const current: Reducer<monaco.editor.ICodeEditor | null> = (state = null, action) => {
-    if (setEditSession.matches(action)) {
-        return action.editSession || null;
+/** Indicates that the code editor is ready for use. */
+const isReady: Reducer<boolean> = (state = false, action) => {
+    if (editorDidCreate.matches(action)) {
+        return true;
     }
 
     return state;
 };
 
-export default combineReducers({ current });
+/**
+ * Indicates which file out of {@link openFileUuids} is the currently active file.
+ *
+ * If {@link activeFileUuid} is not in {@link openFileUuids}, then there is no active file.
+ */
+const activeFileUuid: Reducer<UUID | null> = (state = null, action) => {
+    if (editorDidActivateFile.matches(action)) {
+        return action.uuid;
+    }
+
+    return state;
+};
+
+/** A list of open files in the order they should be displayed to the user. */
+const openFileUuids: Reducer<readonly UUID[]> = (state = [], action) => {
+    if (editorDidOpenFile.matches(action)) {
+        return [...state, action.uuid];
+    }
+
+    if (editorDidCloseFile.matches(action)) {
+        return state.filter((f) => f !== action.uuid);
+    }
+
+    return state;
+};
+
+export default combineReducers({
+    isReady,
+    activeFileUuid,
+    openFileUuids,
+});

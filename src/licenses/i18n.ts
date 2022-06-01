@@ -1,13 +1,22 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021 The Pybricks Authors
+// Copyright (c) 2021-2022 The Pybricks Authors
 
 // License dialog translation keys.
 
-export enum LicenseStringId {
-    Title = 'license.title',
-    Description = 'license.description',
-    PackageLabel = 'license.packageLabel',
-    AuthorLabel = 'license.authorLabel',
-    LicenseLabel = 'license.licenseLabel',
-    SelectPackageHelp = 'license.help.selectPackage',
+import { I18n, useI18n as useShopifyI18n } from '@shopify/react-i18n';
+
+export function useI18n(): I18n {
+    // istanbul ignore next: babel-loader rewrites this line
+    const [i18n] = useShopifyI18n();
+    return i18n;
+}
+
+export enum I18nId {
+    Title = 'title',
+    Description = 'description',
+    PackageLabel = 'packageLabel',
+    AuthorLabel = 'authorLabel',
+    LicenseLabel = 'licenseLabel',
+    ErrorFetchFailed = 'error.fetchFailed',
+    SelectPackageHelp = 'help.selectPackage',
 }

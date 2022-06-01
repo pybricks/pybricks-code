@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2021 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 
 import { I18nContext } from '@shopify/react-i18n';
 import React from 'react';
+import { OverlayProvider } from 'react-aria';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { applyMiddleware, createStore } from 'redux';
@@ -11,24 +12,25 @@ import createSagaMiddleware from 'redux-saga';
 import './index.scss';
 import App from './app/App';
 import { appVersion } from './app/constants';
+import { db } from './fileStorage/context';
 import { i18nManager } from './i18n';
-import * as I18nToaster from './notifications/I18nToaster';
+import * as I18nToaster from './i18nToaster';
 import { rootReducer } from './reducers';
 import reportWebVitals from './reportWebVitals';
-import rootSaga from './sagas';
-import { didSucceed, didUpdate } from './service-worker/actions';
-import * as serviceWorkerRegistration from './serviceWorkerRegistration';
+import rootSaga, { RootSagaContext } from './sagas';
 import { defaultTerminalContext } from './terminal/TerminalContext';
 import ViewHeightSensor from './utils/ViewHeightSensor';
 import { createCountFunc } from './utils/iter';
 
 const toaster = I18nToaster.create(i18nManager);
 
-const sagaMiddleware = createSagaMiddleware({
+const sagaMiddleware = createSagaMiddleware<RootSagaContext>({
     context: {
         nextMessageId: createCountFunc(),
         notification: { toaster },
         terminal: defaultTerminalContext,
+        fileStorage: db,
+        toaster,
     },
 });
 
@@ -52,20 +54,14 @@ ReactDOM.render(
         <Provider store={store}>
             <I18nContext.Provider value={i18nManager}>
                 <ViewHeightSensor />
-                <App />
+                <OverlayProvider>
+                    <App />
+                </OverlayProvider>
             </I18nContext.Provider>
         </Provider>
     </React.StrictMode>,
     document.getElementById('root'),
 );
-
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://cra.link/PWA
-serviceWorkerRegistration.register({
-    onUpdate: (r) => store.dispatch(didUpdate(r)),
-    onSuccess: (r) => store.dispatch(didSucceed(r)),
-});
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

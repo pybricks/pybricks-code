@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2021 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 
 // Custom styling for the Editor control.
 
-@import '../variables.scss';
+@use '@blueprintjs/core/lib/scss/variables' as bp;
+@use '../variables.scss' as pb;
 
 // add "BETA" watermark
 
@@ -19,14 +20,58 @@
     pointer-events: none;
 }
 
-.#{$ns}-dark .pb-editor-placeholder {
-    color: $pt-dark-text-color-muted;
-}
+.pb-editor {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
 
-.pb-editor-placeholder {
-    pointer-events: none;
-    width: max-content;
-    color: $pt-text-color-muted;
-    font-style: italic;
-    padding-left: 4px;
+    &-tablist {
+        padding: bp.$pt-grid-size * 0.3;
+        overflow-x: auto;
+        @include pb.background-contrast(6%);
+
+        .bp4-tab-list > * {
+            padding-left: bp.$pt-grid-size * 1.5;
+
+            &:not(:last-child) {
+                margin: unset;
+            }
+        }
+
+        &-tab {
+            padding-right: bp.$pt-grid-size * 0.5;
+            border-right: 1px solid bp.$pt-divider-black;
+            max-width: bp.$pt-grid-size * 15;
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-end;
+            align-items: center;
+
+            .#{bp.$ns}-dark & {
+                border-right-color: bp.$pt-dark-divider-white;
+            }
+
+            & .#{bp.$ns}-text-overflow-ellipsis {
+                min-width: 0;
+                flex: 1 1 auto;
+            }
+        }
+    }
+
+    &-tabpanel {
+        min-height: 0;
+        flex: 1 1 auto;
+    }
+
+    &-placeholder {
+        pointer-events: none;
+        width: max-content;
+        color: bp.$pt-text-color-muted;
+        font-style: italic;
+        padding-left: 4px;
+
+        .#{bp.$ns}-dark & {
+            color: bp.$pt-dark-text-color-muted;
+        }
+    }
 }
