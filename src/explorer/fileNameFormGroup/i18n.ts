@@ -18,4 +18,5 @@ export enum I18nId {
     HelpTextHasInvalidFirstCharacter = 'helpText.hasInvalidFirstCharacter',
     HelpTextHasInvalidCharacters = 'helpText.hasInvalidCharacters',
     HelpTextAlreadyExists = 'helpText.alreadyExists',
+    HelpTextFixIt = 'helpText.fixIt',
 }
