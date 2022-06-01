@@ -4,8 +4,12 @@
 
 ## [Unreleased]
 
+### Added
+- Added multi-file support.
+
 ### Changed
-- Changed file storage backend.
+- Moved settings.
+- Accessibility improvements.
 
 ### Fixed
 - Fix tooltips not closing when expected ([pybricks-code#275]).
