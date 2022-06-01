@@ -99,6 +99,7 @@
         "sass": "^1.51.0",
         "sass-loader": "^12.6.0",
         "semver": "^7.3.5",
+        "source-map-explorer": "^2.5.2",
         "source-map-loader": "^3.0.0",
         "spdx-satisfies": "^5.0.0",
         "style-loader": "^3.3.1",
@@ -117,6 +118,7 @@
         "zen-push": "^0.2.1"
     },
     "scripts": {
+        "analyze": "source-map-explorer 'build/static/js/*.js'",
         "start": "node scripts/start.js",
         "build": "node scripts/build.js",
         "test": "node scripts/test.js --env=./test/env.js",
