@@ -1,4 +1,4 @@
-![example workflow name](https://github.com/pybricks/pybricks-code/workflows/CI%20Tests/badge.svg) [![Coverage Status](https://coveralls.io/repos/github/pybricks/pybricks-code/badge.svg?branch=master)](https://coveralls.io/github/pybricks/pybricks-code?branch=master)
+[![CI test status](https://github.com/pybricks/pybricks-code/workflows/CI%20Tests/badge.svg)](https://github.com/pybricks/pybricks-code/actions/workflows/test-pull-request.yml) [![Coverage Status](https://coveralls.io/repos/github/pybricks/pybricks-code/badge.svg?branch=master)](https://coveralls.io/github/pybricks/pybricks-code?branch=master)
 
 pybricks-code
 =============
