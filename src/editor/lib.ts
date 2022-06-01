@@ -71,7 +71,7 @@ export class ActiveFileHistoryManager {
             }
         } catch (err) {
             // istanbul ignore next: not a critical error
-            console.error(`failed to get ${this.storageKey}:`, err);
+            console.error(`failed to get ${this.storageKey}: ${err}`);
         }
     }
 
@@ -93,7 +93,7 @@ export class ActiveFileHistoryManager {
             sessionStorage.setItem(this.storageKey, JSON.stringify(this.history));
         } catch (err) {
             // istanbul ignore next: not a critical failure
-            console.error(`failed to store ${this.storageKey}:`, err);
+            console.error(`failed to store ${this.storageKey}: ${err}`);
         }
     }
 
@@ -121,7 +121,7 @@ export class ActiveFileHistoryManager {
             sessionStorage.setItem(this.storageKey, JSON.stringify(this.history));
         } catch (err) {
             // istanbul ignore next: not a critical failure
-            console.error(`failed to store ${this.storageKey}:`, err);
+            console.error(`failed to store ${this.storageKey}: ${err}`);
         }
 
         return wasActiveFile ? this.history.at(-1) : undefined;
