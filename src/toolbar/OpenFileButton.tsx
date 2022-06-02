@@ -14,6 +14,8 @@ export interface OpenFileButtonProps {
     readonly id: string;
     /** A unique label for each instance. */
     readonly label: string;
+    /** The accepted file MIME type. */
+    readonly mimeType: string;
     /** The accepted file extension */
     readonly fileExtension: string;
     /** Tooltip text that appears when hovering over the button. */
@@ -40,6 +42,7 @@ export interface OpenFileButtonProps {
 const OpenFileButton: React.VoidFunctionComponent<OpenFileButtonProps> = ({
     id,
     label,
+    mimeType,
     fileExtension,
     tooltip,
     icon,
@@ -65,9 +68,7 @@ const OpenFileButton: React.VoidFunctionComponent<OpenFileButtonProps> = ({
     const buttonSize = isSmallScreen ? SpinnerSize.SMALL : SpinnerSize.STANDARD;
 
     const { getRootProps, getInputProps } = useDropzone({
-        accept: fileExtension,
-        // using File System Access API is blocked by https://github.com/react-dropzone/react-dropzone/issues/1141
-        useFsAccessApi: false,
+        accept: { [mimeType]: [fileExtension] },
         multiple: false,
         noClick: onClick !== undefined,
         onDropAccepted: (acceptedFiles) => {
@@ -124,6 +125,9 @@ const OpenFileButton: React.VoidFunctionComponent<OpenFileButtonProps> = ({
                         onClick,
                         ...toolbarItemFocusProps,
                         tabIndex: excludeFromTabOrder ? -1 : 0,
+                        // HACK: work around useDropZone "feature" even though
+                        // this role is already implicit on buttons
+                        role: 'button',
                     })}
                 >
                     <input {...getInputProps()} />
