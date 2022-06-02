@@ -2,7 +2,6 @@
 // Copyright (c) 2022 The Pybricks Authors
 
 import { RenderResult, cleanup } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { testRender } from '../../../test';
 import { Toolbar } from './Toolbar';
@@ -40,7 +39,7 @@ function getButtons(toolbar: RenderResult): {
 
 describe('Toolbar', () => {
     it('should have toolbar role', () => {
-        const [toolbar] = testRender(<TestToolbar />);
+        const [, toolbar] = testRender(<TestToolbar />);
 
         expect(toolbar.getByRole('toolbar', { name: 'Test Toolbar' })).toHaveClass(
             'test-class',
@@ -48,7 +47,7 @@ describe('Toolbar', () => {
     });
 
     it('should focus the first element by default', async () => {
-        const [toolbar] = testRender(<TestToolbar />);
+        const [user, toolbar] = testRender(<TestToolbar />);
 
         const { button1, button2, button3 } = getButtons(toolbar);
 
@@ -56,7 +55,7 @@ describe('Toolbar', () => {
         expect(button2).toHaveAttribute('tabindex', '-1');
         expect(button3).toHaveAttribute('tabindex', '-1');
 
-        userEvent.tab();
+        await user.tab();
 
         expect(button1).toHaveFocus();
         expect(button1).not.toHaveAttribute('tabindex');
@@ -64,13 +63,13 @@ describe('Toolbar', () => {
         expect(button3).toHaveAttribute('tabindex', '-1');
     });
 
-    it('should focus next with right arrow key', () => {
-        const [toolbar] = testRender(<TestToolbar />);
+    it('should focus next with right arrow key', async () => {
+        const [user, toolbar] = testRender(<TestToolbar />);
 
         const { button1, button2, button3 } = getButtons(toolbar);
 
         button1.focus();
-        userEvent.keyboard('[ArrowRight]');
+        await user.keyboard('{ArrowRight}');
 
         expect(button2).toHaveFocus();
         expect(button1).toHaveAttribute('tabindex', '-1');
@@ -78,13 +77,13 @@ describe('Toolbar', () => {
         expect(button3).toHaveAttribute('tabindex', '-1');
     });
 
-    it('should focus previous with left arrow key', () => {
-        const [toolbar] = testRender(<TestToolbar />);
+    it('should focus previous with left arrow key', async () => {
+        const [user, toolbar] = testRender(<TestToolbar />);
 
         const { button1, button2, button3 } = getButtons(toolbar);
 
         button3.focus();
-        userEvent.keyboard('[ArrowLeft]');
+        await user.keyboard('{ArrowLeft}');
 
         expect(button2).toHaveFocus();
         expect(button1).toHaveAttribute('tabindex', '-1');
@@ -92,13 +91,13 @@ describe('Toolbar', () => {
         expect(button3).toHaveAttribute('tabindex', '-1');
     });
 
-    it('should wrap focus next with right arrow key', () => {
-        const [toolbar] = testRender(<TestToolbar />);
+    it('should wrap focus next with right arrow key', async () => {
+        const [user, toolbar] = testRender(<TestToolbar />);
 
         const { button1, button2, button3 } = getButtons(toolbar);
 
         button3.focus();
-        userEvent.keyboard('[ArrowRight]');
+        await user.keyboard('{ArrowRight}');
 
         expect(button1).toHaveFocus();
         expect(button1).not.toHaveAttribute('tabindex');
@@ -106,13 +105,13 @@ describe('Toolbar', () => {
         expect(button3).toHaveAttribute('tabindex', '-1');
     });
 
-    it('should wrap focus previous with left arrow key', () => {
-        const [toolbar] = testRender(<TestToolbar />);
+    it('should wrap focus previous with left arrow key', async () => {
+        const [user, toolbar] = testRender(<TestToolbar />);
 
         const { button1, button2, button3 } = getButtons(toolbar);
 
         button1.focus();
-        userEvent.keyboard('[ArrowLeft]');
+        await user.keyboard('{ArrowLeft}');
 
         expect(button3).toHaveFocus();
         expect(button1).toHaveAttribute('tabindex', '-1');
@@ -120,13 +119,13 @@ describe('Toolbar', () => {
         expect(button3).not.toHaveAttribute('tabindex');
     });
 
-    it('should focus first with home key', () => {
-        const [toolbar] = testRender(<TestToolbar />);
+    it('should focus first with home key', async () => {
+        const [user, toolbar] = testRender(<TestToolbar />);
 
         const { button1, button2, button3 } = getButtons(toolbar);
 
         button3.focus();
-        userEvent.keyboard('[Home]');
+        await user.keyboard('{Home}');
 
         expect(button1).toHaveFocus();
         expect(button1).not.toHaveAttribute('tabindex');
@@ -134,13 +133,13 @@ describe('Toolbar', () => {
         expect(button3).toHaveAttribute('tabindex', '-1');
     });
 
-    it('should focus last with end key', () => {
-        const [toolbar] = testRender(<TestToolbar />);
+    it('should focus last with end key', async () => {
+        const [user, toolbar] = testRender(<TestToolbar />);
 
         const { button1, button2, button3 } = getButtons(toolbar);
 
         button1.focus();
-        userEvent.keyboard('[End]');
+        await user.keyboard('{End}');
 
         expect(button3).toHaveFocus();
         expect(button1).toHaveAttribute('tabindex', '-1');
@@ -148,13 +147,13 @@ describe('Toolbar', () => {
         expect(button3).not.toHaveAttribute('tabindex');
     });
 
-    it('should not change focus with up arrow key', () => {
-        const [toolbar] = testRender(<TestToolbar />);
+    it('should not change focus with up arrow key', async () => {
+        const [user, toolbar] = testRender(<TestToolbar />);
 
         const { button1, button2, button3 } = getButtons(toolbar);
 
         button2.focus();
-        userEvent.keyboard('[ArrowUp]');
+        await user.keyboard('{ArrowUp}');
 
         expect(button2).toHaveFocus();
         expect(button1).toHaveAttribute('tabindex', '-1');
@@ -162,13 +161,13 @@ describe('Toolbar', () => {
         expect(button3).toHaveAttribute('tabindex', '-1');
     });
 
-    it('should not change focus with down arrow key', () => {
-        const [toolbar] = testRender(<TestToolbar />);
+    it('should not change focus with down arrow key', async () => {
+        const [user, toolbar] = testRender(<TestToolbar />);
 
         const { button1, button2, button3 } = getButtons(toolbar);
 
         button2.focus();
-        userEvent.keyboard('[ArrowDown]');
+        await user.keyboard('{ArrowDown}');
 
         expect(button2).toHaveFocus();
         expect(button1).toHaveAttribute('tabindex', '-1');
@@ -176,13 +175,13 @@ describe('Toolbar', () => {
         expect(button3).toHaveAttribute('tabindex', '-1');
     });
 
-    it('should not focus next item with tab key', () => {
-        const [toolbar] = testRender(<TestToolbar />);
+    it('should not focus next item with tab key', async () => {
+        const [user, toolbar] = testRender(<TestToolbar />);
 
         const { button1, button2, button3 } = getButtons(toolbar);
 
         button2.focus();
-        userEvent.tab();
+        await user.tab();
 
         expect(document.body).toHaveFocus();
         expect(button1).toHaveAttribute('tabindex', '-1');
@@ -190,12 +189,12 @@ describe('Toolbar', () => {
         expect(button3).toHaveAttribute('tabindex', '-1');
     });
 
-    it('should focus on click', () => {
-        const [toolbar] = testRender(<TestToolbar />);
+    it('should focus on click', async () => {
+        const [user, toolbar] = testRender(<TestToolbar />);
 
         const { button1, button2, button3 } = getButtons(toolbar);
 
-        userEvent.click(button2);
+        await user.click(button2);
 
         expect(button2).toHaveFocus();
         expect(button1).toHaveAttribute('tabindex', '-1');

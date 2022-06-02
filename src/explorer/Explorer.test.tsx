@@ -2,7 +2,6 @@
 // Copyright (c) 2022 The Pybricks Authors
 
 import { cleanup } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { testRender, uuid } from '../../test';
 import { FileMetadata } from '../fileStorage';
@@ -33,36 +32,36 @@ const testFile: FileMetadata = {
 };
 
 describe('archive button', () => {
-    it('should dispatch action when clicked', () => {
+    it('should dispatch action when clicked', async () => {
         jest.mocked(useFileStorageMetadata).mockReturnValue([testFile]);
-        const [explorer, dispatch] = testRender(<Explorer />);
+        const [user, explorer, dispatch] = testRender(<Explorer />);
 
         const button = explorer.getByTitle('Backup all files');
         expect(button).toBeEnabled();
 
-        userEvent.click(button);
+        await user.click(button);
         expect(dispatch).toHaveBeenCalledWith(explorerArchiveAllFiles());
     });
 });
 
 describe('import file button', () => {
     it('should dispatch action when clicked', async () => {
-        const [explorer, dispatch] = testRender(<Explorer />);
+        const [user, explorer, dispatch] = testRender(<Explorer />);
 
         const button = explorer.getByTitle('Import a file');
 
-        userEvent.click(button);
+        await user.click(button);
         expect(dispatch).toHaveBeenCalledWith(explorerImportFiles());
     });
 });
 
 describe('new file button', () => {
     it('should dispatch action when clicked', async () => {
-        const [explorer, dispatch] = testRender(<Explorer />);
+        const [user, explorer, dispatch] = testRender(<Explorer />);
 
         const button = explorer.getByTitle('Create a new file');
 
-        userEvent.click(button);
+        await user.click(button);
         expect(dispatch).toHaveBeenCalledWith(explorerCreateNewFile());
     });
 });
@@ -70,11 +69,11 @@ describe('new file button', () => {
 describe('tree item', () => {
     it('should dispatch action when clicked', async () => {
         jest.mocked(useFileStorageMetadata).mockReturnValue([testFile]);
-        const [explorer, dispatch] = testRender(<Explorer />);
+        const [user, explorer, dispatch] = testRender(<Explorer />);
 
         const treeItem = explorer.getByRole('treeitem', { name: 'test.file' });
 
-        userEvent.click(treeItem);
+        await user.click(treeItem);
 
         expect(dispatch).toHaveBeenCalledWith(
             explorerUserActivateFile('test.file', uuid(0)),
@@ -83,12 +82,12 @@ describe('tree item', () => {
 
     it('should dispatch action when key is pressed', async () => {
         jest.mocked(useFileStorageMetadata).mockReturnValue([testFile]);
-        const [explorer, dispatch] = testRender(<Explorer />);
+        const [user, explorer, dispatch] = testRender(<Explorer />);
 
         const treeItem = explorer.getByRole('treeitem', { name: 'test.file' });
 
-        userEvent.click(treeItem);
-        userEvent.keyboard('{enter}');
+        await user.click(treeItem);
+        await user.keyboard('{Enter}');
 
         expect(dispatch).toHaveBeenCalledWith(
             explorerUserActivateFile('test.file', uuid(0)),
@@ -98,13 +97,13 @@ describe('tree item', () => {
     describe('duplicate', () => {
         it('should dispatch action when button is clicked', async () => {
             jest.mocked(useFileStorageMetadata).mockReturnValue([testFile]);
-            const [explorer, dispatch] = testRender(<Explorer />);
+            const [user, explorer, dispatch] = testRender(<Explorer />);
 
             // NB: this button is intentionally not accessible (by role) since
             // there is a keyboard shortcut.
             const button = explorer.getByTitle('Duplicate test.file');
 
-            userEvent.click(button);
+            await user.click(button);
 
             expect(dispatch).toHaveBeenCalledWith(explorerDuplicateFile('test.file'));
 
@@ -114,12 +113,12 @@ describe('tree item', () => {
 
         it('should dispatch action when key is pressed', async () => {
             jest.mocked(useFileStorageMetadata).mockReturnValue([testFile]);
-            const [explorer, dispatch] = testRender(<Explorer />);
+            const [user, explorer, dispatch] = testRender(<Explorer />);
 
             const treeItem = explorer.getByRole('treeitem', { name: 'test.file' });
 
-            userEvent.click(treeItem);
-            userEvent.keyboard('{ctrl}d');
+            await user.click(treeItem);
+            await user.keyboard('{Control>}d{/Control}');
 
             expect(dispatch).toHaveBeenCalledWith(explorerDuplicateFile('test.file'));
         });
@@ -128,13 +127,13 @@ describe('tree item', () => {
     describe('rename', () => {
         it('should dispatch action when button is clicked', async () => {
             jest.mocked(useFileStorageMetadata).mockReturnValue([testFile]);
-            const [explorer, dispatch] = testRender(<Explorer />);
+            const [user, explorer, dispatch] = testRender(<Explorer />);
 
             // NB: this button is intentionally not accessible (by role) since
             // there is a keyboard shortcut.
             const button = explorer.getByTitle('Rename test.file');
 
-            userEvent.click(button);
+            await user.click(button);
 
             expect(dispatch).toHaveBeenCalledWith(explorerRenameFile('test.file'));
 
@@ -144,12 +143,12 @@ describe('tree item', () => {
 
         it('should dispatch action when key is pressed', async () => {
             jest.mocked(useFileStorageMetadata).mockReturnValue([testFile]);
-            const [explorer, dispatch] = testRender(<Explorer />);
+            const [user, explorer, dispatch] = testRender(<Explorer />);
 
             const treeItem = explorer.getByRole('treeitem', { name: 'test.file' });
 
-            userEvent.click(treeItem);
-            userEvent.keyboard('{f2}');
+            await user.click(treeItem);
+            await user.keyboard('{F2}');
 
             expect(dispatch).toHaveBeenCalledWith(explorerRenameFile('test.file'));
         });
@@ -158,13 +157,13 @@ describe('tree item', () => {
     describe('export', () => {
         it('should dispatch export action when button is clicked', async () => {
             jest.mocked(useFileStorageMetadata).mockReturnValue([testFile]);
-            const [explorer, dispatch] = testRender(<Explorer />);
+            const [user, explorer, dispatch] = testRender(<Explorer />);
 
             // NB: this button is intentionally not accessible (by role) since
             // there is a keyboard shortcut.
             const button = explorer.getByTitle('Export test.file');
 
-            userEvent.click(button);
+            await user.click(button);
 
             expect(dispatch).toHaveBeenCalledWith(explorerExportFile('test.file'));
 
@@ -174,12 +173,12 @@ describe('tree item', () => {
 
         it('should dispatch export action when key is pressed', async () => {
             jest.mocked(useFileStorageMetadata).mockReturnValue([testFile]);
-            const [explorer, dispatch] = testRender(<Explorer />);
+            const [user, explorer, dispatch] = testRender(<Explorer />);
 
             const treeItem = explorer.getByRole('treeitem', { name: 'test.file' });
 
-            userEvent.click(treeItem);
-            userEvent.keyboard('{ctrl}e');
+            await user.click(treeItem);
+            await user.keyboard('{Control>}e{/Control}');
 
             expect(dispatch).toHaveBeenCalledWith(explorerExportFile('test.file'));
         });
@@ -188,13 +187,13 @@ describe('tree item', () => {
     describe('delete', () => {
         it('should dispatch delete action when button is clicked', async () => {
             jest.mocked(useFileStorageMetadata).mockReturnValue([testFile]);
-            const [explorer, dispatch] = testRender(<Explorer />);
+            const [user, explorer, dispatch] = testRender(<Explorer />);
 
             // NB: this button is intentionally not accessible (by role) since
             // there is a keyboard shortcut.
             const button = explorer.getByTitle('Delete test.file');
 
-            userEvent.click(button);
+            await user.click(button);
 
             expect(dispatch).toHaveBeenCalledWith(
                 explorerDeleteFile('test.file', uuid(0)),
@@ -206,12 +205,12 @@ describe('tree item', () => {
 
         it('should dispatch delete action when key is pressed', async () => {
             jest.mocked(useFileStorageMetadata).mockReturnValue([testFile]);
-            const [explorer, dispatch] = testRender(<Explorer />);
+            const [user, explorer, dispatch] = testRender(<Explorer />);
 
             const treeItem = explorer.getByRole('treeitem', { name: 'test.file' });
 
-            userEvent.click(treeItem);
-            userEvent.keyboard('{del}');
+            await user.click(treeItem);
+            await user.keyboard('{Delete}');
 
             expect(dispatch).toHaveBeenCalledWith(
                 explorerDeleteFile('test.file', uuid(0)),

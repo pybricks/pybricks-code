@@ -4,6 +4,8 @@
 import { HotkeysProvider } from '@blueprintjs/core';
 import { I18nContext, I18nManager } from '@shopify/react-i18n';
 import { RenderResult, render } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import type { UserEvent } from '@testing-library/user-event/dist/types/setup';
 import React, { ReactElement } from 'react';
 import { Provider } from 'react-redux';
 import { AnyAction, DeepPartial, PreloadedState, createStore } from 'redux';
@@ -141,7 +143,8 @@ export function lookup(obj: unknown, id: string): string | undefined {
 export const testRender = (
     component: ReactElement,
     state?: PreloadedState<RootState>,
-): [RenderResult, jest.SpyInstance<AnyAction, [action: AnyAction]>] => {
+): [UserEvent, RenderResult, jest.SpyInstance<AnyAction, [action: AnyAction]>] => {
+    const user = userEvent.setup();
     const store = createStore(rootReducer, state);
     const dispatch = jest.spyOn(store, 'dispatch');
 
@@ -155,7 +158,7 @@ export const testRender = (
         </Provider>,
     );
 
-    return [result, dispatch];
+    return [user, result, dispatch];
 };
 
 /**

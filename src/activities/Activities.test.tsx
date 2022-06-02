@@ -2,7 +2,6 @@
 // Copyright (c) 2022 The Pybricks Authors
 
 import { cleanup } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { testRender } from '../../test';
 import Activities, { Activity } from './Activities';
@@ -15,7 +14,7 @@ afterEach(() => {
 
 describe('Activities', () => {
     it('should select explorer by default', () => {
-        const [activities] = testRender(<Activities />);
+        const [, activities] = testRender(<Activities />);
 
         const tab = activities.getByRole('tab', { name: 'File Explorer' });
 
@@ -28,15 +27,15 @@ describe('Activities', () => {
             JSON.stringify(Activity.Settings),
         );
 
-        const [activities] = testRender(<Activities />);
+        const [, activities] = testRender(<Activities />);
 
         const tab = activities.getByRole('tab', { name: 'Settings & Help' });
 
         expect(tab).toHaveAttribute('aria-selected', 'true');
     });
 
-    it('should select none when clicking already selected tab', () => {
-        const [activities] = testRender(<Activities />);
+    it('should select none when clicking already selected tab', async () => {
+        const [user, activities] = testRender(<Activities />);
 
         const explorerTab = activities.getByRole('tab', { name: 'File Explorer' });
 
@@ -47,15 +46,15 @@ describe('Activities', () => {
             );
         }
 
-        userEvent.click(explorerTab);
+        await user.click(explorerTab);
 
         for (const tab of activities.getAllByRole('tab')) {
             expect(tab).toHaveAttribute('aria-selected', 'false');
         }
     });
 
-    it('should select new tab when clicking not already selected tab', () => {
-        const [activities] = testRender(<Activities />);
+    it('should select new tab when clicking not already selected tab', async () => {
+        const [user, activities] = testRender(<Activities />);
 
         const explorerTab = activities.getByRole('tab', { name: 'File Explorer' });
         const settingsTab = activities.getByRole('tab', { name: 'Settings & Help' });
@@ -67,7 +66,7 @@ describe('Activities', () => {
             );
         }
 
-        userEvent.click(settingsTab);
+        await user.click(settingsTab);
 
         for (const tab of activities.getAllByRole('tab')) {
             expect(tab).toHaveAttribute(

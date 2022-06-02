@@ -1,9 +1,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2022 The Pybricks Authors
 
-import { waitFor } from '@testing-library/dom';
+import { fireEvent, waitFor } from '@testing-library/dom';
 import { cleanup } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { testRender } from '../../../test';
 import NewFileWizard from './NewFileWizard';
@@ -15,30 +14,30 @@ afterEach(() => {
 
 describe('accept', () => {
     it('should dispatch accept action when button is clicked', async () => {
-        const [dialog, dispatch] = testRender(<NewFileWizard />, {
+        const [user, dialog, dispatch] = testRender(<NewFileWizard />, {
             explorer: { newFileWizard: { isOpen: true } },
         });
 
         const button = dialog.getByLabelText('Create');
 
         // have to type a file name before Create button is enabled
-        userEvent.type(dialog.getByRole('textbox', { name: 'File name' }), 'test');
+        await user.type(dialog.getByRole('textbox', { name: 'File name' }), 'test');
         await waitFor(() => expect(button).not.toBeDisabled());
 
-        userEvent.click(button);
+        await user.click(button);
         expect(dispatch).toHaveBeenCalledWith(
             newFileWizardDidAccept('test', '.py', Hub.Technic),
         );
     });
 
     it('should dispatch accept action when enter is pressed ', async () => {
-        const [dialog, dispatch] = testRender(<NewFileWizard />, {
+        const [user, dialog, dispatch] = testRender(<NewFileWizard />, {
             explorer: { newFileWizard: { isOpen: true } },
         });
 
-        userEvent.type(
+        await user.type(
             dialog.getByRole('textbox', { name: 'File name' }),
-            'test{enter}',
+            'test{Enter}',
         );
 
         expect(dispatch).toHaveBeenCalledWith(
@@ -48,18 +47,18 @@ describe('accept', () => {
 });
 
 describe('cancel', () => {
-    it('should dispatch cancel when close button is clicked', () => {
-        const [dialog, dispatch] = testRender(<NewFileWizard />, {
+    it('should dispatch cancel when close button is clicked', async () => {
+        const [user, dialog, dispatch] = testRender(<NewFileWizard />, {
             explorer: { newFileWizard: { isOpen: true } },
         });
 
-        userEvent.click(dialog.getByRole('button', { name: 'Close' }));
+        await user.click(dialog.getByRole('button', { name: 'Close' }));
 
         expect(dispatch).toHaveBeenCalledWith(newFileWizardDidCancel());
     });
 
     it('should dispatch cancel when escape button is pressed', async () => {
-        const [dialog, dispatch] = testRender(<NewFileWizard />, {
+        const [user, dialog, dispatch] = testRender(<NewFileWizard />, {
             explorer: { newFileWizard: { isOpen: true } },
         });
 
@@ -67,7 +66,15 @@ describe('cancel', () => {
             expect(dialog.getByRole('textbox', { name: 'File name' })).toHaveFocus(),
         );
 
-        userEvent.keyboard('{esc}');
+        // FIXME: use userEvent instead of fireEvent
+        // blocked by https://github.com/palantir/blueprint/pull/5349
+        // await user.keyboard('{Escape}');
+        user;
+        fireEvent.keyDown(document.activeElement ?? document, {
+            key: 'Escape',
+            keyCode: 27,
+            which: 27,
+        });
 
         expect(dispatch).toHaveBeenCalledWith(newFileWizardDidCancel());
     });

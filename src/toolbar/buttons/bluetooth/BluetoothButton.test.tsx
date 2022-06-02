@@ -11,12 +11,12 @@ afterEach(() => {
     cleanup();
 });
 
-it('should dispatch action when clicked', () => {
-    const [button, dispatch] = testRender(
+it('should dispatch action when clicked', async () => {
+    const [user, button, dispatch] = testRender(
         <BluetoothButton id="test-bluetooth-button" />,
     );
 
-    button.getByRole('button', { name: 'Bluetooth' }).click();
+    await user.click(button.getByRole('button', { name: 'Bluetooth' }));
 
     expect(dispatch).toHaveBeenCalledWith(toggleBluetooth());
 });

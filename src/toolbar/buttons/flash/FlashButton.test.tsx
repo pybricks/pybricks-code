@@ -11,10 +11,10 @@ afterEach(() => {
     cleanup();
 });
 
-it('should dispatch action when clicked', () => {
-    const [button, dispatch] = testRender(<FlashButton id="test-flash-button" />);
+it('should dispatch action when clicked', async () => {
+    const [user, button, dispatch] = testRender(<FlashButton id="test-flash-button" />);
 
-    button.getByRole('button', { name: 'Flash' }).click();
+    await user.click(button.getByRole('button', { name: 'Flash' }));
 
     expect(dispatch).toHaveBeenCalledWith(flashFirmware(null, false, ''));
 });

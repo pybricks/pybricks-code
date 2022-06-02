@@ -2,7 +2,6 @@
 // Copyright (c) 2021-2022 The Pybricks Authors
 
 import { waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { testRender } from '../../test';
 import { BleConnectionState } from '../ble/reducers';
@@ -11,7 +10,7 @@ import StatusBar from './StatusBar';
 it('should show popover when hub name is clicked', async () => {
     const testHubName = 'Test hub';
 
-    const [statusBar] = testRender(<StatusBar />, {
+    const [user, statusBar] = testRender(<StatusBar />, {
         ble: {
             connection: BleConnectionState.Connected,
             deviceName: testHubName,
@@ -22,7 +21,7 @@ it('should show popover when hub name is clicked', async () => {
         },
     });
 
-    userEvent.click(statusBar.getByText(testHubName));
+    await user.click(statusBar.getByText(testHubName));
 
     await waitFor(() => statusBar.getByText('Connected to:'));
 });
@@ -30,7 +29,7 @@ it('should show popover when hub name is clicked', async () => {
 it('should show popover when battery is clicked', async () => {
     const testHubName = 'Test hub';
 
-    const [statusBar] = testRender(<StatusBar />, {
+    const [user, statusBar] = testRender(<StatusBar />, {
         ble: {
             connection: BleConnectionState.Connected,
             deviceName: testHubName,
@@ -41,7 +40,7 @@ it('should show popover when battery is clicked', async () => {
         },
     });
 
-    userEvent.click(statusBar.getByTitle('Battery'));
+    await user.click(statusBar.getByTitle('Battery'));
 
     await waitFor(() => statusBar.getByText('Battery level is OK.'));
 });

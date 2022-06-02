@@ -7,7 +7,7 @@ import Toolbar from './Toolbar';
 
 describe('toolbar', () => {
     it('should have bluetooth button', () => {
-        const [toolbar] = testRender(<Toolbar />);
+        const [, toolbar] = testRender(<Toolbar />);
 
         const runButton = toolbar.getByRole('button', { name: 'Bluetooth' });
 
@@ -15,7 +15,7 @@ describe('toolbar', () => {
     });
 
     it('should have flash button', () => {
-        const [toolbar] = testRender(<Toolbar />);
+        const [, toolbar] = testRender(<Toolbar />);
 
         const runButton = toolbar.getByRole('button', { name: 'Flash' });
 
@@ -23,7 +23,7 @@ describe('toolbar', () => {
     });
 
     it('should have run button', () => {
-        const [toolbar] = testRender(<Toolbar />);
+        const [, toolbar] = testRender(<Toolbar />);
 
         const runButton = toolbar.getByRole('button', { name: 'Run' });
 
@@ -31,7 +31,7 @@ describe('toolbar', () => {
     });
 
     it('should have stop button', () => {
-        const [toolbar] = testRender(<Toolbar />);
+        const [, toolbar] = testRender(<Toolbar />);
 
         const runButton = toolbar.getByRole('button', { name: 'Stop' });
 
@@ -39,7 +39,7 @@ describe('toolbar', () => {
     });
 
     it('should have repl button', () => {
-        const [toolbar] = testRender(<Toolbar />);
+        const [, toolbar] = testRender(<Toolbar />);
 
         const runButton = toolbar.getByRole('button', { name: 'REPL' });
 

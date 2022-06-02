@@ -12,12 +12,12 @@ afterEach(() => {
     cleanup();
 });
 
-it('should dispatch action when clicked', () => {
-    const [button, dispatch] = testRender(<ReplButton id="test-repl-button" />, {
+it('should dispatch action when clicked', async () => {
+    const [user, button, dispatch] = testRender(<ReplButton id="test-repl-button" />, {
         hub: { runtime: HubRuntimeState.Idle },
     });
 
-    button.getByRole('button', { name: 'REPL' }).click();
+    await user.click(button.getByRole('button', { name: 'REPL' }));
 
     expect(dispatch).toHaveBeenCalledWith(repl());
 });

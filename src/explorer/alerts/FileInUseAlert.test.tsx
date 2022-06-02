@@ -12,7 +12,7 @@ it('should be valid', () => {
     // TODO: refactor this to a common function to be used by all alerts
 
     // it should render
-    const [message] = testRender(<>{toast.message}</>);
+    const [, message] = testRender(<>{toast.message}</>);
     expect(message).toBeDefined();
 
     // it should have a dismiss callback
