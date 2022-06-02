@@ -2320,7 +2320,7 @@ __metadata:
     html-webpack-plugin: ^5.5.0
     identity-obj-proxy: ^3.0.0
     jest: ^27.4.3
-    jest-mock-extended: ^2.0.4
+    jest-mock-extended: ^2.0.6
     jest-resolve: ^27.4.2
     jest-watch-typeahead: ^1.0.0
     jszip: ^3.7.1
@@ -9569,15 +9569,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-mock-extended@npm:^2.0.4":
-  version: 2.0.4
-  resolution: "jest-mock-extended@npm:2.0.4"
+"jest-mock-extended@npm:^2.0.6":
+  version: 2.0.6
+  resolution: "jest-mock-extended@npm:2.0.6"
   dependencies:
     ts-essentials: ^7.0.3
   peerDependencies:
-    jest: ^24.0.0 || ^25.0.0 || ^26.0.0 || ^27.0.0
+    jest: ^24.0.0 || ^25.0.0 || ^26.0.0 || ^27.0.0 || ^28.0.0
     typescript: ^3.0.0 || ^4.0.0
-  checksum: 0e3b6ecbb0a41a4a7a45ae48ff9c42d43febd19eaf3d97a975010597ca6c6fdfaa89949b898e98e05689de32abfe6adc5ca32c253ac5b46718a0d4f49fcbb141
+  checksum: 62b920594674af8606ce690bc431bc0ad94976fbeebe4c7a1b3fa45b5bac27f389bb389673e300cc0e30ee17d3f3fd4d7ff550a4f18c5d814388c270fb4c5005
   languageName: node
   linkType: hard
 
