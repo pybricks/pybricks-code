@@ -12,13 +12,13 @@ afterEach(() => {
     cleanup();
 });
 
-it('should dispatch action when clicked', () => {
-    const [button, dispatch] = testRender(<RunButton id="test-run-button" />, {
+it('should dispatch action when clicked', async () => {
+    const [user, button, dispatch] = testRender(<RunButton id="test-run-button" />, {
         editor: { isReady: true },
         hub: { runtime: HubRuntimeState.Idle },
     });
 
-    button.getByRole('button', { name: 'Run' }).click();
+    await user.click(button.getByRole('button', { name: 'Run' }));
 
     expect(dispatch).toHaveBeenCalledWith(downloadAndRun());
 });

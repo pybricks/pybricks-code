@@ -78,9 +78,9 @@ function addWhichToKeyboardEvent(e: KeyboardEvent) {
     Object.defineProperty(e, 'which', { value: which });
 }
 
-document.addEventListener('keydown', addWhichToKeyboardEvent);
-document.addEventListener('keypress', addWhichToKeyboardEvent);
-document.addEventListener('keyup', addWhichToKeyboardEvent);
+document.addEventListener('keydown', addWhichToKeyboardEvent, { capture: true });
+document.addEventListener('keypress', addWhichToKeyboardEvent, { capture: true });
+document.addEventListener('keyup', addWhichToKeyboardEvent, { capture: true });
 
 Object.defineProperty(global.self, 'crypto', {
     value: crypto.webcrypto,
