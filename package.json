@@ -119,7 +119,7 @@
         "analyze": "source-map-explorer 'build/static/js/*.js'",
         "start": "node scripts/start.js",
         "build": "node scripts/build.js",
-        "test": "node scripts/test.js --env=./test/env.js",
+        "test": "node scripts/test.js",
         "coverage": "yarn test --coverage --watchAll=false",
         "coverage:html": "yarn coverage --coverageReporters html",
         "lint": "tsc --noEmit && eslint \"*/**/*.{js,ts,tsx}\" --quiet --fix"
@@ -178,7 +178,7 @@
             "<rootDir>/src/**/__tests__/**/*.{js,jsx,ts,tsx}",
             "<rootDir>/src/**/*.{spec,test}.{js,jsx,ts,tsx}"
         ],
-        "testEnvironment": "jsdom",
+        "testEnvironment": "./test/env",
         "transform": {
             "^.+\\.(js|jsx|mjs|cjs|ts|tsx)$": "<rootDir>/config/jest/babelTransform.js",
             "^.+\\.css$": "<rootDir>/config/jest/cssTransform.js",

@@ -18,11 +18,9 @@
             "name": "Debug Tests",
             "type": "node",
             "request": "launch",
-            "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/craco",
             "env": { "CI": "true" },
-            "args": ["test", "--runInBand", "--no-cache", "--env=./test/env.js"],
+            "args": ["scripts/test.js"],
             "cwd": "${workspaceRoot}",
-            "protocol": "inspector",
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen"
         },
