@@ -33,6 +33,7 @@ const FlashButton: React.VoidFunctionComponent<FlashButtonProps> = ({ id }) => {
         <OpenFileButton
             id={id}
             label={i18n.translate(I18nId.Label)}
+            mimeType="application/zip"
             fileExtension=".zip"
             icon={icon}
             tooltip={
