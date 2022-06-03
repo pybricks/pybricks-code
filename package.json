@@ -33,7 +33,7 @@
         "@types/web-locks-api": "^0.0.2",
         "@types/wicg-file-system-access": "^2020.9.5",
         "@types/zen-push": "^0.1.1",
-        "babel-jest": "^27.4.2",
+        "babel-jest": "^28.1.0",
         "babel-loader": "^8.2.3",
         "babel-plugin-macros": "^3.0.1",
         "babel-plugin-named-asset-import": "^0.3.8",
