@@ -2304,10 +2304,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pybricks/ide-docs@npm:2.1.0":
-  version: 2.1.0
-  resolution: "@pybricks/ide-docs@npm:2.1.0"
-  checksum: 73f8d1dba20ac159b62a672beb46475a511c8fcffa58f3389d8009dc4e04d48552eb927936ce501ef55eb073a7e83515049d2aea9de1028933fdeab495393fdd
+"@pybricks/ide-docs@npm:2.2.0":
+  version: 2.2.0
+  resolution: "@pybricks/ide-docs@npm:2.2.0"
+  checksum: bac6af073e33f95a166c85d1ad634bff61ff19a32aab995c1e39c0ced65944b71973092c5e84452b4a532749c1b920acc72127bb46d3146784e2e6f3898485c2
   languageName: node
   linkType: hard
 
@@ -2327,7 +2327,7 @@ __metadata:
     "@blueprintjs/popover2": ^1.3.0
     "@pmmmwh/react-refresh-webpack-plugin": ^0.5.7
     "@pybricks/firmware": 4.14.0
-    "@pybricks/ide-docs": 2.1.0
+    "@pybricks/ide-docs": 2.2.0
     "@pybricks/mpy-cross-v5": ^2.0.0
     "@shopify/react-i18n": ^7.1.2
     "@svgr/webpack": ^6.2.1
