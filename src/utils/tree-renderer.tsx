@@ -114,7 +114,10 @@ export const renderers: Omit<
                     ? Classes.TREE_NODE_CARET_OPEN
                     : Classes.TREE_NODE_CARET_CLOSED,
             )}
-            {...(props.context.arrowProps as unknown)}
+            {...(props.context.arrowProps as Omit<
+                React.HTMLAttributes<HTMLElement>,
+                'title' | 'children'
+            >)}
         />
     ),
 
@@ -183,7 +186,13 @@ export const renderers: Omit<
 
     renderSearchInput: (props) => (
         <div className={cx('rct-tree-search-input-container')}>
-            <InputGroup {...(props.inputProps as unknown)} placeholder="Search..." />
+            <InputGroup
+                {...(props.inputProps as Omit<
+                    React.HTMLAttributes<HTMLInputElement>,
+                    'defaultValue'
+                >)}
+                placeholder="Search..."
+            />
         </div>
     ),
 
