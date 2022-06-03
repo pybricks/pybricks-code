@@ -2371,7 +2371,7 @@ __metadata:
     react: ^16.13.1
     react-app-polyfill: ^3.0.0
     react-aria: ^3.16.0
-    react-complex-tree: ^1.1.5
+    react-complex-tree: ^1.1.8
     react-dev-utils: ^12.0.1
     react-dom: ^16.13.1
     react-dropzone: ^14.2.1
@@ -12307,10 +12307,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-complex-tree@npm:^1.1.5":
-  version: 1.1.5
-  resolution: "react-complex-tree@npm:1.1.5"
-  checksum: eae0e121b71bf915d43ff05bf9800d6e69930119d674010877bbd615b0292818358eb98dc97fc8e00445808df6a411397e5957a87fd1b70cd7f8898ce3a1721b
+"react-complex-tree@npm:^1.1.8":
+  version: 1.1.8
+  resolution: "react-complex-tree@npm:1.1.8"
+  checksum: 2e6eb15f901253c09bad5af3e51a3d81498ce9aee80bc4b5766f6919be5d6aa8aad00fb1499c513eb69056dba05b88b14d783ede1c7ed821add05de45477386c
   languageName: node
   linkType: hard
 
