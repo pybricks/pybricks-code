@@ -2430,7 +2430,7 @@ __metadata:
     style-loader: ^3.3.1
     tailwindcss: ^3.0.2
     terser-webpack-plugin: ^5.2.5
-    typed-redux-saga: ^1.4.0
+    typed-redux-saga: ^1.5.0
     typescript: ~4.6.2
     usehooks-ts: ^2.5.4
     web-vitals: ^2.1.4
@@ -14465,9 +14465,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typed-redux-saga@npm:^1.4.0":
-  version: 1.4.0
-  resolution: "typed-redux-saga@npm:1.4.0"
+"typed-redux-saga@npm:^1.5.0":
+  version: 1.5.0
+  resolution: "typed-redux-saga@npm:1.5.0"
   dependencies:
     "@babel/helper-module-imports": ^7.14.5
     babel-plugin-macros: ^3.1.0
@@ -14478,7 +14478,7 @@ __metadata:
       optional: true
     babel-plugin-macros:
       optional: true
-  checksum: ae35861e4857370e4471f8e41373ac6afc474e508cf486300063b15c6cde53a031c2c577fdb70add1c8f91466ea2f16e90538212fae07471f6ad6b5863f659bd
+  checksum: 9abf3ae98003e42a09dd0252b00339c6bd3074de2ce7cf1d6b9bc57cf496e7ffe81fc645bb3388bce90aca421204f5f081ba5932f4c63185c96ffafc4d43624e
   languageName: node
   linkType: hard
 
