@@ -2259,12 +2259,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pybricks/firmware@npm:4.14.0":
-  version: 4.14.0
-  resolution: "@pybricks/firmware@npm:4.14.0"
+"@pybricks/firmware@npm:4.15.0":
+  version: 4.15.0
+  resolution: "@pybricks/firmware@npm:4.15.0"
   dependencies:
     jszip: ^3.7.1
-  checksum: d1c369580ea1c75330c18ea83f7e1ae38f340b4197baa96a631f419605d9dc5413fc7c2fcfd44a6fa3412d6ec88c8f55f7a6c110c73c9a2c6a46180ae9c74c58
+  checksum: 9aed7ff24b3d00103e4da9e6470cfb5246baa204551ed0e70c166d3206d5027dc5d6f322fe8d2d36d085ac7bb6895ad8d2ab819d514f2709dff4635efb25afbf
   languageName: node
   linkType: hard
 
@@ -2290,7 +2290,7 @@ __metadata:
     "@blueprintjs/core": ^4.4.0
     "@blueprintjs/popover2": ^1.3.1
     "@pmmmwh/react-refresh-webpack-plugin": ^0.5.7
-    "@pybricks/firmware": 4.14.0
+    "@pybricks/firmware": 4.15.0
     "@pybricks/ide-docs": 2.2.0
     "@pybricks/mpy-cross-v5": ^2.0.0
     "@shopify/react-i18n": ^7.1.2
