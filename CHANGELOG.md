@@ -10,6 +10,38 @@
 ### Changed
 - Moved settings.
 - Accessibility improvements.
+- Updated dependencies.
+- Updated documentation.
+- Updated firmware to v3.2.0b1:
+  
+  ### Added
+  - Added `Stop.NONE` as `then` option for motors.
+  - Added `Stop.COAST_SMART` as `then` option for motors.
+  - Made motor deceleration configurable separately from acceleration.
+  - Enabled `ujson` module.
+  - Added ability to use more than one `DriveBase` in the same script.
+  - Added support for battery charging on Prime and essential hubs.
+
+  ### Changed
+  - Changed how `DriveBases` and `Motor` classes can be used together.
+  - Raise asynchronous `OSError` instead of `SystemExit` if motor is disconnected
+    while a program is running.
+  - Changing settings while a motor is moving no longer raises an exception. Some
+    settings will not take effect until a new motor command is given.
+  - Disabled `Motor.control` and `Motor.log` on Move Hub to save space.
+  - Changed LED color calibration on Prime hub to make yellow less green.
+  - Updated to upstream MicroPython v1.18.
+  - Changed imu.acceleration() units to mm/s/s ([pybricks-micropython#88]) for
+    Move Hub, Technic Hub, and Prime Hub.
+
+  ### Fixed
+  - Fixed color calibration on Powered Up remote control ([support#424]).
+  - Fixed 3x3 Light Matrix colors with hue > 255 not working correctly ([support#619]).
+
+  [pybricks-micropython#88]: https://github.com/pybricks/pybricks-micropython/issues/88
+  [support#424]: https://github.com/pybricks/support/issues/424
+  [support#619]: https://github.com/pybricks/support/issues/619
+
 
 ### Fixed
 - Fix tooltips not closing when expected ([pybricks-code#275]).
