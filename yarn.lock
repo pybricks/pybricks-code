@@ -1679,7 +1679,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@csstools/postcss-trigonometric-functions@npm:^1.0.0":
+"@csstools/postcss-trigonometric-functions@npm:^1.0.1":
   version: 1.0.1
   resolution: "@csstools/postcss-trigonometric-functions@npm:1.0.1"
   dependencies:
@@ -2364,7 +2364,7 @@ __metadata:
     postcss-flexbugs-fixes: ^5.0.2
     postcss-loader: ^7.0.0
     postcss-normalize: ^10.0.1
-    postcss-preset-env: ^7.7.0
+    postcss-preset-env: ^7.7.1
     prettier: ^2.6.2
     prompts: ^2.4.2
     prop-types: ^15.8.1
@@ -6515,10 +6515,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cssdb@npm:^6.6.2":
-  version: 6.6.2
-  resolution: "cssdb@npm:6.6.2"
-  checksum: 4e8d4f5ce27b3aa1a954149d418791ca01f6ce50ac5fefe0edd1594d1bf13dc2b07280b4b4cc00df73e97068e964e9f5644891bdeabc5fb5b1e4186466a29b0d
+"cssdb@npm:^6.6.3":
+  version: 6.6.3
+  resolution: "cssdb@npm:6.6.3"
+  checksum: 0d5bd77bbffae8d5236f7e7af5fb22d54ac0f88f6ffcde736e2759a9db34042cc28491a8b7499d0c7887c2848a4597544620847e2baf5fc108b766f1f30cb1b0
   languageName: node
   linkType: hard
 
@@ -11251,14 +11251,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss-attribute-case-insensitive@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "postcss-attribute-case-insensitive@npm:5.0.0"
+"postcss-attribute-case-insensitive@npm:^5.0.1":
+  version: 5.0.1
+  resolution: "postcss-attribute-case-insensitive@npm:5.0.1"
   dependencies:
-    postcss-selector-parser: ^6.0.2
+    postcss-selector-parser: ^6.0.10
   peerDependencies:
-    postcss: ^8.0.2
-  checksum: 6e0e872af10ba040af79fd0ee63b29cd6bc87a23a146fe71f9942d15769619c1f5b993b3238bdf30eb4f4c24887d2b85755692bc17e21e0ed3b24bd650cbf38b
+    postcss: ^8.3
+  checksum: 9abfe72b7c36863da742b9287203d04b0ae9fee09679180588b24e4a086ee1c2da135baf78e4f9762c984b4f250f286999e2b0c76d77ee616665c5776bd15c64
   languageName: node
   linkType: hard
 
@@ -11353,12 +11353,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss-custom-media@npm:^8.0.0":
-  version: 8.0.0
-  resolution: "postcss-custom-media@npm:8.0.0"
+"postcss-custom-media@npm:^8.0.1":
+  version: 8.0.1
+  resolution: "postcss-custom-media@npm:8.0.1"
   peerDependencies:
-    postcss: ^8.1.0
-  checksum: 11c22e1b8cd5ec13093cb563a3a44817b38127e7f97bde954027f377a6848976092fb5482b96ef0f8b3f716038d9804a01a928eebe98c2d8a1fa9806ff4d3436
+    postcss: ^8.3
+  checksum: 5b6cb85113ab7e2fc2dad2602b4c88e500abc76e0116713fdb144ebfbfee1535767295cab4c3efa1da73ce81d1b7ce6096c4b6d494a32166fa894c83263f0aab
   languageName: node
   linkType: hard
 
@@ -11373,14 +11373,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss-custom-selectors@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "postcss-custom-selectors@npm:6.0.0"
+"postcss-custom-selectors@npm:^6.0.2":
+  version: 6.0.2
+  resolution: "postcss-custom-selectors@npm:6.0.2"
   dependencies:
     postcss-selector-parser: ^6.0.4
   peerDependencies:
-    postcss: ^8.1.2
-  checksum: 64640f6beab468222fefc7194b5de1520b0962654d860b71996ab8582e22e9918775582488fe8567faf9d0fb6a032fbafe89a836cfe9008d0985fe4f1d2f033e
+    postcss: ^8.3
+  checksum: 37eb65dcf37aacc6dc640e9e0e0571361de099b05d7ffd4ab06eae70f950bb8051d0eb2376407e6a36c480bda5ee5dc778b7c1d29a3a2994e1836b1402bb3662
   languageName: node
   linkType: hard
 
@@ -11898,9 +11898,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss-preset-env@npm:^7.7.0":
-  version: 7.7.0
-  resolution: "postcss-preset-env@npm:7.7.0"
+"postcss-preset-env@npm:^7.7.1":
+  version: 7.7.1
+  resolution: "postcss-preset-env@npm:7.7.1"
   dependencies:
     "@csstools/postcss-cascade-layers": ^1.0.2
     "@csstools/postcss-color-function": ^1.1.0
@@ -11912,22 +11912,22 @@ __metadata:
     "@csstools/postcss-oklab-function": ^1.1.0
     "@csstools/postcss-progressive-custom-properties": ^1.3.0
     "@csstools/postcss-stepped-value-functions": ^1.0.0
-    "@csstools/postcss-trigonometric-functions": ^1.0.0
+    "@csstools/postcss-trigonometric-functions": ^1.0.1
     "@csstools/postcss-unset-value": ^1.0.1
     autoprefixer: ^10.4.7
     browserslist: ^4.20.3
     css-blank-pseudo: ^3.0.3
     css-has-pseudo: ^3.0.4
     css-prefers-color-scheme: ^6.0.3
-    cssdb: ^6.6.2
-    postcss-attribute-case-insensitive: ^5.0.0
+    cssdb: ^6.6.3
+    postcss-attribute-case-insensitive: ^5.0.1
     postcss-clamp: ^4.1.0
     postcss-color-functional-notation: ^4.2.3
     postcss-color-hex-alpha: ^8.0.3
     postcss-color-rebeccapurple: ^7.0.2
-    postcss-custom-media: ^8.0.0
+    postcss-custom-media: ^8.0.1
     postcss-custom-properties: ^12.1.7
-    postcss-custom-selectors: ^6.0.0
+    postcss-custom-selectors: ^6.0.2
     postcss-dir-pseudo-class: ^6.0.4
     postcss-double-position-gradients: ^3.1.1
     postcss-env-function: ^4.0.6
@@ -11947,11 +11947,11 @@ __metadata:
     postcss-place: ^7.0.4
     postcss-pseudo-class-any-link: ^7.1.4
     postcss-replace-overflow-wrap: ^4.0.0
-    postcss-selector-not: ^5.0.0
+    postcss-selector-not: ^6.0.0
     postcss-value-parser: ^4.2.0
   peerDependencies:
     postcss: ^8.4
-  checksum: 3f9ce3a3f733b8ba28359b475a0b357e4940ac9cf775cf76e900322bbabd686fe642e0ce96cc992e0b6aac97f04acfc68056dde4efabada7cd211427e1fab419
+  checksum: 6efa443a8c4dcf3a9f0d37ee33541644ebc0cad2aa00f0f966ce80fa548ae1fe860903f6bbf04506201787c21f11daed760c72edf12c42a719727328976d635a
   languageName: node
   linkType: hard
 
@@ -11998,14 +11998,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss-selector-not@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "postcss-selector-not@npm:5.0.0"
+"postcss-selector-not@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "postcss-selector-not@npm:6.0.0"
   dependencies:
-    balanced-match: ^1.0.0
+    postcss-selector-parser: ^6.0.10
   peerDependencies:
-    postcss: ^8.1.0
-  checksum: eb7bdfdd665b2f0db660d4a2061f103b96d7c326a4b9d6241d55bf32bdcd1f5defaa4c8251123c73e1bcc75dad5a2ce77c520e42ce26ecd1e42f2f842baa155f
+    postcss: ^8.3
+  checksum: d7aac5810acd58a3b0268dfc27ce346ffa7324f0ca49b22ef4303d828bb15dff90fbbd439ccba25587504c30f6a1b778a9bb67645fd432bf9daa0fe9d109010e
   languageName: node
   linkType: hard
 
