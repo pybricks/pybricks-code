@@ -2414,7 +2414,7 @@ __metadata:
     react-monaco-editor: ^0.48.0
     react-popper: ^2.3.0
     react-redux: ^8.0.2
-    react-refresh: ^0.11.0
+    react-refresh: ^0.13.0
     react-splitter-layout: ^4.0.0
     redux: ^4.1.2
     redux-logger: ^3.0.6
@@ -12731,10 +12731,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-refresh@npm:^0.11.0":
-  version: 0.11.0
-  resolution: "react-refresh@npm:0.11.0"
-  checksum: 112178a05b1e0ffeaf5d9fb4e56b4410a34a73adeb04dbf13abdc50d9ac9df2ada83e81485156cca0b3fa296aa3612751b3d6cd13be4464642a43679b819cbc7
+"react-refresh@npm:^0.13.0":
+  version: 0.13.0
+  resolution: "react-refresh@npm:0.13.0"
+  checksum: 1cf2b87ed99e1d388aa3923078bc30cd3ce43ee86e8936944e961d3643c6e85da41ebed6a0996e8bdad75a0d2ce3b7e10638b45018231380d4a174f63a451f75
   languageName: node
   linkType: hard
 
