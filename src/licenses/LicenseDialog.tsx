@@ -82,7 +82,7 @@ const LicenseListPanel: React.VoidFunctionComponent<LicenseListPanelProps> = ({
         [onItemClick],
     );
 
-    const viewState = useMemo<TreeViewState>(
+    const viewState = useMemo<TreeViewState<never>>(
         () => ({
             'pb-license-list': {
                 focusedItem,
