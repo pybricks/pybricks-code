@@ -62,7 +62,7 @@
         "jest-mock-extended": "^2.0.6",
         "jest-resolve": "^27.4.2",
         "jest-watch-typeahead": "^1.0.0",
-        "jszip": "^3.7.1",
+        "jszip": "^3.10.0",
         "license-webpack-plugin": "^3.0.0",
         "mini-css-extract-plugin": "^2.4.5",
         "monaco-editor": "^0.33.0",
