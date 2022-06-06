@@ -2300,7 +2300,7 @@ __metadata:
     "@testing-library/react": ^12.1.5
     "@testing-library/user-event": ^14.2.0
     "@types/file-saver": ^2.0.5
-    "@types/jest": ^28.1.0
+    "@types/jest": ^28.1.1
     "@types/node": ^16.11.7
     "@types/react": ^16.14.24
     "@types/react-dom": ^16.9.14
@@ -4281,13 +4281,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jest@npm:*, @types/jest@npm:^28.1.0":
-  version: 28.1.0
-  resolution: "@types/jest@npm:28.1.0"
+"@types/jest@npm:*, @types/jest@npm:^28.1.1":
+  version: 28.1.1
+  resolution: "@types/jest@npm:28.1.1"
   dependencies:
     jest-matcher-utils: ^27.0.0
     pretty-format: ^27.0.0
-  checksum: be4d887b2452e8c1367cd19b23906ba4b64af95e22ca871f81c7af5e945bd39b370e124086356aa9380c4543123b1387448bc2c00a604c6f0a92bc3e4a24e9ce
+  checksum: 0a8b045a7b660372decc807c390d3f99a2b12bb1659a1cd593afe04557f4b7c235b0576a5e35b1577710d20e42759d3d8755eb8bed6edc8733f47007e75a5509
   languageName: node
   linkType: hard
 
