@@ -3,6 +3,7 @@
 
 // The license dialog
 
+import './license.scss';
 import {
     Callout,
     Card,
@@ -10,23 +11,19 @@ import {
     Dialog,
     NonIdealState,
     Spinner,
+    Text,
 } from '@blueprintjs/core';
-import React, { useCallback, useMemo, useState } from 'react';
-import {
-    ControlledTreeEnvironment,
-    Tree,
-    TreeItem,
-    TreeItemIndex,
-    TreeViewState,
-} from 'react-complex-tree';
+import { Item } from '@react-stately/collections';
+import { ListProps, ListState, useListState } from '@react-stately/list';
+import type { Node, Selection } from '@react-types/shared';
+import classNames from 'classnames';
+import React, { useCallback, useState } from 'react';
+import { mergeProps, useFocusRing, useListBox, useOption } from 'react-aria';
 import { useFetch } from 'usehooks-ts';
 import { appName } from '../app/constants';
-import { TreeItemData, renderers } from '../utils/tree-renderer';
 import { I18nId, useI18n } from './i18n';
 
-import './license.scss';
-
-interface LicenseInfo extends TreeItemData {
+interface LicenseInfo {
     readonly name: string;
     readonly version: string;
     readonly author: string | undefined;
@@ -36,83 +33,142 @@ interface LicenseInfo extends TreeItemData {
 
 type LicenseList = ReadonlyArray<LicenseInfo>;
 
+type ListItemProps = {
+    item: Node<LicenseInfo>;
+    state: ListState<LicenseInfo>;
+};
+
+/**
+ * A list item component using react-aria.
+ *
+ * Style uses blueprints tree styles since there is no list style.
+ */
+const ListItem: React.VoidFunctionComponent<ListItemProps> = ({ item, state }) => {
+    const ref = React.useRef<HTMLLIElement>(null);
+    const { optionProps, isSelected } = useOption({ key: item.key }, state, ref);
+
+    const { isFocusVisible, focusProps } = useFocusRing();
+
+    return (
+        <li
+            className={classNames(
+                Classes.TREE_NODE,
+                isSelected && Classes.TREE_NODE_SELECTED,
+                'pb-focus-managed',
+                isFocusVisible && 'pb-focus-ring',
+            )}
+            {...mergeProps(optionProps, focusProps)}
+            ref={ref}
+        >
+            <div className={Classes.TREE_NODE_CONTENT}>
+                <Text className={Classes.TREE_NODE_LABEL} ellipsize>
+                    {item.rendered}
+                </Text>
+            </div>
+        </li>
+    );
+};
+
+/**
+ * Memoized version of list items.
+ *
+ * This saves us from having to rerender all items in the list each time one
+ * item changes.
+ */
+const MemoizedListItem = React.memo(ListItem, (prev, next) => {
+    // selection and focus are the only thing that can change currently
+
+    if (
+        prev.state.selectionManager.focusedKey === prev.item.key ||
+        next.state.selectionManager.focusedKey === next.item.key
+    ) {
+        return false;
+    }
+
+    if (
+        prev.state.selectionManager.selectedKeys.has(prev.item.key) ||
+        next.state.selectionManager.selectedKeys.has(next.item.key)
+    ) {
+        return false;
+    }
+
+    return true;
+});
+
+MemoizedListItem.displayName = 'MemoizedListItem';
+
+type ListBoxProps = ListProps<LicenseInfo>;
+
+/**
+ * A list component using react-aria.
+ *
+ * Style uses blueprints tree styles since there is no list style.
+ */
+const ListBox: React.VoidFunctionComponent<ListBoxProps> = (props) => {
+    // Create state based on the incoming props
+    const state = useListState(props);
+
+    // Get props for the listbox element
+    const ref = React.useRef<HTMLUListElement>(null);
+    const { listBoxProps } = useListBox(props, state, ref);
+
+    return (
+        <div className={Classes.TREE}>
+            <ul
+                className={classNames(Classes.TREE_NODE_LIST, Classes.TREE_ROOT)}
+                {...listBoxProps}
+                ref={ref}
+            >
+                {[...state.collection].map((item) => (
+                    <MemoizedListItem key={item.key} item={item} state={state} />
+                ))}
+            </ul>
+        </div>
+    );
+};
+
 type LicenseListPanelProps = {
-    /** Called when item is clicked. */
-    onItemClick(info?: LicenseInfo): void;
+    /** Called when item is selected. */
+    onItemSelected(info?: LicenseInfo): void;
 };
 
 const LicenseListPanel: React.VoidFunctionComponent<LicenseListPanelProps> = ({
-    onItemClick,
+    onItemSelected,
 }) => {
     const i18n = useI18n();
     const { data, error } = useFetch<LicenseList>('static/oss-licenses.json');
-    const [focusedItem, setFocusedItem] = useState<TreeItemIndex>();
-    const [activeItem, setActiveItem] = useState<TreeItemIndex>();
 
-    const contents = useMemo(() => {
-        if (!data) {
-            return undefined;
-        }
+    const handleSelectionChanged = useCallback(
+        (keys: Selection) => {
+            if (!data) {
+                return;
+            }
 
-        return data.reduce(
-            (obj, info, i) => {
-                obj[i] = {
-                    index: i,
-                    data: info,
-                };
+            // istanbul ignore if: not reachable since list uses single selection
+            if (keys === 'all') {
+                return;
+            }
 
-                return obj;
-            },
-            {
-                root: {
-                    index: 'root',
-                    data: {} as LicenseInfo,
-                    hasChildren: true,
-                    children: data.map((_info, i) => i),
-                },
-            } as Record<TreeItemIndex, TreeItem<LicenseInfo>>,
-        );
-    }, [data]);
-
-    const handlePrimaryAction = useCallback(
-        (item: TreeItem<LicenseInfo>) => {
-            setActiveItem(item.index);
-            onItemClick(item.data);
+            onItemSelected(data.find((item) => keys.has(item.name)));
         },
-        [onItemClick],
-    );
-
-    const viewState = useMemo<TreeViewState<never>>(
-        () => ({
-            'pb-license-list': {
-                focusedItem,
-                // REVISIT: it would be nice if there was an active item separate
-                // from using selected items.
-                selectedItems: activeItem === undefined ? undefined : [activeItem],
-            },
-        }),
-        [focusedItem, activeItem],
+        [data, onItemSelected],
     );
 
     return (
         <div className="pb-license-list">
-            {contents === undefined ? (
+            {data === undefined ? (
                 <NonIdealState>
                     {error ? i18n.translate(I18nId.ErrorFetchFailed) : <Spinner />}
                 </NonIdealState>
             ) : (
-                <ControlledTreeEnvironment<LicenseInfo>
-                    {...renderers}
-                    items={contents}
-                    getItemTitle={(item) => item.data.name}
-                    viewState={viewState}
-                    canRename={false}
-                    showLiveDescription={false}
-                    onFocusItem={(item) => setFocusedItem(item.index)}
-                    onPrimaryAction={handlePrimaryAction}
+                <ListBox
+                    aria-label={i18n.translate(I18nId.PackageListLabel)}
+                    selectionMode="single"
+                    onSelectionChange={handleSelectionChanged}
+                    items={data}
                 >
-                    <Tree treeId="pb-license-list" rootItem="root" />
-                </ControlledTreeEnvironment>
+                    {(item) => <Item key={item.name}>{item.name}</Item>}
+                </ListBox>
             )}
         </div>
     );
@@ -196,7 +252,7 @@ const LicenseDialog: React.VoidFunctionComponent<LicenseDialogProps> = ({
                 </Callout>
                 <Callout className="pb-license-browser">
                     <LicenseListPanel
-                        onItemClick={(info) => {
+                        onItemSelected={(info) => {
                             infoDiv.current?.scrollTo(0, 0);
                             setLicenseInfo(info);
                         }}
