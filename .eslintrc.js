@@ -30,6 +30,7 @@ module.exports = {
     },
     ignorePatterns: [
         'config/**/*.js',
+        'config/**/*.mjs',
         'scripts/*.js',
         'test/env.js',
         '.eslintrc.js',
