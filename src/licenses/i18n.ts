@@ -14,6 +14,7 @@ export function useI18n(): I18n {
 export enum I18nId {
     Title = 'title',
     Description = 'description',
+    PackageListLabel = 'packageList.label',
     PackageLabel = 'packageLabel',
     AuthorLabel = 'authorLabel',
     LicenseLabel = 'licenseLabel',

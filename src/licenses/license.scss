@@ -12,6 +12,7 @@
 .pb-license-browser {
     margin-top: 16px;
     display: flex;
+    gap: 2px;
     height: 600px;
 }
 
@@ -22,16 +23,32 @@
 }
 
 .pb-license-list {
-    width: 25%;
-    flex-flow: column;
-    overflow: auto;
-    // to allow for focus outline
-    padding: 2px;
+    width: 20%;
+    display: flex;
+    flex-direction: column;
+
+    & > .#{bp.$ns}-tree {
+        flex-grow: 1;
+        min-height: 0;
+
+        display: flex;
+
+        & > .#{bp.$ns}-tree-root {
+            flex-grow: 1;
+            min-height: 0;
+            // to allow for focus outline
+            padding: 2px;
+            overflow: auto;
+
+            & .#{bp.$ns}-tree-node-content {
+                padding-left: bp.$pt-grid-size * 0.5;
+            }
+        }
+    }
 }
 
 .pb-license-info {
-    width: 75%;
-    flex-flow: column;
+    width: 80%;
     padding: 0px 16px;
     overflow: auto;
 }

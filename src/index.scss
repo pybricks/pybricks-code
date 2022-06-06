@@ -31,7 +31,7 @@
 }
 
 // show focus for tree nodes even if mouse click it
-.#{bp.$ns}-tree-node:focus,
+.#{bp.$ns}-tree-node:focus:not(.pb-focus-managed),
 // react-aria managed focus visibility
 .pb-focus-ring,
 // broswer managed focus visibility
