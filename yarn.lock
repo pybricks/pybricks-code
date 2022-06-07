@@ -2350,7 +2350,7 @@ __metadata:
     jest: ^28.1.0
     jest-environment-jsdom: ^28.1.0
     jest-mock-extended: ^2.0.6
-    jest-resolve: ^28.1.0
+    jest-resolve: ^28.1.1
     jest-watch-typeahead: ^1.0.0
     jszip: ^3.10.0
     license-webpack-plugin: ^3.0.0
@@ -9614,20 +9614,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-resolve@npm:^28.1.0":
-  version: 28.1.0
-  resolution: "jest-resolve@npm:28.1.0"
+"jest-resolve@npm:^28.1.0, jest-resolve@npm:^28.1.1":
+  version: 28.1.1
+  resolution: "jest-resolve@npm:28.1.1"
   dependencies:
     chalk: ^4.0.0
     graceful-fs: ^4.2.9
-    jest-haste-map: ^28.1.0
+    jest-haste-map: ^28.1.1
     jest-pnp-resolver: ^1.2.2
-    jest-util: ^28.1.0
-    jest-validate: ^28.1.0
+    jest-util: ^28.1.1
+    jest-validate: ^28.1.1
     resolve: ^1.20.0
     resolve.exports: ^1.1.0
     slash: ^3.0.0
-  checksum: 1a37e3a8a1b49a148c4611f85cb27dbb6b0b2d1b76b8a52ddfeb340a74f6d2a7851ba8ba2374948a21024d56592f32b48e3142e9fd813a0fcea4d1db3602ec77
+  checksum: cda5c472fe5b50b91696d90d5c3a72d0f5ff188ecad18816b4085fbac0bad53c0a9abff94c3bf41c7ced24256cf8e34f0b03f1c9e05464e8efcd0f03560d6699
   languageName: node
   linkType: hard
 
@@ -9735,17 +9735,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-validate@npm:^28.1.0":
-  version: 28.1.0
-  resolution: "jest-validate@npm:28.1.0"
+"jest-validate@npm:^28.1.0, jest-validate@npm:^28.1.1":
+  version: 28.1.1
+  resolution: "jest-validate@npm:28.1.1"
   dependencies:
-    "@jest/types": ^28.1.0
+    "@jest/types": ^28.1.1
     camelcase: ^6.2.0
     chalk: ^4.0.0
     jest-get-type: ^28.0.2
     leven: ^3.1.0
-    pretty-format: ^28.1.0
-  checksum: 79f9fe39f15bb47b15da39e19a1b2ba948830b6da53ccf359857cdeaca62cd87721585b0137576e7d1d2b2d7e5b79fdfb57d5b80e6ce3c8a93865d6032b20e4a
+    pretty-format: ^28.1.1
+  checksum: 7bb5427d9b5ef4efc218aaf1f2a4282ebcc66458a6c40aa9fd2914aab967d3157352fb37ea46c83c1bc640ccf997ca3edee4d7aa109dccc02a7c821bac192104
   languageName: node
   linkType: hard
 
@@ -12171,15 +12171,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pretty-format@npm:^28.1.0":
-  version: 28.1.0
-  resolution: "pretty-format@npm:28.1.0"
+"pretty-format@npm:^28.1.0, pretty-format@npm:^28.1.1":
+  version: 28.1.1
+  resolution: "pretty-format@npm:28.1.1"
   dependencies:
     "@jest/schemas": ^28.0.2
     ansi-regex: ^5.0.1
     ansi-styles: ^5.0.0
     react-is: ^18.0.0
-  checksum: c1018099f8f800693449df96c05c243d94e01f7429b6617e1064a1a69b4d715637fc3c579061fbc31548b87d92af74a7933c6eb3856da6f30b29c0ff67004ce0
+  checksum: 7fde4e2d6fd57cef8cf2fa9d5560cc62126de481f09c65dccfe89a3e6158a04355cff278853ace07fdf7f2f48c3d77877c00c47d7d3c1c028dcff5c322300d79
   languageName: node
   linkType: hard
 
