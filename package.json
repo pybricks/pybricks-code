@@ -60,7 +60,7 @@
         "jest": "^28.1.0",
         "jest-environment-jsdom": "^28.1.0",
         "jest-mock-extended": "^2.0.6",
-        "jest-resolve": "^28.1.0",
+        "jest-resolve": "^28.1.1",
         "jest-watch-typeahead": "^1.0.0",
         "jszip": "^3.10.0",
         "license-webpack-plugin": "^3.0.0",
