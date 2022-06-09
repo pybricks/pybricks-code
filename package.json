@@ -52,7 +52,7 @@
         "dexie-react-hooks": "^1.1.1",
         "dotenv": "^16.0.1",
         "dotenv-expand": "^8.0.3",
-        "fake-indexeddb": "^3.1.7",
+        "fake-indexeddb": "^3.1.8",
         "file-loader": "^6.2.0",
         "fs-extra": "^10.0.0",
         "html-webpack-plugin": "^5.5.0",
