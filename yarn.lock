@@ -2343,7 +2343,7 @@ __metadata:
     eslint-plugin-react: ^7.30.0
     eslint-plugin-total-functions: ^5.0.1
     eslint-webpack-plugin: ^3.1.1
-    fake-indexeddb: ^3.1.7
+    fake-indexeddb: ^3.1.8
     file-loader: ^6.2.0
     fs-extra: ^10.0.0
     html-webpack-plugin: ^5.5.0
@@ -7872,12 +7872,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fake-indexeddb@npm:^3.1.7":
-  version: 3.1.7
-  resolution: "fake-indexeddb@npm:3.1.7"
+"fake-indexeddb@npm:^3.1.8":
+  version: 3.1.8
+  resolution: "fake-indexeddb@npm:3.1.8"
   dependencies:
     realistic-structured-clone: ^2.0.1
-  checksum: bd1663c9e27858de3ce6217721eeb0e802a3910bf521a509caaff509ca8c490efda6842d19de86488c43cf5cf5f55a7fdadcefc5e7d591a0976e606ead5000fd
+  checksum: cea9905f5e134952a6471e73c3a69dc79935dc221741a518df7010114a482c900b872c855215e1163e063ce9aab3e8f01a660684cd5c0e8ff11e30bf47892de9
   languageName: node
   linkType: hard
 
