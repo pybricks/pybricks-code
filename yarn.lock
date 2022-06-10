@@ -1504,9 +1504,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@blueprintjs/core@npm:^4.4.0, @blueprintjs/core@npm:^4.4.1":
-  version: 4.4.1
-  resolution: "@blueprintjs/core@npm:4.4.1"
+"@blueprintjs/core@npm:^4.4.1, @blueprintjs/core@npm:^4.5.0":
+  version: 4.5.0
+  resolution: "@blueprintjs/core@npm:4.5.0"
   dependencies:
     "@blueprintjs/colors": ^4.1.3
     "@blueprintjs/icons": ^4.3.0
@@ -1525,7 +1525,7 @@ __metadata:
   bin:
     upgrade-blueprint-2.0.0-rename: scripts/upgrade-blueprint-2.0.0-rename.sh
     upgrade-blueprint-3.0.0-rename: scripts/upgrade-blueprint-3.0.0-rename.sh
-  checksum: f0ce7e3b5022249ea54fe46c76c75a275396f3a3d5fb8106f2a54dc2a0f7f30c3524c126e806ab6dd9190f9514511a0e22e5b509ba636628ce3ed1f4dc4b8111
+  checksum: c4495b4d19346b35919a68e3110b5294066d55798e35ece067cca34ad461ba97686ff8361dd3ff41b61a248780d1397446d98fbc100ba750334763e6386dac97
   languageName: node
   linkType: hard
 
@@ -2288,7 +2288,7 @@ __metadata:
   resolution: "@pybricks/pybricks-code@workspace:."
   dependencies:
     "@babel/core": ^7.18.2
-    "@blueprintjs/core": ^4.4.0
+    "@blueprintjs/core": ^4.5.0
     "@blueprintjs/popover2": ^1.3.1
     "@pmmmwh/react-refresh-webpack-plugin": ^0.5.7
     "@pybricks/firmware": 4.15.0
