@@ -3,12 +3,12 @@
 
 import './index.scss';
 import { HotkeysProvider } from '@blueprintjs/core';
+import { configureStore } from '@reduxjs/toolkit';
 import { I18nContext } from '@shopify/react-i18n';
 import React from 'react';
 import { OverlayProvider } from 'react-aria';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { applyMiddleware, createStore } from 'redux';
 import { createLogger } from 'redux-logger';
 import createSagaMiddleware from 'redux-saga';
 import App from './app/App';
@@ -38,10 +38,24 @@ const sagaMiddleware = createSagaMiddleware<RootSagaContext>({
 // TODO: add runtime option or filter - logger affects firmware flash performance
 const loggerMiddleware = createLogger({ predicate: () => false });
 
-const store = createStore(
-    rootReducer,
-    applyMiddleware(sagaMiddleware, loggerMiddleware),
-);
+const store = configureStore({
+    reducer: rootReducer,
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({
+            serializableCheck: {
+                ignoredActionPaths: [
+                    // copy of defaults
+                    'meta.arg',
+                    'meta.baseQueryMeta',
+                    // HACK: technically serializable, can be removed after
+                    // https://github.com/microsoft/vscode/pull/151993
+                    'viewState.viewState.firstPosition',
+                ],
+            },
+        })
+            .concat(sagaMiddleware)
+            .concat(loggerMiddleware),
+});
 
 // special styling for beta versions
 if (appVersion.match(/beta/)) {
