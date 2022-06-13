@@ -2390,7 +2390,7 @@ __metadata:
     sass-loader: ^13.0.0
     semver: ^7.3.5
     source-map-explorer: ^2.5.2
-    source-map-loader: ^3.0.0
+    source-map-loader: ^4.0.0
     spdx-satisfies: ^5.0.0
     style-loader: ^3.3.1
     tailwindcss: ^3.1.2
@@ -13489,23 +13489,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"source-map-js@npm:>=0.6.2 <2.0.0, source-map-js@npm:^1.0.1, source-map-js@npm:^1.0.2":
+"source-map-js@npm:>=0.6.2 <2.0.0, source-map-js@npm:^1.0.2":
   version: 1.0.2
   resolution: "source-map-js@npm:1.0.2"
   checksum: c049a7fc4deb9a7e9b481ae3d424cc793cb4845daa690bc5a05d428bf41bf231ced49b4cf0c9e77f9d42fdb3d20d6187619fc586605f5eabe995a316da8d377c
   languageName: node
   linkType: hard
 
-"source-map-loader@npm:^3.0.0":
-  version: 3.0.1
-  resolution: "source-map-loader@npm:3.0.1"
+"source-map-loader@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "source-map-loader@npm:4.0.0"
   dependencies:
-    abab: ^2.0.5
+    abab: ^2.0.6
     iconv-lite: ^0.6.3
-    source-map-js: ^1.0.1
+    source-map-js: ^1.0.2
   peerDependencies:
-    webpack: ^5.0.0
-  checksum: 6ff27ba9335307e64edaab8fb8f87aa82a88d7efb12260732f7e3649c3fffe8bd3f77b6970c39c0bdd5e3a9b2a5ed8f11ac805bea90a6c99f186aa52033e53e0
+    webpack: ^5.72.1
+  checksum: 0b169701735bd6a32d66bff84b7475c31066972d717ebef5a24476cc8678cd19c2b8ebe03a7d62ade9586d4f7ba55c17772fdc8d8bc159dcb9315c757a01046e
   languageName: node
   linkType: hard
 
