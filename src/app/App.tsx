@@ -8,6 +8,7 @@ import React, {
     MouseEventHandler,
     useCallback,
     useEffect,
+    useRef,
     useState,
 } from 'react';
 import SplitterLayout from 'react-splitter-layout';
@@ -165,27 +166,26 @@ const App: React.VFC = () => {
     // keep track of last focused element in the activities area and restore
     // focus to that element if any non-interactive area is clicked
 
-    const [lastActivitiesFocusChild, setLastActivitiesFocusChild] =
-        useState<HTMLElement | null>(null);
+    const lastActivitiesFocusChildRef = useRef<HTMLElement>();
 
     const handleFocus = useCallback<FocusEventHandler>(
         (e) => {
             if (e.target instanceof HTMLElement) {
-                setLastActivitiesFocusChild(e.target);
+                lastActivitiesFocusChildRef.current = e.target;
             }
         },
-        [setLastActivitiesFocusChild],
+        [lastActivitiesFocusChildRef],
     );
 
     const handleActivitiesMouseDown = useCallback<MouseEventHandler<HTMLDivElement>>(
         (e) => {
             if (
-                lastActivitiesFocusChild &&
-                e.currentTarget.contains(lastActivitiesFocusChild)
+                lastActivitiesFocusChildRef.current &&
+                e.currentTarget.contains(lastActivitiesFocusChildRef.current)
             ) {
                 // if the last focused child exists and it is still inside of
                 // the activities area, focus it
-                lastActivitiesFocusChild.focus();
+                lastActivitiesFocusChildRef.current.focus();
             } else {
                 // otherwise, focus the first focusable element
                 const walker = getFocusableTreeWalker(e.currentTarget);
@@ -200,7 +200,7 @@ const App: React.VFC = () => {
             e.stopPropagation();
             e.preventDefault();
         },
-        [lastActivitiesFocusChild],
+        [lastActivitiesFocusChildRef],
     );
 
     return (
