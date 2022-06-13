@@ -105,6 +105,7 @@ const Activities: React.VoidFunctionComponent = () => {
             vertical={true}
             className="pb-activities"
             selectedTabId={selectedActivity}
+            renderActiveTabPanelOnly={true}
             onChange={handleAction}
             ref={tabsRef}
         >
