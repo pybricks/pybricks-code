@@ -2,13 +2,19 @@
 // Copyright (c) 2020-2022 The Pybricks Authors
 
 import { HotkeysProvider } from '@blueprintjs/core';
+import { ThunkAction, configureStore } from '@reduxjs/toolkit';
 import { I18nContext, I18nManager } from '@shopify/react-i18n';
 import { RenderResult, render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { UserEvent } from '@testing-library/user-event/dist/types/setup';
 import React, { ReactElement } from 'react';
 import { Provider } from 'react-redux';
-import { AnyAction, DeepPartial, PreloadedState, createStore } from 'redux';
+import {
+    AnyAction,
+    DeepPartial,
+    PreloadedState,
+    legacy_createStore as createStore,
+} from 'redux';
 import { END, MulticastChannel, Saga, Task, runSaga, stdChannel } from 'redux-saga';
 import { UUID } from '../src/fileStorage';
 import { RootState, rootReducer } from '../src/reducers';
@@ -143,9 +149,28 @@ export function lookup(obj: unknown, id: string): string | undefined {
 export const testRender = (
     component: ReactElement,
     state?: PreloadedState<RootState>,
-): [UserEvent, RenderResult, jest.SpyInstance<AnyAction, [action: AnyAction]>] => {
+): [
+    UserEvent,
+    RenderResult,
+    jest.SpyInstance<
+        unknown,
+        [
+            action:
+                | AnyAction
+                | ThunkAction<
+                      unknown,
+                      ReturnType<typeof rootReducer>,
+                      undefined,
+                      AnyAction
+                  >,
+        ]
+    >,
+] => {
     const user = userEvent.setup();
-    const store = createStore(rootReducer, state);
+    const store = configureStore({
+        reducer: rootReducer,
+        preloadedState: state,
+    });
     const dispatch = jest.spyOn(store, 'dispatch');
 
     const i18n = new I18nManager({ locale: 'en' });
