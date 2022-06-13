@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2022 The Pybricks Authors
 
-import { cleanup } from '@testing-library/react';
+import { cleanup, waitFor } from '@testing-library/react';
 import React from 'react';
 import { testRender, uuid } from '../../test';
 import { FileMetadata } from '../fileStorage';
@@ -99,9 +99,12 @@ describe('tree item', () => {
             jest.mocked(useFileStorageMetadata).mockReturnValue([testFile]);
             const [user, explorer, dispatch] = testRender(<Explorer />);
 
-            // NB: this button is intentionally not accessible (by role) since
-            // there is a keyboard shortcut.
-            const button = explorer.getByTitle('Duplicate test.file');
+            const treeItem = explorer.getByRole('treeitem', { name: 'test.file' });
+            await user.hover(treeItem);
+
+            const button = await waitFor(() =>
+                explorer.getByRole('button', { name: 'Duplicate test.file' }),
+            );
 
             await user.click(button);
 
@@ -129,9 +132,12 @@ describe('tree item', () => {
             jest.mocked(useFileStorageMetadata).mockReturnValue([testFile]);
             const [user, explorer, dispatch] = testRender(<Explorer />);
 
-            // NB: this button is intentionally not accessible (by role) since
-            // there is a keyboard shortcut.
-            const button = explorer.getByTitle('Rename test.file');
+            const treeItem = explorer.getByRole('treeitem', { name: 'test.file' });
+            await user.hover(treeItem);
+
+            const button = await waitFor(() =>
+                explorer.getByRole('button', { name: 'Rename test.file' }),
+            );
 
             await user.click(button);
 
@@ -159,9 +165,12 @@ describe('tree item', () => {
             jest.mocked(useFileStorageMetadata).mockReturnValue([testFile]);
             const [user, explorer, dispatch] = testRender(<Explorer />);
 
-            // NB: this button is intentionally not accessible (by role) since
-            // there is a keyboard shortcut.
-            const button = explorer.getByTitle('Export test.file');
+            const treeItem = explorer.getByRole('treeitem', { name: 'test.file' });
+            await user.hover(treeItem);
+
+            const button = await waitFor(() =>
+                explorer.getByRole('button', { name: 'Export test.file' }),
+            );
 
             await user.click(button);
 
@@ -189,9 +198,12 @@ describe('tree item', () => {
             jest.mocked(useFileStorageMetadata).mockReturnValue([testFile]);
             const [user, explorer, dispatch] = testRender(<Explorer />);
 
-            // NB: this button is intentionally not accessible (by role) since
-            // there is a keyboard shortcut.
-            const button = explorer.getByTitle('Delete test.file');
+            const treeItem = explorer.getByRole('treeitem', { name: 'test.file' });
+            await user.hover(treeItem);
+
+            const button = await waitFor(() =>
+                explorer.getByRole('button', { name: 'Delete test.file' }),
+            );
 
             await user.click(button);
 
