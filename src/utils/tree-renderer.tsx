@@ -17,6 +17,7 @@ import {
 } from '@blueprintjs/core';
 import React, { createContext } from 'react';
 import { TreeItem, TreeRenderProps } from 'react-complex-tree';
+import { useBoolean } from 'usehooks-ts';
 
 /** Combines class names into a string. */
 const cx = (...classNames: Array<string | undefined | false>): string =>
@@ -62,48 +63,58 @@ export const renderers: Omit<
         </ul>
     ),
 
-    renderItem: (props) => (
-        <TreeItemContext.Provider value={props.item}>
-            <li
-                className={cx(
-                    Classes.TREE_NODE,
-                    // TODO: include Classes.DISABLED if disabled
-                    props.context.isExpanded && Classes.TREE_NODE_EXPANDED,
-                    (props.context.isSelected || props.context.isDraggingOver) &&
-                        Classes.TREE_NODE_SELECTED,
-                )}
-                onMouseDown={(e) => e.stopPropagation()}
-                {...props.context.itemContainerWithChildrenProps}
-                {...props.context.interactiveElementProps}
-            >
-                <div
+    renderItem: (props) => {
+        const {
+            value: isHover,
+            setTrue: setIsHoverTrue,
+            setFalse: setIsHoverFalse,
+        } = useBoolean(false);
+
+        return (
+            <TreeItemContext.Provider value={props.item}>
+                <li
                     className={cx(
-                        Classes.TREE_NODE_CONTENT,
-                        `${Classes.TREE_NODE_CONTENT}-${props.depth}`,
+                        Classes.TREE_NODE,
+                        // TODO: include Classes.DISABLED if disabled
+                        props.context.isExpanded && Classes.TREE_NODE_EXPANDED,
+                        (props.context.isSelected || props.context.isDraggingOver) &&
+                            Classes.TREE_NODE_SELECTED,
                     )}
-                    {...props.context.itemContainerWithoutChildrenProps}
+                    onMouseDown={(e) => e.stopPropagation()}
+                    onMouseEnter={setIsHoverTrue}
+                    onMouseLeave={setIsHoverFalse}
+                    {...props.context.itemContainerWithChildrenProps}
+                    {...props.context.interactiveElementProps}
                 >
-                    {props.item.hasChildren ? (
-                        props.arrow
-                    ) : (
-                        <span className={Classes.TREE_NODE_CARET_NONE} />
-                    )}
-                    <Icon
-                        className={Classes.TREE_NODE_ICON}
-                        icon={props.item.data.icon}
-                        aria-hidden={true}
-                    />
-                    {props.title}
-                    {props.item.data.secondaryLabel && (
-                        <span className={Classes.TREE_NODE_SECONDARY_LABEL}>
-                            {props.item.data.secondaryLabel}
-                        </span>
-                    )}
-                </div>
-                {props.context.isExpanded && props.children}
-            </li>
-        </TreeItemContext.Provider>
-    ),
+                    <div
+                        className={cx(
+                            Classes.TREE_NODE_CONTENT,
+                            `${Classes.TREE_NODE_CONTENT}-${props.depth}`,
+                        )}
+                        {...props.context.itemContainerWithoutChildrenProps}
+                    >
+                        {props.item.hasChildren ? (
+                            props.arrow
+                        ) : (
+                            <span className={Classes.TREE_NODE_CARET_NONE} />
+                        )}
+                        <Icon
+                            className={Classes.TREE_NODE_ICON}
+                            icon={props.item.data.icon}
+                            aria-hidden={true}
+                        />
+                        {props.title}
+                        {props.item.data.secondaryLabel && isHover && (
+                            <span className={Classes.TREE_NODE_SECONDARY_LABEL}>
+                                {props.item.data.secondaryLabel}
+                            </span>
+                        )}
+                    </div>
+                    {props.context.isExpanded && props.children}
+                </li>
+            </TreeItemContext.Provider>
+        );
+    },
 
     renderItemArrow: (props) => (
         <Icon

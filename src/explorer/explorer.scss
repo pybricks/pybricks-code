@@ -15,11 +15,6 @@
             padding: unset;
         }
 
-        // reveal file action toolbar on hover
-        .#{bp.$ns}-tree-node-content:not(:hover) &-action-button-group {
-            display: none;
-        }
-
         // fix layout since we are nesting toolbar in button group
         &-action-toolbar {
             display: inline-flex;
