@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2022 The Pybricks Authors
 
+import './index.scss';
+import { HotkeysProvider } from '@blueprintjs/core';
 import { I18nContext } from '@shopify/react-i18n';
 import React from 'react';
 import { OverlayProvider } from 'react-aria';
@@ -9,7 +11,6 @@ import { Provider } from 'react-redux';
 import { applyMiddleware, createStore } from 'redux';
 import { createLogger } from 'redux-logger';
 import createSagaMiddleware from 'redux-saga';
-import './index.scss';
 import App from './app/App';
 import { appVersion } from './app/constants';
 import { db } from './fileStorage/context';
@@ -55,7 +56,9 @@ ReactDOM.render(
             <I18nContext.Provider value={i18nManager}>
                 <ViewHeightSensor />
                 <OverlayProvider>
-                    <App />
+                    <HotkeysProvider>
+                        <App />
+                    </HotkeysProvider>
                 </OverlayProvider>
             </I18nContext.Provider>
         </Provider>
