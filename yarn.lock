@@ -1504,9 +1504,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@blueprintjs/core@npm:^4.5.0":
-  version: 4.5.0
-  resolution: "@blueprintjs/core@npm:4.5.0"
+"@blueprintjs/core@npm:^4.5.0, @blueprintjs/core@npm:^4.5.1":
+  version: 4.5.1
+  resolution: "@blueprintjs/core@npm:4.5.1"
   dependencies:
     "@blueprintjs/colors": ^4.1.3
     "@blueprintjs/icons": ^4.3.0
@@ -1525,7 +1525,7 @@ __metadata:
   bin:
     upgrade-blueprint-2.0.0-rename: scripts/upgrade-blueprint-2.0.0-rename.sh
     upgrade-blueprint-3.0.0-rename: scripts/upgrade-blueprint-3.0.0-rename.sh
-  checksum: c4495b4d19346b35919a68e3110b5294066d55798e35ece067cca34ad461ba97686ff8361dd3ff41b61a248780d1397446d98fbc100ba750334763e6386dac97
+  checksum: 1c874c7267f7a0bb1a4aa01b8aeefcc497f2ed8e43ea1c55a36112da520ca4841c18ef91cbdc8f5fa86dec0c041849984deae5204bd876c0654dd60f50418d3b
   languageName: node
   linkType: hard
 
@@ -1540,11 +1540,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@blueprintjs/popover2@npm:^1.4.0":
-  version: 1.4.0
-  resolution: "@blueprintjs/popover2@npm:1.4.0"
+"@blueprintjs/popover2@npm:^1.4.1":
+  version: 1.4.1
+  resolution: "@blueprintjs/popover2@npm:1.4.1"
   dependencies:
-    "@blueprintjs/core": ^4.5.0
+    "@blueprintjs/core": ^4.5.1
     "@juggle/resize-observer": ^3.3.1
     "@popperjs/core": ^2.5.4
     classnames: ^2.2
@@ -1553,7 +1553,7 @@ __metadata:
     tslib: ~2.3.1
   peerDependencies:
     react: ^16.8 || 17 || 18
-  checksum: 079c26d3b4bb42a350c5348432d18d289f6fd2bb066ffa5db8e835f50bd4c6018159d825fc74f922d5b00478f64fc905a2739e55ca7e5e6f398a7646d07e28f8
+  checksum: e8024b750b9f5bfe52d5b26014ce4fab791cfddd56ac4baf39444473d6633165d2c1efa72209b55443d321fbf656219c5d1a94641291f296e1a45602cf000da2
   languageName: node
   linkType: hard
 
@@ -2289,7 +2289,7 @@ __metadata:
   dependencies:
     "@babel/core": ^7.18.5
     "@blueprintjs/core": ^4.5.0
-    "@blueprintjs/popover2": ^1.4.0
+    "@blueprintjs/popover2": ^1.4.1
     "@pmmmwh/react-refresh-webpack-plugin": ^0.5.7
     "@pybricks/firmware": 4.15.0
     "@pybricks/ide-docs": 2.2.0
