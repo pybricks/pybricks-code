@@ -2388,7 +2388,7 @@ __metadata:
     resolve: ^1.22.1
     resolve-url-loader: ^5.0.0
     sass: ^1.52.3
-    sass-loader: ^13.0.0
+    sass-loader: ^13.0.1
     semver: ^7.3.5
     source-map-explorer: ^2.5.2
     source-map-loader: ^4.0.0
@@ -13186,9 +13186,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sass-loader@npm:^13.0.0":
-  version: 13.0.0
-  resolution: "sass-loader@npm:13.0.0"
+"sass-loader@npm:^13.0.1":
+  version: 13.0.1
+  resolution: "sass-loader@npm:13.0.1"
   dependencies:
     klona: ^2.0.4
     neo-async: ^2.6.2
@@ -13207,7 +13207,7 @@ __metadata:
       optional: true
     sass-embedded:
       optional: true
-  checksum: f7af03813dccf0405eb02917cd10c97571ab81f42e9ea1f3da6d9e96991e076521809a452ad319d57c1a63273ce07c23ddfdbda5cd071a56d261dc28913afdaa
+  checksum: 21a4e59947c4a0dd851a7f3e5079ca4cdb0af17cc603862318585f5f72683a0c72926ef73e65a249b5210347894e47df38bfa5fee91132c9f2d29393c7d82b57
   languageName: node
   linkType: hard
 
