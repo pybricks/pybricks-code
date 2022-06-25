@@ -40,6 +40,8 @@ module.exports = function (proxy, allowedHost) {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': '*',
       'Access-Control-Allow-Headers': '*',
+      'Cross-Origin-Opener-Policy': 'same-origin',
+      'Cross-Origin-Embedder-Policy': 'require-corp',
     },
     // Enable gzip compression of generated files.
     compress: true,

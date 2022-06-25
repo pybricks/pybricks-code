@@ -1,10 +1,18 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2022 The Pybricks Authors
 
-import { Button, Intent, ProgressBar } from '@blueprintjs/core';
+import {
+    Button,
+    Icon,
+    IconSize,
+    Intent,
+    ProgressBar,
+    Spinner,
+} from '@blueprintjs/core';
 import { Classes as Classes2, Popover2, Popover2Props } from '@blueprintjs/popover2';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { BleConnectionState } from '../ble/reducers';
+import { CompletionEngineStatus } from '../editor/redux/codeCompletion';
 import { useSelector } from '../reducers';
 import { I18nId, useI18n } from './i18n';
 
@@ -13,6 +21,48 @@ import './status-bar.scss';
 const commonPopoverProps: Partial<Popover2Props> = {
     popoverClassName: Classes2.POPOVER2_CONTENT_SIZING,
     placement: 'top',
+};
+
+const CompletionEngineIndicator: React.VoidFunctionComponent = () => {
+    const { status } = useSelector((s) => s.editor.codeCompletion);
+    const i18n = useI18n();
+
+    const icon = useMemo(() => {
+        switch (status) {
+            case CompletionEngineStatus.Loading:
+                return <Spinner size={IconSize.STANDARD} />;
+            case CompletionEngineStatus.Ready:
+                return <Icon icon="tick-circle" />;
+            case CompletionEngineStatus.Failed:
+                return <Icon icon="error" />;
+            default:
+                return <Icon icon="disable" />;
+        }
+    }, [status]);
+
+    const message = useMemo(() => {
+        switch (status) {
+            case CompletionEngineStatus.Loading:
+                return i18n.translate(I18nId.CompletionEngineStatusMessageLoading);
+            case CompletionEngineStatus.Ready:
+                return i18n.translate(I18nId.CompletionEngineStatusMessageReady);
+            case CompletionEngineStatus.Failed:
+                return i18n.translate(I18nId.CompletionEngineStatusMessageFailed);
+            default:
+                return i18n.translate(I18nId.CompletionEngineStatusMessageUnknown);
+        }
+    }, [status, i18n]);
+
+    return (
+        <Popover2 {...commonPopoverProps} content={message}>
+            <div
+                aria-label={i18n.translate(I18nId.CompletionEngineStatusLabel)}
+                style={{ cursor: 'pointer' }}
+            >
+                {icon}
+            </div>
+        </Popover2>
+    );
 };
 
 const HubInfoButton: React.VoidFunctionComponent = () => {
@@ -99,12 +149,17 @@ const StatusBar: React.VFC = (_props) => {
 
     return (
         <div className="pb-status-bar" role="status" aria-live="off">
-            {connection === BleConnectionState.Connected && (
-                <>
-                    <HubInfoButton />
-                    <BatteryIndicator />
-                </>
-            )}
+            <div className="pb-status-bar-group">
+                <CompletionEngineIndicator />
+            </div>
+            <div className="pb-status-bar-group">
+                {connection === BleConnectionState.Connected && (
+                    <>
+                        <HubInfoButton />
+                        <BatteryIndicator />
+                    </>
+                )}
+            </div>
         </div>
     );
 };

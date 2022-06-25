@@ -3,6 +3,11 @@
 
 import { createAction } from '../actions';
 import { UUID } from '../fileStorage';
+export {
+    didFailToInit as editorCompletionDidFailToInit,
+    didInit as editorCompletionDidInit,
+    init as editorCompletionInit,
+} from './redux/codeCompletion';
 
 /** Action that indicates that a code editor was created. */
 export const editorDidCreate = createAction(() => ({

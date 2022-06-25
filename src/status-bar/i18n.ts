@@ -12,6 +12,11 @@ export function useI18n(): I18n {
 }
 
 export enum I18nId {
+    CompletionEngineStatusLabel = 'completionEngineStatus.label',
+    CompletionEngineStatusMessageLoading = 'completionEngineStatus.message.loading',
+    CompletionEngineStatusMessageReady = 'completionEngineStatus.message.ready',
+    CompletionEngineStatusMessageFailed = 'completionEngineStatus.message.failed',
+    CompletionEngineStatusMessageUnknown = 'completionEngineStatus.message.unknown',
     BatteryTitle = 'battery.title',
     BatteryLow = 'battery.low',
     BatteryOk = 'battery.ok',

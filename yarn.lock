@@ -1451,7 +1451,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/template@npm:^7.0.0, @babel/template@npm:^7.16.7, @babel/template@npm:^7.3.3":
+"@babel/template@npm:^7.0.0, @babel/template@npm:^7.16.7, @babel/template@npm:^7.3.3, @babel/template@npm:^7.4.4":
   version: 7.16.7
   resolution: "@babel/template@npm:7.16.7"
   dependencies:
@@ -2319,6 +2319,7 @@ __metadata:
     babel-loader: ^8.2.3
     babel-plugin-macros: ^3.0.1
     babel-plugin-named-asset-import: ^0.3.8
+    babel-plugin-transform-import-meta: ^2.2.0
     babel-preset-react-app: ^10.0.1
     bfj: ^7.0.2
     browser-fs-access: ^0.30.1
@@ -2370,6 +2371,7 @@ __metadata:
     prettier: ^2.7.1
     prompts: ^2.4.2
     prop-types: ^15.8.1
+    pyodide: 0.20.1-alpha.2
     react: ^16.13.1
     react-app-polyfill: ^3.0.0
     react-aria: ^3.17.0
@@ -5662,6 +5664,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"babel-plugin-transform-import-meta@npm:^2.2.0":
+  version: 2.2.0
+  resolution: "babel-plugin-transform-import-meta@npm:2.2.0"
+  dependencies:
+    "@babel/template": ^7.4.4
+    tslib: ^2.4.0
+  peerDependencies:
+    "@babel/core": ^7.10.0
+  checksum: 305b0750f957e4df3ce08e0b24359dc55fb789c96477e944d113d259a8292e7bb8d665944e04b5a690c82a8dc23f54b711a85917d80988dffe1e046e1db940ee
+  languageName: node
+  linkType: hard
+
 "babel-plugin-transform-react-remove-prop-types@npm:^0.4.24":
   version: 0.4.24
   resolution: "babel-plugin-transform-react-remove-prop-types@npm:0.4.24"
@@ -5731,6 +5745,13 @@ __metadata:
   version: 1.0.2
   resolution: "balanced-match@npm:1.0.2"
   checksum: 9706c088a283058a8a99e0bf91b0a2f75497f185980d9ffa8b304de1d9e58ebda7c72c07ebf01dadedaac5b2907b2c6f566f660d62bd336c3468e960403b9d65
+  languageName: node
+  linkType: hard
+
+"base-64@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "base-64@npm:1.0.0"
+  checksum: d10b64a1fc9b2c5a5f39f1ce1e6c9d1c5b249222bbfa3a0604c592d90623caf74419983feadd8a170f27dc0c3389704f72faafa3e645aeb56bfc030c93ff074a
   languageName: node
   linkType: hard
 
@@ -10785,7 +10806,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-fetch@npm:^2.6.5":
+"node-fetch@npm:^2.6.1, node-fetch@npm:^2.6.5":
   version: 2.6.7
   resolution: "node-fetch@npm:2.6.7"
   dependencies:
@@ -12360,6 +12381,17 @@ __metadata:
   version: 2.1.1
   resolution: "punycode@npm:2.1.1"
   checksum: 823bf443c6dd14f669984dea25757b37993f67e8d94698996064035edd43bed8a5a17a9f12e439c2b35df1078c6bec05a6c86e336209eb1061e8025c481168e8
+  languageName: node
+  linkType: hard
+
+"pyodide@npm:0.20.1-alpha.2":
+  version: 0.20.1-alpha.2
+  resolution: "pyodide@npm:0.20.1-alpha.2"
+  dependencies:
+    base-64: ^1.0.0
+    node-fetch: ^2.6.1
+    ws: ^8.5.0
+  checksum: aeadfd5822660b435561c7f010f1a029b28bfa6080a781a7fbb2fe95b02ca2ea95f234d3c79a5f750c71a6eb3b10872731814805b82be5cbb1a2da2a6386e65f
   languageName: node
   linkType: hard
 
@@ -15342,6 +15374,21 @@ __metadata:
     utf-8-validate:
       optional: true
   checksum: 078fa2dbc06b31a45e0057b19e2930d26c222622e355955afe019c9b9b25f62eb2a8eff7cceabdad04910ecd2bd6ef4fa48e6f3673f2fdddff02a6e4c2459584
+  languageName: node
+  linkType: hard
+
+"ws@npm:^8.5.0":
+  version: 8.8.0
+  resolution: "ws@npm:8.8.0"
+  peerDependencies:
+    bufferutil: ^4.0.1
+    utf-8-validate: ^5.0.2
+  peerDependenciesMeta:
+    bufferutil:
+      optional: true
+    utf-8-validate:
+      optional: true
+  checksum: 6ceed1ca1cb800ef60c7fc8346c7d5d73d73be754228eb958765abf5d714519338efa20ffe674167039486eb3a813aae5a497f8d319e16b4d96216a31df5bd95
   languageName: node
   linkType: hard
 

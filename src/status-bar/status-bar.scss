@@ -15,11 +15,12 @@
     padding-inline: 5px;
     display: flex;
     align-items: center;
-}
+    justify-content: space-between;
 
-// make status bar items right-aligned
-.pb-status-bar :first-child {
-    margin-left: auto;
+    &-group {
+        display: flex;
+        align-items: center;
+    }
 }
 
 .pb-battery-indicator {
