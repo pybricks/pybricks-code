@@ -2,6 +2,11 @@
 
 # Changelog
 
+## [Unreleased]
+
+### Added
+- Added basic intellisense to the code editor.
+
 ## [2.0.0-beta.1] - 2022-06-03
 
 ### Added

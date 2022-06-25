@@ -6,6 +6,7 @@ import { EventChannel, buffers, eventChannel } from 'redux-saga';
 import {
     SagaGenerator,
     call,
+    cancelled,
     delay,
     fork,
     getContext,
@@ -26,11 +27,27 @@ import {
     fileStorageStoreTextFileValue,
     fileStorageStoreTextFileViewState,
 } from '../fileStorage/actions';
+import {
+    pythonMessageComplete,
+    pythonMessageDidComplete,
+    pythonMessageDidFailToComplete,
+    pythonMessageDidFailToGetSignature,
+    pythonMessageDidFailToInit,
+    pythonMessageDidGetSignature,
+    pythonMessageDidInit,
+    pythonMessageGetSignature,
+    pythonMessageInit,
+    pythonMessageSetInterruptBuffer,
+} from '../pybricksMicropython/python-message';
 import { RootState } from '../reducers';
 import { acquireLock, defined, ensureError } from '../utils';
+import { createCountFunc } from '../utils/iter';
 import {
     editorActivateFile,
     editorCloseFile,
+    editorCompletionDidFailToInit,
+    editorCompletionDidInit,
+    editorCompletionInit,
     editorDidActivateFile,
     editorDidCloseFile,
     editorDidCreate,
@@ -373,6 +390,278 @@ function* monitorEditors(): Generator {
     }
 }
 
+/**
+ * Runs a web worker with Pyodide so that we can use Jedi for intellisense.
+ */
+function* runJedi(): Generator {
+    const defer = new Array<() => void>();
+
+    try {
+        console.debug('creating code completion worker');
+
+        // start the web worker and set up communication channels
+
+        const worker = new Worker(
+            new URL('../pybricksMicropython/python-worker.ts', import.meta.url),
+        );
+
+        defer.push(() => worker.terminate());
+
+        const messageChannel = eventChannel<MessageEvent>((emit) => {
+            worker.addEventListener('message', emit);
+
+            return () => worker.removeEventListener('message', emit);
+        }, buffers.expanding());
+
+        defer.push(() => messageChannel.close());
+
+        const errorChannel = eventChannel<ErrorEvent>((emit) => {
+            worker.addEventListener('error', emit);
+
+            return () => worker.removeEventListener('error', emit);
+        }, buffers.expanding());
+
+        defer.push(() => errorChannel.close());
+
+        // wait for the Python runtime to start and get in a ready state
+
+        worker.postMessage(pythonMessageInit());
+        yield* put(editorCompletionInit());
+
+        for (;;) {
+            const { messageEvent, errorEvent } = yield* race({
+                messageEvent: take(messageChannel),
+                errorEvent: take(errorChannel),
+            });
+
+            if (errorEvent) {
+                yield* put(editorCompletionDidFailToInit());
+                throw errorEvent.error;
+            }
+
+            defined(messageEvent);
+
+            if (pythonMessageDidFailToInit.matches(messageEvent.data)) {
+                yield* put(editorCompletionDidFailToInit());
+                throw messageEvent.data.error;
+            }
+
+            if (pythonMessageDidInit.matches(messageEvent.data)) {
+                break;
+            }
+        }
+
+        console.debug('code completion engine is ready');
+        yield* put(editorCompletionDidInit());
+
+        // configure interrupts
+        // https://pyodide.org/en/stable/usage/keyboard-interrupts.html
+
+        // HACK: Using WebAssembly.Memory instead of SharedArrayBuffer to avoid exception.
+        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SharedArrayBuffer/Planned_changes#api_changes
+        const interrupt = new Uint8Array(
+            new WebAssembly.Memory({ initial: 1, maximum: 1, shared: true }).buffer,
+        );
+
+        const setInterrupt = () => {
+            interrupt[0] = 2; //2 === SIGINT
+        };
+
+        const clearInterrupt = () => {
+            interrupt[0] = 0;
+        };
+
+        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SharedArrayBuffer#security_requirements
+        if (crossOriginIsolated) {
+            worker.postMessage(pythonMessageSetInterruptBuffer(interrupt));
+        } else {
+            console.warn(
+                'required headers missing for SharedArrayBuffer, cancellation will not work',
+            );
+        }
+
+        // register intellisense hooks with editor
+
+        const nextId = createCountFunc();
+
+        const completionItemProviderChan = eventChannel<{
+            model: monaco.editor.ITextModel;
+            position: monaco.Position;
+            context: monaco.languages.CompletionContext;
+            token: monaco.CancellationToken;
+            resolve: (value: monaco.languages.CompletionList | null) => void;
+        }>((emit) => {
+            const subscription = monaco.languages.registerCompletionItemProvider(
+                pybricksMicroPythonId,
+                {
+                    triggerCharacters: ['.', ' '],
+                    provideCompletionItems(
+                        model,
+                        position,
+                        context,
+                        token,
+                    ): Promise<monaco.languages.CompletionList | null> {
+                        return new Promise((resolve) => {
+                            emit({ model, position, context, token, resolve });
+                        });
+                    },
+                },
+            );
+
+            return () => subscription.dispose();
+        }, buffers.expanding());
+
+        defer.push(() => completionItemProviderChan.close());
+
+        const signatureProviderChan = eventChannel<{
+            model: monaco.editor.ITextModel;
+            position: monaco.Position;
+            token: monaco.CancellationToken;
+            context: monaco.languages.SignatureHelpContext;
+            resolve: (value: monaco.languages.SignatureHelpResult | null) => void;
+        }>((emit) => {
+            const subscription = monaco.languages.registerSignatureHelpProvider(
+                pybricksMicroPythonId,
+                {
+                    signatureHelpTriggerCharacters: ['('],
+                    signatureHelpRetriggerCharacters: [','],
+                    provideSignatureHelp(model, position, token, context) {
+                        return new Promise((resolve) => {
+                            emit({ model, position, token, context, resolve });
+                        });
+                    },
+                },
+            );
+
+            return () => subscription.dispose();
+        }, buffers.expanding());
+
+        defer.push(() => signatureProviderChan.close());
+
+        // Serialize requests from editor. Due to the way cancellation works, we
+        // can only have one pending message from the web worker at a time.
+
+        for (;;) {
+            const { complete, getSignature } = yield* race({
+                complete: take(completionItemProviderChan),
+                getSignature: take(signatureProviderChan),
+            });
+
+            if (complete) {
+                // for debugging
+                const id = nextId();
+
+                console.debug(`${id}: requested completion item`);
+
+                const subscription = complete.token.onCancellationRequested(() => {
+                    console.debug(`${id}: requested cancelation`);
+                    setInterrupt();
+                });
+
+                try {
+                    clearInterrupt();
+
+                    worker.postMessage(
+                        pythonMessageComplete(
+                            complete.model.getValue(),
+                            complete.position.lineNumber,
+                            complete.position.column,
+                        ),
+                    );
+
+                    for (;;) {
+                        const msg = yield* take(messageChannel);
+
+                        if (pythonMessageDidFailToComplete.matches(msg.data)) {
+                            if (
+                                msg.data.error instanceof DOMException &&
+                                msg.data.error.name === 'AbortError'
+                            ) {
+                                console.log(`${id} canceled`);
+                            } else {
+                                console.error(msg.data.error);
+                            }
+                            complete.resolve(null);
+                            break;
+                        }
+
+                        if (pythonMessageDidComplete.matches(msg.data)) {
+                            const list = JSON.parse(msg.data.completionListJson);
+                            console.debug(list);
+                            complete.resolve({ suggestions: list });
+                            console.debug(`${id}: resolved: ${msg.data.type}`);
+                            break;
+                        }
+                    }
+                } finally {
+                    subscription.dispose();
+                }
+            } else if (getSignature) {
+                // for debugging
+                const id = nextId();
+
+                console.debug(`${id}: requested signatures`);
+
+                const subscription = getSignature.token.onCancellationRequested(() => {
+                    console.debug(`${id}: requested cancelation`);
+                    setInterrupt();
+                });
+
+                try {
+                    clearInterrupt();
+
+                    worker.postMessage(
+                        pythonMessageGetSignature(
+                            getSignature.model.getValue(),
+                            getSignature.position.lineNumber,
+                            getSignature.position.column,
+                        ),
+                    );
+
+                    for (;;) {
+                        const msg = yield* take(messageChannel);
+
+                        if (pythonMessageDidFailToGetSignature.matches(msg.data)) {
+                            if (
+                                msg.data.error instanceof DOMException &&
+                                msg.data.error.name === 'AbortError'
+                            ) {
+                                console.log(`${id} canceled`);
+                            } else {
+                                console.error(msg.data.error);
+                            }
+                            getSignature.resolve(null);
+                            break;
+                        }
+
+                        if (pythonMessageDidGetSignature.matches(msg.data)) {
+                            const signatures = JSON.parse(msg.data.signatureHelpJson);
+                            console.debug(signatures);
+                            getSignature.resolve({
+                                value: signatures,
+                                dispose: () => undefined,
+                            });
+                            console.debug(`${id}: resolved: ${msg.data.type}`);
+                            break;
+                        }
+                    }
+                } finally {
+                    subscription.dispose();
+                }
+            }
+        }
+    } catch (err) {
+        const isCancelled = yield* cancelled();
+
+        if (!isCancelled) {
+            console.error(err);
+        }
+    } finally {
+        defer.forEach((item) => item());
+    }
+}
+
 export default function* (): Generator {
     yield* fork(monitorEditors);
+    yield* fork(runJedi);
 }

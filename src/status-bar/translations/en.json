@@ -1,4 +1,13 @@
 {
+    "completionEngineStatus": {
+        "label": "Code completion engine status indicator",
+        "message": {
+            "loading": "Code completion engine is starting up and will be ready soon.",
+            "ready": "Code completion engine is ready to use.",
+            "failed": "Code completion engine has stopped working.",
+            "unknown": "Code completion engine has not started yet."
+        }
+    },
     "hubInfo": {
         "title": "Connected hub",
         "connectedTo": "Connected to:",

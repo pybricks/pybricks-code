@@ -9,6 +9,7 @@ import {
     editorDidCreate,
     editorDidOpenFile,
 } from './actions';
+import codeCompletion from './redux/codeCompletion';
 
 /** Indicates that the code editor is ready for use. */
 const isReady: Reducer<boolean> = (state = false, action) => {
@@ -46,6 +47,7 @@ const openFileUuids: Reducer<readonly UUID[]> = (state = [], action) => {
 };
 
 export default combineReducers({
+    codeCompletion,
     isReady,
     activeFileUuid,
     openFileUuids,

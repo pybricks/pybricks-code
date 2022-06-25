@@ -20,7 +20,9 @@ module.exports = babelJest.createTransformer({
     ['@babel/plugin-transform-typescript', {
       allowDeclareFields: true
     }], 
-    '@shopify/react-i18n/babel'],
+    '@shopify/react-i18n/babel',
+    "babel-plugin-transform-import-meta",
+  ],
   presets: [
     [
       require.resolve('babel-preset-react-app'),
