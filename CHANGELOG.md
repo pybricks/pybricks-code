@@ -2,7 +2,7 @@
 
 # Changelog
 
-## [Unreleased]
+## [2.0.0-beta.2]
 
 ### Added
 - Added basic intellisense to the code editor.
@@ -290,7 +290,8 @@ Prerelease changes are documented at [support#48].
 
 <!-- links for version headings -->
 
-[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.1...HEAD
+[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.2...HEAD
+[2.0.0-beta.2]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.1...v2.0.0-beta.2
 [2.0.0-beta.1]: https://github.com/pybricks/pybricks-code/compare/v1.2.0-beta.1...v2.0.0-beta.1
 [1.2.0-beta.1]: https://github.com/pybricks/pybricks-code/compare/v1.1.0...v1.2.0-beta.1
 [1.1.0]: https://github.com/pybricks/pybricks-code/compare/v1.1.0-rc.1...v1.1.0
