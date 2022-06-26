@@ -33,7 +33,7 @@ export const pybricksBugReportsUrl = 'https://github.com/pybricks/support/issues
 export const pybricksGitterUrl = 'https://gitter.im/pybricks/community';
 
 /** Pybricks copyright statement. */
-export const pybricksCopyright = 'Copyright (c) 2020-2021 The Pybricks Authors';
+export const pybricksCopyright = 'Copyright (c) 2020-2022 The Pybricks Authors';
 
 // https://www.lego.com/en-us/legal/notices-and-policies/fair-play/
 /** LEGO "fair play" disclaimer */
