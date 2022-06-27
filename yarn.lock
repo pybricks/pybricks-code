@@ -2341,7 +2341,7 @@ __metadata:
     eslint-config-typed-fp: ^2.0.1
     eslint-plugin-functional: ^4.2.1
     eslint-plugin-import: ^2.26.0
-    eslint-plugin-prettier: ^4.0.0
+    eslint-plugin-prettier: ^4.1.0
     eslint-plugin-react: ^7.30.1
     eslint-plugin-total-functions: ^5.0.1
     eslint-webpack-plugin: ^3.2.0
@@ -7658,9 +7658,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-prettier@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "eslint-plugin-prettier@npm:4.0.0"
+"eslint-plugin-prettier@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "eslint-plugin-prettier@npm:4.1.0"
   dependencies:
     prettier-linter-helpers: ^1.0.0
   peerDependencies:
@@ -7669,7 +7669,7 @@ __metadata:
   peerDependenciesMeta:
     eslint-config-prettier:
       optional: true
-  checksum: 03d69177a3c21fa2229c7e427ce604429f0b20ab7f411e2e824912f572a207c7f5a41fd1f0a95b9b8afe121e291c1b1f1dc1d44c7aad4b0837487f9c19f5210d
+  checksum: 3f731b9988383851f1a42bd67a093461886fc56dc5d0ca4c72bdd0755dc0f843faedde843c1812710a75782a9711096aad22b6140fe7d6f996cc4a672c8b3643
   languageName: node
   linkType: hard
 
