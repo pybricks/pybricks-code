@@ -2325,7 +2325,7 @@ __metadata:
     browser-fs-access: ^0.30.1
     browserslist: ^4.21.0
     camelcase: ^7.0.0
-    canvas: ^2.9.2
+    canvas: ^2.9.3
     case-sensitive-paths-webpack-plugin: ^2.4.0
     copy-webpack-plugin: ^11.0.0
     css-loader: ^6.5.1
@@ -6043,15 +6043,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"canvas@npm:^2.9.2":
-  version: 2.9.2
-  resolution: "canvas@npm:2.9.2"
+"canvas@npm:^2.9.3":
+  version: 2.9.3
+  resolution: "canvas@npm:2.9.3"
   dependencies:
     "@mapbox/node-pre-gyp": ^1.0.0
     nan: ^2.15.0
     node-gyp: latest
     simple-get: ^3.0.3
-  checksum: 8788dd11a77408db16f4cd3dfadd2d4b0a418560b92613c4f3b2c93dfd9d66e77b33cd994725f17bb94a549a440ac981b62075cc22e0a82fe2aa7f1aa7d9b065
+  checksum: 368112ba4b16f54ce6dfac1ccbc45ddd1eb0b76dc09509c2601c2a26459bb4449d259a7aa8664fd94153aad13b48557535f3b9eb7fad9a97929b9eb962e50f09
   languageName: node
   linkType: hard
 
