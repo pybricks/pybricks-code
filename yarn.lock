@@ -2390,7 +2390,7 @@ __metadata:
     resolve: ^1.22.1
     resolve-url-loader: ^5.0.0
     sass: ^1.53.0
-    sass-loader: ^13.0.1
+    sass-loader: ^13.0.2
     semver: ^7.3.5
     source-map-explorer: ^2.5.2
     source-map-loader: ^4.0.0
@@ -13208,9 +13208,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sass-loader@npm:^13.0.1":
-  version: 13.0.1
-  resolution: "sass-loader@npm:13.0.1"
+"sass-loader@npm:^13.0.2":
+  version: 13.0.2
+  resolution: "sass-loader@npm:13.0.2"
   dependencies:
     klona: ^2.0.4
     neo-async: ^2.6.2
@@ -13229,7 +13229,7 @@ __metadata:
       optional: true
     sass-embedded:
       optional: true
-  checksum: 21a4e59947c4a0dd851a7f3e5079ca4cdb0af17cc603862318585f5f72683a0c72926ef73e65a249b5210347894e47df38bfa5fee91132c9f2d29393c7d82b57
+  checksum: 6306712cc75bd4b4260ce67178778c92110089485f358b5956b6b12aba15a55e5c7287154daaf8b32678891df915b7bcda7356991afe8bf08ca7356ed30eb448
   languageName: node
   linkType: hard
 
@@ -15362,22 +15362,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ws@npm:^8.2.3, ws@npm:^8.4.2":
-  version: 8.7.0
-  resolution: "ws@npm:8.7.0"
-  peerDependencies:
-    bufferutil: ^4.0.1
-    utf-8-validate: ^5.0.2
-  peerDependenciesMeta:
-    bufferutil:
-      optional: true
-    utf-8-validate:
-      optional: true
-  checksum: 078fa2dbc06b31a45e0057b19e2930d26c222622e355955afe019c9b9b25f62eb2a8eff7cceabdad04910ecd2bd6ef4fa48e6f3673f2fdddff02a6e4c2459584
-  languageName: node
-  linkType: hard
-
-"ws@npm:^8.5.0":
+"ws@npm:^8.2.3, ws@npm:^8.4.2, ws@npm:^8.5.0":
   version: 8.8.0
   resolution: "ws@npm:8.8.0"
   peerDependencies:
