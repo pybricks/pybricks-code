@@ -1917,7 +1917,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jest/environment@npm:^28.1.1, @jest/environment@npm:^28.1.2":
+"@jest/environment@npm:^28.1.2":
   version: 28.1.2
   resolution: "@jest/environment@npm:28.1.2"
   dependencies:
@@ -1948,7 +1948,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jest/fake-timers@npm:^28.1.1, @jest/fake-timers@npm:^28.1.2":
+"@jest/fake-timers@npm:^28.1.2":
   version: 28.1.2
   resolution: "@jest/fake-timers@npm:28.1.2"
   dependencies:
@@ -2351,7 +2351,7 @@ __metadata:
     html-webpack-plugin: ^5.5.0
     identity-obj-proxy: ^3.0.0
     jest: ^28.1.2
-    jest-environment-jsdom: ^28.1.1
+    jest-environment-jsdom: ^28.1.2
     jest-mock-extended: ^2.0.6
     jest-resolve: ^28.1.1
     jest-watch-typeahead: ^1.0.0
@@ -9564,19 +9564,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-environment-jsdom@npm:^28.1.1":
-  version: 28.1.1
-  resolution: "jest-environment-jsdom@npm:28.1.1"
+"jest-environment-jsdom@npm:^28.1.2":
+  version: 28.1.2
+  resolution: "jest-environment-jsdom@npm:28.1.2"
   dependencies:
-    "@jest/environment": ^28.1.1
-    "@jest/fake-timers": ^28.1.1
+    "@jest/environment": ^28.1.2
+    "@jest/fake-timers": ^28.1.2
     "@jest/types": ^28.1.1
     "@types/jsdom": ^16.2.4
     "@types/node": "*"
     jest-mock: ^28.1.1
     jest-util: ^28.1.1
     jsdom: ^19.0.0
-  checksum: 86db0304e1efd706c0a5eef2bd3657bab7b7933b7d8fd87c02312f81bc4631dd64cf7c87efd9b2601ae019face02ef838db6dbf2d0d079b9b5e82be214e4be53
+  checksum: 73388b5cde4ce4b49cdb36746211b46c416a75b070837faefd4c907fe5095b2a7b197f753e10ee110c4b8f43571ffc277b65b3ca48f01ec0fbc74525274a19fc
   languageName: node
   linkType: hard
 

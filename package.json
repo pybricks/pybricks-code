@@ -60,7 +60,7 @@
         "html-webpack-plugin": "^5.5.0",
         "identity-obj-proxy": "^3.0.0",
         "jest": "^28.1.2",
-        "jest-environment-jsdom": "^28.1.1",
+        "jest-environment-jsdom": "^28.1.2",
         "jest-mock-extended": "^2.0.6",
         "jest-resolve": "^28.1.1",
         "jest-watch-typeahead": "^1.0.0",
