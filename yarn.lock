@@ -2406,7 +2406,7 @@ __metadata:
     webpack-dev-server: ^4.9.2
     webpack-manifest-plugin: ^5.0.0
     workbox-webpack-plugin: ^6.4.1
-    xterm: ^4.18.0
+    xterm: ^4.19.0
     xterm-addon-fit: ^0.5.0
     zen-push: ^0.2.1
   languageName: unknown
@@ -15409,10 +15409,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"xterm@npm:^4.18.0":
-  version: 4.18.0
-  resolution: "xterm@npm:4.18.0"
-  checksum: c1f391b0894928e048f8b6334943470b9e8fe91987222716a6c82840757475b87196383f6ce872250fe3dff3d984f45411fdf3841436c22d9301e50bf6043d2e
+"xterm@npm:^4.19.0":
+  version: 4.19.0
+  resolution: "xterm@npm:4.19.0"
+  checksum: 4385e08d6f1e26d0db295ba55f0ed9c304686a72c2cfdd32502cf59de23ae9c93434d469fc3735f44375602f209f767a1ba643a86be6f8e0f1cf7e5bfdccde87
   languageName: node
   linkType: hard
 
