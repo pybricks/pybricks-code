@@ -86,7 +86,7 @@
         "react-complex-tree": "^1.1.9",
         "react-dev-utils": "^12.0.1",
         "react-dom": "^16.13.1",
-        "react-dropzone": "^14.2.1",
+        "react-dropzone": "^14.2.2",
         "react-monaco-editor": "^0.49.0",
         "react-popper": "^2.3.0",
         "react-redux": "^8.0.2",
