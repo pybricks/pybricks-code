@@ -12,7 +12,7 @@
         "@blueprintjs/core": "^4.5.0",
         "@blueprintjs/popover2": "^1.4.1",
         "@pmmmwh/react-refresh-webpack-plugin": "^0.5.7",
-        "@pybricks/firmware": "4.15.0",
+        "@pybricks/firmware": "4.16.1",
         "@pybricks/ide-docs": "2.2.0",
         "@pybricks/mpy-cross-v5": "^2.0.0",
         "@pybricks/mpy-cross-v6": "^1.0.0",

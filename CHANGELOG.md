@@ -2,7 +2,32 @@
 
 # Changelog
 
-## [2.0.0-beta.2]
+## [Unreleased]
+
+### Changed
+- Updated firmware to Pybricks v3.2.0b2:
+
+  ### Added
+  - Added `Motor.stalled()` method.
+
+  ### Fixed
+  - Fixed motor not stopping at the end of `run_until_stalled` ([support#662]).
+  - Fixed incorrect battery current reading on Technic hub ([support#665]).
+  - Fixed non-zero speed reported when stalled.
+  - Fixed I/O devices not syncing at high baud rate.
+  - Fixed `ENODEV` error while device connection manager is busy ([support#674]).
+
+  ### Changed
+  - Reworked internal motor model that is used to estimate speed.
+  - Speed methods now use estimated speed instead of reported speed.
+  - Changed drive base default speed to go a little slower.
+  - Updated MicroPython to v1.19.
+
+  [support#662]: https://github.com/pybricks/support/issues/662
+  [support#665]: https://github.com/pybricks/support/issues/665
+  [support#674]: https://github.com/pybricks/support/issues/674
+
+## [2.0.0-beta.2] - 2022-06-24
 
 ### Added
 - Added basic intellisense to the code editor.
