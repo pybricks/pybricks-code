@@ -601,8 +601,8 @@ module.exports = function (webpackEnv) {
       new CopyPlugin({
         patterns: [
           {
-            from: 'node_modules/@pybricks/ide-docs/html',
-            to: 'static/docs',
+            from: `${path.dirname(require.resolve('@pybricks/ide-docs/package.json'))}/html`,
+            to: `static/docs/v${require('@pybricks/ide-docs/package.json').version}/`,
           },
         ],
       }),
