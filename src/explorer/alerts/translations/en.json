@@ -1,5 +1,8 @@
 {
     "fileInUse": {
         "message": "The file '{fileName}' could not be opened. It is already open in another window."
+    },
+    "noFilesToBackup": {
+        "message": "There are no files to backup. Create a new file first by clicking the {icon} icon."
     }
 }

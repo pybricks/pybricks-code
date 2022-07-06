@@ -11,4 +11,5 @@ export function useI18n(): I18n {
 
 export enum I18nId {
     FileInUseMessage = 'fileInUse.message',
+    NoFilesToBackupMessage = 'noFilesToBackup.message',
 }

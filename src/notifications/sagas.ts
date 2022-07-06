@@ -21,7 +21,6 @@ import {
 import { editorDidFailToOpenFile } from '../editor/actions';
 import { EditorError } from '../editor/error';
 import {
-    explorerDidFailToArchiveAllFiles,
     explorerDidFailToCreateNewFile,
     explorerDidFailToDeleteFile,
     explorerDidFailToDuplicateFile,
@@ -387,17 +386,6 @@ function* showFileStorageFailToInitialize(
     yield* showUnexpectedError(I18nId.FileStorageFailedToInitialize, action.error);
 }
 
-function* showFileStorageFailToArchive(
-    action: ReturnType<typeof explorerDidFailToArchiveAllFiles>,
-): Generator {
-    if (action.error.name === 'AbortError') {
-        // user clicked cancel button - not an error
-        return;
-    }
-
-    yield* showUnexpectedError(I18nId.ExplorerFailedToArchive, action.error);
-}
-
 function* showExplorerFailToImportFiles(
     action: ReturnType<typeof explorerDidFailToImportFiles>,
 ): Generator {
@@ -476,7 +464,6 @@ export default function* (): Generator {
     yield* takeEvery(appDidCheckForUpdate, showNoUpdateInfo);
     yield* takeEvery(bleDIServiceDidReceiveFirmwareRevision, checkVersion);
     yield* takeEvery(fileStorageDidFailToInitialize, showFileStorageFailToInitialize);
-    yield* takeEvery(explorerDidFailToArchiveAllFiles, showFileStorageFailToArchive);
     yield* takeEvery(explorerDidFailToImportFiles, showExplorerFailToImportFiles);
     yield* takeEvery(explorerDidFailToCreateNewFile, showExplorerFailToCreateFile);
     yield* takeEvery(explorerDidFailToDuplicateFile, showExplorerFailToDuplicate);

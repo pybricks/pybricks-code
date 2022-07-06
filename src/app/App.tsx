@@ -5,15 +5,7 @@ import 'react-splitter-layout/lib/index.css';
 import './app.scss';
 import { Classes } from '@blueprintjs/core';
 import docsPackage from '@pybricks/ide-docs/package.json';
-import { getFocusableTreeWalker } from '@react-aria/focus';
-import React, {
-    FocusEventHandler,
-    MouseEventHandler,
-    useCallback,
-    useEffect,
-    useRef,
-    useState,
-} from 'react';
+import React, { useEffect, useState } from 'react';
 import SplitterLayout from 'react-splitter-layout';
 import { useLocalStorage, useTernaryDarkMode } from 'usehooks-ts';
 import Activities from '../activities/Activities';
@@ -164,54 +156,10 @@ const App: React.VFC = () => {
         return () => removeEventListener('keydown', listener);
     }, []);
 
-    // keep track of last focused element in the activities area and restore
-    // focus to that element if any non-interactive area is clicked
-
-    const lastActivitiesFocusChildRef = useRef<HTMLElement>();
-
-    const handleFocus = useCallback<FocusEventHandler>(
-        (e) => {
-            if (e.target instanceof HTMLElement) {
-                lastActivitiesFocusChildRef.current = e.target;
-            }
-        },
-        [lastActivitiesFocusChildRef],
-    );
-
-    const handleActivitiesMouseDown = useCallback<MouseEventHandler<HTMLDivElement>>(
-        (e) => {
-            if (
-                lastActivitiesFocusChildRef.current &&
-                e.currentTarget.contains(lastActivitiesFocusChildRef.current)
-            ) {
-                // if the last focused child exists and it is still inside of
-                // the activities area, focus it
-                lastActivitiesFocusChildRef.current.focus();
-            } else {
-                // otherwise, focus the first focusable element
-                const walker = getFocusableTreeWalker(e.currentTarget);
-                const first = walker.nextNode();
-
-                if (first instanceof HTMLElement) {
-                    first.focus();
-                }
-            }
-
-            // prevent document body from getting focus
-            e.stopPropagation();
-            e.preventDefault();
-        },
-        [lastActivitiesFocusChildRef],
-    );
-
     return (
         <div className="pb-app" onContextMenu={(e) => e.preventDefault()}>
             <div className="pb-app-body">
-                <div
-                    className="pb-app-activities"
-                    onFocus={handleFocus}
-                    onMouseDown={handleActivitiesMouseDown}
-                >
+                <div className="pb-app-activities">
                     <Activities />
                 </div>
                 {/* need a container with position: relative; for SplitterLayout since it uses position: absolute; */}

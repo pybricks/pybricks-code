@@ -3,7 +3,7 @@
 
 import { fileOpen, fileSave } from 'browser-fs-access';
 import JSZip from 'jszip';
-import { call, put, race, take, takeEvery } from 'typed-redux-saga/macro';
+import { call, put, race, select, take, takeEvery } from 'typed-redux-saga/macro';
 import { alertsShowAlert } from '../alerts/actions';
 import {
     editorActivateFile,
@@ -41,6 +41,7 @@ import {
     pythonFileMimeType,
     validateFileName,
 } from '../pybricksMicropython/lib';
+import { RootState } from '../reducers';
 import { defined, ensureError, timestamp } from '../utils';
 import {
     explorerArchiveAllFiles,
@@ -77,6 +78,7 @@ import {
     duplicateFileDialogDidCancel,
     duplicateFileDialogShow,
 } from './duplicateFileDialog/actions';
+import { ExplorerError } from './error';
 import {
     newFileWizardDidAccept,
     newFileWizardDidCancel,
@@ -104,7 +106,7 @@ function* handleExplorerArchiveAllFiles(): Generator {
         defined(didDump);
 
         if (didDump.files.length === 0) {
-            throw new Error('no files');
+            throw new ExplorerError('NoFiles', 'no files in storage');
         }
 
         const zip = new JSZip();
@@ -130,7 +132,18 @@ function* handleExplorerArchiveAllFiles(): Generator {
 
         yield* put(explorerDidArchiveAllFiles());
     } catch (err) {
-        yield* put(explorerDidFailToArchiveAllFiles(ensureError(err)));
+        const error = ensureError(err);
+
+        if (error instanceof ExplorerError && error.name === 'NoFiles') {
+            yield* put(alertsShowAlert('explorer', 'noFilesToBackup'));
+        } else {
+            yield* put(
+                alertsShowAlert('alerts', 'unexpectedError', {
+                    error,
+                }),
+            );
+        }
+        yield* put(explorerDidFailToArchiveAllFiles(error));
     }
 }
 
@@ -405,9 +418,13 @@ function* handleExplorerDeleteFile(action: ReturnType<typeof explorerDeleteFile>
 
         // at this point we know the user accepted
 
+        const openUuids = yield* select((s: RootState) => s.editor.openFileUuids);
+
         // have to close editor before deleting, otherwise we get "in use" error
-        yield* put(editorCloseFile(action.uuid));
-        yield* take(editorDidCloseFile.when((a) => a.uuid === action.uuid));
+        if (openUuids.includes(action.uuid)) {
+            yield* put(editorCloseFile(action.uuid));
+            yield* take(editorDidCloseFile.when((a) => a.uuid === action.uuid));
+        }
 
         yield* put(fileStorageDeleteFile(action.fileName));
 

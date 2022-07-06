@@ -14,6 +14,7 @@ import {
     editorDidFailToActivateFile,
 } from '../editor/actions';
 import { EditorError } from '../editor/error';
+import { UUID } from '../fileStorage';
 import {
     fileStorageCopyFile,
     fileStorageDeleteFile,
@@ -69,6 +70,7 @@ import {
     duplicateFileDialogDidCancel,
     duplicateFileDialogShow,
 } from './duplicateFileDialog/actions';
+import { ExplorerError, ExplorerErrorName } from './error';
 import {
     Hub,
     newFileWizardDidAccept,
@@ -83,6 +85,23 @@ import {
 import explorer from './sagas';
 
 jest.mock('browser-fs-access');
+
+/**
+ * Asymmetric matcher for matching errors by name while ignoring the message.
+ * @param name The name to match.
+ * @returns An asymmetric matcher cast to an ExplorerError so that it can be
+ * passed to action functions.
+ */
+function expectExplorerError(name: ExplorerErrorName): ExplorerError {
+    const matcher: jest.AsymmetricMatcher & Record<string, unknown> = {
+        $$typeof: Symbol.for('jest.asymmetricMatcher'),
+        asymmetricMatch: (other) =>
+            other instanceof ExplorerError && other.name === name,
+        toAsymmetricMatcher: () => `[ExplorerError: ${name}]`,
+    };
+
+    return matcher as unknown as ExplorerError;
+}
 
 describe('handleExplorerArchiveAllFiles', () => {
     let saga: AsyncSaga;
@@ -104,6 +123,10 @@ describe('handleExplorerArchiveAllFiles', () => {
             saga.put(fileStorageDidFailToDumpAllFiles(testError));
 
             await expect(saga.take()).resolves.toEqual(
+                alertsShowAlert('alerts', 'unexpectedError', { error: testError }),
+            );
+
+            await expect(saga.take()).resolves.toEqual(
                 explorerDidFailToArchiveAllFiles(testError),
             );
         });
@@ -112,7 +135,11 @@ describe('handleExplorerArchiveAllFiles', () => {
             saga.put(fileStorageDidDumpAllFiles([]));
 
             await expect(saga.take()).resolves.toEqual(
-                explorerDidFailToArchiveAllFiles(new Error('no files')),
+                alertsShowAlert('explorer', 'noFilesToBackup'),
+            );
+
+            await expect(saga.take()).resolves.toEqual(
+                explorerDidFailToArchiveAllFiles(expectExplorerError('NoFiles')),
             );
         });
 
@@ -131,6 +158,10 @@ describe('handleExplorerArchiveAllFiles', () => {
                 jest.spyOn(browserFsAccess, 'fileSave').mockImplementation(() => {
                     throw testError;
                 });
+
+                await expect(saga.take()).resolves.toEqual(
+                    alertsShowAlert('alerts', 'unexpectedError', { error: testError }),
+                );
 
                 await expect(saga.take()).resolves.toEqual(
                     explorerDidFailToArchiveAllFiles(testError),
@@ -471,31 +502,47 @@ describe('handleExplorerDeleteFile', () => {
         );
     });
 
-    describe('accepted', () => {
-        beforeEach(async () => {
-            saga.put(deleteFileAlertDidAccept());
+    describe.each([false, true])(
+        'accepted, file is open: %o',
+        (fileIsOpenInEditor: boolean) => {
+            beforeEach(async () => {
+                if (fileIsOpenInEditor) {
+                    const openFileUuids: readonly UUID[] = [uuid(0)];
+                    saga.updateState({ editor: { openFileUuids } });
+                }
 
-            // should close the editor first
-            await expect(saga.take()).resolves.toEqual(editorCloseFile(uuid(0)));
-            saga.put(editorDidCloseFile(uuid(0)));
+                saga.put(deleteFileAlertDidAccept());
 
-            // then delete the file
-            await expect(saga.take()).resolves.toEqual(fileStorageDeleteFile(testFile));
-        });
+                if (fileIsOpenInEditor) {
+                    // should close the editor first
+                    await expect(saga.take()).resolves.toEqual(
+                        editorCloseFile(uuid(0)),
+                    );
+                    saga.put(editorDidCloseFile(uuid(0)));
+                }
 
-        it('should propagate error', async () => {
-            const testError = new Error('test error');
-            saga.put(fileStorageDidFailToDeleteFile(testFile, testError));
-            await expect(saga.take()).resolves.toEqual(
-                explorerDidFailToDeleteFile(testFile, testError),
-            );
-        });
+                // then delete the file
+                await expect(saga.take()).resolves.toEqual(
+                    fileStorageDeleteFile(testFile),
+                );
+            });
 
-        it('should succeed', async () => {
-            saga.put(fileStorageDidDeleteFile(testFile));
-            await expect(saga.take()).resolves.toEqual(explorerDidDeleteFile(testFile));
-        });
-    });
+            it('should propagate error', async () => {
+                const testError = new Error('test error');
+                saga.put(fileStorageDidFailToDeleteFile(testFile, testError));
+                await expect(saga.take()).resolves.toEqual(
+                    explorerDidFailToDeleteFile(testFile, testError),
+                );
+            });
+
+            it('should succeed', async () => {
+                saga.put(fileStorageDidDeleteFile(testFile));
+                await expect(saga.take()).resolves.toEqual(
+                    explorerDidDeleteFile(testFile),
+                );
+            });
+        },
+    );
 
     afterEach(async () => {
         await saga.end();

@@ -4,6 +4,14 @@
 
 ## [Unreleased]
 
+### Added
+- Added better error message when no files to backup ([support#681]).
+
+### Fixed
+- Fixed deleting files that are not open in the editor.
+
+[support#681]: https://github.com/pybricks/support/issues/681
+
 ## [2.0.0-beta.3] - 2022-07-06
 
 ### Changed
