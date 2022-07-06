@@ -13,8 +13,9 @@ export const checksum = createAction((checksum: number) => ({
 
 // High-level hub actions.
 
-export const downloadAndRun = createAction(() => ({
+export const downloadAndRun = createAction((abiVersion: number) => ({
     type: 'hub.action.downloadAndRun',
+    abiVersion,
 }));
 
 export const didStartDownload = createAction(() => ({

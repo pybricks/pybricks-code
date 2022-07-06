@@ -2283,6 +2283,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@pybricks/mpy-cross-v6@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@pybricks/mpy-cross-v6@npm:1.0.0"
+  checksum: ff09564d5923665ad836185405e8a1f830890913d82e466440bc7cb90e6b9754aad537d7d55360dbad44cfa6612cce5b593b28b981a4d82f8ed6ec640d42bf5f
+  languageName: node
+  linkType: hard
+
 "@pybricks/pybricks-code@workspace:.":
   version: 0.0.0-use.local
   resolution: "@pybricks/pybricks-code@workspace:."
@@ -2294,6 +2301,7 @@ __metadata:
     "@pybricks/firmware": 4.15.0
     "@pybricks/ide-docs": 2.2.0
     "@pybricks/mpy-cross-v5": ^2.0.0
+    "@pybricks/mpy-cross-v6": ^1.0.0
     "@reduxjs/toolkit": ^1.8.3
     "@shopify/react-i18n": ^7.1.3
     "@svgr/webpack": ^6.2.1

@@ -392,10 +392,9 @@ const Editor: React.VFC = () => {
         () => ({
             id: 'pybricks.action.check',
             label: i18n.translate(I18nId.Check),
-            // REVISIT: the compile options here might need to be changed - hopefully there is
-            // one setting that works for all hub types for cases where we aren't connected.
             run: (e) => {
-                dispatch(compile(e.getValue(), []));
+                // for checking, use the most recent compiler
+                dispatch(compile(e.getValue(), 6, []));
             },
             keybindings: [monaco.KeyCode.F2],
         }),

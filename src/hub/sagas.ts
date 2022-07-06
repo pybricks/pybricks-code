@@ -46,10 +46,17 @@ function* waitForWrite(id: number): SagaGenerator<{
     });
 }
 
-function* handleDownloadAndRun(): Generator {
+function* handleDownloadAndRun(action: ReturnType<typeof downloadAndRun>): Generator {
     const script = yield* editorGetValue();
 
-    yield* put(compile(script, ['-mno-unicode']));
+    yield* put(
+        compile(
+            script,
+            action.abiVersion,
+            // no-unicode option was removed in MPY ABI v6
+            action.abiVersion < 6 ? ['-mno-unicode'] : [],
+        ),
+    );
 
     const { mpy, mpyFail } = yield* race({
         mpy: take(didCompile),

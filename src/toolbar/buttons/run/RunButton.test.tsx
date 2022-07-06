@@ -20,5 +20,5 @@ it('should dispatch action when clicked', async () => {
 
     await user.click(button.getByRole('button', { name: 'Run' }));
 
-    expect(dispatch).toHaveBeenCalledWith(downloadAndRun());
+    expect(dispatch).toHaveBeenCalledWith(downloadAndRun(6));
 });

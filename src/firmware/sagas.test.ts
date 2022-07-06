@@ -107,6 +107,7 @@ describe('flashFirmware', () => {
             action = await saga.take();
             expect(action).toMatchInlineSnapshot(`
                 Object {
+                  "abiVersion": 5,
                   "options": Array [
                     "-mno-unicode",
                   ],
@@ -622,6 +623,7 @@ describe('flashFirmware', () => {
             action = await saga.take();
             expect(action).toMatchInlineSnapshot(`
                 Object {
+                  "abiVersion": 5,
                   "options": Array [
                     "-mno-unicode",
                   ],
@@ -767,6 +769,7 @@ describe('flashFirmware', () => {
             action = await saga.take();
             expect(action).toMatchInlineSnapshot(`
                 Object {
+                  "abiVersion": 5,
                   "options": Array [
                     "-mno-unicode",
                   ],
@@ -861,6 +864,7 @@ describe('flashFirmware', () => {
             action = await saga.take();
             expect(action).toMatchInlineSnapshot(`
                 Object {
+                  "abiVersion": 5,
                   "options": Array [
                     "-mno-unicode",
                   ],
@@ -964,6 +968,7 @@ describe('flashFirmware', () => {
             action = await saga.take();
             expect(action).toMatchInlineSnapshot(`
                 Object {
+                  "abiVersion": 5,
                   "options": Array [
                     "-mno-unicode",
                   ],
@@ -1107,6 +1112,7 @@ describe('flashFirmware', () => {
             action = await saga.take();
             expect(action).toMatchInlineSnapshot(`
                 Object {
+                  "abiVersion": 5,
                   "options": Array [
                     "-mno-unicode",
                   ],
@@ -1236,6 +1242,7 @@ describe('flashFirmware', () => {
             let action = await saga.take();
             expect(action).toMatchInlineSnapshot(`
                 Object {
+                  "abiVersion": 5,
                   "options": Array [
                     "-mno-unicode",
                   ],
@@ -1477,6 +1484,7 @@ describe('flashFirmware', () => {
             let action = await saga.take();
             expect(action).toMatchInlineSnapshot(`
                 Object {
+                  "abiVersion": 5,
                   "options": Array [
                     "-mno-unicode",
                   ],
@@ -1536,6 +1544,7 @@ describe('flashFirmware', () => {
             let action = await saga.take();
             expect(action).toMatchInlineSnapshot(`
                 Object {
+                  "abiVersion": 5,
                   "options": Array [
                     "-mno-unicode",
                   ],
@@ -1596,6 +1605,7 @@ describe('flashFirmware', () => {
             let action = await saga.take();
             expect(action).toMatchInlineSnapshot(`
                 Object {
+                  "abiVersion": 5,
                   "options": Array [
                     "-mno-unicode",
                   ],
@@ -1659,6 +1669,7 @@ describe('flashFirmware', () => {
             let action = await saga.take();
             expect(action).toMatchInlineSnapshot(`
                 Object {
+                  "abiVersion": 5,
                   "options": Array [
                     "-mno-unicode",
                   ],
@@ -1759,6 +1770,7 @@ describe('flashFirmware', () => {
         action = await saga.take();
         expect(action).toMatchInlineSnapshot(`
             Object {
+              "abiVersion": 5,
               "options": Array [
                 "-mno-unicode",
               ],

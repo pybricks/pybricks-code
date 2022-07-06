@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021 The Pybricks Authors
+// Copyright (c) 2021-2022 The Pybricks Authors
 
 import { AnyAction } from 'redux';
 import { didReceiveStatusReport } from '../ble-pybricks-service/actions';
@@ -19,6 +19,7 @@ test('initial state', () => {
     expect(reducers(undefined, {} as AnyAction)).toMatchInlineSnapshot(`
         Object {
           "downloadProgress": null,
+          "mpyAbiVersion": 6,
           "runtime": "hub.runtime.disconnected",
         }
     `);
