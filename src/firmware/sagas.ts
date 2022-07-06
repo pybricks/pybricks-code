@@ -196,7 +196,7 @@ function* loadFirmware(
         program = yield* call(() => reader.readMainPy());
     }
 
-    if (metadata['mpy-abi-version'] !== 5) {
+    if (![5, 6].includes(metadata['mpy-abi-version'])) {
         yield* put(
             didFailToFinish(
                 FailToFinishReasonType.BadMetadata,
