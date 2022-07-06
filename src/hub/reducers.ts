@@ -2,9 +2,12 @@
 // Copyright (c) 2020-2022 The Pybricks Authors
 
 import { Reducer, combineReducers } from 'redux';
+import * as semver from 'semver';
+import { bleDIServiceDidReceiveFirmwareRevision } from '../ble-device-info-service/actions';
 import { didReceiveStatusReport } from '../ble-pybricks-service/actions';
 import { Status, statusToFlag } from '../ble-pybricks-service/protocol';
 import { didConnect, didDisconnect } from '../ble/actions';
+import { pythonVersionToSemver } from '../utils/version';
 import {
     didFailToFinishDownload,
     didFinishDownload,
@@ -118,4 +121,18 @@ const downloadProgress: Reducer<number | null> = (state = null, action) => {
     return state;
 };
 
-export default combineReducers({ runtime, downloadProgress });
+const mpyAbiVersion: Reducer<number> = (state = 6, action) => {
+    if (bleDIServiceDidReceiveFirmwareRevision.matches(action)) {
+        // HACK: there is not a good way to get the supported MPY ABI version
+        // from a running hub, so we use heuristics on the firmware version.
+        if (semver.satisfies(pythonVersionToSemver(action.version), '>=3.2.0-beta.2')) {
+            return 6;
+        }
+
+        return 5;
+    }
+
+    return state;
+};
+
+export default combineReducers({ runtime, downloadProgress, mpyAbiVersion });

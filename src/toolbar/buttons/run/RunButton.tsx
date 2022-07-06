@@ -14,6 +14,7 @@ type RunButtonProps = Pick<ActionButtonProps, 'id'>;
 
 const RunButton: React.VoidFunctionComponent<RunButtonProps> = ({ id }) => {
     const downloadProgress = useSelector((s) => s.hub.downloadProgress);
+    const mpyAbiVersion = useSelector((s) => s.hub.mpyAbiVersion);
     const runtime = useSelector((s) => s.hub.runtime);
     const isEditorReady = useSelector((s) => s.editor.isReady);
     const keyboardShortcut = 'F5';
@@ -37,7 +38,7 @@ const RunButton: React.VoidFunctionComponent<RunButtonProps> = ({ id }) => {
             enabled={isEditorReady && runtime === HubRuntimeState.Idle}
             showProgress={runtime === HubRuntimeState.Loading}
             progress={downloadProgress === null ? undefined : downloadProgress}
-            onAction={() => dispatch(downloadAndRun())}
+            onAction={() => dispatch(downloadAndRun(mpyAbiVersion))}
         />
     );
 };

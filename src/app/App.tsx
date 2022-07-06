@@ -1,7 +1,10 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2022 The Pybricks Authors
 
+import 'react-splitter-layout/lib/index.css';
+import './app.scss';
 import { Classes } from '@blueprintjs/core';
+import docsPackage from '@pybricks/ide-docs/package.json';
 import { getFocusableTreeWalker } from '@react-aria/focus';
 import React, {
     FocusEventHandler,
@@ -20,8 +23,6 @@ import StatusBar from '../status-bar/StatusBar';
 import Terminal from '../terminal/Terminal';
 import Toolbar from '../toolbar/Toolbar';
 import { isMacOS } from '../utils/os';
-import 'react-splitter-layout/lib/index.css';
-import './app.scss';
 
 const Docs: React.VFC = () => {
     const { setIsSettingShowDocsEnabled } = useSettingIsShowDocsEnabled();
@@ -119,7 +120,7 @@ const Docs: React.VFC = () => {
                     contentWindow.document.documentElement.classList.add(Classes.DARK);
                 }
             }}
-            src="static/docs/index.html"
+            src={`static/docs/v${docsPackage.version}/index.html`}
             allowFullScreen={true}
             role="documentation"
             width="100%"

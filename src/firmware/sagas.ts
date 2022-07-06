@@ -207,7 +207,9 @@ function* loadFirmware(
         yield* disconnectAndCancel();
     }
 
-    yield* put(compile(program, metadata['mpy-cross-options']));
+    yield* put(
+        compile(program, metadata['mpy-abi-version'], metadata['mpy-cross-options']),
+    );
     const { mpy, mpyFail } = yield* race({
         mpy: take(didCompile),
         mpyFail: take(didFailToCompile),

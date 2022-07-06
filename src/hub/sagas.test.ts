@@ -31,7 +31,7 @@ describe('downloadAndRun', () => {
 
         saga.updateState({ editor: { isReady: true } });
 
-        saga.put(downloadAndRun());
+        saga.put(downloadAndRun(5));
 
         // first, it gets the value from the current editor
         const editorValueAction = await saga.take();
@@ -41,7 +41,7 @@ describe('downloadAndRun', () => {
 
         // then it tries to compile the program in the current editor
         const compileAction = await saga.take();
-        expect(compileAction).toEqual(compile('', ['-mno-unicode']));
+        expect(compileAction).toEqual(compile('', 5, ['-mno-unicode']));
         saga.put(didCompile(new Uint8Array(30)));
 
         // then it notifies that loading has begun
