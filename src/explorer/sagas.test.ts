@@ -70,6 +70,7 @@ import {
     duplicateFileDialogDidCancel,
     duplicateFileDialogShow,
 } from './duplicateFileDialog/actions';
+import { ExplorerError, ExplorerErrorName } from './error';
 import {
     Hub,
     newFileWizardDidAccept,
@@ -84,6 +85,23 @@ import {
 import explorer from './sagas';
 
 jest.mock('browser-fs-access');
+
+/**
+ * Asymmetric matcher for matching errors by name while ignoring the message.
+ * @param name The name to match.
+ * @returns An asymmetric matcher cast to an ExplorerError so that it can be
+ * passed to action functions.
+ */
+function expectExplorerError(name: ExplorerErrorName): ExplorerError {
+    const matcher: jest.AsymmetricMatcher & Record<string, unknown> = {
+        $$typeof: Symbol.for('jest.asymmetricMatcher'),
+        asymmetricMatch: (other) =>
+            other instanceof ExplorerError && other.name === name,
+        toAsymmetricMatcher: () => `[ExplorerError: ${name}]`,
+    };
+
+    return matcher as unknown as ExplorerError;
+}
 
 describe('handleExplorerArchiveAllFiles', () => {
     let saga: AsyncSaga;
@@ -105,6 +123,10 @@ describe('handleExplorerArchiveAllFiles', () => {
             saga.put(fileStorageDidFailToDumpAllFiles(testError));
 
             await expect(saga.take()).resolves.toEqual(
+                alertsShowAlert('alerts', 'unexpectedError', { error: testError }),
+            );
+
+            await expect(saga.take()).resolves.toEqual(
                 explorerDidFailToArchiveAllFiles(testError),
             );
         });
@@ -113,7 +135,11 @@ describe('handleExplorerArchiveAllFiles', () => {
             saga.put(fileStorageDidDumpAllFiles([]));
 
             await expect(saga.take()).resolves.toEqual(
-                explorerDidFailToArchiveAllFiles(new Error('no files')),
+                alertsShowAlert('explorer', 'noFilesToBackup'),
+            );
+
+            await expect(saga.take()).resolves.toEqual(
+                explorerDidFailToArchiveAllFiles(expectExplorerError('NoFiles')),
             );
         });
 
@@ -132,6 +158,10 @@ describe('handleExplorerArchiveAllFiles', () => {
                 jest.spyOn(browserFsAccess, 'fileSave').mockImplementation(() => {
                     throw testError;
                 });
+
+                await expect(saga.take()).resolves.toEqual(
+                    alertsShowAlert('alerts', 'unexpectedError', { error: testError }),
+                );
 
                 await expect(saga.take()).resolves.toEqual(
                     explorerDidFailToArchiveAllFiles(testError),

@@ -78,6 +78,7 @@ import {
     duplicateFileDialogDidCancel,
     duplicateFileDialogShow,
 } from './duplicateFileDialog/actions';
+import { ExplorerError } from './error';
 import {
     newFileWizardDidAccept,
     newFileWizardDidCancel,
@@ -105,7 +106,7 @@ function* handleExplorerArchiveAllFiles(): Generator {
         defined(didDump);
 
         if (didDump.files.length === 0) {
-            throw new Error('no files');
+            throw new ExplorerError('NoFiles', 'no files in storage');
         }
 
         const zip = new JSZip();
@@ -131,7 +132,18 @@ function* handleExplorerArchiveAllFiles(): Generator {
 
         yield* put(explorerDidArchiveAllFiles());
     } catch (err) {
-        yield* put(explorerDidFailToArchiveAllFiles(ensureError(err)));
+        const error = ensureError(err);
+
+        if (error instanceof ExplorerError && error.name === 'NoFiles') {
+            yield* put(alertsShowAlert('explorer', 'noFilesToBackup'));
+        } else {
+            yield* put(
+                alertsShowAlert('alerts', 'unexpectedError', {
+                    error,
+                }),
+            );
+        }
+        yield* put(explorerDidFailToArchiveAllFiles(error));
     }
 }
 

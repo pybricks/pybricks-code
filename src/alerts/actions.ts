@@ -15,7 +15,9 @@ export const alertsShowAlert = createAction(
     <D extends AlertDomain, S extends AlertSpecific<D>>(
         domain: D,
         specific: S,
-        props: AlertProps<D, S>,
+        ...props: AlertProps<D, S> extends never
+            ? [props?: never]
+            : [props: AlertProps<D, S>]
     ) => ({
         type: 'alerts.action.showAlert',
         domain,

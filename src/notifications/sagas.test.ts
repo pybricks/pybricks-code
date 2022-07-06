@@ -19,7 +19,6 @@ import {
 import { editorDidFailToOpenFile } from '../editor/actions';
 import { EditorError } from '../editor/error';
 import {
-    explorerDidFailToArchiveAllFiles,
     explorerDidFailToCreateNewFile,
     explorerDidFailToDeleteFile,
     explorerDidFailToDuplicateFile,
@@ -111,7 +110,6 @@ test.each([
     appDidCheckForUpdate(false),
     bleDIServiceDidReceiveFirmwareRevision('3.0.0'),
     fileStorageDidFailToInitialize(new Error('test error')),
-    explorerDidFailToArchiveAllFiles(new Error('test error')),
     explorerDidFailToImportFiles(new Error('test error')),
     explorerDidFailToCreateNewFile(new Error('test error')),
     explorerDidFailToDuplicateFile('test.file', new Error('test error')),
@@ -137,7 +135,6 @@ test.each([
     serviceWorkerDidSucceed(),
     appDidCheckForUpdate(true),
     bleDIServiceDidReceiveFirmwareRevision(firmwareVersion),
-    explorerDidFailToArchiveAllFiles(new DOMException('test message', 'AbortError')),
     explorerDidFailToImportFiles(new DOMException('test message', 'AbortError')),
     explorerDidFailToCreateNewFile(new DOMException('test message', 'AbortError')),
     explorerDidFailToDuplicateFile(
