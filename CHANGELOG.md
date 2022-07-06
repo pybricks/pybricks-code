@@ -4,7 +4,10 @@
 
 ## [Unreleased]
 
+## [2.0.0-beta.3] - 2022-07-06
+
 ### Changed
+- Updated dependencies.
 - Updated firmware to Pybricks v3.2.0b2:
 
   ### Added
@@ -13,7 +16,7 @@
   ### Fixed
   - Fixed motor not stopping at the end of `run_until_stalled` ([support#662]).
   - Fixed incorrect battery current reading on Technic hub ([support#665]).
-  - Fixed non-zero speed reported when stalled.
+  - Fixed non-zero speed reported when motor stalled.
   - Fixed I/O devices not syncing at high baud rate.
   - Fixed `ENODEV` error while device connection manager is busy ([support#674]).
 
@@ -306,16 +309,18 @@
 - Updated hub firmware to [v3.0.0].
 - Updated documentation.
 
+[v3.0.0]: https://github.com/pybricks/pybricks-micropython/blob/master/CHANGELOG.md#300---2021-06-08
+
 ## Prerelease
 
 Prerelease changes are documented at [support#48].
 
 [support#48]: https://github.com/pybricks/support/issues/48
-[v3.0.0]: https://github.com/pybricks/pybricks-micropython/blob/master/CHANGELOG.md#300---2021-06-08
 
 <!-- links for version headings -->
 
-[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.2...HEAD
+[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.3...HEAD
+[2.0.0-beta.3]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.2...v2.0.0-beta.3
 [2.0.0-beta.2]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.1...v2.0.0-beta.2
 [2.0.0-beta.1]: https://github.com/pybricks/pybricks-code/compare/v1.2.0-beta.1...v2.0.0-beta.1
 [1.2.0-beta.1]: https://github.com/pybricks/pybricks-code/compare/v1.1.0...v1.2.0-beta.1
