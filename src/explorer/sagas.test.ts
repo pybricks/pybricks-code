@@ -14,6 +14,7 @@ import {
     editorDidFailToActivateFile,
 } from '../editor/actions';
 import { EditorError } from '../editor/error';
+import { UUID } from '../fileStorage';
 import {
     fileStorageCopyFile,
     fileStorageDeleteFile,
@@ -471,31 +472,47 @@ describe('handleExplorerDeleteFile', () => {
         );
     });
 
-    describe('accepted', () => {
-        beforeEach(async () => {
-            saga.put(deleteFileAlertDidAccept());
+    describe.each([false, true])(
+        'accepted, file is open: %o',
+        (fileIsOpenInEditor: boolean) => {
+            beforeEach(async () => {
+                if (fileIsOpenInEditor) {
+                    const openFileUuids: readonly UUID[] = [uuid(0)];
+                    saga.updateState({ editor: { openFileUuids } });
+                }
 
-            // should close the editor first
-            await expect(saga.take()).resolves.toEqual(editorCloseFile(uuid(0)));
-            saga.put(editorDidCloseFile(uuid(0)));
+                saga.put(deleteFileAlertDidAccept());
 
-            // then delete the file
-            await expect(saga.take()).resolves.toEqual(fileStorageDeleteFile(testFile));
-        });
+                if (fileIsOpenInEditor) {
+                    // should close the editor first
+                    await expect(saga.take()).resolves.toEqual(
+                        editorCloseFile(uuid(0)),
+                    );
+                    saga.put(editorDidCloseFile(uuid(0)));
+                }
 
-        it('should propagate error', async () => {
-            const testError = new Error('test error');
-            saga.put(fileStorageDidFailToDeleteFile(testFile, testError));
-            await expect(saga.take()).resolves.toEqual(
-                explorerDidFailToDeleteFile(testFile, testError),
-            );
-        });
+                // then delete the file
+                await expect(saga.take()).resolves.toEqual(
+                    fileStorageDeleteFile(testFile),
+                );
+            });
 
-        it('should succeed', async () => {
-            saga.put(fileStorageDidDeleteFile(testFile));
-            await expect(saga.take()).resolves.toEqual(explorerDidDeleteFile(testFile));
-        });
-    });
+            it('should propagate error', async () => {
+                const testError = new Error('test error');
+                saga.put(fileStorageDidFailToDeleteFile(testFile, testError));
+                await expect(saga.take()).resolves.toEqual(
+                    explorerDidFailToDeleteFile(testFile, testError),
+                );
+            });
+
+            it('should succeed', async () => {
+                saga.put(fileStorageDidDeleteFile(testFile));
+                await expect(saga.take()).resolves.toEqual(
+                    explorerDidDeleteFile(testFile),
+                );
+            });
+        },
+    );
 
     afterEach(async () => {
         await saga.end();

@@ -4,6 +4,9 @@
 
 ## [Unreleased]
 
+### Fixed
+- Fixed deleting files that are not open in the editor.
+
 ## [2.0.0-beta.3] - 2022-07-06
 
 ### Changed

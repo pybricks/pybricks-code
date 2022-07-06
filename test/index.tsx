@@ -9,12 +9,7 @@ import userEvent from '@testing-library/user-event';
 import type { UserEvent } from '@testing-library/user-event/dist/types/setup';
 import React, { ReactElement } from 'react';
 import { Provider } from 'react-redux';
-import {
-    AnyAction,
-    DeepPartial,
-    PreloadedState,
-    legacy_createStore as createStore,
-} from 'redux';
+import { AnyAction, PreloadedState, legacy_createStore as createStore } from 'redux';
 import { END, MulticastChannel, Saga, Task, runSaga, stdChannel } from 'redux-saga';
 import { UUID } from '../src/fileStorage';
 import { RootState, rootReducer } from '../src/reducers';
@@ -81,7 +76,7 @@ export class AsyncSaga {
         return Promise.resolve(next);
     }
 
-    public updateState(state: DeepPartial<RootState>): void {
+    public updateState(state: PreloadedState<RootState>): void {
         for (const key of Object.keys(state) as Array<keyof RootState>) {
             // @ts-expect-error: writing to readonly for testing
             this.state[key] = { ...this.state[key], ...state[key] };
