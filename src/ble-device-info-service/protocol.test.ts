@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021 The Pybricks Authors
+// Copyright (c) 2021-2022 The Pybricks Authors
 
 import {
     HubType,
@@ -8,7 +8,7 @@ import {
 } from '../ble-lwp3-service/protocol';
 import { decodePnpId, getHubTypeName } from './protocol';
 
-function encodeInfo(id: HubType, variant?: number) {
+export function encodeInfo(id: HubType, variant?: number) {
     return new DataView(
         new Uint8Array([
             1, // Bluetooth SIG
