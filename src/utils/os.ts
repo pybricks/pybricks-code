@@ -1,17 +1,14 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021 The Pybricks Authors
+// Copyright (c) 2021-2022 The Pybricks Authors
 
 // Utility functions for dealing with operating systems.
-
-// TODO: replace with navigator.userAgentData when it is more widely available
-// https://developer.mozilla.org/en-US/docs/Web/API/User-Agent_Client_Hints_API
 
 /**
  * Tests if we are running on Android.
  * @returns `true` if running on Android, otherwise `false`.
  */
 export function isAndroid(): boolean {
-    return /android/i.test(navigator.userAgent);
+    return navigator.userAgentData?.platform === 'Android';
 }
 
 /**
@@ -19,7 +16,7 @@ export function isAndroid(): boolean {
  * @returns `true` if running on macOS, otherwise `false`.
  */
 export function isMacOS(): boolean {
-    return /mac/i.test(navigator.platform);
+    return navigator.userAgentData?.platform === 'macOS';
 }
 
 /**
@@ -27,5 +24,21 @@ export function isMacOS(): boolean {
  * @returns `true` if running on Windows, otherwise `false`.
  */
 export function isWindows(): boolean {
-    return /win/i.test(navigator.platform);
+    return navigator.userAgentData?.platform === 'Windows';
+}
+
+/**
+ * Tests if we are running on Linux.
+ * @returns `true` if running on Linux, otherwise `false`.
+ */
+export function isLinux(): boolean {
+    return navigator.userAgentData?.platform === 'Linux';
+}
+
+/**
+ * Tests if we are running on iOS.
+ * @returns `true` if running on iOS, otherwise `false`.
+ */
+export function isIOS(): boolean {
+    return navigator.userAgentData?.platform === 'iOS';
 }
