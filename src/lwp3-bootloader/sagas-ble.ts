@@ -19,7 +19,10 @@ import {
     disconnect,
     send,
 } from './actions';
-import { CharacteristicUUID, ServiceUUID } from './protocol';
+import {
+    lwp3BootloaderCharacteristicUUID,
+    lwp3BootloaderServiceUUID,
+} from './protocol';
 
 function* handleNotify(data: DataView): Generator {
     yield* put(didReceive(data));
@@ -59,8 +62,8 @@ function* handleConnect(): Generator {
     try {
         device = yield* call(() =>
             navigator.bluetooth.requestDevice({
-                filters: [{ services: [ServiceUUID] }],
-                optionalServices: [ServiceUUID],
+                filters: [{ services: [lwp3BootloaderServiceUUID] }],
+                optionalServices: [lwp3BootloaderServiceUUID],
             }),
         );
     } catch (err) {
@@ -98,7 +101,7 @@ function* handleConnect(): Generator {
 
     let service: BluetoothRemoteGATTService;
     try {
-        service = yield* call([server, 'getPrimaryService'], ServiceUUID);
+        service = yield* call([server, 'getPrimaryService'], lwp3BootloaderServiceUUID);
     } catch (err) {
         server.disconnect();
         yield* takeMaybe(disconnectChannel);
@@ -116,7 +119,7 @@ function* handleConnect(): Generator {
     try {
         characteristic = yield* call(
             [service, 'getCharacteristic'],
-            CharacteristicUUID,
+            lwp3BootloaderCharacteristicUUID,
         );
     } catch (err) {
         server.disconnect();

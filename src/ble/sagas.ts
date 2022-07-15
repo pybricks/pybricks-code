@@ -23,7 +23,7 @@ import {
 } from '../ble-device-info-service/actions';
 import {
     decodePnpId,
-    serviceUUID as deviceInfoServiceUUID,
+    deviceInformationServiceUUID,
     firmwareRevisionStringUUID,
     pnpIdUUID,
     softwareRevisionStringUUID,
@@ -35,9 +35,9 @@ import {
     write as writeUart,
 } from '../ble-nordic-uart-service/actions';
 import {
-    RxCharUUID as uartRxCharUUID,
-    ServiceUUID as uartServiceUUID,
-    TxCharUUID as uartTxCharUUID,
+    nordicUartRxCharUUID,
+    nordicUartServiceUUID,
+    nordicUartTxCharUUID,
 } from '../ble-nordic-uart-service/protocol';
 import {
     didFailToWriteCommand,
@@ -46,8 +46,8 @@ import {
     writeCommand,
 } from '../ble-pybricks-service/actions';
 import {
-    ControlCharacteristicUUID as pybricksCommandCharacteristicUUID,
-    ServiceUUID as pybricksServiceUUID,
+    pybricksControlCharacteristicUUID,
+    pybricksServiceUUID,
 } from '../ble-pybricks-service/protocol';
 import { RootState } from '../reducers';
 import { ensureError } from '../utils';
@@ -121,8 +121,8 @@ function* handleBleConnectPybricks(): Generator {
                 filters: [{ services: [pybricksServiceUUID] }],
                 optionalServices: [
                     pybricksServiceUUID,
-                    deviceInfoServiceUUID,
-                    uartServiceUUID,
+                    deviceInformationServiceUUID,
+                    nordicUartServiceUUID,
                 ],
             }),
         );
@@ -183,7 +183,7 @@ function* handleBleConnectPybricks(): Generator {
     try {
         deviceInfoService = yield* call(
             [server, 'getPrimaryService'],
-            deviceInfoServiceUUID,
+            deviceInformationServiceUUID,
         );
     } catch (err) {
         server.disconnect();
@@ -360,7 +360,7 @@ function* handleBleConnectPybricks(): Generator {
     try {
         pybricksControlChar = yield* call(
             [pybricksService, 'getCharacteristic'],
-            pybricksCommandCharacteristicUUID,
+            pybricksControlCharacteristicUUID,
         );
     } catch (err) {
         server.disconnect();
@@ -432,7 +432,7 @@ function* handleBleConnectPybricks(): Generator {
 
     let uartService: BluetoothRemoteGATTService;
     try {
-        uartService = yield* call([server, 'getPrimaryService'], uartServiceUUID);
+        uartService = yield* call([server, 'getPrimaryService'], nordicUartServiceUUID);
     } catch (err) {
         yield* cancel(tasks);
         pybricksControlChannel.close();
@@ -460,7 +460,10 @@ function* handleBleConnectPybricks(): Generator {
 
     let uartRxChar: BluetoothRemoteGATTCharacteristic;
     try {
-        uartRxChar = yield* call([uartService, 'getCharacteristic'], uartRxCharUUID);
+        uartRxChar = yield* call(
+            [uartService, 'getCharacteristic'],
+            nordicUartRxCharUUID,
+        );
     } catch (err) {
         yield* cancel(tasks);
         pybricksControlChannel.close();
@@ -482,7 +485,10 @@ function* handleBleConnectPybricks(): Generator {
 
     let uartTxChar: BluetoothRemoteGATTCharacteristic;
     try {
-        uartTxChar = yield* call([uartService, 'getCharacteristic'], uartTxCharUUID);
+        uartTxChar = yield* call(
+            [uartService, 'getCharacteristic'],
+            nordicUartTxCharUUID,
+        );
     } catch (err) {
         yield* cancel(tasks);
         pybricksControlChannel.close();

@@ -12,7 +12,7 @@ import {
     takeEvery,
 } from 'typed-redux-saga/macro';
 import { didFailToWrite, didWrite, write } from '../ble-nordic-uart-service/actions';
-import { SafeTxCharLength } from '../ble-nordic-uart-service/protocol';
+import { nordicUartSafeTxCharLength } from '../ble-nordic-uart-service/protocol';
 import {
     didFailToSendCommand,
     didSendCommand,
@@ -121,10 +121,10 @@ function* handleDownloadAndRun(action: ReturnType<typeof downloadAndRun>): Gener
         const chunk = mpy.data.slice(i, i + downloadChunkSize);
 
         // we can actually only write 20 bytes at a time
-        for (let j = 0; j < chunk.length; j += SafeTxCharLength) {
+        for (let j = 0; j < chunk.length; j += nordicUartSafeTxCharLength) {
             yield* put(didProgressDownload((i + j) / mpy.data.byteLength));
             const writeAction = yield* put(
-                write(nextMessageId(), chunk.slice(j, j + SafeTxCharLength)),
+                write(nextMessageId(), chunk.slice(j, j + nordicUartSafeTxCharLength)),
             );
             const { didFailToWrite } = yield* waitForWrite(writeAction.id);
 

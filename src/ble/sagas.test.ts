@@ -11,20 +11,20 @@ import {
     bleDIServiceDidReceiveSoftwareRevision,
 } from '../ble-device-info-service/actions';
 import {
-    serviceUUID as deviceInfoServiceUUID,
+    deviceInformationServiceUUID,
     firmwareRevisionStringUUID,
     pnpIdUUID,
     softwareRevisionStringUUID,
 } from '../ble-device-info-service/protocol';
 import { encodeInfo } from '../ble-device-info-service/protocol.test';
 import {
-    RxCharUUID as uartRxCharUUID,
-    ServiceUUID as uartServiceUUID,
-    TxCharUUID as uartTxCharUUID,
+    nordicUartRxCharUUID,
+    nordicUartServiceUUID,
+    nordicUartTxCharUUID,
 } from '../ble-nordic-uart-service/protocol';
 import {
-    ControlCharacteristicUUID as pybricksCommandCharacteristicUUID,
-    ServiceUUID as pybricksServiceUUID,
+    pybricksControlCharacteristicUUID,
+    pybricksServiceUUID,
 } from '../ble-pybricks-service/protocol';
 import {
     BleDeviceFailToConnectReasonType,
@@ -106,7 +106,7 @@ function createMocks(): Mocks {
 
     const pybricksService = mock<BluetoothRemoteGATTService>();
     pybricksService.getCharacteristic
-        .calledWith(pybricksCommandCharacteristicUUID)
+        .calledWith(pybricksControlCharacteristicUUID)
         .mockResolvedValue(pybricksChar);
 
     const uartRxChar = mock<BluetoothRemoteGATTCharacteristic>();
@@ -122,10 +122,10 @@ function createMocks(): Mocks {
 
     const uartService = mock<BluetoothRemoteGATTService>();
     uartService.getCharacteristic
-        .calledWith(uartRxCharUUID)
+        .calledWith(nordicUartRxCharUUID)
         .mockResolvedValue(uartRxChar);
     uartService.getCharacteristic
-        .calledWith(uartTxCharUUID)
+        .calledWith(nordicUartTxCharUUID)
         .mockResolvedValue(uartTxChar);
 
     const gatt = mock<BluetoothRemoteGATTServer>();
@@ -136,12 +136,14 @@ function createMocks(): Mocks {
         }, 10);
     });
     gatt.getPrimaryService
-        .calledWith(deviceInfoServiceUUID)
+        .calledWith(deviceInformationServiceUUID)
         .mockResolvedValue(deviceInfoService);
     gatt.getPrimaryService
         .calledWith(pybricksServiceUUID)
         .mockResolvedValue(pybricksService);
-    gatt.getPrimaryService.calledWith(uartServiceUUID).mockResolvedValue(uartService);
+    gatt.getPrimaryService
+        .calledWith(nordicUartServiceUUID)
+        .mockResolvedValue(uartService);
 
     const deviceEvents = new EventTarget();
     const device = mock<BluetoothDevice>({
@@ -339,7 +341,7 @@ describe('connect action is dispatched', () => {
         it('should fail if device does not have device info service', async () => {
             const testError = new DOMException('test error', 'NotFoundError');
             mocks.gatt.getPrimaryService
-                .calledWith(deviceInfoServiceUUID)
+                .calledWith(deviceInformationServiceUUID)
                 .mockRejectedValueOnce(testError);
 
             await runConnectUntil(saga, ConnectRunPoint.Connect);
@@ -485,7 +487,7 @@ describe('connect action is dispatched', () => {
         it('should fail if getting pybricks characteristic fails', async () => {
             const testError = new Error('test error');
             mocks.pybricksService.getCharacteristic
-                .calledWith(pybricksCommandCharacteristicUUID)
+                .calledWith(pybricksControlCharacteristicUUID)
                 .mockRejectedValue(testError);
 
             await runConnectUntil(saga, ConnectRunPoint.DidReceivePnpId);
@@ -544,7 +546,7 @@ describe('connect action is dispatched', () => {
         it('should fail if device does not have nordic uart service', async () => {
             const testError = new DOMException('test error', 'NotFoundError');
             mocks.gatt.getPrimaryService
-                .calledWith(uartServiceUUID)
+                .calledWith(nordicUartServiceUUID)
                 .mockRejectedValueOnce(testError);
 
             await runConnectUntil(saga, ConnectRunPoint.DidReceivePnpId);
@@ -562,7 +564,7 @@ describe('connect action is dispatched', () => {
         it('should fail if getting nordic uart rx characteristic fails', async () => {
             const testError = new Error('test error');
             mocks.uartService.getCharacteristic
-                .calledWith(uartRxCharUUID)
+                .calledWith(nordicUartRxCharUUID)
                 .mockRejectedValue(testError);
 
             await runConnectUntil(saga, ConnectRunPoint.DidReceivePnpId);
@@ -583,7 +585,7 @@ describe('connect action is dispatched', () => {
         it('should fail if getting nordic uart tx characteristic fails', async () => {
             const testError = new Error('test error');
             mocks.uartService.getCharacteristic
-                .calledWith(uartTxCharUUID)
+                .calledWith(nordicUartTxCharUUID)
                 .mockRejectedValue(testError);
 
             await runConnectUntil(saga, ConnectRunPoint.DidReceivePnpId);
