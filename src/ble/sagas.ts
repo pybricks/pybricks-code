@@ -260,9 +260,11 @@ function* handleBleConnectPybricks(): Generator {
     try {
         pnpIdChar = yield* call([deviceInfoService, 'getCharacteristic'], pnpIdUUID);
     } catch (err) {
-        console.warn(
-            'PnP ID characteristic requires Pybricks firmware v3.1.0a1 or later',
-        );
+        if (process.env.NODE_ENV !== 'test') {
+            console.warn(
+                'PnP ID characteristic requires Pybricks firmware v3.1.0a1 or later',
+            );
+        }
     }
 
     if (pnpIdChar) {
