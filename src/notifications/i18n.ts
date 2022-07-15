@@ -14,7 +14,6 @@ export function useI18n(): I18n {
 export enum I18nId {
     AppNoUpdateFound = 'app.noUpdateFound',
     BleUnexpectedError = 'ble.unexpectedError',
-    BleGattPermission = 'ble.gattPermission',
     BleGattServiceNotFound = 'ble.gattServiceNotFound',
     EditorFailedToOpenFile = 'editor.failedToOpenFile',
     EditorFailedToSaveFile = 'editor.failedToSaveFile',

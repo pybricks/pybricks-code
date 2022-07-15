@@ -315,6 +315,9 @@ describe('connect action is dispatched', () => {
             await runConnectUntil(saga, ConnectRunPoint.Connect);
 
             await expect(saga.take()).resolves.toEqual(
+                alertsShowAlert('ble', 'noGatt'),
+            );
+            await expect(saga.take()).resolves.toEqual(
                 bleDidFailToConnectPybricks({
                     reason: BleDeviceFailToConnectReasonType.NoGatt,
                 }),

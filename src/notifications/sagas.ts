@@ -174,10 +174,6 @@ function* showBleDeviceDidFailToConnectError(
     action: ReturnType<typeof bleDidFailToConnectPybricks>,
 ): Generator {
     switch (action.reason) {
-        case BleDeviceFailToConnectReasonType.NoGatt:
-            yield* showSingleton(Level.Error, I18nId.BleGattPermission);
-            break;
-
         case BleDeviceFailToConnectReasonType.NoPybricksService:
             yield* showSingleton(Level.Error, I18nId.BleGattServiceNotFound, {
                 serviceName: 'Pybricks',

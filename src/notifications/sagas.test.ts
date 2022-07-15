@@ -61,7 +61,6 @@ function createTestToasterSaga(): { toaster: IToaster; saga: AsyncSaga } {
 }
 
 test.each([
-    bleDidFailToConnectPybricks({ reason: BleDeviceFailToConnectReasonType.NoGatt }),
     bleDidFailToConnectPybricks({
         reason: BleDeviceFailToConnectReasonType.NoDeviceInfoService,
     }),
@@ -130,6 +129,7 @@ test.each([
         reason: BleDeviceFailToConnectReasonType.NoBluetooth,
     }),
     bleDidFailToConnectPybricks({ reason: BleDeviceFailToConnectReasonType.Canceled }),
+    bleDidFailToConnectPybricks({ reason: BleDeviceFailToConnectReasonType.NoGatt }),
     bleDidFailToConnectPybricks({
         reason: BleDeviceFailToConnectReasonType.Unknown,
         err: { name: 'test', message: 'unknown' },

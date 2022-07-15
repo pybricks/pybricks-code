@@ -149,6 +149,7 @@ function* handleBleConnectPybricks(): Generator {
         const gatt = device.gatt;
 
         if (!gatt) {
+            yield* put(alertsShowAlert('ble', 'noGatt'));
             yield* put(bleDidFailToConnectPybricks({ reason: Reason.NoGatt }));
             return;
         }

@@ -8,5 +8,8 @@
     "bluetoothNotAvailable": {
         "message": "No Bluetooth adapter could be found.",
         "suggestion": "Please connect or enable a Bluetooth Low Energy adapter and restart the browser."
+    },
+    "noGatt": {
+        "message": "The web browser did not give permission to use Bluetooth Low Energy."
     }
 }
