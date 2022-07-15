@@ -9681,7 +9681,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-mock-extended@npm:^2.0.6":
+"jest-mock-extended@npm:2.0.6":
   version: 2.0.6
   resolution: "jest-mock-extended@npm:2.0.6"
   dependencies:
@@ -9690,6 +9690,18 @@ __metadata:
     jest: ^24.0.0 || ^25.0.0 || ^26.0.0 || ^27.0.0 || ^28.0.0
     typescript: ^3.0.0 || ^4.0.0
   checksum: 62b920594674af8606ce690bc431bc0ad94976fbeebe4c7a1b3fa45b5bac27f389bb389673e300cc0e30ee17d3f3fd4d7ff550a4f18c5d814388c270fb4c5005
+  languageName: node
+  linkType: hard
+
+"jest-mock-extended@patch:jest-mock-extended@npm:2.0.6#.yarn/patches/jest-mock-extended-npm-2.0.6-86ec410111.patch::locator=%40pybricks%2Fpybricks-code%40workspace%3A.":
+  version: 2.0.6
+  resolution: "jest-mock-extended@patch:jest-mock-extended@npm%3A2.0.6#.yarn/patches/jest-mock-extended-npm-2.0.6-86ec410111.patch::version=2.0.6&hash=9057e0&locator=%40pybricks%2Fpybricks-code%40workspace%3A."
+  dependencies:
+    ts-essentials: ^7.0.3
+  peerDependencies:
+    jest: ^24.0.0 || ^25.0.0 || ^26.0.0 || ^27.0.0 || ^28.0.0
+    typescript: ^3.0.0 || ^4.0.0
+  checksum: 02045304db317a929482d376a46d69d7987b7b5577f602620d678eb129070a87b8e61c213696dbc135eff970a43bb808ea5417d3554819b259aedc4f997eaded
   languageName: node
   linkType: hard
 

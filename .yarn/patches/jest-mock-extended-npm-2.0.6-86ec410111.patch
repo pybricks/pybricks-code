@@ -1,0 +1,39 @@
+diff --git a/lib/CalledWithFn.js b/lib/CalledWithFn.js
+index 56674799caceb24951e71ab00f20eb53a52c5b6c..1aec49f8c67eb840dba54e937fe49f66a9c13872 100644
+--- a/lib/CalledWithFn.js
++++ b/lib/CalledWithFn.js
+@@ -30,7 +30,7 @@ const calledWithFn = () => {
+             fn.mockImplementation((...args) => checkCalledWith(calledWithStack, args));
+             calledWithStack = [];
+         }
+-        calledWithStack.push({ args, calledWithFn });
++        calledWithStack.unshift({ args, calledWithFn });
+         return calledWithFn;
+     };
+     return fn;
+diff --git a/lib/cjs/CalledWithFn.js b/lib/cjs/CalledWithFn.js
+index 0cdfc48c26a86f4372e19b8abc2cd3c2dd32f357..d374b9bbe2d93ed27f2ea8d8443338dde970a33a 100644
+--- a/lib/cjs/CalledWithFn.js
++++ b/lib/cjs/CalledWithFn.js
+@@ -30,7 +30,7 @@ const calledWithFn = () => {
+             fn.mockImplementation((...args) => checkCalledWith(calledWithStack, args));
+             calledWithStack = [];
+         }
+-        calledWithStack.push({ args, calledWithFn });
++        calledWithStack.unshift({ args, calledWithFn });
+         return calledWithFn;
+     };
+     return fn;
+diff --git a/lib/mjs/CalledWithFn.js b/lib/mjs/CalledWithFn.js
+index 4c90aeb893cf4c11cacc386d08aea6147cc8f9e1..5c4677c2d088392a067d94742415237f539b77f1 100644
+--- a/lib/mjs/CalledWithFn.js
++++ b/lib/mjs/CalledWithFn.js
+@@ -27,7 +27,7 @@ export const calledWithFn = () => {
+             fn.mockImplementation((...args) => checkCalledWith(calledWithStack, args));
+             calledWithStack = [];
+         }
+-        calledWithStack.push({ args, calledWithFn });
++        calledWithStack.unshift({ args, calledWithFn });
+         return calledWithFn;
+     };
+     return fn;

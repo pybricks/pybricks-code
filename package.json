@@ -162,7 +162,8 @@
     "resolutions": {
         "mq-polyfill@1.1.8": "patch:mq-polyfill@npm:1.1.8#.yarn/patches/mq-polyfill-npm-1.1.8-62fe162439.patch",
         "react-error-overlay": "6.0.9",
-        "react-dev-utils@^12.0.1": "patch:react-dev-utils@npm:12.0.1#.yarn/patches/react-dev-utils-npm-12.0.1-83ba06e3ee.patch"
+        "react-dev-utils@^12.0.1": "patch:react-dev-utils@npm:12.0.1#.yarn/patches/react-dev-utils-npm-12.0.1-83ba06e3ee.patch",
+        "jest-mock-extended@^2.0.6": "patch:jest-mock-extended@npm:2.0.6#.yarn/patches/jest-mock-extended-npm-2.0.6-86ec410111.patch"
     },
     "jest": {
         "roots": [

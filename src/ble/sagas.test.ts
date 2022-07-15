@@ -29,8 +29,12 @@ import {
     BleDeviceFailToConnectReasonType,
     connect,
     didConnect,
+    didDisconnect,
     didFailToConnect,
+    disconnect,
+    toggleBluetooth,
 } from './actions';
+import { BleConnectionState } from './reducers';
 import ble from './sagas';
 
 const encoder = new TextEncoder();
@@ -38,6 +42,192 @@ const encoder = new TextEncoder();
 afterEach(() => {
     jest.clearAllMocks();
 });
+
+type Mocks = {
+    bluetooth: MockProxy<Bluetooth>;
+    device: MockProxy<BluetoothDevice>;
+    gatt: MockProxy<BluetoothRemoteGATTServer>;
+    deviceInfoService: MockProxy<BluetoothRemoteGATTService>;
+    firmwareRevisionChar: MockProxy<BluetoothRemoteGATTCharacteristic>;
+    softwareRevisionChar: MockProxy<BluetoothRemoteGATTCharacteristic>;
+    pnpIdChar: MockProxy<BluetoothRemoteGATTCharacteristic>;
+    pybricksService: MockProxy<BluetoothRemoteGATTService>;
+    pybricksChar: MockProxy<BluetoothRemoteGATTCharacteristic>;
+    uartService: MockProxy<BluetoothRemoteGATTService>;
+    uartRxChar: MockProxy<BluetoothRemoteGATTCharacteristic>;
+    uartTxChar: MockProxy<BluetoothRemoteGATTCharacteristic>;
+};
+
+/**
+ * Creates mocks used in connect tests.
+ */
+function createMocks(): Mocks {
+    const firmwareRevisionChar = mock<BluetoothRemoteGATTCharacteristic>();
+    firmwareRevisionChar.readValue.mockResolvedValue(
+        new DataView(encoder.encode('3.2.0b2').buffer),
+    );
+
+    const softwareRevisionChar = mock<BluetoothRemoteGATTCharacteristic>();
+    softwareRevisionChar.readValue.mockResolvedValue(
+        new DataView(encoder.encode('1.1.0').buffer),
+    );
+
+    const pnpIdChar = mock<BluetoothRemoteGATTCharacteristic>();
+    pnpIdChar.readValue.mockResolvedValue(
+        new DataView(encodeInfo(HubType.TechnicHub).buffer),
+    );
+
+    const deviceInfoService = mock<BluetoothRemoteGATTService>();
+    deviceInfoService.getCharacteristic
+        .calledWith(firmwareRevisionStringUUID)
+        .mockResolvedValue(firmwareRevisionChar);
+    deviceInfoService.getCharacteristic
+        .calledWith(softwareRevisionStringUUID)
+        .mockResolvedValue(softwareRevisionChar);
+    deviceInfoService.getCharacteristic
+        .calledWith(pnpIdUUID)
+        .mockResolvedValue(pnpIdChar);
+
+    const pybricksCharEventTarget = new EventTarget();
+    const pybricksChar = mock<BluetoothRemoteGATTCharacteristic>({
+        addEventListener: pybricksCharEventTarget.addEventListener.bind(
+            pybricksCharEventTarget,
+        ),
+        removeEventListener: pybricksCharEventTarget.removeEventListener.bind(
+            pybricksCharEventTarget,
+        ),
+        dispatchEvent: pybricksCharEventTarget.dispatchEvent.bind(
+            pybricksCharEventTarget,
+        ),
+    });
+    pybricksChar.startNotifications.mockResolvedValue(pybricksChar);
+    pybricksChar.stopNotifications.mockResolvedValue(pybricksChar);
+
+    const pybricksService = mock<BluetoothRemoteGATTService>();
+    pybricksService.getCharacteristic
+        .calledWith(pybricksCommandCharacteristicUUID)
+        .mockResolvedValue(pybricksChar);
+
+    const uartRxChar = mock<BluetoothRemoteGATTCharacteristic>();
+
+    const uartTxCharEventTarget = new EventTarget();
+    const uartTxChar = mock<BluetoothRemoteGATTCharacteristic>({
+        addEventListener:
+            uartTxCharEventTarget.addEventListener.bind(uartTxCharEventTarget),
+        removeEventListener:
+            uartTxCharEventTarget.removeEventListener.bind(uartTxCharEventTarget),
+        dispatchEvent: uartTxCharEventTarget.dispatchEvent.bind(uartTxCharEventTarget),
+    });
+
+    const uartService = mock<BluetoothRemoteGATTService>();
+    uartService.getCharacteristic
+        .calledWith(uartRxCharUUID)
+        .mockResolvedValue(uartRxChar);
+    uartService.getCharacteristic
+        .calledWith(uartTxCharUUID)
+        .mockResolvedValue(uartTxChar);
+
+    const gatt = mock<BluetoothRemoteGATTServer>();
+    gatt.connect.mockResolvedValue(gatt);
+    gatt.disconnect.mockImplementation(() => {
+        setTimeout(() => {
+            device.dispatchEvent(new Event('gattserverdisconnected'));
+        }, 10);
+    });
+    gatt.getPrimaryService
+        .calledWith(deviceInfoServiceUUID)
+        .mockResolvedValue(deviceInfoService);
+    gatt.getPrimaryService
+        .calledWith(pybricksServiceUUID)
+        .mockResolvedValue(pybricksService);
+    gatt.getPrimaryService.calledWith(uartServiceUUID).mockResolvedValue(uartService);
+
+    const deviceEvents = new EventTarget();
+    const device = mock<BluetoothDevice>({
+        id: 'test-id',
+        name: 'test name',
+        gatt,
+        addEventListener: deviceEvents.addEventListener.bind(
+            deviceEvents,
+        ) as BluetoothDevice['addEventListener'],
+        removeEventListener: deviceEvents.removeEventListener.bind(deviceEvents),
+        dispatchEvent: deviceEvents.dispatchEvent.bind(deviceEvents),
+    });
+
+    const bluetooth = mock<Bluetooth>();
+    bluetooth.getAvailability.mockResolvedValue(true);
+    bluetooth.requestDevice.mockResolvedValue(device);
+
+    return {
+        bluetooth,
+        device,
+        gatt,
+        deviceInfoService,
+        firmwareRevisionChar,
+        softwareRevisionChar,
+        pnpIdChar,
+        pybricksService,
+        pybricksChar,
+        uartService,
+        uartRxChar,
+        uartTxChar,
+    };
+}
+
+enum ConnectRunPoint {
+    Connect,
+    DidReceiveFirmwareRevision,
+    DidReceiveSoftwareRevision,
+    DidReceivePnpId,
+    DidConnect,
+}
+
+/**
+ * Run the "success" path of the connect saga until a given point.
+ *
+ * This helps avoid duplicate code in tests.
+ *
+ * @param saga The saga.
+ * @param point The point at which to stop running.
+ */
+async function runConnectUntil(saga: AsyncSaga, point: ConnectRunPoint): Promise<void> {
+    saga.put(connect());
+
+    if (point === ConnectRunPoint.Connect) {
+        return;
+    }
+
+    await expect(saga.take()).resolves.toEqual(
+        bleDIServiceDidReceiveFirmwareRevision('3.2.0b2'),
+    );
+
+    if (point === ConnectRunPoint.DidReceiveFirmwareRevision) {
+        return;
+    }
+
+    await expect(saga.take()).resolves.toEqual(
+        bleDIServiceDidReceiveSoftwareRevision('1.1.0'),
+    );
+
+    if (point === ConnectRunPoint.DidReceiveSoftwareRevision) {
+        return;
+    }
+
+    await expect(saga.take()).resolves.toEqual(
+        bleDIServiceDidReceivePnPId({
+            productId: 0x80,
+            productVersion: 0,
+            vendorId: 919,
+            vendorIdSource: 1,
+        }),
+    );
+
+    if (point === ConnectRunPoint.DidReceivePnpId) {
+        return;
+    }
+
+    await expect(saga.take()).resolves.toEqual(didConnect('test-id', 'test name'));
+}
 
 describe('connect action is dispatched', () => {
     let saga: AsyncSaga;
@@ -47,7 +237,7 @@ describe('connect action is dispatched', () => {
     });
 
     it('should fail if no web bluetooth', async () => {
-        saga.put(connect());
+        await runConnectUntil(saga, ConnectRunPoint.Connect);
 
         await expect(saga.take()).resolves.toEqual(
             didFailToConnect({
@@ -57,13 +247,16 @@ describe('connect action is dispatched', () => {
     });
 
     describe('has web bluetooth', () => {
+        let mocks: Mocks;
         beforeEach(() => {
-            navigator.bluetooth = mock<Bluetooth>();
+            mocks = createMocks();
+            navigator.bluetooth = mocks.bluetooth;
         });
 
         it('should fail if bluetooth is not available', async () => {
             jest.spyOn(navigator.bluetooth, 'getAvailability').mockResolvedValue(false);
-            saga.put(connect());
+
+            await runConnectUntil(saga, ConnectRunPoint.Connect);
 
             await expect(saga.take()).resolves.toEqual(
                 didFailToConnect({
@@ -72,288 +265,367 @@ describe('connect action is dispatched', () => {
             );
         });
 
-        describe('bluetooth is available', () => {
-            beforeEach(() => {
-                jest.spyOn(navigator.bluetooth, 'getAvailability').mockResolvedValue(
-                    true,
-                );
-            });
+        it('should fail if user canceled requestDevice', async () => {
+            jest.spyOn(navigator.bluetooth, 'requestDevice').mockRejectedValue(
+                new DOMException('test error', 'NotFoundError'),
+            );
 
-            it('should fail if user canceled', async () => {
-                jest.spyOn(navigator.bluetooth, 'requestDevice').mockRejectedValue(
-                    new DOMException('test error', 'NotFoundError'),
-                );
-                saga.put(connect());
+            await runConnectUntil(saga, ConnectRunPoint.Connect);
 
-                await expect(saga.take()).resolves.toEqual(
-                    didFailToConnect({
-                        reason: BleDeviceFailToConnectReasonType.Canceled,
-                    }),
-                );
-            });
+            await expect(saga.take()).resolves.toEqual(
+                didFailToConnect({
+                    reason: BleDeviceFailToConnectReasonType.Canceled,
+                }),
+            );
+        });
 
-            it('should fail on other exception', async () => {
-                const testError = new DOMException('test error', 'SecurityError');
-                jest.spyOn(navigator.bluetooth, 'requestDevice').mockRejectedValue(
-                    testError,
-                );
-                saga.put(connect());
+        it('should fail on other exception in requestDevice', async () => {
+            const testError = new DOMException('test error', 'SecurityError');
+            jest.spyOn(navigator.bluetooth, 'requestDevice').mockRejectedValue(
+                testError,
+            );
 
-                await expect(saga.take()).resolves.toEqual(
-                    didFailToConnect({
-                        reason: BleDeviceFailToConnectReasonType.Unknown,
-                        err: testError,
-                    }),
-                );
-            });
+            await runConnectUntil(saga, ConnectRunPoint.Connect);
 
-            describe('device found', () => {
-                let device: MockProxy<BluetoothDevice>;
+            await expect(saga.take()).resolves.toEqual(
+                didFailToConnect({
+                    reason: BleDeviceFailToConnectReasonType.Unknown,
+                    err: testError,
+                }),
+            );
+        });
 
-                beforeEach(() => {
-                    const deviceEvents = new EventTarget();
+        it('should fail if device has no gatt property', async () => {
+            Object.defineProperty(mocks.device, 'gatt', { value: undefined });
 
-                    device = mock<BluetoothDevice>({
-                        id: 'test-id',
-                        name: 'test name',
-                        gatt: undefined,
-                        addEventListener: deviceEvents.addEventListener.bind(
-                            deviceEvents,
-                        ) as BluetoothDevice['addEventListener'],
-                        removeEventListener:
-                            deviceEvents.removeEventListener.bind(deviceEvents),
-                        dispatchEvent: deviceEvents.dispatchEvent.bind(deviceEvents),
-                    });
+            await runConnectUntil(saga, ConnectRunPoint.Connect);
 
-                    jest.spyOn(navigator.bluetooth, 'requestDevice').mockResolvedValue(
-                        device,
-                    );
-                });
+            await expect(saga.take()).resolves.toEqual(
+                didFailToConnect({
+                    reason: BleDeviceFailToConnectReasonType.NoGatt,
+                }),
+            );
+        });
 
-                it('should fail if no gatt', async () => {
-                    saga.put(connect());
+        it('should fail if gatt connect fails', async () => {
+            const testError = new DOMException('test error', 'NetworkError');
+            mocks.gatt.connect.mockRejectedValueOnce(testError);
 
-                    await expect(saga.take()).resolves.toEqual(
-                        didFailToConnect({
-                            reason: BleDeviceFailToConnectReasonType.NoGatt,
-                        }),
-                    );
-                });
+            await runConnectUntil(saga, ConnectRunPoint.Connect);
 
-                describe('has gatt', () => {
-                    let gatt: MockProxy<BluetoothRemoteGATTServer>;
+            await expect(saga.take()).resolves.toEqual(
+                didFailToConnect({
+                    reason: BleDeviceFailToConnectReasonType.Unknown,
+                    err: testError,
+                }),
+            );
+        });
 
-                    beforeEach(() => {
-                        gatt = mock<BluetoothRemoteGATTServer>();
-                        Object.defineProperty(device, 'gatt', { value: gatt });
-                    });
+        it('should fail if device does not have device info service', async () => {
+            const testError = new DOMException('test error', 'NotFoundError');
+            mocks.gatt.getPrimaryService
+                .calledWith(deviceInfoServiceUUID)
+                .mockRejectedValueOnce(testError);
 
-                    it('should fail if gatt connect fails', async () => {
-                        const testError = new DOMException(
-                            'test error',
-                            'NetworkError',
-                        );
-                        gatt.connect.mockRejectedValue(testError);
+            await runConnectUntil(saga, ConnectRunPoint.Connect);
 
-                        saga.put(connect());
+            await expect(saga.take()).resolves.toEqual(
+                didFailToConnect({
+                    reason: BleDeviceFailToConnectReasonType.NoDeviceInfoService,
+                }),
+            );
 
-                        await expect(saga.take()).resolves.toEqual(
-                            didFailToConnect({
-                                reason: BleDeviceFailToConnectReasonType.Unknown,
-                                err: testError,
-                            }),
-                        );
-                    });
+            expect(mocks.gatt.disconnect).toHaveBeenCalled();
+        });
 
-                    describe('gatt connect succeeded', () => {
-                        beforeEach(() => {
-                            gatt.connect.mockResolvedValue(gatt);
-                            gatt.disconnect.mockImplementation(() => {
-                                setTimeout(() => {
-                                    device.dispatchEvent(
-                                        new Event('gattserverdisconnected'),
-                                    );
-                                }, 10);
-                            });
-                        });
+        it('should fail if getting firmware revision characteristic fails', async () => {
+            const testError = new Error('test error');
+            mocks.deviceInfoService.getCharacteristic
+                .calledWith(firmwareRevisionStringUUID)
+                .mockRejectedValue(testError);
 
-                        it('should fail if device does not have device info service', async () => {
-                            const testError = new DOMException(
-                                'test error',
-                                'NotFoundError',
-                            );
-                            gatt.getPrimaryService.mockRejectedValue(testError);
+            await runConnectUntil(saga, ConnectRunPoint.Connect);
 
-                            saga.put(connect());
+            await expect(saga.take()).resolves.toEqual(
+                didFailToConnect({
+                    reason: BleDeviceFailToConnectReasonType.Unknown,
+                    err: testError,
+                }),
+            );
 
-                            await expect(saga.take()).resolves.toEqual(
-                                didFailToConnect({
-                                    reason: BleDeviceFailToConnectReasonType.NoDeviceInfoService,
-                                }),
-                            );
+            expect(mocks.gatt.disconnect).toHaveBeenCalled();
+        });
 
-                            expect(gatt.disconnect).toHaveBeenCalled();
-                        });
+        it('should fail if reading firmware revision characteristic fails', async () => {
+            const testError = new Error('test error');
+            mocks.firmwareRevisionChar.readValue.mockRejectedValue(testError);
 
-                        describe('has device info service', () => {
-                            let deviceInfoService: MockProxy<BluetoothRemoteGATTService>;
+            await runConnectUntil(saga, ConnectRunPoint.Connect);
 
-                            beforeEach(() => {
-                                deviceInfoService = mock<BluetoothRemoteGATTService>();
-                                gatt.getPrimaryService
-                                    .calledWith(deviceInfoServiceUUID)
-                                    .mockResolvedValue(deviceInfoService);
-                            });
+            await expect(saga.take()).resolves.toEqual(
+                didFailToConnect({
+                    reason: BleDeviceFailToConnectReasonType.Unknown,
+                    err: testError,
+                }),
+            );
 
-                            it('should fail if getting firmware version characteristic fails', async () => {
-                                const testError = new Error('test error');
-                                deviceInfoService.getCharacteristic.mockRejectedValue(
-                                    testError,
-                                );
+            expect(mocks.gatt.disconnect).toHaveBeenCalled();
+        });
 
-                                saga.put(connect());
+        it('should fail if getting software revision characteristic fails', async () => {
+            const testError = new Error('test error');
+            mocks.deviceInfoService.getCharacteristic
+                .calledWith(softwareRevisionStringUUID)
+                .mockRejectedValueOnce(testError);
 
-                                await expect(saga.take()).resolves.toEqual(
-                                    didFailToConnect({
-                                        reason: BleDeviceFailToConnectReasonType.Unknown,
-                                        err: testError,
-                                    }),
-                                );
+            await runConnectUntil(saga, ConnectRunPoint.DidReceiveFirmwareRevision);
 
-                                expect(gatt.disconnect).toHaveBeenCalled();
-                            });
+            await expect(saga.take()).resolves.toEqual(
+                didFailToConnect({
+                    reason: BleDeviceFailToConnectReasonType.Unknown,
+                    err: testError,
+                }),
+            );
 
-                            describe('has firmware version', () => {
-                                let firmwareRevisionChar: MockProxy<BluetoothRemoteGATTCharacteristic>;
-                                let softwareRevisionChar: MockProxy<BluetoothRemoteGATTCharacteristic>;
-                                let pnpIdChar: MockProxy<BluetoothRemoteGATTCharacteristic>;
-                                let pybricksService: MockProxy<BluetoothRemoteGATTService>;
-                                let pybricksChar: MockProxy<BluetoothRemoteGATTCharacteristic>;
-                                let uartService: MockProxy<BluetoothRemoteGATTService>;
-                                let uartRxChar: MockProxy<BluetoothRemoteGATTCharacteristic>;
-                                let uartTxChar: MockProxy<BluetoothRemoteGATTCharacteristic>;
+            expect(mocks.gatt.disconnect).toHaveBeenCalled();
+        });
 
-                                beforeEach(() => {
-                                    firmwareRevisionChar =
-                                        mock<BluetoothRemoteGATTCharacteristic>();
-                                    firmwareRevisionChar.readValue.mockResolvedValue(
-                                        new DataView(encoder.encode('3.2.0b2').buffer),
-                                    );
+        it('should fail if reading software revision characteristic fails', async () => {
+            const testError = new Error('test error');
+            mocks.softwareRevisionChar.readValue.mockRejectedValue(testError);
 
-                                    softwareRevisionChar =
-                                        mock<BluetoothRemoteGATTCharacteristic>();
-                                    softwareRevisionChar.readValue.mockResolvedValue(
-                                        new DataView(encoder.encode('1.1.0').buffer),
-                                    );
+            await runConnectUntil(saga, ConnectRunPoint.DidReceiveFirmwareRevision);
 
-                                    pnpIdChar =
-                                        mock<BluetoothRemoteGATTCharacteristic>();
-                                    pnpIdChar.readValue.mockResolvedValue(
-                                        new DataView(
-                                            encodeInfo(HubType.TechnicHub).buffer,
-                                        ),
-                                    );
+            await expect(saga.take()).resolves.toEqual(
+                didFailToConnect({
+                    reason: BleDeviceFailToConnectReasonType.Unknown,
+                    err: testError,
+                }),
+            );
 
-                                    deviceInfoService.getCharacteristic
-                                        .calledWith(firmwareRevisionStringUUID)
-                                        .mockResolvedValue(firmwareRevisionChar);
-                                    deviceInfoService.getCharacteristic
-                                        .calledWith(softwareRevisionStringUUID)
-                                        .mockResolvedValue(softwareRevisionChar);
-                                    deviceInfoService.getCharacteristic
-                                        .calledWith(pnpIdUUID)
-                                        .mockResolvedValue(pnpIdChar);
+            expect(mocks.gatt.disconnect).toHaveBeenCalled();
+        });
 
-                                    pybricksService =
-                                        mock<BluetoothRemoteGATTService>();
+        it('should skip bleDIServiceDidReceivePnPId action if getting pnp id characteristic fails', async () => {
+            const testError = new Error('test error');
+            mocks.deviceInfoService.getCharacteristic
+                .calledWith(pnpIdUUID)
+                .mockRejectedValueOnce(testError);
 
-                                    gatt.getPrimaryService
-                                        .calledWith(pybricksServiceUUID)
-                                        .mockResolvedValue(pybricksService);
+            await runConnectUntil(saga, ConnectRunPoint.DidReceiveSoftwareRevision);
 
-                                    const pybricksCharEventTarget = new EventTarget();
-                                    pybricksChar =
-                                        mock<BluetoothRemoteGATTCharacteristic>({
-                                            addEventListener:
-                                                pybricksCharEventTarget.addEventListener.bind(
-                                                    pybricksCharEventTarget,
-                                                ),
-                                            removeEventListener:
-                                                pybricksCharEventTarget.removeEventListener.bind(
-                                                    pybricksCharEventTarget,
-                                                ),
-                                            dispatchEvent:
-                                                pybricksCharEventTarget.dispatchEvent.bind(
-                                                    pybricksCharEventTarget,
-                                                ),
-                                        });
-                                    pybricksChar.startNotifications.mockResolvedValue(
-                                        pybricksChar,
-                                    );
-                                    pybricksChar.stopNotifications.mockResolvedValue(
-                                        pybricksChar,
-                                    );
+            await expect(saga.take()).resolves.toEqual(
+                didConnect('test-id', 'test name'),
+            );
+        });
 
-                                    pybricksService.getCharacteristic
-                                        .calledWith(pybricksCommandCharacteristicUUID)
-                                        .mockResolvedValue(pybricksChar);
+        it('should fail if reading pnp id characteristic fails', async () => {
+            const testError = new Error('test error');
+            mocks.pnpIdChar.readValue.mockRejectedValue(testError);
 
-                                    uartService = mock<BluetoothRemoteGATTService>();
+            await runConnectUntil(saga, ConnectRunPoint.DidReceiveSoftwareRevision);
 
-                                    gatt.getPrimaryService
-                                        .calledWith(uartServiceUUID)
-                                        .mockResolvedValue(uartService);
+            await expect(saga.take()).resolves.toEqual(
+                didFailToConnect({
+                    reason: BleDeviceFailToConnectReasonType.Unknown,
+                    err: testError,
+                }),
+            );
 
-                                    uartRxChar =
-                                        mock<BluetoothRemoteGATTCharacteristic>();
-                                    uartService.getCharacteristic
-                                        .calledWith(uartRxCharUUID)
-                                        .mockResolvedValue(uartRxChar);
+            expect(mocks.gatt.disconnect).toHaveBeenCalled();
+        });
 
-                                    uartTxChar =
-                                        mock<BluetoothRemoteGATTCharacteristic>();
-                                    uartService.getCharacteristic
-                                        .calledWith(uartTxCharUUID)
-                                        .mockResolvedValue(uartTxChar);
-                                });
+        it('should fail if device does not have pybricks service', async () => {
+            const testError = new DOMException('test error', 'NotFoundError');
+            mocks.gatt.getPrimaryService
+                .calledWith(pybricksServiceUUID)
+                .mockRejectedValueOnce(testError);
 
-                                it('should put didConnection action', async () => {
-                                    saga.put(connect());
+            await runConnectUntil(saga, ConnectRunPoint.DidReceivePnpId);
 
-                                    // TODO: there are a bunch of untested failure paths
+            await expect(saga.take()).resolves.toEqual(
+                didFailToConnect({
+                    reason: BleDeviceFailToConnectReasonType.NoPybricksService,
+                }),
+            );
 
-                                    await expect(saga.take()).resolves.toEqual(
-                                        bleDIServiceDidReceiveFirmwareRevision(
-                                            '3.2.0b2',
-                                        ),
-                                    );
+            expect(mocks.gatt.disconnect).toHaveBeenCalled();
+        });
 
-                                    await expect(saga.take()).resolves.toEqual(
-                                        bleDIServiceDidReceiveSoftwareRevision('1.1.0'),
-                                    );
+        it('should fail if getting pybricks characteristic fails', async () => {
+            const testError = new Error('test error');
+            mocks.pybricksService.getCharacteristic
+                .calledWith(pybricksCommandCharacteristicUUID)
+                .mockRejectedValue(testError);
 
-                                    await expect(saga.take()).resolves.toEqual(
-                                        bleDIServiceDidReceivePnPId({
-                                            productId: 0x80,
-                                            productVersion: 0,
-                                            vendorId: 919,
-                                            vendorIdSource: 1,
-                                        }),
-                                    );
+            await runConnectUntil(saga, ConnectRunPoint.DidReceivePnpId);
 
-                                    await expect(saga.take()).resolves.toEqual(
-                                        didConnect('test-id', 'test name'),
-                                    );
-                                });
-                            });
-                        });
-                    });
-                });
-            });
+            await expect(saga.take()).resolves.toEqual(
+                didFailToConnect({
+                    reason: BleDeviceFailToConnectReasonType.Unknown,
+                    err: testError,
+                }),
+            );
+
+            expect(mocks.gatt.disconnect).toHaveBeenCalled();
+        });
+
+        it('should fail if stopping pybricks characteristic notifications fails', async () => {
+            const testError = new Error('test error');
+            mocks.pybricksChar.stopNotifications.mockRejectedValue(testError);
+
+            await runConnectUntil(saga, ConnectRunPoint.DidReceivePnpId);
+
+            await expect(saga.take()).resolves.toEqual(
+                didFailToConnect({
+                    reason: BleDeviceFailToConnectReasonType.Unknown,
+                    err: testError,
+                }),
+            );
+
+            expect(mocks.gatt.disconnect).toHaveBeenCalled();
+        });
+
+        it('should fail if starting pybricks characteristic notifications fails', async () => {
+            const testError = new Error('test error');
+            mocks.pybricksChar.startNotifications.mockRejectedValue(testError);
+
+            await runConnectUntil(saga, ConnectRunPoint.DidReceivePnpId);
+
+            await expect(saga.take()).resolves.toEqual(
+                didFailToConnect({
+                    reason: BleDeviceFailToConnectReasonType.Unknown,
+                    err: testError,
+                }),
+            );
+
+            expect(mocks.gatt.disconnect).toHaveBeenCalled();
+        });
+
+        it('should fail if device does not have nordic uart service', async () => {
+            const testError = new DOMException('test error', 'NotFoundError');
+            mocks.gatt.getPrimaryService
+                .calledWith(uartServiceUUID)
+                .mockRejectedValueOnce(testError);
+
+            await runConnectUntil(saga, ConnectRunPoint.DidReceivePnpId);
+
+            await expect(saga.take()).resolves.toEqual(
+                didFailToConnect({
+                    // FIXME: this is wrong error
+                    reason: BleDeviceFailToConnectReasonType.NoPybricksService,
+                }),
+            );
+
+            expect(mocks.gatt.disconnect).toHaveBeenCalled();
+        });
+
+        it('should fail if getting nordic uart rx characteristic fails', async () => {
+            const testError = new Error('test error');
+            mocks.uartService.getCharacteristic
+                .calledWith(uartRxCharUUID)
+                .mockRejectedValue(testError);
+
+            await runConnectUntil(saga, ConnectRunPoint.DidReceivePnpId);
+
+            await expect(saga.take()).resolves.toEqual(
+                didFailToConnect({
+                    reason: BleDeviceFailToConnectReasonType.Unknown,
+                    err: testError,
+                }),
+            );
+
+            expect(mocks.gatt.disconnect).toHaveBeenCalled();
+        });
+
+        it('should fail if getting nordic uart tx characteristic fails', async () => {
+            const testError = new Error('test error');
+            mocks.uartService.getCharacteristic
+                .calledWith(uartTxCharUUID)
+                .mockRejectedValue(testError);
+
+            await runConnectUntil(saga, ConnectRunPoint.DidReceivePnpId);
+
+            await expect(saga.take()).resolves.toEqual(
+                didFailToConnect({
+                    reason: BleDeviceFailToConnectReasonType.Unknown,
+                    err: testError,
+                }),
+            );
+
+            expect(mocks.gatt.disconnect).toHaveBeenCalled();
+        });
+
+        it('should fail if stopping nordic uart tx  characteristic notifications fails', async () => {
+            const testError = new Error('test error');
+            mocks.uartTxChar.stopNotifications.mockRejectedValue(testError);
+
+            await runConnectUntil(saga, ConnectRunPoint.DidReceivePnpId);
+
+            await expect(saga.take()).resolves.toEqual(
+                didFailToConnect({
+                    reason: BleDeviceFailToConnectReasonType.Unknown,
+                    err: testError,
+                }),
+            );
+
+            expect(mocks.gatt.disconnect).toHaveBeenCalled();
+        });
+
+        it('should fail if starting nordic uart tx characteristic notifications fails', async () => {
+            const testError = new Error('test error');
+            mocks.uartTxChar.startNotifications.mockRejectedValue(testError);
+
+            await runConnectUntil(saga, ConnectRunPoint.DidReceivePnpId);
+
+            await expect(saga.take()).resolves.toEqual(
+                didFailToConnect({
+                    reason: BleDeviceFailToConnectReasonType.Unknown,
+                    err: testError,
+                }),
+            );
+
+            expect(mocks.gatt.disconnect).toHaveBeenCalled();
+        });
+
+        it('should put didConnection action', async () => {
+            await runConnectUntil(saga, ConnectRunPoint.DidConnect);
+        });
+
+        it('should handle disconnect', async () => {
+            await runConnectUntil(saga, ConnectRunPoint.DidConnect);
+
+            saga.put(disconnect());
+
+            await expect(saga.take()).resolves.toEqual(didDisconnect());
+
+            expect(mocks.gatt.disconnect).toHaveBeenCalled();
         });
     });
 
     afterEach(async () => {
         await saga.end();
+    });
+});
+
+describe('toggleBluetooth action', () => {
+    it('should connect when disconnected', async () => {
+        const saga = new AsyncSaga(ble);
+
+        saga.updateState({ ble: { connection: BleConnectionState.Disconnected } });
+
+        saga.put(toggleBluetooth());
+
+        await expect(saga.take()).resolves.toEqual(connect());
+    });
+
+    it('should disconnect when connected', async () => {
+        const saga = new AsyncSaga(ble);
+
+        saga.updateState({ ble: { connection: BleConnectionState.Connected } });
+
+        saga.put(toggleBluetooth());
+
+        await expect(saga.take()).resolves.toEqual(disconnect());
     });
 });
