@@ -13,4 +13,6 @@ export enum I18nId {
     NoWebBluetoothMessage = 'noWebBluetooth.message',
     NoWebBluetoothSuggestion = 'noWebBluetooth.suggestion',
     NoWebBluetoothLinux = 'noWebBluetooth.linux',
+    BluetoothNotAvailableMessage = 'bluetoothNotAvailable.message',
+    BluetoothNotAvailableSuggestion = 'bluetoothNotAvailable.suggestion',
 }

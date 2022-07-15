@@ -190,9 +190,6 @@ function* showBleDeviceDidFailToConnectError(
                 hubName: 'Pybricks Hub',
             });
             break;
-        case BleDeviceFailToConnectReasonType.NoBluetooth:
-            yield* showSingleton(Level.Error, I18nId.BleNoBluetooth);
-            break;
         case BleDeviceFailToConnectReasonType.Unknown:
             yield* showUnexpectedError(I18nId.BleUnexpectedError, action.err);
             break;
@@ -208,9 +205,6 @@ function* showBootloaderDidFailToConnectError(
                 serviceName: 'LEGO Bootloader',
                 hubName: 'LEGO Bootloader',
             });
-            break;
-        case BootloaderConnectionFailureReason.NoBluetooth:
-            yield* showSingleton(Level.Error, I18nId.BleNoBluetooth);
             break;
         case BootloaderConnectionFailureReason.Unknown:
             yield* showUnexpectedError(I18nId.BleUnexpectedError, action.err);

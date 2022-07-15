@@ -109,6 +109,7 @@ function* handleBleConnectPybricks(): Generator {
 
     const available = yield* call(() => navigator.bluetooth.getAvailability());
     if (!available) {
+        yield* put(alertsShowAlert('ble', 'bluetoothNotAvailable'));
         yield* put(bleDidFailToConnectPybricks({ reason: Reason.NoBluetooth }));
         return;
     }

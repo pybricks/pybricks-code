@@ -50,6 +50,7 @@ function* handleConnect(): Generator {
 
     const available = yield* call(() => navigator.bluetooth.getAvailability());
     if (!available) {
+        yield* put(alertsShowAlert('ble', 'bluetoothNotAvailable'));
         yield* put(didFailToConnect(Reason.NoBluetooth));
         return;
     }

@@ -16,7 +16,6 @@ export enum I18nId {
     BleUnexpectedError = 'ble.unexpectedError',
     BleGattPermission = 'ble.gattPermission',
     BleGattServiceNotFound = 'ble.gattServiceNotFound',
-    BleNoBluetooth = 'ble.noBluetooth',
     EditorFailedToOpenFile = 'editor.failedToOpenFile',
     EditorFailedToSaveFile = 'editor.failedToSaveFile',
     ExplorerFailedToImportFiles = 'explorer.failedToImportFiles',
