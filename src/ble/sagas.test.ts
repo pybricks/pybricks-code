@@ -297,6 +297,9 @@ describe('connect action is dispatched', () => {
             await runConnectUntil(saga, ConnectRunPoint.Connect);
 
             await expect(saga.take()).resolves.toEqual(
+                alertsShowAlert('alerts', 'unexpectedError', { error: testError }),
+            );
+            await expect(saga.take()).resolves.toEqual(
                 bleDidFailToConnectPybricks({
                     reason: BleDeviceFailToConnectReasonType.Unknown,
                     err: testError,
@@ -322,6 +325,9 @@ describe('connect action is dispatched', () => {
 
             await runConnectUntil(saga, ConnectRunPoint.Connect);
 
+            await expect(saga.take()).resolves.toEqual(
+                alertsShowAlert('alerts', 'unexpectedError', { error: testError }),
+            );
             await expect(saga.take()).resolves.toEqual(
                 bleDidFailToConnectPybricks({
                     reason: BleDeviceFailToConnectReasonType.Unknown,
@@ -356,6 +362,9 @@ describe('connect action is dispatched', () => {
             await runConnectUntil(saga, ConnectRunPoint.Connect);
 
             await expect(saga.take()).resolves.toEqual(
+                alertsShowAlert('alerts', 'unexpectedError', { error: testError }),
+            );
+            await expect(saga.take()).resolves.toEqual(
                 bleDidFailToConnectPybricks({
                     reason: BleDeviceFailToConnectReasonType.Unknown,
                     err: testError,
@@ -371,6 +380,9 @@ describe('connect action is dispatched', () => {
 
             await runConnectUntil(saga, ConnectRunPoint.Connect);
 
+            await expect(saga.take()).resolves.toEqual(
+                alertsShowAlert('alerts', 'unexpectedError', { error: testError }),
+            );
             await expect(saga.take()).resolves.toEqual(
                 bleDidFailToConnectPybricks({
                     reason: BleDeviceFailToConnectReasonType.Unknown,
@@ -390,6 +402,9 @@ describe('connect action is dispatched', () => {
             await runConnectUntil(saga, ConnectRunPoint.DidReceiveFirmwareRevision);
 
             await expect(saga.take()).resolves.toEqual(
+                alertsShowAlert('alerts', 'unexpectedError', { error: testError }),
+            );
+            await expect(saga.take()).resolves.toEqual(
                 bleDidFailToConnectPybricks({
                     reason: BleDeviceFailToConnectReasonType.Unknown,
                     err: testError,
@@ -405,6 +420,9 @@ describe('connect action is dispatched', () => {
 
             await runConnectUntil(saga, ConnectRunPoint.DidReceiveFirmwareRevision);
 
+            await expect(saga.take()).resolves.toEqual(
+                alertsShowAlert('alerts', 'unexpectedError', { error: testError }),
+            );
             await expect(saga.take()).resolves.toEqual(
                 bleDidFailToConnectPybricks({
                     reason: BleDeviceFailToConnectReasonType.Unknown,
@@ -434,6 +452,9 @@ describe('connect action is dispatched', () => {
 
             await runConnectUntil(saga, ConnectRunPoint.DidReceiveSoftwareRevision);
 
+            await expect(saga.take()).resolves.toEqual(
+                alertsShowAlert('alerts', 'unexpectedError', { error: testError }),
+            );
             await expect(saga.take()).resolves.toEqual(
                 bleDidFailToConnectPybricks({
                     reason: BleDeviceFailToConnectReasonType.Unknown,
@@ -470,6 +491,9 @@ describe('connect action is dispatched', () => {
             await runConnectUntil(saga, ConnectRunPoint.DidReceivePnpId);
 
             await expect(saga.take()).resolves.toEqual(
+                alertsShowAlert('alerts', 'unexpectedError', { error: testError }),
+            );
+            await expect(saga.take()).resolves.toEqual(
                 bleDidFailToConnectPybricks({
                     reason: BleDeviceFailToConnectReasonType.Unknown,
                     err: testError,
@@ -486,6 +510,9 @@ describe('connect action is dispatched', () => {
             await runConnectUntil(saga, ConnectRunPoint.DidReceivePnpId);
 
             await expect(saga.take()).resolves.toEqual(
+                alertsShowAlert('alerts', 'unexpectedError', { error: testError }),
+            );
+            await expect(saga.take()).resolves.toEqual(
                 bleDidFailToConnectPybricks({
                     reason: BleDeviceFailToConnectReasonType.Unknown,
                     err: testError,
@@ -501,6 +528,9 @@ describe('connect action is dispatched', () => {
 
             await runConnectUntil(saga, ConnectRunPoint.DidReceivePnpId);
 
+            await expect(saga.take()).resolves.toEqual(
+                alertsShowAlert('alerts', 'unexpectedError', { error: testError }),
+            );
             await expect(saga.take()).resolves.toEqual(
                 bleDidFailToConnectPybricks({
                     reason: BleDeviceFailToConnectReasonType.Unknown,
@@ -538,6 +568,9 @@ describe('connect action is dispatched', () => {
             await runConnectUntil(saga, ConnectRunPoint.DidReceivePnpId);
 
             await expect(saga.take()).resolves.toEqual(
+                alertsShowAlert('alerts', 'unexpectedError', { error: testError }),
+            );
+            await expect(saga.take()).resolves.toEqual(
                 bleDidFailToConnectPybricks({
                     reason: BleDeviceFailToConnectReasonType.Unknown,
                     err: testError,
@@ -556,6 +589,9 @@ describe('connect action is dispatched', () => {
             await runConnectUntil(saga, ConnectRunPoint.DidReceivePnpId);
 
             await expect(saga.take()).resolves.toEqual(
+                alertsShowAlert('alerts', 'unexpectedError', { error: testError }),
+            );
+            await expect(saga.take()).resolves.toEqual(
                 bleDidFailToConnectPybricks({
                     reason: BleDeviceFailToConnectReasonType.Unknown,
                     err: testError,
@@ -572,6 +608,9 @@ describe('connect action is dispatched', () => {
             await runConnectUntil(saga, ConnectRunPoint.DidReceivePnpId);
 
             await expect(saga.take()).resolves.toEqual(
+                alertsShowAlert('alerts', 'unexpectedError', { error: testError }),
+            );
+            await expect(saga.take()).resolves.toEqual(
                 bleDidFailToConnectPybricks({
                     reason: BleDeviceFailToConnectReasonType.Unknown,
                     err: testError,
@@ -587,6 +626,9 @@ describe('connect action is dispatched', () => {
 
             await runConnectUntil(saga, ConnectRunPoint.DidReceivePnpId);
 
+            await expect(saga.take()).resolves.toEqual(
+                alertsShowAlert('alerts', 'unexpectedError', { error: testError }),
+            );
             await expect(saga.take()).resolves.toEqual(
                 bleDidFailToConnectPybricks({
                     reason: BleDeviceFailToConnectReasonType.Unknown,

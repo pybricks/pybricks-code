@@ -190,9 +190,6 @@ function* showBleDeviceDidFailToConnectError(
                 hubName: 'Pybricks Hub',
             });
             break;
-        case BleDeviceFailToConnectReasonType.Unknown:
-            yield* showUnexpectedError(I18nId.BleUnexpectedError, action.err);
-            break;
     }
 }
 

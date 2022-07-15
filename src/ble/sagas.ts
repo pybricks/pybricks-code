@@ -132,6 +132,11 @@ function* handleBleConnectPybricks(): Generator {
             yield* put(bleDidFailToConnectPybricks({ reason: Reason.Canceled }));
         } else {
             yield* put(
+                alertsShowAlert('alerts', 'unexpectedError', {
+                    error: ensureError(err),
+                }),
+            );
+            yield* put(
                 bleDidFailToConnectPybricks({
                     reason: Reason.Unknown,
                     err: ensureError(err),
@@ -159,6 +164,11 @@ function* handleBleConnectPybricks(): Generator {
     } catch (err) {
         disconnectChannel.close();
         yield* put(
+            alertsShowAlert('alerts', 'unexpectedError', {
+                error: ensureError(err),
+            }),
+        );
+        yield* put(
             bleDidFailToConnectPybricks({
                 reason: Reason.Unknown,
                 err: ensureError(err),
@@ -184,6 +194,11 @@ function* handleBleConnectPybricks(): Generator {
             );
         } else {
             yield* put(
+                alertsShowAlert('alerts', 'unexpectedError', {
+                    error: ensureError(err),
+                }),
+            );
+            yield* put(
                 bleDidFailToConnectPybricks({
                     reason: Reason.Unknown,
                     err: ensureError(err),
@@ -203,6 +218,11 @@ function* handleBleConnectPybricks(): Generator {
         server.disconnect();
         yield* takeMaybe(disconnectChannel);
         yield* put(
+            alertsShowAlert('alerts', 'unexpectedError', {
+                error: ensureError(err),
+            }),
+        );
+        yield* put(
             bleDidFailToConnectPybricks({
                 reason: Reason.Unknown,
                 err: ensureError(err),
@@ -217,6 +237,11 @@ function* handleBleConnectPybricks(): Generator {
     } catch (err) {
         server.disconnect();
         yield* takeMaybe(disconnectChannel);
+        yield* put(
+            alertsShowAlert('alerts', 'unexpectedError', {
+                error: ensureError(err),
+            }),
+        );
         yield* put(
             bleDidFailToConnectPybricks({
                 reason: Reason.Unknown,
@@ -236,6 +261,11 @@ function* handleBleConnectPybricks(): Generator {
         server.disconnect();
         yield* takeMaybe(disconnectChannel);
         yield* put(
+            alertsShowAlert('alerts', 'unexpectedError', {
+                error: ensureError(err),
+            }),
+        );
+        yield* put(
             bleDidFailToConnectPybricks({
                 reason: Reason.Unknown,
                 err: ensureError(err),
@@ -250,6 +280,11 @@ function* handleBleConnectPybricks(): Generator {
     } catch (err) {
         server.disconnect();
         yield* takeMaybe(disconnectChannel);
+        yield* put(
+            alertsShowAlert('alerts', 'unexpectedError', {
+                error: ensureError(err),
+            }),
+        );
         yield* put(
             bleDidFailToConnectPybricks({
                 reason: Reason.Unknown,
@@ -278,6 +313,11 @@ function* handleBleConnectPybricks(): Generator {
             server.disconnect();
             yield* takeMaybe(disconnectChannel);
             yield* put(
+                alertsShowAlert('alerts', 'unexpectedError', {
+                    error: ensureError(err),
+                }),
+            );
+            yield* put(
                 bleDidFailToConnectPybricks({
                     reason: Reason.Unknown,
                     err: ensureError(err),
@@ -302,6 +342,11 @@ function* handleBleConnectPybricks(): Generator {
             );
         } else {
             yield* put(
+                alertsShowAlert('alerts', 'unexpectedError', {
+                    error: ensureError(err),
+                }),
+            );
+            yield* put(
                 bleDidFailToConnectPybricks({
                     reason: Reason.Unknown,
                     err: ensureError(err),
@@ -320,6 +365,11 @@ function* handleBleConnectPybricks(): Generator {
     } catch (err) {
         server.disconnect();
         yield* takeMaybe(disconnectChannel);
+        yield* put(
+            alertsShowAlert('alerts', 'unexpectedError', {
+                error: ensureError(err),
+            }),
+        );
         yield* put(
             bleDidFailToConnectPybricks({
                 reason: Reason.Unknown,
@@ -365,6 +415,11 @@ function* handleBleConnectPybricks(): Generator {
         server.disconnect();
         yield* takeMaybe(disconnectChannel);
         yield* put(
+            alertsShowAlert('alerts', 'unexpectedError', {
+                error: ensureError(err),
+            }),
+        );
+        yield* put(
             bleDidFailToConnectPybricks({
                 reason: Reason.Unknown,
                 err: ensureError(err),
@@ -389,6 +444,11 @@ function* handleBleConnectPybricks(): Generator {
             );
         } else {
             yield* put(
+                alertsShowAlert('alerts', 'unexpectedError', {
+                    error: ensureError(err),
+                }),
+            );
+            yield* put(
                 bleDidFailToConnectPybricks({
                     reason: Reason.Unknown,
                     err: ensureError(err),
@@ -407,6 +467,11 @@ function* handleBleConnectPybricks(): Generator {
         server.disconnect();
         yield* takeMaybe(disconnectChannel);
         yield* put(
+            alertsShowAlert('alerts', 'unexpectedError', {
+                error: ensureError(err),
+            }),
+        );
+        yield* put(
             bleDidFailToConnectPybricks({
                 reason: Reason.Unknown,
                 err: ensureError(err),
@@ -423,6 +488,11 @@ function* handleBleConnectPybricks(): Generator {
         pybricksControlChannel.close();
         server.disconnect();
         yield* takeMaybe(disconnectChannel);
+        yield* put(
+            alertsShowAlert('alerts', 'unexpectedError', {
+                error: ensureError(err),
+            }),
+        );
         yield* put(
             bleDidFailToConnectPybricks({
                 reason: Reason.Unknown,
@@ -460,6 +530,11 @@ function* handleBleConnectPybricks(): Generator {
         pybricksControlChannel.close();
         server.disconnect();
         yield* takeMaybe(disconnectChannel);
+        yield* put(
+            alertsShowAlert('alerts', 'unexpectedError', {
+                error: ensureError(err),
+            }),
+        );
         yield* put(
             bleDidFailToConnectPybricks({
                 reason: Reason.Unknown,

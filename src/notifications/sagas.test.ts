@@ -68,10 +68,6 @@ test.each([
     bleDidFailToConnectPybricks({
         reason: BleDeviceFailToConnectReasonType.NoPybricksService,
     }),
-    bleDidFailToConnectPybricks({
-        reason: BleDeviceFailToConnectReasonType.Unknown,
-        err: { name: 'test', message: 'unknown' },
-    }),
     bootloaderDidFailToConnect(BootloaderConnectionFailureReason.Unknown, <Error>{
         message: 'test',
     }),
@@ -134,6 +130,10 @@ test.each([
         reason: BleDeviceFailToConnectReasonType.NoBluetooth,
     }),
     bleDidFailToConnectPybricks({ reason: BleDeviceFailToConnectReasonType.Canceled }),
+    bleDidFailToConnectPybricks({
+        reason: BleDeviceFailToConnectReasonType.Unknown,
+        err: { name: 'test', message: 'unknown' },
+    }),
     bootloaderDidFailToConnect(BootloaderConnectionFailureReason.NoWebBluetooth),
     bootloaderDidFailToConnect(BootloaderConnectionFailureReason.NoBluetooth),
     bootloaderDidFailToConnect(BootloaderConnectionFailureReason.Canceled),
