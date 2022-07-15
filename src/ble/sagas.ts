@@ -15,6 +15,7 @@ import {
     takeEvery,
     takeMaybe,
 } from 'typed-redux-saga/macro';
+import { alertsShowAlert } from '../alerts/actions';
 import {
     bleDIServiceDidReceiveFirmwareRevision,
     bleDIServiceDidReceivePnPId,
@@ -101,6 +102,7 @@ function* handleWriteUart(
 
 function* handleBleConnectPybricks(): Generator {
     if (navigator.bluetooth === undefined) {
+        yield* put(alertsShowAlert('ble', 'noWebBluetooth'));
         yield* put(bleDidFailToConnectPybricks({ reason: Reason.NoWebBluetooth }));
         return;
     }

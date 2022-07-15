@@ -62,9 +62,6 @@ function createTestToasterSaga(): { toaster: IToaster; saga: AsyncSaga } {
 
 test.each([
     bleDidFailToConnectPybricks({
-        reason: BleDeviceFailToConnectReasonType.NoWebBluetooth,
-    }),
-    bleDidFailToConnectPybricks({
         reason: BleDeviceFailToConnectReasonType.NoBluetooth,
     }),
     bleDidFailToConnectPybricks({ reason: BleDeviceFailToConnectReasonType.NoGatt }),
@@ -81,7 +78,6 @@ test.each([
     bootloaderDidFailToConnect(BootloaderConnectionFailureReason.Unknown, <Error>{
         message: 'test',
     }),
-    bootloaderDidFailToConnect(BootloaderConnectionFailureReason.NoWebBluetooth),
     bootloaderDidFailToConnect(BootloaderConnectionFailureReason.NoBluetooth),
     bootloaderDidFailToConnect(BootloaderConnectionFailureReason.GattServiceNotFound),
     didFailToCompile(['reason']),
@@ -135,7 +131,11 @@ test.each([
 });
 
 test.each([
+    bleDidFailToConnectPybricks({
+        reason: BleDeviceFailToConnectReasonType.NoWebBluetooth,
+    }),
     bleDidFailToConnectPybricks({ reason: BleDeviceFailToConnectReasonType.Canceled }),
+    bootloaderDidFailToConnect(BootloaderConnectionFailureReason.NoWebBluetooth),
     bootloaderDidFailToConnect(BootloaderConnectionFailureReason.Canceled),
     didFailToFinish(FailToFinishReasonType.FailedToConnect),
     serviceWorkerDidSucceed(),

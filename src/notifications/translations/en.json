@@ -5,7 +5,6 @@
     "ble": {
         "gattPermission": "The web browser did not give permission to use Bluetooth Low Energy",
         "gattServiceNotFound": "Connected to hub but failed to get {serviceName} service.\nEnsure that you are using the most recent firmware.\nIf the problem persists, try removing the \"{hubName}\" device in your OS Bluetooth settings, then try connecting again.",
-        "noWebBluetooth": "This web browser does not support Web Bluetooth or it is not enabled.",
         "noBluetooth": "No Bluetooth adapter could be found. Please connect or enable a Bluetooth Low Energy adapter and restart the browser.",
         "unexpectedError": "Unexpected error while trying to connect: {errorMessage}"
     },

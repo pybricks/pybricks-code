@@ -193,16 +193,6 @@ function* showBleDeviceDidFailToConnectError(
         case BleDeviceFailToConnectReasonType.NoBluetooth:
             yield* showSingleton(Level.Error, I18nId.BleNoBluetooth);
             break;
-        case BleDeviceFailToConnectReasonType.NoWebBluetooth:
-            yield* showSingleton(
-                Level.Error,
-                I18nId.BleNoWebBluetooth,
-                undefined,
-                helpAction(
-                    'https://github.com/WebBluetoothCG/web-bluetooth/blob/master/implementation-status.md',
-                ),
-            );
-            break;
         case BleDeviceFailToConnectReasonType.Unknown:
             yield* showUnexpectedError(I18nId.BleUnexpectedError, action.err);
             break;
@@ -218,16 +208,6 @@ function* showBootloaderDidFailToConnectError(
                 serviceName: 'LEGO Bootloader',
                 hubName: 'LEGO Bootloader',
             });
-            break;
-        case BootloaderConnectionFailureReason.NoWebBluetooth:
-            yield* showSingleton(
-                Level.Error,
-                I18nId.BleNoWebBluetooth,
-                undefined,
-                helpAction(
-                    'https://github.com/WebBluetoothCG/web-bluetooth/blob/master/implementation-status.md',
-                ),
-            );
             break;
         case BootloaderConnectionFailureReason.NoBluetooth:
             yield* showSingleton(Level.Error, I18nId.BleNoBluetooth);

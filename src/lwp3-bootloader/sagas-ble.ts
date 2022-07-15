@@ -5,6 +5,7 @@
 
 import { END, eventChannel } from 'redux-saga';
 import { call, cancel, put, spawn, takeEvery, takeMaybe } from 'typed-redux-saga/macro';
+import { alertsShowAlert } from '../alerts/actions';
 import { ensureError } from '../utils';
 import {
     BootloaderConnectionFailureReason as Reason,
@@ -42,6 +43,7 @@ function* write(
 
 function* handleConnect(): Generator {
     if (navigator.bluetooth === undefined) {
+        yield* put(alertsShowAlert('ble', 'noWebBluetooth'));
         yield* put(didFailToConnect(Reason.NoWebBluetooth));
         return;
     }

@@ -4,6 +4,7 @@
 import { HubType } from '@pybricks/firmware';
 import { MockProxy, mock } from 'jest-mock-extended';
 import { AsyncSaga } from '../../test';
+import { alertsShowAlert } from '../alerts/actions';
 import {
     bleDIServiceDidReceiveFirmwareRevision,
     bleDIServiceDidReceivePnPId,
@@ -241,6 +242,9 @@ describe('connect action is dispatched', () => {
     it('should fail if no web bluetooth', async () => {
         await runConnectUntil(saga, ConnectRunPoint.Connect);
 
+        await expect(saga.take()).resolves.toEqual(
+            alertsShowAlert('ble', 'noWebBluetooth'),
+        );
         await expect(saga.take()).resolves.toEqual(
             bleDidFailToConnectPybricks({
                 reason: BleDeviceFailToConnectReasonType.NoWebBluetooth,

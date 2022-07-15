@@ -1,0 +1,8 @@
+{
+    "noWebBluetooth": {
+        "message": "This browser does not support Web Bluetooth or it is not enabled.",
+        "suggestion": "Use a supported browser such as Google Chrome or Microsoft Edge.",
+        "linux": "Web Bluetooth is experimental on Linux and must be manually enabled. Copy the link below and paste it in the address bar.",
+        "action": "More Info"
+    }
+}
