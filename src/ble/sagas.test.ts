@@ -27,11 +27,11 @@ import {
 } from '../ble-pybricks-service/protocol';
 import {
     BleDeviceFailToConnectReasonType,
-    connect,
-    didConnect,
-    didDisconnect,
-    didFailToConnect,
-    disconnect,
+    bleConnectPybricks,
+    bleDidConnectPybricks,
+    bleDidDisconnectPybricks,
+    bleDidFailToConnectPybricks,
+    bleDisconnectPybricks,
     toggleBluetooth,
 } from './actions';
 import { BleConnectionState } from './reducers';
@@ -191,7 +191,7 @@ enum ConnectRunPoint {
  * @param point The point at which to stop running.
  */
 async function runConnectUntil(saga: AsyncSaga, point: ConnectRunPoint): Promise<void> {
-    saga.put(connect());
+    saga.put(bleConnectPybricks());
 
     if (point === ConnectRunPoint.Connect) {
         return;
@@ -226,7 +226,9 @@ async function runConnectUntil(saga: AsyncSaga, point: ConnectRunPoint): Promise
         return;
     }
 
-    await expect(saga.take()).resolves.toEqual(didConnect('test-id', 'test name'));
+    await expect(saga.take()).resolves.toEqual(
+        bleDidConnectPybricks('test-id', 'test name'),
+    );
 }
 
 describe('connect action is dispatched', () => {
@@ -240,7 +242,7 @@ describe('connect action is dispatched', () => {
         await runConnectUntil(saga, ConnectRunPoint.Connect);
 
         await expect(saga.take()).resolves.toEqual(
-            didFailToConnect({
+            bleDidFailToConnectPybricks({
                 reason: BleDeviceFailToConnectReasonType.NoWebBluetooth,
             }),
         );
@@ -259,7 +261,7 @@ describe('connect action is dispatched', () => {
             await runConnectUntil(saga, ConnectRunPoint.Connect);
 
             await expect(saga.take()).resolves.toEqual(
-                didFailToConnect({
+                bleDidFailToConnectPybricks({
                     reason: BleDeviceFailToConnectReasonType.NoBluetooth,
                 }),
             );
@@ -273,7 +275,7 @@ describe('connect action is dispatched', () => {
             await runConnectUntil(saga, ConnectRunPoint.Connect);
 
             await expect(saga.take()).resolves.toEqual(
-                didFailToConnect({
+                bleDidFailToConnectPybricks({
                     reason: BleDeviceFailToConnectReasonType.Canceled,
                 }),
             );
@@ -288,7 +290,7 @@ describe('connect action is dispatched', () => {
             await runConnectUntil(saga, ConnectRunPoint.Connect);
 
             await expect(saga.take()).resolves.toEqual(
-                didFailToConnect({
+                bleDidFailToConnectPybricks({
                     reason: BleDeviceFailToConnectReasonType.Unknown,
                     err: testError,
                 }),
@@ -301,7 +303,7 @@ describe('connect action is dispatched', () => {
             await runConnectUntil(saga, ConnectRunPoint.Connect);
 
             await expect(saga.take()).resolves.toEqual(
-                didFailToConnect({
+                bleDidFailToConnectPybricks({
                     reason: BleDeviceFailToConnectReasonType.NoGatt,
                 }),
             );
@@ -314,7 +316,7 @@ describe('connect action is dispatched', () => {
             await runConnectUntil(saga, ConnectRunPoint.Connect);
 
             await expect(saga.take()).resolves.toEqual(
-                didFailToConnect({
+                bleDidFailToConnectPybricks({
                     reason: BleDeviceFailToConnectReasonType.Unknown,
                     err: testError,
                 }),
@@ -330,7 +332,7 @@ describe('connect action is dispatched', () => {
             await runConnectUntil(saga, ConnectRunPoint.Connect);
 
             await expect(saga.take()).resolves.toEqual(
-                didFailToConnect({
+                bleDidFailToConnectPybricks({
                     reason: BleDeviceFailToConnectReasonType.NoDeviceInfoService,
                 }),
             );
@@ -347,7 +349,7 @@ describe('connect action is dispatched', () => {
             await runConnectUntil(saga, ConnectRunPoint.Connect);
 
             await expect(saga.take()).resolves.toEqual(
-                didFailToConnect({
+                bleDidFailToConnectPybricks({
                     reason: BleDeviceFailToConnectReasonType.Unknown,
                     err: testError,
                 }),
@@ -363,7 +365,7 @@ describe('connect action is dispatched', () => {
             await runConnectUntil(saga, ConnectRunPoint.Connect);
 
             await expect(saga.take()).resolves.toEqual(
-                didFailToConnect({
+                bleDidFailToConnectPybricks({
                     reason: BleDeviceFailToConnectReasonType.Unknown,
                     err: testError,
                 }),
@@ -381,7 +383,7 @@ describe('connect action is dispatched', () => {
             await runConnectUntil(saga, ConnectRunPoint.DidReceiveFirmwareRevision);
 
             await expect(saga.take()).resolves.toEqual(
-                didFailToConnect({
+                bleDidFailToConnectPybricks({
                     reason: BleDeviceFailToConnectReasonType.Unknown,
                     err: testError,
                 }),
@@ -397,7 +399,7 @@ describe('connect action is dispatched', () => {
             await runConnectUntil(saga, ConnectRunPoint.DidReceiveFirmwareRevision);
 
             await expect(saga.take()).resolves.toEqual(
-                didFailToConnect({
+                bleDidFailToConnectPybricks({
                     reason: BleDeviceFailToConnectReasonType.Unknown,
                     err: testError,
                 }),
@@ -415,7 +417,7 @@ describe('connect action is dispatched', () => {
             await runConnectUntil(saga, ConnectRunPoint.DidReceiveSoftwareRevision);
 
             await expect(saga.take()).resolves.toEqual(
-                didConnect('test-id', 'test name'),
+                bleDidConnectPybricks('test-id', 'test name'),
             );
         });
 
@@ -426,7 +428,7 @@ describe('connect action is dispatched', () => {
             await runConnectUntil(saga, ConnectRunPoint.DidReceiveSoftwareRevision);
 
             await expect(saga.take()).resolves.toEqual(
-                didFailToConnect({
+                bleDidFailToConnectPybricks({
                     reason: BleDeviceFailToConnectReasonType.Unknown,
                     err: testError,
                 }),
@@ -444,7 +446,7 @@ describe('connect action is dispatched', () => {
             await runConnectUntil(saga, ConnectRunPoint.DidReceivePnpId);
 
             await expect(saga.take()).resolves.toEqual(
-                didFailToConnect({
+                bleDidFailToConnectPybricks({
                     reason: BleDeviceFailToConnectReasonType.NoPybricksService,
                 }),
             );
@@ -461,7 +463,7 @@ describe('connect action is dispatched', () => {
             await runConnectUntil(saga, ConnectRunPoint.DidReceivePnpId);
 
             await expect(saga.take()).resolves.toEqual(
-                didFailToConnect({
+                bleDidFailToConnectPybricks({
                     reason: BleDeviceFailToConnectReasonType.Unknown,
                     err: testError,
                 }),
@@ -477,7 +479,7 @@ describe('connect action is dispatched', () => {
             await runConnectUntil(saga, ConnectRunPoint.DidReceivePnpId);
 
             await expect(saga.take()).resolves.toEqual(
-                didFailToConnect({
+                bleDidFailToConnectPybricks({
                     reason: BleDeviceFailToConnectReasonType.Unknown,
                     err: testError,
                 }),
@@ -493,7 +495,7 @@ describe('connect action is dispatched', () => {
             await runConnectUntil(saga, ConnectRunPoint.DidReceivePnpId);
 
             await expect(saga.take()).resolves.toEqual(
-                didFailToConnect({
+                bleDidFailToConnectPybricks({
                     reason: BleDeviceFailToConnectReasonType.Unknown,
                     err: testError,
                 }),
@@ -511,7 +513,7 @@ describe('connect action is dispatched', () => {
             await runConnectUntil(saga, ConnectRunPoint.DidReceivePnpId);
 
             await expect(saga.take()).resolves.toEqual(
-                didFailToConnect({
+                bleDidFailToConnectPybricks({
                     // FIXME: this is wrong error
                     reason: BleDeviceFailToConnectReasonType.NoPybricksService,
                 }),
@@ -529,7 +531,7 @@ describe('connect action is dispatched', () => {
             await runConnectUntil(saga, ConnectRunPoint.DidReceivePnpId);
 
             await expect(saga.take()).resolves.toEqual(
-                didFailToConnect({
+                bleDidFailToConnectPybricks({
                     reason: BleDeviceFailToConnectReasonType.Unknown,
                     err: testError,
                 }),
@@ -547,7 +549,7 @@ describe('connect action is dispatched', () => {
             await runConnectUntil(saga, ConnectRunPoint.DidReceivePnpId);
 
             await expect(saga.take()).resolves.toEqual(
-                didFailToConnect({
+                bleDidFailToConnectPybricks({
                     reason: BleDeviceFailToConnectReasonType.Unknown,
                     err: testError,
                 }),
@@ -563,7 +565,7 @@ describe('connect action is dispatched', () => {
             await runConnectUntil(saga, ConnectRunPoint.DidReceivePnpId);
 
             await expect(saga.take()).resolves.toEqual(
-                didFailToConnect({
+                bleDidFailToConnectPybricks({
                     reason: BleDeviceFailToConnectReasonType.Unknown,
                     err: testError,
                 }),
@@ -579,7 +581,7 @@ describe('connect action is dispatched', () => {
             await runConnectUntil(saga, ConnectRunPoint.DidReceivePnpId);
 
             await expect(saga.take()).resolves.toEqual(
-                didFailToConnect({
+                bleDidFailToConnectPybricks({
                     reason: BleDeviceFailToConnectReasonType.Unknown,
                     err: testError,
                 }),
@@ -595,9 +597,9 @@ describe('connect action is dispatched', () => {
         it('should handle disconnect', async () => {
             await runConnectUntil(saga, ConnectRunPoint.DidConnect);
 
-            saga.put(disconnect());
+            saga.put(bleDisconnectPybricks());
 
-            await expect(saga.take()).resolves.toEqual(didDisconnect());
+            await expect(saga.take()).resolves.toEqual(bleDidDisconnectPybricks());
 
             expect(mocks.gatt.disconnect).toHaveBeenCalled();
         });
@@ -616,7 +618,7 @@ describe('toggleBluetooth action', () => {
 
         saga.put(toggleBluetooth());
 
-        await expect(saga.take()).resolves.toEqual(connect());
+        await expect(saga.take()).resolves.toEqual(bleConnectPybricks());
     });
 
     it('should disconnect when connected', async () => {
@@ -626,6 +628,6 @@ describe('toggleBluetooth action', () => {
 
         saga.put(toggleBluetooth());
 
-        await expect(saga.take()).resolves.toEqual(disconnect());
+        await expect(saga.take()).resolves.toEqual(bleDisconnectPybricks());
     });
 });

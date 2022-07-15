@@ -52,11 +52,11 @@ import { RootState } from '../reducers';
 import { ensureError } from '../utils';
 import {
     BleDeviceFailToConnectReasonType as Reason,
-    connect,
-    didConnect,
-    didDisconnect,
-    didFailToConnect,
-    disconnect,
+    bleConnectPybricks as bleConnectPybricks,
+    bleDidConnectPybricks,
+    bleDidDisconnectPybricks,
+    bleDidFailToConnectPybricks,
+    bleDisconnectPybricks,
     toggleBluetooth,
 } from './actions';
 import { BleConnectionState } from './reducers';
@@ -99,15 +99,15 @@ function* handleWriteUart(
     }
 }
 
-function* handleConnect(): Generator {
+function* handleBleConnectPybricks(): Generator {
     if (navigator.bluetooth === undefined) {
-        yield* put(didFailToConnect({ reason: Reason.NoWebBluetooth }));
+        yield* put(bleDidFailToConnectPybricks({ reason: Reason.NoWebBluetooth }));
         return;
     }
 
     const available = yield* call(() => navigator.bluetooth.getAvailability());
     if (!available) {
-        yield* put(didFailToConnect({ reason: Reason.NoBluetooth }));
+        yield* put(bleDidFailToConnectPybricks({ reason: Reason.NoBluetooth }));
         return;
     }
 
@@ -126,17 +126,20 @@ function* handleConnect(): Generator {
     } catch (err) {
         if (err instanceof DOMException && err.code === DOMException.NOT_FOUND_ERR) {
             // this can happen if the use cancels the dialog
-            yield* put(didFailToConnect({ reason: Reason.Canceled }));
+            yield* put(bleDidFailToConnectPybricks({ reason: Reason.Canceled }));
         } else {
             yield* put(
-                didFailToConnect({ reason: Reason.Unknown, err: ensureError(err) }),
+                bleDidFailToConnectPybricks({
+                    reason: Reason.Unknown,
+                    err: ensureError(err),
+                }),
             );
         }
         return;
     }
 
     if (device.gatt === undefined) {
-        yield* put(didFailToConnect({ reason: Reason.NoGatt }));
+        yield* put(bleDidFailToConnectPybricks({ reason: Reason.NoGatt }));
         return;
     }
 
@@ -152,11 +155,16 @@ function* handleConnect(): Generator {
         server = yield* call([device.gatt, 'connect']);
     } catch (err) {
         disconnectChannel.close();
-        yield* put(didFailToConnect({ reason: Reason.Unknown, err: ensureError(err) }));
+        yield* put(
+            bleDidFailToConnectPybricks({
+                reason: Reason.Unknown,
+                err: ensureError(err),
+            }),
+        );
         return;
     }
 
-    yield* takeEvery(disconnect, handleDisconnect, server);
+    yield* takeEvery(bleDisconnectPybricks, handleDisconnect, server);
 
     let deviceInfoService: BluetoothRemoteGATTService;
     try {
@@ -168,10 +176,15 @@ function* handleConnect(): Generator {
         server.disconnect();
         yield* takeMaybe(disconnectChannel);
         if (err instanceof DOMException && err.code === DOMException.NOT_FOUND_ERR) {
-            yield* put(didFailToConnect({ reason: Reason.NoDeviceInfoService }));
+            yield* put(
+                bleDidFailToConnectPybricks({ reason: Reason.NoDeviceInfoService }),
+            );
         } else {
             yield* put(
-                didFailToConnect({ reason: Reason.Unknown, err: ensureError(err) }),
+                bleDidFailToConnectPybricks({
+                    reason: Reason.Unknown,
+                    err: ensureError(err),
+                }),
             );
         }
         return;
@@ -186,7 +199,12 @@ function* handleConnect(): Generator {
     } catch (err) {
         server.disconnect();
         yield* takeMaybe(disconnectChannel);
-        yield* put(didFailToConnect({ reason: Reason.Unknown, err: ensureError(err) }));
+        yield* put(
+            bleDidFailToConnectPybricks({
+                reason: Reason.Unknown,
+                err: ensureError(err),
+            }),
+        );
         return;
     }
 
@@ -196,7 +214,12 @@ function* handleConnect(): Generator {
     } catch (err) {
         server.disconnect();
         yield* takeMaybe(disconnectChannel);
-        yield* put(didFailToConnect({ reason: Reason.Unknown, err: ensureError(err) }));
+        yield* put(
+            bleDidFailToConnectPybricks({
+                reason: Reason.Unknown,
+                err: ensureError(err),
+            }),
+        );
         return;
     }
 
@@ -209,7 +232,12 @@ function* handleConnect(): Generator {
     } catch (err) {
         server.disconnect();
         yield* takeMaybe(disconnectChannel);
-        yield* put(didFailToConnect({ reason: Reason.Unknown, err: ensureError(err) }));
+        yield* put(
+            bleDidFailToConnectPybricks({
+                reason: Reason.Unknown,
+                err: ensureError(err),
+            }),
+        );
         return;
     }
 
@@ -219,7 +247,12 @@ function* handleConnect(): Generator {
     } catch (err) {
         server.disconnect();
         yield* takeMaybe(disconnectChannel);
-        yield* put(didFailToConnect({ reason: Reason.Unknown, err: ensureError(err) }));
+        yield* put(
+            bleDidFailToConnectPybricks({
+                reason: Reason.Unknown,
+                err: ensureError(err),
+            }),
+        );
         return;
     }
 
@@ -240,7 +273,10 @@ function* handleConnect(): Generator {
             server.disconnect();
             yield* takeMaybe(disconnectChannel);
             yield* put(
-                didFailToConnect({ reason: Reason.Unknown, err: ensureError(err) }),
+                bleDidFailToConnectPybricks({
+                    reason: Reason.Unknown,
+                    err: ensureError(err),
+                }),
             );
             return;
         }
@@ -256,10 +292,15 @@ function* handleConnect(): Generator {
         server.disconnect();
         yield* takeMaybe(disconnectChannel);
         if (err instanceof DOMException && err.code === DOMException.NOT_FOUND_ERR) {
-            yield* put(didFailToConnect({ reason: Reason.NoPybricksService }));
+            yield* put(
+                bleDidFailToConnectPybricks({ reason: Reason.NoPybricksService }),
+            );
         } else {
             yield* put(
-                didFailToConnect({ reason: Reason.Unknown, err: ensureError(err) }),
+                bleDidFailToConnectPybricks({
+                    reason: Reason.Unknown,
+                    err: ensureError(err),
+                }),
             );
         }
         return;
@@ -274,7 +315,12 @@ function* handleConnect(): Generator {
     } catch (err) {
         server.disconnect();
         yield* takeMaybe(disconnectChannel);
-        yield* put(didFailToConnect({ reason: Reason.Unknown, err: ensureError(err) }));
+        yield* put(
+            bleDidFailToConnectPybricks({
+                reason: Reason.Unknown,
+                err: ensureError(err),
+            }),
+        );
         return;
     }
 
@@ -313,7 +359,12 @@ function* handleConnect(): Generator {
         pybricksControlChannel.close();
         server.disconnect();
         yield* takeMaybe(disconnectChannel);
-        yield* put(didFailToConnect({ reason: Reason.Unknown, err: ensureError(err) }));
+        yield* put(
+            bleDidFailToConnectPybricks({
+                reason: Reason.Unknown,
+                err: ensureError(err),
+            }),
+        );
         return;
     }
 
@@ -328,10 +379,15 @@ function* handleConnect(): Generator {
         server.disconnect();
         yield* takeMaybe(disconnectChannel);
         if (err instanceof DOMException && err.code === DOMException.NOT_FOUND_ERR) {
-            yield* put(didFailToConnect({ reason: Reason.NoPybricksService }));
+            yield* put(
+                bleDidFailToConnectPybricks({ reason: Reason.NoPybricksService }),
+            );
         } else {
             yield* put(
-                didFailToConnect({ reason: Reason.Unknown, err: ensureError(err) }),
+                bleDidFailToConnectPybricks({
+                    reason: Reason.Unknown,
+                    err: ensureError(err),
+                }),
             );
         }
         return;
@@ -345,7 +401,12 @@ function* handleConnect(): Generator {
         pybricksControlChannel.close();
         server.disconnect();
         yield* takeMaybe(disconnectChannel);
-        yield* put(didFailToConnect({ reason: Reason.Unknown, err: ensureError(err) }));
+        yield* put(
+            bleDidFailToConnectPybricks({
+                reason: Reason.Unknown,
+                err: ensureError(err),
+            }),
+        );
         return;
     }
 
@@ -357,7 +418,12 @@ function* handleConnect(): Generator {
         pybricksControlChannel.close();
         server.disconnect();
         yield* takeMaybe(disconnectChannel);
-        yield* put(didFailToConnect({ reason: Reason.Unknown, err: ensureError(err) }));
+        yield* put(
+            bleDidFailToConnectPybricks({
+                reason: Reason.Unknown,
+                err: ensureError(err),
+            }),
+        );
         return;
     }
 
@@ -389,13 +455,18 @@ function* handleConnect(): Generator {
         pybricksControlChannel.close();
         server.disconnect();
         yield* takeMaybe(disconnectChannel);
-        yield* put(didFailToConnect({ reason: Reason.Unknown, err: ensureError(err) }));
+        yield* put(
+            bleDidFailToConnectPybricks({
+                reason: Reason.Unknown,
+                err: ensureError(err),
+            }),
+        );
         return;
     }
 
     tasks.push(yield* takeEvery(writeUart, handleWriteUart, uartRxChar));
 
-    yield* put(didConnect(device.id, device.name || ''));
+    yield* put(bleDidConnectPybricks(device.id, device.name || ''));
 
     // wait for disconnection
     yield* takeMaybe(disconnectChannel);
@@ -404,7 +475,7 @@ function* handleConnect(): Generator {
     uartTxChannel.close();
     pybricksControlChannel.close();
 
-    yield* put(didDisconnect());
+    yield* put(bleDidDisconnectPybricks());
 }
 
 function* handleToggleBluetooth(): Generator {
@@ -414,15 +485,15 @@ function* handleToggleBluetooth(): Generator {
 
     switch (connectionState) {
         case BleConnectionState.Connected:
-            yield* put(disconnect());
+            yield* put(bleDisconnectPybricks());
             break;
         case BleConnectionState.Disconnected:
-            yield* put(connect());
+            yield* put(bleConnectPybricks());
             break;
     }
 }
 
 export default function* (): Generator {
-    yield* takeEvery(connect, handleConnect);
+    yield* takeEvery(bleConnectPybricks, handleBleConnectPybricks);
     yield* takeEvery(toggleBluetooth, handleToggleBluetooth);
 }

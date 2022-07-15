@@ -5,17 +5,17 @@
 
 import { createAction } from '../actions';
 /**
- * Creates an action that indicates connecting has been requested.
+ * Creates an action that initiates a connection to a hub running Pybricks firmware.
  */
-export const connect = createAction(() => ({
-    type: 'ble.device.action.connect',
+export const bleConnectPybricks = createAction(() => ({
+    type: 'ble.action.connectPybricks',
 }));
 
 /**
- * Creates an action that indicates a device was connected.
+ * Response that indicates {@link bleConnectPybricks} succeeded.
  */
-export const didConnect = createAction((id: string, name: string) => ({
-    type: 'ble.device.action.didConnect',
+export const bleDidConnectPybricks = createAction((id: string, name: string) => ({
+    type: 'ble.device.action.didConnectPybricks',
     id,
     name,
 }));
@@ -67,34 +67,34 @@ export type BleDeviceDidFailToConnectReason =
     | BleDeviceFailToConnectUnknownReason;
 
 /**
- * Creates an action that indicates a device failed to connect.
+ * Response that indicates {@link bleConnectPybricks} failed.
  */
-export const didFailToConnect = createAction(
+export const bleDidFailToConnectPybricks = createAction(
     (reason: BleDeviceDidFailToConnectReason) => ({
-        type: 'ble.device.action.didFailToConnect',
+        type: 'ble.action.didFailToConnectPybricks',
         ...reason,
     }),
 );
 
 /**
- * Creates an action that indicates disconnecting was requested.
+ * Creates an action to request disconnecting a hub running Pybricks firmware.
  */
-export const disconnect = createAction(() => ({
-    type: 'ble.device.action.disconnect',
+export const bleDisconnectPybricks = createAction(() => ({
+    type: 'ble.action.disconnectPybricks',
 }));
 
 /**
- * Creates an action that indicates a device was disconnected.
+ * Creates an action that indicates that {@link bleDisconnectPybricks} succeeded.
  */
-export const didDisconnect = createAction(() => ({
-    type: 'ble.device.action.didDisconnect',
+export const bleDidDisconnectPybricks = createAction(() => ({
+    type: 'ble.action.didDisconnectPybricks',
 }));
 
 /**
- * Creates an action that indicates a device failed to disconnect.
+ * Creates an action that indicates that {@link bleDisconnectPybricks} failed.
  */
-export const didFailToDisconnect = createAction(() => ({
-    type: 'ble.device.action.didFailToDisconnect',
+export const bleDidFailToDisconnectPybricks = createAction(() => ({
+    type: 'ble.action.didFailToDisconnectPybricks',
 }));
 
 /**

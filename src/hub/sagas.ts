@@ -18,7 +18,7 @@ import {
     didSendCommand,
     sendStopUserProgramCommand,
 } from '../ble-pybricks-service/actions';
-import { didConnect } from '../ble/actions';
+import { bleDidConnectPybricks } from '../ble/actions';
 import { editorGetValue } from '../editor/sagas';
 import { compile, didCompile, didFailToCompile } from '../mpy/actions';
 import { defined } from '../utils';
@@ -190,5 +190,5 @@ export default function* (): Generator {
     yield* takeEvery(repl, handleRepl);
     yield* takeEvery(stop, handleStop);
     // calling stop right after connecting should get the hub into a known state
-    yield* takeEvery(didConnect, handleStop);
+    yield* takeEvery(bleDidConnectPybricks, handleStop);
 }

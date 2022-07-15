@@ -6,7 +6,7 @@ import * as semver from 'semver';
 import { bleDIServiceDidReceiveFirmwareRevision } from '../ble-device-info-service/actions';
 import { didReceiveStatusReport } from '../ble-pybricks-service/actions';
 import { Status, statusToFlag } from '../ble-pybricks-service/protocol';
-import { didConnect, didDisconnect } from '../ble/actions';
+import { bleDidConnectPybricks, bleDidDisconnectPybricks } from '../ble/actions';
 import { pythonVersionToSemver } from '../utils/version';
 import {
     didFailToFinishDownload,
@@ -49,11 +49,11 @@ const runtime: Reducer<HubRuntimeState> = (
     state = HubRuntimeState.Disconnected,
     action,
 ) => {
-    if (didConnect.matches(action)) {
+    if (bleDidConnectPybricks.matches(action)) {
         return HubRuntimeState.Unknown;
     }
 
-    if (didDisconnect.matches(action)) {
+    if (bleDidDisconnectPybricks.matches(action)) {
         return HubRuntimeState.Disconnected;
     }
 

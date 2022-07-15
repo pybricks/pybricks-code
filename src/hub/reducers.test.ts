@@ -4,7 +4,7 @@
 import { AnyAction } from 'redux';
 import { didReceiveStatusReport } from '../ble-pybricks-service/actions';
 import { Status, statusToFlag } from '../ble-pybricks-service/protocol';
-import { didConnect, didDisconnect } from '../ble/actions';
+import { bleDidConnectPybricks, bleDidDisconnectPybricks } from '../ble/actions';
 import {
     didFailToFinishDownload,
     didFinishDownload,
@@ -30,7 +30,7 @@ describe('runtime', () => {
         expect(
             reducers(
                 { runtime: HubRuntimeState.Disconnected } as State,
-                didConnect('test-id', 'Test Name'),
+                bleDidConnectPybricks('test-id', 'Test Name'),
             ).runtime,
         ).toBe(HubRuntimeState.Unknown);
     });
@@ -38,7 +38,8 @@ describe('runtime', () => {
     test.each(Object.values(HubRuntimeState))('didDisconnect', (startingState) => {
         // all states are overridden by disconnect
         expect(
-            reducers({ runtime: startingState } as State, didDisconnect()).runtime,
+            reducers({ runtime: startingState } as State, bleDidDisconnectPybricks())
+                .runtime,
         ).toBe(HubRuntimeState.Disconnected);
     });
 

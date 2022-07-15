@@ -6,7 +6,7 @@ import { didFailToWrite } from '../ble-nordic-uart-service/actions';
 import { eventProtocolError } from '../ble-pybricks-service/actions';
 import {
     BleDeviceFailToConnectReasonType,
-    didFailToConnect as bleDidFailToConnect,
+    bleDidFailToConnectPybricks,
 } from '../ble/actions';
 import {
     BootloaderConnectionFailureReason,
@@ -21,12 +21,14 @@ test('bleDeviceDidFailToConnect', async () => {
     console.error = jest.fn();
 
     saga.put(
-        bleDidFailToConnect({ reason: BleDeviceFailToConnectReasonType.Canceled }),
+        bleDidFailToConnectPybricks({
+            reason: BleDeviceFailToConnectReasonType.Canceled,
+        }),
     );
     expect(console.error).toHaveBeenCalledTimes(0);
 
     saga.put(
-        bleDidFailToConnect({
+        bleDidFailToConnectPybricks({
             reason: BleDeviceFailToConnectReasonType.Unknown,
             err: new Error('test error'),
         }),

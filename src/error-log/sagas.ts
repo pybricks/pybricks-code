@@ -6,7 +6,7 @@ import { didFailToWrite as bleUartDidFailToWrite } from '../ble-nordic-uart-serv
 import { eventProtocolError as pybricksEventProtocolError } from '../ble-pybricks-service/actions';
 import {
     BleDeviceFailToConnectReasonType,
-    didFailToConnect as bleDeviceDidFailToConnect,
+    bleDidFailToConnectPybricks,
 } from '../ble/actions';
 import { fileStorageDidFailToStoreTextFileValue } from '../fileStorage/actions';
 import {
@@ -16,7 +16,7 @@ import {
 } from '../lwp3-bootloader/actions';
 
 function handleBleDeviceDidFailToConnect(
-    action: ReturnType<typeof bleDeviceDidFailToConnect>,
+    action: ReturnType<typeof bleDidFailToConnectPybricks>,
 ): void {
     if (action.reason === BleDeviceFailToConnectReasonType.Unknown) {
         console.error(action.err);
@@ -54,7 +54,7 @@ function handleFileStorageDidFailToStoreTextFileValue(
 }
 
 export default function* (): Generator {
-    yield* takeEvery(bleDeviceDidFailToConnect, handleBleDeviceDidFailToConnect);
+    yield* takeEvery(bleDidFailToConnectPybricks, handleBleDeviceDidFailToConnect);
     yield* takeEvery(pybricksEventProtocolError, handlePybricksEventProtocolError);
     yield* takeEvery(bleUartDidFailToWrite, handleBleUartDidFailToWrite);
     yield* takeEvery(bootloaderDidFailToConnect, handleBootloaderDidFailToConnect);

@@ -16,7 +16,7 @@ import { appName } from '../app/constants';
 import { bleDIServiceDidReceiveFirmwareRevision } from '../ble-device-info-service/actions';
 import {
     BleDeviceFailToConnectReasonType,
-    didFailToConnect as bleDeviceDidFailToConnect,
+    bleDidFailToConnectPybricks,
 } from '../ble/actions';
 import { editorDidFailToOpenFile } from '../editor/actions';
 import { EditorError } from '../editor/error';
@@ -171,7 +171,7 @@ function* showUnexpectedError(messageId: I18nId, error: Error): Generator {
 }
 
 function* showBleDeviceDidFailToConnectError(
-    action: ReturnType<typeof bleDeviceDidFailToConnect>,
+    action: ReturnType<typeof bleDidFailToConnectPybricks>,
 ): Generator {
     switch (action.reason) {
         case BleDeviceFailToConnectReasonType.NoGatt:
@@ -454,7 +454,7 @@ function* showExplorerFailToDelete(
 }
 
 export default function* (): Generator {
-    yield* takeEvery(bleDeviceDidFailToConnect, showBleDeviceDidFailToConnectError);
+    yield* takeEvery(bleDidFailToConnectPybricks, showBleDeviceDidFailToConnectError);
     yield* takeEvery(bootloaderDidFailToConnect, showBootloaderDidFailToConnectError);
     yield* takeEvery(didFailToFinish, showFlashFirmwareError);
     yield* takeEvery(didCompile, dismissCompilerError);

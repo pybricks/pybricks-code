@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021 The Pybricks Authors
+// Copyright (c) 2021-2022 The Pybricks Authors
 
 import { AnyAction } from 'redux';
 import {
@@ -12,12 +12,12 @@ import { didReceiveStatusReport } from '../ble-pybricks-service/actions';
 import { Status, statusToFlag } from '../ble-pybricks-service/protocol';
 import {
     BleDeviceDidFailToConnectReason,
-    connect,
-    didConnect,
-    didDisconnect,
-    didFailToConnect,
-    didFailToDisconnect,
-    disconnect,
+    bleConnectPybricks,
+    bleDidConnectPybricks,
+    bleDidDisconnectPybricks,
+    bleDidFailToConnectPybricks,
+    bleDidFailToDisconnectPybricks,
+    bleDisconnectPybricks,
 } from './actions';
 import reducers, { BleConnectionState } from './reducers';
 
@@ -38,35 +38,39 @@ test('initial state', () => {
 
 test('connection', () => {
     expect(
-        reducers({ connection: BleConnectionState.Disconnected } as State, connect())
-            .connection,
+        reducers(
+            { connection: BleConnectionState.Disconnected } as State,
+            bleConnectPybricks(),
+        ).connection,
     ).toBe(BleConnectionState.Connecting);
     expect(
         reducers(
             { connection: BleConnectionState.Connecting } as State,
-            didConnect('test-id', 'Test Name'),
+            bleDidConnectPybricks('test-id', 'Test Name'),
         ).connection,
     ).toBe(BleConnectionState.Connected);
     expect(
         reducers(
             { connection: BleConnectionState.Connecting } as State,
-            didFailToConnect({} as BleDeviceDidFailToConnectReason),
+            bleDidFailToConnectPybricks({} as BleDeviceDidFailToConnectReason),
         ).connection,
     ).toBe(BleConnectionState.Disconnected);
     expect(
-        reducers({ connection: BleConnectionState.Connected } as State, disconnect())
-            .connection,
+        reducers(
+            { connection: BleConnectionState.Connected } as State,
+            bleDisconnectPybricks(),
+        ).connection,
     ).toBe(BleConnectionState.Disconnecting);
     expect(
         reducers(
             { connection: BleConnectionState.Disconnecting } as State,
-            didDisconnect(),
+            bleDidDisconnectPybricks(),
         ).connection,
     ).toBe(BleConnectionState.Disconnected);
     expect(
         reducers(
             { connection: BleConnectionState.Disconnecting } as State,
-            didFailToDisconnect(),
+            bleDidFailToDisconnectPybricks(),
         ).connection,
     ).toBe(BleConnectionState.Connected);
 });
@@ -76,11 +80,13 @@ test('deviceName', () => {
     const testName = 'Test Name';
 
     expect(
-        reducers({ deviceName: '' } as State, didConnect(testId, testName)).deviceName,
+        reducers({ deviceName: '' } as State, bleDidConnectPybricks(testId, testName))
+            .deviceName,
     ).toBe(testName);
 
     expect(
-        reducers({ deviceName: testName } as State, didDisconnect()).deviceName,
+        reducers({ deviceName: testName } as State, bleDidDisconnectPybricks())
+            .deviceName,
     ).toBe('');
 });
 
@@ -98,7 +104,8 @@ test('deviceType', () => {
     ).toBe('Move hub');
 
     expect(
-        reducers({ deviceType: 'Move hub' } as State, didDisconnect()).deviceType,
+        reducers({ deviceType: 'Move hub' } as State, bleDidDisconnectPybricks())
+            .deviceType,
     ).toBe('');
 });
 
@@ -113,8 +120,10 @@ test('deviceFirmwareVersion', () => {
     ).toBe(testVersion);
 
     expect(
-        reducers({ deviceFirmwareVersion: testVersion } as State, didDisconnect())
-            .deviceFirmwareVersion,
+        reducers(
+            { deviceFirmwareVersion: testVersion } as State,
+            bleDidDisconnectPybricks(),
+        ).deviceFirmwareVersion,
     ).toBe('');
 });
 
@@ -134,14 +143,14 @@ test('deviceLowBatteryWarning', () => {
     ).toBeFalsy();
 
     expect(
-        reducers({ deviceLowBatteryWarning: true } as State, didDisconnect())
+        reducers({ deviceLowBatteryWarning: true } as State, bleDidDisconnectPybricks())
             .deviceLowBatteryWarning,
     ).toBeFalsy();
 });
 
 test('deviceBatteryCharging', () => {
     expect(
-        reducers({ deviceBatteryCharging: true } as State, didDisconnect())
+        reducers({ deviceBatteryCharging: true } as State, bleDidDisconnectPybricks())
             .deviceBatteryCharging,
     ).toBeFalsy();
 });

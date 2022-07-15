@@ -13,12 +13,12 @@ import { getHubTypeName } from '../ble-device-info-service/protocol';
 import { didReceiveStatusReport } from '../ble-pybricks-service/actions';
 import { Status, statusToFlag } from '../ble-pybricks-service/protocol';
 import {
-    connect,
-    didConnect,
-    didDisconnect,
-    didFailToConnect,
-    didFailToDisconnect,
-    disconnect,
+    bleConnectPybricks,
+    bleDidConnectPybricks,
+    bleDidDisconnectPybricks,
+    bleDidFailToConnectPybricks,
+    bleDidFailToDisconnectPybricks,
+    bleDisconnectPybricks,
 } from './actions';
 
 /**
@@ -47,19 +47,25 @@ const connection: Reducer<BleConnectionState> = (
     state = BleConnectionState.Disconnected,
     action,
 ) => {
-    if (connect.matches(action)) {
+    if (bleConnectPybricks.matches(action)) {
         return BleConnectionState.Connecting;
     }
 
-    if (didConnect.matches(action) || didFailToDisconnect.matches(action)) {
+    if (
+        bleDidConnectPybricks.matches(action) ||
+        bleDidFailToDisconnectPybricks.matches(action)
+    ) {
         return BleConnectionState.Connected;
     }
 
-    if (disconnect.matches(action)) {
+    if (bleDisconnectPybricks.matches(action)) {
         return BleConnectionState.Disconnecting;
     }
 
-    if (didFailToConnect.matches(action) || didDisconnect.matches(action)) {
+    if (
+        bleDidFailToConnectPybricks.matches(action) ||
+        bleDidDisconnectPybricks.matches(action)
+    ) {
         return BleConnectionState.Disconnected;
     }
 
@@ -67,11 +73,11 @@ const connection: Reducer<BleConnectionState> = (
 };
 
 const deviceName: Reducer<string> = (state = '', action) => {
-    if (didDisconnect.matches(action)) {
+    if (bleDidDisconnectPybricks.matches(action)) {
         return '';
     }
 
-    if (didConnect.matches(action)) {
+    if (bleDidConnectPybricks.matches(action)) {
         return action.name;
     }
 
@@ -79,7 +85,7 @@ const deviceName: Reducer<string> = (state = '', action) => {
 };
 
 const deviceType: Reducer<string> = (state = '', action) => {
-    if (didDisconnect.matches(action)) {
+    if (bleDidDisconnectPybricks.matches(action)) {
         return '';
     }
 
@@ -91,7 +97,7 @@ const deviceType: Reducer<string> = (state = '', action) => {
 };
 
 const deviceFirmwareVersion: Reducer<string> = (state = '', action) => {
-    if (didDisconnect.matches(action)) {
+    if (bleDidDisconnectPybricks.matches(action)) {
         return '';
     }
 
@@ -103,7 +109,7 @@ const deviceFirmwareVersion: Reducer<string> = (state = '', action) => {
 };
 
 const deviceLowBatteryWarning: Reducer<boolean> = (state = false, action) => {
-    if (didDisconnect.matches(action)) {
+    if (bleDidDisconnectPybricks.matches(action)) {
         return false;
     }
 
@@ -117,7 +123,7 @@ const deviceLowBatteryWarning: Reducer<boolean> = (state = false, action) => {
 };
 
 const deviceBatteryCharging: Reducer<boolean> = (state = false, action) => {
-    if (didDisconnect.matches(action)) {
+    if (bleDidDisconnectPybricks.matches(action)) {
         return false;
     }
 

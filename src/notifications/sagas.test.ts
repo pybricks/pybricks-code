@@ -14,7 +14,7 @@ import { appDidCheckForUpdate } from '../app/actions';
 import { bleDIServiceDidReceiveFirmwareRevision } from '../ble-device-info-service/actions';
 import {
     BleDeviceFailToConnectReasonType,
-    didFailToConnect as bleDidFailToConnect,
+    bleDidFailToConnectPybricks,
 } from '../ble/actions';
 import { editorDidFailToOpenFile } from '../editor/actions';
 import { EditorError } from '../editor/error';
@@ -61,14 +61,20 @@ function createTestToasterSaga(): { toaster: IToaster; saga: AsyncSaga } {
 }
 
 test.each([
-    bleDidFailToConnect({ reason: BleDeviceFailToConnectReasonType.NoWebBluetooth }),
-    bleDidFailToConnect({ reason: BleDeviceFailToConnectReasonType.NoBluetooth }),
-    bleDidFailToConnect({ reason: BleDeviceFailToConnectReasonType.NoGatt }),
-    bleDidFailToConnect({
+    bleDidFailToConnectPybricks({
+        reason: BleDeviceFailToConnectReasonType.NoWebBluetooth,
+    }),
+    bleDidFailToConnectPybricks({
+        reason: BleDeviceFailToConnectReasonType.NoBluetooth,
+    }),
+    bleDidFailToConnectPybricks({ reason: BleDeviceFailToConnectReasonType.NoGatt }),
+    bleDidFailToConnectPybricks({
         reason: BleDeviceFailToConnectReasonType.NoDeviceInfoService,
     }),
-    bleDidFailToConnect({ reason: BleDeviceFailToConnectReasonType.NoPybricksService }),
-    bleDidFailToConnect({
+    bleDidFailToConnectPybricks({
+        reason: BleDeviceFailToConnectReasonType.NoPybricksService,
+    }),
+    bleDidFailToConnectPybricks({
         reason: BleDeviceFailToConnectReasonType.Unknown,
         err: { name: 'test', message: 'unknown' },
     }),
@@ -129,7 +135,7 @@ test.each([
 });
 
 test.each([
-    bleDidFailToConnect({ reason: BleDeviceFailToConnectReasonType.Canceled }),
+    bleDidFailToConnectPybricks({ reason: BleDeviceFailToConnectReasonType.Canceled }),
     bootloaderDidFailToConnect(BootloaderConnectionFailureReason.Canceled),
     didFailToFinish(FailToFinishReasonType.FailedToConnect),
     serviceWorkerDidSucceed(),
