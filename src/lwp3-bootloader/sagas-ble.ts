@@ -4,7 +4,15 @@
 // Handles Bluetooth Low Energy connection to LEGO Wireless Protocol v3 Bootloader service.
 
 import { END, eventChannel } from 'redux-saga';
-import { call, cancel, put, spawn, takeEvery, takeMaybe } from 'typed-redux-saga/macro';
+import {
+    call,
+    cancel,
+    delay,
+    put,
+    spawn,
+    takeEvery,
+    takeMaybe,
+} from 'typed-redux-saga/macro';
 import { alertsShowAlert } from '../alerts/actions';
 import { ensureError } from '../utils';
 import {
@@ -97,6 +105,12 @@ function* handleConnect(): Generator {
         disconnectChannel.close();
         yield* put(didFailToConnect(Reason.Unknown, ensureError(err)));
         return;
+    }
+
+    // istanbul ignore if
+    if (process.env.NODE_ENV !== 'test') {
+        // give OS Bluetooth stack some time to settle
+        yield* delay(1000);
     }
 
     let service: BluetoothRemoteGATTService;

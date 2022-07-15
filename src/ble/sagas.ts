@@ -10,6 +10,7 @@ import { Task, buffers, eventChannel } from 'redux-saga';
 import {
     call,
     cancel,
+    delay,
     fork,
     put,
     select,
@@ -163,6 +164,12 @@ function* handleBleConnectPybricks(): Generator {
         const server = yield* call(() => gatt.connect());
 
         defer.push(() => server.disconnect());
+
+        // istanbul ignore if
+        if (process.env.NODE_ENV !== 'test') {
+            // give OS Bluetooth stack some time to settle
+            yield* delay(1000);
+        }
 
         const deviceInfoService = yield* call(() =>
             server.getPrimaryService(deviceInformationServiceUUID).catch((err) => {
