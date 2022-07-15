@@ -6,14 +6,15 @@
 // TODO: this file needs to be combined with the firmware BLE connection management
 // to reduce duplicated code
 
-import { END, Task, eventChannel } from 'redux-saga';
+import { Task, buffers, eventChannel } from 'redux-saga';
 import {
     call,
     cancel,
+    fork,
     put,
     select,
+    take,
     takeEvery,
-    takeMaybe,
 } from 'typed-redux-saga/macro';
 import { alertsShowAlert } from '../alerts/actions';
 import {
@@ -64,10 +65,6 @@ import { BleConnectionState } from './reducers';
 
 const decoder = new TextDecoder();
 
-function handleDisconnect(server: BluetoothRemoteGATTServer): void {
-    server.disconnect();
-}
-
 function* handlePybricksControlValueChanged(data: DataView): Generator {
     yield* put(didNotifyEvent(data));
 }
@@ -114,428 +111,254 @@ function* handleBleConnectPybricks(): Generator {
         return;
     }
 
-    let device: BluetoothDevice;
+    // spawned tasks that will need to be canceled later
+    const tasks = new Array<Task>();
+
+    const defer = new Array<() => void>();
+
     try {
-        device = yield* call(() =>
-            navigator.bluetooth.requestDevice({
-                filters: [{ services: [pybricksServiceUUID] }],
-                optionalServices: [
-                    pybricksServiceUUID,
-                    deviceInformationServiceUUID,
-                    nordicUartServiceUUID,
-                ],
-            }),
+        const device = yield* call(() =>
+            navigator.bluetooth
+                .requestDevice({
+                    filters: [{ services: [pybricksServiceUUID] }],
+                    optionalServices: [
+                        pybricksServiceUUID,
+                        deviceInformationServiceUUID,
+                        nordicUartServiceUUID,
+                    ],
+                })
+                .catch((err) => {
+                    if (
+                        err instanceof DOMException &&
+                        err.code === DOMException.NOT_FOUND_ERR
+                    ) {
+                        // this means the user clicked the cancel button in the scan dialog
+                        return undefined;
+                    }
+
+                    throw err;
+                }),
         );
-    } catch (err) {
-        if (err instanceof DOMException && err.code === DOMException.NOT_FOUND_ERR) {
-            // this can happen if the use cancels the dialog
+
+        if (!device) {
             yield* put(bleDidFailToConnectPybricks({ reason: Reason.Canceled }));
-        } else {
-            yield* put(
-                alertsShowAlert('alerts', 'unexpectedError', {
-                    error: ensureError(err),
-                }),
-            );
-            yield* put(
-                bleDidFailToConnectPybricks({
-                    reason: Reason.Unknown,
-                    err: ensureError(err),
-                }),
-            );
+            return;
         }
-        return;
-    }
 
-    if (device.gatt === undefined) {
-        yield* put(bleDidFailToConnectPybricks({ reason: Reason.NoGatt }));
-        return;
-    }
+        const gatt = device.gatt;
 
-    const disconnectChannel = eventChannel((emitter) => {
-        const listener = (): void => emitter(END);
-        device.addEventListener('gattserverdisconnected', listener);
-        return (): void =>
-            device.removeEventListener('gattserverdisconnected', listener);
-    });
+        if (!gatt) {
+            yield* put(bleDidFailToConnectPybricks({ reason: Reason.NoGatt }));
+            return;
+        }
 
-    let server: BluetoothRemoteGATTServer;
-    try {
-        server = yield* call([device.gatt, 'connect']);
-    } catch (err) {
-        disconnectChannel.close();
-        yield* put(
-            alertsShowAlert('alerts', 'unexpectedError', {
-                error: ensureError(err),
+        const disconnectChannel = eventChannel<Event>((emit) => {
+            device.addEventListener('gattserverdisconnected', emit);
+            return (): void =>
+                device.removeEventListener('gattserverdisconnected', emit);
+        }, buffers.sliding(1));
+
+        defer.push(() => disconnectChannel.close());
+
+        const server = yield* call(() => gatt.connect());
+
+        defer.push(() => server.disconnect());
+
+        const deviceInfoService = yield* call(() =>
+            server.getPrimaryService(deviceInformationServiceUUID).catch((err) => {
+                if (
+                    err instanceof DOMException &&
+                    err.code === DOMException.NOT_FOUND_ERR
+                ) {
+                    return undefined;
+                }
+
+                throw err;
             }),
         );
-        yield* put(
-            bleDidFailToConnectPybricks({
-                reason: Reason.Unknown,
-                err: ensureError(err),
-            }),
-        );
-        return;
-    }
 
-    yield* takeEvery(bleDisconnectPybricks, handleDisconnect, server);
-
-    let deviceInfoService: BluetoothRemoteGATTService;
-    try {
-        deviceInfoService = yield* call(
-            [server, 'getPrimaryService'],
-            deviceInformationServiceUUID,
-        );
-    } catch (err) {
-        server.disconnect();
-        yield* takeMaybe(disconnectChannel);
-        if (err instanceof DOMException && err.code === DOMException.NOT_FOUND_ERR) {
+        if (!deviceInfoService) {
             yield* put(
                 bleDidFailToConnectPybricks({ reason: Reason.NoDeviceInfoService }),
             );
-        } else {
-            yield* put(
-                alertsShowAlert('alerts', 'unexpectedError', {
-                    error: ensureError(err),
-                }),
-            );
-            yield* put(
-                bleDidFailToConnectPybricks({
-                    reason: Reason.Unknown,
-                    err: ensureError(err),
-                }),
-            );
+            return;
         }
-        return;
-    }
 
-    let firmwareVersionChar: BluetoothRemoteGATTCharacteristic;
-    try {
-        firmwareVersionChar = yield* call(
-            [deviceInfoService, 'getCharacteristic'],
-            firmwareRevisionStringUUID,
+        const firmwareVersionChar = yield* call(() =>
+            deviceInfoService.getCharacteristic(firmwareRevisionStringUUID),
         );
-    } catch (err) {
-        server.disconnect();
-        yield* takeMaybe(disconnectChannel);
-        yield* put(
-            alertsShowAlert('alerts', 'unexpectedError', {
-                error: ensureError(err),
-            }),
-        );
-        yield* put(
-            bleDidFailToConnectPybricks({
-                reason: Reason.Unknown,
-                err: ensureError(err),
-            }),
-        );
-        return;
-    }
 
-    try {
-        const version = decoder.decode(yield* call([firmwareVersionChar, 'readValue']));
-        yield* put(bleDIServiceDidReceiveFirmwareRevision(version));
-    } catch (err) {
-        server.disconnect();
-        yield* takeMaybe(disconnectChannel);
-        yield* put(
-            alertsShowAlert('alerts', 'unexpectedError', {
-                error: ensureError(err),
-            }),
+        const firmwareRevision = decoder.decode(
+            yield* call(() => firmwareVersionChar.readValue()),
         );
-        yield* put(
-            bleDidFailToConnectPybricks({
-                reason: Reason.Unknown,
-                err: ensureError(err),
-            }),
-        );
-        return;
-    }
+        yield* put(bleDIServiceDidReceiveFirmwareRevision(firmwareRevision));
 
-    let softwareVersionChar: BluetoothRemoteGATTCharacteristic;
-    try {
-        softwareVersionChar = yield* call(
-            [deviceInfoService, 'getCharacteristic'],
-            softwareRevisionStringUUID,
+        const softwareVersionChar = yield* call(() =>
+            deviceInfoService.getCharacteristic(softwareRevisionStringUUID),
         );
-    } catch (err) {
-        server.disconnect();
-        yield* takeMaybe(disconnectChannel);
-        yield* put(
-            alertsShowAlert('alerts', 'unexpectedError', {
-                error: ensureError(err),
-            }),
-        );
-        yield* put(
-            bleDidFailToConnectPybricks({
-                reason: Reason.Unknown,
-                err: ensureError(err),
-            }),
-        );
-        return;
-    }
 
-    try {
-        const version = decoder.decode(yield* call([softwareVersionChar, 'readValue']));
-        yield* put(bleDIServiceDidReceiveSoftwareRevision(version));
-    } catch (err) {
-        server.disconnect();
-        yield* takeMaybe(disconnectChannel);
-        yield* put(
-            alertsShowAlert('alerts', 'unexpectedError', {
-                error: ensureError(err),
+        const softwareRevision = decoder.decode(
+            yield* call(() => softwareVersionChar.readValue()),
+        );
+        yield* put(bleDIServiceDidReceiveSoftwareRevision(softwareRevision));
+
+        const pnpIdChar = yield* call(() =>
+            deviceInfoService.getCharacteristic(pnpIdUUID).catch((err) => {
+                if (
+                    err instanceof DOMException &&
+                    err.code === DOMException.NOT_FOUND_ERR
+                ) {
+                    // istanbul ignore if
+                    if (process.env.NODE_ENV !== 'test') {
+                        console.warn(
+                            'PnP ID characteristic requires Pybricks firmware v3.1.0a1 or later',
+                        );
+                    }
+
+                    return undefined;
+                }
+
+                throw err;
             }),
         );
-        yield* put(
-            bleDidFailToConnectPybricks({
-                reason: Reason.Unknown,
-                err: ensureError(err),
-            }),
-        );
-        return;
-    }
 
-    let pnpIdChar: BluetoothRemoteGATTCharacteristic | undefined = undefined;
-    try {
-        pnpIdChar = yield* call([deviceInfoService, 'getCharacteristic'], pnpIdUUID);
-    } catch (err) {
-        if (process.env.NODE_ENV !== 'test') {
-            console.warn(
-                'PnP ID characteristic requires Pybricks firmware v3.1.0a1 or later',
-            );
-        }
-    }
-
-    if (pnpIdChar) {
-        try {
-            const pnpId = decodePnpId(yield* call([pnpIdChar, 'readValue']));
+        if (pnpIdChar) {
+            const pnpId = decodePnpId(yield* call(() => pnpIdChar.readValue()));
             yield* put(bleDIServiceDidReceivePnPId(pnpId));
-        } catch (err) {
-            server.disconnect();
-            yield* takeMaybe(disconnectChannel);
-            yield* put(
-                alertsShowAlert('alerts', 'unexpectedError', {
-                    error: ensureError(err),
-                }),
-            );
+        }
+
+        const pybricksService = yield* call(() =>
+            server.getPrimaryService(pybricksServiceUUID).catch((err) => {
+                if (
+                    err instanceof DOMException &&
+                    err.code === DOMException.NOT_FOUND_ERR
+                ) {
+                    return undefined;
+                }
+
+                throw err;
+            }),
+        );
+
+        if (!pybricksService) {
             yield* put(
                 bleDidFailToConnectPybricks({
-                    reason: Reason.Unknown,
-                    err: ensureError(err),
+                    reason: Reason.NoPybricksService,
                 }),
             );
             return;
         }
-    }
 
-    let pybricksService: BluetoothRemoteGATTService;
-    try {
-        pybricksService = yield* call(
-            [server, 'getPrimaryService'],
-            pybricksServiceUUID,
+        const pybricksControlChar = yield* call(() =>
+            pybricksService.getCharacteristic(pybricksControlCharacteristicUUID),
         );
-    } catch (err) {
-        server.disconnect();
-        yield* takeMaybe(disconnectChannel);
-        if (err instanceof DOMException && err.code === DOMException.NOT_FOUND_ERR) {
-            yield* put(
-                bleDidFailToConnectPybricks({ reason: Reason.NoPybricksService }),
-            );
-        } else {
-            yield* put(
-                alertsShowAlert('alerts', 'unexpectedError', {
-                    error: ensureError(err),
-                }),
-            );
-            yield* put(
-                bleDidFailToConnectPybricks({
-                    reason: Reason.Unknown,
-                    err: ensureError(err),
-                }),
-            );
-        }
-        return;
-    }
 
-    let pybricksControlChar: BluetoothRemoteGATTCharacteristic;
-    try {
-        pybricksControlChar = yield* call(
-            [pybricksService, 'getCharacteristic'],
-            pybricksControlCharacteristicUUID,
-        );
-    } catch (err) {
-        server.disconnect();
-        yield* takeMaybe(disconnectChannel);
-        yield* put(
-            alertsShowAlert('alerts', 'unexpectedError', {
-                error: ensureError(err),
-            }),
-        );
-        yield* put(
-            bleDidFailToConnectPybricks({
-                reason: Reason.Unknown,
-                err: ensureError(err),
-            }),
-        );
-        return;
-    }
+        const pybricksControlChannel = eventChannel<DataView>((emit) => {
+            const listener = (): void => {
+                if (!pybricksControlChar.value) {
+                    return;
+                }
+                emit(pybricksControlChar.value);
+            };
 
-    const pybricksControlChannel = eventChannel<DataView>((emitter) => {
-        const listener = (): void => {
-            if (!pybricksControlChar.value) {
-                return;
-            }
-            emitter(pybricksControlChar.value);
-        };
-        pybricksControlChar.addEventListener('characteristicvaluechanged', listener);
-        return (): void =>
-            pybricksControlChar.removeEventListener(
+            pybricksControlChar.addEventListener(
                 'characteristicvaluechanged',
                 listener,
             );
-    });
 
-    // forked tasks that will need to be canceled later
-    const tasks = new Array<Task>();
+            return (): void =>
+                pybricksControlChar.removeEventListener(
+                    'characteristicvaluechanged',
+                    listener,
+                );
+        });
 
-    tasks.push(
-        yield* takeEvery(pybricksControlChannel, handlePybricksControlValueChanged),
-    );
+        defer.push(() => pybricksControlChannel.close());
+        tasks.push(
+            yield* takeEvery(pybricksControlChannel, handlePybricksControlValueChanged),
+        );
 
-    try {
         // REVISIT: possible Pybricks firmware bug (or chromium bug on Linux)
         // where 'characteristicvaluechanged' is not called after disconnecting
         // and reconnecting unless we stop notifications before we start them
         // again. Wireshark shows that no enable notification descriptor write
         // is performed but notifications are received.
-        yield* call([pybricksControlChar, 'stopNotifications']);
-        yield* call([pybricksControlChar, 'startNotifications']);
-    } catch (err) {
-        yield* cancel(tasks);
-        pybricksControlChannel.close();
-        server.disconnect();
-        yield* takeMaybe(disconnectChannel);
-        yield* put(
-            alertsShowAlert('alerts', 'unexpectedError', {
-                error: ensureError(err),
+        yield* call(() => pybricksControlChar.stopNotifications());
+        yield* call(() => pybricksControlChar.startNotifications());
+
+        tasks.push(
+            yield* takeEvery(writeCommand, handleWriteCommand, pybricksControlChar),
+        );
+
+        const uartService = yield* call(() =>
+            server.getPrimaryService(nordicUartServiceUUID).catch((err) => {
+                if (
+                    err instanceof DOMException &&
+                    err.code === DOMException.NOT_FOUND_ERR
+                ) {
+                    return undefined;
+                }
+
+                throw err;
             }),
         );
-        yield* put(
-            bleDidFailToConnectPybricks({
-                reason: Reason.Unknown,
-                err: ensureError(err),
-            }),
-        );
-        return;
-    }
 
-    tasks.push(yield* takeEvery(writeCommand, handleWriteCommand, pybricksControlChar));
-
-    let uartService: BluetoothRemoteGATTService;
-    try {
-        uartService = yield* call([server, 'getPrimaryService'], nordicUartServiceUUID);
-    } catch (err) {
-        yield* cancel(tasks);
-        pybricksControlChannel.close();
-        server.disconnect();
-        yield* takeMaybe(disconnectChannel);
-        if (err instanceof DOMException && err.code === DOMException.NOT_FOUND_ERR) {
-            yield* put(
-                bleDidFailToConnectPybricks({ reason: Reason.NoPybricksService }),
-            );
-        } else {
-            yield* put(
-                alertsShowAlert('alerts', 'unexpectedError', {
-                    error: ensureError(err),
-                }),
-            );
+        if (!uartService) {
             yield* put(
                 bleDidFailToConnectPybricks({
-                    reason: Reason.Unknown,
-                    err: ensureError(err),
+                    reason: Reason.NoPybricksService,
                 }),
             );
+            return;
         }
-        return;
-    }
 
-    let uartRxChar: BluetoothRemoteGATTCharacteristic;
-    try {
-        uartRxChar = yield* call(
-            [uartService, 'getCharacteristic'],
-            nordicUartRxCharUUID,
+        const uartRxChar = yield* call(() =>
+            uartService.getCharacteristic(nordicUartRxCharUUID),
         );
-    } catch (err) {
-        yield* cancel(tasks);
-        pybricksControlChannel.close();
-        server.disconnect();
-        yield* takeMaybe(disconnectChannel);
-        yield* put(
-            alertsShowAlert('alerts', 'unexpectedError', {
-                error: ensureError(err),
-            }),
-        );
-        yield* put(
-            bleDidFailToConnectPybricks({
-                reason: Reason.Unknown,
-                err: ensureError(err),
-            }),
-        );
-        return;
-    }
 
-    let uartTxChar: BluetoothRemoteGATTCharacteristic;
-    try {
-        uartTxChar = yield* call(
-            [uartService, 'getCharacteristic'],
-            nordicUartTxCharUUID,
+        const uartTxChar = yield* call(() =>
+            uartService.getCharacteristic(nordicUartTxCharUUID),
         );
-    } catch (err) {
-        yield* cancel(tasks);
-        pybricksControlChannel.close();
-        server.disconnect();
-        yield* takeMaybe(disconnectChannel);
-        yield* put(
-            alertsShowAlert('alerts', 'unexpectedError', {
-                error: ensureError(err),
-            }),
-        );
-        yield* put(
-            bleDidFailToConnectPybricks({
-                reason: Reason.Unknown,
-                err: ensureError(err),
-            }),
-        );
-        return;
-    }
 
-    const uartTxChannel = eventChannel<DataView>((emitter) => {
-        const listener = (): void => {
-            if (!uartTxChar.value) {
-                return;
-            }
-            emitter(uartTxChar.value);
-        };
-        uartTxChar.addEventListener('characteristicvaluechanged', listener);
-        return (): void =>
-            uartTxChar.removeEventListener('characteristicvaluechanged', listener);
-    });
+        const uartTxChannel = eventChannel<DataView>((emitter) => {
+            const listener = (): void => {
+                if (!uartTxChar.value) {
+                    return;
+                }
+                emitter(uartTxChar.value);
+            };
+            uartTxChar.addEventListener('characteristicvaluechanged', listener);
+            return (): void =>
+                uartTxChar.removeEventListener('characteristicvaluechanged', listener);
+        });
 
-    tasks.push(yield* takeEvery(uartTxChannel, handleUartValueChanged));
+        defer.push(() => uartTxChannel.close());
+        tasks.push(yield* takeEvery(uartTxChannel, handleUartValueChanged));
 
-    try {
         // REVISIT: possible Pybricks firmware bug (or chromium bug on Linux)
         // where 'characteristicvaluechanged' is not called after disconnecting
         // and reconnecting unless we stop notifications before we start them
         // again. Wireshark shows that no enable notification descriptor write
         // is performed but notifications are received.
-        yield* call([uartTxChar, 'stopNotifications']);
-        yield* call([uartTxChar, 'startNotifications']);
+        yield* call(() => uartTxChar.stopNotifications());
+        yield* call(() => uartTxChar.startNotifications());
+
+        tasks.push(yield* takeEvery(writeUart, handleWriteUart, uartRxChar));
+
+        yield* put(bleDidConnectPybricks(device.id, device.name || ''));
+
+        const handleDisconnectRequest = function* (): Generator {
+            yield* take(bleDisconnectPybricks);
+            server.disconnect();
+        };
+
+        yield* fork(handleDisconnectRequest);
+
+        // wait for disconnection
+        yield* take(disconnectChannel);
+
+        yield* put(bleDidDisconnectPybricks());
     } catch (err) {
-        yield* cancel(tasks);
-        uartTxChannel.close();
-        pybricksControlChannel.close();
-        server.disconnect();
-        yield* takeMaybe(disconnectChannel);
         yield* put(
             alertsShowAlert('alerts', 'unexpectedError', {
                 error: ensureError(err),
@@ -547,21 +370,13 @@ function* handleBleConnectPybricks(): Generator {
                 err: ensureError(err),
             }),
         );
-        return;
+    } finally {
+        yield* cancel(tasks);
+
+        while (defer.length > 0) {
+            defer.pop()?.();
+        }
     }
-
-    tasks.push(yield* takeEvery(writeUart, handleWriteUart, uartRxChar));
-
-    yield* put(bleDidConnectPybricks(device.id, device.name || ''));
-
-    // wait for disconnection
-    yield* takeMaybe(disconnectChannel);
-
-    yield* cancel(tasks);
-    uartTxChannel.close();
-    pybricksControlChannel.close();
-
-    yield* put(bleDidDisconnectPybricks());
 }
 
 function* handleToggleBluetooth(): Generator {

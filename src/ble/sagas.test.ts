@@ -436,7 +436,7 @@ describe('connect action is dispatched', () => {
         });
 
         it('should skip bleDIServiceDidReceivePnPId action if getting pnp id characteristic fails', async () => {
-            const testError = new Error('test error');
+            const testError = new DOMException('test error', 'NotFoundError');
             mocks.deviceInfoService.getCharacteristic
                 .calledWith(pnpIdUUID)
                 .mockRejectedValueOnce(testError);
