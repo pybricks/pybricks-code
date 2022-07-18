@@ -187,6 +187,12 @@ function* handleBleConnectPybricks(): Generator {
 
         if (!deviceInfoService) {
             yield* put(
+                alertsShowAlert('ble', 'missingService', {
+                    serviceName: 'Device Information',
+                    hubName: device.name || 'Pybricks Hub',
+                }),
+            );
+            yield* put(
                 bleDidFailToConnectPybricks({ reason: Reason.NoDeviceInfoService }),
             );
             return;
@@ -250,6 +256,12 @@ function* handleBleConnectPybricks(): Generator {
 
         if (!pybricksService) {
             yield* put(
+                alertsShowAlert('ble', 'missingService', {
+                    serviceName: 'Pybricks',
+                    hubName: device.name || 'Pybricks Hub',
+                }),
+            );
+            yield* put(
                 bleDidFailToConnectPybricks({
                     reason: Reason.NoPybricksService,
                 }),
@@ -312,6 +324,12 @@ function* handleBleConnectPybricks(): Generator {
         );
 
         if (!uartService) {
+            yield* put(
+                alertsShowAlert('ble', 'missingService', {
+                    serviceName: 'Nordic UART',
+                    hubName: device.name || 'Pybricks Hub',
+                }),
+            );
             yield* put(
                 bleDidFailToConnectPybricks({
                     reason: Reason.NoPybricksService,

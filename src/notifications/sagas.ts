@@ -14,10 +14,6 @@ import { getAlertProps } from '../alerts';
 import { appDidCheckForUpdate, appReload } from '../app/actions';
 import { appName } from '../app/constants';
 import { bleDIServiceDidReceiveFirmwareRevision } from '../ble-device-info-service/actions';
-import {
-    BleDeviceFailToConnectReasonType,
-    bleDidFailToConnectPybricks,
-} from '../ble/actions';
 import { editorDidFailToOpenFile } from '../editor/actions';
 import { EditorError } from '../editor/error';
 import {
@@ -168,25 +164,6 @@ function* showUnexpectedError(messageId: I18nId, error: Error): Generator {
             error,
         }),
     );
-}
-
-function* showBleDeviceDidFailToConnectError(
-    action: ReturnType<typeof bleDidFailToConnectPybricks>,
-): Generator {
-    switch (action.reason) {
-        case BleDeviceFailToConnectReasonType.NoPybricksService:
-            yield* showSingleton(Level.Error, I18nId.BleGattServiceNotFound, {
-                serviceName: 'Pybricks',
-                hubName: 'Pybricks Hub',
-            });
-            break;
-        case BleDeviceFailToConnectReasonType.NoDeviceInfoService:
-            yield* showSingleton(Level.Error, I18nId.BleGattServiceNotFound, {
-                serviceName: 'Device Information',
-                hubName: 'Pybricks Hub',
-            });
-            break;
-    }
 }
 
 function* showBootloaderDidFailToConnectError(
@@ -421,7 +398,6 @@ function* showExplorerFailToDelete(
 }
 
 export default function* (): Generator {
-    yield* takeEvery(bleDidFailToConnectPybricks, showBleDeviceDidFailToConnectError);
     yield* takeEvery(bootloaderDidFailToConnect, showBootloaderDidFailToConnectError);
     yield* takeEvery(didFailToFinish, showFlashFirmwareError);
     yield* takeEvery(didCompile, dismissCompilerError);

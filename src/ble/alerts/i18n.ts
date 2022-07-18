@@ -16,4 +16,7 @@ export enum I18nId {
     BluetoothNotAvailableMessage = 'bluetoothNotAvailable.message',
     BluetoothNotAvailableSuggestion = 'bluetoothNotAvailable.suggestion',
     NoGattMessage = 'noGatt.message',
+    MissingServiceMessage = 'missingService.message',
+    MissingServiceSuggestion1 = 'missingService.suggestion1',
+    MissingServiceSuggestion2 = 'missingService.suggestion2',
 }

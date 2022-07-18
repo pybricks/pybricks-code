@@ -350,6 +350,12 @@ describe('connect action is dispatched', () => {
             await runConnectUntil(saga, ConnectRunPoint.Connect);
 
             await expect(saga.take()).resolves.toEqual(
+                alertsShowAlert('ble', 'missingService', {
+                    serviceName: 'Device Information',
+                    hubName: 'test name',
+                }),
+            );
+            await expect(saga.take()).resolves.toEqual(
                 bleDidFailToConnectPybricks({
                     reason: BleDeviceFailToConnectReasonType.NoDeviceInfoService,
                 }),
@@ -479,6 +485,12 @@ describe('connect action is dispatched', () => {
             await runConnectUntil(saga, ConnectRunPoint.DidReceivePnpId);
 
             await expect(saga.take()).resolves.toEqual(
+                alertsShowAlert('ble', 'missingService', {
+                    serviceName: 'Pybricks',
+                    hubName: 'test name',
+                }),
+            );
+            await expect(saga.take()).resolves.toEqual(
                 bleDidFailToConnectPybricks({
                     reason: BleDeviceFailToConnectReasonType.NoPybricksService,
                 }),
@@ -554,6 +566,12 @@ describe('connect action is dispatched', () => {
 
             await runConnectUntil(saga, ConnectRunPoint.DidReceivePnpId);
 
+            await expect(saga.take()).resolves.toEqual(
+                alertsShowAlert('ble', 'missingService', {
+                    serviceName: 'Nordic UART',
+                    hubName: 'test name',
+                }),
+            );
             await expect(saga.take()).resolves.toEqual(
                 bleDidFailToConnectPybricks({
                     // FIXME: this is wrong error
