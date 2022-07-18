@@ -11,7 +11,6 @@ import { HubType, LegoCompanyId } from '../ble-lwp3-service/protocol';
 import { didReceiveStatusReport } from '../ble-pybricks-service/actions';
 import { Status, statusToFlag } from '../ble-pybricks-service/protocol';
 import {
-    BleDeviceDidFailToConnectReason,
     bleConnectPybricks,
     bleDidConnectPybricks,
     bleDidDisconnectPybricks,
@@ -52,7 +51,7 @@ test('connection', () => {
     expect(
         reducers(
             { connection: BleConnectionState.Connecting } as State,
-            bleDidFailToConnectPybricks({} as BleDeviceDidFailToConnectReason),
+            bleDidFailToConnectPybricks(),
         ).connection,
     ).toBe(BleConnectionState.Disconnected);
     expect(

@@ -54,7 +54,6 @@ import {
 import { RootState } from '../reducers';
 import { ensureError } from '../utils';
 import {
-    BleDeviceFailToConnectReasonType as Reason,
     bleConnectPybricks as bleConnectPybricks,
     bleDidConnectPybricks,
     bleDidDisconnectPybricks,
@@ -101,14 +100,14 @@ function* handleWriteUart(
 function* handleBleConnectPybricks(): Generator {
     if (navigator.bluetooth === undefined) {
         yield* put(alertsShowAlert('ble', 'noWebBluetooth'));
-        yield* put(bleDidFailToConnectPybricks({ reason: Reason.NoWebBluetooth }));
+        yield* put(bleDidFailToConnectPybricks());
         return;
     }
 
     const available = yield* call(() => navigator.bluetooth.getAvailability());
     if (!available) {
         yield* put(alertsShowAlert('ble', 'bluetoothNotAvailable'));
-        yield* put(bleDidFailToConnectPybricks({ reason: Reason.NoBluetooth }));
+        yield* put(bleDidFailToConnectPybricks());
         return;
     }
 
@@ -142,7 +141,7 @@ function* handleBleConnectPybricks(): Generator {
         );
 
         if (!device) {
-            yield* put(bleDidFailToConnectPybricks({ reason: Reason.Canceled }));
+            yield* put(bleDidFailToConnectPybricks());
             return;
         }
 
@@ -150,7 +149,7 @@ function* handleBleConnectPybricks(): Generator {
 
         if (!gatt) {
             yield* put(alertsShowAlert('ble', 'noGatt'));
-            yield* put(bleDidFailToConnectPybricks({ reason: Reason.NoGatt }));
+            yield* put(bleDidFailToConnectPybricks());
             return;
         }
 
@@ -192,9 +191,7 @@ function* handleBleConnectPybricks(): Generator {
                     hubName: device.name || 'Pybricks Hub',
                 }),
             );
-            yield* put(
-                bleDidFailToConnectPybricks({ reason: Reason.NoDeviceInfoService }),
-            );
+            yield* put(bleDidFailToConnectPybricks());
             return;
         }
 
@@ -261,11 +258,7 @@ function* handleBleConnectPybricks(): Generator {
                     hubName: device.name || 'Pybricks Hub',
                 }),
             );
-            yield* put(
-                bleDidFailToConnectPybricks({
-                    reason: Reason.NoPybricksService,
-                }),
-            );
+            yield* put(bleDidFailToConnectPybricks());
             return;
         }
 
@@ -330,11 +323,7 @@ function* handleBleConnectPybricks(): Generator {
                     hubName: device.name || 'Pybricks Hub',
                 }),
             );
-            yield* put(
-                bleDidFailToConnectPybricks({
-                    reason: Reason.NoPybricksService,
-                }),
-            );
+            yield* put(bleDidFailToConnectPybricks());
             return;
         }
 
@@ -396,12 +385,7 @@ function* handleBleConnectPybricks(): Generator {
                 error: ensureError(err),
             }),
         );
-        yield* put(
-            bleDidFailToConnectPybricks({
-                reason: Reason.Unknown,
-                err: ensureError(err),
-            }),
-        );
+        yield* put(bleDidFailToConnectPybricks());
     } finally {
         yield* cancel(tasks);
 

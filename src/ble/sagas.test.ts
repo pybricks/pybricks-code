@@ -27,7 +27,6 @@ import {
     pybricksServiceUUID,
 } from '../ble-pybricks-service/protocol';
 import {
-    BleDeviceFailToConnectReasonType,
     bleConnectPybricks,
     bleDidConnectPybricks,
     bleDidDisconnectPybricks,
@@ -247,11 +246,7 @@ describe('connect action is dispatched', () => {
         await expect(saga.take()).resolves.toEqual(
             alertsShowAlert('ble', 'noWebBluetooth'),
         );
-        await expect(saga.take()).resolves.toEqual(
-            bleDidFailToConnectPybricks({
-                reason: BleDeviceFailToConnectReasonType.NoWebBluetooth,
-            }),
-        );
+        await expect(saga.take()).resolves.toEqual(bleDidFailToConnectPybricks());
     });
 
     describe('has web bluetooth', () => {
@@ -269,11 +264,7 @@ describe('connect action is dispatched', () => {
             await expect(saga.take()).resolves.toEqual(
                 alertsShowAlert('ble', 'bluetoothNotAvailable'),
             );
-            await expect(saga.take()).resolves.toEqual(
-                bleDidFailToConnectPybricks({
-                    reason: BleDeviceFailToConnectReasonType.NoBluetooth,
-                }),
-            );
+            await expect(saga.take()).resolves.toEqual(bleDidFailToConnectPybricks());
         });
 
         it('should fail if user canceled requestDevice', async () => {
@@ -283,11 +274,7 @@ describe('connect action is dispatched', () => {
 
             await runConnectUntil(saga, ConnectRunPoint.Connect);
 
-            await expect(saga.take()).resolves.toEqual(
-                bleDidFailToConnectPybricks({
-                    reason: BleDeviceFailToConnectReasonType.Canceled,
-                }),
-            );
+            await expect(saga.take()).resolves.toEqual(bleDidFailToConnectPybricks());
         });
 
         it('should fail on other exception in requestDevice', async () => {
@@ -301,12 +288,7 @@ describe('connect action is dispatched', () => {
             await expect(saga.take()).resolves.toEqual(
                 alertsShowAlert('alerts', 'unexpectedError', { error: testError }),
             );
-            await expect(saga.take()).resolves.toEqual(
-                bleDidFailToConnectPybricks({
-                    reason: BleDeviceFailToConnectReasonType.Unknown,
-                    err: testError,
-                }),
-            );
+            await expect(saga.take()).resolves.toEqual(bleDidFailToConnectPybricks());
         });
 
         it('should fail if device has no gatt property', async () => {
@@ -317,11 +299,7 @@ describe('connect action is dispatched', () => {
             await expect(saga.take()).resolves.toEqual(
                 alertsShowAlert('ble', 'noGatt'),
             );
-            await expect(saga.take()).resolves.toEqual(
-                bleDidFailToConnectPybricks({
-                    reason: BleDeviceFailToConnectReasonType.NoGatt,
-                }),
-            );
+            await expect(saga.take()).resolves.toEqual(bleDidFailToConnectPybricks());
         });
 
         it('should fail if gatt connect fails', async () => {
@@ -333,12 +311,7 @@ describe('connect action is dispatched', () => {
             await expect(saga.take()).resolves.toEqual(
                 alertsShowAlert('alerts', 'unexpectedError', { error: testError }),
             );
-            await expect(saga.take()).resolves.toEqual(
-                bleDidFailToConnectPybricks({
-                    reason: BleDeviceFailToConnectReasonType.Unknown,
-                    err: testError,
-                }),
-            );
+            await expect(saga.take()).resolves.toEqual(bleDidFailToConnectPybricks());
         });
 
         it('should fail if device does not have device info service', async () => {
@@ -355,11 +328,7 @@ describe('connect action is dispatched', () => {
                     hubName: 'test name',
                 }),
             );
-            await expect(saga.take()).resolves.toEqual(
-                bleDidFailToConnectPybricks({
-                    reason: BleDeviceFailToConnectReasonType.NoDeviceInfoService,
-                }),
-            );
+            await expect(saga.take()).resolves.toEqual(bleDidFailToConnectPybricks());
 
             expect(mocks.gatt.disconnect).toHaveBeenCalled();
         });
@@ -375,12 +344,7 @@ describe('connect action is dispatched', () => {
             await expect(saga.take()).resolves.toEqual(
                 alertsShowAlert('alerts', 'unexpectedError', { error: testError }),
             );
-            await expect(saga.take()).resolves.toEqual(
-                bleDidFailToConnectPybricks({
-                    reason: BleDeviceFailToConnectReasonType.Unknown,
-                    err: testError,
-                }),
-            );
+            await expect(saga.take()).resolves.toEqual(bleDidFailToConnectPybricks());
 
             expect(mocks.gatt.disconnect).toHaveBeenCalled();
         });
@@ -394,12 +358,7 @@ describe('connect action is dispatched', () => {
             await expect(saga.take()).resolves.toEqual(
                 alertsShowAlert('alerts', 'unexpectedError', { error: testError }),
             );
-            await expect(saga.take()).resolves.toEqual(
-                bleDidFailToConnectPybricks({
-                    reason: BleDeviceFailToConnectReasonType.Unknown,
-                    err: testError,
-                }),
-            );
+            await expect(saga.take()).resolves.toEqual(bleDidFailToConnectPybricks());
 
             expect(mocks.gatt.disconnect).toHaveBeenCalled();
         });
@@ -415,12 +374,7 @@ describe('connect action is dispatched', () => {
             await expect(saga.take()).resolves.toEqual(
                 alertsShowAlert('alerts', 'unexpectedError', { error: testError }),
             );
-            await expect(saga.take()).resolves.toEqual(
-                bleDidFailToConnectPybricks({
-                    reason: BleDeviceFailToConnectReasonType.Unknown,
-                    err: testError,
-                }),
-            );
+            await expect(saga.take()).resolves.toEqual(bleDidFailToConnectPybricks());
 
             expect(mocks.gatt.disconnect).toHaveBeenCalled();
         });
@@ -434,12 +388,7 @@ describe('connect action is dispatched', () => {
             await expect(saga.take()).resolves.toEqual(
                 alertsShowAlert('alerts', 'unexpectedError', { error: testError }),
             );
-            await expect(saga.take()).resolves.toEqual(
-                bleDidFailToConnectPybricks({
-                    reason: BleDeviceFailToConnectReasonType.Unknown,
-                    err: testError,
-                }),
-            );
+            await expect(saga.take()).resolves.toEqual(bleDidFailToConnectPybricks());
 
             expect(mocks.gatt.disconnect).toHaveBeenCalled();
         });
@@ -466,12 +415,7 @@ describe('connect action is dispatched', () => {
             await expect(saga.take()).resolves.toEqual(
                 alertsShowAlert('alerts', 'unexpectedError', { error: testError }),
             );
-            await expect(saga.take()).resolves.toEqual(
-                bleDidFailToConnectPybricks({
-                    reason: BleDeviceFailToConnectReasonType.Unknown,
-                    err: testError,
-                }),
-            );
+            await expect(saga.take()).resolves.toEqual(bleDidFailToConnectPybricks());
 
             expect(mocks.gatt.disconnect).toHaveBeenCalled();
         });
@@ -490,11 +434,7 @@ describe('connect action is dispatched', () => {
                     hubName: 'test name',
                 }),
             );
-            await expect(saga.take()).resolves.toEqual(
-                bleDidFailToConnectPybricks({
-                    reason: BleDeviceFailToConnectReasonType.NoPybricksService,
-                }),
-            );
+            await expect(saga.take()).resolves.toEqual(bleDidFailToConnectPybricks());
 
             expect(mocks.gatt.disconnect).toHaveBeenCalled();
         });
@@ -510,12 +450,7 @@ describe('connect action is dispatched', () => {
             await expect(saga.take()).resolves.toEqual(
                 alertsShowAlert('alerts', 'unexpectedError', { error: testError }),
             );
-            await expect(saga.take()).resolves.toEqual(
-                bleDidFailToConnectPybricks({
-                    reason: BleDeviceFailToConnectReasonType.Unknown,
-                    err: testError,
-                }),
-            );
+            await expect(saga.take()).resolves.toEqual(bleDidFailToConnectPybricks());
 
             expect(mocks.gatt.disconnect).toHaveBeenCalled();
         });
@@ -529,12 +464,7 @@ describe('connect action is dispatched', () => {
             await expect(saga.take()).resolves.toEqual(
                 alertsShowAlert('alerts', 'unexpectedError', { error: testError }),
             );
-            await expect(saga.take()).resolves.toEqual(
-                bleDidFailToConnectPybricks({
-                    reason: BleDeviceFailToConnectReasonType.Unknown,
-                    err: testError,
-                }),
-            );
+            await expect(saga.take()).resolves.toEqual(bleDidFailToConnectPybricks());
 
             expect(mocks.gatt.disconnect).toHaveBeenCalled();
         });
@@ -548,12 +478,7 @@ describe('connect action is dispatched', () => {
             await expect(saga.take()).resolves.toEqual(
                 alertsShowAlert('alerts', 'unexpectedError', { error: testError }),
             );
-            await expect(saga.take()).resolves.toEqual(
-                bleDidFailToConnectPybricks({
-                    reason: BleDeviceFailToConnectReasonType.Unknown,
-                    err: testError,
-                }),
-            );
+            await expect(saga.take()).resolves.toEqual(bleDidFailToConnectPybricks());
 
             expect(mocks.gatt.disconnect).toHaveBeenCalled();
         });
@@ -572,12 +497,7 @@ describe('connect action is dispatched', () => {
                     hubName: 'test name',
                 }),
             );
-            await expect(saga.take()).resolves.toEqual(
-                bleDidFailToConnectPybricks({
-                    // FIXME: this is wrong error
-                    reason: BleDeviceFailToConnectReasonType.NoPybricksService,
-                }),
-            );
+            await expect(saga.take()).resolves.toEqual(bleDidFailToConnectPybricks());
 
             expect(mocks.gatt.disconnect).toHaveBeenCalled();
         });
@@ -593,12 +513,7 @@ describe('connect action is dispatched', () => {
             await expect(saga.take()).resolves.toEqual(
                 alertsShowAlert('alerts', 'unexpectedError', { error: testError }),
             );
-            await expect(saga.take()).resolves.toEqual(
-                bleDidFailToConnectPybricks({
-                    reason: BleDeviceFailToConnectReasonType.Unknown,
-                    err: testError,
-                }),
-            );
+            await expect(saga.take()).resolves.toEqual(bleDidFailToConnectPybricks());
 
             expect(mocks.gatt.disconnect).toHaveBeenCalled();
         });
@@ -614,12 +529,7 @@ describe('connect action is dispatched', () => {
             await expect(saga.take()).resolves.toEqual(
                 alertsShowAlert('alerts', 'unexpectedError', { error: testError }),
             );
-            await expect(saga.take()).resolves.toEqual(
-                bleDidFailToConnectPybricks({
-                    reason: BleDeviceFailToConnectReasonType.Unknown,
-                    err: testError,
-                }),
-            );
+            await expect(saga.take()).resolves.toEqual(bleDidFailToConnectPybricks());
 
             expect(mocks.gatt.disconnect).toHaveBeenCalled();
         });
@@ -633,12 +543,7 @@ describe('connect action is dispatched', () => {
             await expect(saga.take()).resolves.toEqual(
                 alertsShowAlert('alerts', 'unexpectedError', { error: testError }),
             );
-            await expect(saga.take()).resolves.toEqual(
-                bleDidFailToConnectPybricks({
-                    reason: BleDeviceFailToConnectReasonType.Unknown,
-                    err: testError,
-                }),
-            );
+            await expect(saga.take()).resolves.toEqual(bleDidFailToConnectPybricks());
 
             expect(mocks.gatt.disconnect).toHaveBeenCalled();
         });
@@ -652,12 +557,7 @@ describe('connect action is dispatched', () => {
             await expect(saga.take()).resolves.toEqual(
                 alertsShowAlert('alerts', 'unexpectedError', { error: testError }),
             );
-            await expect(saga.take()).resolves.toEqual(
-                bleDidFailToConnectPybricks({
-                    reason: BleDeviceFailToConnectReasonType.Unknown,
-                    err: testError,
-                }),
-            );
+            await expect(saga.take()).resolves.toEqual(bleDidFailToConnectPybricks());
 
             expect(mocks.gatt.disconnect).toHaveBeenCalled();
         });
