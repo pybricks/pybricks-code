@@ -385,6 +385,12 @@ function* handleBleConnectPybricks(): Generator {
 
         yield* put(bleDidDisconnectPybricks());
     } catch (err) {
+        // istanbul ignore if
+        if (process.env.NODE_ENV !== 'test') {
+            // log error so it can still be copied even if alert is closed
+            console.error(err);
+        }
+
         yield* put(
             alertsShowAlert('alerts', 'unexpectedError', {
                 error: ensureError(err),
