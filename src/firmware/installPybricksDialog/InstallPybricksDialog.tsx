@@ -155,14 +155,19 @@ const AcceptLicensePanel: React.VoidFunctionComponent<AcceptLicensePanelProps> =
         <div className={dialogBody}>
             <div className="pb-firmware-installPybricksDialog-license">
                 <div className="pb-firmware-installPybricksDialog-license-text">
-                    {data && <pre>{data.licenseText}</pre>}
-                    {!data && (
-                        <NonIdealState>
-                            {(error &&
-                                i18n.translate(
-                                    I18nId.LicensePanelLicenseTextError,
-                                )) || <Spinner />}
-                        </NonIdealState>
+                    {data ? (
+                        <pre>{data.licenseText}</pre>
+                    ) : (
+                        <NonIdealState
+                            icon={error ? 'error' : <Spinner />}
+                            description={
+                                error
+                                    ? i18n.translate(
+                                          I18nId.LicensePanelLicenseTextError,
+                                      )
+                                    : undefined
+                            }
+                        />
                     )}
                 </div>
                 <Checkbox
