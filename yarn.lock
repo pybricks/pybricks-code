@@ -2322,7 +2322,7 @@ __metadata:
     "@types/react-splitter-layout": ^3.0.2
     "@types/redux-logger": ^3.0.9
     "@types/semver": ^7.3.10
-    "@types/web-bluetooth": ^0.0.14
+    "@types/web-bluetooth": ^0.0.15
     "@types/web-locks-api": ^0.0.2
     "@types/wicg-file-system-access": ^2020.9.5
     "@types/zen-push": ^0.1.1
@@ -4665,10 +4665,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/web-bluetooth@npm:^0.0.14":
-  version: 0.0.14
-  resolution: "@types/web-bluetooth@npm:0.0.14"
-  checksum: 1eb694ff2ba6ef239e10024bfb205c087fb1a43aa8b4a31f3a3b7c90eccf2f55c7fb4c1057e382e1c2f4d6d8a137e68bf1255790b980c5ac95026419a623c6b5
+"@types/web-bluetooth@npm:^0.0.15":
+  version: 0.0.15
+  resolution: "@types/web-bluetooth@npm:0.0.15"
+  checksum: 4e3b3b1c0baf6735690ce0c5ffaac53de3dbd16362316cbc5e32970bcb1e1baf16dae0a9f30fe86256ad0ee22a4533423f443835273efc54b15235086ebda85b
   languageName: node
   linkType: hard
 
