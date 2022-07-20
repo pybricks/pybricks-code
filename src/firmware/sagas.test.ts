@@ -82,7 +82,7 @@ describe('flashFirmware', () => {
 
             // saga is triggered by this action
 
-            saga.put(flashFirmwareAction(null, false, 'test name'));
+            saga.put(flashFirmwareAction(null, undefined, 'test name'));
 
             // first step is to connect to the hub bootloader
 
@@ -228,7 +228,7 @@ describe('flashFirmware', () => {
 
             // saga is triggered by this action
 
-            saga.put(flashFirmwareAction(null, false, ''));
+            saga.put(flashFirmwareAction(null, undefined, ''));
 
             // first step is to connect to the hub bootloader
 
@@ -277,7 +277,7 @@ describe('flashFirmware', () => {
 
             // saga is triggered by this action
 
-            saga.put(flashFirmwareAction(null, false, ''));
+            saga.put(flashFirmwareAction(null, undefined, ''));
 
             // first step is to connect to the hub bootloader
 
@@ -344,7 +344,7 @@ describe('flashFirmware', () => {
 
             // saga is triggered by this action
 
-            saga.put(flashFirmwareAction(null, false, ''));
+            saga.put(flashFirmwareAction(null, undefined, ''));
 
             // first step is to connect to the hub bootloader
 
@@ -407,7 +407,7 @@ describe('flashFirmware', () => {
 
             // saga is triggered by this action
 
-            saga.put(flashFirmwareAction(null, false, ''));
+            saga.put(flashFirmwareAction(null, undefined, ''));
 
             // first step is to connect to the hub bootloader
 
@@ -473,7 +473,7 @@ describe('flashFirmware', () => {
 
             // saga is triggered by this action
 
-            saga.put(flashFirmwareAction(null, false, ''));
+            saga.put(flashFirmwareAction(null, undefined, ''));
 
             // first step is to connect to the hub bootloader
 
@@ -532,7 +532,7 @@ describe('flashFirmware', () => {
 
             // saga is triggered by this action
 
-            saga.put(flashFirmwareAction(null, false, ''));
+            saga.put(flashFirmwareAction(null, undefined, ''));
 
             // first step is to connect to the hub bootloader
 
@@ -597,7 +597,7 @@ describe('flashFirmware', () => {
 
             // saga is triggered by this action
 
-            saga.put(flashFirmwareAction(null, false, ''));
+            saga.put(flashFirmwareAction(null, undefined, ''));
 
             // first step is to connect to the hub bootloader
 
@@ -679,7 +679,7 @@ describe('flashFirmware', () => {
 
             // saga is triggered by this action
 
-            saga.put(flashFirmwareAction(null, false, ''));
+            saga.put(flashFirmwareAction(null, undefined, ''));
 
             // first step is to connect to the hub bootloader
 
@@ -744,7 +744,7 @@ describe('flashFirmware', () => {
 
             // saga is triggered by this action
 
-            saga.put(flashFirmwareAction(null, false, ''));
+            saga.put(flashFirmwareAction(null, undefined, ''));
 
             // first step is to connect to the hub bootloader
 
@@ -839,7 +839,7 @@ describe('flashFirmware', () => {
 
             // saga is triggered by this action
 
-            saga.put(flashFirmwareAction(null, false, ''));
+            saga.put(flashFirmwareAction(null, undefined, ''));
 
             // first step is to connect to the hub bootloader
 
@@ -943,7 +943,7 @@ describe('flashFirmware', () => {
 
             // saga is triggered by this action
 
-            saga.put(flashFirmwareAction(null, false, ''));
+            saga.put(flashFirmwareAction(null, undefined, ''));
 
             // first step is to connect to the hub bootloader
 
@@ -1087,7 +1087,7 @@ describe('flashFirmware', () => {
 
             // saga is triggered by this action
 
-            saga.put(flashFirmwareAction(null, false, ''));
+            saga.put(flashFirmwareAction(null, undefined, ''));
 
             // first step is to connect to the hub bootloader
 
@@ -1232,7 +1232,7 @@ describe('flashFirmware', () => {
             saga.put(
                 flashFirmwareAction(
                     await zip.generateAsync({ type: 'arraybuffer' }),
-                    false,
+                    undefined,
                     '',
                 ),
             );
@@ -1381,7 +1381,7 @@ describe('flashFirmware', () => {
             saga.put(
                 flashFirmwareAction(
                     await zip.generateAsync({ type: 'arraybuffer' }),
-                    false,
+                    undefined,
                     '',
                 ),
             );
@@ -1428,7 +1428,7 @@ describe('flashFirmware', () => {
             saga.put(
                 flashFirmwareAction(
                     await zip.generateAsync({ type: 'arraybuffer' }),
-                    false,
+                    undefined,
                     '',
                 ),
             );
@@ -1474,7 +1474,7 @@ describe('flashFirmware', () => {
             saga.put(
                 flashFirmwareAction(
                     await zip.generateAsync({ type: 'arraybuffer' }),
-                    false,
+                    undefined,
                     '',
                 ),
             );
@@ -1534,7 +1534,7 @@ describe('flashFirmware', () => {
             saga.put(
                 flashFirmwareAction(
                     await zip.generateAsync({ type: 'arraybuffer' }),
-                    false,
+                    undefined,
                     '',
                 ),
             );
@@ -1595,7 +1595,7 @@ describe('flashFirmware', () => {
             saga.put(
                 flashFirmwareAction(
                     await zip.generateAsync({ type: 'arraybuffer' }),
-                    false,
+                    undefined,
                     '',
                 ),
             );
@@ -1659,7 +1659,7 @@ describe('flashFirmware', () => {
             saga.put(
                 flashFirmwareAction(
                     await zip.generateAsync({ type: 'arraybuffer' }),
-                    false,
+                    undefined,
                     '',
                 ),
             );
@@ -1745,7 +1745,7 @@ describe('flashFirmware', () => {
 
         // saga is triggered by this action
 
-        saga.put(flashFirmwareAction(null, false, ''));
+        saga.put(flashFirmwareAction(null, undefined, ''));
 
         // first step is to connect to the hub bootloader
 

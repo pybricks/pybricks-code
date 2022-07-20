@@ -40,13 +40,15 @@
             "error": "The name is too long."
         },
         "customMain": {
-            "label": "Custom program",
+            "label": "Include custom program",
             "labelInfo": "(optional)",
             "notApplicable": {
                 "message": "This hub has external flash memory so including a custom program when flashing firmware is not needed."
             },
-            "includeCurrentProgram": {
-                "label": "Include current program",
+            "include": {
+                "label": "Include selected program as {main}",
+                "noSelection": "(no selection)",
+                "noFiles": "(no files)",
                 "help": "Enable to include your program when flashing the firmware or disable to use the default program. Flashing your program along with the firmware will allow you to run your program without being connected to {appName}"
             }
         }

@@ -8,7 +8,12 @@ export const firmwareInstallPybricksDialogShow = createAction(() => ({
     type: 'firmware.installPybricksDialog.action.show',
 }));
 
-/** Actions that indicates the user accepted the install Pybricks firmware dialog. */
+/**
+ * Action that indicates the user accepted the install Pybricks firmware dialog.
+ * @param firmwareZip The firmware.zip raw data.
+ * @param customProgram Optional path of custom program to include when flashing firmware.
+ * @param hubName The hub name to use when flashing firmware.
+ */
 export const firmwareInstallPybricksDialogAccept = createAction(
     (firmwareZip: ArrayBuffer, customProgram: string | undefined, hubName: string) => ({
         type: 'firmware.installPybricksDialog.action.accept',

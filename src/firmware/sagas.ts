@@ -25,7 +25,11 @@ import {
     take,
     takeEvery,
 } from 'typed-redux-saga/macro';
-import { editorGetValue } from '../editor/sagas';
+import {
+    fileStorageDidFailToReadFile,
+    fileStorageDidReadFile,
+    fileStorageReadFile,
+} from '../fileStorage/actions';
 import {
     checksumRequest,
     checksumResponse,
@@ -283,8 +287,27 @@ function* handleFlashFirmware(action: ReturnType<typeof flashFirmware>): Generat
 
         let program: string | undefined = undefined;
 
-        if (action.flashCurrentProgram) {
-            program = yield* editorGetValue();
+        if (action.customProgram) {
+            yield* put(fileStorageReadFile(action.customProgram));
+
+            const { didRead, didFailToRead } = yield* race({
+                didRead: take(
+                    fileStorageDidReadFile.when((a) => a.path === action.customProgram),
+                ),
+                didFailToRead: take(
+                    fileStorageDidFailToReadFile.when(
+                        (a) => a.path === action.customProgram,
+                    ),
+                ),
+            });
+
+            if (didFailToRead) {
+                throw didFailToRead.error;
+            }
+
+            defined(didRead);
+
+            program = didRead.contents;
         }
 
         if (action.data !== null) {
@@ -496,7 +519,9 @@ function* handleInstallPybricks(): Generator {
 
     defined(accepted);
 
-    yield* put(flashFirmware(accepted.firmwareZip, false, accepted.hubName));
+    yield* put(
+        flashFirmware(accepted.firmwareZip, accepted.customProgram, accepted.hubName),
+    );
 }
 
 export default function* (): Generator {

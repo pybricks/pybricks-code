@@ -13,12 +13,14 @@ import {
     Icon,
     InputGroup,
     Intent,
+    MenuItem,
     MultistepDialog,
     NonIdealState,
     Spinner,
     Switch,
 } from '@blueprintjs/core';
 import { Classes as Classes2, Popover2 } from '@blueprintjs/popover2';
+import { Select2 } from '@blueprintjs/select';
 import classNames from 'classnames';
 import React, { useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
@@ -31,6 +33,8 @@ import {
     hubHasUSB,
 } from '../../components/hubPicker';
 import { HubPicker } from '../../components/hubPicker/HubPicker';
+import { FileMetadata } from '../../fileStorage';
+import { useFileStorageMetadata } from '../../fileStorage/hooks';
 import { useSelector } from '../../reducers';
 import {
     firmwareInstallPybricksDialogAccept,
@@ -176,19 +180,24 @@ type SelectOptionsPanelProps = {
     hubType: Hub;
     hubName: string;
     includeProgram: boolean;
+    selectedIncludeFile: FileMetadata | undefined;
     onChangeHubName(hubName: string): void;
     onChangeIncludeProgram(includeProgram: boolean): void;
+    onChangeSelectedIncludeFile(selectedIncludeFile: FileMetadata | undefined): void;
 };
 
 const ConfigureOptionsPanel: React.VoidFunctionComponent<SelectOptionsPanelProps> = ({
     hubType,
     hubName,
     includeProgram,
+    selectedIncludeFile,
     onChangeHubName,
     onChangeIncludeProgram,
+    onChangeSelectedIncludeFile,
 }) => {
     const i18n = useI18n();
     const isHubNameValid = validateHubName(hubName);
+    const files = useFileStorageMetadata();
 
     return (
         <div className={dialogBody}>
@@ -198,7 +207,6 @@ const ConfigureOptionsPanel: React.VoidFunctionComponent<SelectOptionsPanelProps
             >
                 <ControlGroup>
                     <InputGroup
-                        id="hub-name-input"
                         value={hubName}
                         onChange={(e) => onChangeHubName(e.currentTarget.value)}
                         onMouseOver={(e) => e.preventDefault()}
@@ -234,8 +242,9 @@ const ConfigureOptionsPanel: React.VoidFunctionComponent<SelectOptionsPanelProps
                 )) || (
                     <ControlGroup>
                         <Switch
-                            label={i18n.translate(
-                                I18nId.OptionsPanelCustomMainIncludeCurrentProgramLabel,
+                            labelElement={i18n.translate(
+                                I18nId.OptionsPanelCustomMainIncludeLabel,
+                                { main: <code>main.py</code> },
                             )}
                             checked={includeProgram}
                             onChange={(e) =>
@@ -244,12 +253,54 @@ const ConfigureOptionsPanel: React.VoidFunctionComponent<SelectOptionsPanelProps
                                 )
                             }
                         />
+                        <Select2
+                            items={files || []}
+                            itemRenderer={(
+                                item,
+                                { handleClick, handleFocus, modifiers },
+                            ) => (
+                                <MenuItem
+                                    roleStructure="listoption"
+                                    active={modifiers.active}
+                                    disabled={modifiers.disabled}
+                                    text={item.path}
+                                    key={item.uuid}
+                                    onClick={handleClick}
+                                    onFocus={handleFocus}
+                                />
+                            )}
+                            noResults={
+                                <MenuItem
+                                    roleStructure="listoption"
+                                    disabled={true}
+                                    text={i18n.translate(
+                                        I18nId.OptionsPanelCustomMainIncludeNoFiles,
+                                    )}
+                                />
+                            }
+                            filterable={false}
+                            popoverProps={{ minimal: true }}
+                            disabled={!includeProgram}
+                            onItemSelect={onChangeSelectedIncludeFile}
+                        >
+                            <Button
+                                icon="double-caret-vertical"
+                                text={
+                                    selectedIncludeFile?.path ??
+                                    i18n.translate(
+                                        I18nId.OptionsPanelCustomMainIncludeNoSelection,
+                                    )
+                                }
+                                disabled={!includeProgram}
+                            />
+                        </Select2>
                         <HelpButton
                             helpForLabel={i18n.translate(
-                                I18nId.OptionsPanelCustomMainIncludeCurrentProgramLabel,
+                                I18nId.OptionsPanelCustomMainIncludeLabel,
+                                { main: 'main.py' },
                             )}
                             content={i18n.translate(
-                                I18nId.OptionsPanelCustomMainIncludeCurrentProgramHelp,
+                                I18nId.OptionsPanelCustomMainIncludeHelp,
                                 {
                                     appName,
                                 },
@@ -355,6 +406,7 @@ export const InstallPybricksDialog: React.VoidFunctionComponent = () => {
     const [hubType, setHubType] = useState(defaultHubType);
     const [hubName, setHubName] = useState('');
     const [includeProgram, setIncludeProgram] = useState(false);
+    const [selectedIncludeFile, setSelectedIncludeFile] = useState<FileMetadata>();
     const [licenseAccepted, setLicenseAccepted] = useState(false);
     const { data } = useFirmware(hubType);
     const i18n = useI18n();
@@ -370,7 +422,7 @@ export const InstallPybricksDialog: React.VoidFunctionComponent = () => {
                     dispatch(
                         firmwareInstallPybricksDialogAccept(
                             data?.firmwareZip ?? new ArrayBuffer(0),
-                            undefined,
+                            selectedIncludeFile?.path,
                             hubName,
                         ),
                     ),
@@ -406,8 +458,10 @@ export const InstallPybricksDialog: React.VoidFunctionComponent = () => {
                         hubType={hubType}
                         hubName={hubName}
                         includeProgram={includeProgram}
+                        selectedIncludeFile={selectedIncludeFile}
                         onChangeHubName={setHubName}
                         onChangeIncludeProgram={setIncludeProgram}
+                        onChangeSelectedIncludeFile={setSelectedIncludeFile}
                     />
                 }
                 backButtonProps={{ text: i18n.translate(I18nId.BackButtonLabel) }}
