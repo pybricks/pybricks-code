@@ -62,8 +62,14 @@ import {
     didFinish,
     didProgress,
     didStart,
+    firmwareInstallPybricks,
     flashFirmware,
 } from './actions';
+import {
+    firmwareInstallPybricksDialogAccept,
+    firmwareInstallPybricksDialogCancel,
+    firmwareInstallPybricksDialogShow,
+} from './installPybricksDialog/actions';
 
 const firmwareZipMap = new Map<HubType, string>([
     [HubType.CityHub, cityHubZip],
@@ -477,6 +483,23 @@ function* handleFlashFirmware(action: ReturnType<typeof flashFirmware>): Generat
     }
 }
 
+function* handleInstallPybricks(): Generator {
+    yield* put(firmwareInstallPybricksDialogShow());
+    const { accepted, canceled } = yield* race({
+        accepted: take(firmwareInstallPybricksDialogAccept),
+        canceled: take(firmwareInstallPybricksDialogCancel),
+    });
+
+    if (canceled) {
+        return;
+    }
+
+    defined(accepted);
+
+    yield* put(flashFirmware(accepted.firmwareZip, false, accepted.hubName));
+}
+
 export default function* (): Generator {
     yield* takeEvery(flashFirmware, handleFlashFirmware);
+    yield* takeEvery(firmwareInstallPybricks, handleInstallPybricks);
 }

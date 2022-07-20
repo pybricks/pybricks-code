@@ -345,3 +345,45 @@ function didFailToFinishCreator(
  * @param total The total number of bytes to be flashed.
  */
 export const didFailToFinish = createAction(didFailToFinishCreator);
+
+/**
+ * Action that triggers the install Pybricks firmware saga.
+ */
+export const firmwareInstallPybricks = createAction(() => ({
+    type: 'firmware.action.installPybricks',
+}));
+
+/**
+ * Action that indicates {@link firmwareInstallPybricks} succeeded.
+ */
+export const firmwareDidInstallPybricks = createAction(() => ({
+    type: 'firmware.action.didInstallPybricks',
+}));
+
+/**
+ * Action that indicates {@link firmwareInstallPybricks} failed.
+ */
+export const firmwareDidFailToInstallPybricks = createAction(() => ({
+    type: 'firmware.action.didFailToInstallPybricks',
+}));
+
+/**
+ * Action that triggers the restore LEGO firmware saga.
+ */
+export const firmwareRestoreLego = createAction(() => ({
+    type: 'firmware.action.restoreLego',
+}));
+
+/**
+ * Action that indicates {@link firmwareRestoreLego} succeeded.
+ */
+export const firmwareDidRestoreLego = createAction(() => ({
+    type: 'firmware.action.didRestoreLego',
+}));
+
+/**
+ * Action that indicates {@link firmwareRestoreLego} failed.
+ */
+export const firmwareDidFailToRestoreLego = createAction(() => ({
+    type: 'firmware.action.didFailToRestoreLego',
+}));

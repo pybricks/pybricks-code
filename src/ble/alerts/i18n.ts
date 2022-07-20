@@ -19,4 +19,9 @@ export enum I18nId {
     MissingServiceMessage = 'missingService.message',
     MissingServiceSuggestion1 = 'missingService.suggestion1',
     MissingServiceSuggestion2 = 'missingService.suggestion2',
+    NoHubMessage = 'noHub.message',
+    NoHubSuggestion1 = 'noHub.suggestion1',
+    NoHubSuggestion2 = 'noHub.suggestion2',
+    NoHubFlashFirmwareButton = 'noHub.flashFirmwareButton',
+    NoHubTroubleshootButton = 'noHub.troubleshootButton',
 }

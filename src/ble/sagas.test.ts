@@ -4,7 +4,7 @@
 import { HubType } from '@pybricks/firmware';
 import { MockProxy, mock } from 'jest-mock-extended';
 import { AsyncSaga } from '../../test';
-import { alertsShowAlert } from '../alerts/actions';
+import { alertsDidShowAlert, alertsShowAlert } from '../alerts/actions';
 import {
     bleDIServiceDidReceiveFirmwareRevision,
     bleDIServiceDidReceivePnPId,
@@ -26,6 +26,7 @@ import {
     pybricksControlCharacteristicUUID,
     pybricksServiceUUID,
 } from '../ble-pybricks-service/protocol';
+import { firmwareInstallPybricks } from '../firmware/actions';
 import {
     bleConnectPybricks,
     bleDidConnectPybricks,
@@ -274,7 +275,11 @@ describe('connect action is dispatched', () => {
 
             await runConnectUntil(saga, ConnectRunPoint.Connect);
 
+            await expect(saga.take()).resolves.toEqual(alertsShowAlert('ble', 'noHub'));
             await expect(saga.take()).resolves.toEqual(bleDidFailToConnectPybricks());
+
+            saga.put(alertsDidShowAlert('ble', 'noHub', 'flashFirmware'));
+            await expect(saga.take()).resolves.toEqual(firmwareInstallPybricks());
         });
 
         it('should fail on other exception in requestDevice', async () => {

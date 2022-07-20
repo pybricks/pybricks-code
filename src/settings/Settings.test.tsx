@@ -4,6 +4,7 @@
 import { cleanup, getByLabelText, waitFor } from '@testing-library/react';
 import React from 'react';
 import { testRender } from '../../test';
+import { firmwareInstallPybricks, firmwareRestoreLego } from '../firmware/actions';
 import Settings from './Settings';
 
 afterEach(() => {
@@ -41,41 +42,27 @@ describe('darkMode setting switch', () => {
     });
 });
 
-describe('flashCurrentProgram setting switch', () => {
-    it('should toggle the setting', async () => {
-        const [user, settings] = testRender(<Settings />);
+describe('firmware', () => {
+    it('should dispatch action when install Pybricks firmware button is clicked', async () => {
+        const [user, settings, dispatch] = testRender(<Settings />);
 
-        expect(localStorage.getItem('setting.flashCurrentProgram')).toBe(null);
+        const button = settings.getByRole('button', {
+            name: 'Install Pybricks Firmware',
+        });
+        await user.click(button);
 
-        await user.click(settings.getByLabelText('Include current program'));
-        expect(localStorage.getItem('setting.flashCurrentProgram')).toBe('true');
-
-        await user.click(settings.getByLabelText('Include current program'));
-        expect(localStorage.getItem('setting.flashCurrentProgram')).toBe('false');
-    });
-});
-
-describe('hubName setting', () => {
-    it('should migrate old settings', () => {
-        // old settings did not use json format, so lack quotes
-        localStorage.setItem('setting.hubName', 'old name');
-
-        const [, settings] = testRender(<Settings />);
-
-        const textBox = settings.getByLabelText('Hub name');
-
-        expect(textBox).toHaveValue('old name');
+        expect(dispatch).toHaveBeenCalledWith(firmwareInstallPybricks());
     });
 
-    it('should update the setting', async () => {
-        const [user, settings] = testRender(<Settings />);
+    it('should dispatch action when restore official LEGO firmware button is clicked', async () => {
+        const [user, settings, dispatch] = testRender(<Settings />);
 
-        expect(localStorage.getItem('setting.hubName')).toBe(null);
+        const button = settings.getByRole('button', {
+            name: 'Restore Official LEGO® Firmware',
+        });
+        await user.click(button);
 
-        const textBox = settings.getByLabelText('Hub name');
-        await user.type(textBox, 'test name');
-
-        expect(localStorage.getItem('setting.hubName')).toBe('"test name"');
+        expect(dispatch).toHaveBeenCalledWith(firmwareRestoreLego());
     });
 });
 

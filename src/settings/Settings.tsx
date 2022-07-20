@@ -6,10 +6,6 @@ import {
     ButtonGroup,
     ControlGroup,
     FormGroup,
-    Icon,
-    InputGroup,
-    Intent,
-    Label,
     Switch,
 } from '@blueprintjs/core';
 import React, { useState } from 'react';
@@ -18,7 +14,6 @@ import { useTernaryDarkMode } from 'usehooks-ts';
 import AboutDialog from '../about/AboutDialog';
 import { appCheckForUpdate, appReload, appShowInstallPrompt } from '../app/actions';
 import {
-    appName,
     pybricksBugReportsUrl,
     pybricksGitterUrl,
     pybricksProjectsUrl,
@@ -26,15 +21,13 @@ import {
 } from '../app/constants';
 import { Button } from '../components/Button';
 import HelpButton from '../components/HelpButton';
+import { firmwareInstallPybricks, firmwareRestoreLego } from '../firmware/actions';
+import { InstallPybricksDialog } from '../firmware/installPybricksDialog/InstallPybricksDialog';
 import { pseudolocalize } from '../i18n';
 import { useSelector } from '../reducers';
 import ExternalLinkIcon from '../utils/ExternalLinkIcon';
 import { isMacOS } from '../utils/os';
-import {
-    useSettingFlashCurrentProgram,
-    useSettingHubName,
-    useSettingIsShowDocsEnabled,
-} from './hooks';
+import { useSettingIsShowDocsEnabled } from './hooks';
 import { I18nId, useI18n } from './i18n';
 import './settings.scss';
 
@@ -44,8 +37,6 @@ const Settings: React.VoidFunctionComponent = () => {
     const [isAboutDialogOpen, setIsAboutDialogOpen] = useState(false);
     const { isDarkMode, setTernaryDarkMode } = useTernaryDarkMode();
 
-    const [isFlashCurrentProgramEnabled, setIsFlashCurrentProgramEnabled] =
-        useSettingFlashCurrentProgram();
     const isServiceWorkerRegistered = useSelector(
         (s) => s.app.isServiceWorkerRegistered,
     );
@@ -56,7 +47,6 @@ const Settings: React.VoidFunctionComponent = () => {
     );
     const promptingInstall = useSelector((s) => s.app.promptingInstall);
     const readyForOfflineUse = useSelector((s) => s.app.readyForOfflineUse);
-    const { hubName, isHubNameValid, setHubName } = useSettingHubName();
 
     const dispatch = useDispatch();
 
@@ -107,52 +97,19 @@ const Settings: React.VoidFunctionComponent = () => {
                 </ControlGroup>
             </FormGroup>
             <FormGroup label={i18n.translate(I18nId.FirmwareTitle)}>
-                <ControlGroup>
-                    <Switch
-                        label={i18n.translate(I18nId.FirmwareCurrentProgramLabel)}
-                        checked={isFlashCurrentProgramEnabled}
-                        onChange={(e) =>
-                            setIsFlashCurrentProgramEnabled(
-                                (e.target as HTMLInputElement).checked,
-                            )
-                        }
-                    />
-                    <HelpButton
-                        helpForLabel={i18n.translate(
-                            I18nId.FirmwareCurrentProgramLabel,
-                        )}
-                        content={i18n.translate(I18nId.FirmwareCurrentProgramHelp, {
-                            appName,
-                        })}
-                    />
-                </ControlGroup>
-                <Label htmlFor="hub-name-input">
-                    {i18n.translate(I18nId.FirmwareHubNameLabel)}
-                </Label>
-                <ControlGroup>
-                    <InputGroup
-                        id="hub-name-input"
-                        value={hubName}
-                        onChange={(e) => setHubName(e.currentTarget.value)}
-                        onMouseOver={(e) => e.preventDefault()}
-                        onMouseDown={(e) => e.stopPropagation()}
-                        intent={isHubNameValid ? Intent.NONE : Intent.DANGER}
-                        placeholder="Pybricks Hub"
-                        rightElement={
-                            isHubNameValid ? undefined : (
-                                <Icon
-                                    icon="error"
-                                    intent={Intent.DANGER}
-                                    itemType="div"
-                                />
-                            )
-                        }
-                    />
-                    <HelpButton
-                        helpForLabel={i18n.translate(I18nId.FirmwareHubNameLabel)}
-                        content={i18n.translate(I18nId.FirmwareHubNameHelp)}
-                    />
-                </ControlGroup>
+                <Button
+                    minimal={true}
+                    icon="download"
+                    label={i18n.translate(I18nId.FirmwareFlashPybricksLabel)}
+                    onPress={() => dispatch(firmwareInstallPybricks())}
+                />
+                <InstallPybricksDialog />
+                <Button
+                    minimal={true}
+                    icon="download"
+                    label={i18n.translate(I18nId.FirmwareFlashLegoLabel)}
+                    onPress={() => dispatch(firmwareRestoreLego())}
+                />
             </FormGroup>
             <FormGroup label={i18n.translate(I18nId.HelpTitle)}>
                 <ButtonGroup minimal={true} vertical={true} alignText="left">

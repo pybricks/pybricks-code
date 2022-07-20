@@ -17,7 +17,7 @@ import {
     take,
     takeEvery,
 } from 'typed-redux-saga/macro';
-import { alertsShowAlert } from '../alerts/actions';
+import { alertsDidShowAlert, alertsShowAlert } from '../alerts/actions';
 import {
     bleDIServiceDidReceiveFirmwareRevision,
     bleDIServiceDidReceivePnPId,
@@ -51,6 +51,7 @@ import {
     pybricksControlCharacteristicUUID,
     pybricksServiceUUID,
 } from '../ble-pybricks-service/protocol';
+import { firmwareInstallPybricks } from '../firmware/actions';
 import { RootState } from '../reducers';
 import { ensureError } from '../utils';
 import {
@@ -141,7 +142,21 @@ function* handleBleConnectPybricks(): Generator {
         );
 
         if (!device) {
+            yield* put(alertsShowAlert('ble', 'noHub'));
             yield* put(bleDidFailToConnectPybricks());
+
+            const { action } = yield* take<
+                ReturnType<typeof alertsDidShowAlert<'ble', 'noHub'>>
+            >(
+                alertsDidShowAlert.when(
+                    (a) => a.domain === 'ble' && a.specific === 'noHub',
+                ),
+            );
+
+            if (action === 'flashFirmware') {
+                yield* put(firmwareInstallPybricks());
+            }
+
             return;
         }
 

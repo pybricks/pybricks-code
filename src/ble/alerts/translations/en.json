@@ -16,5 +16,12 @@
         "message": "Connected to hub but failed to get {serviceName} service.",
         "suggestion1": "Ensure that you are using the most recent firmware.",
         "suggestion2": "If the problem persists, try removing the \"{hubName}\" device in your OS Bluetooth settings, then try connecting again."
+    },
+    "noHub": {
+        "message": "Could not find your hub?",
+        "suggestion1": "{appName} requires custom firmware to be flashed to your hub. If you have not done this already, click the {buttonName} button below to do so now.",
+        "suggestion2": "If you have flashed the Pybricks firmware to the hub already and you are still having problems connecting, please visit the troubleshooting guide.",
+        "flashFirmwareButton": "Flash Firmware",
+        "troubleshootButton": "Troubleshooting Tips"
     }
 }

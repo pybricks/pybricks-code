@@ -6,6 +6,7 @@ import { FileWithHandle } from 'browser-fs-access';
 import { mock } from 'jest-mock-extended';
 import { AsyncSaga, uuid } from '../../test';
 import { alertsShowAlert } from '../alerts/actions';
+import { Hub } from '../components/hubPicker';
 import {
     editorActivateFile,
     editorCloseFile,
@@ -72,7 +73,6 @@ import {
 } from './duplicateFileDialog/actions';
 import { ExplorerError, ExplorerErrorName } from './error';
 import {
-    Hub,
     newFileWizardDidAccept,
     newFileWizardDidCancel,
     newFileWizardShow,

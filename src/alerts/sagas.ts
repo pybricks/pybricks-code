@@ -34,6 +34,8 @@ function* handleShowAlert(action: ReturnType<typeof alertsShowAlert>): Generator
 
     try {
         const alertAction = yield* take(chan);
+        // the dismiss actions will have called this already, but other actions don't
+        toaster.dismiss(key);
 
         yield* put(alertsDidShowAlert(action.domain, action.specific, alertAction));
     } finally {

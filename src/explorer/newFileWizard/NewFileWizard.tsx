@@ -1,17 +1,12 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2022 The Pybricks Authors
 
-import {
-    Button,
-    Classes,
-    Dialog,
-    FormGroup,
-    Radio,
-    RadioGroup,
-} from '@blueprintjs/core';
+import { Button, Classes, Dialog, FormGroup } from '@blueprintjs/core';
 import React, { useCallback, useRef, useState } from 'react';
 import { useId } from 'react-aria';
 import { useDispatch } from 'react-redux';
+import { Hub } from '../../components/hubPicker';
+import { HubPicker } from '../../components/hubPicker/HubPicker';
 import { useFileStorageMetadata } from '../../fileStorage/hooks';
 import {
     FileNameValidationResult,
@@ -20,7 +15,7 @@ import {
 } from '../../pybricksMicropython/lib';
 import { useSelector } from '../../reducers';
 import FileNameFormGroup from '../fileNameFormGroup/FileNameFormGroup';
-import { Hub, newFileWizardDidAccept, newFileWizardDidCancel } from './actions';
+import { newFileWizardDidAccept, newFileWizardDidCancel } from './actions';
 import { I18nId, useI18n } from './i18n';
 
 // This should be set to the most commonly used hub.
@@ -75,19 +70,7 @@ const NewFileWizard: React.VoidFunctionComponent = () => {
                         onChange={setFileName}
                     />
                     <FormGroup label={i18n.translate(I18nId.SmartHubLabel)}>
-                        <RadioGroup
-                            selectedValue={hubType}
-                            onChange={(e) => setHubType(e.currentTarget.value as Hub)}
-                        >
-                            <Radio value={Hub.Move}>BOOST Move Hub</Radio>
-                            <Radio value={Hub.City}>City Hub</Radio>
-                            <Radio value={Hub.Technic}>Technic Hub</Radio>
-                            <Radio value={Hub.Prime}>SPIKE Prime</Radio>
-                            <Radio value={Hub.Essential}>SPIKE Essential</Radio>
-                            <Radio value={Hub.Inventor}>
-                                MINDSTORMS Robot Inventor
-                            </Radio>
-                        </RadioGroup>
+                        <HubPicker hubType={hubType} onChange={setHubType} />
                     </FormGroup>
                 </div>
                 <div className={Classes.DIALOG_FOOTER}>
