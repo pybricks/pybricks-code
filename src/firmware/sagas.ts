@@ -201,9 +201,15 @@ function* loadFirmware(
     const firmwareBase = yield* call(() => reader.readFirmwareBase());
     const metadata = yield* call(() => reader.readMetadata());
 
-    // if a user program was not given, then use main.py from the frimware.zip
+    // if a user program was not given, then use main.py from the firmware.zip
     if (program === undefined) {
         program = yield* call(() => reader.readMainPy());
+    }
+
+    // REVISIT: the firmware may eventually be changed to allow no main.py
+    // for now, ensure there is a program even if it does nothing
+    if (!program) {
+        program = '';
     }
 
     if (![5, 6].includes(metadata['mpy-abi-version'])) {
