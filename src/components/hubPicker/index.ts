@@ -57,3 +57,17 @@ export function hubHasExternalFlash(hub: Hub): boolean {
             return false;
     }
 }
+
+/** Gets the bootloader type for the hub. */
+export function hubBootloaderType(hub: Hub) {
+    switch (hub) {
+        case Hub.Prime:
+        case Hub.Essential:
+        case Hub.Inventor:
+            return 'usb-lego-dfu';
+        case Hub.Move:
+        case Hub.City:
+        case Hub.Technic:
+            return 'ble-lwp3-bootloader';
+    }
+}

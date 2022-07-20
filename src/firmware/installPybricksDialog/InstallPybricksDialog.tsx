@@ -28,6 +28,7 @@ import { appName } from '../../app/constants';
 import HelpButton from '../../components/HelpButton';
 import {
     Hub,
+    hubBootloaderType,
     hubHasBluetoothButton,
     hubHasExternalFlash,
     hubHasUSB,
@@ -426,6 +427,7 @@ export const InstallPybricksDialog: React.VoidFunctionComponent = () => {
                 onClick: () =>
                     dispatch(
                         firmwareInstallPybricksDialogAccept(
+                            hubBootloaderType(hubType),
                             data?.firmwareZip ?? new ArrayBuffer(0),
                             selectedIncludeFile?.path,
                             hubName,

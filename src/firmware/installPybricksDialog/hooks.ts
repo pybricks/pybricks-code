@@ -4,7 +4,9 @@
 
 import { FirmwareReader } from '@pybricks/firmware';
 import cityHubZip from '@pybricks/firmware/build/cityhub.zip';
+import essentialHubZip from '@pybricks/firmware/build/essentialhub.zip';
 import moveHubZip from '@pybricks/firmware/build/movehub.zip';
+import primeHubZip from '@pybricks/firmware/build/primehub.zip';
 import technicHubZip from '@pybricks/firmware/build/technichub.zip';
 import { useEffect, useReducer, useRef } from 'react';
 import { Hub } from '../../components/hubPicker';
@@ -30,9 +32,12 @@ type Action =
     | { type: 'error'; payload: Error };
 
 const firmwareZipMap = new Map<Hub, string>([
+    [Hub.Move, moveHubZip],
     [Hub.City, cityHubZip],
     [Hub.Technic, technicHubZip],
-    [Hub.Move, moveHubZip],
+    [Hub.Prime, primeHubZip],
+    [Hub.Essential, essentialHubZip],
+    [Hub.Inventor, primeHubZip],
 ]);
 
 /**

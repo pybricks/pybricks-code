@@ -525,9 +525,17 @@ function* handleInstallPybricks(): Generator {
 
     defined(accepted);
 
-    yield* put(
-        flashFirmware(accepted.firmwareZip, accepted.customProgram, accepted.hubName),
-    );
+    switch (accepted.flashMethod) {
+        case 'ble-lwp3-bootloader':
+            yield* put(
+                flashFirmware(
+                    accepted.firmwareZip,
+                    accepted.customProgram,
+                    accepted.hubName,
+                ),
+            );
+            break;
+    }
 }
 
 export default function* (): Generator {
