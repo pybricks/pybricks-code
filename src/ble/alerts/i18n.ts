@@ -24,4 +24,6 @@ export enum I18nId {
     NoHubSuggestion2 = 'noHub.suggestion2',
     NoHubFlashFirmwareButton = 'noHub.flashFirmwareButton',
     NoHubTroubleshootButton = 'noHub.troubleshootButton',
+    OldFirmwareMessage = 'oldFirmware.message',
+    OldFirmwareFlashFirmwareLabel = 'oldFirmware.flashFirmware.label',
 }

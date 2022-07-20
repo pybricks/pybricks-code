@@ -39,5 +39,4 @@ export enum I18nId {
     ServiceWorkerUpdateMessage = 'serviceWorker.update.message',
     ServiceWorkerUpdateAction = 'serviceWorker.update.action',
     MpyError = 'mpy.error',
-    CheckFirmwareTooOld = 'check.firmwareTooOld',
 }

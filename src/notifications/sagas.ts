@@ -4,16 +4,13 @@
 // Saga for managing notifications (toasts)
 
 import { ActionProps, IToaster, IconName, Intent, LinkProps } from '@blueprintjs/core';
-import { firmwareVersion } from '@pybricks/firmware';
 import { Replacements } from '@shopify/react-i18n';
 import React from 'react';
 import { channel } from 'redux-saga';
-import * as semver from 'semver';
 import { delay, getContext, put, take, takeEvery } from 'typed-redux-saga/macro';
 import { getAlertProps } from '../alerts';
 import { appDidCheckForUpdate, appReload } from '../app/actions';
 import { appName } from '../app/constants';
-import { bleDIServiceDidReceiveFirmwareRevision } from '../ble-device-info-service/actions';
 import { editorDidFailToOpenFile } from '../editor/actions';
 import { EditorError } from '../editor/error';
 import {
@@ -31,7 +28,6 @@ import {
 } from '../lwp3-bootloader/actions';
 import { didCompile, didFailToCompile } from '../mpy/actions';
 import { serviceWorkerDidUpdate } from '../service-worker/actions';
-import { pythonVersionToSemver } from '../utils/version';
 import NotificationAction from './NotificationAction';
 import NotificationMessage from './NotificationMessage';
 import { add as addNotification } from './actions';
@@ -309,21 +305,6 @@ function* showNoUpdateInfo(action: ReturnType<typeof appDidCheckForUpdate>): Gen
     });
 }
 
-function* checkVersion(
-    action: ReturnType<typeof bleDIServiceDidReceiveFirmwareRevision>,
-): Generator {
-    // ensure the actual hub firmware version is the same as the shipped
-    // firmware version or newer
-    if (
-        !semver.satisfies(
-            pythonVersionToSemver(action.version),
-            `>=${pythonVersionToSemver(firmwareVersion)}`,
-        )
-    ) {
-        yield* showSingleton(Level.Error, I18nId.CheckFirmwareTooOld);
-    }
-}
-
 function* showFileStorageFailToInitialize(
     action: ReturnType<typeof fileStorageDidFailToInitialize>,
 ): Generator {
@@ -405,7 +386,6 @@ export default function* (): Generator {
     yield* takeEvery(addNotification, handleAddNotification);
     yield* takeEvery(serviceWorkerDidUpdate, showServiceWorkerUpdate);
     yield* takeEvery(appDidCheckForUpdate, showNoUpdateInfo);
-    yield* takeEvery(bleDIServiceDidReceiveFirmwareRevision, checkVersion);
     yield* takeEvery(fileStorageDidFailToInitialize, showFileStorageFailToInitialize);
     yield* takeEvery(explorerDidFailToImportFiles, showExplorerFailToImportFiles);
     yield* takeEvery(explorerDidFailToCreateNewFile, showExplorerFailToCreateFile);

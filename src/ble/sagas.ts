@@ -6,7 +6,9 @@
 // TODO: this file needs to be combined with the firmware BLE connection management
 // to reduce duplicated code
 
+import { firmwareVersion } from '@pybricks/firmware';
 import { Task, buffers, eventChannel } from 'redux-saga';
+import { satisfies } from 'semver';
 import {
     call,
     cancel,
@@ -14,6 +16,7 @@ import {
     fork,
     put,
     select,
+    spawn,
     take,
     takeEvery,
 } from 'typed-redux-saga/macro';
@@ -54,6 +57,7 @@ import {
 import { firmwareInstallPybricks } from '../firmware/actions';
 import { RootState } from '../reducers';
 import { ensureError } from '../utils';
+import { pythonVersionToSemver } from '../utils/version';
 import {
     bleConnectPybricks as bleConnectPybricks,
     bleDidConnectPybricks,
@@ -218,6 +222,35 @@ function* handleBleConnectPybricks(): Generator {
             yield* call(() => firmwareVersionChar.readValue()),
         );
         yield* put(bleDIServiceDidReceiveFirmwareRevision(firmwareRevision));
+
+        // notify user if old firmware
+        if (
+            satisfies(
+                pythonVersionToSemver(firmwareRevision),
+                `<${pythonVersionToSemver(firmwareVersion)}`,
+            )
+        ) {
+            yield* put(alertsShowAlert('ble', 'oldFirmware'));
+
+            // initiate flashing firmware if user requested
+            const flashIfRequested = function* () {
+                const { action } = yield* take<
+                    ReturnType<typeof alertsDidShowAlert<'ble', 'oldFirmware'>>
+                >(
+                    alertsDidShowAlert.when(
+                        (a) => a.domain === 'ble' && a.specific === 'oldFirmware',
+                    ),
+                );
+
+                if (action === 'flashFirmware') {
+                    yield* put(firmwareInstallPybricks());
+                }
+            };
+
+            // have to spawn so that we don't block the task and it still works
+            // if parent task ends
+            yield* spawn(flashIfRequested);
+        }
 
         const softwareVersionChar = yield* call(() =>
             deviceInfoService.getCharacteristic(softwareRevisionStringUUID),

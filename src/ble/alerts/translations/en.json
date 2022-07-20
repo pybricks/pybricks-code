@@ -23,5 +23,11 @@
         "suggestion2": "If you have flashed the Pybricks firmware to the hub already and you are still having problems connecting, please visit the troubleshooting guide.",
         "flashFirmwareButton": "Flash Firmware",
         "troubleshootButton": "Troubleshooting Tips"
+    },
+    "oldFirmware": {
+        "message": "A new firmware version is available for this hub. Please install the latest version to use all new features.",
+        "flashFirmware": {
+            "label": "Flash firmware now"
+        }
     }
 }

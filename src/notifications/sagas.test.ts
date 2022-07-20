@@ -2,16 +2,11 @@
 // Copyright (c) 2021-2022 The Pybricks Authors
 
 import { IToaster } from '@blueprintjs/core';
-import {
-    FirmwareReaderError,
-    FirmwareReaderErrorCode,
-    firmwareVersion,
-} from '@pybricks/firmware';
+import { FirmwareReaderError, FirmwareReaderErrorCode } from '@pybricks/firmware';
 import { I18nManager } from '@shopify/react-i18n';
 import { AnyAction } from 'redux';
 import { AsyncSaga, uuid } from '../../test';
 import { appDidCheckForUpdate } from '../app/actions';
-import { bleDIServiceDidReceiveFirmwareRevision } from '../ble-device-info-service/actions';
 import { editorDidFailToOpenFile } from '../editor/actions';
 import { EditorError } from '../editor/error';
 import {
@@ -91,7 +86,6 @@ test.each([
     didFailToFinish(FailToFinishReasonType.FirmwareSize),
     didFailToFinish(FailToFinishReasonType.Unknown, new Error('test error')),
     appDidCheckForUpdate(false),
-    bleDIServiceDidReceiveFirmwareRevision('3.0.0'),
     fileStorageDidFailToInitialize(new Error('test error')),
     explorerDidFailToImportFiles(new Error('test error')),
     explorerDidFailToCreateNewFile(new Error('test error')),
@@ -118,7 +112,6 @@ test.each([
     didFailToFinish(FailToFinishReasonType.FailedToConnect),
     serviceWorkerDidSucceed(),
     appDidCheckForUpdate(true),
-    bleDIServiceDidReceiveFirmwareRevision(firmwareVersion),
     explorerDidFailToImportFiles(new DOMException('test message', 'AbortError')),
     explorerDidFailToCreateNewFile(new DOMException('test message', 'AbortError')),
     explorerDidFailToDuplicateFile(

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2022 The Pybricks Authors
 
-import './noHub.scss';
+import './index.scss';
 import { AnchorButton, Button, Intent } from '@blueprintjs/core';
 import React from 'react';
 import { appName, pybricksBluetoothTroubleshootingUrl } from '../../app/constants';
@@ -30,7 +30,7 @@ const NoHub: React.VoidFunctionComponent<NoHubProps> = ({ onFlashFirmware }) => 
                 })}
             </p>
             <p>{i18n.translate(I18nId.NoHubSuggestion2)}</p>
-            <div className="pb-ble-alerts-noHub-buttons">
+            <div className="pb-ble-alerts-buttons">
                 <Button icon="download" onClick={onFlashFirmware}>
                     {i18n.translate(I18nId.NoHubFlashFirmwareButton)}
                 </Button>

@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2022 The Pybricks Authors
 
-import { HubType } from '@pybricks/firmware';
 import { MockProxy, mock } from 'jest-mock-extended';
 import { AsyncSaga } from '../../test';
 import { alertsDidShowAlert, alertsShowAlert } from '../alerts/actions';
@@ -17,6 +16,7 @@ import {
     softwareRevisionStringUUID,
 } from '../ble-device-info-service/protocol';
 import { encodeInfo } from '../ble-device-info-service/protocol.test';
+import { HubType } from '../ble-lwp3-service/protocol';
 import {
     nordicUartRxCharUUID,
     nordicUartServiceUUID,
@@ -203,6 +203,8 @@ async function runConnectUntil(saga: AsyncSaga, point: ConnectRunPoint): Promise
     await expect(saga.take()).resolves.toEqual(
         bleDIServiceDidReceiveFirmwareRevision('3.2.0b2'),
     );
+
+    await expect(saga.take()).resolves.toEqual(alertsShowAlert('ble', 'oldFirmware'));
 
     if (point === ConnectRunPoint.DidReceiveFirmwareRevision) {
         return;
