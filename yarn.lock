@@ -2338,6 +2338,7 @@ __metadata:
     "@types/react-splitter-layout": ^3.0.2
     "@types/redux-logger": ^3.0.9
     "@types/semver": ^7.3.10
+    "@types/w3c-web-usb": ^1.0.6
     "@types/web-bluetooth": ^0.0.15
     "@types/web-locks-api": ^0.0.2
     "@types/wicg-file-system-access": ^2020.9.5
@@ -2362,6 +2363,7 @@ __metadata:
     dexie: ^3.2.2
     dexie-observable: ^4.0.0-beta.13
     dexie-react-hooks: ^1.1.1
+    dfu: ^0.1.5
     dotenv: ^16.0.1
     dotenv-expand: ^8.0.3
     eslint: ^8.20.0
@@ -4679,6 +4681,13 @@ __metadata:
   version: 0.0.3
   resolution: "@types/use-sync-external-store@npm:0.0.3"
   checksum: 161ddb8eec5dbe7279ac971531217e9af6b99f7783213566d2b502e2e2378ea19cf5e5ea4595039d730aa79d3d35c6567d48599f69773a02ffcff1776ec2a44e
+  languageName: node
+  linkType: hard
+
+"@types/w3c-web-usb@npm:^1.0.6":
+  version: 1.0.6
+  resolution: "@types/w3c-web-usb@npm:1.0.6"
+  checksum: 9f30948cb84174fa290066b08274bdfb034d38c6db0976e9a826508732fba04d81e3300bca41ea23b737f1424c51adec5ae810cdf85d5b5a158d5840914f0417
   languageName: node
   linkType: hard
 
@@ -7108,6 +7117,15 @@ __metadata:
   version: 3.2.2
   resolution: "dexie@npm:3.2.2"
   checksum: 7a21079f7ab139ebd724a009917f9293f2b01c341e2a3cd51d2455dda4d4e78b9ca7de0373e963108395cf1921ce7f6556cac967c1e957005a3c7c11794ceccf
+  languageName: node
+  linkType: hard
+
+"dfu@npm:^0.1.5":
+  version: 0.1.5
+  resolution: "dfu@npm:0.1.5"
+  dependencies:
+    nanoevents: ^6.0.0
+  checksum: 7fa8aa1578518be4eb8981f67878ecb6f68e64ccf91ed278f35708a6d4e3f6e822e68ab8653c6b3d69e08ddf105c550698b88db363bdab8f8c2a7a582ac96001
   languageName: node
   linkType: hard
 
@@ -10807,6 +10825,13 @@ __metadata:
   dependencies:
     node-gyp: latest
   checksum: 33e1bb4dfca447fe37d4bb5889be55de154828632c8d38646db67293a21afd61ed9909cdf1b886214a64707d935926c4e60e2b09de9edfc2ad58de31d6ce8f39
+  languageName: node
+  linkType: hard
+
+"nanoevents@npm:^6.0.0":
+  version: 6.0.2
+  resolution: "nanoevents@npm:6.0.2"
+  checksum: 73d8c8f584b850bae6705820710a20c19be61145a4a6ad3b157caf1fea52d46f48e0d1f1c1452019c0e84869f226debad2245218f0b0c3f9dffb7afc9b42e663
   languageName: node
   linkType: hard
 

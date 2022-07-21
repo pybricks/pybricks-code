@@ -7,6 +7,7 @@
 ### Added
 - Added better error message when no files to backup ([support#681]).
 - Added multi-step firmware flashing dialog.
+- Added support for flashing firmware via USB DFU.
 
 ### Fixed
 - Fixed deleting files that are not open in the editor.

@@ -32,6 +32,7 @@
         "@types/react-splitter-layout": "^3.0.2",
         "@types/redux-logger": "^3.0.9",
         "@types/semver": "^7.3.10",
+        "@types/w3c-web-usb": "^1.0.6",
         "@types/web-bluetooth": "^0.0.15",
         "@types/web-locks-api": "^0.0.2",
         "@types/wicg-file-system-access": "^2020.9.5",
@@ -54,6 +55,7 @@
         "dexie": "^3.2.2",
         "dexie-observable": "^4.0.0-beta.13",
         "dexie-react-hooks": "^1.1.1",
+        "dfu": "^0.1.5",
         "dotenv": "^16.0.1",
         "dotenv-expand": "^8.0.3",
         "fake-indexeddb": "^4.0.0",
@@ -192,7 +194,7 @@
             "^(?!.*\\.(js|jsx|mjs|cjs|ts|tsx|css|json)$)": "<rootDir>/config/jest/fileTransform.mjs"
         },
         "transformIgnorePatterns": [
-            "[/\\\\]node_modules[/\\\\](?!(monaco-editor|react-monaco-editor)[/\\\\]).+\\.(js|jsx|mjs|cjs|ts|tsx)$",
+            "[/\\\\]node_modules[/\\\\](?!(monaco-editor|react-monaco-editor|nanoevents)[/\\\\]).+\\.(js|jsx|mjs|cjs|ts|tsx)$",
             "^.+\\.module\\.(css|sass|scss)$"
         ],
         "modulePaths": [],

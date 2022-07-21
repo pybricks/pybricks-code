@@ -35,6 +35,9 @@ export const pybricksGitterUrl = 'https://gitter.im/pybricks/community';
 export const pybricksBluetoothTroubleshootingUrl =
     'https://github.com/pybricks/support/discussions/270';
 
+export const pybricksUsbDfuTroubleshootingUrl =
+    'https://github.com/pybricks/support/discussions/688';
+
 /** Pybricks copyright statement. */
 export const pybricksCopyright = 'Copyright (c) 2020-2022 The Pybricks Authors';
 

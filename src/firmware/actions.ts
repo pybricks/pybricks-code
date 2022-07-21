@@ -347,6 +347,35 @@ function didFailToFinishCreator(
 export const didFailToFinish = createAction(didFailToFinishCreator);
 
 /**
+ * Low-level action to flash firmware using LEGO's DFU over USB.
+ * @param data The firmware zip file data.
+ * @param hubName A custom hub name or an empty string to use the default name.
+ */
+export const firmwareFlashUsbDfu = createAction(
+    (data: ArrayBuffer, hubName: string) => ({
+        type: 'firmware.action.flashUsbDfu',
+        data,
+        hubName,
+    }),
+);
+
+/**
+ * Low-level action that indicates {@link firmwareFlashUsbDfu} succeeded.
+ */
+export const firmwareDidFlashUsbDfu = createAction(() => ({
+    type: 'firmware.action.didFlashUsbDfu',
+}));
+
+/**
+ * Low-level action that indicates {@link firmwareFlashUsbDfu} failed.
+ */
+export const firmwareDidFailToFlashUsbDfu = createAction(() => ({
+    type: 'firmware.action.didFailToFlashUsbDfu',
+}));
+
+// High-level actions
+
+/**
  * Action that triggers the install Pybricks firmware saga.
  */
 export const firmwareInstallPybricks = createAction(() => ({
