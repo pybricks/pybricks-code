@@ -22,7 +22,8 @@ export const alertsShowAlert = createAction(
         type: 'alerts.action.showAlert',
         domain,
         specific,
-        props,
+        // HACK: using varargs to allow props to be optional, but it is only one arg
+        props: props.at(0),
     }),
 );
 

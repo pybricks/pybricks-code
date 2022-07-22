@@ -26,7 +26,7 @@ const NoDfuHub: React.VoidFunctionComponent = () => {
                 href={pybricksUsbDfuTroubleshootingUrl}
                 target="_blank"
             >
-                {i18n.translate('noDfuHub.suggestion2')}
+                {i18n.translate('noDfuHub.troubleshootButton')}
                 <ExternalLinkIcon />
             </AnchorButton>
         </>
