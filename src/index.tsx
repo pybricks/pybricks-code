@@ -47,9 +47,11 @@ const store = configureStore({
                     // copy of defaults
                     'meta.arg',
                     'meta.baseQueryMeta',
-                    // HACK: technically serializable, can be removed after
-                    // https://github.com/microsoft/vscode/pull/151993
+                    // monoco view state has class-based object but is technically serializable
                     'viewState.viewState.firstPosition',
+                    // contain ArrayBuffer or DataView
+                    'data',
+                    'firmwareZip',
                 ],
             },
         })
