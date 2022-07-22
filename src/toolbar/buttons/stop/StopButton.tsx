@@ -7,7 +7,7 @@ import { stop } from '../../../hub/actions';
 import { HubRuntimeState } from '../../../hub/reducers';
 import { useSelector } from '../../../reducers';
 import ActionButton, { ActionButtonProps } from '../../ActionButton';
-import { I18nId, useI18n } from './i18n';
+import { useI18n } from './i18n';
 import icon from './icon.svg';
 
 type StopButtonProps = Pick<ActionButtonProps, 'id'>;
@@ -22,9 +22,9 @@ const StopButton: React.VoidFunctionComponent<StopButtonProps> = ({ id }) => {
     return (
         <ActionButton
             id={id}
-            label={i18n.translate(I18nId.Label)}
+            label={i18n.translate('label')}
             keyboardShortcut={keyboardShortcut}
-            tooltip={i18n.translate(I18nId.Tooltip, { key: keyboardShortcut })}
+            tooltip={i18n.translate('tooltip', { key: keyboardShortcut })}
             icon={icon}
             enabled={runtime === HubRuntimeState.Running}
             onAction={() => dispatch(stop())}

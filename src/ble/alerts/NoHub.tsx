@@ -7,7 +7,7 @@ import React from 'react';
 import { appName, pybricksBluetoothTroubleshootingUrl } from '../../app/constants';
 import { CreateToast } from '../../i18nToaster';
 import ExternalLinkIcon from '../../utils/ExternalLinkIcon';
-import { I18nId, useI18n } from './i18n';
+import { useI18n } from './i18n';
 
 type NoHubProps = {
     onFlashFirmware: () => void;
@@ -18,28 +18,26 @@ const NoHub: React.VoidFunctionComponent<NoHubProps> = ({ onFlashFirmware }) => 
 
     return (
         <>
-            <p>{i18n.translate(I18nId.NoHubMessage)}</p>
+            <p>{i18n.translate('noHub.message')}</p>
             <p>
-                {i18n.translate(I18nId.NoHubSuggestion1, {
+                {i18n.translate('noHub.suggestion1', {
                     appName,
                     buttonName: (
-                        <strong>
-                            {i18n.translate(I18nId.NoHubFlashFirmwareButton)}
-                        </strong>
+                        <strong>{i18n.translate('noHub.flashFirmwareButton')}</strong>
                     ),
                 })}
             </p>
-            <p>{i18n.translate(I18nId.NoHubSuggestion2)}</p>
+            <p>{i18n.translate('noHub.suggestion2')}</p>
             <div className="pb-ble-alerts-buttons">
                 <Button icon="download" onClick={onFlashFirmware}>
-                    {i18n.translate(I18nId.NoHubFlashFirmwareButton)}
+                    {i18n.translate('noHub.flashFirmwareButton')}
                 </Button>
                 <AnchorButton
                     icon="help"
                     href={pybricksBluetoothTroubleshootingUrl}
                     target="_blank"
                 >
-                    {i18n.translate(I18nId.NoHubTroubleshootButton)}
+                    {i18n.translate('noHub.troubleshootButton')}
                     <ExternalLinkIcon />
                 </AnchorButton>
             </div>

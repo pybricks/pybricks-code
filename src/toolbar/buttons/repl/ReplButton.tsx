@@ -7,7 +7,7 @@ import { repl } from '../../../hub/actions';
 import { HubRuntimeState } from '../../../hub/reducers';
 import { useSelector } from '../../../reducers';
 import ActionButton, { ActionButtonProps } from '../../ActionButton';
-import { I18nId, useI18n } from './i18n';
+import { useI18n } from './i18n';
 import icon from './icon.svg';
 
 type ReplButtonProps = Pick<ActionButtonProps, 'id'>;
@@ -22,8 +22,8 @@ const ReplButton: React.VoidFunctionComponent<ReplButtonProps> = ({ id }) => {
     return (
         <ActionButton
             id={id}
-            label={i18n.translate(I18nId.Label)}
-            tooltip={i18n.translate(I18nId.Tooltip)}
+            label={i18n.translate('label')}
+            tooltip={i18n.translate('tooltip')}
             icon={icon}
             enabled={enabled}
             onAction={action}

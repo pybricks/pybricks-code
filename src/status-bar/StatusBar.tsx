@@ -14,7 +14,7 @@ import React, { useMemo } from 'react';
 import { BleConnectionState } from '../ble/reducers';
 import { CompletionEngineStatus } from '../editor/redux/codeCompletion';
 import { useSelector } from '../reducers';
-import { I18nId, useI18n } from './i18n';
+import { useI18n } from './i18n';
 
 import './status-bar.scss';
 
@@ -43,20 +43,20 @@ const CompletionEngineIndicator: React.VoidFunctionComponent = () => {
     const message = useMemo(() => {
         switch (status) {
             case CompletionEngineStatus.Loading:
-                return i18n.translate(I18nId.CompletionEngineStatusMessageLoading);
+                return i18n.translate('completionEngineStatus.message.loading');
             case CompletionEngineStatus.Ready:
-                return i18n.translate(I18nId.CompletionEngineStatusMessageReady);
+                return i18n.translate('completionEngineStatus.message.ready');
             case CompletionEngineStatus.Failed:
-                return i18n.translate(I18nId.CompletionEngineStatusMessageFailed);
+                return i18n.translate('completionEngineStatus.message.failed');
             default:
-                return i18n.translate(I18nId.CompletionEngineStatusMessageUnknown);
+                return i18n.translate('completionEngineStatus.message.unknown');
         }
     }, [status, i18n]);
 
     return (
         <Popover2 {...commonPopoverProps} content={message}>
             <div
-                aria-label={i18n.translate(I18nId.CompletionEngineStatusLabel)}
+                aria-label={i18n.translate('completionEngineStatus.label')}
                 style={{ cursor: 'pointer' }}
             >
                 {icon}
@@ -79,23 +79,19 @@ const HubInfoButton: React.VoidFunctionComponent = () => {
                     <tbody>
                         <tr>
                             <td>
-                                <strong>
-                                    {i18n.translate(I18nId.HubInfoConnectedTo)}
-                                </strong>
+                                <strong>{i18n.translate('hubInfo.connectedTo')}</strong>
                             </td>
                             <td>{deviceName}</td>
                         </tr>
                         <tr>
                             <td>
-                                <strong>{i18n.translate(I18nId.HubInfoHubType)}</strong>
+                                <strong>{i18n.translate('hubInfo.hubType')}</strong>
                             </td>
                             <td>{deviceType}</td>
                         </tr>
                         <tr>
                             <td>
-                                <strong>
-                                    {i18n.translate(I18nId.HubInfoFirmware)}
-                                </strong>
+                                <strong>{i18n.translate('hubInfo.firmware')}</strong>
                             </td>
                             <td>v{deviceFirmwareVersion}</td>
                         </tr>
@@ -103,7 +99,7 @@ const HubInfoButton: React.VoidFunctionComponent = () => {
                 </table>
             }
         >
-            <Button title={i18n.translate(I18nId.HubInfoTitle)} minimal={true}>
+            <Button title={i18n.translate('hubInfo.title')} minimal={true}>
                 {deviceName}
             </Button>
         </Popover2>
@@ -120,14 +116,12 @@ const BatteryIndicator: React.VoidFunctionComponent = () => {
             {...commonPopoverProps}
             content={
                 <span className="no-wrap">
-                    {i18n.translate(
-                        lowBatteryWarning ? I18nId.BatteryLow : I18nId.BatteryOk,
-                    )}
+                    {i18n.translate(lowBatteryWarning ? 'battery.low' : 'battery.ok')}
                 </span>
             }
         >
             <div
-                title={i18n.translate(I18nId.BatteryTitle)}
+                title={i18n.translate('battery.title')}
                 className="pb-battery-indicator"
                 style={{ cursor: 'pointer' }}
             >

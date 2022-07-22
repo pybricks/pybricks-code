@@ -35,7 +35,7 @@ import { useSelector } from '../reducers';
 import { useSettingIsShowDocsEnabled } from '../settings/hooks';
 import { isMacOS } from '../utils/os';
 import { editorActivateFile, editorCloseFile } from './actions';
-import { I18nId, useI18n } from './i18n';
+import { useI18n } from './i18n';
 import * as pybricksMicroPython from './pybricksMicroPython';
 import { pybricksMicroPythonId } from './pybricksMicroPython';
 import { UntitledHintContribution } from './untitledHint';
@@ -129,9 +129,9 @@ const EditorContextMenu: React.VoidFunctionComponent<EditorContextMenuProps> = (
     const canRedo = model && model.canRedo();
 
     return (
-        <Menu aria-label={i18n.translate(I18nId.ContextMenuLabel)} role="menu">
+        <Menu aria-label={i18n.translate('contextMenu.label')} role="menu">
             <EditorContextMenuItem
-                label={i18n.translate(I18nId.Copy)}
+                label={i18n.translate('copy')}
                 icon="duplicate"
                 keyboardShortcut={isMacOS() ? 'Cmd-C' : 'Ctrl-C'}
                 disabled={!hasSelection}
@@ -139,7 +139,7 @@ const EditorContextMenu: React.VoidFunctionComponent<EditorContextMenuProps> = (
                 editorAction="editor.action.clipboardCopyAction"
             />
             <EditorContextMenuItem
-                label={i18n.translate(I18nId.Paste)}
+                label={i18n.translate('paste')}
                 icon="clipboard"
                 keyboardShortcut={isMacOS() ? 'Cmd-V' : 'Ctrl-V'}
                 disabled={!model}
@@ -147,7 +147,7 @@ const EditorContextMenu: React.VoidFunctionComponent<EditorContextMenuProps> = (
                 editorAction="editor.action.clipboardPasteAction"
             />
             <EditorContextMenuItem
-                label={i18n.translate(I18nId.SelectAll)}
+                label={i18n.translate('selectAll')}
                 icon="blank"
                 keyboardShortcut={isMacOS() ? 'Cmd-A' : 'Ctrl-A'}
                 disabled={!model}
@@ -156,7 +156,7 @@ const EditorContextMenu: React.VoidFunctionComponent<EditorContextMenuProps> = (
             />
             <MenuDivider />
             <EditorContextMenuItem
-                label={i18n.translate(I18nId.Undo)}
+                label={i18n.translate('undo')}
                 icon="undo"
                 keyboardShortcut={isMacOS() ? 'Cmd-Z' : 'Ctrl-Z'}
                 disabled={!canUndo}
@@ -164,7 +164,7 @@ const EditorContextMenu: React.VoidFunctionComponent<EditorContextMenuProps> = (
                 editorAction="undo"
             />
             <EditorContextMenuItem
-                label={i18n.translate(I18nId.Redo)}
+                label={i18n.translate('redo')}
                 icon="redo"
                 keyboardShortcut={isMacOS() ? 'Cmd-Shift-Z' : 'Ctrl-Shift-Z'}
                 disabled={!canRedo}
@@ -214,7 +214,7 @@ const TabCloseButton: React.VoidFunctionComponent<TabCloseButtonProps> = ({ uuid
 
     return (
         <Button
-            title={i18n.translate(I18nId.CloseFileTooltip, {
+            title={i18n.translate('closeFile.tooltip', {
                 fileName,
             })}
             minimal={true}
@@ -369,7 +369,7 @@ const Editor: React.VFC = () => {
         (editor) => {
             const contrib = new UntitledHintContribution(
                 editor,
-                i18n.translate(I18nId.Placeholder),
+                i18n.translate('placeholder'),
             );
             return () => contrib.dispose();
         },
@@ -380,7 +380,7 @@ const Editor: React.VFC = () => {
         editor,
         () => ({
             id: 'pybricks.action.toggleDocs',
-            label: i18n.translate(I18nId.ToggleDocs),
+            label: i18n.translate('toggleDocs'),
             run: () => toggleIsSettingShowDocsEnabled(),
             keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyD],
         }),
@@ -391,7 +391,7 @@ const Editor: React.VFC = () => {
         editor,
         () => ({
             id: 'pybricks.action.check',
-            label: i18n.translate(I18nId.Check),
+            label: i18n.translate('check'),
             run: (e) => {
                 // for checking, use the most recent compiler
                 dispatch(compile(e.getValue(), 6, []));

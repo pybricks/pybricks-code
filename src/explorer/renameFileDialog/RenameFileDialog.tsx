@@ -12,7 +12,7 @@ import {
 import { useSelector } from '../../reducers';
 import FileNameFormGroup from '../fileNameFormGroup/FileNameFormGroup';
 import { renameFileDialogDidAccept, renameFileDialogDidCancel } from './actions';
-import { I18nId, useI18n } from './i18n';
+import { useI18n } from './i18n';
 
 const RenameFileDialog: React.VFC = () => {
     const i18n = useI18n();
@@ -46,7 +46,7 @@ const RenameFileDialog: React.VFC = () => {
 
     return (
         <Dialog
-            title={i18n.translate(I18nId.Title, {
+            title={i18n.translate('title', {
                 fileName: oldName,
             })}
             isOpen={isOpen}
@@ -74,7 +74,7 @@ const RenameFileDialog: React.VFC = () => {
                             disabled={result !== FileNameValidationResult.IsOk}
                             type="submit"
                         >
-                            {i18n.translate(I18nId.ActionRename)}
+                            {i18n.translate('action.rename')}
                         </Button>
                     </div>
                 </div>

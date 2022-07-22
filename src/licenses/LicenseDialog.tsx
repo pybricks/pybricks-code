@@ -21,7 +21,7 @@ import React, { useCallback, useState } from 'react';
 import { mergeProps, useFocusRing, useListBox, useOption } from 'react-aria';
 import { useFetch } from 'usehooks-ts';
 import { appName } from '../app/constants';
-import { I18nId, useI18n } from './i18n';
+import { useI18n } from './i18n';
 
 interface LicenseInfo {
     readonly name: string;
@@ -158,11 +158,11 @@ const LicenseListPanel: React.VoidFunctionComponent<LicenseListPanelProps> = ({
         <div className="pb-license-list">
             {data === undefined ? (
                 <NonIdealState>
-                    {error ? i18n.translate(I18nId.ErrorFetchFailed) : <Spinner />}
+                    {error ? i18n.translate('error.fetchFailed') : <Spinner />}
                 </NonIdealState>
             ) : (
                 <ListBox
-                    aria-label={i18n.translate(I18nId.PackageListLabel)}
+                    aria-label={i18n.translate('packageList.label')}
                     selectionMode="single"
                     onSelectionChange={handleSelectionChanged}
                     items={data}
@@ -187,13 +187,13 @@ const LicenseInfoPanel = React.forwardRef<HTMLDivElement, LicenseInfoPanelProps>
             <div className="pb-license-info" ref={ref}>
                 {licenseInfo === undefined ? (
                     <NonIdealState>
-                        {i18n.translate(I18nId.SelectPackageHelp)}
+                        {i18n.translate('help.selectPackage')}
                     </NonIdealState>
                 ) : (
                     <div>
                         <Card>
                             <p>
-                                <strong>{i18n.translate(I18nId.PackageLabel)}</strong>{' '}
+                                <strong>{i18n.translate('packageLabel')}</strong>{' '}
                                 {licenseInfo.name}{' '}
                                 <span className={Classes.TEXT_MUTED}>
                                     v{licenseInfo.version}
@@ -201,14 +201,12 @@ const LicenseInfoPanel = React.forwardRef<HTMLDivElement, LicenseInfoPanelProps>
                             </p>
                             {licenseInfo.author && (
                                 <p>
-                                    <strong>
-                                        {i18n.translate(I18nId.AuthorLabel)}
-                                    </strong>{' '}
+                                    <strong>{i18n.translate('authorLabel')}</strong>{' '}
                                     {licenseInfo.author}
                                 </p>
                             )}
                             <p>
-                                <strong>{i18n.translate(I18nId.LicenseLabel)}</strong>{' '}
+                                <strong>{i18n.translate('licenseLabel')}</strong>{' '}
                                 {licenseInfo.license}
                             </p>
                         </Card>
@@ -240,13 +238,13 @@ const LicenseDialog: React.VoidFunctionComponent<LicenseDialogProps> = ({
     return (
         <Dialog
             className="pb-license-dialog"
-            title={i18n.translate(I18nId.Title)}
+            title={i18n.translate('title')}
             isOpen={isOpen}
             onClose={onClose}
         >
             <div className={Classes.DIALOG_BODY}>
                 <Callout className={Classes.INTENT_PRIMARY} icon="info-sign">
-                    {i18n.translate(I18nId.Description, {
+                    {i18n.translate('description', {
                         name: appName,
                     })}
                 </Callout>

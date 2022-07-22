@@ -1,20 +1,12 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021-2022 The Pybricks Authors
+// Copyright (c) 2022 The Pybricks Authors
 
-// About dialog translation keys.
+import { useI18n as useShopifyI18n } from '@shopify/react-i18n';
+import type { TypedI18n } from '../i18n';
+import type translations from './translations/en.json';
 
-import { I18n, useI18n as useShopifyI18n } from '@shopify/react-i18n';
-
-export function useI18n(): I18n {
+export function useI18n(): TypedI18n<typeof translations> {
     // istanbul ignore next: babel-loader rewrites this line
     const [i18n] = useShopifyI18n();
     return i18n;
-}
-
-export enum I18nId {
-    Title = 'title',
-    Description = 'description',
-    LicenseButtonLabel = 'licenseButton.label',
-    ChangelogButtonLabel = 'changelogButton.label',
-    WebsiteButtonLabel = 'websiteButton.label',
 }

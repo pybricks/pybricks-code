@@ -11,7 +11,7 @@ import { FitAddon } from 'xterm-addon-fit';
 import { isMacOS } from '../utils/os';
 import { TerminalContext } from './TerminalContext';
 import { receiveData } from './actions';
-import { I18nId, useI18n } from './i18n';
+import { useI18n } from './i18n';
 
 import 'xterm/css/xterm.css';
 
@@ -64,7 +64,7 @@ function createContextMenu(
                             navigator.clipboard.writeText(selected);
                         }
                     }}
-                    text={i18n.translate(I18nId.Copy)}
+                    text={i18n.translate('copy')}
                     icon="duplicate"
                     label={isMacOS() ? 'Cmd-C' : 'Ctrl-Shift-C'}
                     disabled={!xterm.hasSelection()}
@@ -73,19 +73,19 @@ function createContextMenu(
                     onClick={async (): Promise<void> => {
                         xterm.paste(await navigator.clipboard.readText());
                     }}
-                    text={i18n.translate(I18nId.Paste)}
+                    text={i18n.translate('paste')}
                     icon="clipboard"
                     label={isMacOS() ? 'Cmd-V' : 'Ctrl-V'}
                 />
                 <MenuItem
                     onClick={() => xterm.selectAll()}
-                    text={i18n.translate(I18nId.SelectAll)}
+                    text={i18n.translate('selectAll')}
                     icon="blank"
                 />
                 <MenuDivider />
                 <MenuItem
                     onClick={(): void => xterm.clear()}
-                    text={i18n.translate(I18nId.Clear)}
+                    text={i18n.translate('clear')}
                     icon="trash"
                 />
             </Menu>

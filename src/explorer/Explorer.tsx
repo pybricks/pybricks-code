@@ -42,7 +42,7 @@ import {
 } from './actions';
 import DeleteFileAlert from './deleteFileAlert/DeleteFileAlert';
 import DuplicateFileDialog from './duplicateFileDialog/DuplicateFileDialog';
-import { I18nId, useI18n } from './i18n';
+import { useI18n } from './i18n';
 import NewFileWizard from './newFileWizard/NewFileWizard';
 import RenameFileDialog from './renameFileDialog/RenameFileDialog';
 
@@ -121,13 +121,13 @@ const FileActionButtonGroup: React.VoidFunctionComponent<ActionButtonGroupProps>
                 <ActionButton
                     id={renameButtonId}
                     icon="edit"
-                    tooltip={i18n.translate(I18nId.TreeItemRenameTooltip, { fileName })}
+                    tooltip={i18n.translate('treeItem.renameTooltip', { fileName })}
                     onClick={() => dispatch(explorerRenameFile(fileName))}
                 />
                 <ActionButton
                     id={duplicateButtonId}
                     icon="duplicate"
-                    tooltip={i18n.translate(I18nId.TreeItemDuplicateTooltip, {
+                    tooltip={i18n.translate('treeItem.duplicateTooltip', {
                         fileName,
                     })}
                     onClick={() => dispatch(explorerDuplicateFile(fileName))}
@@ -140,13 +140,13 @@ const FileActionButtonGroup: React.VoidFunctionComponent<ActionButtonGroupProps>
                     // archive icon which is also used to indicate an export/
                     // download operation
                     icon="import"
-                    tooltip={i18n.translate(I18nId.TreeItemExportTooltip, { fileName })}
+                    tooltip={i18n.translate('treeItem.exportTooltip', { fileName })}
                     onClick={() => dispatch(explorerExportFile(fileName))}
                 />
                 <ActionButton
                     id={deleteButtonId}
                     icon="trash"
-                    tooltip={i18n.translate(I18nId.TreeItemDeleteTooltip, { fileName })}
+                    tooltip={i18n.translate('treeItem.deleteTooltip', { fileName })}
                     onClick={() =>
                         dispatch(explorerDeleteFile(fileName, item.index as UUID))
                     }
@@ -166,14 +166,14 @@ const Header: React.VoidFunctionComponent = () => {
     return (
         <Toolbar
             className="pb-explorer-header-toolbar"
-            aria-label={i18n.translate(I18nId.HeaderToolbarTitle)}
+            aria-label={i18n.translate('header.toolbar.title')}
             firstFocusableItemId={archiveButtonId}
         >
             <ButtonGroup minimal={true}>
                 <ActionButton
                     id={archiveButtonId}
                     icon="archive"
-                    tooltip={i18n.translate(I18nId.HeaderToolbarExportAll)}
+                    tooltip={i18n.translate('header.toolbar.exportAll')}
                     onClick={() => dispatch(explorerArchiveAllFiles())}
                 />
                 <ActionButton
@@ -182,13 +182,13 @@ const Header: React.VoidFunctionComponent = () => {
                     // what we want here since import is analogous to upload
                     // even though this is the "import" action
                     icon="export"
-                    tooltip={i18n.translate(I18nId.HeaderToolbarImport)}
+                    tooltip={i18n.translate('header.toolbar.import')}
                     onClick={() => dispatch(explorerImportFiles())}
                 />
                 <ActionButton
                     id={newButtonId}
                     icon="plus"
-                    tooltip={i18n.translate(I18nId.HeaderToolbarAddNew)}
+                    tooltip={i18n.translate('header.toolbar.addNew')}
                     onClick={() => dispatch(explorerCreateNewFile())}
                 />
             </ButtonGroup>
@@ -205,35 +205,35 @@ function useLiveDescriptors(): LiveDescriptors {
     return useMemo(
         () => ({
             introduction: `
-                <p>${i18n.translate(I18nId.TreeLiveDescriptorIntroAccessibilityGuide, {
+                <p>${i18n.translate('tree.liveDescriptor.intro.accessibilityGuide', {
                     treeLabel: '{treeLabel}',
                 })}</p>
-                <p>${i18n.translate(I18nId.TreeLiveDescriptorIntroNavigation)}</p>
+                <p>${i18n.translate('tree.liveDescriptor.intro.navigation')}</p>
                 <ul>
                     <li>${i18n.translate(
-                        I18nId.TreeLiveDescriptorIntroKeybindingsPrimaryAction,
+                        'tree.liveDescriptor.intro.keybindings.primaryAction',
                         { key: '{keybinding:primaryAction}' },
                     )}</li>
                     <li>${i18n.translate(
-                        I18nId.TreeLiveDescriptorIntroKeybindingsRename,
+                        'tree.liveDescriptor.intro.keybindings.rename',
                         { key: 'f2' },
                     )}</li>
                     <li>${i18n.translate(
-                        I18nId.TreeLiveDescriptorIntroKeybindingsDuplicate,
+                        'tree.liveDescriptor.intro.keybindings.duplicate',
                         { key: `${isMacOS() ? 'cmd' : 'ctrl'}+d` },
                     )}</li>
                     <li>${i18n.translate(
-                        I18nId.TreeLiveDescriptorIntroKeybindingsExport,
+                        'tree.liveDescriptor.intro.keybindings.export',
                         { key: `${isMacOS() ? 'cmd' : 'ctrl'}+e` },
                     )}</li>
                     <li>${i18n.translate(
-                        I18nId.TreeLiveDescriptorIntroKeybindingsDelete,
+                        'tree.liveDescriptor.intro.keybindings.delete',
                         { key: 'delete' },
                     )}</li>
                 </ul>
             `,
             renamingItem: 'not used',
-            searching: `<p>${i18n.translate(I18nId.TreeLiveDescriptorSearching)}</p>`,
+            searching: `<p>${i18n.translate('tree.liveDescriptor.searching')}</p>`,
             programmaticallyDragging: 'not used',
             programmaticallyDraggingTarget: 'not used',
         }),
@@ -400,7 +400,7 @@ const FileTree: React.VoidFunctionComponent = () => {
                 <Tree
                     treeId={treeId}
                     rootItem={rootItemIndex}
-                    treeLabel={i18n.translate(I18nId.TreeLabel)}
+                    treeLabel={i18n.translate('tree.label')}
                 />
             </div>
         </ControlledTreeEnvironment>

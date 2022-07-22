@@ -42,7 +42,7 @@ import {
     firmwareInstallPybricksDialogCancel,
 } from './actions';
 import { useFirmware } from './hooks';
-import { I18nId, useI18n } from './i18n';
+import { useI18n } from './i18n';
 import { validateHubName } from '.';
 
 const dialogBody = classNames(
@@ -63,7 +63,7 @@ const SelectHubPanel: React.VoidFunctionComponent<SelectHubPanelProps> = ({
 
     return (
         <div className={dialogBody}>
-            <p>{i18n.translate(I18nId.SelectHubPanelMessage)}</p>
+            <p>{i18n.translate('selectHubPanel.message')}</p>
             <HubPicker hubType={hubType} onChange={onChange} />
             <Popover2
                 popoverClassName={Classes2.POPOVER2_CONTENT_SIZING}
@@ -72,47 +72,47 @@ const SelectHubPanel: React.VoidFunctionComponent<SelectHubPanelProps> = ({
                     <div>
                         <h3>
                             {i18n.translate(
-                                I18nId.SelectHubPanelNotOnListButtonInfoMindstormsTitle,
+                                'selectHubPanel.notOnListButton.info.mindstorms.title',
                             )}
                         </h3>
                         <ul>
                             <li>
                                 {i18n.translate(
-                                    I18nId.SelectHubPanelNotOnListButtonInfoMindstormsRcx,
+                                    'selectHubPanel.notOnListButton.info.mindstorms.rcx',
                                 )}
                             </li>
                             <li>
                                 {i18n.translate(
-                                    I18nId.SelectHubPanelNotOnListButtonInfoMindstormsNxt,
+                                    'selectHubPanel.notOnListButton.info.mindstorms.nxt',
                                 )}
                             </li>
                             <li>
                                 {i18n.translate(
-                                    I18nId.SelectHubPanelNotOnListButtonInfoMindstormsEv3,
+                                    'selectHubPanel.notOnListButton.info.mindstorms.ev3',
                                 )}
                             </li>
                         </ul>
                         <h3>
                             {i18n.translate(
-                                I18nId.SelectHubPanelNotOnListButtonInfoPoweredUpTitle,
+                                'selectHubPanel.notOnListButton.info.poweredUp.title',
                             )}
                         </h3>
                         <ul>
                             <li>
                                 {i18n.translate(
-                                    I18nId.SelectHubPanelNotOnListButtonInfoPoweredUpWedo2,
+                                    'selectHubPanel.notOnListButton.info.poweredUp.wedo2',
                                 )}
                                 <em>*</em>
                             </li>
                             <li>
                                 {i18n.translate(
-                                    I18nId.SelectHubPanelNotOnListButtonInfoPoweredUpDuploTrain,
+                                    'selectHubPanel.notOnListButton.info.poweredUp.duploTrain',
                                 )}
                                 <em>*</em>
                             </li>
                             <li>
                                 {i18n.translate(
-                                    I18nId.SelectHubPanelNotOnListButtonInfoPoweredUpMario,
+                                    'selectHubPanel.notOnListButton.info.poweredUp.mario',
                                 )}
                             </li>
                         </ul>
@@ -120,7 +120,7 @@ const SelectHubPanel: React.VoidFunctionComponent<SelectHubPanelProps> = ({
                         <em>
                             *{' '}
                             {i18n.translate(
-                                I18nId.SelectHubPanelNotOnListButtonInfoPoweredUpFootnote,
+                                'selectHubPanel.notOnListButton.info.poweredUp.footnote',
                             )}
                         </em>
                     </div>
@@ -130,7 +130,7 @@ const SelectHubPanel: React.VoidFunctionComponent<SelectHubPanelProps> = ({
                         elementRef={ref as IRef<HTMLButtonElement>}
                         {...targetProps}
                     >
-                        {i18n.translate(I18nId.SelectHubPanelNotOnListButtonLabel)}
+                        {i18n.translate('selectHubPanel.notOnListButton.label')}
                     </Button>
                 )}
             />
@@ -163,16 +163,14 @@ const AcceptLicensePanel: React.VoidFunctionComponent<AcceptLicensePanelProps> =
                             icon={error ? 'error' : <Spinner />}
                             description={
                                 error
-                                    ? i18n.translate(
-                                          I18nId.LicensePanelLicenseTextError,
-                                      )
+                                    ? i18n.translate('licensePanel.licenseText.error')
                                     : undefined
                             }
                         />
                     )}
                 </div>
                 <Checkbox
-                    label={i18n.translate(I18nId.LicensePanelAcceptCheckboxLabel)}
+                    label={i18n.translate('licensePanel.acceptCheckbox.label')}
                     checked={licenseAccepted}
                     onChange={(e) => onLicenseAcceptedChanged(e.currentTarget.checked)}
                     disabled={!data}
@@ -208,8 +206,8 @@ const ConfigureOptionsPanel: React.VoidFunctionComponent<SelectOptionsPanelProps
     return (
         <div className={dialogBody}>
             <FormGroup
-                label={i18n.translate(I18nId.OptionsPanelHubNameLabel)}
-                labelInfo={i18n.translate(I18nId.OptionsPanelHubNameLabelInfo)}
+                label={i18n.translate('optionsPanel.hubName.label')}
+                labelInfo={i18n.translate('optionsPanel.hubName.labelInfo')}
             >
                 <ControlGroup>
                     <InputGroup
@@ -230,26 +228,26 @@ const ConfigureOptionsPanel: React.VoidFunctionComponent<SelectOptionsPanelProps
                         }
                     />
                     <HelpButton
-                        helpForLabel={i18n.translate(I18nId.OptionsPanelHubNameLabel)}
-                        content={i18n.translate(I18nId.OptionsPanelHubNameHelp)}
+                        helpForLabel={i18n.translate('optionsPanel.hubName.label')}
+                        content={i18n.translate('optionsPanel.hubName.help')}
                     />
                 </ControlGroup>
             </FormGroup>
             <FormGroup
-                label={i18n.translate(I18nId.OptionsPanelCustomMainLabel)}
-                labelInfo={i18n.translate(I18nId.OptionsPanelCustomMainLabelInfo)}
+                label={i18n.translate('optionsPanel.customMain.label')}
+                labelInfo={i18n.translate('optionsPanel.customMain.labelInfo')}
             >
                 {(hubHasExternalFlash(hubType) && (
                     <p>
                         {i18n.translate(
-                            I18nId.OptionsPanelCustomMainNotApplicableMessage,
+                            'optionsPanel.customMain.notApplicable.message',
                         )}
                     </p>
                 )) || (
                     <ControlGroup>
                         <Switch
                             labelElement={i18n.translate(
-                                I18nId.OptionsPanelCustomMainIncludeLabel,
+                                'optionsPanel.customMain.include.label',
                                 { main: <code>main.py</code> },
                             )}
                             checked={includeProgram}
@@ -280,7 +278,7 @@ const ConfigureOptionsPanel: React.VoidFunctionComponent<SelectOptionsPanelProps
                                     roleStructure="listoption"
                                     disabled={true}
                                     text={i18n.translate(
-                                        I18nId.OptionsPanelCustomMainIncludeNoFiles,
+                                        'optionsPanel.customMain.include.noFiles',
                                     )}
                                 />
                             }
@@ -294,7 +292,7 @@ const ConfigureOptionsPanel: React.VoidFunctionComponent<SelectOptionsPanelProps
                                 text={
                                     selectedIncludeFile?.path ??
                                     i18n.translate(
-                                        I18nId.OptionsPanelCustomMainIncludeNoSelection,
+                                        'optionsPanel.customMain.include.noSelection',
                                     )
                                 }
                                 disabled={!includeProgram}
@@ -302,11 +300,11 @@ const ConfigureOptionsPanel: React.VoidFunctionComponent<SelectOptionsPanelProps
                         </Select2>
                         <HelpButton
                             helpForLabel={i18n.translate(
-                                I18nId.OptionsPanelCustomMainIncludeLabel,
+                                'optionsPanel.customMain.include.label',
                                 { main: 'main.py' },
                             )}
                             content={i18n.translate(
-                                I18nId.OptionsPanelCustomMainIncludeHelp,
+                                'optionsPanel.customMain.include.help',
                                 {
                                     appName,
                                 },
@@ -332,47 +330,45 @@ const BootloaderModePanel: React.VoidFunctionComponent<BootloaderModePanelProps>
         return {
             button: i18n.translate(
                 hubHasBluetoothButton(hubType)
-                    ? I18nId.BootloaderPanelButtonBluetooth
-                    : I18nId.BootloaderPanelButtonPower,
+                    ? 'bootloaderPanel.button.bluetooth'
+                    : 'bootloaderPanel.button.power',
             ),
             light: i18n.translate(
                 hubHasBluetoothButton(hubType)
-                    ? I18nId.BootloaderPanelLightBluetooth
-                    : I18nId.BootloaderPanelLightStatus,
+                    ? 'bootloaderPanel.light.bluetooth'
+                    : 'bootloaderPanel.light.status',
             ),
             lightPattern: i18n.translate(
                 hubHasBluetoothButton(hubType)
-                    ? I18nId.BootloaderPanelLightPatternBluetooth
-                    : I18nId.BootloaderPanelLightPatternStatus,
+                    ? 'bootloaderPanel.lightPattern.bluetooth'
+                    : 'bootloaderPanel.lightPattern.status',
             ),
         };
     }, [i18n, hubType]);
 
     return (
         <div className={dialogBody}>
-            <p>{i18n.translate(I18nId.BootloaderPanelInstruction1)}</p>
+            <p>{i18n.translate('bootloaderPanel.instruction1')}</p>
             <ol>
                 {hubHasUSB(hubType) && (
-                    <li>{i18n.translate(I18nId.BootloaderPanelStepDisconnectUsb)}</li>
+                    <li>{i18n.translate('bootloaderPanel.step.disconnectUsb')}</li>
                 )}
 
-                <li>{i18n.translate(I18nId.BootloaderPanelStepPowerOff)}</li>
+                <li>{i18n.translate('bootloaderPanel.step.powerOff')}</li>
 
                 {/* City hub has power issues and requires disconnecting motors/sensors */}
                 {hubType === Hub.City && (
-                    <li>{i18n.translate(I18nId.BootloaderPanelStepDisconnectIo)}</li>
+                    <li>{i18n.translate('bootloaderPanel.step.disconnectIo')}</li>
                 )}
 
-                <li>
-                    {i18n.translate(I18nId.BootloaderPanelStepHoldButton, { button })}
-                </li>
+                <li>{i18n.translate('bootloaderPanel.step.holdButton', { button })}</li>
 
                 {hubHasUSB(hubType) && (
-                    <li>{i18n.translate(I18nId.BootloaderPanelStepConnectUsb)}</li>
+                    <li>{i18n.translate('bootloaderPanel.step.connectUsb')}</li>
                 )}
 
                 <li>
-                    {i18n.translate(I18nId.BootloaderPanelStepWaitForLight, {
+                    {i18n.translate('bootloaderPanel.step.waitForLight', {
                         button,
                         light,
                         lightPattern,
@@ -383,8 +379,8 @@ const BootloaderModePanel: React.VoidFunctionComponent<BootloaderModePanelProps>
                     {i18n.translate(
                         /* hubs with USB will keep the power on, but other hubs won't */
                         hubHasUSB(hubType)
-                            ? I18nId.BootloaderPanelStepReleaseButton
-                            : I18nId.BootloaderPanelStepKeepHolding,
+                            ? 'bootloaderPanel.step.releaseButton'
+                            : 'bootloaderPanel.step.keepHolding',
                         {
                             button,
                         },
@@ -392,11 +388,9 @@ const BootloaderModePanel: React.VoidFunctionComponent<BootloaderModePanelProps>
                 </li>
             </ol>
             <p>
-                {i18n.translate(I18nId.BootloaderPanelInstruction2, {
+                {i18n.translate('bootloaderPanel.instruction2', {
                     flashFirmware: (
-                        <strong>
-                            {i18n.translate(I18nId.FlashFirmwareButtonLabel)}
-                        </strong>
+                        <strong>{i18n.translate('flashFirmwareButton.label')}</strong>
                     ),
                 })}
             </p>
@@ -419,11 +413,11 @@ export const InstallPybricksDialog: React.VoidFunctionComponent = () => {
 
     return (
         <MultistepDialog
-            title={i18n.translate(I18nId.Title)}
+            title={i18n.translate('title')}
             isOpen={isOpen}
             onClose={() => dispatch(firmwareInstallPybricksDialogCancel())}
             finalButtonProps={{
-                text: i18n.translate(I18nId.FlashFirmwareButtonLabel),
+                text: i18n.translate('flashFirmwareButton.label'),
                 onClick: () =>
                     dispatch(
                         firmwareInstallPybricksDialogAccept(
@@ -437,13 +431,13 @@ export const InstallPybricksDialog: React.VoidFunctionComponent = () => {
         >
             <DialogStep
                 id="hub"
-                title={i18n.translate(I18nId.SelectHubPanelTitle)}
+                title={i18n.translate('selectHubPanel.title')}
                 panel={<SelectHubPanel hubType={hubType} onChange={setHubType} />}
-                nextButtonProps={{ text: i18n.translate(I18nId.NextButtonLabel) }}
+                nextButtonProps={{ text: i18n.translate('nextButton.label') }}
             />
             <DialogStep
                 id="license"
-                title={i18n.translate(I18nId.LicensePanelTitle)}
+                title={i18n.translate('licensePanel.title')}
                 panel={
                     <AcceptLicensePanel
                         hubType={hubType}
@@ -451,15 +445,15 @@ export const InstallPybricksDialog: React.VoidFunctionComponent = () => {
                         onLicenseAcceptedChanged={setLicenseAccepted}
                     />
                 }
-                backButtonProps={{ text: i18n.translate(I18nId.BackButtonLabel) }}
+                backButtonProps={{ text: i18n.translate('backButton.label') }}
                 nextButtonProps={{
                     disabled: !licenseAccepted,
-                    text: i18n.translate(I18nId.NextButtonLabel),
+                    text: i18n.translate('nextButton.label'),
                 }}
             />
             <DialogStep
                 id="options"
-                title={i18n.translate(I18nId.OptionsPanelTitle)}
+                title={i18n.translate('optionsPanel.title')}
                 panel={
                     <ConfigureOptionsPanel
                         hubType={hubType}
@@ -471,14 +465,14 @@ export const InstallPybricksDialog: React.VoidFunctionComponent = () => {
                         onChangeSelectedIncludeFile={setSelectedIncludeFile}
                     />
                 }
-                backButtonProps={{ text: i18n.translate(I18nId.BackButtonLabel) }}
-                nextButtonProps={{ text: i18n.translate(I18nId.NextButtonLabel) }}
+                backButtonProps={{ text: i18n.translate('backButton.label') }}
+                nextButtonProps={{ text: i18n.translate('nextButton.label') }}
             />
             <DialogStep
                 id="bootloader"
-                title={i18n.translate(I18nId.BootloaderPanelTitle)}
+                title={i18n.translate('bootloaderPanel.title')}
                 panel={<BootloaderModePanel hubType={hubType} />}
-                backButtonProps={{ text: i18n.translate(I18nId.BackButtonLabel) }}
+                backButtonProps={{ text: i18n.translate('backButton.label') }}
             />
         </MultistepDialog>
     );

@@ -16,7 +16,7 @@ import {
 } from '../app/constants';
 import LicenseDialog from '../licenses/LicenseDialog';
 import ExternalLinkIcon from '../utils/ExternalLinkIcon';
-import { I18nId, useI18n } from './i18n';
+import { useI18n } from './i18n';
 
 import './about.scss';
 
@@ -32,7 +32,7 @@ const AboutDialog: React.VoidFunctionComponent<AboutDialogProps> = ({
 
     return (
         <Dialog
-            title={i18n.translate(I18nId.Title, { appName })}
+            title={i18n.translate('title', { appName })}
             isOpen={isOpen}
             onClose={onClose}
         >
@@ -41,7 +41,7 @@ const AboutDialog: React.VoidFunctionComponent<AboutDialogProps> = ({
                     <img src="favicon.ico" />
                 </div>
                 <p>
-                    <strong>{i18n.translate(I18nId.Description)}</strong>
+                    <strong>{i18n.translate('description')}</strong>
                 </p>
                 <p>{`v${firmwareVersion} (${appName} v${appVersion})`}</p>
                 <p>{pybricksCopyright}</p>
@@ -52,14 +52,14 @@ const AboutDialog: React.VoidFunctionComponent<AboutDialogProps> = ({
                 </p>
                 <div className={Classes.DIALOG_FOOTER_ACTIONS}>
                     <Button onClick={() => setIsLicenseDialogOpen(true)}>
-                        {i18n.translate(I18nId.LicenseButtonLabel)}
+                        {i18n.translate('licenseButton.label')}
                     </Button>
                     <AnchorButton href={changelogUrl} target="blank_">
-                        {i18n.translate(I18nId.ChangelogButtonLabel)}
+                        {i18n.translate('changelogButton.label')}
                         <ExternalLinkIcon />
                     </AnchorButton>
                     <AnchorButton href={pybricksWebsiteUrl} target="blank_">
-                        {i18n.translate(I18nId.WebsiteButtonLabel)}
+                        {i18n.translate('websiteButton.label')}
                         <ExternalLinkIcon />
                     </AnchorButton>
                 </div>

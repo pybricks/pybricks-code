@@ -28,7 +28,7 @@ import { useSelector } from '../reducers';
 import ExternalLinkIcon from '../utils/ExternalLinkIcon';
 import { isMacOS } from '../utils/os';
 import { useSettingIsShowDocsEnabled } from './hooks';
-import { I18nId, useI18n } from './i18n';
+import { useI18n } from './i18n';
 import './settings.scss';
 
 const Settings: React.VoidFunctionComponent = () => {
@@ -55,15 +55,15 @@ const Settings: React.VoidFunctionComponent = () => {
     return (
         <div className="pb-settings">
             <FormGroup
-                label={i18n.translate(I18nId.AppearanceTitle)}
-                helperText={i18n.translate(I18nId.AppearanceZoomHelp, {
+                label={i18n.translate('appearance.title')}
+                helperText={i18n.translate('appearance.zoom.help', {
                     in: <span>{isMacOS() ? 'Cmd' : 'Ctrl'}-+</span>,
                     out: <span>{isMacOS() ? 'Cmd' : 'Ctrl'}--</span>,
                 })}
             >
                 <ControlGroup>
                     <Switch
-                        label={i18n.translate(I18nId.AppearanceDocumentationLabel)}
+                        label={i18n.translate('appearance.documentation.label')}
                         checked={isSettingShowDocsEnabled}
                         onChange={(e) =>
                             setIsSettingShowDocsEnabled(
@@ -72,15 +72,13 @@ const Settings: React.VoidFunctionComponent = () => {
                         }
                     />
                     <HelpButton
-                        helpForLabel={i18n.translate(
-                            I18nId.AppearanceDocumentationLabel,
-                        )}
-                        content={i18n.translate(I18nId.AppearanceDocumentationHelp)}
+                        helpForLabel={i18n.translate('appearance.documentation.label')}
+                        content={i18n.translate('appearance.documentation.help')}
                     />
                 </ControlGroup>
                 <ControlGroup>
                     <Switch
-                        label={i18n.translate(I18nId.AppearanceDarkModeLabel)}
+                        label={i18n.translate('appearance.darkMode.label')}
                         checked={isDarkMode}
                         onChange={(e) =>
                             setTernaryDarkMode(
@@ -91,42 +89,42 @@ const Settings: React.VoidFunctionComponent = () => {
                         }
                     />
                     <HelpButton
-                        helpForLabel={i18n.translate(I18nId.AppearanceDarkModeLabel)}
-                        content={i18n.translate(I18nId.AppearanceDarkModeHelp)}
+                        helpForLabel={i18n.translate('appearance.darkMode.label')}
+                        content={i18n.translate('appearance.darkMode.help')}
                     />
                 </ControlGroup>
             </FormGroup>
-            <FormGroup label={i18n.translate(I18nId.FirmwareTitle)}>
+            <FormGroup label={i18n.translate('firmware.title')}>
                 <Button
                     minimal={true}
                     icon="download"
-                    label={i18n.translate(I18nId.FirmwareFlashPybricksLabel)}
+                    label={i18n.translate('firmware.flashPybricksButton.label')}
                     onPress={() => dispatch(firmwareInstallPybricks())}
                 />
                 <InstallPybricksDialog />
                 <Button
                     minimal={true}
                     icon="download"
-                    label={i18n.translate(I18nId.FirmwareFlashLegoLabel)}
+                    label={i18n.translate('firmware.flashLegoButton.label')}
                     onPress={() => dispatch(firmwareRestoreLego())}
                 />
             </FormGroup>
-            <FormGroup label={i18n.translate(I18nId.HelpTitle)}>
+            <FormGroup label={i18n.translate('help.title')}>
                 <ButtonGroup minimal={true} vertical={true} alignText="left">
                     <AnchorButton
                         icon="lightbulb"
                         href={pybricksProjectsUrl}
                         target="blank_"
                     >
-                        {i18n.translate(I18nId.HelpProjectsLabel)}
+                        {i18n.translate('help.projects.label')}
                         <ExternalLinkIcon />
                     </AnchorButton>
                     <AnchorButton icon="help" href={pybricksSupportUrl} target="blank_">
-                        {i18n.translate(I18nId.HelpSupportLabel)}
+                        {i18n.translate('help.support.label')}
                         <ExternalLinkIcon />
                     </AnchorButton>
                     <AnchorButton icon="chat" href={pybricksGitterUrl} target="blank_">
-                        {i18n.translate(I18nId.HelpChatLabel)}
+                        {i18n.translate('help.chat.label')}
                         <ExternalLinkIcon />
                     </AnchorButton>
                     <AnchorButton
@@ -134,7 +132,7 @@ const Settings: React.VoidFunctionComponent = () => {
                         href={pybricksBugReportsUrl}
                         target="blank_"
                     >
-                        {i18n.translate(I18nId.HelpBugsLabel)}
+                        {i18n.translate('help.bugs.label')}
                         <ExternalLinkIcon />
                     </AnchorButton>
                     <AboutDialog
@@ -144,15 +142,13 @@ const Settings: React.VoidFunctionComponent = () => {
                 </ButtonGroup>
             </FormGroup>
             <FormGroup
-                label={i18n.translate(I18nId.AppTitle)}
-                helperText={
-                    readyForOfflineUse && i18n.translate(I18nId.AppOfflineUseHelp)
-                }
+                label={i18n.translate('app.title')}
+                helperText={readyForOfflineUse && i18n.translate('app.offlineUseHelp')}
             >
                 <ButtonGroup minimal={true} vertical={true} alignText="left">
                     {hasUnresolvedInstallPrompt && (
                         <Button
-                            label={i18n.translate(I18nId.AppInstallLabel)}
+                            label={i18n.translate('app.install.label')}
                             icon="add"
                             onPress={() => dispatch(appShowInstallPrompt())}
                             loading={promptingInstall}
@@ -161,7 +157,7 @@ const Settings: React.VoidFunctionComponent = () => {
                     {(process.env.NODE_ENV === 'development' ||
                         (isServiceWorkerRegistered && !updateAvailable)) && (
                         <Button
-                            label={i18n.translate(I18nId.AppCheckForUpdateLabel)}
+                            label={i18n.translate('app.checkForUpdate.label')}
                             icon="refresh"
                             onPress={() => dispatch(appCheckForUpdate())}
                             loading={checkingForUpdate}
@@ -170,13 +166,13 @@ const Settings: React.VoidFunctionComponent = () => {
                     {(process.env.NODE_ENV === 'development' ||
                         (isServiceWorkerRegistered && updateAvailable)) && (
                         <Button
-                            label={i18n.translate(I18nId.AppRestartLabel)}
+                            label={i18n.translate('app.restart.label')}
                             icon="refresh"
                             onPress={() => dispatch(appReload())}
                         />
                     )}
                     <Button
-                        label={i18n.translate(I18nId.AppAboutLabel)}
+                        label={i18n.translate('app.about.label')}
                         icon="info-sign"
                         onPress={() => {
                             setIsAboutDialogOpen(true);

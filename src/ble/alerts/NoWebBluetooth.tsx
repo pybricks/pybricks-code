@@ -5,19 +5,19 @@ import { Button, Intent } from '@blueprintjs/core';
 import React from 'react';
 import { CreateToast } from '../../i18nToaster';
 import { isIOS, isLinux } from '../../utils/os';
-import { I18nId, useI18n } from './i18n';
+import { useI18n } from './i18n';
 
 const NoWebBluetooth: React.VoidFunctionComponent = () => {
     const i18n = useI18n();
     return (
         <>
-            <p>{i18n.translate(I18nId.NoWebBluetoothMessage)}</p>
+            <p>{i18n.translate('noWebBluetooth.message')}</p>
             {!isLinux() && !isIOS() && (
-                <p>{i18n.translate(I18nId.NoWebBluetoothSuggestion)}</p>
+                <p>{i18n.translate('noWebBluetooth.suggestion')}</p>
             )}
             {isLinux() && (
                 <>
-                    <p>{i18n.translate(I18nId.NoWebBluetoothLinux)}</p>
+                    <p>{i18n.translate('noWebBluetooth.linux')}</p>
                     <p>
                         <code>
                             chrome://flags/#enable-experimental-web-platform-features

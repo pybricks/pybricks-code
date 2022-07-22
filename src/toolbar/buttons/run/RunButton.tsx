@@ -7,7 +7,7 @@ import { downloadAndRun } from '../../../hub/actions';
 import { HubRuntimeState } from '../../../hub/reducers';
 import { useSelector } from '../../../reducers';
 import ActionButton, { ActionButtonProps } from '../../ActionButton';
-import { I18nId, useI18n } from './i18n';
+import { useI18n } from './i18n';
 import icon from './icon.svg';
 
 type RunButtonProps = Pick<ActionButtonProps, 'id'>;
@@ -25,14 +25,14 @@ const RunButton: React.VoidFunctionComponent<RunButtonProps> = ({ id }) => {
     return (
         <ActionButton
             id={id}
-            label={i18n.translate(I18nId.Label)}
+            label={i18n.translate('label')}
             keyboardShortcut={keyboardShortcut}
             tooltip={
                 downloadProgress
-                    ? i18n.translate(I18nId.TooltipProgress, {
+                    ? i18n.translate('tooltip.progress', {
                           percent: i18n.formatPercentage(downloadProgress),
                       })
-                    : i18n.translate(I18nId.TooltipAction, { key: keyboardShortcut })
+                    : i18n.translate('tooltip.action', { key: keyboardShortcut })
             }
             icon={icon}
             enabled={isEditorReady && runtime === HubRuntimeState.Idle}

@@ -4,14 +4,14 @@
 import { Intent } from '@blueprintjs/core';
 import React from 'react';
 import { CreateToast } from '../../i18nToaster';
-import { I18nId, useI18n } from './i18n';
+import { useI18n } from './i18n';
 
 const BluetoothNotAvailable: React.VoidFunctionComponent = () => {
     const i18n = useI18n();
     return (
         <>
-            <p>{i18n.translate(I18nId.BluetoothNotAvailableMessage)}</p>
-            <p>{i18n.translate(I18nId.BluetoothNotAvailableSuggestion)}</p>
+            <p>{i18n.translate('bluetoothNotAvailable.message')}</p>
+            <p>{i18n.translate('bluetoothNotAvailable.suggestion')}</p>
         </>
     );
 };
