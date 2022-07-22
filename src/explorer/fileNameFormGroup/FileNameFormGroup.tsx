@@ -6,7 +6,7 @@ import type { AriaButtonProps } from '@react-types/button';
 import React, { useCallback, useRef } from 'react';
 import { useButton } from 'react-aria';
 import { FileNameValidationResult } from '../../pybricksMicropython/lib';
-import { I18nId, useI18n } from './i18n';
+import { useI18n } from './i18n';
 
 /**
  * Trims trailing and leading whitespace and replaces additional whitespace
@@ -51,7 +51,7 @@ const FixItButton: React.VoidFunctionComponent<FixItButtonProps> = (props) => {
         ref,
     );
 
-    return <a {...buttonProps}>{i18n.translate(I18nId.HelpTextFixIt)}</a>;
+    return <a {...buttonProps}>{i18n.translate('helpText.fixIt')}</a>;
 };
 
 type FileNameHelpTextProps = {
@@ -87,27 +87,27 @@ const FileNameHelpText: React.VoidFunctionComponent<FileNameHelpTextProps> = ({
 
     switch (validation) {
         case FileNameValidationResult.IsOk:
-            return <>{i18n.translate(I18nId.HelpTextIsOk)}</>;
+            return <>{i18n.translate('helpText.isOk')}</>;
         case FileNameValidationResult.IsEmpty:
-            return <>{i18n.translate(I18nId.HelpTextIsEmpty)}</>;
+            return <>{i18n.translate('helpText.isEmpty')}</>;
         case FileNameValidationResult.HasSpaces:
             return (
                 <>
-                    {i18n.translate(I18nId.HelpTextHasSpaces)}{' '}
+                    {i18n.translate('helpText.hasSpaces')}{' '}
                     <FixItButton onPress={handleHasSpaces} />
                 </>
             );
         case FileNameValidationResult.HasFileExtension:
             return (
                 <>
-                    {i18n.translate(I18nId.HelpTextHasFileExtension)}{' '}
+                    {i18n.translate('helpText.hasFileExtension')}{' '}
                     <FixItButton onPress={handleHasFileExtension} />
                 </>
             );
         case FileNameValidationResult.HasInvalidFirstCharacter:
             return (
                 <>
-                    {i18n.translate(I18nId.HelpTextHasInvalidFirstCharacter, {
+                    {i18n.translate('helpText.hasInvalidFirstCharacter', {
                         letters: <code className={Classes.CODE}>a…z</code>,
                         underscore: <code className={Classes.CODE}>_</code>,
                     })}
@@ -116,7 +116,7 @@ const FileNameHelpText: React.VoidFunctionComponent<FileNameHelpTextProps> = ({
         case FileNameValidationResult.HasInvalidCharacters:
             return (
                 <>
-                    {i18n.translate(I18nId.HelpTextHasInvalidCharacters, {
+                    {i18n.translate('helpText.hasInvalidCharacters', {
                         letters: <code className={Classes.CODE}>a…z</code>,
                         numbers: <code className={Classes.CODE}>0…9</code>,
                         dash: <code className={Classes.CODE}>-</code>,
@@ -126,7 +126,7 @@ const FileNameHelpText: React.VoidFunctionComponent<FileNameHelpTextProps> = ({
                 </>
             );
         case FileNameValidationResult.AlreadyExists:
-            return <>{i18n.translate(I18nId.HelpTextAlreadyExists)}</>;
+            return <>{i18n.translate('helpText.alreadyExists')}</>;
     }
 };
 
@@ -162,7 +162,7 @@ const FileNameFormGroup: React.VoidFunctionComponent<FileNameFormGroupProps> = (
 
     return (
         <FormGroup
-            label={i18n.translate(I18nId.Label)}
+            label={i18n.translate('label')}
             intent={fileNameIntent}
             subLabel={
                 <FileNameHelpText

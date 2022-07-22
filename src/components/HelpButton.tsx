@@ -7,7 +7,7 @@ import { OverlayContainer } from 'react-aria';
 import { useBoolean } from 'usehooks-ts';
 import { Button } from './Button';
 import HelpDialog from './HelpDialog';
-import { I18nId, useI18n } from './i18n';
+import { useI18n } from './i18n';
 
 type HelpButtonProps = {
     /** The label of the control this button provides help for. */
@@ -49,9 +49,9 @@ const HelpButton: React.VoidFunctionComponent<HelpButtonProps> = ({
     return (
         <>
             <Button
-                label={i18n.translate(I18nId.HelpButtonLabel)}
+                label={i18n.translate('helpButton.label')}
                 hideLabel
-                description={i18n.translate(I18nId.HelpButtonDescription, {
+                description={i18n.translate('helpButton.description', {
                     helpForLabel,
                 })}
                 minimal
@@ -62,7 +62,7 @@ const HelpButton: React.VoidFunctionComponent<HelpButtonProps> = ({
             {isDialogMounted && (
                 <OverlayContainer className={Classes.PORTAL}>
                     <HelpDialog
-                        title={i18n.translate(I18nId.HelpDialogTitle)}
+                        title={i18n.translate('helpDialog.title')}
                         isOpen={isDialogOpen}
                         openButton={openButton}
                         onClose={setIsDialogOpenFalse}

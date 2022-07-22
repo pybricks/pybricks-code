@@ -5,7 +5,7 @@ import './index.scss';
 import { Button, Intent } from '@blueprintjs/core';
 import React from 'react';
 import { CreateToast } from '../../i18nToaster';
-import { I18nId, useI18n } from './i18n';
+import { useI18n } from './i18n';
 
 type OldFirmwareProps = {
     onFlashFirmware: () => void;
@@ -18,10 +18,10 @@ const OldFirmware: React.VoidFunctionComponent<OldFirmwareProps> = ({
 
     return (
         <>
-            <p>{i18n.translate(I18nId.OldFirmwareMessage)}</p>
+            <p>{i18n.translate('oldFirmware.message')}</p>
             <div className="pb-ble-alerts-buttons">
                 <Button icon="download" onClick={onFlashFirmware}>
-                    {i18n.translate(I18nId.OldFirmwareFlashFirmwareLabel)}
+                    {i18n.translate('oldFirmware.flashFirmware.label')}
                 </Button>
             </div>
         </>

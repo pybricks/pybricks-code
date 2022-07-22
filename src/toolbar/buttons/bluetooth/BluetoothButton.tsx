@@ -10,7 +10,7 @@ import { useSelector } from '../../../reducers';
 import ActionButton, { ActionButtonProps } from '../../ActionButton';
 import connectedIcon from './connected.svg';
 import disconnectedIcon from './disconnected.svg';
-import { I18nId, useI18n } from './i18n';
+import { useI18n } from './i18n';
 
 type BluetoothButtonProps = Pick<ActionButtonProps, 'id'>;
 
@@ -28,9 +28,9 @@ const BluetoothButton: React.VoidFunctionComponent<BluetoothButtonProps> = ({ id
     return (
         <ActionButton
             id={id}
-            label={i18n.translate(I18nId.Label)}
+            label={i18n.translate('label')}
             tooltip={i18n.translate(
-                isDisconnected ? I18nId.TooltipConnect : I18nId.TooltipDisconnect,
+                isDisconnected ? 'tooltip.connect' : 'tooltip.disconnect',
             )}
             icon={isDisconnected ? disconnectedIcon : connectedIcon}
             enabled={isDisconnected || bleConnection === BleConnectionState.Connected}

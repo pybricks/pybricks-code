@@ -4,11 +4,11 @@
 import { Intent } from '@blueprintjs/core';
 import React from 'react';
 import { CreateToast } from '../../i18nToaster';
-import { I18nId, useI18n } from './i18n';
+import { useI18n } from './i18n';
 
 const NoGatt: React.VoidFunctionComponent = () => {
     const i18n = useI18n();
-    return <p>{i18n.translate(I18nId.NoGattMessage)}</p>;
+    return <p>{i18n.translate('noGatt.message')}</p>;
 };
 
 export const noGatt: CreateToast = (onAction) => {

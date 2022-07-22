@@ -4,13 +4,13 @@
 import { Icon, Intent } from '@blueprintjs/core';
 import React from 'react';
 import { CreateToast } from '../../i18nToaster';
-import { I18nId, useI18n } from './i18n';
+import { useI18n } from './i18n';
 
 const NoFilesToBackup: React.VoidFunctionComponent = () => {
     const i18n = useI18n();
     return (
         <>
-            {i18n.translate(I18nId.NoFilesToBackupMessage, {
+            {i18n.translate('noFilesToBackup.message', {
                 icon: <Icon icon="plus" />,
             })}
         </>

@@ -7,7 +7,7 @@ import React, { useCallback, useEffect, useRef } from 'react';
 import { useLocalStorage } from 'usehooks-ts';
 import Explorer from '../explorer/Explorer';
 import Settings from '../settings/Settings';
-import { I18nId, useI18n } from './i18n';
+import { useI18n } from './i18n';
 
 /** Indicates the selected activity. */
 export enum Activity {
@@ -101,7 +101,7 @@ const Activities: React.VoidFunctionComponent = () => {
 
     return (
         <Tabs
-            aria-label={i18n.translate(I18nId.Title)}
+            aria-label={i18n.translate('title')}
             vertical={true}
             className="pb-activities"
             selectedTabId={selectedActivity}
@@ -110,12 +110,12 @@ const Activities: React.VoidFunctionComponent = () => {
             ref={tabsRef}
         >
             <Tab
-                aria-label={i18n.translate(I18nId.Explorer)}
+                aria-label={i18n.translate('explorer')}
                 className="pb-activities-tablist-tab"
                 id={Activity.Explorer}
                 title={
                     <Icon
-                        htmlTitle={i18n.translate(I18nId.Explorer)}
+                        htmlTitle={i18n.translate('explorer')}
                         size={35}
                         icon="document"
                     />
@@ -125,15 +125,11 @@ const Activities: React.VoidFunctionComponent = () => {
                 onMouseDown={(e) => e.stopPropagation()}
             />
             <Tab
-                aria-label={i18n.translate(I18nId.Settings)}
+                aria-label={i18n.translate('settings')}
                 className="pb-activities-tablist-tab"
                 id={Activity.Settings}
                 title={
-                    <Icon
-                        htmlTitle={i18n.translate(I18nId.Settings)}
-                        size={35}
-                        icon="cog"
-                    />
+                    <Icon htmlTitle={i18n.translate('settings')} size={35} icon="cog" />
                 }
                 panel={<Settings />}
                 panelClassName="pb-activities-tabview"

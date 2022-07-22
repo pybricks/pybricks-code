@@ -20,7 +20,7 @@ import {
     useOverlay,
 } from 'react-aria';
 import { usePopper } from 'react-popper';
-import { I18nId, useI18n } from './i18n';
+import { useI18n } from './i18n';
 
 type HelpDialogProps = {
     /** The title of the dialog. */
@@ -147,7 +147,7 @@ const HelpDialog: React.FunctionComponent<HelpDialogProps> = ({
                                 <DismissButton
                                     id={dismissId}
                                     aria-label={i18n.translate(
-                                        I18nId.HelpDialogCloseButtonLabel,
+                                        'helpDialog.closeButton.label',
                                     )}
                                     onDismiss={onClose}
                                 />

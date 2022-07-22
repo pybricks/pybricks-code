@@ -6,7 +6,7 @@ import { AnchorButton, Button, ButtonGroup, Collapse, Intent } from '@blueprintj
 import React, { useState } from 'react';
 import { useId } from 'react-aria';
 import { CreateToast } from '../i18nToaster';
-import { I18nId, useI18n } from './i18n';
+import { useI18n } from './i18n';
 
 type UnexpectedErrorAlertProps = {
     error: Error;
@@ -21,7 +21,7 @@ const UnexpectedErrorAlert: React.VoidFunctionComponent<UnexpectedErrorAlertProp
 
     return (
         <>
-            <p>{i18n.translate(I18nId.Message, { errorMessage: error.message })}</p>
+            <p>{i18n.translate('message', { errorMessage: error.message })}</p>
             <span>
                 <Button
                     aria-labelledby={labelId}
@@ -30,7 +30,7 @@ const UnexpectedErrorAlert: React.VoidFunctionComponent<UnexpectedErrorAlertProp
                     icon={isExpanded ? 'chevron-down' : 'chevron-right'}
                     onClick={() => setIsExpanded((v) => !v)}
                 />
-                <span id={labelId}>{i18n.translate(I18nId.TechnicalInfo)}</span>
+                <span id={labelId}>{i18n.translate('technicalInfo')}</span>
             </span>
             <Collapse isOpen={isExpanded}>
                 <pre className="pb-alerts-stack-trace">{error.stack}</pre>
@@ -46,7 +46,7 @@ const UnexpectedErrorAlert: React.VoidFunctionComponent<UnexpectedErrorAlertProp
                             )
                         }
                     >
-                        {i18n.translate(I18nId.CopyErrorMessage)}
+                        {i18n.translate('copyErrorMessage')}
                     </Button>
                     <AnchorButton
                         intent={Intent.DANGER}
@@ -56,7 +56,7 @@ const UnexpectedErrorAlert: React.VoidFunctionComponent<UnexpectedErrorAlertProp
                         )}+${encodeURIComponent(error.message)}`}
                         target="_blank"
                     >
-                        {i18n.translate(I18nId.ReportBug)}
+                        {i18n.translate('reportBug')}
                     </AnchorButton>
                 </ButtonGroup>
             </div>

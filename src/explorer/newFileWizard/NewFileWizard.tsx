@@ -16,7 +16,7 @@ import {
 import { useSelector } from '../../reducers';
 import FileNameFormGroup from '../fileNameFormGroup/FileNameFormGroup';
 import { newFileWizardDidAccept, newFileWizardDidCancel } from './actions';
-import { I18nId, useI18n } from './i18n';
+import { useI18n } from './i18n';
 
 // This should be set to the most commonly used hub.
 const defaultHub = Hub.Technic;
@@ -54,7 +54,7 @@ const NewFileWizard: React.VoidFunctionComponent = () => {
     return (
         <Dialog
             icon="plus"
-            title={i18n.translate(I18nId.Title)}
+            title={i18n.translate('title')}
             isOpen={isOpen}
             onOpening={() => setFileName('')}
             onOpened={() => fileNameInputRef.current?.focus()}
@@ -69,7 +69,7 @@ const NewFileWizard: React.VoidFunctionComponent = () => {
                         inputRef={fileNameInputRef}
                         onChange={setFileName}
                     />
-                    <FormGroup label={i18n.translate(I18nId.SmartHubLabel)}>
+                    <FormGroup label={i18n.translate('smartHub.label')}>
                         <HubPicker hubType={hubType} onChange={setHubType} />
                     </FormGroup>
                 </div>
@@ -84,7 +84,7 @@ const NewFileWizard: React.VoidFunctionComponent = () => {
                             type="submit"
                         >
                             <span id={acceptButtonLabelId}>
-                                {i18n.translate(I18nId.ActionCreate)}
+                                {i18n.translate('action.create')}
                             </span>
                         </Button>
                     </div>

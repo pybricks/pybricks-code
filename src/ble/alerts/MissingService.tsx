@@ -4,7 +4,7 @@
 import { Intent } from '@blueprintjs/core';
 import React from 'react';
 import { CreateToast } from '../../i18nToaster';
-import { I18nId, useI18n } from './i18n';
+import { useI18n } from './i18n';
 
 type MissingServiceProps = {
     serviceName: string;
@@ -18,9 +18,9 @@ const MissingService: React.VoidFunctionComponent<MissingServiceProps> = ({
     const i18n = useI18n();
     return (
         <>
-            <p>{i18n.translate(I18nId.MissingServiceMessage, { serviceName })}</p>
-            <p>{i18n.translate(I18nId.MissingServiceSuggestion1)}</p>
-            <p>{i18n.translate(I18nId.MissingServiceSuggestion2, { hubName })}</p>
+            <p>{i18n.translate('missingService.message', { serviceName })}</p>
+            <p>{i18n.translate('missingService.suggestion1')}</p>
+            <p>{i18n.translate('missingService.suggestion2', { hubName })}</p>
         </>
     );
 };

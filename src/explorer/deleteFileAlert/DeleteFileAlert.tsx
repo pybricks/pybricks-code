@@ -6,7 +6,7 @@ import React, { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from '../../reducers';
 import { deleteFileAlertDidAccept, deleteFileAlertDidCancel } from './actions';
-import { I18nId, useI18n } from './i18n';
+import { useI18n } from './i18n';
 
 const DeleteFileAlert: React.VoidFunctionComponent = () => {
     const { isOpen, fileName } = useSelector((s) => s.explorer.deleteFileAlert);
@@ -37,13 +37,13 @@ const DeleteFileAlert: React.VoidFunctionComponent = () => {
             isOpen={isOpen}
             icon="trash"
             intent={Intent.DANGER}
-            confirmButtonText={i18n.translate(I18nId.Accept)}
-            cancelButtonText={i18n.translate(I18nId.Cancel)}
+            confirmButtonText={i18n.translate('action.accept')}
+            cancelButtonText={i18n.translate('action.cancel')}
             onConfirm={() => dispatch(deleteFileAlertDidAccept())}
             onCancel={() => dispatch(deleteFileAlertDidCancel())}
             onOpened={handleOpened}
         >
-            {i18n.translate(I18nId.Message, { fileName })}
+            {i18n.translate('message', { fileName })}
         </Alert>
     );
 };
