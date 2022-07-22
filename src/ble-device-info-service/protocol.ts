@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021 The Pybricks Authors
+// Copyright (c) 2021-2022 The Pybricks Authors
 //
 // Pybricks uses the standard Device Info service.
 // Refer to Device Information Service (DIS) at https://www.bluetooth.com/specifications/specs/
@@ -13,7 +13,7 @@ import {
 } from '../ble-lwp3-service/protocol';
 
 /** Device Information service UUID. */
-export const serviceUUID = 0x180a;
+export const deviceInformationServiceUUID = 0x180a;
 
 /** Firmware Revision String characteristic UUID. */
 export const firmwareRevisionStringUUID = 0x2a26;

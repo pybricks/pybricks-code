@@ -4,20 +4,13 @@
 // Saga for managing notifications (toasts)
 
 import { ActionProps, IToaster, IconName, Intent, LinkProps } from '@blueprintjs/core';
-import { firmwareVersion } from '@pybricks/firmware';
 import { Replacements } from '@shopify/react-i18n';
 import React from 'react';
 import { channel } from 'redux-saga';
-import * as semver from 'semver';
 import { delay, getContext, put, take, takeEvery } from 'typed-redux-saga/macro';
 import { getAlertProps } from '../alerts';
 import { appDidCheckForUpdate, appReload } from '../app/actions';
 import { appName } from '../app/constants';
-import { bleDIServiceDidReceiveFirmwareRevision } from '../ble-device-info-service/actions';
-import {
-    BleDeviceFailToConnectReasonType,
-    didFailToConnect as bleDeviceDidFailToConnect,
-} from '../ble/actions';
 import { editorDidFailToOpenFile } from '../editor/actions';
 import { EditorError } from '../editor/error';
 import {
@@ -35,7 +28,6 @@ import {
 } from '../lwp3-bootloader/actions';
 import { didCompile, didFailToCompile } from '../mpy/actions';
 import { serviceWorkerDidUpdate } from '../service-worker/actions';
-import { pythonVersionToSemver } from '../utils/version';
 import NotificationAction from './NotificationAction';
 import NotificationMessage from './NotificationMessage';
 import { add as addNotification } from './actions';
@@ -170,45 +162,6 @@ function* showUnexpectedError(messageId: I18nId, error: Error): Generator {
     );
 }
 
-function* showBleDeviceDidFailToConnectError(
-    action: ReturnType<typeof bleDeviceDidFailToConnect>,
-): Generator {
-    switch (action.reason) {
-        case BleDeviceFailToConnectReasonType.NoGatt:
-            yield* showSingleton(Level.Error, I18nId.BleGattPermission);
-            break;
-
-        case BleDeviceFailToConnectReasonType.NoPybricksService:
-            yield* showSingleton(Level.Error, I18nId.BleGattServiceNotFound, {
-                serviceName: 'Pybricks',
-                hubName: 'Pybricks Hub',
-            });
-            break;
-        case BleDeviceFailToConnectReasonType.NoDeviceInfoService:
-            yield* showSingleton(Level.Error, I18nId.BleGattServiceNotFound, {
-                serviceName: 'Device Information',
-                hubName: 'Pybricks Hub',
-            });
-            break;
-        case BleDeviceFailToConnectReasonType.NoBluetooth:
-            yield* showSingleton(Level.Error, I18nId.BleNoBluetooth);
-            break;
-        case BleDeviceFailToConnectReasonType.NoWebBluetooth:
-            yield* showSingleton(
-                Level.Error,
-                I18nId.BleNoWebBluetooth,
-                undefined,
-                helpAction(
-                    'https://github.com/WebBluetoothCG/web-bluetooth/blob/master/implementation-status.md',
-                ),
-            );
-            break;
-        case BleDeviceFailToConnectReasonType.Unknown:
-            yield* showUnexpectedError(I18nId.BleUnexpectedError, action.err);
-            break;
-    }
-}
-
 function* showBootloaderDidFailToConnectError(
     action: ReturnType<typeof bootloaderDidFailToConnect>,
 ): Generator {
@@ -218,19 +171,6 @@ function* showBootloaderDidFailToConnectError(
                 serviceName: 'LEGO Bootloader',
                 hubName: 'LEGO Bootloader',
             });
-            break;
-        case BootloaderConnectionFailureReason.NoWebBluetooth:
-            yield* showSingleton(
-                Level.Error,
-                I18nId.BleNoWebBluetooth,
-                undefined,
-                helpAction(
-                    'https://github.com/WebBluetoothCG/web-bluetooth/blob/master/implementation-status.md',
-                ),
-            );
-            break;
-        case BootloaderConnectionFailureReason.NoBluetooth:
-            yield* showSingleton(Level.Error, I18nId.BleNoBluetooth);
             break;
         case BootloaderConnectionFailureReason.Unknown:
             yield* showUnexpectedError(I18nId.BleUnexpectedError, action.err);
@@ -365,21 +305,6 @@ function* showNoUpdateInfo(action: ReturnType<typeof appDidCheckForUpdate>): Gen
     });
 }
 
-function* checkVersion(
-    action: ReturnType<typeof bleDIServiceDidReceiveFirmwareRevision>,
-): Generator {
-    // ensure the actual hub firmware version is the same as the shipped
-    // firmware version or newer
-    if (
-        !semver.satisfies(
-            pythonVersionToSemver(action.version),
-            `>=${pythonVersionToSemver(firmwareVersion)}`,
-        )
-    ) {
-        yield* showSingleton(Level.Error, I18nId.CheckFirmwareTooOld);
-    }
-}
-
 function* showFileStorageFailToInitialize(
     action: ReturnType<typeof fileStorageDidFailToInitialize>,
 ): Generator {
@@ -454,7 +379,6 @@ function* showExplorerFailToDelete(
 }
 
 export default function* (): Generator {
-    yield* takeEvery(bleDeviceDidFailToConnect, showBleDeviceDidFailToConnectError);
     yield* takeEvery(bootloaderDidFailToConnect, showBootloaderDidFailToConnectError);
     yield* takeEvery(didFailToFinish, showFlashFirmwareError);
     yield* takeEvery(didCompile, dismissCompilerError);
@@ -462,7 +386,6 @@ export default function* (): Generator {
     yield* takeEvery(addNotification, handleAddNotification);
     yield* takeEvery(serviceWorkerDidUpdate, showServiceWorkerUpdate);
     yield* takeEvery(appDidCheckForUpdate, showNoUpdateInfo);
-    yield* takeEvery(bleDIServiceDidReceiveFirmwareRevision, checkVersion);
     yield* takeEvery(fileStorageDidFailToInitialize, showFileStorageFailToInitialize);
     yield* takeEvery(explorerDidFailToImportFiles, showExplorerFailToImportFiles);
     yield* takeEvery(explorerDidFailToCreateNewFile, showExplorerFailToCreateFile);

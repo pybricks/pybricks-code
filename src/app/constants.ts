@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021 The Pybricks Authors
+// Copyright (c) 2021-2022 The Pybricks Authors
 
 // Definitions for compile-time UI settings.
 
@@ -31,6 +31,12 @@ export const pybricksBugReportsUrl = 'https://github.com/pybricks/support/issues
 
 /** URL for Pybricks community chat on Gitter */
 export const pybricksGitterUrl = 'https://gitter.im/pybricks/community';
+
+export const pybricksBluetoothTroubleshootingUrl =
+    'https://github.com/pybricks/support/discussions/270';
+
+export const pybricksUsbDfuTroubleshootingUrl =
+    'https://github.com/pybricks/support/discussions/688';
 
 /** Pybricks copyright statement. */
 export const pybricksCopyright = 'Copyright (c) 2020-2022 The Pybricks Authors';

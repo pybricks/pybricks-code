@@ -5,8 +5,9 @@ import { fireEvent, waitFor } from '@testing-library/dom';
 import { cleanup } from '@testing-library/react';
 import React from 'react';
 import { testRender } from '../../../test';
+import { Hub } from '../../components/hubPicker';
 import NewFileWizard from './NewFileWizard';
-import { Hub, newFileWizardDidAccept, newFileWizardDidCancel } from './actions';
+import { newFileWizardDidAccept, newFileWizardDidCancel } from './actions';
 
 afterEach(() => {
     cleanup();

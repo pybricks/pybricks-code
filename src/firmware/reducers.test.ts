@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021 The Pybricks Authors
+// Copyright (c) 2021-2022 The Pybricks Authors
 
 import { AnyAction } from 'redux';
 import {
@@ -17,6 +17,9 @@ test('initial state', () => {
     expect(reducers(undefined, {} as AnyAction)).toMatchInlineSnapshot(`
         Object {
           "flashing": false,
+          "installPybricksDialog": Object {
+            "isOpen": false,
+          },
           "progress": null,
         }
     `);

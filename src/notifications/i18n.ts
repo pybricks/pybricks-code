@@ -14,10 +14,7 @@ export function useI18n(): I18n {
 export enum I18nId {
     AppNoUpdateFound = 'app.noUpdateFound',
     BleUnexpectedError = 'ble.unexpectedError',
-    BleGattPermission = 'ble.gattPermission',
     BleGattServiceNotFound = 'ble.gattServiceNotFound',
-    BleNoWebBluetooth = 'ble.noWebBluetooth',
-    BleNoBluetooth = 'ble.noBluetooth',
     EditorFailedToOpenFile = 'editor.failedToOpenFile',
     EditorFailedToSaveFile = 'editor.failedToSaveFile',
     ExplorerFailedToImportFiles = 'explorer.failedToImportFiles',
@@ -42,5 +39,4 @@ export enum I18nId {
     ServiceWorkerUpdateMessage = 'serviceWorker.update.message',
     ServiceWorkerUpdateAction = 'serviceWorker.update.action',
     MpyError = 'mpy.error',
-    CheckFirmwareTooOld = 'check.firmwareTooOld',
 }

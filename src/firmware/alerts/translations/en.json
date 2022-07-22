@@ -1,0 +1,21 @@
+{
+    "noWebUsb": {
+        "message": "This browser does not support Web USB or Web USB is not enabled.",
+        "suggestion": "Use a supported browser such as Google Chrome or Microsoft Edge."
+    },
+    "noDfuHub": {
+        "message": "Could not find your hub?",
+        "suggestion1": {
+            "windows": "You may need to manually install a USB driver before you can connect to your hub.",
+            "linux": "You may need to add udev rules before you can connect to your hub."
+        },
+        "suggestion2": "Click the button below for more information.",
+        "troubleshootButton": "Troubleshooting Tips"
+    },
+    "noDfuInterface": {
+        "message": "This is very unusual. The USB device did not contain the expected interface."
+    },
+    "firmwareMismatch": {
+        "message": "Cannot flash firmware. The firmware file is for a different kind of hub."
+    }
+}

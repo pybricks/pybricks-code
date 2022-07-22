@@ -1,7 +1,0 @@
-{
-    "label": "Flash",
-    "tooltip": {
-        "action": "Install Pybricks firmware",
-        "progress": "Flashing… {percent}"
-    }
-}

@@ -120,15 +120,15 @@ export type FailToFinishReason =
 /**
  * Creates a new action to flash firmware to a hub.
  * @param data The firmware zip file data or `null` to get firmware later.
- * @param flashCurrentProgram If true, flash the current program from the editor,
- *      otherwise use the program from firmware.zip.
+ * @param customProgram If defined, flash the path of a program from file storage,
+ *      otherwise use the main.py program from firmware.zip.
  * @param hubName A custom hub name or an empty string to use the default name.
  */
 export const flashFirmware = createAction(
-    (data: ArrayBuffer | null, flashCurrentProgram: boolean, hubName: string) => ({
+    (data: ArrayBuffer | null, customProgram: string | undefined, hubName: string) => ({
         type: 'flashFirmware.action.flashFirmware',
         data,
-        flashCurrentProgram,
+        customProgram,
         hubName,
     }),
 );
@@ -345,3 +345,74 @@ function didFailToFinishCreator(
  * @param total The total number of bytes to be flashed.
  */
 export const didFailToFinish = createAction(didFailToFinishCreator);
+
+/**
+ * Low-level action to flash firmware using LEGO's DFU over USB.
+ * @param data The firmware zip file data.
+ * @param hubName A custom hub name or an empty string to use the default name.
+ */
+export const firmwareFlashUsbDfu = createAction(
+    (data: ArrayBuffer, hubName: string) => ({
+        type: 'firmware.action.flashUsbDfu',
+        data,
+        hubName,
+    }),
+);
+
+/**
+ * Low-level action that indicates {@link firmwareFlashUsbDfu} succeeded.
+ */
+export const firmwareDidFlashUsbDfu = createAction(() => ({
+    type: 'firmware.action.didFlashUsbDfu',
+}));
+
+/**
+ * Low-level action that indicates {@link firmwareFlashUsbDfu} failed.
+ */
+export const firmwareDidFailToFlashUsbDfu = createAction(() => ({
+    type: 'firmware.action.didFailToFlashUsbDfu',
+}));
+
+// High-level actions
+
+/**
+ * Action that triggers the install Pybricks firmware saga.
+ */
+export const firmwareInstallPybricks = createAction(() => ({
+    type: 'firmware.action.installPybricks',
+}));
+
+/**
+ * Action that indicates {@link firmwareInstallPybricks} succeeded.
+ */
+export const firmwareDidInstallPybricks = createAction(() => ({
+    type: 'firmware.action.didInstallPybricks',
+}));
+
+/**
+ * Action that indicates {@link firmwareInstallPybricks} failed.
+ */
+export const firmwareDidFailToInstallPybricks = createAction(() => ({
+    type: 'firmware.action.didFailToInstallPybricks',
+}));
+
+/**
+ * Action that triggers the restore LEGO firmware saga.
+ */
+export const firmwareRestoreLego = createAction(() => ({
+    type: 'firmware.action.restoreLego',
+}));
+
+/**
+ * Action that indicates {@link firmwareRestoreLego} succeeded.
+ */
+export const firmwareDidRestoreLego = createAction(() => ({
+    type: 'firmware.action.didRestoreLego',
+}));
+
+/**
+ * Action that indicates {@link firmwareRestoreLego} failed.
+ */
+export const firmwareDidFailToRestoreLego = createAction(() => ({
+    type: 'firmware.action.didFailToRestoreLego',
+}));

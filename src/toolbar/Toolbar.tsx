@@ -6,7 +6,6 @@ import React from 'react';
 import { useId } from 'react-aria';
 import { Toolbar as UtilsToolbar } from '../components/toolbar/Toolbar';
 import BluetoothButton from './buttons/bluetooth/BluetoothButton';
-import FlashButton from './buttons/flash/FlashButton';
 import ReplButton from './buttons/repl/ReplButton';
 import RunButton from './buttons/run/RunButton';
 import StopButton from './buttons/stop/StopButton';
@@ -23,7 +22,6 @@ const Toolbar: React.VFC = () => {
     return (
         <UtilsToolbar className="pb-toolbar" firstFocusableItemId={flashButtonId}>
             <ButtonGroup className="pb-toolbar-group pb-align-left">
-                <FlashButton id={flashButtonId} />
                 <BluetoothButton id={bluetoothButtonId} />
             </ButtonGroup>
             <ButtonGroup className="pb-toolbar-group pb-align-left">

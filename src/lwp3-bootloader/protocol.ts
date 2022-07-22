@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2021 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 
 // Ref: https://lego.github.io/lego-ble-wireless-protocol-docs/index.html#lego-hub-boot-loader-service
 
@@ -8,12 +8,12 @@ import { assert, hex } from '../utils';
 /**
  * LEGO Powered Up Bootloader Service UUID.
  */
-export const ServiceUUID = '00001625-1212-efde-1623-785feabcd123';
+export const lwp3BootloaderServiceUUID = '00001625-1212-efde-1623-785feabcd123';
 
 /**
  * LEGO Powered Up Bootloader Characteristic UUID.
  */
-export const CharacteristicUUID = '00001626-1212-efde-1623-785feabcd123';
+export const lwp3BootloaderCharacteristicUUID = '00001626-1212-efde-1623-785feabcd123';
 
 /**
  * The maximum message size that can be sent or received.

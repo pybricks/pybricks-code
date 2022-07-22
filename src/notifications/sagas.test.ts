@@ -2,20 +2,11 @@
 // Copyright (c) 2021-2022 The Pybricks Authors
 
 import { IToaster } from '@blueprintjs/core';
-import {
-    FirmwareReaderError,
-    FirmwareReaderErrorCode,
-    firmwareVersion,
-} from '@pybricks/firmware';
+import { FirmwareReaderError, FirmwareReaderErrorCode } from '@pybricks/firmware';
 import { I18nManager } from '@shopify/react-i18n';
 import { AnyAction } from 'redux';
 import { AsyncSaga, uuid } from '../../test';
 import { appDidCheckForUpdate } from '../app/actions';
-import { bleDIServiceDidReceiveFirmwareRevision } from '../ble-device-info-service/actions';
-import {
-    BleDeviceFailToConnectReasonType,
-    didFailToConnect as bleDidFailToConnect,
-} from '../ble/actions';
 import { editorDidFailToOpenFile } from '../editor/actions';
 import { EditorError } from '../editor/error';
 import {
@@ -61,22 +52,9 @@ function createTestToasterSaga(): { toaster: IToaster; saga: AsyncSaga } {
 }
 
 test.each([
-    bleDidFailToConnect({ reason: BleDeviceFailToConnectReasonType.NoWebBluetooth }),
-    bleDidFailToConnect({ reason: BleDeviceFailToConnectReasonType.NoBluetooth }),
-    bleDidFailToConnect({ reason: BleDeviceFailToConnectReasonType.NoGatt }),
-    bleDidFailToConnect({
-        reason: BleDeviceFailToConnectReasonType.NoDeviceInfoService,
-    }),
-    bleDidFailToConnect({ reason: BleDeviceFailToConnectReasonType.NoPybricksService }),
-    bleDidFailToConnect({
-        reason: BleDeviceFailToConnectReasonType.Unknown,
-        err: { name: 'test', message: 'unknown' },
-    }),
     bootloaderDidFailToConnect(BootloaderConnectionFailureReason.Unknown, <Error>{
         message: 'test',
     }),
-    bootloaderDidFailToConnect(BootloaderConnectionFailureReason.NoWebBluetooth),
-    bootloaderDidFailToConnect(BootloaderConnectionFailureReason.NoBluetooth),
     bootloaderDidFailToConnect(BootloaderConnectionFailureReason.GattServiceNotFound),
     didFailToCompile(['reason']),
     add('warning', 'message'),
@@ -108,7 +86,6 @@ test.each([
     didFailToFinish(FailToFinishReasonType.FirmwareSize),
     didFailToFinish(FailToFinishReasonType.Unknown, new Error('test error')),
     appDidCheckForUpdate(false),
-    bleDIServiceDidReceiveFirmwareRevision('3.0.0'),
     fileStorageDidFailToInitialize(new Error('test error')),
     explorerDidFailToImportFiles(new Error('test error')),
     explorerDidFailToCreateNewFile(new Error('test error')),
@@ -129,12 +106,12 @@ test.each([
 });
 
 test.each([
-    bleDidFailToConnect({ reason: BleDeviceFailToConnectReasonType.Canceled }),
+    bootloaderDidFailToConnect(BootloaderConnectionFailureReason.NoWebBluetooth),
+    bootloaderDidFailToConnect(BootloaderConnectionFailureReason.NoBluetooth),
     bootloaderDidFailToConnect(BootloaderConnectionFailureReason.Canceled),
     didFailToFinish(FailToFinishReasonType.FailedToConnect),
     serviceWorkerDidSucceed(),
     appDidCheckForUpdate(true),
-    bleDIServiceDidReceiveFirmwareRevision(firmwareVersion),
     explorerDidFailToImportFiles(new DOMException('test message', 'AbortError')),
     explorerDidFailToCreateNewFile(new DOMException('test message', 'AbortError')),
     explorerDidFailToDuplicateFile(

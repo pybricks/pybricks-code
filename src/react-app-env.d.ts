@@ -3,6 +3,7 @@
 
 /// <reference types="node" />
 /// <reference types="react-dom" />
+/// <reference types="user-agent-data-types" />
 
 declare namespace NodeJS {
     interface ProcessEnv {

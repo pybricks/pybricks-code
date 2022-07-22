@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2021 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 //
 // Definitions related to the Pybricks Bluetooth low energy GATT service.
 
 import { assert } from '../utils';
 
 /** Pybricks service UUID. */
-export const ServiceUUID = 'c5f50001-8280-46da-89f4-6d8051e4aeef';
+export const pybricksServiceUUID = 'c5f50001-8280-46da-89f4-6d8051e4aeef';
 /** Pybricks control characteristic UUID. */
-export const ControlCharacteristicUUID = 'c5f50002-8280-46da-89f4-6d8051e4aeef';
+export const pybricksControlCharacteristicUUID = 'c5f50002-8280-46da-89f4-6d8051e4aeef';
 
 /** Commands are instructions sent to the hub. */
 export enum CommandType {

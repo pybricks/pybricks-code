@@ -1,0 +1,92 @@
+{
+    "title": "Install Pybricks Firmware",
+    "selectHubPanel": {
+        "title": "Select hub type",
+        "message": "Which kind of hub do you want to use?",
+        "notOnListButton": {
+            "label": "My hub is not in the list.",
+            "info": {
+                "mindstorms": {
+                    "title": "MINDSTORMS Programmable Bricks",
+                    "rcx": "RCX - not enough memory to run Pybricks",
+                    "nxt": "NXT - maybe some day",
+                    "ev3": "EV3 - supported using VS Code instead of Pybricks Code"
+                },
+                "poweredUp": {
+                    "title": "Unsupported Powered Up Hubs",
+                    "wedo2": "WeDo 2.0 Smart hub",
+                    "duploTrain": "Duplo Train hub",
+                    "mario": "Mario/Luigi/Peach",
+                    "footnote": "firmware cannot be updated"
+                }
+            }
+        }
+    },
+    "licensePanel": {
+        "title": "Accept licenses",
+        "licenseText": {
+            "error": "There was a problem while getting the firmware file."
+        },
+        "acceptCheckbox": {
+            "label": "I have read and agree to the license terms and conditions."
+        }
+    },
+    "optionsPanel": {
+        "title": "Configure options",
+        "hubName": {
+            "label": "Hub name",
+            "labelInfo": "(optional)",
+            "help": "Enter a name here to customize the hub name when flashing the firmware. This name will be used in the Bluetooth advertising data and can be used to identify the hub when connecting.",
+            "error": "The name is too long."
+        },
+        "customMain": {
+            "label": "Include custom program",
+            "labelInfo": "(optional)",
+            "notApplicable": {
+                "message": "This hub has external flash memory so including a custom program when flashing firmware is not needed."
+            },
+            "include": {
+                "label": "Include selected program as {main}",
+                "noSelection": "(no selection)",
+                "noFiles": "(no files)",
+                "help": "Enable to include your program when flashing the firmware or disable to use the default program. Flashing your program along with the firmware will allow you to run your program without being connected to {appName}"
+            }
+        }
+    },
+    "bootloaderPanel": {
+        "title": "Place hub in bootloader mode",
+        "instruction1": "To flash the firmware, the hub must be placed in bootloader mode. Follow the steps below to do this:",
+        "button": {
+            "bluetooth": "Bluetooth button",
+            "power": "power button"
+        },
+        "light": {
+            "bluetooth": "Bluetooth light",
+            "status": "hub status light"
+        },
+        "lightPattern": {
+            "bluetooth": "pink-green-blue-off",
+            "status": "light purple"
+        },
+        "step": {
+            "disconnectUsb": "Disconnect the USB cable from the hub.",
+            "powerOff": "Turn off the hub.",
+            "disconnectIo": "Disconnect all motors and sensors from the I/O ports on the hub.",
+            "holdButton": "Press and hold the {button} on the hub.",
+            "connectUsb": "Connect the USB cable.",
+            "waitForLight": "Keep holding the {button} and wait for the {light} to start flashing {lightPattern}. This takes about 5 seconds.",
+            "releaseButton": "Release the {button}",
+            "keepHolding": "Keep holding the {button}."
+        },
+        "instruction2": "Then click the {flashFirmware} button below to connect to the hub and flash the firmware."
+    },
+    "backButton": {
+        "label": "Back"
+    },
+    "nextButton": {
+        "label": "Next"
+    },
+    "flashFirmwareButton": {
+        "label": "Flash Firmware"
+    }
+}

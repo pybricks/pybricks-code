@@ -394,6 +394,11 @@ function* monitorEditors(): Generator {
  * Runs a web worker with Pyodide so that we can use Jedi for intellisense.
  */
 function* runJedi(): Generator {
+    // TODO: web workers are not implemented in test environment
+    if (process.env.NODE_ENV === 'test') {
+        return;
+    }
+
     const defer = new Array<() => void>();
 
     try {

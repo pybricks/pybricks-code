@@ -10,6 +10,7 @@ import {
 import cityHubZip from '@pybricks/firmware/build/cityhub.zip';
 import moveHubZip from '@pybricks/firmware/build/movehub.zip';
 import technicHubZip from '@pybricks/firmware/build/technichub.zip';
+import { WebDFU } from 'dfu';
 import { AnyAction } from 'redux';
 import { ActionPattern } from 'redux-saga/effects';
 import {
@@ -25,7 +26,12 @@ import {
     take,
     takeEvery,
 } from 'typed-redux-saga/macro';
-import { editorGetValue } from '../editor/sagas';
+import { alertsShowAlert } from '../alerts/actions';
+import {
+    fileStorageDidFailToReadFile,
+    fileStorageDidReadFile,
+    fileStorageReadFile,
+} from '../fileStorage/actions';
 import {
     checksumRequest,
     checksumResponse,
@@ -51,8 +57,9 @@ import { MaxProgramFlashSize, Result } from '../lwp3-bootloader/protocol';
 import { BootloaderConnectionState } from '../lwp3-bootloader/reducers';
 import { compile, didCompile, didFailToCompile } from '../mpy/actions';
 import { RootState } from '../reducers';
+import { LegoUsbProductId, legoUsbVendorId } from '../usb';
 import { defined, ensureError, hex, maybe } from '../utils';
-import { fmod, sumComplement32 } from '../utils/math';
+import { crc32, fmod, sumComplement32 } from '../utils/math';
 import { isAndroid } from '../utils/os';
 import {
     FailToFinishReasonType,
@@ -62,8 +69,17 @@ import {
     didFinish,
     didProgress,
     didStart,
+    firmwareDidFailToFlashUsbDfu,
+    firmwareDidFlashUsbDfu,
+    firmwareFlashUsbDfu,
+    firmwareInstallPybricks,
     flashFirmware,
 } from './actions';
+import {
+    firmwareInstallPybricksDialogAccept,
+    firmwareInstallPybricksDialogCancel,
+    firmwareInstallPybricksDialogShow,
+} from './installPybricksDialog/actions';
 
 const firmwareZipMap = new Map<HubType, string>([
     [HubType.CityHub, cityHubZip],
@@ -183,7 +199,12 @@ function* loadFirmware(
         } else {
             yield* put(didFailToFinish(FailToFinishReasonType.Unknown, readerErr));
         }
+
+        // FIXME: we should return error/throw instead
         yield* disconnectAndCancel();
+
+        // istanbul ignore next: needed for typescript flow
+        throw new Error('unreachable');
     }
 
     defined(reader);
@@ -191,9 +212,15 @@ function* loadFirmware(
     const firmwareBase = yield* call(() => reader.readFirmwareBase());
     const metadata = yield* call(() => reader.readMetadata());
 
-    // if a user program was not given, then use main.py from the frimware.zip
+    // if a user program was not given, then use main.py from the firmware.zip
     if (program === undefined) {
         program = yield* call(() => reader.readMainPy());
+    }
+
+    // REVISIT: the firmware may eventually be changed to allow no main.py
+    // for now, ensure there is a program even if it does nothing
+    if (!program) {
+        program = '';
     }
 
     if (![5, 6].includes(metadata['mpy-abi-version'])) {
@@ -204,7 +231,12 @@ function* loadFirmware(
                 MetadataProblem.NotSupported,
             ),
         );
+
+        // FIXME: we should return error/throw instead
         yield* disconnectAndCancel();
+
+        // istanbul ignore next: needed for typescript flow
+        throw new Error('unreachable');
     }
 
     yield* put(
@@ -216,8 +248,12 @@ function* loadFirmware(
     });
 
     if (mpyFail) {
+        // FIXME: we should return error/throw instead
         yield* put(didFailToFinish(FailToFinishReasonType.FailedToCompile));
         yield* disconnectAndCancel();
+
+        // istanbul ignore next: needed for typescript flow
+        throw new Error('unreachable');
     }
 
     defined(mpy);
@@ -230,8 +266,12 @@ function* loadFirmware(
     const firmwareView = new DataView(firmware.buffer);
 
     if (firmware.length > metadata['max-firmware-size']) {
+        // FIXME: we should return error/throw instead
         yield* put(didFailToFinish(FailToFinishReasonType.FirmwareSize));
         yield* disconnectAndCancel();
+
+        // istanbul ignore next: needed for typescript flow
+        throw new Error('unreachable');
     }
 
     firmware.set(firmwareBase);
@@ -246,7 +286,23 @@ function* loadFirmware(
         }
     }
 
-    if (metadata['checksum-type'] !== 'sum') {
+    const checksum = (function () {
+        switch (metadata['checksum-type']) {
+            case 'sum':
+                return sumComplement32(
+                    firmwareIterator(firmwareView, metadata['max-firmware-size']),
+                );
+            case 'crc32':
+                return crc32(
+                    firmwareIterator(firmwareView, metadata['max-firmware-size']),
+                );
+            default:
+                return undefined;
+        }
+    })();
+
+    if (!checksum) {
+        // FIXME: we should return error/throw instead
         yield* put(
             didFailToFinish(
                 FailToFinishReasonType.BadMetadata,
@@ -255,11 +311,10 @@ function* loadFirmware(
             ),
         );
         yield* disconnectAndCancel();
-    }
 
-    const checksum = sumComplement32(
-        firmwareIterator(firmwareView, metadata['max-firmware-size']),
-    );
+        // istanbul ignore next: needed for typescript flow
+        throw new Error('unreachable');
+    }
 
     firmwareView.setUint32(checksumOffset, checksum, true);
 
@@ -277,8 +332,27 @@ function* handleFlashFirmware(action: ReturnType<typeof flashFirmware>): Generat
 
         let program: string | undefined = undefined;
 
-        if (action.flashCurrentProgram) {
-            program = yield* editorGetValue();
+        if (action.customProgram) {
+            yield* put(fileStorageReadFile(action.customProgram));
+
+            const { didRead, didFailToRead } = yield* race({
+                didRead: take(
+                    fileStorageDidReadFile.when((a) => a.path === action.customProgram),
+                ),
+                didFailToRead: take(
+                    fileStorageDidFailToReadFile.when(
+                        (a) => a.path === action.customProgram,
+                    ),
+                ),
+            });
+
+            if (didFailToRead) {
+                throw didFailToRead.error;
+            }
+
+            defined(didRead);
+
+            program = didRead.contents;
         }
 
         if (action.data !== null) {
@@ -477,6 +551,170 @@ function* handleFlashFirmware(action: ReturnType<typeof flashFirmware>): Generat
     }
 }
 
+/** Maps USB Product ID to LWP3 hub type ID */
+const productIdMap: ReadonlyMap<LegoUsbProductId, HubType> = new Map([
+    [LegoUsbProductId.SpikePrimeBootloader, HubType.PrimeHub],
+    [LegoUsbProductId.SpikeEssentialBootloader, HubType.EssentialHub],
+    [LegoUsbProductId.MindstormsRobotInventorBootloader, HubType.PrimeHub],
+]);
+
+// currently all hubs use the same start address
+const dfuFirmwareStartAddress = 0x08008000;
+
+function* handleFlashUsbDfu(action: ReturnType<typeof firmwareFlashUsbDfu>): Generator {
+    const defer = new Array<() => void>();
+
+    try {
+        // not all web browsers support Web USB
+        if (!navigator.usb) {
+            yield* put(alertsShowAlert('firmware', 'noWebUsb'));
+            yield* put(firmwareDidFailToFlashUsbDfu());
+            return;
+        }
+
+        const device = yield* call(() =>
+            navigator.usb
+                .requestDevice({
+                    filters: [
+                        {
+                            vendorId: legoUsbVendorId,
+                            productId: LegoUsbProductId.SpikePrimeBootloader,
+                        },
+                        {
+                            vendorId: legoUsbVendorId,
+                            productId: LegoUsbProductId.SpikeEssentialBootloader,
+                        },
+                        {
+                            vendorId: legoUsbVendorId,
+                            productId:
+                                LegoUsbProductId.MindstormsRobotInventorBootloader,
+                        },
+                    ],
+                })
+                .catch((err) => {
+                    if (
+                        err instanceof DOMException &&
+                        err.code === DOMException.NOT_FOUND_ERR
+                    ) {
+                        // user clicked cancel button
+                        return undefined;
+                    }
+
+                    throw err;
+                }),
+        );
+
+        if (!device) {
+            yield* put(alertsShowAlert('firmware', 'noDfuHub'));
+            yield* put(firmwareDidFailToFlashUsbDfu());
+            return;
+        }
+
+        const dfu = new WebDFU(
+            device,
+            // forceInterfacesName is needed to get the flash layout map
+            { forceInterfacesName: true },
+            {
+                info: console.debug,
+                warning: console.warn,
+                progress: (progress, total) => {
+                    // TODO: bind to eventChannel and dispatch progress actions
+                    console.log(progress, total);
+                },
+            },
+        );
+
+        yield* call(() => dfu.init());
+
+        // we want the interface with alt=0
+        const ifaceIndex = dfu.interfaces.findIndex(
+            (i) => i.alternate.alternateSetting === 0,
+        );
+
+        if (ifaceIndex === -1) {
+            yield* put(alertsShowAlert('firmware', 'noDfuInterface'));
+            yield* put(firmwareDidFailToFlashUsbDfu());
+            return;
+        }
+
+        yield* call(() => dfu.connect(ifaceIndex));
+
+        defer.push(() => dfu.close());
+
+        const { firmware, deviceId } = yield* loadFirmware(
+            action.data,
+            undefined,
+            action.hubName,
+        );
+
+        if (deviceId !== productIdMap.get(device.productId)) {
+            yield* put(alertsShowAlert('firmware', 'firmwareMismatch'));
+            yield* put(firmwareDidFailToFlashUsbDfu());
+            return;
+        }
+
+        dfu.dfuseStartAddress = dfuFirmwareStartAddress;
+        const writeProc = dfu.write(1024, firmware, true);
+
+        writeProc.events.on('error', console.error);
+
+        // REVISIT: we could possibly race the 'write/end' and 'error' events
+        // here instead of waiting for disconnect
+
+        // this is a bit of a hack, but the hub resets when flashing is done
+        // so we get a disconnect event unless there was an error, so the user
+        // will probably see the timeout error instead of the underlying error
+        yield* call(() => dfu.waitDisconnected(30000));
+
+        yield* put(firmwareDidFlashUsbDfu());
+    } catch (err) {
+        if (process.env.NODE_ENV !== 'test') {
+            console.error(err);
+        }
+
+        yield* put(
+            alertsShowAlert('alerts', 'unexpectedError', { error: ensureError(err) }),
+        );
+
+        yield* put(firmwareDidFailToFlashUsbDfu());
+    } finally {
+        while (defer.length !== 0) {
+            defer.pop()?.();
+        }
+    }
+}
+
+function* handleInstallPybricks(): Generator {
+    yield* put(firmwareInstallPybricksDialogShow());
+    const { accepted, canceled } = yield* race({
+        accepted: take(firmwareInstallPybricksDialogAccept),
+        canceled: take(firmwareInstallPybricksDialogCancel),
+    });
+
+    if (canceled) {
+        return;
+    }
+
+    defined(accepted);
+
+    switch (accepted.flashMethod) {
+        case 'ble-lwp3-bootloader':
+            yield* put(
+                flashFirmware(
+                    accepted.firmwareZip,
+                    accepted.customProgram,
+                    accepted.hubName,
+                ),
+            );
+            break;
+        case 'usb-lego-dfu':
+            yield* put(firmwareFlashUsbDfu(accepted.firmwareZip, accepted.hubName));
+            break;
+    }
+}
+
 export default function* (): Generator {
     yield* takeEvery(flashFirmware, handleFlashFirmware);
+    yield* takeEvery(firmwareFlashUsbDfu, handleFlashUsbDfu);
+    yield* takeEvery(firmwareInstallPybricks, handleInstallPybricks);
 }

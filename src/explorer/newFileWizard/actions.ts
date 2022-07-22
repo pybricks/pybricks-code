@@ -2,27 +2,12 @@
 // Copyright (c) 2022 The Pybricks Authors
 
 import { createAction } from '../../actions';
+import { Hub } from '../../components/hubPicker';
 
 import { pythonFileExtension } from '../../pybricksMicropython/lib';
 
 /** Supported file extensions. */
 type SupportedFileExtension = typeof pythonFileExtension;
-
-/** Supported hub types. */
-export enum Hub {
-    /** BOOST Move hub */
-    Move = 'movehub',
-    /** City hub */
-    City = 'cityhub',
-    /** Technic hub */
-    Technic = 'technichub',
-    /** MINDSTORMS Robot Inventor hub */
-    Inventor = 'inventorhub',
-    /** SPIKE Prime hub */
-    Prime = 'primehub',
-    /** SPIKE Essential hub */
-    Essential = 'essentialhub',
-}
 
 /**
  * Requests to show the new file wizard dialog.

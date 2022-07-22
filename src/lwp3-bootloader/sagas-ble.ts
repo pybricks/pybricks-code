@@ -4,7 +4,16 @@
 // Handles Bluetooth Low Energy connection to LEGO Wireless Protocol v3 Bootloader service.
 
 import { END, eventChannel } from 'redux-saga';
-import { call, cancel, put, spawn, takeEvery, takeMaybe } from 'typed-redux-saga/macro';
+import {
+    call,
+    cancel,
+    delay,
+    put,
+    spawn,
+    takeEvery,
+    takeMaybe,
+} from 'typed-redux-saga/macro';
+import { alertsShowAlert } from '../alerts/actions';
 import { ensureError } from '../utils';
 import {
     BootloaderConnectionFailureReason as Reason,
@@ -18,7 +27,10 @@ import {
     disconnect,
     send,
 } from './actions';
-import { CharacteristicUUID, ServiceUUID } from './protocol';
+import {
+    lwp3BootloaderCharacteristicUUID,
+    lwp3BootloaderServiceUUID,
+} from './protocol';
 
 function* handleNotify(data: DataView): Generator {
     yield* put(didReceive(data));
@@ -42,12 +54,14 @@ function* write(
 
 function* handleConnect(): Generator {
     if (navigator.bluetooth === undefined) {
+        yield* put(alertsShowAlert('ble', 'noWebBluetooth'));
         yield* put(didFailToConnect(Reason.NoWebBluetooth));
         return;
     }
 
     const available = yield* call(() => navigator.bluetooth.getAvailability());
     if (!available) {
+        yield* put(alertsShowAlert('ble', 'bluetoothNotAvailable'));
         yield* put(didFailToConnect(Reason.NoBluetooth));
         return;
     }
@@ -56,8 +70,8 @@ function* handleConnect(): Generator {
     try {
         device = yield* call(() =>
             navigator.bluetooth.requestDevice({
-                filters: [{ services: [ServiceUUID] }],
-                optionalServices: [ServiceUUID],
+                filters: [{ services: [lwp3BootloaderServiceUUID] }],
+                optionalServices: [lwp3BootloaderServiceUUID],
             }),
         );
     } catch (err) {
@@ -93,15 +107,19 @@ function* handleConnect(): Generator {
         return;
     }
 
+    // istanbul ignore if
+    if (process.env.NODE_ENV !== 'test') {
+        // give OS Bluetooth stack some time to settle
+        yield* delay(1000);
+    }
+
     let service: BluetoothRemoteGATTService;
     try {
-        service = yield* call([server, 'getPrimaryService'], ServiceUUID);
+        service = yield* call([server, 'getPrimaryService'], lwp3BootloaderServiceUUID);
     } catch (err) {
         server.disconnect();
         yield* takeMaybe(disconnectChannel);
         if (err instanceof DOMException && err.code === DOMException.NOT_FOUND_ERR) {
-            // Possibly/probably caused by Chrome BlueZ back-end bug
-            // https://chromium-review.googlesource.com/c/chromium/src/+/2214098
             yield* put(didFailToConnect(Reason.GattServiceNotFound));
         } else {
             yield* put(didFailToConnect(Reason.Unknown, ensureError(err)));
@@ -113,7 +131,7 @@ function* handleConnect(): Generator {
     try {
         characteristic = yield* call(
             [service, 'getCharacteristic'],
-            CharacteristicUUID,
+            lwp3BootloaderCharacteristicUUID,
         );
     } catch (err) {
         server.disconnect();

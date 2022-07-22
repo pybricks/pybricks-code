@@ -5,96 +5,47 @@
 
 import { createAction } from '../actions';
 /**
- * Creates an action that indicates connecting has been requested.
+ * Creates an action that initiates a connection to a hub running Pybricks firmware.
  */
-export const connect = createAction(() => ({
-    type: 'ble.device.action.connect',
+export const bleConnectPybricks = createAction(() => ({
+    type: 'ble.action.connectPybricks',
 }));
 
 /**
- * Creates an action that indicates a device was connected.
+ * Response that indicates {@link bleConnectPybricks} succeeded.
  */
-export const didConnect = createAction((id: string, name: string) => ({
-    type: 'ble.device.action.didConnect',
+export const bleDidConnectPybricks = createAction((id: string, name: string) => ({
+    type: 'ble.device.action.didConnectPybricks',
     id,
     name,
 }));
 
-export enum BleDeviceFailToConnectReasonType {
-    NoWebBluetooth = 'ble.device.didFailToConnect.noWebBluetooth',
-    NoBluetooth = 'ble.device.didFailToConnect.noBluetooth',
-    Canceled = 'ble.device.didFailToConnect.canceled',
-    NoGatt = 'ble.device.didFailToConnect.noGatt',
-    NoDeviceInfoService = 'ble.device.didFailToConnect.noDeviceInfoService',
-    NoPybricksService = 'ble.device.didFailToConnect.noPybricksService',
-    Unknown = 'ble.device.didFailToConnect.unknown',
-}
-
-type Reason<T extends BleDeviceFailToConnectReasonType> = {
-    reason: T;
-};
-
-export type BleDeviceFailToConnectNoWebBluetoothReason =
-    Reason<BleDeviceFailToConnectReasonType.NoWebBluetooth>;
-
-export type BleDeviceFailToConnectNoBluetoothReason =
-    Reason<BleDeviceFailToConnectReasonType.NoBluetooth>;
-
-export type BleDeviceFailToConnectCanceledReason =
-    Reason<BleDeviceFailToConnectReasonType.Canceled>;
-
-export type BleDeviceFailToConnectNoGattReason =
-    Reason<BleDeviceFailToConnectReasonType.NoGatt>;
-
-export type BleDeviceFailToConnectNoDeviceInfoServiceReason =
-    Reason<BleDeviceFailToConnectReasonType.NoDeviceInfoService>;
-
-export type BleDeviceFailToConnectNoPybricksServiceReason =
-    Reason<BleDeviceFailToConnectReasonType.NoPybricksService>;
-
-export type BleDeviceFailToConnectUnknownReason =
-    Reason<BleDeviceFailToConnectReasonType.Unknown> & {
-        err: Error;
-    };
-
-export type BleDeviceDidFailToConnectReason =
-    | BleDeviceFailToConnectNoWebBluetoothReason
-    | BleDeviceFailToConnectNoBluetoothReason
-    | BleDeviceFailToConnectCanceledReason
-    | BleDeviceFailToConnectNoGattReason
-    | BleDeviceFailToConnectNoDeviceInfoServiceReason
-    | BleDeviceFailToConnectNoPybricksServiceReason
-    | BleDeviceFailToConnectUnknownReason;
-
 /**
- * Creates an action that indicates a device failed to connect.
+ * Response that indicates {@link bleConnectPybricks} failed.
  */
-export const didFailToConnect = createAction(
-    (reason: BleDeviceDidFailToConnectReason) => ({
-        type: 'ble.device.action.didFailToConnect',
-        ...reason,
-    }),
-);
-
-/**
- * Creates an action that indicates disconnecting was requested.
- */
-export const disconnect = createAction(() => ({
-    type: 'ble.device.action.disconnect',
+export const bleDidFailToConnectPybricks = createAction(() => ({
+    type: 'ble.action.didFailToConnectPybricks',
 }));
 
 /**
- * Creates an action that indicates a device was disconnected.
+ * Creates an action to request disconnecting a hub running Pybricks firmware.
  */
-export const didDisconnect = createAction(() => ({
-    type: 'ble.device.action.didDisconnect',
+export const bleDisconnectPybricks = createAction(() => ({
+    type: 'ble.action.disconnectPybricks',
 }));
 
 /**
- * Creates an action that indicates a device failed to disconnect.
+ * Creates an action that indicates that {@link bleDisconnectPybricks} succeeded.
  */
-export const didFailToDisconnect = createAction(() => ({
-    type: 'ble.device.action.didFailToDisconnect',
+export const bleDidDisconnectPybricks = createAction(() => ({
+    type: 'ble.action.didDisconnectPybricks',
+}));
+
+/**
+ * Creates an action that indicates that {@link bleDisconnectPybricks} failed.
+ */
+export const bleDidFailToDisconnectPybricks = createAction(() => ({
+    type: 'ble.action.didFailToDisconnectPybricks',
 }));
 
 /**

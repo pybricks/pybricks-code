@@ -1,0 +1,13 @@
+diff --git a/lib/CalledWithFn.js b/lib/CalledWithFn.js
+index 56674799caceb24951e71ab00f20eb53a52c5b6c..1aec49f8c67eb840dba54e937fe49f66a9c13872 100644
+--- a/lib/CalledWithFn.js
++++ b/lib/CalledWithFn.js
+@@ -30,7 +30,7 @@ const calledWithFn = () => {
+             fn.mockImplementation((...args) => checkCalledWith(calledWithStack, args));
+             calledWithStack = [];
+         }
+-        calledWithStack.push({ args, calledWithFn });
++        calledWithStack.unshift({ args, calledWithFn });
+         return calledWithFn;
+     };
+     return fn;

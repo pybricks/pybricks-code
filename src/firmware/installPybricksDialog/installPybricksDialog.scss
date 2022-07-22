@@ -1,0 +1,28 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2022 The Pybricks Authors
+
+@use '@blueprintjs/core/lib/scss/variables' as bp;
+
+.pb-firmware-installPybricksDialog {
+    &-body {
+        min-height: bp.$pt-grid-size * 25;
+    }
+
+    &-license {
+        display: flex;
+        flex-direction: column;
+        gap: bp.$pt-grid-size;
+        min-height: inherit;
+
+        &-text {
+            flex-grow: 1;
+            min-height: 0;
+            max-height: bp.$pt-grid-size * 20;
+            overflow: auto;
+
+            & .#{bp.$ns}-non-ideal-state {
+                min-height: bp.$pt-grid-size * 20;
+            }
+        }
+    }
+}

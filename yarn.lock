@@ -1508,7 +1508,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@blueprintjs/core@npm:^4.5.0, @blueprintjs/core@npm:^4.6.1":
+"@blueprintjs/core@npm:^4.6.1":
   version: 4.6.1
   resolution: "@blueprintjs/core@npm:4.6.1"
   dependencies:
@@ -1559,6 +1559,21 @@ __metadata:
     react: ^16.8 || 17 || 18
     react-dom: ^16.8 || 17 || 18
   checksum: 285bdda43cc6803552003b70e79215943a134510d6c76116d7cf5cb901ff83bd73da3a4d7486b5580e72eb18d62d488778248156faf1af4d9ffe43618a537b9c
+  languageName: node
+  linkType: hard
+
+"@blueprintjs/select@npm:^4.5.0":
+  version: 4.5.0
+  resolution: "@blueprintjs/select@npm:4.5.0"
+  dependencies:
+    "@blueprintjs/core": ^4.6.1
+    "@blueprintjs/popover2": ^1.4.3
+    classnames: ^2.2
+    tslib: ~2.3.1
+  peerDependencies:
+    react: ^16.8 || 17 || 18
+    react-dom: ^16.8 || 17 || 18
+  checksum: 837049e6d7d1063f65aaa9d94d4b9b74a2b0a3a227243ceeaeb4302a743960f4a1c9fbceb51ee20f3216ba71becfd1fa4e405950c0f6d75288ba96f2a8e9be53
   languageName: node
   linkType: hard
 
@@ -2265,12 +2280,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pybricks/firmware@npm:4.17.0":
-  version: 4.17.0
-  resolution: "@pybricks/firmware@npm:4.17.0"
+"@pybricks/firmware@npm:5.0.0":
+  version: 5.0.0
+  resolution: "@pybricks/firmware@npm:5.0.0"
   dependencies:
     jszip: ^3.7.1
-  checksum: 68d35727d101024f0c58bef0e7a8f245c7c5cbc8b38b2d3c638efc56a1ae84e03e52c596e3bfcdf0d22c1c9add4c2037d8fe4bf54e69b78763ec8c1169cc8517
+  checksum: 049dd90e988aa574cfa0ead1e62bcb74e6fdfc9b709bc1c40874ddf3abb63cd35555d22806c91184bc2e982912a001e0ef94ef72ef66217eb0319bcaf45a7cb3
   languageName: node
   linkType: hard
 
@@ -2300,10 +2315,11 @@ __metadata:
   resolution: "@pybricks/pybricks-code@workspace:."
   dependencies:
     "@babel/core": ^7.18.9
-    "@blueprintjs/core": ^4.5.0
+    "@blueprintjs/core": ^4.6.1
     "@blueprintjs/popover2": ^1.4.3
+    "@blueprintjs/select": ^4.5.0
     "@pmmmwh/react-refresh-webpack-plugin": ^0.5.7
-    "@pybricks/firmware": 4.17.0
+    "@pybricks/firmware": 5.0.0
     "@pybricks/ide-docs": 2.2.0
     "@pybricks/mpy-cross-v5": ^2.0.0
     "@pybricks/mpy-cross-v6": ^2.0.0
@@ -2322,6 +2338,7 @@ __metadata:
     "@types/react-splitter-layout": ^3.0.2
     "@types/redux-logger": ^3.0.9
     "@types/semver": ^7.3.10
+    "@types/w3c-web-usb": ^1.0.6
     "@types/web-bluetooth": ^0.0.15
     "@types/web-locks-api": ^0.0.2
     "@types/wicg-file-system-access": ^2020.9.5
@@ -2346,6 +2363,7 @@ __metadata:
     dexie: ^3.2.2
     dexie-observable: ^4.0.0-beta.13
     dexie-react-hooks: ^1.1.1
+    dfu: ^0.1.5
     dotenv: ^16.0.1
     dotenv-expand: ^8.0.3
     eslint: ^8.20.0
@@ -2414,6 +2432,7 @@ __metadata:
     typed-redux-saga: ^1.5.0
     typescript: ~4.7.4
     usehooks-ts: ^2.6.0
+    user-agent-data-types: ^0.3.0
     web-vitals: ^2.1.4
     webpack: ^5.73.0
     webpack-dev-server: ^4.9.3
@@ -4662,6 +4681,13 @@ __metadata:
   version: 0.0.3
   resolution: "@types/use-sync-external-store@npm:0.0.3"
   checksum: 161ddb8eec5dbe7279ac971531217e9af6b99f7783213566d2b502e2e2378ea19cf5e5ea4595039d730aa79d3d35c6567d48599f69773a02ffcff1776ec2a44e
+  languageName: node
+  linkType: hard
+
+"@types/w3c-web-usb@npm:^1.0.6":
+  version: 1.0.6
+  resolution: "@types/w3c-web-usb@npm:1.0.6"
+  checksum: 9f30948cb84174fa290066b08274bdfb034d38c6db0976e9a826508732fba04d81e3300bca41ea23b737f1424c51adec5ae810cdf85d5b5a158d5840914f0417
   languageName: node
   linkType: hard
 
@@ -7091,6 +7117,15 @@ __metadata:
   version: 3.2.2
   resolution: "dexie@npm:3.2.2"
   checksum: 7a21079f7ab139ebd724a009917f9293f2b01c341e2a3cd51d2455dda4d4e78b9ca7de0373e963108395cf1921ce7f6556cac967c1e957005a3c7c11794ceccf
+  languageName: node
+  linkType: hard
+
+"dfu@npm:^0.1.5":
+  version: 0.1.5
+  resolution: "dfu@npm:0.1.5"
+  dependencies:
+    nanoevents: ^6.0.0
+  checksum: 7fa8aa1578518be4eb8981f67878ecb6f68e64ccf91ed278f35708a6d4e3f6e822e68ab8653c6b3d69e08ddf105c550698b88db363bdab8f8c2a7a582ac96001
   languageName: node
   linkType: hard
 
@@ -9685,7 +9720,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-mock-extended@npm:^2.0.7":
+"jest-mock-extended@npm:2.0.7":
   version: 2.0.7
   resolution: "jest-mock-extended@npm:2.0.7"
   dependencies:
@@ -9694,6 +9729,18 @@ __metadata:
     jest: ^24.0.0 || ^25.0.0 || ^26.0.0 || ^27.0.0 || ^28.0.0
     typescript: ^3.0.0 || ^4.0.0
   checksum: e9928f1c1e4c9d1bb9746e0f0791e7b0c5b91474d10ed07c6f59e80294830b46b9f6f99b418e4ebcb3641db7957f2014317ab4267e56b676789f7013db72aa8e
+  languageName: node
+  linkType: hard
+
+"jest-mock-extended@patch:jest-mock-extended@npm:2.0.7#.yarn/patches/jest-mock-extended-npm-2.0.7-4cdf066556.patch::locator=%40pybricks%2Fpybricks-code%40workspace%3A.":
+  version: 2.0.7
+  resolution: "jest-mock-extended@patch:jest-mock-extended@npm%3A2.0.7#.yarn/patches/jest-mock-extended-npm-2.0.7-4cdf066556.patch::version=2.0.7&hash=b7e4f2&locator=%40pybricks%2Fpybricks-code%40workspace%3A."
+  dependencies:
+    ts-essentials: ^7.0.3
+  peerDependencies:
+    jest: ^24.0.0 || ^25.0.0 || ^26.0.0 || ^27.0.0 || ^28.0.0
+    typescript: ^3.0.0 || ^4.0.0
+  checksum: 322b8330e8be6fd3a2a2faf45fc63e0140de88acff00c23d64f5f6b071c1f551129f48a9ba355dd86fe37fcf5b3675704ee7ea2a33d449752e4982de161ddaf2
   languageName: node
   linkType: hard
 
@@ -10778,6 +10825,13 @@ __metadata:
   dependencies:
     node-gyp: latest
   checksum: 33e1bb4dfca447fe37d4bb5889be55de154828632c8d38646db67293a21afd61ed9909cdf1b886214a64707d935926c4e60e2b09de9edfc2ad58de31d6ce8f39
+  languageName: node
+  linkType: hard
+
+"nanoevents@npm:^6.0.0":
+  version: 6.0.2
+  resolution: "nanoevents@npm:6.0.2"
+  checksum: 73d8c8f584b850bae6705820710a20c19be61145a4a6ad3b157caf1fea52d46f48e0d1f1c1452019c0e84869f226debad2245218f0b0c3f9dffb7afc9b42e663
   languageName: node
   linkType: hard
 
@@ -14725,6 +14779,13 @@ __metadata:
   peerDependencies:
     react: ">=16.9.0"
   checksum: bc21886351a99389870a38cff1ce19521c5bed61c091873914f5de11ea32ed19cd1126ba1695e9bdf58045dc99343c6117465f02e91912e0762c76ac1a137756
+  languageName: node
+  linkType: hard
+
+"user-agent-data-types@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "user-agent-data-types@npm:0.3.0"
+  checksum: 73a61ddfba17e7289a1312fc98c4f1f98d6353e6ace3e3159b36735e6a679b05bcb2afdfb8e602d690a89e6af44669783045ed9059f4bd0890f8e0ee8a772ee5
   languageName: node
   linkType: hard
 

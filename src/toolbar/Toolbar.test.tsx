@@ -14,14 +14,6 @@ describe('toolbar', () => {
         expect(runButton).toBeDefined();
     });
 
-    it('should have flash button', () => {
-        const [, toolbar] = testRender(<Toolbar />);
-
-        const runButton = toolbar.getByRole('button', { name: 'Flash' });
-
-        expect(runButton).toBeDefined();
-    });
-
     it('should have run button', () => {
         const [, toolbar] = testRender(<Toolbar />);
 

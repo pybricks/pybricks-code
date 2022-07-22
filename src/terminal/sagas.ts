@@ -19,7 +19,7 @@ import {
     didWrite,
     write,
 } from '../ble-nordic-uart-service/actions';
-import { SafeTxCharLength } from '../ble-nordic-uart-service/protocol';
+import { nordicUartSafeTxCharLength } from '../ble-nordic-uart-service/protocol';
 import { checksum } from '../hub/actions';
 import { HubRuntimeState } from '../hub/reducers';
 import { RootState } from '../reducers';
@@ -56,7 +56,7 @@ function* receiveTerminalData(): Generator {
         let value = action.value;
 
         // Try to collect more data so that we aren't sending just one byte at time
-        while (value.length < SafeTxCharLength) {
+        while (value.length < nordicUartSafeTxCharLength) {
             const { action, timeout } = yield* race({
                 action: take(channel),
                 timeout: delay(20),
@@ -72,9 +72,9 @@ function* receiveTerminalData(): Generator {
 
         // stdin gets piped to BLE connection
         const data = encoder.encode(value);
-        for (let i = 0; i < data.length; i += SafeTxCharLength) {
+        for (let i = 0; i < data.length; i += nordicUartSafeTxCharLength) {
             const { id } = yield* put(
-                write(nextMessageId(), data.slice(i, i + SafeTxCharLength)),
+                write(nextMessageId(), data.slice(i, i + nordicUartSafeTxCharLength)),
             );
 
             yield* take(
