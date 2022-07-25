@@ -1562,9 +1562,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@blueprintjs/select@npm:^4.5.0":
-  version: 4.5.0
-  resolution: "@blueprintjs/select@npm:4.5.0"
+"@blueprintjs/select@npm:^4.5.1":
+  version: 4.5.1
+  resolution: "@blueprintjs/select@npm:4.5.1"
   dependencies:
     "@blueprintjs/core": ^4.6.1
     "@blueprintjs/popover2": ^1.4.3
@@ -1573,7 +1573,7 @@ __metadata:
   peerDependencies:
     react: ^16.8 || 17 || 18
     react-dom: ^16.8 || 17 || 18
-  checksum: 837049e6d7d1063f65aaa9d94d4b9b74a2b0a3a227243ceeaeb4302a743960f4a1c9fbceb51ee20f3216ba71becfd1fa4e405950c0f6d75288ba96f2a8e9be53
+  checksum: 29d83607204bc53c5e050e23566f6412e32940afd348a720f4948b75bcde17125ff4d221edde895ea102975b303e2afe71ff6fbed6208b69b9ff9406f855302e
   languageName: node
   linkType: hard
 
@@ -2317,7 +2317,7 @@ __metadata:
     "@babel/core": ^7.18.9
     "@blueprintjs/core": ^4.6.1
     "@blueprintjs/popover2": ^1.4.3
-    "@blueprintjs/select": ^4.5.0
+    "@blueprintjs/select": ^4.5.1
     "@pmmmwh/react-refresh-webpack-plugin": ^0.5.7
     "@pybricks/firmware": 5.0.0
     "@pybricks/ide-docs": 2.2.0
