@@ -94,6 +94,10 @@ const firmwareZipMap = new Map<HubType, string>([
  * parent task).
  */
 function* disconnectAndCancel(): SagaGenerator<void> {
+    const toaster = yield* getContext<IToaster>('toaster');
+
+    toaster.dismiss('firmware.ble.progress');
+
     const connection = yield* select((s: RootState) => s.bootloader.connection);
 
     if (connection === BootloaderConnectionState.Connected) {
@@ -328,6 +332,8 @@ function* loadFirmware(
  * @param action The action that triggered this saga.
  */
 function* handleFlashFirmware(action: ReturnType<typeof flashFirmware>): Generator {
+    const toaster = yield* getContext<IToaster>('toaster');
+
     try {
         let firmware: Uint8Array | undefined = undefined;
         let deviceId: HubType | undefined = undefined;
@@ -418,6 +424,16 @@ function* handleFlashFirmware(action: ReturnType<typeof flashFirmware>): Generat
 
         yield* put(didStart());
 
+        toaster.show(
+            flashProgress(() => undefined, {
+                action: 'erase',
+                progress: undefined,
+            }),
+            'firmware.ble.progress',
+        );
+
+        yield* put(alertsShowAlert('firmware', 'releaseButton'));
+
         const eraseAction = yield* put(
             eraseRequest(nextMessageId(), deviceId === HubType.CityHub),
         );
@@ -468,6 +484,14 @@ function* handleFlashFirmware(action: ReturnType<typeof flashFirmware>): Generat
             yield* waitForDidRequest(programAction.id);
 
             yield* put(didProgress(offset / firmware.length));
+
+            toaster.show(
+                flashProgress(() => undefined, {
+                    action: 'flash',
+                    progress: offset / firmware.length,
+                }),
+                'firmware.ble.progress',
+            );
 
             // we don't want to request checksum if this is the last packet since
             // the bootloader will send a response to the program request already.
@@ -541,6 +565,14 @@ function* handleFlashFirmware(action: ReturnType<typeof flashFirmware>): Generat
         }
 
         yield* put(didProgress(1));
+
+        toaster.show(
+            flashProgress(() => undefined, {
+                action: 'flash',
+                progress: 1,
+            }),
+            'firmware.ble.progress',
+        );
 
         // this will cause the remote device to disconnect and reboot
         const rebootAction = yield* put(rebootRequest(nextMessageId()));

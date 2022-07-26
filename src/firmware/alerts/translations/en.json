@@ -21,5 +21,8 @@
     "flashProgress": {
         "erasing": "Erasing internal flash memory: {percent}",
         "flashing": "Writing new firmware: {percent}"
+    },
+    "releaseButton": {
+        "message": "You may release the power button on the hub now."
     }
 }
