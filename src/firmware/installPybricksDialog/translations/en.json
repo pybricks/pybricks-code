@@ -92,6 +92,6 @@
         "label": "Next"
     },
     "flashFirmwareButton": {
-        "label": "Flash Firmware"
+        "label": "Connect and flash"
     }
 }
