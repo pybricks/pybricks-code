@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2022 The Pybricks Authors
 
+import { IToaster } from '@blueprintjs/core';
 import {
     FirmwareReader,
     FirmwareReaderError,
@@ -75,6 +76,7 @@ import {
     firmwareInstallPybricks,
     flashFirmware,
 } from './actions';
+import { flashProgress } from './alerts/FlashProgress';
 import {
     firmwareInstallPybricksDialogAccept,
     firmwareInstallPybricksDialogCancel,
@@ -615,12 +617,10 @@ function* handleFlashUsbDfu(action: ReturnType<typeof firmwareFlashUsbDfu>): Gen
             // forceInterfacesName is needed to get the flash layout map
             { forceInterfacesName: true },
             {
+                // NB: info and progress are never called in dfu v0.1.5
                 info: console.debug,
                 warning: console.warn,
-                progress: (progress, total) => {
-                    // TODO: bind to eventChannel and dispatch progress actions
-                    console.log(progress, total);
-                },
+                progress: console.debug,
             },
         );
 
@@ -655,6 +655,28 @@ function* handleFlashUsbDfu(action: ReturnType<typeof firmwareFlashUsbDfu>): Gen
 
         dfu.dfuseStartAddress = dfuFirmwareStartAddress;
         const writeProc = dfu.write(1024, firmware, true);
+
+        const toaster = yield* getContext<IToaster>('toaster');
+
+        writeProc.events.on('erase/process', (sent, total) => {
+            toaster.show(
+                flashProgress(() => undefined, {
+                    action: 'erase',
+                    progress: sent / total,
+                }),
+                'firmware.dfu.progress',
+            );
+        });
+
+        writeProc.events.on('write/process', (sent, total) => {
+            toaster.show(
+                flashProgress(() => undefined, {
+                    action: 'flash',
+                    progress: sent / total,
+                }),
+                'firmware.dfu.progress',
+            );
+        });
 
         writeProc.events.on('error', console.error);
 
