@@ -4,6 +4,7 @@
 import './installPybricksDialog.scss';
 import {
     Button,
+    Callout,
     Checkbox,
     Classes,
     ControlGroup,
@@ -24,7 +25,11 @@ import { Select2 } from '@blueprintjs/select';
 import classNames from 'classnames';
 import React, { useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { appName } from '../../app/constants';
+import {
+    appName,
+    pybricksUsbDfuWindowsDriverInstallUrl,
+    pybricksUsbLinuxUdevRulesUrl,
+} from '../../app/constants';
 import HelpButton from '../../components/HelpButton';
 import {
     Hub,
@@ -37,6 +42,8 @@ import { HubPicker } from '../../components/hubPicker/HubPicker';
 import { FileMetadata } from '../../fileStorage';
 import { useFileStorageMetadata } from '../../fileStorage/hooks';
 import { useSelector } from '../../reducers';
+import ExternalLinkIcon from '../../utils/ExternalLinkIcon';
+import { isLinux, isWindows } from '../../utils/os';
 import {
     firmwareInstallPybricksDialogAccept,
     firmwareInstallPybricksDialogCancel,
@@ -348,6 +355,37 @@ const BootloaderModePanel: React.VoidFunctionComponent<BootloaderModePanelProps>
 
     return (
         <div className={dialogBody}>
+            {hubHasUSB(hubType) && isLinux() && (
+                <p>
+                    <Callout intent={Intent.WARNING} icon="warning-sign">
+                        {i18n.translate('bootloaderPanel.warning.linux')}{' '}
+                        <a
+                            href={pybricksUsbLinuxUdevRulesUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                        >
+                            {i18n.translate('bootloaderPanel.warning.learnMore')}
+                        </a>
+                        <ExternalLinkIcon />
+                    </Callout>
+                </p>
+            )}
+            {hubHasUSB(hubType) && isWindows() && (
+                <p>
+                    <Callout intent={Intent.WARNING} icon="warning-sign">
+                        {i18n.translate('bootloaderPanel.warning.windows')}{' '}
+                        <a
+                            href={pybricksUsbDfuWindowsDriverInstallUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                        >
+                            {i18n.translate('bootloaderPanel.warning.learnMore')}
+                        </a>
+                        <ExternalLinkIcon />
+                    </Callout>
+                </p>
+            )}
+
             <p>{i18n.translate('bootloaderPanel.instruction1')}</p>
             <ol>
                 {hubHasUSB(hubType) && (
