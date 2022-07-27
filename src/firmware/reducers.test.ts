@@ -21,6 +21,9 @@ test('initial state', () => {
             "isOpen": false,
           },
           "progress": null,
+          "restoreOfficialDialog": Object {
+            "isOpen": false,
+          },
         }
     `);
 });

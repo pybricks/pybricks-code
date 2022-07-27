@@ -136,8 +136,14 @@ a.#{bp.$ns}-button {
     min-width: math.div(bp.$pt-grid-size, 2);
 }
 
-.#{bp.$ns}-running-text h4:first-child {
-    margin-top: 0;
+.#{bp.$ns}-running-text {
+    *:first-child {
+        margin-top: 0;
+    }
+
+    *:last-child {
+        margin-bottom: 0;
+    }
 }
 
 // make scrollbars fit our style

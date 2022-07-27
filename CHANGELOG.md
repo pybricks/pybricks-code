@@ -9,6 +9,7 @@
 - Added multi-step firmware flashing dialog.
 - Added support for flashing firmware via USB DFU ([support#659]).
 - Added an interactive introductory tour of the app.
+- Added restore official LEGO firmware dialog.
 
 ### Changed
 - Updated dependencies.

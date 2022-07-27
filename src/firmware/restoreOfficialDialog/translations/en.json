@@ -1,0 +1,13 @@
+{
+    "title": "Restore official LEGO® Firmware",
+    "poweredUpHubs": {
+        "title": "Powered Up Hubs",
+        "message": "The official firmware can be restored on Powered Up hubs by putting the hub in bootloader mode and connecting to the hub using one of the official LEGO apps.",
+        "action": "Watch video."
+    },
+    "spikeHubs": {
+        "title": "SPIKE/MINDSTORMS Hubs",
+        "message": "The official LEGO software for these hubs does not have a way to restore the firmware on these hubs. So, we have provided a special site to do this for you.",
+        "action": "Pybricks DFU restore tool."
+    }
+}

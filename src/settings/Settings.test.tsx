@@ -4,7 +4,8 @@
 import { cleanup, getByLabelText, waitFor } from '@testing-library/react';
 import React from 'react';
 import { testRender } from '../../test';
-import { firmwareInstallPybricks, firmwareRestoreLego } from '../firmware/actions';
+import { firmwareInstallPybricks } from '../firmware/actions';
+import { firmwareRestoreOfficialDialogShow } from '../firmware/restoreOfficialDialog/actions';
 import Settings from './Settings';
 
 afterEach(() => {
@@ -62,7 +63,7 @@ describe('firmware', () => {
         });
         await user.click(button);
 
-        expect(dispatch).toHaveBeenCalledWith(firmwareRestoreLego());
+        expect(dispatch).toHaveBeenCalledWith(firmwareRestoreOfficialDialogShow());
     });
 });
 

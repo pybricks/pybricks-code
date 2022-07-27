@@ -395,24 +395,3 @@ export const firmwareDidInstallPybricks = createAction(() => ({
 export const firmwareDidFailToInstallPybricks = createAction(() => ({
     type: 'firmware.action.didFailToInstallPybricks',
 }));
-
-/**
- * Action that triggers the restore LEGO firmware saga.
- */
-export const firmwareRestoreLego = createAction(() => ({
-    type: 'firmware.action.restoreLego',
-}));
-
-/**
- * Action that indicates {@link firmwareRestoreLego} succeeded.
- */
-export const firmwareDidRestoreLego = createAction(() => ({
-    type: 'firmware.action.didRestoreLego',
-}));
-
-/**
- * Action that indicates {@link firmwareRestoreLego} failed.
- */
-export const firmwareDidFailToRestoreLego = createAction(() => ({
-    type: 'firmware.action.didFailToRestoreLego',
-}));
