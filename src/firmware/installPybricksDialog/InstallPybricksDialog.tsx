@@ -154,28 +154,27 @@ const AcceptLicensePanel: React.VoidFunctionComponent<AcceptLicensePanelProps> =
 
     return (
         <div className={dialogBody}>
-            <div className="pb-firmware-installPybricksDialog-license">
-                <div className="pb-firmware-installPybricksDialog-license-text">
-                    {data ? (
-                        <pre>{data.licenseText}</pre>
-                    ) : (
-                        <NonIdealState
-                            icon={error ? 'error' : <Spinner />}
-                            description={
-                                error
-                                    ? i18n.translate('licensePanel.licenseText.error')
-                                    : undefined
-                            }
-                        />
-                    )}
-                </div>
-                <Checkbox
-                    label={i18n.translate('licensePanel.acceptCheckbox.label')}
-                    checked={licenseAccepted}
-                    onChange={(e) => onLicenseAcceptedChanged(e.currentTarget.checked)}
-                    disabled={!data}
-                />
+            <div className="pb-firmware-installPybricksDialog-license-text">
+                {data ? (
+                    <pre>{data.licenseText}</pre>
+                ) : (
+                    <NonIdealState
+                        icon={error ? 'error' : <Spinner />}
+                        description={
+                            error
+                                ? i18n.translate('licensePanel.licenseText.error')
+                                : undefined
+                        }
+                    />
+                )}
             </div>
+            <Checkbox
+                className="pb-firmware-installPybricksDialog-license-checkbox"
+                label={i18n.translate('licensePanel.acceptCheckbox.label')}
+                checked={licenseAccepted}
+                onChange={(e) => onLicenseAcceptedChanged(e.currentTarget.checked)}
+                disabled={!data}
+            />
         </div>
     );
 };
@@ -349,82 +348,84 @@ const BootloaderModePanel: React.VoidFunctionComponent<BootloaderModePanelProps>
     return (
         <div className={dialogBody}>
             {hubHasUSB(hubType) && isLinux() && (
-                <p>
-                    <Callout intent={Intent.WARNING} icon="warning-sign">
-                        {i18n.translate('bootloaderPanel.warning.linux')}{' '}
-                        <a
-                            href={pybricksUsbLinuxUdevRulesUrl}
-                            target="_blank"
-                            rel="noreferrer"
-                        >
-                            {i18n.translate('bootloaderPanel.warning.learnMore')}
-                        </a>
-                        <ExternalLinkIcon />
-                    </Callout>
-                </p>
+                <Callout intent={Intent.WARNING} icon="warning-sign">
+                    {i18n.translate('bootloaderPanel.warning.linux')}{' '}
+                    <a
+                        href={pybricksUsbLinuxUdevRulesUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                    >
+                        {i18n.translate('bootloaderPanel.warning.learnMore')}
+                    </a>
+                    <ExternalLinkIcon />
+                </Callout>
             )}
             {hubHasUSB(hubType) && isWindows() && (
-                <p>
-                    <Callout intent={Intent.WARNING} icon="warning-sign">
-                        {i18n.translate('bootloaderPanel.warning.windows')}{' '}
-                        <a
-                            href={pybricksUsbDfuWindowsDriverInstallUrl}
-                            target="_blank"
-                            rel="noreferrer"
-                        >
-                            {i18n.translate('bootloaderPanel.warning.learnMore')}
-                        </a>
-                        <ExternalLinkIcon />
-                    </Callout>
-                </p>
+                <Callout intent={Intent.WARNING} icon="warning-sign">
+                    {i18n.translate('bootloaderPanel.warning.windows')}{' '}
+                    <a
+                        href={pybricksUsbDfuWindowsDriverInstallUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                    >
+                        {i18n.translate('bootloaderPanel.warning.learnMore')}
+                    </a>
+                    <ExternalLinkIcon />
+                </Callout>
             )}
 
-            <p>{i18n.translate('bootloaderPanel.instruction1')}</p>
-            <ol>
-                {hubHasUSB(hubType) && (
-                    <li>{i18n.translate('bootloaderPanel.step.disconnectUsb')}</li>
-                )}
-
-                <li>{i18n.translate('bootloaderPanel.step.powerOff')}</li>
-
-                {/* City hub has power issues and requires disconnecting motors/sensors */}
-                {hubType === Hub.City && (
-                    <li>{i18n.translate('bootloaderPanel.step.disconnectIo')}</li>
-                )}
-
-                <li>{i18n.translate('bootloaderPanel.step.holdButton', { button })}</li>
-
-                {hubHasUSB(hubType) && (
-                    <li>{i18n.translate('bootloaderPanel.step.connectUsb')}</li>
-                )}
-
-                <li>
-                    {i18n.translate('bootloaderPanel.step.waitForLight', {
-                        button,
-                        light,
-                        lightPattern,
-                    })}
-                </li>
-
-                <li>
-                    {i18n.translate(
-                        /* hubs with USB will keep the power on, but other hubs won't */
-                        hubHasUSB(hubType)
-                            ? 'bootloaderPanel.step.releaseButton'
-                            : 'bootloaderPanel.step.keepHolding',
-                        {
-                            button,
-                        },
+            <div className={Classes.RUNNING_TEXT}>
+                <p>{i18n.translate('bootloaderPanel.instruction1')}</p>
+                <ol>
+                    {hubHasUSB(hubType) && (
+                        <li>{i18n.translate('bootloaderPanel.step.disconnectUsb')}</li>
                     )}
-                </li>
-            </ol>
-            <p>
-                {i18n.translate('bootloaderPanel.instruction2', {
-                    flashFirmware: (
-                        <strong>{i18n.translate('flashFirmwareButton.label')}</strong>
-                    ),
-                })}
-            </p>
+
+                    <li>{i18n.translate('bootloaderPanel.step.powerOff')}</li>
+
+                    {/* City hub has power issues and requires disconnecting motors/sensors */}
+                    {hubType === Hub.City && (
+                        <li>{i18n.translate('bootloaderPanel.step.disconnectIo')}</li>
+                    )}
+
+                    <li>
+                        {i18n.translate('bootloaderPanel.step.holdButton', { button })}
+                    </li>
+
+                    {hubHasUSB(hubType) && (
+                        <li>{i18n.translate('bootloaderPanel.step.connectUsb')}</li>
+                    )}
+
+                    <li>
+                        {i18n.translate('bootloaderPanel.step.waitForLight', {
+                            button,
+                            light,
+                            lightPattern,
+                        })}
+                    </li>
+
+                    <li>
+                        {i18n.translate(
+                            /* hubs with USB will keep the power on, but other hubs won't */
+                            hubHasUSB(hubType)
+                                ? 'bootloaderPanel.step.releaseButton'
+                                : 'bootloaderPanel.step.keepHolding',
+                            {
+                                button,
+                            },
+                        )}
+                    </li>
+                </ol>
+                <p>
+                    {i18n.translate('bootloaderPanel.instruction2', {
+                        flashFirmware: (
+                            <strong>
+                                {i18n.translate('flashFirmwareButton.label')}
+                            </strong>
+                        ),
+                    })}
+                </p>
+            </div>
         </div>
     );
 };
