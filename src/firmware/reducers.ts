@@ -4,6 +4,7 @@
 import { Reducer, combineReducers } from 'redux';
 import { didFailToFinish, didFinish, didProgress, didStart } from './actions';
 import installPybricksDialog from './installPybricksDialog/reducers';
+import restoreOfficialDialog from './restoreOfficialDialog/reducers';
 
 const flashing: Reducer<boolean> = (state = false, action) => {
     if (didStart.matches(action)) {
@@ -29,4 +30,9 @@ const progress: Reducer<number | null> = (state = null, action) => {
     return state;
 };
 
-export default combineReducers({ installPybricksDialog, flashing, progress });
+export default combineReducers({
+    installPybricksDialog,
+    restoreOfficialDialog,
+    flashing,
+    progress,
+});

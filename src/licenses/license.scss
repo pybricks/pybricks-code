@@ -50,9 +50,19 @@
 .pb-license-info {
     width: 80%;
     padding: 0px 16px;
-    overflow: auto;
+
+    display: flex;
+    flex-direction: column;
+    gap: bp.$pt-grid-size;
 }
 
 .pb-license-text {
-    padding: 0px 16px;
+    overflow: auto;
+    min-height: 0;
+
+    & pre {
+        white-space: pre-wrap;
+        word-break: keep-all;
+        margin: 0;
+    }
 }

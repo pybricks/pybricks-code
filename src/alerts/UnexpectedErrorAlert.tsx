@@ -2,7 +2,14 @@
 // Copyright (c) 2022 The Pybricks Authors
 
 import './UnexpectedErrorAlert.scss';
-import { AnchorButton, Button, ButtonGroup, Collapse, Intent } from '@blueprintjs/core';
+import {
+    AnchorButton,
+    Button,
+    ButtonGroup,
+    Collapse,
+    Intent,
+    Pre,
+} from '@blueprintjs/core';
 import React, { useState } from 'react';
 import { useId } from 'react-aria';
 import { CreateToast } from '../i18nToaster';
@@ -33,7 +40,7 @@ const UnexpectedErrorAlert: React.VoidFunctionComponent<UnexpectedErrorAlertProp
                 <span id={labelId}>{i18n.translate('technicalInfo')}</span>
             </span>
             <Collapse isOpen={isExpanded}>
-                <pre className="pb-alerts-stack-trace">{error.stack}</pre>
+                <Pre className="pb-alerts-stack-trace">{error.stack}</Pre>
             </Collapse>
             <div>
                 <ButtonGroup minimal={true} fill={true}>

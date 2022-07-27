@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2022 The Pybricks Authors
 
-import { Button, Intent } from '@blueprintjs/core';
+import { Button, Code, Intent } from '@blueprintjs/core';
 import React from 'react';
 import { CreateToast } from '../../i18nToaster';
 import { isIOS, isLinux } from '../../utils/os';
@@ -19,9 +19,9 @@ const NoWebBluetooth: React.VoidFunctionComponent = () => {
                 <>
                     <p>{i18n.translate('noWebBluetooth.linux')}</p>
                     <p>
-                        <code>
+                        <Code>
                             chrome://flags/#enable-experimental-web-platform-features
-                        </code>
+                        </Code>
                         <Button
                             icon="duplicate"
                             small={true}

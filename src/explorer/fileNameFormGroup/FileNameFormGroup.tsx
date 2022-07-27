@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2022 The Pybricks Authors
 
-import { Classes, FormGroup, InputGroup, Intent, Tag } from '@blueprintjs/core';
+import { Classes, Code, FormGroup, InputGroup, Intent, Tag } from '@blueprintjs/core';
 import type { AriaButtonProps } from '@react-types/button';
 import React, { useCallback, useRef } from 'react';
 import { useButton } from 'react-aria';
@@ -108,8 +108,8 @@ const FileNameHelpText: React.VoidFunctionComponent<FileNameHelpTextProps> = ({
             return (
                 <>
                     {i18n.translate('helpText.hasInvalidFirstCharacter', {
-                        letters: <code className={Classes.CODE}>a…z</code>,
-                        underscore: <code className={Classes.CODE}>_</code>,
+                        letters: <Code className={Classes.CODE}>a…z</Code>,
+                        underscore: <Code className={Classes.CODE}>_</Code>,
                     })}
                 </>
             );
@@ -117,10 +117,10 @@ const FileNameHelpText: React.VoidFunctionComponent<FileNameHelpTextProps> = ({
             return (
                 <>
                     {i18n.translate('helpText.hasInvalidCharacters', {
-                        letters: <code className={Classes.CODE}>a…z</code>,
-                        numbers: <code className={Classes.CODE}>0…9</code>,
-                        dash: <code className={Classes.CODE}>-</code>,
-                        underscore: <code className={Classes.CODE}>_</code>,
+                        letters: <Code className={Classes.CODE}>a…z</Code>,
+                        numbers: <Code className={Classes.CODE}>0…9</Code>,
+                        dash: <Code className={Classes.CODE}>-</Code>,
+                        underscore: <Code className={Classes.CODE}>_</Code>,
                     })}{' '}
                     <FixItButton onPress={handleHasInvalidCharacters} />
                 </>

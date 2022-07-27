@@ -21,8 +21,10 @@ import {
 } from '../app/constants';
 import { Button } from '../components/Button';
 import HelpButton from '../components/HelpButton';
-import { firmwareInstallPybricks, firmwareRestoreLego } from '../firmware/actions';
+import { firmwareInstallPybricks } from '../firmware/actions';
 import { InstallPybricksDialog } from '../firmware/installPybricksDialog/InstallPybricksDialog';
+import RestoreOfficialDialog from '../firmware/restoreOfficialDialog/RestoreOfficialDialog';
+import { firmwareRestoreOfficialDialogShow } from '../firmware/restoreOfficialDialog/actions';
 import { pseudolocalize } from '../i18n';
 import { useSelector } from '../reducers';
 import ExternalLinkIcon from '../utils/ExternalLinkIcon';
@@ -108,8 +110,9 @@ const Settings: React.VoidFunctionComponent = () => {
                     minimal={true}
                     icon="download"
                     label={i18n.translate('firmware.flashLegoButton.label')}
-                    onPress={() => dispatch(firmwareRestoreLego())}
+                    onPress={() => dispatch(firmwareRestoreOfficialDialogShow())}
                 />
+                <RestoreOfficialDialog />
             </FormGroup>
             <FormGroup label={i18n.translate('help.title')}>
                 <ButtonGroup minimal={true} vertical={true} alignText="left">
