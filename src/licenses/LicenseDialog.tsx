@@ -10,6 +10,7 @@ import {
     Classes,
     Dialog,
     NonIdealState,
+    Pre,
     Spinner,
     Text,
 } from '@blueprintjs/core';
@@ -190,7 +191,7 @@ const LicenseInfoPanel = React.forwardRef<HTMLDivElement, LicenseInfoPanelProps>
                         {i18n.translate('help.selectPackage')}
                     </NonIdealState>
                 ) : (
-                    <div>
+                    <>
                         <Card>
                             <p>
                                 <strong>{i18n.translate('packageLabel')}</strong>{' '}
@@ -211,9 +212,9 @@ const LicenseInfoPanel = React.forwardRef<HTMLDivElement, LicenseInfoPanelProps>
                             </p>
                         </Card>
                         <div className="pb-license-text">
-                            <pre>{licenseInfo.licenseText}</pre>
+                            <Pre>{licenseInfo.licenseText}</Pre>
                         </div>
-                    </div>
+                    </>
                 )}
             </div>
         );

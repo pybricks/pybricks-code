@@ -23,6 +23,12 @@
             & .#{bp.$ns}-non-ideal-state {
                 min-height: bp.$pt-grid-size * 35;
             }
+
+            & pre {
+                white-space: pre-wrap;
+                word-break: keep-all;
+                margin: 0;
+            }
         }
 
         &-checkbox {

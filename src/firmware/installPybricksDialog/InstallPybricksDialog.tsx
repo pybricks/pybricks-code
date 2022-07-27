@@ -7,6 +7,7 @@ import {
     Callout,
     Checkbox,
     Classes,
+    Code,
     ControlGroup,
     DialogStep,
     FormGroup,
@@ -17,6 +18,7 @@ import {
     MenuItem,
     MultistepDialog,
     NonIdealState,
+    Pre,
     Spinner,
     Switch,
 } from '@blueprintjs/core';
@@ -69,12 +71,12 @@ const SelectHubPanel: React.VoidFunctionComponent = () => {
                 popoverClassName={Classes2.POPOVER2_CONTENT_SIZING}
                 placement="right-end"
                 content={
-                    <div>
-                        <h3>
+                    <div className={Classes.RUNNING_TEXT}>
+                        <h4>
                             {i18n.translate(
                                 'selectHubPanel.notOnListButton.info.mindstorms.title',
                             )}
-                        </h3>
+                        </h4>
                         <ul>
                             <li>
                                 {i18n.translate(
@@ -92,11 +94,11 @@ const SelectHubPanel: React.VoidFunctionComponent = () => {
                                 )}
                             </li>
                         </ul>
-                        <h3>
+                        <h4>
                             {i18n.translate(
                                 'selectHubPanel.notOnListButton.info.poweredUp.title',
                             )}
-                        </h3>
+                        </h4>
                         <ul>
                             <li>
                                 {i18n.translate(
@@ -156,7 +158,7 @@ const AcceptLicensePanel: React.VoidFunctionComponent<AcceptLicensePanelProps> =
         <div className={dialogBody}>
             <div className="pb-firmware-installPybricksDialog-license-text">
                 {data ? (
-                    <pre>{data.licenseText}</pre>
+                    <Pre>{data.licenseText}</Pre>
                 ) : (
                     <NonIdealState
                         icon={error ? 'error' : <Spinner />}
@@ -247,7 +249,7 @@ const ConfigureOptionsPanel: React.VoidFunctionComponent<SelectOptionsPanelProps
                         <Switch
                             labelElement={i18n.translate(
                                 'optionsPanel.customMain.include.label',
-                                { main: <code>main.py</code> },
+                                { main: <Code>main.py</Code> },
                             )}
                             checked={includeProgram}
                             onChange={(e) =>

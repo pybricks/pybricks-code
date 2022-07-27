@@ -136,6 +136,10 @@ a.#{bp.$ns}-button {
     min-width: math.div(bp.$pt-grid-size, 2);
 }
 
+.#{bp.$ns}-running-text h4:first-child {
+    margin-top: 0;
+}
+
 // make scrollbars fit our style
 ::-webkit-scrollbar {
     width: 16px;
