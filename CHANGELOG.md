@@ -10,6 +10,16 @@
 - Added support for flashing firmware via USB DFU.
 - Added an interactive introductory tour of the app.
 
+### Changed
+- Updated dependencies.
+- Updated firmware to Pybricks v3.2.0b3:
+
+  ### Fixed
+  - Fix integral control not working properly.
+
+  ### Changed
+  - `Motor.run_time` no longer raises an exception for negative time values.
+
 ### Fixed
 - Fixed deleting files that are not open in the editor.
 
