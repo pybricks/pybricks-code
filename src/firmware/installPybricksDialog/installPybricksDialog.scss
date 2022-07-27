@@ -5,7 +5,7 @@
 
 .pb-firmware-installPybricksDialog {
     &-body {
-        min-height: bp.$pt-grid-size * 25;
+        min-height: bp.$pt-grid-size * 35;
     }
 
     &-license {
@@ -17,11 +17,11 @@
         &-text {
             flex-grow: 1;
             min-height: 0;
-            max-height: bp.$pt-grid-size * 20;
+            max-height: bp.$pt-grid-size * 30;
             overflow: auto;
 
             & .#{bp.$ns}-non-ideal-state {
-                min-height: bp.$pt-grid-size * 20;
+                min-height: bp.$pt-grid-size * 30;
             }
         }
     }

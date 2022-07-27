@@ -1802,6 +1802,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@gilbarbara/deep-equal@npm:^0.1.1":
+  version: 0.1.1
+  resolution: "@gilbarbara/deep-equal@npm:0.1.1"
+  checksum: d904761847320587cbb2a76310acc3344d241201e4e6521e9f88b2f4eb7d8a13aed2081fca1cad625ef78390651e5bbfe914ff5d6925a9f40cf305676a9e1f20
+  languageName: node
+  linkType: hard
+
 "@humanwhocodes/config-array@npm:^0.9.2":
   version: 0.9.5
   resolution: "@humanwhocodes/config-array@npm:0.9.5"
@@ -2410,6 +2417,7 @@ __metadata:
     react-dev-utils: ^12.0.1
     react-dom: ^16.13.1
     react-dropzone: ^14.2.2
+    react-joyride: ^2.5.0
     react-monaco-editor: ^0.49.0
     react-popper: ^2.3.0
     react-redux: ^8.0.2
@@ -8000,6 +8008,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"exenv@npm:^1.2.2":
+  version: 1.2.2
+  resolution: "exenv@npm:1.2.2"
+  checksum: a894f3b60ab8419e0b6eec99c690a009c8276b4c90655ccaf7d28faba2de3a6b93b3d92210f9dc5efd36058d44f04098f6bbccef99859151104bfd49939904dc
+  languageName: node
+  linkType: hard
+
 "exit@npm:^0.1.2":
   version: 0.1.2
   resolution: "exit@npm:0.1.2"
@@ -9268,6 +9283,13 @@ __metadata:
   version: 1.0.1
   resolution: "is-lambda@npm:1.0.1"
   checksum: 93a32f01940220532e5948538699ad610d5924ac86093fcee83022252b363eb0cc99ba53ab084a04e4fb62bf7b5731f55496257a4c38adf87af9c4d352c71c35
+  languageName: node
+  linkType: hard
+
+"is-lite@npm:^0.8.2":
+  version: 0.8.2
+  resolution: "is-lite@npm:0.8.2"
+  checksum: 0ee62cb238c2a044f58d1cd139fb0b48026c407ec8625ee6572b417f164e17ec937f0a0785f466e320749a796c316a3b78dcb4b520f7ddd4b9de38ad5a23d70f
   languageName: node
   linkType: hard
 
@@ -11478,7 +11500,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"popper.js@npm:^1.14.4, popper.js@npm:^1.16.1":
+"popper.js@npm:^1.14.4, popper.js@npm:^1.16.0, popper.js@npm:^1.16.1":
   version: 1.16.1
   resolution: "popper.js@npm:1.16.1"
   checksum: c56ae5001ec50a77ee297a8061a0221d99d25c7348d2e6bcd3e45a0d0f32a1fd81bca29d46cb0d4bdf13efb77685bd6a0ce93f9eb3c608311a461f945fffedbe
@@ -12699,6 +12721,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-floater@npm:^0.7.5":
+  version: 0.7.5
+  resolution: "react-floater@npm:0.7.5"
+  dependencies:
+    deepmerge: ^4.2.2
+    exenv: ^1.2.2
+    is-lite: ^0.8.2
+    popper.js: ^1.16.0
+    react-proptype-conditional-require: ^1.0.4
+    tree-changes: ^0.9.1
+  peerDependencies:
+    prop-types: ^15.7.2
+    react: 15 - 18
+    react-dom: 15 - 18
+  checksum: 72d0ccd15d93e08885e9d5ff59be757df198fa48e796b3ce48138e8ba0f393df4b246c18e4887ad62214607f75041366b34c0d4f0edc7e70e774eb236c377698
+  languageName: node
+  linkType: hard
+
 "react-is@npm:^16.13.1, react-is@npm:^16.7.0":
   version: 16.13.1
   resolution: "react-is@npm:16.13.1"
@@ -12717,6 +12757,26 @@ __metadata:
   version: 18.1.0
   resolution: "react-is@npm:18.1.0"
   checksum: d206a0fe6790851bff168727bfb896de02c5591695afb0c441163e8630136a3e13ee1a7ddd59fdccddcc93968b4721ae112c10f790b194b03b35a3dc13a355ef
+  languageName: node
+  linkType: hard
+
+"react-joyride@npm:^2.5.0":
+  version: 2.5.0
+  resolution: "react-joyride@npm:2.5.0"
+  dependencies:
+    deepmerge: ^4.2.2
+    exenv: ^1.2.2
+    is-lite: ^0.8.2
+    react-floater: ^0.7.5
+    react-is: ^16.13.1
+    scroll: ^3.0.1
+    scrollparent: ^2.0.1
+    tree-changes: ^0.9.1
+  peerDependencies:
+    prop-types: ^15.0.0
+    react: 15 - 18
+    react-dom: 15 - 18
+  checksum: 2d15d1b6a6e6e830af0e594b53b5318dd91a3b57f183157404375d1760a36b4f91acf89c69e73fed7ba5d9d0c13bdc23b2ea426a64259635321a4aaa020aae9d
   languageName: node
   linkType: hard
 
@@ -12761,6 +12821,13 @@ __metadata:
     react: ^16.8.0 || ^17 || ^18
     react-dom: ^16.8.0 || ^17 || ^18
   checksum: 837111c98738011c69b3069a464ea5bdcbf487105b6148e8faf90cb7337e134edb1b98b8824322941c378756cca30a15c18c25f558e53b85ed5762fa0dc8e6b2
+  languageName: node
+  linkType: hard
+
+"react-proptype-conditional-require@npm:^1.0.4":
+  version: 1.0.4
+  resolution: "react-proptype-conditional-require@npm:1.0.4"
+  checksum: 78f82d15b2c77c14fd8fbcbbed279850df3a856984aacd519ee6c2162e034b114b8ac47c00157b84ef7c98c0711d933a0177d9d54555629cf381f54341bb0e8f
   languageName: node
   linkType: hard
 
@@ -13382,6 +13449,20 @@ __metadata:
     ajv-formats: ^2.1.1
     ajv-keywords: ^5.0.0
   checksum: c843e92fdd1a5c145dbb6ffdae33e501867f9703afac67bdf35a685e49f85b1dcc10ea250033175a64bd9d31f0555bc6785b8359da0c90bcea30cf6dfbb55a8f
+  languageName: node
+  linkType: hard
+
+"scroll@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "scroll@npm:3.0.1"
+  checksum: e6b045347adace30035073882e6ef2af7e1c81dd611faf3a578ca8cd0d1a3a9da54932dd97ed6fd99c9573351c758fa50e6d8ed4afb5bd3a33794b6c48d25922
+  languageName: node
+  linkType: hard
+
+"scrollparent@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "scrollparent@npm:2.0.1"
+  checksum: 9ff2b29c1233431ebd0910e5f8db4a058836ee0292d1bb18042fbb4d2175c3ed73fa28a71a96074ac6848173185238ad1139bdefc3863be4808df981175cb807
   languageName: node
   linkType: hard
 
@@ -14412,6 +14493,16 @@ __metadata:
   version: 0.0.3
   resolution: "tr46@npm:0.0.3"
   checksum: 726321c5eaf41b5002e17ffbd1fb7245999a073e8979085dacd47c4b4e8068ff5777142fc6726d6ca1fd2ff16921b48788b87225cbc57c72636f6efa8efbffe3
+  languageName: node
+  linkType: hard
+
+"tree-changes@npm:^0.9.1":
+  version: 0.9.1
+  resolution: "tree-changes@npm:0.9.1"
+  dependencies:
+    "@gilbarbara/deep-equal": ^0.1.1
+    is-lite: ^0.8.2
+  checksum: 6749f0213dbbfda592326250cdbbc9bb0f03c6c22e042e7089b1c4d6ab2fc1aa5cde0e02d31d5d7a32c901301146a01ed0c9b90a94007798681aa6af76bd6428
   languageName: node
   linkType: hard
 

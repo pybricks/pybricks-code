@@ -4,6 +4,7 @@
 import './installPybricksDialog.scss';
 import {
     Button,
+    Callout,
     Checkbox,
     Classes,
     ControlGroup,
@@ -24,7 +25,11 @@ import { Select2 } from '@blueprintjs/select';
 import classNames from 'classnames';
 import React, { useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { appName } from '../../app/constants';
+import {
+    appName,
+    pybricksUsbDfuWindowsDriverInstallUrl,
+    pybricksUsbLinuxUdevRulesUrl,
+} from '../../app/constants';
 import HelpButton from '../../components/HelpButton';
 import {
     Hub,
@@ -34,9 +39,12 @@ import {
     hubHasUSB,
 } from '../../components/hubPicker';
 import { HubPicker } from '../../components/hubPicker/HubPicker';
+import { useHubPickerSelectedHub } from '../../components/hubPicker/hooks';
 import { FileMetadata } from '../../fileStorage';
 import { useFileStorageMetadata } from '../../fileStorage/hooks';
 import { useSelector } from '../../reducers';
+import ExternalLinkIcon from '../../utils/ExternalLinkIcon';
+import { isLinux, isWindows } from '../../utils/os';
 import {
     firmwareInstallPybricksDialogAccept,
     firmwareInstallPybricksDialogCancel,
@@ -50,21 +58,13 @@ const dialogBody = classNames(
     'pb-firmware-installPybricksDialog-body',
 );
 
-type SelectHubPanelProps = {
-    hubType: Hub;
-    onChange: (hubType: Hub) => void;
-};
-
-const SelectHubPanel: React.VoidFunctionComponent<SelectHubPanelProps> = ({
-    hubType,
-    onChange,
-}) => {
+const SelectHubPanel: React.VoidFunctionComponent = () => {
     const i18n = useI18n();
 
     return (
         <div className={dialogBody}>
             <p>{i18n.translate('selectHubPanel.message')}</p>
-            <HubPicker hubType={hubType} onChange={onChange} />
+            <HubPicker />
             <Popover2
                 popoverClassName={Classes2.POPOVER2_CONTENT_SIZING}
                 placement="right-end"
@@ -348,6 +348,37 @@ const BootloaderModePanel: React.VoidFunctionComponent<BootloaderModePanelProps>
 
     return (
         <div className={dialogBody}>
+            {hubHasUSB(hubType) && isLinux() && (
+                <p>
+                    <Callout intent={Intent.WARNING} icon="warning-sign">
+                        {i18n.translate('bootloaderPanel.warning.linux')}{' '}
+                        <a
+                            href={pybricksUsbLinuxUdevRulesUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                        >
+                            {i18n.translate('bootloaderPanel.warning.learnMore')}
+                        </a>
+                        <ExternalLinkIcon />
+                    </Callout>
+                </p>
+            )}
+            {hubHasUSB(hubType) && isWindows() && (
+                <p>
+                    <Callout intent={Intent.WARNING} icon="warning-sign">
+                        {i18n.translate('bootloaderPanel.warning.windows')}{' '}
+                        <a
+                            href={pybricksUsbDfuWindowsDriverInstallUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                        >
+                            {i18n.translate('bootloaderPanel.warning.learnMore')}
+                        </a>
+                        <ExternalLinkIcon />
+                    </Callout>
+                </p>
+            )}
+
             <p>{i18n.translate('bootloaderPanel.instruction1')}</p>
             <ol>
                 {hubHasUSB(hubType) && (
@@ -398,16 +429,14 @@ const BootloaderModePanel: React.VoidFunctionComponent<BootloaderModePanelProps>
     );
 };
 
-const defaultHubType = Hub.Technic;
-
 export const InstallPybricksDialog: React.VoidFunctionComponent = () => {
     const { isOpen } = useSelector((s) => s.firmware.installPybricksDialog);
     const dispatch = useDispatch();
-    const [hubType, setHubType] = useState(defaultHubType);
     const [hubName, setHubName] = useState('');
     const [includeProgram, setIncludeProgram] = useState(false);
     const [selectedIncludeFile, setSelectedIncludeFile] = useState<FileMetadata>();
     const [licenseAccepted, setLicenseAccepted] = useState(false);
+    const [hubType] = useHubPickerSelectedHub();
     const { data } = useFirmware(hubType);
     const i18n = useI18n();
 
@@ -432,7 +461,7 @@ export const InstallPybricksDialog: React.VoidFunctionComponent = () => {
             <DialogStep
                 id="hub"
                 title={i18n.translate('selectHubPanel.title')}
-                panel={<SelectHubPanel hubType={hubType} onChange={setHubType} />}
+                panel={<SelectHubPanel />}
                 nextButtonProps={{ text: i18n.translate('nextButton.label') }}
             />
             <DialogStep

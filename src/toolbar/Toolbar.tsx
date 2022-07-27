@@ -9,13 +9,17 @@ import BluetoothButton from './buttons/bluetooth/BluetoothButton';
 import ReplButton from './buttons/repl/ReplButton';
 import RunButton from './buttons/run/RunButton';
 import StopButton from './buttons/stop/StopButton';
+import TourButton from './buttons/tour/TourButton';
 
 import './toolbar.scss';
 
+// matches ID in tour component
+const bluetoothButtonId = 'pb-toolbar-bluetooth-button';
+const runButtonId = 'pb-toolbar-run-button';
+const tourButtonId = 'pb-toolbar-tour-button';
+
 const Toolbar: React.VFC = () => {
     const flashButtonId = useId();
-    const bluetoothButtonId = useId();
-    const runButtonId = useId();
     const stopButtonId = useId();
     const replButtonId = useId();
 
@@ -28,6 +32,9 @@ const Toolbar: React.VFC = () => {
                 <RunButton id={runButtonId} />
                 <StopButton id={stopButtonId} />
                 <ReplButton id={replButtonId} />
+            </ButtonGroup>
+            <ButtonGroup className="pb-toolbar-group pb-align-right">
+                <TourButton id={tourButtonId} />
             </ButtonGroup>
         </UtilsToolbar>
     );

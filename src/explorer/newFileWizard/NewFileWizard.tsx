@@ -5,8 +5,8 @@ import { Button, Classes, Dialog, FormGroup } from '@blueprintjs/core';
 import React, { useCallback, useRef, useState } from 'react';
 import { useId } from 'react-aria';
 import { useDispatch } from 'react-redux';
-import { Hub } from '../../components/hubPicker';
 import { HubPicker } from '../../components/hubPicker/HubPicker';
+import { useHubPickerSelectedHub } from '../../components/hubPicker/hooks';
 import { useFileStorageMetadata } from '../../fileStorage/hooks';
 import {
     FileNameValidationResult,
@@ -17,9 +17,6 @@ import { useSelector } from '../../reducers';
 import FileNameFormGroup from '../fileNameFormGroup/FileNameFormGroup';
 import { newFileWizardDidAccept, newFileWizardDidCancel } from './actions';
 import { useI18n } from './i18n';
-
-// This should be set to the most commonly used hub.
-const defaultHub = Hub.Technic;
 
 const NewFileWizard: React.VoidFunctionComponent = () => {
     const i18n = useI18n();
@@ -33,8 +30,8 @@ const NewFileWizard: React.VoidFunctionComponent = () => {
         pythonFileExtension,
         files.map((f) => f.path),
     );
-    const [hubType, setHubType] = useState(defaultHub);
 
+    const [hubType] = useHubPickerSelectedHub();
     const fileNameInputRef = useRef<HTMLInputElement>(null);
 
     const handleSubmit = useCallback<React.FormEventHandler>(
@@ -70,7 +67,7 @@ const NewFileWizard: React.VoidFunctionComponent = () => {
                         onChange={setFileName}
                     />
                     <FormGroup label={i18n.translate('smartHub.label')}>
-                        <HubPicker hubType={hubType} onChange={setHubType} />
+                        <HubPicker />
                     </FormGroup>
                 </div>
                 <div className={Classes.DIALOG_FOOTER}>

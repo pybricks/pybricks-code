@@ -27,7 +27,7 @@ describe('accept', () => {
 
         await user.click(button);
         expect(dispatch).toHaveBeenCalledWith(
-            newFileWizardDidAccept('test', '.py', Hub.Technic),
+            newFileWizardDidAccept('test', '.py', Hub.Move),
         );
     });
 
@@ -42,7 +42,7 @@ describe('accept', () => {
         );
 
         expect(dispatch).toHaveBeenCalledWith(
-            newFileWizardDidAccept('test', '.py', Hub.Technic),
+            newFileWizardDidAccept('test', '.py', Hub.Move),
         );
     });
 });

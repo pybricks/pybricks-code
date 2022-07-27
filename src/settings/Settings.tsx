@@ -96,6 +96,7 @@ const Settings: React.VoidFunctionComponent = () => {
             </FormGroup>
             <FormGroup label={i18n.translate('firmware.title')}>
                 <Button
+                    id="pb-settings-flash-pybricks-button"
                     minimal={true}
                     icon="download"
                     label={i18n.translate('firmware.flashPybricksButton.label')}
@@ -103,6 +104,7 @@ const Settings: React.VoidFunctionComponent = () => {
                 />
                 <InstallPybricksDialog />
                 <Button
+                    id="pb-settings-flash-official-button"
                     minimal={true}
                     icon="download"
                     label={i18n.translate('firmware.flashLegoButton.label')}

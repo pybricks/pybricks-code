@@ -11,6 +11,7 @@ import fileStorage from './fileStorage/reducers';
 import firmware from './firmware/reducers';
 import hub from './hub/reducers';
 import bootloader from './lwp3-bootloader/reducers';
+import tour from './tour/reducers';
 
 /**
  * Root reducer for redux store.
@@ -24,6 +25,7 @@ export const rootReducer = combineReducers({
     fileStorage,
     firmware,
     hub,
+    tour,
 });
 
 /**

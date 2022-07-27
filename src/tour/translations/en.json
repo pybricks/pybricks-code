@@ -1,0 +1,33 @@
+{
+    "back": "Back",
+    "close": "Close",
+    "last": "Last",
+    "next": "Next",
+    "open": "Open the dialog",
+    "skip": "Skip",
+    "steps": {
+        "welcome": {
+            "message": "Welcome to {appName}.",
+            "action": "Click {next} to discover key features."
+        },
+        "newFile": {
+            "message": "Click the {icon} button to create a new program."
+        },
+        "backupFiles": {
+            "message": "Don't lose your work.",
+            "action": "Click the {icon} button to backup all of your programs."
+        },
+        "flashPybricksFirmware": {
+            "message": "{appName} requires a special firmware to be flashed to your hub in order to run the program on the hub."
+        },
+        "restoreOfficialFirmware": {
+            "message": "You can always restore the official LEGO® firmware after using the special Pybricks firmware."
+        },
+        "connectToHub": {
+            "message": "One you have flashed the Pybricks firmware, click the Bluetooth button to connect to the hub."
+        },
+        "downloadAndRun": {
+            "message": "After you are connected to the hub, click the {icon} button to download and run your program."
+        }
+    }
+}

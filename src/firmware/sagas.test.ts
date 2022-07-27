@@ -1,13 +1,16 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2021-2022 The Pybricks Authors
 
+import { IToaster } from '@blueprintjs/core';
 import {
     FirmwareMetadata,
     FirmwareReaderError,
     FirmwareReaderErrorCode,
 } from '@pybricks/firmware';
+import { mock } from 'jest-mock-extended';
 import JSZip from 'jszip';
 import { AsyncSaga } from '../../test';
+import { alertsShowAlert } from '../alerts/actions';
 import {
     BootloaderConnectionFailureReason,
     checksumRequest,
@@ -78,6 +81,7 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
+                toaster: mock<IToaster>(),
             });
 
             // saga is triggered by this action
@@ -129,6 +133,9 @@ describe('flashFirmware', () => {
             expect(action).toEqual(didStart());
 
             // erase first
+
+            action = await saga.take();
+            expect(action).toEqual(alertsShowAlert('firmware', 'releaseButton'));
 
             action = await saga.take();
             expect(action).toEqual(eraseRequest(1, /* isCityHub */ false));
@@ -224,6 +231,7 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
+                toaster: mock<IToaster>(),
             });
 
             // saga is triggered by this action
@@ -273,6 +281,7 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
+                toaster: mock<IToaster>(),
             });
 
             // saga is triggered by this action
@@ -340,6 +349,7 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
+                toaster: mock<IToaster>(),
             });
 
             // saga is triggered by this action
@@ -403,6 +413,7 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
+                toaster: mock<IToaster>(),
             });
 
             // saga is triggered by this action
@@ -469,6 +480,7 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
+                toaster: mock<IToaster>(),
             });
 
             // saga is triggered by this action
@@ -528,6 +540,7 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
+                toaster: mock<IToaster>(),
             });
 
             // saga is triggered by this action
@@ -593,6 +606,7 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
+                toaster: mock<IToaster>(),
             });
 
             // saga is triggered by this action
@@ -675,6 +689,7 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
+                toaster: mock<IToaster>(),
             });
 
             // saga is triggered by this action
@@ -740,6 +755,7 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
+                toaster: mock<IToaster>(),
             });
 
             // saga is triggered by this action
@@ -789,6 +805,9 @@ describe('flashFirmware', () => {
             expect(action).toEqual(didStart());
 
             // erase first
+
+            action = await saga.take();
+            expect(action).toEqual(alertsShowAlert('firmware', 'releaseButton'));
 
             action = await saga.take();
             expect(action).toEqual(eraseRequest(1, /* isCityHub */ false));
@@ -835,6 +854,7 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
+                toaster: mock<IToaster>(),
             });
 
             // saga is triggered by this action
@@ -884,6 +904,9 @@ describe('flashFirmware', () => {
             expect(action).toEqual(didStart());
 
             // erase first
+
+            action = await saga.take();
+            expect(action).toEqual(alertsShowAlert('firmware', 'releaseButton'));
 
             action = await saga.take();
             expect(action).toEqual(eraseRequest(1, /* isCityHub */ false));
@@ -939,6 +962,7 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
+                toaster: mock<IToaster>(),
             });
 
             // saga is triggered by this action
@@ -988,6 +1012,9 @@ describe('flashFirmware', () => {
             expect(action).toEqual(didStart());
 
             // erase first
+
+            action = await saga.take();
+            expect(action).toEqual(alertsShowAlert('firmware', 'releaseButton'));
 
             action = await saga.take();
             expect(action).toEqual(eraseRequest(1, /* isCityHub */ false));
@@ -1083,6 +1110,7 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
+                toaster: mock<IToaster>(),
             });
 
             // saga is triggered by this action
@@ -1132,6 +1160,9 @@ describe('flashFirmware', () => {
             expect(action).toEqual(didStart());
 
             // erase first
+
+            action = await saga.take();
+            expect(action).toEqual(alertsShowAlert('firmware', 'releaseButton'));
 
             action = await saga.take();
             expect(action).toEqual(eraseRequest(1, /* isCityHub */ false));
@@ -1225,6 +1256,7 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
+                toaster: mock<IToaster>(),
             });
 
             // saga is triggered by this action
@@ -1282,6 +1314,9 @@ describe('flashFirmware', () => {
             expect(action).toEqual(didStart());
 
             // erase first
+
+            action = await saga.take();
+            expect(action).toEqual(alertsShowAlert('firmware', 'releaseButton'));
 
             action = await saga.take();
             expect(action).toEqual(eraseRequest(1, /* isCityHub */ false));
@@ -1374,6 +1409,7 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
+                toaster: mock<IToaster>(),
             });
 
             // saga is triggered by this action
@@ -1421,6 +1457,7 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
+                toaster: mock<IToaster>(),
             });
 
             // saga is triggered by this action
@@ -1467,6 +1504,7 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
+                toaster: mock<IToaster>(),
             });
 
             // saga is triggered by this action
@@ -1527,6 +1565,7 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
+                toaster: mock<IToaster>(),
             });
 
             // saga is triggered by this action
@@ -1588,6 +1627,7 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
+                toaster: mock<IToaster>(),
             });
 
             // saga is triggered by this action
@@ -1652,6 +1692,7 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
+                toaster: mock<IToaster>(),
             });
 
             // saga is triggered by this action
@@ -1741,6 +1782,7 @@ describe('flashFirmware', () => {
 
         const saga = new AsyncSaga(flashFirmware, {
             nextMessageId: createCountFunc(),
+            toaster: mock<IToaster>(),
         });
 
         // saga is triggered by this action
@@ -1792,11 +1834,13 @@ describe('flashFirmware', () => {
         // erase first
 
         action = await saga.take();
+        expect(action).toEqual(alertsShowAlert('firmware', 'releaseButton'));
+
+        action = await saga.take();
         expect(action).toEqual(eraseRequest(1, /* isCityHub */ false));
 
         saga.put(didRequest(1));
         saga.put(eraseResponse(Result.OK));
-
         // then write the new firmware
 
         const totalFirmwareSize = metadata['user-mpy-offset'] + mpySize + 8;
