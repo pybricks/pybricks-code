@@ -4,31 +4,17 @@
 import './activities.scss';
 import { Icon, Tab, Tabs } from '@blueprintjs/core';
 import React, { useCallback, useEffect, useRef } from 'react';
-import { useLocalStorage } from 'usehooks-ts';
 import Explorer from '../explorer/Explorer';
 import Settings from '../settings/Settings';
+import { Activity, useActivitiesSelectedActivity } from './hooks';
 import { useI18n } from './i18n';
-
-/** Indicates the selected activity. */
-export enum Activity {
-    /** No activity is selected. */
-    None = 'activity.none',
-    /** The explorer activity is selected. */
-    Explorer = 'activity.explorer',
-    /** The settings activity is selected. */
-    Settings = 'activity.settings',
-}
 
 /**
  * React component that acts as a tab control to select activities.
  */
 const Activities: React.VoidFunctionComponent = () => {
+    const [selectedActivity, setSelectedActivity] = useActivitiesSelectedActivity();
     const i18n = useI18n();
-
-    const [selectedActivity, setSelectedActivity] = useLocalStorage(
-        'activities.selectedActivity',
-        Activity.Explorer,
-    );
 
     const handleAction = useCallback(
         (newActivity: Activity) => {
@@ -110,6 +96,7 @@ const Activities: React.VoidFunctionComponent = () => {
             ref={tabsRef}
         >
             <Tab
+                itemID="pb-activities-explorer-tab"
                 aria-label={i18n.translate('explorer')}
                 className="pb-activities-tablist-tab"
                 id={Activity.Explorer}
@@ -125,6 +112,7 @@ const Activities: React.VoidFunctionComponent = () => {
                 onMouseDown={(e) => e.stopPropagation()}
             />
             <Tab
+                itemID="pb-activities-settings-tab"
                 aria-label={i18n.translate('settings')}
                 className="pb-activities-tablist-tab"
                 id={Activity.Settings}

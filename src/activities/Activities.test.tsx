@@ -4,7 +4,8 @@
 import { cleanup } from '@testing-library/react';
 import React from 'react';
 import { testRender } from '../../test';
-import Activities, { Activity } from './Activities';
+import Activities from './Activities';
+import { Activity } from './hooks';
 
 afterEach(() => {
     cleanup();

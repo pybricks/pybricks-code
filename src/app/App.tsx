@@ -14,6 +14,7 @@ import { useSettingIsShowDocsEnabled } from '../settings/hooks';
 import StatusBar from '../status-bar/StatusBar';
 import Terminal from '../terminal/Terminal';
 import Toolbar from '../toolbar/Toolbar';
+import Tour from '../tour/Tour';
 import { isMacOS } from '../utils/os';
 
 const Docs: React.VFC = () => {
@@ -196,6 +197,7 @@ const App: React.VFC = () => {
                 </div>
             </div>
             <StatusBar />
+            <Tour />
         </div>
     );
 };

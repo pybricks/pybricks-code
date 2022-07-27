@@ -156,10 +156,12 @@ const FileActionButtonGroup: React.VoidFunctionComponent<ActionButtonGroupProps>
     );
 };
 
+// matches ID in tour component
+const archiveButtonId = 'pb-explorer-archive-button';
+const newButtonId = 'pb-explorer-add-button';
+
 const Header: React.VoidFunctionComponent = () => {
-    const archiveButtonId = useId();
     const exportButtonId = useId();
-    const newButtonId = useId();
     const dispatch = useDispatch();
     const i18n = useI18n();
 

@@ -8,6 +8,8 @@ import React, { useRef } from 'react';
 import { FocusRing, useButton } from 'react-aria';
 
 type ButtonProps = {
+    /** Optional DOM ID for the button. */
+    id?: string;
     /** The label for the button. */
     label: string;
     /** If true, the label will not be visible (will use aria-label instead). */
@@ -28,6 +30,7 @@ type ButtonProps = {
 
 /** Similar to Blueprint.js button with better accessibility. */
 export const Button: React.VoidFunctionComponent<ButtonProps> = ({
+    id,
     label,
     hideLabel,
     description,
@@ -59,6 +62,7 @@ export const Button: React.VoidFunctionComponent<ButtonProps> = ({
             {/* useButton() breaks the native browser :focus-visible :-/ */}
             <FocusRing focusRingClass="pb-focus-ring">
                 <button
+                    id={id}
                     className={classNames(Classes.BUTTON, 'pb-focus-managed', {
                         [Classes.ACTIVE]: isPressed,
                         [Classes.LOADING]: loading,
