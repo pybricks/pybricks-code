@@ -7,7 +7,7 @@
 ### Added
 - Added better error message when no files to backup ([support#681]).
 - Added multi-step firmware flashing dialog.
-- Added support for flashing firmware via USB DFU.
+- Added support for flashing firmware via USB DFU ([support#659]).
 - Added an interactive introductory tour of the app.
 
 ### Changed
@@ -23,6 +23,7 @@
 ### Fixed
 - Fixed deleting files that are not open in the editor.
 
+[support#659]: https://github.com/pybricks/support/issues/659
 [support#681]: https://github.com/pybricks/support/issues/681
 
 ## [2.0.0-beta.3] - 2022-07-06
