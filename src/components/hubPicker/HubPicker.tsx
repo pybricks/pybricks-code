@@ -3,21 +3,16 @@
 
 import { Radio, RadioGroup } from '@blueprintjs/core';
 import React from 'react';
+import { useHubPickerSelectedHub } from './hooks';
 import { Hub } from '.';
 
-type HubPickerProps = {
-    hubType: Hub;
-    onChange: (hubType: Hub) => void;
-};
+export const HubPicker: React.VoidFunctionComponent = () => {
+    const [selectedHub, setSelectedHub] = useHubPickerSelectedHub();
 
-export const HubPicker: React.VoidFunctionComponent<HubPickerProps> = ({
-    hubType,
-    onChange,
-}) => {
     return (
         <RadioGroup
-            selectedValue={hubType}
-            onChange={(e) => onChange(e.currentTarget.value as Hub)}
+            selectedValue={selectedHub}
+            onChange={(e) => setSelectedHub(e.currentTarget.value as Hub)}
         >
             <Radio value={Hub.Move}>BOOST Move Hub</Radio>
             <Radio value={Hub.City}>City Hub</Radio>

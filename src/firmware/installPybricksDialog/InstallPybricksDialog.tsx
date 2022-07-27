@@ -39,6 +39,7 @@ import {
     hubHasUSB,
 } from '../../components/hubPicker';
 import { HubPicker } from '../../components/hubPicker/HubPicker';
+import { useHubPickerSelectedHub } from '../../components/hubPicker/hooks';
 import { FileMetadata } from '../../fileStorage';
 import { useFileStorageMetadata } from '../../fileStorage/hooks';
 import { useSelector } from '../../reducers';
@@ -57,21 +58,13 @@ const dialogBody = classNames(
     'pb-firmware-installPybricksDialog-body',
 );
 
-type SelectHubPanelProps = {
-    hubType: Hub;
-    onChange: (hubType: Hub) => void;
-};
-
-const SelectHubPanel: React.VoidFunctionComponent<SelectHubPanelProps> = ({
-    hubType,
-    onChange,
-}) => {
+const SelectHubPanel: React.VoidFunctionComponent = () => {
     const i18n = useI18n();
 
     return (
         <div className={dialogBody}>
             <p>{i18n.translate('selectHubPanel.message')}</p>
-            <HubPicker hubType={hubType} onChange={onChange} />
+            <HubPicker />
             <Popover2
                 popoverClassName={Classes2.POPOVER2_CONTENT_SIZING}
                 placement="right-end"
@@ -436,16 +429,14 @@ const BootloaderModePanel: React.VoidFunctionComponent<BootloaderModePanelProps>
     );
 };
 
-const defaultHubType = Hub.Technic;
-
 export const InstallPybricksDialog: React.VoidFunctionComponent = () => {
     const { isOpen } = useSelector((s) => s.firmware.installPybricksDialog);
     const dispatch = useDispatch();
-    const [hubType, setHubType] = useState(defaultHubType);
     const [hubName, setHubName] = useState('');
     const [includeProgram, setIncludeProgram] = useState(false);
     const [selectedIncludeFile, setSelectedIncludeFile] = useState<FileMetadata>();
     const [licenseAccepted, setLicenseAccepted] = useState(false);
+    const [hubType] = useHubPickerSelectedHub();
     const { data } = useFirmware(hubType);
     const i18n = useI18n();
 
@@ -470,7 +461,7 @@ export const InstallPybricksDialog: React.VoidFunctionComponent = () => {
             <DialogStep
                 id="hub"
                 title={i18n.translate('selectHubPanel.title')}
-                panel={<SelectHubPanel hubType={hubType} onChange={setHubType} />}
+                panel={<SelectHubPanel />}
                 nextButtonProps={{ text: i18n.translate('nextButton.label') }}
             />
             <DialogStep
