@@ -4,6 +4,11 @@
 
 ## [Unreleased]
 
+### Fixed
+- Fixed `main.[hash].js` not cached ([support#689]).
+
+[support#689]: https://github.com/pybricks/support/issues/689
+
 ## [2.0.0-beta.4] - 2022-07-28
 
 ### Added
