@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [2.0.0-beta.4] - 2022-07-28
+
 ### Added
 - Added better error message when no files to backup ([support#681]).
 - Added multi-step firmware flashing dialog.
