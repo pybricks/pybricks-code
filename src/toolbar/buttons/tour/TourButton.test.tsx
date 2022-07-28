@@ -4,6 +4,7 @@
 import { cleanup } from '@testing-library/react';
 import React from 'react';
 import { testRender } from '../../../../test';
+import { appName } from '../../../app/constants';
 import { HubRuntimeState } from '../../../hub/reducers';
 import { tourStart } from '../../../tour/actions';
 import TourButton from './TourButton';
@@ -17,7 +18,7 @@ it('should dispatch action when clicked', async () => {
         hub: { runtime: HubRuntimeState.Running },
     });
 
-    await user.click(button.getByRole('button', { name: 'Tour Pybricks Code' }));
+    await user.click(button.getByRole('button', { name: `Tour ${appName}` }));
 
     expect(dispatch).toHaveBeenCalledWith(tourStart());
 });
