@@ -4,6 +4,13 @@
 
 ## [Unreleased]
 
+## [2.0.0-beta.5] - 2022-07-28
+
+### Fixed
+- Fixed `main.[hash].js` not cached ([support#689]).
+
+[support#689]: https://github.com/pybricks/support/issues/689
+
 ## [2.0.0-beta.4] - 2022-07-28
 
 ### Added
@@ -344,7 +351,9 @@ Prerelease changes are documented at [support#48].
 
 <!-- links for version headings -->
 
-[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.3...HEAD
+[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.5...HEAD
+[2.0.0-beta.5]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.4...v2.0.0-beta.5
+[2.0.0-beta.4]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.3...v2.0.0-beta.4
 [2.0.0-beta.3]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.2...v2.0.0-beta.3
 [2.0.0-beta.2]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.1...v2.0.0-beta.2
 [2.0.0-beta.1]: https://github.com/pybricks/pybricks-code/compare/v1.2.0-beta.1...v2.0.0-beta.1
