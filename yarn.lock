@@ -1508,9 +1508,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@blueprintjs/core@npm:^4.6.1":
-  version: 4.6.1
-  resolution: "@blueprintjs/core@npm:4.6.1"
+"@blueprintjs/core@npm:^4.6.1, @blueprintjs/core@npm:^4.7.0":
+  version: 4.7.0
+  resolution: "@blueprintjs/core@npm:4.7.0"
   dependencies:
     "@blueprintjs/colors": ^4.1.4
     "@blueprintjs/icons": ^4.4.0
@@ -1529,7 +1529,7 @@ __metadata:
   bin:
     upgrade-blueprint-2.0.0-rename: scripts/upgrade-blueprint-2.0.0-rename.sh
     upgrade-blueprint-3.0.0-rename: scripts/upgrade-blueprint-3.0.0-rename.sh
-  checksum: 1bd2a770821c485c86cfa823c142e753d628257106f8d380dab020e8718cfed7d9ff828b729fed5e8ae97dd0aac7135095c286b3393d7e962a09517d682c7f41
+  checksum: 2ad2609e125ef0100d03fbfe38b462231047281c0378ab153ac6baf77a6a325c0f74141ee4a0dcd529df31fe7f332b42245b3bfa95b441c66c9b6c62ba8c0676
   languageName: node
   linkType: hard
 
@@ -1544,11 +1544,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@blueprintjs/popover2@npm:^1.4.3":
-  version: 1.4.3
-  resolution: "@blueprintjs/popover2@npm:1.4.3"
+"@blueprintjs/popover2@npm:^1.4.3, @blueprintjs/popover2@npm:^1.5.0":
+  version: 1.5.0
+  resolution: "@blueprintjs/popover2@npm:1.5.0"
   dependencies:
-    "@blueprintjs/core": ^4.6.1
+    "@blueprintjs/core": ^4.7.0
     "@juggle/resize-observer": ^3.3.1
     "@popperjs/core": ^2.5.4
     classnames: ^2.2
@@ -1558,7 +1558,7 @@ __metadata:
   peerDependencies:
     react: ^16.8 || 17 || 18
     react-dom: ^16.8 || 17 || 18
-  checksum: 285bdda43cc6803552003b70e79215943a134510d6c76116d7cf5cb901ff83bd73da3a4d7486b5580e72eb18d62d488778248156faf1af4d9ffe43618a537b9c
+  checksum: 1a6f1af8172125c8f412d077cbbf12d6fbaea2fe4b02da7ffc60eb22902eac6a6ae9d74eff6a4d6eb2c9d96c9acc449a91e7b0dcfac91f1290b2973881f987be
   languageName: node
   linkType: hard
 
@@ -2323,7 +2323,7 @@ __metadata:
   dependencies:
     "@babel/core": ^7.18.9
     "@blueprintjs/core": ^4.6.1
-    "@blueprintjs/popover2": ^1.4.3
+    "@blueprintjs/popover2": ^1.5.0
     "@blueprintjs/select": ^4.5.1
     "@pmmmwh/react-refresh-webpack-plugin": ^0.5.7
     "@pybricks/firmware": 5.0.0
