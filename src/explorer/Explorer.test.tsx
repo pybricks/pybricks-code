@@ -106,7 +106,8 @@ describe('tree item', () => {
                 explorer.getByRole('button', { name: 'Duplicate test.file' }),
             );
 
-            await user.click(button);
+            // user.click() has bad interaction with hover so we use user.pointer() instead
+            await user.pointer({ keys: '[MouseLeft]', target: button });
 
             expect(dispatch).toHaveBeenCalledWith(explorerDuplicateFile('test.file'));
 
@@ -139,7 +140,8 @@ describe('tree item', () => {
                 explorer.getByRole('button', { name: 'Rename test.file' }),
             );
 
-            await user.click(button);
+            // user.click() has bad interaction with hover so we use user.pointer() instead
+            await user.pointer({ keys: '[MouseLeft]', target: button });
 
             expect(dispatch).toHaveBeenCalledWith(explorerRenameFile('test.file'));
 
@@ -172,7 +174,8 @@ describe('tree item', () => {
                 explorer.getByRole('button', { name: 'Export test.file' }),
             );
 
-            await user.click(button);
+            // user.click() has bad interaction with hover so we use user.pointer() instead
+            await user.pointer({ keys: '[MouseLeft]', target: button });
 
             expect(dispatch).toHaveBeenCalledWith(explorerExportFile('test.file'));
 
@@ -205,7 +208,8 @@ describe('tree item', () => {
                 explorer.getByRole('button', { name: 'Delete test.file' }),
             );
 
-            await user.click(button);
+            // user.click() has bad interaction with hover so we use user.pointer() instead
+            await user.pointer({ keys: '[MouseLeft]', target: button });
 
             expect(dispatch).toHaveBeenCalledWith(
                 explorerDeleteFile('test.file', uuid(0)),
