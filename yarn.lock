@@ -2360,7 +2360,7 @@ __metadata:
     "@testing-library/dom": ^8.16.0
     "@testing-library/jest-dom": ^5.16.4
     "@testing-library/react": ^12.1.5
-    "@testing-library/user-event": ^14.3.0
+    "@testing-library/user-event": ^14.4.1
     "@types/file-saver": ^2.0.5
     "@types/jest": ^28.1.6
     "@types/node": ^16.11.7
@@ -4231,12 +4231,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/user-event@npm:^14.3.0":
-  version: 14.3.0
-  resolution: "@testing-library/user-event@npm:14.3.0"
+"@testing-library/user-event@npm:^14.4.1":
+  version: 14.4.1
+  resolution: "@testing-library/user-event@npm:14.4.1"
   peerDependencies:
     "@testing-library/dom": ">=7.21.4"
-  checksum: cbd5954460496519cb2ff3fa506ca598d7e4c2e3d2f2e129b21909758f5ec87573aad7d6c79aebffd4bd0ea843315b3064a2a76e545f196bd4c82489cb3afc1d
+  checksum: 01f2318097d64ab99c400a2825680b241451c7d87e69fbda9135b7c896d4205afff46b55b25fcfff47542732d38918c6ca49d2e937892931f6f93346ccbc1950
   languageName: node
   linkType: hard
 
