@@ -6,7 +6,6 @@ import { ThunkAction, configureStore } from '@reduxjs/toolkit';
 import { I18nContext, I18nManager } from '@shopify/react-i18n';
 import { RenderResult, render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { UserEvent } from '@testing-library/user-event/dist/types/setup';
 import React, { ReactElement } from 'react';
 import { Provider } from 'react-redux';
 import { AnyAction, PreloadedState, legacy_createStore as createStore } from 'redux';
@@ -14,6 +13,9 @@ import { END, MulticastChannel, Saga, Task, runSaga, stdChannel } from 'redux-sa
 import { UUID } from '../src/fileStorage';
 import { RootState, rootReducer } from '../src/reducers';
 import { RootSagaContext } from '../src/sagas';
+
+// HACK: not a public type so can't be imported directly
+type UserEvent = ReturnType<typeof userEvent.setup>;
 
 export class AsyncSaga {
     private channel: MulticastChannel<AnyAction>;
