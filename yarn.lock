@@ -2432,7 +2432,7 @@ __metadata:
     monaco-themes: ^0.4.2
     mq-polyfill: 1.1.8
     navigator.locks: ^0.8.5
-    postcss: ^8.4.4
+    postcss: ^8.4.16
     postcss-flexbugs-fixes: ^5.0.2
     postcss-loader: ^7.0.1
     postcss-normalize: ^10.0.1
@@ -12342,14 +12342,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss@npm:^8.2.14, postcss@npm:^8.4.13, postcss@npm:^8.4.14, postcss@npm:^8.4.4, postcss@npm:^8.4.7":
-  version: 8.4.14
-  resolution: "postcss@npm:8.4.14"
+"postcss@npm:^8.2.14, postcss@npm:^8.4.13, postcss@npm:^8.4.14, postcss@npm:^8.4.16, postcss@npm:^8.4.7":
+  version: 8.4.16
+  resolution: "postcss@npm:8.4.16"
   dependencies:
     nanoid: ^3.3.4
     picocolors: ^1.0.0
     source-map-js: ^1.0.2
-  checksum: fe58766ff32e4becf65a7d57678995cfd239df6deed2fe0557f038b47c94e4132e7e5f68b5aa820c13adfec32e523b693efaeb65798efb995ce49ccd83953816
+  checksum: 10eee25efd77868036403858577da0cefaf2e0905feeaba5770d5438ccdddba3d01cba8063e96b8aac4c6daa0ed413dd5ae0554a433a3c4db38df1d134cffc1f
   languageName: node
   linkType: hard
 
