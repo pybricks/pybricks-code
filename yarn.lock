@@ -2448,7 +2448,7 @@ __metadata:
     react-dev-utils: ^12.0.1
     react-dom: ^16.13.1
     react-dropzone: ^14.2.2
-    react-joyride: ^2.5.0
+    react-joyride: ^2.5.1
     react-monaco-editor: ^0.49.0
     react-popper: ^2.3.0
     react-redux: ^8.0.2
@@ -12787,21 +12787,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-floater@npm:^0.7.5":
-  version: 0.7.5
-  resolution: "react-floater@npm:0.7.5"
+"react-floater@npm:^0.7.6":
+  version: 0.7.6
+  resolution: "react-floater@npm:0.7.6"
   dependencies:
     deepmerge: ^4.2.2
     exenv: ^1.2.2
     is-lite: ^0.8.2
     popper.js: ^1.16.0
+    prop-types: ^15.8.1
     react-proptype-conditional-require: ^1.0.4
     tree-changes: ^0.9.1
   peerDependencies:
-    prop-types: ^15.7.2
     react: 15 - 18
     react-dom: 15 - 18
-  checksum: 72d0ccd15d93e08885e9d5ff59be757df198fa48e796b3ce48138e8ba0f393df4b246c18e4887ad62214607f75041366b34c0d4f0edc7e70e774eb236c377698
+  checksum: 8268e14fbdf9393b39300f3c90ea2de382782f1d959176579e30841095a73f9240ec05fce3ec89e8b4e58cbc46c9b043b2ad0b338f5c5d3b91168b16a4282ac1
   languageName: node
   linkType: hard
 
@@ -12826,23 +12826,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-joyride@npm:^2.5.0":
-  version: 2.5.0
-  resolution: "react-joyride@npm:2.5.0"
+"react-joyride@npm:^2.5.1":
+  version: 2.5.1
+  resolution: "react-joyride@npm:2.5.1"
   dependencies:
     deepmerge: ^4.2.2
     exenv: ^1.2.2
     is-lite: ^0.8.2
-    react-floater: ^0.7.5
+    prop-types: ^15.8.1
+    react-floater: ^0.7.6
     react-is: ^16.13.1
     scroll: ^3.0.1
     scrollparent: ^2.0.1
     tree-changes: ^0.9.1
   peerDependencies:
-    prop-types: ^15.0.0
     react: 15 - 18
     react-dom: 15 - 18
-  checksum: 2d15d1b6a6e6e830af0e594b53b5318dd91a3b57f183157404375d1760a36b4f91acf89c69e73fed7ba5d9d0c13bdc23b2ea426a64259635321a4aaa020aae9d
+  checksum: 8ea2e5736c82f4a512b493f4448bf058b3d3a453750813154bcc058d147cfdf31c1dd47ef6389121e01537caa455ea0701657e1fdf3ad46215b34c42c717fc6f
   languageName: node
   linkType: hard
 
