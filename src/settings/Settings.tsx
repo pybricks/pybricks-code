@@ -22,8 +22,6 @@ import {
 import { Button } from '../components/Button';
 import HelpButton from '../components/HelpButton';
 import { firmwareInstallPybricks } from '../firmware/actions';
-import { InstallPybricksDialog } from '../firmware/installPybricksDialog/InstallPybricksDialog';
-import RestoreOfficialDialog from '../firmware/restoreOfficialDialog/RestoreOfficialDialog';
 import { firmwareRestoreOfficialDialogShow } from '../firmware/restoreOfficialDialog/actions';
 import { pseudolocalize } from '../i18n';
 import { useSelector } from '../reducers';
@@ -104,7 +102,6 @@ const Settings: React.VoidFunctionComponent = () => {
                     label={i18n.translate('firmware.flashPybricksButton.label')}
                     onPress={() => dispatch(firmwareInstallPybricks())}
                 />
-                <InstallPybricksDialog />
                 <Button
                     id="pb-settings-flash-official-button"
                     minimal={true}
@@ -112,7 +109,6 @@ const Settings: React.VoidFunctionComponent = () => {
                     label={i18n.translate('firmware.flashLegoButton.label')}
                     onPress={() => dispatch(firmwareRestoreOfficialDialogShow())}
                 />
-                <RestoreOfficialDialog />
             </FormGroup>
             <FormGroup label={i18n.translate('help.title')}>
                 <ButtonGroup minimal={true} vertical={true} alignText="left">
