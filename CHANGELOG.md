@@ -4,6 +4,11 @@
 
 ## [Unreleased]
 
+### Fixed
+- Fixed run button enabled when no file open ([support#691]).
+
+[support#691]: https://github.com/pybricks/support/issues/691
+
 ## [2.0.0-beta.5] - 2022-07-28
 
 ### Fixed
