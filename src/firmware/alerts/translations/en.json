@@ -1,4 +1,9 @@
 {
+    "dfuError": {
+        "message": "A USB error ocurred while flashing the firmware.",
+        "suggestion": "Ensure the USB cable is not damaged and is firmly attached to the hub and to the computer.",
+        "tryAgainButton": "Try again"
+    },
     "noWebUsb": {
         "message": "This browser does not support Web USB or Web USB is not enabled.",
         "suggestion": "Use a supported browser such as Google Chrome or Microsoft Edge."
