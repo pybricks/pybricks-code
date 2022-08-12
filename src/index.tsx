@@ -52,6 +52,7 @@ const store = configureStore({
                     // contain ArrayBuffer or DataView
                     'data',
                     'firmwareZip',
+                    'payload',
                     // Error is not serializable
                     'error',
                 ],
