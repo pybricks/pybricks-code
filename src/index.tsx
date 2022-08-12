@@ -55,6 +55,7 @@ const store = configureStore({
                     'payload',
                     // Error is not serializable
                     'error',
+                    'props.error',
                 ],
             },
         })
