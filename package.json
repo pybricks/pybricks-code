@@ -17,7 +17,7 @@
         "@pybricks/ide-docs": "2.2.0",
         "@pybricks/mpy-cross-v5": "^2.0.0",
         "@pybricks/mpy-cross-v6": "^2.0.0",
-        "@reduxjs/toolkit": "^1.8.3",
+        "@reduxjs/toolkit": "^1.8.4",
         "@shopify/react-i18n": "^7.2.0",
         "@svgr/webpack": "^6.3.1",
         "@testing-library/dom": "^8.17.1",
