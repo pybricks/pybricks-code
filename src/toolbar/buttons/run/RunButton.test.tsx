@@ -3,7 +3,7 @@
 
 import { cleanup } from '@testing-library/react';
 import React from 'react';
-import { testRender } from '../../../../test';
+import { testRender, uuid } from '../../../../test';
 import { downloadAndRun } from '../../../hub/actions';
 import { HubRuntimeState } from '../../../hub/reducers';
 import RunButton from './RunButton';
@@ -14,7 +14,7 @@ afterEach(() => {
 
 it('should dispatch action when clicked', async () => {
     const [user, button, dispatch] = testRender(<RunButton id="test-run-button" />, {
-        editor: { isReady: true },
+        editor: { activeFileUuid: uuid(0) },
         hub: { runtime: HubRuntimeState.Idle },
     });
 

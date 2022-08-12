@@ -10,6 +10,8 @@ import SplitterLayout from 'react-splitter-layout';
 import { useLocalStorage, useTernaryDarkMode } from 'usehooks-ts';
 import Activities from '../activities/Activities';
 import Editor from '../editor/Editor';
+import { InstallPybricksDialog } from '../firmware/installPybricksDialog/InstallPybricksDialog';
+import RestoreOfficialDialog from '../firmware/restoreOfficialDialog/RestoreOfficialDialog';
 import { useSettingIsShowDocsEnabled } from '../settings/hooks';
 import StatusBar from '../status-bar/StatusBar';
 import Terminal from '../terminal/Terminal';
@@ -198,6 +200,8 @@ const App: React.VFC = () => {
             </div>
             <StatusBar />
             <Tour />
+            <InstallPybricksDialog />
+            <RestoreOfficialDialog />
         </div>
     );
 };

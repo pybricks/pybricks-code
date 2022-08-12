@@ -13,6 +13,7 @@ import moveHubZip from '@pybricks/firmware/build/movehub.zip';
 import technicHubZip from '@pybricks/firmware/build/technichub.zip';
 import { WebDFU } from 'dfu';
 import { AnyAction } from 'redux';
+import { eventChannel } from 'redux-saga';
 import { ActionPattern } from 'redux-saga/effects';
 import {
     SagaGenerator,
@@ -27,7 +28,7 @@ import {
     take,
     takeEvery,
 } from 'typed-redux-saga/macro';
-import { alertsShowAlert } from '../alerts/actions';
+import { alertsDidShowAlert, alertsShowAlert } from '../alerts/actions';
 import {
     fileStorageDidFailToReadFile,
     fileStorageDidReadFile,
@@ -595,6 +596,8 @@ const productIdMap: ReadonlyMap<LegoUsbProductId, HubType> = new Map([
 // currently all hubs use the same start address
 const dfuFirmwareStartAddress = 0x08008000;
 
+const firmwareDfuProgressToastId = 'firmware.dfu.progress';
+
 function* handleFlashUsbDfu(action: ReturnType<typeof firmwareFlashUsbDfu>): Generator {
     const defer = new Array<() => void>();
 
@@ -671,7 +674,20 @@ function* handleFlashUsbDfu(action: ReturnType<typeof firmwareFlashUsbDfu>): Gen
 
         yield* call(() => dfu.connect(ifaceIndex));
 
-        defer.push(() => dfu.close());
+        defer.push(() =>
+            dfu.close().catch((err) => {
+                if (
+                    err instanceof DOMException &&
+                    err.code === DOMException.NETWORK_ERR
+                ) {
+                    // device was disconnected
+                    return;
+                }
+
+                // not expected
+                console.log(err);
+            }),
+        );
 
         const { firmware, deviceId } = yield* loadFirmware(
             action.data,
@@ -690,35 +706,85 @@ function* handleFlashUsbDfu(action: ReturnType<typeof firmwareFlashUsbDfu>): Gen
 
         const toaster = yield* getContext<IToaster>('toaster');
 
-        writeProc.events.on('erase/process', (sent, total) => {
-            toaster.show(
-                flashProgress(() => undefined, {
-                    action: 'erase',
-                    progress: sent / total,
-                }),
-                'firmware.dfu.progress',
-            );
+        defer.push(
+            writeProc.events.on('erase/process', (sent, total) => {
+                toaster.show(
+                    flashProgress(() => undefined, {
+                        action: 'erase',
+                        progress: sent / total,
+                    }),
+                    firmwareDfuProgressToastId,
+                );
+            }),
+        );
+
+        defer.push(
+            writeProc.events.on('write/process', (sent, total) => {
+                toaster.show(
+                    flashProgress(() => undefined, {
+                        action: 'flash',
+                        progress: sent / total,
+                    }),
+                    firmwareDfuProgressToastId,
+                );
+            }),
+        );
+
+        const endChan = eventChannel<boolean>((emit) => {
+            // can't emit null or undefined, so have to emit something
+            return writeProc.events.on('end', () => emit(true));
         });
 
-        writeProc.events.on('write/process', (sent, total) => {
-            toaster.show(
-                flashProgress(() => undefined, {
-                    action: 'flash',
-                    progress: sent / total,
-                }),
-                'firmware.dfu.progress',
-            );
+        defer.push(() => endChan.close());
+
+        const errorChan = eventChannel((emit) => {
+            return writeProc.events.on('error', emit);
         });
 
-        writeProc.events.on('error', console.error);
+        defer.push(() => errorChan.close());
 
-        // REVISIT: we could possibly race the 'write/end' and 'error' events
-        // here instead of waiting for disconnect
+        const { error } = yield* (function* () {
+            // HACK: Somehow an error during the write phase can cause the
+            // race generator to throw instead of returning the error.
+            // So we catch the error and return it as if errorChan won the
+            // race.
+            try {
+                return yield* race({
+                    end: take(endChan),
+                    error: take(errorChan),
+                });
+            } catch (err) {
+                return { error: err };
+            }
+        })();
 
-        // this is a bit of a hack, but the hub resets when flashing is done
-        // so we get a disconnect event unless there was an error, so the user
-        // will probably see the timeout error instead of the underlying error
-        yield* call(() => dfu.waitDisconnected(30000));
+        // errors can happen, e.g. if the USB cable is disconnected while
+        // flashing the firmware
+        if (error) {
+            if (process.env.NODE_ENV !== 'test') {
+                console.error(error);
+            }
+
+            toaster.dismiss(firmwareDfuProgressToastId);
+            yield* put(firmwareDidFailToFlashUsbDfu());
+
+            yield* put(alertsShowAlert('firmware', 'dfuError'));
+
+            const { action: alertAction } = yield* take<
+                ReturnType<typeof alertsDidShowAlert<'firmware', 'dfuError'>>
+            >(
+                alertsDidShowAlert.when(
+                    (a) => a.domain === 'firmware' && a.specific === 'dfuError',
+                ),
+            );
+
+            if (alertAction === 'tryAgain') {
+                // queue the action that triggered this saga to retry
+                yield* put(action);
+            }
+
+            return;
+        }
 
         yield* put(firmwareDidFlashUsbDfu());
     } catch (err) {

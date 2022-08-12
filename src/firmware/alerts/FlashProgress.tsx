@@ -35,9 +35,7 @@ const FlashProgress: React.VoidFunctionComponent<FlashProgressProps> = ({
                 </p>
             )}
 
-            <p>
-                <ProgressBar value={progress} />
-            </p>
+            <ProgressBar value={progress} />
         </>
     );
 };
