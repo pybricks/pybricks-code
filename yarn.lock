@@ -1523,9 +1523,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@blueprintjs/core@npm:^4.8.0, @blueprintjs/core@npm:^4.9.0":
-  version: 4.9.0
-  resolution: "@blueprintjs/core@npm:4.9.0"
+"@blueprintjs/core@npm:^4.8.0, @blueprintjs/core@npm:^4.9.0, @blueprintjs/core@npm:^4.9.1":
+  version: 4.9.1
+  resolution: "@blueprintjs/core@npm:4.9.1"
   dependencies:
     "@blueprintjs/colors": ^4.1.5
     "@blueprintjs/icons": ^4.4.1
@@ -1544,7 +1544,7 @@ __metadata:
   bin:
     upgrade-blueprint-2.0.0-rename: scripts/upgrade-blueprint-2.0.0-rename.sh
     upgrade-blueprint-3.0.0-rename: scripts/upgrade-blueprint-3.0.0-rename.sh
-  checksum: 6df72d34887865149a5d466d2efb44faed6a2e2ca22abc928e97a36a21e8553165dd29dd7d6f1a807c0b1c03f5d1b81667f44670d10f2c30c3f6c9bd2bf4e0ec
+  checksum: 730c0410e890020214ec918625794131a1295a74b06c287ca282df114d4159c15294763b2a0d517812754a131ccdf3c8e8f987a992b05caea67a6a67019555b1
   languageName: node
   linkType: hard
 
@@ -1559,11 +1559,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@blueprintjs/popover2@npm:^1.6.0":
-  version: 1.6.0
-  resolution: "@blueprintjs/popover2@npm:1.6.0"
+"@blueprintjs/popover2@npm:^1.6.0, @blueprintjs/popover2@npm:^1.6.1":
+  version: 1.6.1
+  resolution: "@blueprintjs/popover2@npm:1.6.1"
   dependencies:
-    "@blueprintjs/core": ^4.9.0
+    "@blueprintjs/core": ^4.9.1
     "@juggle/resize-observer": ^3.3.1
     "@popperjs/core": ^2.5.4
     classnames: ^2.2
@@ -1573,7 +1573,7 @@ __metadata:
   peerDependencies:
     react: ^16.8 || 17 || 18
     react-dom: ^16.8 || 17 || 18
-  checksum: 64cd31ae32814d80c323b101bbf59b641ab4a500a9caf32238382e477a4e0b0aa2e7df17e432b2caf7621167cc234f0a0447e680d3983219fa6223aae4f031f9
+  checksum: 0be0ee88488a7334a4aa83fab84a568b79e51ebe627017c74ff4ea97533f8efdbfea7b547e0f24e193fad6225f627397abb6758a84fc03a597947003e234540b
   languageName: node
   linkType: hard
 
@@ -2386,7 +2386,7 @@ __metadata:
   dependencies:
     "@babel/core": ^7.18.13
     "@blueprintjs/core": ^4.8.0
-    "@blueprintjs/popover2": ^1.6.0
+    "@blueprintjs/popover2": ^1.6.1
     "@blueprintjs/select": ^4.6.0
     "@pmmmwh/react-refresh-webpack-plugin": ^0.5.7
     "@pybricks/firmware": 5.0.0
