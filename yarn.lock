@@ -2440,7 +2440,7 @@ __metadata:
     "@pybricks/mpy-cross-v5": ^2.0.0
     "@pybricks/mpy-cross-v6": ^2.0.0
     "@reduxjs/toolkit": ^1.8.5
-    "@shopify/react-i18n": ^7.2.0
+    "@shopify/react-i18n": ^7.2.1
     "@svgr/webpack": ^6.3.1
     "@testing-library/dom": ^8.17.1
     "@testing-library/jest-dom": ^5.16.5
@@ -3985,70 +3985,70 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@shopify/dates@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@shopify/dates@npm:2.0.0"
+"@shopify/dates@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "@shopify/dates@npm:2.0.1"
   dependencies:
-    "@shopify/decorators": ^3.0.0
-  checksum: fe63a53a9155b4ba4d16136be92445deb206e71320a0602ac373c5067c7cfa31a1ca50806e69bf7e610eec44c49ca0bdd85bd70944d1fb98931113f016458046
+    "@shopify/decorators": ^3.0.1
+  checksum: 2b268f13c6563b906ac0a26c445e39334e5070d699b8884ce112aa0328174ee7a64a18454045e85a7a7fff12084c9b38ee7dad6abad91abbefc35059a95842bb
   languageName: node
   linkType: hard
 
-"@shopify/decorators@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@shopify/decorators@npm:3.0.0"
+"@shopify/decorators@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "@shopify/decorators@npm:3.0.1"
   dependencies:
-    "@shopify/function-enhancers": ^3.0.0
-  checksum: fdeef94001fc2daca36508ee1f6e1196833bc02599c0f91b8e00370b7098edac786c33db34711d150f72c043154ae3fed65c99402a0b074748019de7e8c19160
+    "@shopify/function-enhancers": ^3.0.1
+  checksum: f3c0706f899d2a5a92a9568337fc4f459500af2f4ba61f936a7b4b45fb91a0490520010c330676a675156bb22bafd75704c049552a938c888a832605a5e3d070
   languageName: node
   linkType: hard
 
-"@shopify/function-enhancers@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@shopify/function-enhancers@npm:3.0.0"
-  checksum: ce0692216ca442f91165b5fdcdb48737806afe90517e333985ce949cda9017b646ee893005af3013c27151775f701a832e00f0f67c6aad06148abed337d2af81
+"@shopify/function-enhancers@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "@shopify/function-enhancers@npm:3.0.1"
+  checksum: caad8b1909c21520999f74706faec0c46deb3db9c7250ac05f723b30cd599098900bd4188b81acc4a18c7209205d982ac77a56620c014dc196bff85548e3cc47
   languageName: node
   linkType: hard
 
-"@shopify/i18n@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@shopify/i18n@npm:2.0.0"
-  checksum: 60f784e377acf3ee12efd83af2d35bc4deffb88e770123a72dff6909ebfbbe752231d328b2479b322f0454163336ebcd2c39e0664c92e297d130eefe9709a413
+"@shopify/i18n@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "@shopify/i18n@npm:2.0.1"
+  checksum: 9e9dffae6da4d181952b0a7b30c712d9cad9bca03d2b332ff96d3b49a07e6f9d5c512953bfd1b438513c99b644a70598786be6a447a3e355cb917ea74d08fc8b
   languageName: node
   linkType: hard
 
-"@shopify/react-effect@npm:^5.0.1":
-  version: 5.0.1
-  resolution: "@shopify/react-effect@npm:5.0.1"
+"@shopify/react-effect@npm:^5.0.2":
+  version: 5.0.2
+  resolution: "@shopify/react-effect@npm:5.0.2"
   peerDependencies:
     react: ">=16.8.0 <19.0.0"
     react-dom: ">=16.8.0 <19.0.0"
-  checksum: 15a6068bc4f3cbfc0070bc3e381d21cd7d46b1dbba021d66408fd424769930d8f3d7d6eba954670925ecbf0fae3c726846ccebdb4e91f4437c9c0f90ff4071de
+  checksum: 6bbdca4a2e1c802c8c08011bd4781836dc0a5ecf9c0a9c61051df613220fadad026afa62e3cde44279ae1c4c44ea49241f9cfa883ec03a7092c80bdae8f48969
   languageName: node
   linkType: hard
 
-"@shopify/react-hooks@npm:^3.0.1":
-  version: 3.0.1
-  resolution: "@shopify/react-hooks@npm:3.0.1"
+"@shopify/react-hooks@npm:^3.0.2":
+  version: 3.0.2
+  resolution: "@shopify/react-hooks@npm:3.0.2"
   peerDependencies:
     react: ">=16.8.0 <19.0.0"
-  checksum: c9e1ac1552b43c482867877fc278a96dafc102861efdf23519ac30055896df310ae5f7b238d841d102eb6ebfe5850f81cae3bd87be8a3f011e78a8de59d55a6b
+  checksum: ffa87eb6f735ffc19d468272863c8a2ae80fa2c4154e2c392718da3eb34f83515b8f1a8843b80853b80cb2a53e95296f3db4aee222ba181b43f5a3b82eec43c9
   languageName: node
   linkType: hard
 
-"@shopify/react-i18n@npm:^7.2.0":
-  version: 7.2.0
-  resolution: "@shopify/react-i18n@npm:7.2.0"
+"@shopify/react-i18n@npm:^7.2.1":
+  version: 7.2.1
+  resolution: "@shopify/react-i18n@npm:7.2.1"
   dependencies:
     "@babel/template": ^7.0.0
     "@babel/traverse": ^7.0.0
-    "@shopify/dates": ^2.0.0
-    "@shopify/decorators": ^3.0.0
-    "@shopify/function-enhancers": ^3.0.0
-    "@shopify/i18n": ^2.0.0
-    "@shopify/react-effect": ^5.0.1
-    "@shopify/react-hooks": ^3.0.1
-    "@shopify/useful-types": ^5.1.0
+    "@shopify/dates": ^2.0.1
+    "@shopify/decorators": ^3.0.1
+    "@shopify/function-enhancers": ^3.0.1
+    "@shopify/i18n": ^2.0.1
+    "@shopify/react-effect": ^5.0.2
+    "@shopify/react-hooks": ^3.0.2
+    "@shopify/useful-types": ^5.1.1
     "@types/hoist-non-react-statics": ^3.0.1
     change-case: ^4.1.2
     fs-extra: ^9.1.0
@@ -4067,14 +4067,14 @@ __metadata:
       optional: true
     fs-extra:
       optional: true
-  checksum: a41fcd3e92027c8f562be2abc580c14a9f0ff5b6aab87e41dada01fd241ded3a0f01b41a199b0d9b4a1189f8cb05a22e2ab004a7e897a0e88a8971069e627bd3
+  checksum: f344d6a0dfd568ca4dfa6ee3f9ea491c894dc524233b6515e89ca6b972167a587ce6fbf145c24049fa3c2b0998cdaf7878575d413b7c6c416ec93aa5b6fc0ec4
   languageName: node
   linkType: hard
 
-"@shopify/useful-types@npm:^5.1.0":
-  version: 5.1.0
-  resolution: "@shopify/useful-types@npm:5.1.0"
-  checksum: 6c4bb3afa0151a0afdd5471e8434df21ef540ea5ef904fd71359c27a3183f72f108a70743c5280043bb71f752a61b3ae6954977d050501438a60c0a465e70465
+"@shopify/useful-types@npm:^5.1.1":
+  version: 5.1.1
+  resolution: "@shopify/useful-types@npm:5.1.1"
+  checksum: 9b1139519366859f41a9c37aa5ca9f83247be41913b1f41c86a8bb482b4ecee1f1695b349e21baaaad6348ef5712259c19ea1922d99d5bc3b7af4748478efcb7
   languageName: node
   linkType: hard
 
