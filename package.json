@@ -67,7 +67,7 @@
         "jest-environment-jsdom": "^29.0.1",
         "jest-mock-extended": "^2.0.7",
         "jest-resolve": "^29.0.0",
-        "jest-watch-typeahead": "^2.0.0",
+        "jest-watch-typeahead": "^2.1.1",
         "jszip": "^3.10.1",
         "license-webpack-plugin": "^3.0.0",
         "mini-css-extract-plugin": "^2.6.1",
