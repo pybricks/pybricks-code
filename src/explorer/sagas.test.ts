@@ -82,6 +82,10 @@ import {
     renameFileDialogDidCancel,
     renameFileDialogShow,
 } from './renameFileDialog/actions';
+import {
+    renameImportDialogDidAccept,
+    renameImportDialogShow,
+} from './renameImportDialog/actions';
 import explorer from './sagas';
 
 jest.mock('browser-fs-access');
@@ -223,6 +227,40 @@ describe('handleExplorerImportFiles', () => {
 
         const action = await saga.take();
         expect(action).toEqual(explorerDidFailToImportFiles(cancelError));
+
+        await saga.end();
+    });
+
+    it('should handle invalid file name', async () => {
+        const testFileName = 'bad#name.py';
+        const testFileContents = '# test';
+
+        const saga = new AsyncSaga(explorer);
+
+        jest.spyOn(browserFsAccess, 'fileOpen').mockResolvedValueOnce([
+            mock<FileWithHandle>({
+                name: testFileName,
+                text: () => Promise.resolve(testFileContents),
+            }),
+        ]);
+
+        saga.put(explorerImportFiles());
+
+        await expect(saga.take()).resolves.toEqual(
+            renameImportDialogShow(testFileName),
+        );
+
+        const renamedFileName = 'good_name.py';
+
+        saga.put(renameImportDialogDidAccept(testFileName, renamedFileName));
+
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageWriteFile(renamedFileName, testFileContents),
+        );
+
+        saga.put(fileStorageDidWriteFile(renamedFileName, uuid(0)));
+
+        await expect(saga.take()).resolves.toEqual(explorerDidImportFiles());
 
         await saga.end();
     });

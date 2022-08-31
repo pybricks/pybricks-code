@@ -8,10 +8,12 @@
 - Fixed run button enabled when no file open ([support#691]).
 - Fixed flash firmware dialog not showing when settings not open ([support#694]).
 - Fixed errors not handled while flashing firmware via USB ([pybricks-code#1011]).
+- Fixed imports with invalid file name silently ignored ([support#717]).
 
 [pybricks-code#1011]: https://github.com/pybricks/pybricks-code/issues/1011
 [support#691]: https://github.com/pybricks/support/issues/691
 [support#694]: https://github.com/pybricks/support/issues/694
+[support#717]: https://github.com/pybricks/support/issues/717
 
 ## [2.0.0-beta.5] - 2022-07-28
 
