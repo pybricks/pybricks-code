@@ -45,6 +45,7 @@ import DuplicateFileDialog from './duplicateFileDialog/DuplicateFileDialog';
 import { useI18n } from './i18n';
 import NewFileWizard from './newFileWizard/NewFileWizard';
 import RenameFileDialog from './renameFileDialog/RenameFileDialog';
+import RenameImportDialog from './renameImportDialog/RenameImportDialog';
 
 type ActionButtonProps = {
     /** The DOM id for this instance. */
@@ -417,6 +418,7 @@ const Explorer: React.VFC = () => {
             <FileTree />
             <NewFileWizard />
             <RenameFileDialog />
+            <RenameImportDialog />
             <DuplicateFileDialog />
             <DeleteFileAlert />
         </div>

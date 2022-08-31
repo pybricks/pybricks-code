@@ -89,6 +89,11 @@ import {
     renameFileDialogDidCancel,
     renameFileDialogShow,
 } from './renameFileDialog/actions';
+import {
+    renameImportDialogDidAccept,
+    renameImportDialogDidCancel,
+    renameImportDialogShow,
+} from './renameImportDialog/actions';
 
 function* handleExplorerArchiveAllFiles(): Generator {
     try {
@@ -166,20 +171,26 @@ function* handleExplorerImportFiles(): Generator {
             const text = yield* call(() => file.text());
 
             const [baseName] = file.name.split(pythonFileExtensionRegex);
+            let fileName = `${baseName}${pythonFileExtension}`;
 
             const result = validateFileName(baseName, pythonFileExtension, []);
 
             if (result != FileNameValidationResult.IsOk) {
-                // TODO: validate file name and allow user to rename or skip
-                console.error(
-                    'skipping file',
-                    file.name,
-                    FileNameValidationResult[result],
-                );
-                continue;
-            }
+                yield* put(renameImportDialogShow(file.name));
 
-            const fileName = `${baseName}${pythonFileExtension}`;
+                const { accepted, cancelled } = yield* race({
+                    accepted: take(renameImportDialogDidAccept),
+                    cancelled: take(renameImportDialogDidCancel),
+                });
+
+                if (cancelled) {
+                    continue;
+                }
+
+                defined(accepted);
+
+                fileName = accepted.newName;
+            }
 
             yield* put(fileStorageWriteFile(fileName, text));
 
