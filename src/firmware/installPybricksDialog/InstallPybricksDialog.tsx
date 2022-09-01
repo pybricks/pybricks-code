@@ -11,7 +11,6 @@ import {
     ControlGroup,
     DialogStep,
     FormGroup,
-    IRef,
     Icon,
     InputGroup,
     Intent,
@@ -129,7 +128,7 @@ const SelectHubPanel: React.VoidFunctionComponent = () => {
                 }
                 renderTarget={({ isOpen: _isOpen, ref, ...targetProps }) => (
                     <Button
-                        elementRef={ref as IRef<HTMLButtonElement>}
+                        elementRef={ref as React.Ref<HTMLButtonElement>}
                         {...targetProps}
                     >
                         {i18n.translate('selectHubPanel.notOnListButton.label')}
