@@ -59,6 +59,64 @@ const dialogBody = classNames(
     'pb-firmware-installPybricksDialog-body',
 );
 
+const UnsupportedHubs: React.VoidFunctionComponent = () => {
+    const i18n = useI18n();
+
+    return (
+        <div className={Classes.RUNNING_TEXT}>
+            <h4>
+                {i18n.translate('selectHubPanel.notOnListButton.info.mindstorms.title')}
+            </h4>
+            <ul>
+                <li>
+                    {i18n.translate(
+                        'selectHubPanel.notOnListButton.info.mindstorms.rcx',
+                    )}
+                </li>
+                <li>
+                    {i18n.translate(
+                        'selectHubPanel.notOnListButton.info.mindstorms.nxt',
+                    )}
+                </li>
+                <li>
+                    {i18n.translate(
+                        'selectHubPanel.notOnListButton.info.mindstorms.ev3',
+                    )}
+                </li>
+            </ul>
+            <h4>
+                {i18n.translate('selectHubPanel.notOnListButton.info.poweredUp.title')}
+            </h4>
+            <ul>
+                <li>
+                    {i18n.translate(
+                        'selectHubPanel.notOnListButton.info.poweredUp.wedo2',
+                    )}
+                    <em>*</em>
+                </li>
+                <li>
+                    {i18n.translate(
+                        'selectHubPanel.notOnListButton.info.poweredUp.duploTrain',
+                    )}
+                    <em>*</em>
+                </li>
+                <li>
+                    {i18n.translate(
+                        'selectHubPanel.notOnListButton.info.poweredUp.mario',
+                    )}
+                </li>
+            </ul>
+
+            <em>
+                *{' '}
+                {i18n.translate(
+                    'selectHubPanel.notOnListButton.info.poweredUp.footnote',
+                )}
+            </em>
+        </div>
+    );
+};
+
 const SelectHubPanel: React.VoidFunctionComponent = () => {
     const i18n = useI18n();
 
@@ -69,63 +127,7 @@ const SelectHubPanel: React.VoidFunctionComponent = () => {
             <Popover2
                 popoverClassName={Classes2.POPOVER2_CONTENT_SIZING}
                 placement="right-end"
-                content={
-                    <div className={Classes.RUNNING_TEXT}>
-                        <h4>
-                            {i18n.translate(
-                                'selectHubPanel.notOnListButton.info.mindstorms.title',
-                            )}
-                        </h4>
-                        <ul>
-                            <li>
-                                {i18n.translate(
-                                    'selectHubPanel.notOnListButton.info.mindstorms.rcx',
-                                )}
-                            </li>
-                            <li>
-                                {i18n.translate(
-                                    'selectHubPanel.notOnListButton.info.mindstorms.nxt',
-                                )}
-                            </li>
-                            <li>
-                                {i18n.translate(
-                                    'selectHubPanel.notOnListButton.info.mindstorms.ev3',
-                                )}
-                            </li>
-                        </ul>
-                        <h4>
-                            {i18n.translate(
-                                'selectHubPanel.notOnListButton.info.poweredUp.title',
-                            )}
-                        </h4>
-                        <ul>
-                            <li>
-                                {i18n.translate(
-                                    'selectHubPanel.notOnListButton.info.poweredUp.wedo2',
-                                )}
-                                <em>*</em>
-                            </li>
-                            <li>
-                                {i18n.translate(
-                                    'selectHubPanel.notOnListButton.info.poweredUp.duploTrain',
-                                )}
-                                <em>*</em>
-                            </li>
-                            <li>
-                                {i18n.translate(
-                                    'selectHubPanel.notOnListButton.info.poweredUp.mario',
-                                )}
-                            </li>
-                        </ul>
-
-                        <em>
-                            *{' '}
-                            {i18n.translate(
-                                'selectHubPanel.notOnListButton.info.poweredUp.footnote',
-                            )}
-                        </em>
-                    </div>
-                }
+                content={<UnsupportedHubs />}
                 renderTarget={({ isOpen: _isOpen, ref, ...targetProps }) => (
                     <Button
                         elementRef={ref as React.Ref<HTMLButtonElement>}
