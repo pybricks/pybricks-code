@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2021-2022 The Pybricks Authors
 
-import { IToaster } from '@blueprintjs/core';
+import { ToasterInstance } from '@blueprintjs/core';
 import { FirmwareReaderError, FirmwareReaderErrorCode } from '@pybricks/firmware';
 import { I18nManager } from '@shopify/react-i18n';
 import { AnyAction } from 'redux';
@@ -37,7 +37,7 @@ import { add } from './actions';
 import { I18nId } from './i18n';
 import notification from './sagas';
 
-function createTestToasterSaga(): { toaster: IToaster; saga: AsyncSaga } {
+function createTestToasterSaga(): { toaster: ToasterInstance; saga: AsyncSaga } {
     const i18n = new I18nManager({ locale: 'en' });
     const toaster = i18nToaster.create(i18n);
 

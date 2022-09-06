@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2022 The Pybricks Authors
 
-import { IToastProps } from '@blueprintjs/core';
+import { ToastProps } from '@blueprintjs/core';
 import alerts from './alerts/alerts';
 import ble from './ble/alerts';
 import explorer from './explorer/alerts';
@@ -79,7 +79,7 @@ export function getAlertProps<D extends AlertDomain, S extends AlertSpecific<D>>
     specific: S,
     onAlert: AlertCallback<D, S>,
     props: AlertProps<D, S>,
-): IToastProps {
+): ToastProps {
     const create = alertDomains[domain][specific] as unknown as CreateToast<
         Record<string, unknown> | never,
         string
