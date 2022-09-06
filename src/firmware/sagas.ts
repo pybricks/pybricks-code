@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2022 The Pybricks Authors
 
-import { IToaster } from '@blueprintjs/core';
+import { ToasterInstance } from '@blueprintjs/core';
 import {
     FirmwareReader,
     FirmwareReaderError,
@@ -95,7 +95,7 @@ const firmwareZipMap = new Map<HubType, string>([
  * parent task).
  */
 function* disconnectAndCancel(): SagaGenerator<void> {
-    const toaster = yield* getContext<IToaster>('toaster');
+    const toaster = yield* getContext<ToasterInstance>('toaster');
 
     toaster.dismiss('firmware.ble.progress');
 
@@ -333,7 +333,7 @@ function* loadFirmware(
  * @param action The action that triggered this saga.
  */
 function* handleFlashFirmware(action: ReturnType<typeof flashFirmware>): Generator {
-    const toaster = yield* getContext<IToaster>('toaster');
+    const toaster = yield* getContext<ToasterInstance>('toaster');
 
     try {
         let firmware: Uint8Array | undefined = undefined;
@@ -704,7 +704,7 @@ function* handleFlashUsbDfu(action: ReturnType<typeof firmwareFlashUsbDfu>): Gen
         dfu.dfuseStartAddress = dfuFirmwareStartAddress;
         const writeProc = dfu.write(1024, firmware, true);
 
-        const toaster = yield* getContext<IToaster>('toaster');
+        const toaster = yield* getContext<ToasterInstance>('toaster');
 
         defer.push(
             writeProc.events.on('erase/process', (sent, total) => {

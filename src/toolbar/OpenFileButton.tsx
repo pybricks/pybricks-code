@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2022 The Pybricks Authors
 
-import { Button, IRef, Intent, Spinner, SpinnerSize } from '@blueprintjs/core';
+import { Button, Intent, Spinner, SpinnerSize } from '@blueprintjs/core';
 import { Tooltip2 } from '@blueprintjs/popover2';
 import React, { useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
@@ -116,7 +116,7 @@ const OpenFileButton: React.VoidFunctionComponent<OpenFileButtonProps> = ({
                         id,
                         'aria-label': label,
                         refKey: 'elementRef',
-                        elementRef: tooltipTargetRef as IRef<HTMLButtonElement>,
+                        elementRef: tooltipTargetRef as React.Ref<HTMLButtonElement>,
                         ...tooltipTargetProps,
                         // https://github.com/palantir/blueprint/pull/5300
                         'aria-haspopup': undefined,

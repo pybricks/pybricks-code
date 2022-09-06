@@ -3,7 +3,13 @@
 
 // Saga for managing notifications (toasts)
 
-import { ActionProps, IToaster, IconName, Intent, LinkProps } from '@blueprintjs/core';
+import {
+    ActionProps,
+    IconName,
+    Intent,
+    LinkProps,
+    ToasterInstance,
+} from '@blueprintjs/core';
 import { Replacements } from '@shopify/react-i18n';
 import React from 'react';
 import { channel } from 'redux-saga';
@@ -34,7 +40,7 @@ import { add as addNotification } from './actions';
 import { I18nId } from './i18n';
 
 type NotificationContext = {
-    toaster: IToaster;
+    toaster: ToasterInstance;
 };
 
 /**
@@ -81,7 +87,7 @@ function mapIcon(level: Level): IconName | undefined {
 }
 
 /**
- * Converts a URL to an action that can be passed to `IToaster.show()`.
+ * Converts a URL to an action that can be passed to `ToasterInstance.show()`.
  * @param helpUrl A URL.
  */
 function helpAction(helpUrl: string): ActionProps & LinkProps {

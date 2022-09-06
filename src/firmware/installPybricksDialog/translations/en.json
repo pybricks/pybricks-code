@@ -20,6 +20,18 @@
                     "footnote": "firmware cannot be updated"
                 }
             }
+        },
+        "advanced": {
+            "label": "Advanced",
+            "customFirmwareDropzone": {
+                "label": "Drop custom firmware .zip file here or click to browse."
+            }
+        },
+        "customFirmware": {
+            "message": "Custom firmware selected.",
+            "hubType": "Hub Type: {hubTypeName}",
+            "firmwareVersion": "Firmware Version: {version}",
+            "clearButton": "Clear"
         }
     },
     "licensePanel": {

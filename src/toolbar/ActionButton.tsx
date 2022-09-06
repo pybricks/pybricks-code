@@ -1,14 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2022 The Pybricks Authors
 
-import {
-    Button,
-    IRef,
-    Intent,
-    Spinner,
-    SpinnerSize,
-    useHotkeys,
-} from '@blueprintjs/core';
+import { Button, Intent, Spinner, SpinnerSize, useHotkeys } from '@blueprintjs/core';
 import { Tooltip2 } from '@blueprintjs/popover2';
 import React, { useEffect, useMemo, useState } from 'react';
 import { tooltipDelay } from '../app/constants';
@@ -100,7 +93,7 @@ const ActionButton: React.VoidFunctionComponent<ActionButtonProps> = ({
                 <Button
                     id={id}
                     aria-label={label}
-                    elementRef={tooltipTargetRef as IRef<HTMLButtonElement>}
+                    elementRef={tooltipTargetRef as React.Ref<HTMLButtonElement>}
                     {...tooltipTargetProps}
                     // https://github.com/palantir/blueprint/pull/5300
                     aria-haspopup={undefined}

@@ -2,25 +2,30 @@
 // Copyright (c) 2022 The Pybricks Authors
 // based on https://usehooks-ts.com/react-hook/use-fetch
 
-import { FirmwareReader } from '@pybricks/firmware';
+import { FirmwareMetadata, FirmwareReader } from '@pybricks/firmware';
 import cityHubZip from '@pybricks/firmware/build/cityhub.zip';
 import essentialHubZip from '@pybricks/firmware/build/essentialhub.zip';
 import moveHubZip from '@pybricks/firmware/build/movehub.zip';
 import primeHubZip from '@pybricks/firmware/build/primehub.zip';
 import technicHubZip from '@pybricks/firmware/build/technichub.zip';
-import { useEffect, useReducer, useRef } from 'react';
+import { useEffect, useMemo, useReducer, useRef } from 'react';
+import { useDispatch } from 'react-redux';
+import { useIsMounted } from 'usehooks-ts';
+import { alertsShowAlert } from '../../alerts/actions';
 import { Hub } from '../../components/hubPicker';
+import { ensureError } from '../../utils';
 
 type FirmwareData = {
     firmwareZip: ArrayBuffer;
     licenseText: string;
+    metadata: FirmwareMetadata;
 };
 
 interface State {
     /** The firmware.zip data or undefined if `fetch()` is not complete or on error. */
-    data?: FirmwareData;
+    firmwareData?: FirmwareData;
     /** Undefined `fetch()` is not complete yet or was successful, otherwise the error. */
-    error?: Error;
+    firmwareError?: Error;
 }
 
 type Cache = { [url: string]: FirmwareData };
@@ -48,13 +53,11 @@ const firmwareZipMap = new Map<Hub, string>([
 export function useFirmware(hubType: Hub): State {
     const url = firmwareZipMap.get(hubType);
     const cache = useRef<Cache>({});
-
-    // Used to prevent state update if the component is unmounted
-    const cancelRequest = useRef<boolean>(false);
+    const isMounted = useIsMounted();
 
     const initialState: State = {
-        error: undefined,
-        data: undefined,
+        firmwareError: undefined,
+        firmwareData: undefined,
     };
 
     // Keep state logic separated
@@ -63,9 +66,9 @@ export function useFirmware(hubType: Hub): State {
             case 'loading':
                 return { ...initialState };
             case 'fetched':
-                return { ...initialState, data: action.payload };
+                return { ...initialState, firmwareData: action.payload };
             case 'error':
-                return { ...initialState, error: action.payload };
+                return { ...initialState, firmwareError: action.payload };
             default:
                 return state;
         }
@@ -78,8 +81,6 @@ export function useFirmware(hubType: Hub): State {
         if (!url) {
             return;
         }
-
-        cancelRequest.current = false;
 
         const fetchData = async () => {
             dispatch({ type: 'loading' });
@@ -99,10 +100,12 @@ export function useFirmware(hubType: Hub): State {
                 const firmwareZip = await response.arrayBuffer();
                 const reader = await FirmwareReader.load(firmwareZip);
                 const licenseText = await reader.readReadMeOss();
-                const data = { firmwareZip, licenseText };
+                const metadata = await reader.readMetadata();
+                const data = { firmwareZip, licenseText, metadata };
 
                 cache.current[url] = data;
-                if (cancelRequest.current) {
+
+                if (!isMounted()) {
                     return;
                 }
 
@@ -112,22 +115,103 @@ export function useFirmware(hubType: Hub): State {
                     console.error(error);
                 }
 
-                if (cancelRequest.current) {
+                if (!isMounted()) {
                     return;
                 }
 
-                dispatch({ type: 'error', payload: error as Error });
+                dispatch({ type: 'error', payload: ensureError(error) });
             }
         };
 
         void fetchData();
-
-        // Use the cleanup function for avoiding a possible
-        // state update after the component was unmounted
-        return () => {
-            cancelRequest.current = true;
-        };
-    }, [url]);
+    }, [url, isMounted]);
 
     return state;
+}
+
+/**
+ * Gets the data from the user-provided firmware file, if any.
+ * @param zipFile The user-provided zip file.
+ * @returns State consisting of unzipped data or error.
+ */
+export function useCustomFirmware(zipFile: File | undefined) {
+    const reduxDispatch = useDispatch();
+    const isMounted = useIsMounted();
+
+    const initialState: State = {
+        firmwareError: undefined,
+        firmwareData: undefined,
+    };
+
+    // Keep state logic separated
+    const fetchReducer = (state: State, action: Action): State => {
+        switch (action.type) {
+            case 'loading':
+                return { ...initialState };
+            case 'fetched':
+                return { ...initialState, firmwareData: action.payload };
+            case 'error':
+                return { ...initialState, firmwareError: action.payload };
+            default:
+                return state;
+        }
+    };
+
+    const [state, dispatch] = useReducer(fetchReducer, initialState);
+
+    useEffect(() => {
+        if (!zipFile) {
+            dispatch({ type: 'loading' });
+            return;
+        }
+
+        // REVISIT: with no cache, we end up unzipping the same file multiple times.
+
+        const readFile = async () => {
+            dispatch({ type: 'loading' });
+
+            try {
+                const firmwareZip = await zipFile.arrayBuffer();
+                const reader = await FirmwareReader.load(firmwareZip);
+                const licenseText = await reader.readReadMeOss();
+                const metadata = await reader.readMetadata();
+                const data = {
+                    firmwareZip,
+                    licenseText,
+                    metadata,
+                };
+
+                if (!isMounted()) {
+                    return;
+                }
+
+                dispatch({ type: 'fetched', payload: data });
+            } catch (err) {
+                if (process.env.NODE_ENV !== 'test') {
+                    console.error(err);
+                }
+
+                if (!isMounted()) {
+                    return;
+                }
+
+                const error = ensureError(err);
+                dispatch({ type: 'error', payload: error });
+                reduxDispatch(alertsShowAlert('alerts', 'unexpectedError', { error }));
+            }
+        };
+
+        readFile();
+    }, [zipFile, isMounted]);
+
+    const isCustomFirmwareRequested = useMemo(
+        () => state.firmwareData !== undefined,
+        [state.firmwareData],
+    );
+
+    return {
+        isCustomFirmwareRequested,
+        customFirmwareData: state.firmwareData,
+        customFirmwareError: state.firmwareError,
+    };
 }

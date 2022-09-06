@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2022 The Pybricks Authors
 
-import { IToastOptions, IToastProps, IToaster } from '@blueprintjs/core';
+import { IToastOptions, ToastProps, ToasterInstance } from '@blueprintjs/core';
 import { waitFor } from '@testing-library/dom';
 import { AsyncSaga } from '../../test';
 import { alertsDidShowAlert, alertsShowAlert } from './actions';
@@ -11,14 +11,14 @@ afterEach(() => {
     jest.clearAllMocks();
 });
 
-class TestToaster implements IToaster {
+class TestToaster implements ToasterInstance {
     private toasts = new Array<IToastOptions>();
 
     public getToasts(): IToastOptions[] {
         return this.toasts;
     }
 
-    public show(props: IToastProps, key?: string): string {
+    public show(props: ToastProps, key?: string): string {
         if (!key) {
             throw new Error('key is required!');
         }

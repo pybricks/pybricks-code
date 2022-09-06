@@ -60,6 +60,29 @@ body {
     white-space: nowrap;
 }
 
+// shared styles
+
+.pb-dropzone-root {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: bp.$pt-grid-size * 2;
+    border-width: 2;
+    border-radius: 2;
+    border-style: dashed;
+    border-color: bp.$pt-divider-black;
+    background-color: bp.$pt-app-background-color;
+    color: bp.$pt-text-color-muted;
+    outline: none;
+    transition: border 0.24s ease-in-out;
+
+    .#{bp.$ns}-dark & {
+        border-color: bp.$pt-dark-divider-white;
+        background-color: bp.$pt-dark-app-background-color;
+        color: bp.$pt-dark-text-color-muted;
+    }
+}
+
 // global style tweaks
 
 .#{bp.$ns}-toast {
