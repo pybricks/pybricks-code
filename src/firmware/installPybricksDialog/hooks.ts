@@ -9,6 +9,7 @@ import moveHubZip from '@pybricks/firmware/build/movehub.zip';
 import primeHubZip from '@pybricks/firmware/build/primehub.zip';
 import technicHubZip from '@pybricks/firmware/build/technichub.zip';
 import { useEffect, useReducer, useRef } from 'react';
+import { useIsMounted } from 'usehooks-ts';
 import { Hub } from '../../components/hubPicker';
 
 type FirmwareData = {
@@ -48,9 +49,7 @@ const firmwareZipMap = new Map<Hub, string>([
 export function useFirmware(hubType: Hub): State {
     const url = firmwareZipMap.get(hubType);
     const cache = useRef<Cache>({});
-
-    // Used to prevent state update if the component is unmounted
-    const cancelRequest = useRef<boolean>(false);
+    const isMounted = useIsMounted();
 
     const initialState: State = {
         error: undefined,
@@ -79,8 +78,6 @@ export function useFirmware(hubType: Hub): State {
             return;
         }
 
-        cancelRequest.current = false;
-
         const fetchData = async () => {
             dispatch({ type: 'loading' });
 
@@ -102,7 +99,8 @@ export function useFirmware(hubType: Hub): State {
                 const data = { firmwareZip, licenseText };
 
                 cache.current[url] = data;
-                if (cancelRequest.current) {
+
+                if (!isMounted()) {
                     return;
                 }
 
@@ -112,7 +110,7 @@ export function useFirmware(hubType: Hub): State {
                     console.error(error);
                 }
 
-                if (cancelRequest.current) {
+                if (!isMounted()) {
                     return;
                 }
 
@@ -121,13 +119,7 @@ export function useFirmware(hubType: Hub): State {
         };
 
         void fetchData();
-
-        // Use the cleanup function for avoiding a possible
-        // state update after the component was unmounted
-        return () => {
-            cancelRequest.current = true;
-        };
-    }, [url]);
+    }, [url, isMounted]);
 
     return state;
 }
