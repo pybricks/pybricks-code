@@ -68,6 +68,27 @@ if (appVersion.match(/beta/)) {
     document.body.classList.add('pb-beta');
 }
 
+// prevent default drag/drop which just "downloads" any file dropped anywhere
+// in the browser window
+
+const dragEventHandler = (e: DragEvent) => {
+    if (
+        e.target instanceof Element &&
+        !e.target.classList.contains('pb-dropzone-root')
+    ) {
+        e.preventDefault();
+
+        if (e.dataTransfer) {
+            e.dataTransfer.effectAllowed = 'none';
+            e.dataTransfer.dropEffect = 'none';
+        }
+    }
+};
+
+window.addEventListener('dragenter', dragEventHandler, false);
+window.addEventListener('dragover', dragEventHandler);
+window.addEventListener('drop', dragEventHandler);
+
 sagaMiddleware.run(rootSaga);
 
 ReactDOM.render(

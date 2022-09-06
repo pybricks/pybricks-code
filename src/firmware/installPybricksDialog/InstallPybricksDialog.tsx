@@ -8,6 +8,7 @@ import {
     Checkbox,
     Classes,
     Code,
+    Collapse,
     ControlGroup,
     DialogStep,
     FormGroup,
@@ -23,9 +24,14 @@ import {
 } from '@blueprintjs/core';
 import { Classes as Classes2, Popover2 } from '@blueprintjs/popover2';
 import { Select2 } from '@blueprintjs/select';
+import { FirmwareMetadata, HubType } from '@pybricks/firmware';
+import { fileOpen } from 'browser-fs-access';
 import classNames from 'classnames';
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
+import { useDropzone } from 'react-dropzone';
 import { useDispatch } from 'react-redux';
+import { useLocalStorage } from 'usehooks-ts';
+import { alertsShowAlert } from '../../alerts/actions';
 import {
     appName,
     pybricksUsbDfuWindowsDriverInstallUrl,
@@ -44,13 +50,14 @@ import { useHubPickerSelectedHub } from '../../components/hubPicker/hooks';
 import { FileMetadata } from '../../fileStorage';
 import { useFileStorageMetadata } from '../../fileStorage/hooks';
 import { useSelector } from '../../reducers';
+import { ensureError } from '../../utils';
 import ExternalLinkIcon from '../../utils/ExternalLinkIcon';
 import { isLinux, isWindows } from '../../utils/os';
 import {
     firmwareInstallPybricksDialogAccept,
     firmwareInstallPybricksDialogCancel,
 } from './actions';
-import { useFirmware } from './hooks';
+import { useCustomFirmware, useFirmware } from './hooks';
 import { useI18n } from './i18n';
 import { validateHubName } from '.';
 
@@ -58,6 +65,44 @@ const dialogBody = classNames(
     Classes.DIALOG_BODY,
     'pb-firmware-installPybricksDialog-body',
 );
+
+/** Translates hub type from firmware metadata to local hub type. */
+function getHubTypeFromMetadata(
+    metadata: FirmwareMetadata | undefined,
+    fallback: Hub,
+): Hub {
+    switch (metadata?.['device-id']) {
+        case HubType.MoveHub:
+            return Hub.Move;
+        case HubType.CityHub:
+            return Hub.City;
+        case HubType.TechnicHub:
+            return Hub.Technic;
+        case HubType.PrimeHub:
+            return Hub.Prime;
+        case HubType.EssentialHub:
+            return Hub.Essential;
+        default:
+            return fallback;
+    }
+}
+
+function getHubTypeNameFromMetadata(metadata: FirmwareMetadata | undefined): string {
+    switch (metadata?.['device-id']) {
+        case HubType.MoveHub:
+            return 'BOOST Move Hub';
+        case HubType.CityHub:
+            return 'City Hub';
+        case HubType.TechnicHub:
+            return 'Technic Hub';
+        case HubType.PrimeHub:
+            return 'SPIKE Prime/MINDSTORMS Robot Inventor hub';
+        case HubType.EssentialHub:
+            return 'SPIKE Essential hub';
+        default:
+            return '?';
+    }
+}
 
 const UnsupportedHubs: React.VoidFunctionComponent = () => {
     const i18n = useI18n();
@@ -117,26 +162,150 @@ const UnsupportedHubs: React.VoidFunctionComponent = () => {
     );
 };
 
-const SelectHubPanel: React.VoidFunctionComponent = () => {
+type SelectHubPanelProps = {
+    customFirmwareZip: File | undefined;
+    onCustomFirmwareZip: (firmwareZip: File | undefined) => void;
+};
+
+const SelectHubPanel: React.VoidFunctionComponent<SelectHubPanelProps> = ({
+    customFirmwareZip,
+    onCustomFirmwareZip,
+}) => {
+    const { isCustomFirmwareRequested, customFirmwareData } =
+        useCustomFirmware(customFirmwareZip);
+    const [isAdvancedOpen, setIsAdvancedOpen] = useLocalStorage(
+        'installPybricksDialog.isAdvancedOpen',
+        false,
+    );
     const i18n = useI18n();
+    const dispatch = useDispatch();
+
+    const onDrop = useCallback((acceptedFiles: File[]) => {
+        // should only be one file since multiple={false}
+        acceptedFiles.forEach((f) => {
+            onCustomFirmwareZip(f);
+        });
+    }, []);
+
+    const onClick = useCallback(async () => {
+        try {
+            const file = await fileOpen({
+                id: 'customFirmware',
+                mimeTypes: ['application/zip'],
+                extensions: ['.zip'],
+                // TODO: translate description
+                description: 'Zip Files',
+                excludeAcceptAllOption: true,
+                startIn: 'downloads',
+            });
+
+            onCustomFirmwareZip(file);
+        } catch (err) {
+            if (err instanceof DOMException && err.name === 'AbortError') {
+                // user cancelled, nothing to do
+            } else {
+                dispatch(
+                    alertsShowAlert('alerts', 'unexpectedError', {
+                        error: ensureError(err),
+                    }),
+                );
+            }
+        }
+    }, []);
+
+    const onKeyDown = useCallback(
+        (e: React.KeyboardEvent) => {
+            if (e.key !== 'Enter' && e.key !== ' ') {
+                return;
+            }
+
+            e.stopPropagation();
+            onClick();
+        },
+        [onClick],
+    );
+
+    const { getRootProps, getInputProps } = useDropzone({
+        accept: { 'application/zip': ['.zip'] },
+        multiple: false,
+        // react-dropzone doesn't allow full control of File System API, so we
+        // implement our own using browser-fs-access instead.
+        noClick: true,
+        onDrop,
+    });
 
     return (
         <div className={dialogBody}>
-            <p>{i18n.translate('selectHubPanel.message')}</p>
-            <HubPicker />
-            <Popover2
-                popoverClassName={Classes2.POPOVER2_CONTENT_SIZING}
-                placement="right-end"
-                content={<UnsupportedHubs />}
-                renderTarget={({ isOpen: _isOpen, ref, ...targetProps }) => (
+            {isCustomFirmwareRequested ? (
+                <>
+                    <p>{i18n.translate('selectHubPanel.customFirmware.message')}</p>
+                    <p>
+                        {i18n.translate('selectHubPanel.customFirmware.hubType', {
+                            hubTypeName: getHubTypeNameFromMetadata(
+                                customFirmwareData?.metadata,
+                            ),
+                        })}
+                    </p>
+                    <p>
+                        {i18n.translate(
+                            'selectHubPanel.customFirmware.firmwareVersion',
+                            {
+                                version:
+                                    customFirmwareData?.metadata['firmware-version'],
+                            },
+                        )}
+                    </p>
                     <Button
-                        elementRef={ref as React.Ref<HTMLButtonElement>}
-                        {...targetProps}
+                        onClick={() => {
+                            onCustomFirmwareZip(undefined);
+                        }}
                     >
-                        {i18n.translate('selectHubPanel.notOnListButton.label')}
+                        {i18n.translate('selectHubPanel.customFirmware.clearButton')}
                     </Button>
-                )}
-            />
+                </>
+            ) : (
+                <>
+                    <p>{i18n.translate('selectHubPanel.message')}</p>
+                    <HubPicker />
+                    <Popover2
+                        popoverClassName={Classes2.POPOVER2_CONTENT_SIZING}
+                        placement="right-end"
+                        content={<UnsupportedHubs />}
+                        renderTarget={({ isOpen: _isOpen, ref, ...targetProps }) => (
+                            <Button
+                                elementRef={ref as React.Ref<HTMLButtonElement>}
+                                {...targetProps}
+                            >
+                                {i18n.translate('selectHubPanel.notOnListButton.label')}
+                            </Button>
+                        )}
+                    />
+                </>
+            )}
+            <div className="pb-firmware-installPybricksDialog-selectHub-advanced">
+                <Button
+                    minimal={true}
+                    small={true}
+                    icon={isAdvancedOpen ? 'chevron-down' : 'chevron-right'}
+                    onClick={() => setIsAdvancedOpen((v) => !v)}
+                >
+                    {i18n.translate('selectHubPanel.advanced.label')}
+                </Button>
+                <Collapse isOpen={isAdvancedOpen}>
+                    <div
+                        {...getRootProps({
+                            className: 'pb-dropzone-root',
+                            onClick,
+                            onKeyDown,
+                        })}
+                    >
+                        <input {...getInputProps()} />
+                        {i18n.translate(
+                            'selectHubPanel.advanced.customFirmwareDropzone.label',
+                        )}
+                    </div>
+                </Collapse>
+            </div>
         </div>
     );
 };
@@ -144,27 +313,38 @@ const SelectHubPanel: React.VoidFunctionComponent = () => {
 type AcceptLicensePanelProps = {
     hubType: Hub;
     licenseAccepted: boolean;
+    customFirmwareZip: File | undefined;
     onLicenseAcceptedChanged: (accepted: boolean) => void;
 };
 
 const AcceptLicensePanel: React.VoidFunctionComponent<AcceptLicensePanelProps> = ({
     hubType,
     licenseAccepted,
+    customFirmwareZip,
     onLicenseAcceptedChanged,
 }) => {
-    const { data, error } = useFirmware(hubType);
+    const { firmwareData, firmwareError } = useFirmware(hubType);
+    const { isCustomFirmwareRequested, customFirmwareData, customFirmwareError } =
+        useCustomFirmware(customFirmwareZip);
     const i18n = useI18n();
+
+    const selectedFirmwareData = isCustomFirmwareRequested
+        ? customFirmwareData
+        : firmwareData;
+    const selectedFirmwareError = isCustomFirmwareRequested
+        ? customFirmwareError
+        : firmwareError;
 
     return (
         <div className={dialogBody}>
             <div className="pb-firmware-installPybricksDialog-license-text">
-                {data ? (
-                    <Pre>{data.licenseText}</Pre>
+                {selectedFirmwareData ? (
+                    <Pre>{selectedFirmwareData.licenseText}</Pre>
                 ) : (
                     <NonIdealState
-                        icon={error ? 'error' : <Spinner />}
+                        icon={selectedFirmwareError ? 'error' : <Spinner />}
                         description={
-                            error
+                            selectedFirmwareError
                                 ? i18n.translate('licensePanel.licenseText.error')
                                 : undefined
                         }
@@ -176,7 +356,7 @@ const AcceptLicensePanel: React.VoidFunctionComponent<AcceptLicensePanelProps> =
                 label={i18n.translate('licensePanel.acceptCheckbox.label')}
                 checked={licenseAccepted}
                 onChange={(e) => onLicenseAcceptedChanged(e.currentTarget.checked)}
-                disabled={!data}
+                disabled={!selectedFirmwareData}
             />
         </div>
     );
@@ -441,8 +621,18 @@ export const InstallPybricksDialog: React.VoidFunctionComponent = () => {
     const [selectedIncludeFile, setSelectedIncludeFile] = useState<FileMetadata>();
     const [licenseAccepted, setLicenseAccepted] = useState(false);
     const [hubType] = useHubPickerSelectedHub();
-    const { data } = useFirmware(hubType);
+    const { firmwareData } = useFirmware(hubType);
+    const [customFirmwareZip, setCustomFirmwareZip] = useState<File>();
+    const { isCustomFirmwareRequested, customFirmwareData } =
+        useCustomFirmware(customFirmwareZip);
     const i18n = useI18n();
+
+    const selectedFirmwareData = isCustomFirmwareRequested
+        ? customFirmwareData
+        : firmwareData;
+    const selectedHubType = isCustomFirmwareRequested
+        ? getHubTypeFromMetadata(customFirmwareData?.metadata, hubType)
+        : hubType;
 
     return (
         <MultistepDialog
@@ -454,8 +644,8 @@ export const InstallPybricksDialog: React.VoidFunctionComponent = () => {
                 onClick: () =>
                     dispatch(
                         firmwareInstallPybricksDialogAccept(
-                            hubBootloaderType(hubType),
-                            data?.firmwareZip ?? new ArrayBuffer(0),
+                            hubBootloaderType(selectedHubType),
+                            selectedFirmwareData?.firmwareZip ?? new ArrayBuffer(0),
                             selectedIncludeFile?.path,
                             hubName,
                         ),
@@ -465,7 +655,12 @@ export const InstallPybricksDialog: React.VoidFunctionComponent = () => {
             <DialogStep
                 id="hub"
                 title={i18n.translate('selectHubPanel.title')}
-                panel={<SelectHubPanel />}
+                panel={
+                    <SelectHubPanel
+                        customFirmwareZip={customFirmwareZip}
+                        onCustomFirmwareZip={setCustomFirmwareZip}
+                    />
+                }
                 nextButtonProps={{ text: i18n.translate('nextButton.label') }}
             />
             <DialogStep
@@ -473,8 +668,9 @@ export const InstallPybricksDialog: React.VoidFunctionComponent = () => {
                 title={i18n.translate('licensePanel.title')}
                 panel={
                     <AcceptLicensePanel
-                        hubType={hubType}
+                        hubType={selectedHubType}
                         licenseAccepted={licenseAccepted}
+                        customFirmwareZip={customFirmwareZip}
                         onLicenseAcceptedChanged={setLicenseAccepted}
                     />
                 }
@@ -489,7 +685,7 @@ export const InstallPybricksDialog: React.VoidFunctionComponent = () => {
                 title={i18n.translate('optionsPanel.title')}
                 panel={
                     <ConfigureOptionsPanel
-                        hubType={hubType}
+                        hubType={selectedHubType}
                         hubName={hubName}
                         includeProgram={includeProgram}
                         selectedIncludeFile={selectedIncludeFile}
@@ -504,7 +700,7 @@ export const InstallPybricksDialog: React.VoidFunctionComponent = () => {
             <DialogStep
                 id="bootloader"
                 title={i18n.translate('bootloaderPanel.title')}
-                panel={<BootloaderModePanel hubType={hubType} />}
+                panel={<BootloaderModePanel hubType={selectedHubType} />}
                 backButtonProps={{ text: i18n.translate('backButton.label') }}
             />
         </MultistepDialog>
