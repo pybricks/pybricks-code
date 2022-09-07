@@ -1611,15 +1611,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@csstools/postcss-cascade-layers@npm:^1.0.5":
-  version: 1.0.5
-  resolution: "@csstools/postcss-cascade-layers@npm:1.0.5"
+"@csstools/postcss-cascade-layers@npm:^1.0.6":
+  version: 1.0.6
+  resolution: "@csstools/postcss-cascade-layers@npm:1.0.6"
   dependencies:
     "@csstools/selector-specificity": ^2.0.2
     postcss-selector-parser: ^6.0.10
   peerDependencies:
     postcss: ^8.2
-  checksum: f9d6954d7d7b888af9ecc6160e1a1d3dac3d11de7520007e198689c703249c7e66d6e7643828b76952a77576193f295dbcaea897ac21d01a217f94cc7935dc73
+  checksum: 7c20ec73dc138f5c3bcff9342aa18c0bc70ec56fdda389376d55d631a0b6bf41c81a83ee62d5d47537c2a5244831ebcc1181d6fbff17a9d5e54e3f33bcb11e65
   languageName: node
   linkType: hard
 
@@ -2559,7 +2559,7 @@ __metadata:
     postcss-flexbugs-fixes: ^5.0.2
     postcss-loader: ^7.0.1
     postcss-normalize: ^10.0.1
-    postcss-preset-env: ^7.8.0
+    postcss-preset-env: ^7.8.1
     prettier: ^2.7.1
     prompts: ^2.4.2
     prop-types: ^15.8.1
@@ -7006,10 +7006,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cssdb@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "cssdb@npm:7.0.0"
-  checksum: ae7e91fc812647ae542b1a7c737a8c517e6ea8b7811e165a503061a3cd999b4577852e84ed54d7010517923576a7fc5f0bceddb9eae40b160fa268dd3dc29fe7
+"cssdb@npm:^7.0.1":
+  version: 7.0.1
+  resolution: "cssdb@npm:7.0.1"
+  checksum: 4b4de59864c8d3adb5f90fad2b97d527714bb7702f317275b43e2d4e91cb68408130e9c8bdef932027feec86bd74beb847509ee931a3338f7a5be7d01c81eac8
   languageName: node
   linkType: hard
 
@@ -12558,11 +12558,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss-preset-env@npm:^7.8.0":
-  version: 7.8.0
-  resolution: "postcss-preset-env@npm:7.8.0"
+"postcss-preset-env@npm:^7.8.1":
+  version: 7.8.1
+  resolution: "postcss-preset-env@npm:7.8.1"
   dependencies:
-    "@csstools/postcss-cascade-layers": ^1.0.5
+    "@csstools/postcss-cascade-layers": ^1.0.6
     "@csstools/postcss-color-function": ^1.1.1
     "@csstools/postcss-font-format-keywords": ^1.0.1
     "@csstools/postcss-hwb-function": ^1.0.2
@@ -12581,7 +12581,7 @@ __metadata:
     css-blank-pseudo: ^3.0.3
     css-has-pseudo: ^3.0.4
     css-prefers-color-scheme: ^6.0.3
-    cssdb: ^7.0.0
+    cssdb: ^7.0.1
     postcss-attribute-case-insensitive: ^5.0.2
     postcss-clamp: ^4.1.0
     postcss-color-functional-notation: ^4.2.4
@@ -12613,7 +12613,7 @@ __metadata:
     postcss-value-parser: ^4.2.0
   peerDependencies:
     postcss: ^8.2
-  checksum: 7c07f6ecc776dc8063bfffbb8e44b88730cde0c8951c9960263c38bdb0c5103ace41f34b01eac0ff4861b00384e44ff450f7861f34072a50850afb862af4d6a8
+  checksum: 5ed4470bfa0bef6d8b5d73c18a822a6a4a5c2da2eb813cb3c286475eb3ce89395da25b306ab80e7356b44445a74e7f63eb4ea5ad42594327cd9626cd579c8f75
   languageName: node
   linkType: hard
 
