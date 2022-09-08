@@ -75,6 +75,9 @@ const cssModuleRegex = /\.module\.css$/;
 const sassRegex = /\.(scss|sass)$/;
 const sassModuleRegex = /\.module\.(scss|sass)$/;
 
+// Pyodide
+const pyodideStaticPath = `pyodide/v${require('pyodide/package.json').version}/`
+
 const hasJsxRuntime = (() => {
   if (process.env.DISABLE_NEW_JSX_TRANSFORM === 'true') {
     return false;
@@ -604,6 +607,15 @@ module.exports = function (webpackEnv) {
             from: `${path.dirname(require.resolve('@pybricks/ide-docs/package.json'))}/html`,
             to: `static/docs/v${require('@pybricks/ide-docs/package.json').version}/`,
           },
+        ],
+      }),
+      new CopyPlugin({
+        patterns: [
+          { from: require.resolve("pyodide/distutils.tar"), to: pyodideStaticPath },
+          { from: require.resolve("pyodide/pyodide_py.tar"), to: pyodideStaticPath },
+          { from: require.resolve("pyodide/pyodide.asm.data"), to: pyodideStaticPath},
+          { from: require.resolve("pyodide/pyodide.asm.js"), to:pyodideStaticPath },
+          { from: require.resolve("pyodide/pyodide.asm.wasm"), to: pyodideStaticPath },
         ],
       }),
       new LicensePlugin(require('./licenses')),

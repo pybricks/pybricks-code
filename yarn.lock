@@ -2457,6 +2457,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@pybricks/jedi@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@pybricks/jedi@npm:1.0.1"
+  checksum: 62beb12046add1949df8df3de38b1ffa21b52b47eb6827d5e43cf71ef8c4169c1d5b2248a4497a0ebe38d9858b90301f7c40b13f5e1417e4487fae6e5f4d0ea2
+  languageName: node
+  linkType: hard
+
 "@pybricks/mpy-cross-v5@npm:^2.0.0":
   version: 2.0.0
   resolution: "@pybricks/mpy-cross-v5@npm:2.0.0"
@@ -2482,6 +2489,7 @@ __metadata:
     "@pmmmwh/react-refresh-webpack-plugin": ^0.5.7
     "@pybricks/firmware": 5.0.0
     "@pybricks/ide-docs": 2.2.0
+    "@pybricks/jedi": ^1.0.1
     "@pybricks/mpy-cross-v5": ^2.0.0
     "@pybricks/mpy-cross-v6": ^2.0.0
     "@reduxjs/toolkit": ^1.8.5
@@ -12892,6 +12900,17 @@ __metadata:
     node-fetch: ^2.6.1
     ws: ^8.5.0
   checksum: 42504a37d6fadc229a961e6bfbfdccff9916597c26b3f0a0944323d9fa35f155e3801d54589f8c52ab057e4fd50e98ba88a310fb7033adb60bde32f711ae5194
+  languageName: node
+  linkType: hard
+
+"pyodide@patch:pyodide@npm:0.21.2#.yarn/patches/pyodide-npm-0.21.2-9c8485f185.patch::locator=%40pybricks%2Fpybricks-code%40workspace%3A.":
+  version: 0.21.2
+  resolution: "pyodide@patch:pyodide@npm%3A0.21.2#.yarn/patches/pyodide-npm-0.21.2-9c8485f185.patch::version=0.21.2&hash=1f9407&locator=%40pybricks%2Fpybricks-code%40workspace%3A."
+  dependencies:
+    base-64: ^1.0.0
+    node-fetch: ^2.6.1
+    ws: ^8.5.0
+  checksum: f70eb731f354fea7209b6129bcf922a6855d946066e653a33a6ae52f3d60229798967b95236fd27f1c59ed3b73890e2a1f50b5fd7d035ed4f70e7ec384edd6a6
   languageName: node
   linkType: hard
 
