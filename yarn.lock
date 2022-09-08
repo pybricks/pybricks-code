@@ -1523,7 +1523,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@blueprintjs/core@npm:^4.8.0, @blueprintjs/core@npm:^4.9.3, @blueprintjs/core@npm:^4.9.4":
+"@blueprintjs/core@npm:^4.8.0, @blueprintjs/core@npm:^4.9.4":
   version: 4.9.4
   resolution: "@blueprintjs/core@npm:4.9.4"
   dependencies:
@@ -1563,7 +1563,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@blueprintjs/popover2@npm:^1.6.3, @blueprintjs/popover2@npm:^1.6.4":
+"@blueprintjs/popover2@npm:^1.6.4":
   version: 1.6.4
   resolution: "@blueprintjs/popover2@npm:1.6.4"
   dependencies:
@@ -1585,12 +1585,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@blueprintjs/select@npm:^4.6.3":
-  version: 4.6.3
-  resolution: "@blueprintjs/select@npm:4.6.3"
+"@blueprintjs/select@npm:^4.6.4":
+  version: 4.6.4
+  resolution: "@blueprintjs/select@npm:4.6.4"
   dependencies:
-    "@blueprintjs/core": ^4.9.3
-    "@blueprintjs/popover2": ^1.6.3
+    "@blueprintjs/core": ^4.9.4
+    "@blueprintjs/popover2": ^1.6.4
     classnames: ^2.2
     tslib: ~2.3.1
   peerDependencies:
@@ -1600,7 +1600,7 @@ __metadata:
   peerDependenciesMeta:
     "@types/react":
       optional: true
-  checksum: 32687811fffff91f54ab041dbd999f342aefbc660aabd7660b0a7930117882c69bb54f67960b39e72d0fc4c653f0205d358e73187bb8cecd9e7686c1a12e6cbd
+  checksum: 7c95cd972b352bb6aaef423072ae8a30355ed60d411d3fbdb879824dc9182c21c56f847d27033121b61eaa41eb19e8a8abb67bd5fbbce1296d0cbcc6b7df44d7
   languageName: node
   linkType: hard
 
@@ -2478,7 +2478,7 @@ __metadata:
     "@babel/core": ^7.19.0
     "@blueprintjs/core": ^4.8.0
     "@blueprintjs/popover2": ^1.6.4
-    "@blueprintjs/select": ^4.6.3
+    "@blueprintjs/select": ^4.6.4
     "@pmmmwh/react-refresh-webpack-plugin": ^0.5.7
     "@pybricks/firmware": 5.0.0
     "@pybricks/ide-docs": 2.2.0
