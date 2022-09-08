@@ -12,7 +12,9 @@
 - Fixed flash firmware dialog not showing when settings not open ([support#694]).
 - Fixed errors not handled while flashing firmware via USB ([pybricks-code#1011]).
 - Fixed imports with invalid file name silently ignored ([support#717]).
+- Fixed code completion not working when offline ([pybricks-code#938]).
 
+[pybricks-code#938]: https://github.com/pybricks/pybricks-code/issues/938
 [pybricks-code#1011]: https://github.com/pybricks/pybricks-code/issues/1011
 [pybricks-code#1020]: https://github.com/pybricks/pybricks-code/issues/1020
 [support#691]: https://github.com/pybricks/support/issues/691

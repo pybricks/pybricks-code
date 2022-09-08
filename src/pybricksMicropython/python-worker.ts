@@ -6,7 +6,8 @@
 // NB: We need to be very careful about imports here since many libraries for
 // web aren't compatible with web workers!
 
-import type { loadPyodide as loadPyodideFunc } from 'pyodide';
+import { loadPyodide } from 'pyodide';
+import pyodidePackage from 'pyodide/package.json';
 import { ensureError } from '../utils';
 import {
     pythonMessageComplete,
@@ -20,10 +21,6 @@ import {
     pythonMessageInit,
     pythonMessageSetInterruptBuffer,
 } from './python-message';
-
-importScripts('https://cdn.jsdelivr.net/pyodide/v0.20.0/full/pyodide.js');
-
-declare const loadPyodide: typeof loadPyodideFunc;
 
 /**
  * Wrapper around {@link ensureError} that also converts KeyboardInterrupt to
@@ -46,24 +43,44 @@ function fixUpError(err: unknown): Error {
 
 const setUpPythonEnvironment = `
 import jedi
-import micropip
-
-print('loading pybricks...')
-await micropip.install('pybricks-jedi')
-print('loaded pybricks.')
-
 import pybricks_jedi
 
-print('preloading...')
+print('preloading pybricks_jedi...')
 pybricks_jedi.initialize()
 print('preloading done.')
 `;
 
+const pyodideVersion = `v${pyodidePackage.version}`;
+
 async function init(): Promise<void> {
     console.log('starting Pyodide...');
 
-    const pyodide = await loadPyodide();
-    await pyodide.loadPackage(['micropip', 'jedi']);
+    const pyodide = await loadPyodide({
+        indexURL: `${location.protocol}${location.host}/pyodide/${pyodideVersion}`,
+        // REVISIT: would make more sense provide our own
+        lockFileURL: new URL('pyodide/repodata.json', import.meta.url).toString(),
+    });
+
+    // NB: using URL+import.meta.url for webpack magic - don't try to optimize it
+    await pyodide.loadPackage(
+        new URL('@pybricks/jedi/docstring-parser.whl', import.meta.url).toString(),
+    );
+    await pyodide.loadPackage(
+        new URL('@pybricks/jedi/jedi.whl', import.meta.url).toString(),
+    );
+    await pyodide.loadPackage(
+        new URL('@pybricks/jedi/parso.whl', import.meta.url).toString(),
+    );
+    await pyodide.loadPackage(
+        new URL('@pybricks/jedi/pybricks-jedi.whl', import.meta.url).toString(),
+    );
+    await pyodide.loadPackage(
+        new URL('@pybricks/jedi/pybricks.whl', import.meta.url).toString(),
+    );
+    await pyodide.loadPackage(
+        new URL('@pybricks/jedi/typing_extensions.whl', import.meta.url).toString(),
+    );
+
     await pyodide.runPythonAsync(setUpPythonEnvironment);
 
     const complete = pyodide.runPython('pybricks_jedi.complete');

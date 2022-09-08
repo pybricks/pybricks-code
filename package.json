@@ -15,6 +15,7 @@
         "@pmmmwh/react-refresh-webpack-plugin": "^0.5.7",
         "@pybricks/firmware": "5.0.0",
         "@pybricks/ide-docs": "2.2.0",
+        "@pybricks/jedi": "^1.0.1",
         "@pybricks/mpy-cross-v5": "^2.0.0",
         "@pybricks/mpy-cross-v6": "^2.0.0",
         "@reduxjs/toolkit": "^1.8.5",
@@ -168,7 +169,8 @@
         "mq-polyfill@1.1.8": "patch:mq-polyfill@npm:1.1.8#.yarn/patches/mq-polyfill-npm-1.1.8-62fe162439.patch",
         "react-error-overlay": "6.0.9",
         "react-dev-utils@^12.0.1": "patch:react-dev-utils@npm:12.0.1#.yarn/patches/react-dev-utils-npm-12.0.1-83ba06e3ee.patch",
-        "jest-mock-extended@^2.0.7": "patch:jest-mock-extended@npm:2.0.7#.yarn/patches/jest-mock-extended-npm-2.0.7-4cdf066556.patch"
+        "jest-mock-extended@^2.0.7": "patch:jest-mock-extended@npm:2.0.7#.yarn/patches/jest-mock-extended-npm-2.0.7-4cdf066556.patch",
+        "pyodide@0.21.2": "patch:pyodide@npm:0.21.2#.yarn/patches/pyodide-npm-0.21.2-9c8485f185.patch"
     },
     "jest": {
         "roots": [
