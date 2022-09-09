@@ -118,10 +118,10 @@ So for local testing without https, we need to follow
 To serve the website, run:
 
     yarn build
-    python3 -m http.server --directory build
+    ./scripts/serve.py
 
 Note: the usual `npx serve` doesn't properly serve parts of the site so we use
-Python instead.
+a custom Python script instead.
 
 Then at `chrome://flags/#unsafely-treat-insecure-origin-as-secure`, add:
 

@@ -56,3 +56,14 @@ export const pybricksCopyright = 'Copyright (c) 2020-2022 The Pybricks Authors';
 /** LEGO "fair play" disclaimer */
 export const legoDisclaimer =
     'LEGO® is a trademark of the LEGO Group of companies which does not sponsor, authorize or endorse this site.';
+
+/**
+ * Provides a version for the required headers of this app.
+ *
+ * This is used for cache bursting when the required headers change.
+ *
+ * Currently, the following headers are required:
+ *      Cross-Origin-Opener-Policy: same-origin
+ *      Cross-Origin-Embedder-Policy: require-corp
+ */
+export const httpServerHeadersVersion = 2;
