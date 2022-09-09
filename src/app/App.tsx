@@ -18,6 +18,7 @@ import Terminal from '../terminal/Terminal';
 import Toolbar from '../toolbar/Toolbar';
 import Tour from '../tour/Tour';
 import { isMacOS } from '../utils/os';
+import { httpServerHeadersVersion } from './constants';
 
 const Docs: React.VFC = () => {
     const { setIsSettingShowDocsEnabled } = useSettingIsShowDocsEnabled();
@@ -115,7 +116,7 @@ const Docs: React.VFC = () => {
                     contentWindow.document.documentElement.classList.add(Classes.DARK);
                 }
             }}
-            src={`static/docs/v${docsPackage.version}/index.html`}
+            src={`static/docs/v${docsPackage.version}/index.html?v${httpServerHeadersVersion}`}
             allowFullScreen={true}
             role="documentation"
             width="100%"
