@@ -110,12 +110,12 @@ describe('flashFirmware', () => {
 
             action = await saga.take();
             expect(action).toMatchInlineSnapshot(`
-                Object {
+                {
                   "abiVersion": 5,
-                  "options": Array [
+                  "options": [
                     "-mno-unicode",
                   ],
-                  "script": "print(\\"test\\")",
+                  "script": "print("test")",
                   "type": "mpy.action.compile",
                 }
             `);
@@ -636,12 +636,12 @@ describe('flashFirmware', () => {
 
             action = await saga.take();
             expect(action).toMatchInlineSnapshot(`
-                Object {
+                {
                   "abiVersion": 5,
-                  "options": Array [
+                  "options": [
                     "-mno-unicode",
                   ],
-                  "script": "print(\\"test\\")",
+                  "script": "print("test")",
                   "type": "mpy.action.compile",
                 }
             `);
@@ -784,12 +784,12 @@ describe('flashFirmware', () => {
 
             action = await saga.take();
             expect(action).toMatchInlineSnapshot(`
-                Object {
+                {
                   "abiVersion": 5,
-                  "options": Array [
+                  "options": [
                     "-mno-unicode",
                   ],
-                  "script": "print(\\"test\\")",
+                  "script": "print("test")",
                   "type": "mpy.action.compile",
                 }
             `);
@@ -883,12 +883,12 @@ describe('flashFirmware', () => {
 
             action = await saga.take();
             expect(action).toMatchInlineSnapshot(`
-                Object {
+                {
                   "abiVersion": 5,
-                  "options": Array [
+                  "options": [
                     "-mno-unicode",
                   ],
-                  "script": "print(\\"test\\")",
+                  "script": "print("test")",
                   "type": "mpy.action.compile",
                 }
             `);
@@ -991,12 +991,12 @@ describe('flashFirmware', () => {
 
             action = await saga.take();
             expect(action).toMatchInlineSnapshot(`
-                Object {
+                {
                   "abiVersion": 5,
-                  "options": Array [
+                  "options": [
                     "-mno-unicode",
                   ],
-                  "script": "print(\\"test\\")",
+                  "script": "print("test")",
                   "type": "mpy.action.compile",
                 }
             `);
@@ -1139,12 +1139,12 @@ describe('flashFirmware', () => {
 
             action = await saga.take();
             expect(action).toMatchInlineSnapshot(`
-                Object {
+                {
                   "abiVersion": 5,
-                  "options": Array [
+                  "options": [
                     "-mno-unicode",
                   ],
-                  "script": "print(\\"test\\")",
+                  "script": "print("test")",
                   "type": "mpy.action.compile",
                 }
             `);
@@ -1273,12 +1273,12 @@ describe('flashFirmware', () => {
 
             let action = await saga.take();
             expect(action).toMatchInlineSnapshot(`
-                Object {
+                {
                   "abiVersion": 5,
-                  "options": Array [
+                  "options": [
                     "-mno-unicode",
                   ],
-                  "script": "print(\\"test\\")",
+                  "script": "print("test")",
                   "type": "mpy.action.compile",
                 }
             `);
@@ -1521,12 +1521,12 @@ describe('flashFirmware', () => {
 
             let action = await saga.take();
             expect(action).toMatchInlineSnapshot(`
-                Object {
+                {
                   "abiVersion": 5,
-                  "options": Array [
+                  "options": [
                     "-mno-unicode",
                   ],
-                  "script": "print(\\"test\\")",
+                  "script": "print("test")",
                   "type": "mpy.action.compile",
                 }
             `);
@@ -1582,12 +1582,12 @@ describe('flashFirmware', () => {
 
             let action = await saga.take();
             expect(action).toMatchInlineSnapshot(`
-                Object {
+                {
                   "abiVersion": 5,
-                  "options": Array [
+                  "options": [
                     "-mno-unicode",
                   ],
-                  "script": "print(\\"test\\")",
+                  "script": "print("test")",
                   "type": "mpy.action.compile",
                 }
             `);
@@ -1644,12 +1644,12 @@ describe('flashFirmware', () => {
 
             let action = await saga.take();
             expect(action).toMatchInlineSnapshot(`
-                Object {
+                {
                   "abiVersion": 5,
-                  "options": Array [
+                  "options": [
                     "-mno-unicode",
                   ],
-                  "script": "print(\\"test\\")",
+                  "script": "print("test")",
                   "type": "mpy.action.compile",
                 }
             `);
@@ -1709,12 +1709,12 @@ describe('flashFirmware', () => {
 
             let action = await saga.take();
             expect(action).toMatchInlineSnapshot(`
-                Object {
+                {
                   "abiVersion": 5,
-                  "options": Array [
+                  "options": [
                     "-mno-unicode",
                   ],
-                  "script": "print(\\"test\\")",
+                  "script": "print("test")",
                   "type": "mpy.action.compile",
                 }
             `);
@@ -1811,12 +1811,12 @@ describe('flashFirmware', () => {
 
         action = await saga.take();
         expect(action).toMatchInlineSnapshot(`
-            Object {
+            {
               "abiVersion": 5,
-              "options": Array [
+              "options": [
                 "-mno-unicode",
               ],
-              "script": "print(\\"test\\")",
+              "script": "print("test")",
               "type": "mpy.action.compile",
             }
         `);

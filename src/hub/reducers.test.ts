@@ -17,7 +17,7 @@ type State = ReturnType<typeof reducers>;
 
 test('initial state', () => {
     expect(reducers(undefined, {} as AnyAction)).toMatchInlineSnapshot(`
-        Object {
+        {
           "downloadProgress": null,
           "mpyAbiVersion": 6,
           "runtime": "hub.runtime.disconnected",
