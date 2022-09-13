@@ -28,9 +28,9 @@ test('compiler error works', async () => {
     expect(didFailToCompile.matches(action)).toBeTruthy();
     const { err } = action as ReturnType<typeof didFailToCompile>;
     expect(err).toMatchInlineSnapshot(`
-        Array [
+        [
           "Traceback (most recent call last):",
-          "  File \\"main.py\\", line 1",
+          "  File "main.py", line 1",
           "SyntaxError: invalid syntax",
         ]
     `);

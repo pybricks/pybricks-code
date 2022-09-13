@@ -20,7 +20,7 @@ type State = ReturnType<typeof reducers>;
 
 test('initial state', () => {
     expect(reducers(undefined, {} as AnyAction)).toMatchInlineSnapshot(`
-        Object {
+        {
           "checkingForUpdate": false,
           "hasUnresolvedInstallPrompt": false,
           "isServiceWorkerRegistered": false,

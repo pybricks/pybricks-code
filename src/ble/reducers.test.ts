@@ -24,7 +24,7 @@ type State = ReturnType<typeof reducers>;
 
 test('initial state', () => {
     expect(reducers(undefined, {} as AnyAction)).toMatchInlineSnapshot(`
-        Object {
+        {
           "connection": "ble.connection.state.disconnected",
           "deviceBatteryCharging": false,
           "deviceFirmwareVersion": "",

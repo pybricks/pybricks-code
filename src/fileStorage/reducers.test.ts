@@ -9,7 +9,7 @@ type State = ReturnType<typeof reducers>;
 
 test('initial state', () => {
     expect(reducers(undefined, {} as AnyAction)).toMatchInlineSnapshot(`
-        Object {
+        {
           "isInitialized": false,
         }
     `);
