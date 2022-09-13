@@ -291,7 +291,7 @@ describe('handleExplorerCreateNewFile', () => {
         saga.put(newFileWizardDidAccept('test', pythonFileExtension, Hub.Technic));
 
         await expect(saga.take()).resolves.toMatchInlineSnapshot(`
-            Object {
+            {
               "contents": "from pybricks.hubs import TechnicHub
             from pybricks.pupdevices import Motor
             from pybricks.parameters import Button, Color, Direction, Port, Stop

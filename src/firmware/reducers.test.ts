@@ -15,13 +15,13 @@ type State = ReturnType<typeof reducers>;
 
 test('initial state', () => {
     expect(reducers(undefined, {} as AnyAction)).toMatchInlineSnapshot(`
-        Object {
+        {
           "flashing": false,
-          "installPybricksDialog": Object {
+          "installPybricksDialog": {
             "isOpen": false,
           },
           "progress": null,
-          "restoreOfficialDialog": Object {
+          "restoreOfficialDialog": {
             "isOpen": false,
           },
         }
