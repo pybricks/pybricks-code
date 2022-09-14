@@ -50,19 +50,6 @@
             "labelInfo": "(optional)",
             "help": "Enter a name here to customize the hub name when flashing the firmware. This name will be used in the Bluetooth advertising data and can be used to identify the hub when connecting.",
             "error": "The name is too long."
-        },
-        "customMain": {
-            "label": "Include custom program",
-            "labelInfo": "(optional)",
-            "notApplicable": {
-                "message": "This hub has external flash memory so including a custom program when flashing firmware is not needed."
-            },
-            "include": {
-                "label": "Include selected program as {main}",
-                "noSelection": "(no selection)",
-                "noFiles": "(no files)",
-                "help": "Enable to include your program when flashing the firmware or disable to use the default program. Flashing your program along with the firmware will allow you to run your program without being connected to {appName}"
-            }
         }
     },
     "bootloaderPanel": {

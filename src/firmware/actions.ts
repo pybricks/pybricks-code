@@ -120,15 +120,12 @@ export type FailToFinishReason =
 /**
  * Creates a new action to flash firmware to a hub.
  * @param data The firmware zip file data or `null` to get firmware later.
- * @param customProgram If defined, flash the path of a program from file storage,
- *      otherwise use the main.py program from firmware.zip.
  * @param hubName A custom hub name or an empty string to use the default name.
  */
 export const flashFirmware = createAction(
-    (data: ArrayBuffer | null, customProgram: string | undefined, hubName: string) => ({
+    (data: ArrayBuffer | null, hubName: string) => ({
         type: 'flashFirmware.action.flashFirmware',
         data,
-        customProgram,
         hubName,
     }),
 );

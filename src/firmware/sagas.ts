@@ -32,11 +32,6 @@ import {
 } from 'typed-redux-saga/macro';
 import { alertsDidShowAlert, alertsShowAlert } from '../alerts/actions';
 import {
-    fileStorageDidFailToReadFile,
-    fileStorageDidReadFile,
-    fileStorageReadFile,
-} from '../fileStorage/actions';
-import {
     checksumRequest,
     checksumResponse,
     connect,
@@ -192,11 +187,10 @@ function* firmwareIterator(data: DataView, maxSize: number): Generator<number> {
  * Loads Pybricks firmware from a .zip file.
  *
  * @param data The zip file raw data
- * @param program User program or `undefined` to use main.py from firmware.zip
+ * @param hubName Optional custom name for the hub.
  */
 function* loadFirmware(
     data: ArrayBuffer,
-    program: string | undefined,
     hubName: string,
 ): SagaGenerator<{ firmware: Uint8Array; deviceId: HubType }> {
     const [reader, readerErr] = yield* call(() => maybe(FirmwareReader.load(data)));
@@ -223,16 +217,7 @@ function* loadFirmware(
 
     // v1.x allows appending main.py to firmware, later versions do not
     if (metadataIsV100(metadata) || metadataIsV110(metadata)) {
-        // if a user program was not given, then use main.py from the firmware.zip
-        if (program === undefined) {
-            program = yield* call(() => reader.readMainPy());
-        }
-
-        // REVISIT: the firmware may eventually be changed to allow no main.py
-        // for now, ensure there is a program even if it does nothing
-        if (!program) {
-            program = '';
-        }
+        const program = (yield* call(() => reader.readMainPy())) ?? '';
 
         if (![5, 6].includes(metadata['mpy-abi-version'])) {
             yield* put(
@@ -396,37 +381,8 @@ function* handleFlashFirmware(action: ReturnType<typeof flashFirmware>): Generat
         let firmware: Uint8Array | undefined = undefined;
         let deviceId: HubType | undefined = undefined;
 
-        let program: string | undefined = undefined;
-
-        if (action.customProgram) {
-            yield* put(fileStorageReadFile(action.customProgram));
-
-            const { didRead, didFailToRead } = yield* race({
-                didRead: take(
-                    fileStorageDidReadFile.when((a) => a.path === action.customProgram),
-                ),
-                didFailToRead: take(
-                    fileStorageDidFailToReadFile.when(
-                        (a) => a.path === action.customProgram,
-                    ),
-                ),
-            });
-
-            if (didFailToRead) {
-                throw didFailToRead.error;
-            }
-
-            defined(didRead);
-
-            program = didRead.contents;
-        }
-
         if (action.data !== null) {
-            ({ firmware, deviceId } = yield* loadFirmware(
-                action.data,
-                program,
-                action.hubName,
-            ));
+            ({ firmware, deviceId } = yield* loadFirmware(action.data, action.hubName));
         }
 
         yield* put(connect());
@@ -468,11 +424,7 @@ function* handleFlashFirmware(action: ReturnType<typeof flashFirmware>): Generat
             }
 
             const data = yield* call(() => response.arrayBuffer());
-            ({ firmware, deviceId } = yield* loadFirmware(
-                data,
-                program,
-                action.hubName,
-            ));
+            ({ firmware, deviceId } = yield* loadFirmware(data, action.hubName));
 
             if (deviceId !== undefined && info.hubType !== deviceId) {
                 yield* put(didFailToFinish(FailToFinishReasonType.DeviceMismatch));
@@ -746,11 +698,7 @@ function* handleFlashUsbDfu(action: ReturnType<typeof firmwareFlashUsbDfu>): Gen
             }),
         );
 
-        const { firmware, deviceId } = yield* loadFirmware(
-            action.data,
-            undefined,
-            action.hubName,
-        );
+        const { firmware, deviceId } = yield* loadFirmware(action.data, action.hubName);
 
         if (deviceId !== productIdMap.get(device.productId)) {
             yield* put(alertsShowAlert('firmware', 'firmwareMismatch'));
@@ -876,13 +824,7 @@ function* handleInstallPybricks(): Generator {
 
     switch (accepted.flashMethod) {
         case 'ble-lwp3-bootloader':
-            yield* put(
-                flashFirmware(
-                    accepted.firmwareZip,
-                    accepted.customProgram,
-                    accepted.hubName,
-                ),
-            );
+            yield* put(flashFirmware(accepted.firmwareZip, accepted.hubName));
             break;
         case 'usb-lego-dfu':
             yield* put(firmwareFlashUsbDfu(accepted.firmwareZip, accepted.hubName));

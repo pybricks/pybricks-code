@@ -7,7 +7,6 @@ import {
     Callout,
     Checkbox,
     Classes,
-    Code,
     Collapse,
     ControlGroup,
     DialogStep,
@@ -15,15 +14,12 @@ import {
     Icon,
     InputGroup,
     Intent,
-    MenuItem,
     MultistepDialog,
     NonIdealState,
     Pre,
     Spinner,
-    Switch,
 } from '@blueprintjs/core';
 import { Classes as Classes2, Popover2 } from '@blueprintjs/popover2';
-import { Select2 } from '@blueprintjs/select';
 import { FirmwareMetadata, HubType } from '@pybricks/firmware';
 import { fileOpen } from 'browser-fs-access';
 import classNames from 'classnames';
@@ -33,7 +29,6 @@ import { useDispatch } from 'react-redux';
 import { useLocalStorage } from 'usehooks-ts';
 import { alertsShowAlert } from '../../alerts/actions';
 import {
-    appName,
     pybricksUsbDfuWindowsDriverInstallUrl,
     pybricksUsbLinuxUdevRulesUrl,
 } from '../../app/constants';
@@ -42,13 +37,10 @@ import {
     Hub,
     hubBootloaderType,
     hubHasBluetoothButton,
-    hubHasExternalFlash,
     hubHasUSB,
 } from '../../components/hubPicker';
 import { HubPicker } from '../../components/hubPicker/HubPicker';
 import { useHubPickerSelectedHub } from '../../components/hubPicker/hooks';
-import { FileMetadata } from '../../fileStorage';
-import { useFileStorageMetadata } from '../../fileStorage/hooks';
 import { useSelector } from '../../reducers';
 import { ensureError } from '../../utils';
 import ExternalLinkIcon from '../../utils/ExternalLinkIcon';
@@ -363,27 +355,16 @@ const AcceptLicensePanel: React.VoidFunctionComponent<AcceptLicensePanelProps> =
 };
 
 type SelectOptionsPanelProps = {
-    hubType: Hub;
     hubName: string;
-    includeProgram: boolean;
-    selectedIncludeFile: FileMetadata | undefined;
     onChangeHubName(hubName: string): void;
-    onChangeIncludeProgram(includeProgram: boolean): void;
-    onChangeSelectedIncludeFile(selectedIncludeFile: FileMetadata | undefined): void;
 };
 
 const ConfigureOptionsPanel: React.VoidFunctionComponent<SelectOptionsPanelProps> = ({
-    hubType,
     hubName,
-    includeProgram,
-    selectedIncludeFile,
     onChangeHubName,
-    onChangeIncludeProgram,
-    onChangeSelectedIncludeFile,
 }) => {
     const i18n = useI18n();
     const isHubNameValid = validateHubName(hubName);
-    const files = useFileStorageMetadata();
 
     return (
         <div className={dialogBody}>
@@ -414,86 +395,6 @@ const ConfigureOptionsPanel: React.VoidFunctionComponent<SelectOptionsPanelProps
                         content={i18n.translate('optionsPanel.hubName.help')}
                     />
                 </ControlGroup>
-            </FormGroup>
-            <FormGroup
-                label={i18n.translate('optionsPanel.customMain.label')}
-                labelInfo={i18n.translate('optionsPanel.customMain.labelInfo')}
-            >
-                {(hubHasExternalFlash(hubType) && (
-                    <p>
-                        {i18n.translate(
-                            'optionsPanel.customMain.notApplicable.message',
-                        )}
-                    </p>
-                )) || (
-                    <ControlGroup>
-                        <Switch
-                            labelElement={i18n.translate(
-                                'optionsPanel.customMain.include.label',
-                                { main: <Code>main.py</Code> },
-                            )}
-                            checked={includeProgram}
-                            onChange={(e) =>
-                                onChangeIncludeProgram(
-                                    (e.target as HTMLInputElement).checked,
-                                )
-                            }
-                        />
-                        <Select2
-                            items={files || []}
-                            itemRenderer={(
-                                item,
-                                { handleClick, handleFocus, modifiers },
-                            ) => (
-                                <MenuItem
-                                    roleStructure="listoption"
-                                    active={modifiers.active}
-                                    disabled={modifiers.disabled}
-                                    text={item.path}
-                                    key={item.uuid}
-                                    onClick={handleClick}
-                                    onFocus={handleFocus}
-                                />
-                            )}
-                            noResults={
-                                <MenuItem
-                                    roleStructure="listoption"
-                                    disabled={true}
-                                    text={i18n.translate(
-                                        'optionsPanel.customMain.include.noFiles',
-                                    )}
-                                />
-                            }
-                            filterable={false}
-                            popoverProps={{ minimal: true }}
-                            disabled={!includeProgram}
-                            onItemSelect={onChangeSelectedIncludeFile}
-                        >
-                            <Button
-                                icon="double-caret-vertical"
-                                text={
-                                    selectedIncludeFile?.path ??
-                                    i18n.translate(
-                                        'optionsPanel.customMain.include.noSelection',
-                                    )
-                                }
-                                disabled={!includeProgram}
-                            />
-                        </Select2>
-                        <HelpButton
-                            helpForLabel={i18n.translate(
-                                'optionsPanel.customMain.include.label',
-                                { main: 'main.py' },
-                            )}
-                            content={i18n.translate(
-                                'optionsPanel.customMain.include.help',
-                                {
-                                    appName,
-                                },
-                            )}
-                        />
-                    </ControlGroup>
-                )}
             </FormGroup>
         </div>
     );
@@ -617,8 +518,6 @@ export const InstallPybricksDialog: React.VoidFunctionComponent = () => {
     const { isOpen } = useSelector((s) => s.firmware.installPybricksDialog);
     const dispatch = useDispatch();
     const [hubName, setHubName] = useState('');
-    const [includeProgram, setIncludeProgram] = useState(false);
-    const [selectedIncludeFile, setSelectedIncludeFile] = useState<FileMetadata>();
     const [licenseAccepted, setLicenseAccepted] = useState(false);
     const [hubType] = useHubPickerSelectedHub();
     const { firmwareData } = useFirmware(hubType);
@@ -646,7 +545,6 @@ export const InstallPybricksDialog: React.VoidFunctionComponent = () => {
                         firmwareInstallPybricksDialogAccept(
                             hubBootloaderType(selectedHubType),
                             selectedFirmwareData?.firmwareZip ?? new ArrayBuffer(0),
-                            selectedIncludeFile?.path,
                             hubName,
                         ),
                     ),
@@ -685,13 +583,8 @@ export const InstallPybricksDialog: React.VoidFunctionComponent = () => {
                 title={i18n.translate('optionsPanel.title')}
                 panel={
                     <ConfigureOptionsPanel
-                        hubType={selectedHubType}
                         hubName={hubName}
-                        includeProgram={includeProgram}
-                        selectedIncludeFile={selectedIncludeFile}
                         onChangeHubName={setHubName}
-                        onChangeIncludeProgram={setIncludeProgram}
-                        onChangeSelectedIncludeFile={setSelectedIncludeFile}
                     />
                 }
                 backButtonProps={{ text: i18n.translate('backButton.label') }}
