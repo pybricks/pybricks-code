@@ -14,6 +14,9 @@
 - Fixed imports with invalid file name silently ignored ([support#717]).
 - Fixed code completion not working when offline ([pybricks-code#938]).
 
+### Removed
+- Removed feature to include custom `main.py` when flashing firmware.
+
 [pybricks-code#938]: https://github.com/pybricks/pybricks-code/issues/938
 [pybricks-code#1011]: https://github.com/pybricks/pybricks-code/issues/1011
 [pybricks-code#1020]: https://github.com/pybricks/pybricks-code/issues/1020
