@@ -155,6 +155,18 @@ export const didFinish = createAction(() => ({
     type: 'flashFirmware.action.didFinish',
 }));
 
+function isError(err: unknown): err is Error {
+    const maybeError = err as Error;
+
+    return (
+        maybeError !== undefined &&
+        typeof maybeError.name === 'string' &&
+        typeof maybeError.message === 'string'
+    );
+}
+
+// FIXME: get rid of this monstrosity
+
 const didFailToFinishType = 'flashFirmware.action.didFailToFinish';
 
 function didFailToFinishCreator(reason: FailToFinishReasonType.FailedToConnect): {
@@ -260,7 +272,7 @@ function didFailToFinishCreator(
 } {
     if (reason === FailToFinishReasonType.BleError) {
         // istanbul ignore if: programmer error give wrong arg
-        if (!(arg1 instanceof Error)) {
+        if (!isError(arg1)) {
             throw new Error('missing or invalid err');
         }
         return {
@@ -328,7 +340,7 @@ function didFailToFinishCreator(
 
     if (reason === FailToFinishReasonType.Unknown) {
         // istanbul ignore if: programmer error give wrong arg
-        if (!(arg1 instanceof Error)) {
+        if (!isError(arg1)) {
             throw new Error('missing or invalid err');
         }
         return {
