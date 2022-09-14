@@ -8,7 +8,7 @@
         "url": "https://github.com/pybricks/pybricks-code"
     },
     "dependencies": {
-        "@babel/core": "^7.19.0",
+        "@babel/core": "^7.19.1",
         "@blueprintjs/core": "^4.8.0",
         "@blueprintjs/popover2": "^1.6.4",
         "@blueprintjs/select": "^4.6.4",
@@ -26,7 +26,7 @@
         "@testing-library/react": "^12.1.5",
         "@testing-library/user-event": "^14.4.3",
         "@types/file-saver": "^2.0.5",
-        "@types/jest": "^29.0.1",
+        "@types/jest": "^29.0.2",
         "@types/node": "^16.11.7",
         "@types/react": "^16.14.24",
         "@types/react-dom": "^16.9.14",
@@ -156,7 +156,7 @@
         "eslint-config-prettier": "^8.5.0",
         "eslint-config-react-app": "^7.0.1",
         "eslint-config-typed-fp": "^2.0.1",
-        "eslint-plugin-functional": "^4.3.0",
+        "eslint-plugin-functional": "^4.3.1",
         "eslint-plugin-import": "^2.26.0",
         "eslint-plugin-prettier": "^4.2.1",
         "eslint-plugin-react": "^7.31.8",
