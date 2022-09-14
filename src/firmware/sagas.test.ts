@@ -4,6 +4,8 @@
 import { ToasterInstance } from '@blueprintjs/core';
 import {
     FirmwareMetadata,
+    FirmwareMetadataV110,
+    FirmwareMetadataV200,
     FirmwareReaderError,
     FirmwareReaderErrorCode,
 } from '@pybricks/firmware';
@@ -55,9 +57,9 @@ afterEach(() => {
 
 describe('flashFirmware', () => {
     describe('normal flow using app supplied firmware', () => {
-        test('success', async () => {
-            const metadata: FirmwareMetadata = {
-                'metadata-version': '1.0.0',
+        test('metadata v1.x works', async () => {
+            const metadata: FirmwareMetadataV110 = {
+                'metadata-version': '1.1.0',
                 'device-id': HubType.MoveHub,
                 'checksum-type': 'sum',
                 'firmware-version': '1.2.3',
@@ -65,7 +67,7 @@ describe('flashFirmware', () => {
                 'mpy-abi-version': 5,
                 'mpy-cross-options': ['-mno-unicode'],
                 'user-mpy-offset': 100,
-                'hub-name-offset': 90,
+                'hub-name-offset': 54,
                 'max-hub-name-size': 10,
             };
 
@@ -188,6 +190,134 @@ describe('flashFirmware', () => {
             // hub indicates success
 
             saga.put(programResponse(0x33, totalFirmwareSize));
+
+            action = await saga.take();
+            expect(action).toEqual(didProgress(1));
+
+            // and finally reboot the hub
+
+            action = await saga.take();
+            expect(action).toEqual(rebootRequest(++id));
+
+            saga.put(didRequest(id));
+
+            // then we are done
+
+            action = await saga.take();
+            expect(action).toEqual(didFinish());
+
+            await saga.end();
+        });
+
+        test('metadata v2.x works', async () => {
+            const metadata: FirmwareMetadataV200 = {
+                'metadata-version': '2.0.0',
+                'device-id': HubType.MoveHub,
+                'firmware-version': '1.2.3',
+                'checksum-type': 'sum',
+                'checksum-size': 1024,
+                'hub-name-offset': 54,
+                'hub-name-size': 10,
+            };
+
+            const zip = new JSZip();
+            zip.file('firmware-base.bin', new Uint8Array(64));
+            zip.file('firmware.metadata.json', JSON.stringify(metadata));
+            zip.file('ReadMe_OSS.txt', 'test');
+
+            jest.spyOn(window, 'fetch').mockResolvedValueOnce(
+                new Response(await zip.generateAsync({ type: 'blob' })),
+            );
+
+            const saga = new AsyncSaga(flashFirmware, {
+                nextMessageId: createCountFunc(),
+                toaster: mock<ToasterInstance>(),
+            });
+
+            // saga is triggered by this action
+
+            saga.put(flashFirmwareAction(null, undefined, 'test name'));
+
+            // first step is to connect to the hub bootloader
+
+            let action = await saga.take();
+            expect(action).toEqual(connect());
+
+            saga.updateState({
+                bootloader: { connection: BootloaderConnectionState.Connected },
+            });
+            saga.put(didConnect());
+
+            // then find out what kind of hub it is
+
+            action = await saga.take();
+            expect(action).toEqual(infoRequest(0));
+
+            saga.put(didRequest(0));
+            saga.put(infoResponse(0x01000000, 0x08005000, 0x081f800, HubType.MoveHub));
+
+            // then start flashing the firmware
+
+            // should get didStart action just before starting to erase
+            action = await saga.take();
+            expect(action).toEqual(didStart());
+
+            // erase first
+
+            action = await saga.take();
+            expect(action).toEqual(alertsShowAlert('firmware', 'releaseButton'));
+
+            action = await saga.take();
+            expect(action).toEqual(eraseRequest(1, /* isCityHub */ false));
+
+            saga.put(didRequest(1));
+            saga.put(eraseResponse(Result.OK));
+
+            // then write the new firmware
+
+            const totalFirmwareSize = 68;
+            action = await saga.take();
+            expect(action).toEqual(initRequest(2, totalFirmwareSize));
+
+            saga.put(didRequest(2));
+            saga.put(initResponse(Result.OK));
+
+            const dummyPayload = new ArrayBuffer(0);
+            let id = 2;
+            for (let count = 1, offset = 0; ; count++, offset += 14) {
+                action = await saga.take();
+                expect(action).toEqual(
+                    programRequest(++id, 0x08005000 + offset, dummyPayload),
+                );
+                expect(
+                    (action as ReturnType<typeof programRequest>).payload.byteLength,
+                ).toBe(Math.min(14, totalFirmwareSize - offset));
+
+                saga.put(didRequest(id));
+
+                action = await saga.take();
+                expect(action).toEqual(didProgress(offset / totalFirmwareSize));
+
+                // Have to be careful that a checksum request is not sent after
+                // last payload is sent, otherwise the hub gets confused.
+
+                if (offset + 14 >= totalFirmwareSize) {
+                    expect(count).toBe(5);
+                    break;
+                }
+
+                if (count % 10 === 0) {
+                    action = await saga.take();
+                    expect(action).toEqual(checksumRequest(++id));
+
+                    saga.put(didRequest(id));
+                    saga.put(checksumResponse(0));
+                }
+            }
+
+            // hub indicates success
+
+            saga.put(programResponse(0xe0, totalFirmwareSize));
 
             action = await saga.take();
             expect(action).toEqual(didProgress(1));

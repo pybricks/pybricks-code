@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2022 The Pybricks Authors
 
-import { FirmwareMetadata, FirmwareReaderError } from '@pybricks/firmware';
+import { FirmwareReaderError } from '@pybricks/firmware';
 import { createAction } from '../actions';
 
 export enum MetadataProblem {
@@ -86,7 +86,7 @@ export type FailToFinishReasonZipError = Reason<FailToFinishReasonType.ZipError>
 
 export type FailToFinishReasonBadMetadata =
     Reason<FailToFinishReasonType.BadMetadata> & {
-        property: keyof FirmwareMetadata;
+        property: string;
         problem: MetadataProblem;
     };
 
@@ -228,7 +228,7 @@ function didFailToFinishCreator(
 
 function didFailToFinishCreator(
     reason: FailToFinishReasonType.BadMetadata,
-    property: keyof FirmwareMetadata,
+    property: string,
     problem: MetadataProblem,
 ): {
     type: typeof didFailToFinishType;
@@ -324,7 +324,9 @@ function didFailToFinishCreator(
             arg1 !== 'mpy-abi-version' &&
             arg1 !== 'mpy-cross-options' &&
             arg1 !== 'user-mpy-offset' &&
-            arg1 !== 'max-firmware-size'
+            arg1 !== 'max-firmware-size' &&
+            arg1 !== 'checksum-size' &&
+            arg1 !== 'hub-name-size'
         ) {
             throw new Error('missing or invalid property');
         }
