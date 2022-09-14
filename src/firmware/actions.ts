@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2022 The Pybricks Authors
 
-import { FirmwareMetadata, FirmwareReaderError } from '@pybricks/firmware';
+import { FirmwareReaderError } from '@pybricks/firmware';
 import { createAction } from '../actions';
 
 export enum MetadataProblem {
@@ -86,7 +86,7 @@ export type FailToFinishReasonZipError = Reason<FailToFinishReasonType.ZipError>
 
 export type FailToFinishReasonBadMetadata =
     Reason<FailToFinishReasonType.BadMetadata> & {
-        property: keyof FirmwareMetadata;
+        property: string;
         problem: MetadataProblem;
     };
 
@@ -120,15 +120,12 @@ export type FailToFinishReason =
 /**
  * Creates a new action to flash firmware to a hub.
  * @param data The firmware zip file data or `null` to get firmware later.
- * @param customProgram If defined, flash the path of a program from file storage,
- *      otherwise use the main.py program from firmware.zip.
  * @param hubName A custom hub name or an empty string to use the default name.
  */
 export const flashFirmware = createAction(
-    (data: ArrayBuffer | null, customProgram: string | undefined, hubName: string) => ({
+    (data: ArrayBuffer | null, hubName: string) => ({
         type: 'flashFirmware.action.flashFirmware',
         data,
-        customProgram,
         hubName,
     }),
 );
@@ -154,6 +151,18 @@ export const didProgress = createAction((value: number) => {
 export const didFinish = createAction(() => ({
     type: 'flashFirmware.action.didFinish',
 }));
+
+function isError(err: unknown): err is Error {
+    const maybeError = err as Error;
+
+    return (
+        maybeError !== undefined &&
+        typeof maybeError.name === 'string' &&
+        typeof maybeError.message === 'string'
+    );
+}
+
+// FIXME: get rid of this monstrosity
 
 const didFailToFinishType = 'flashFirmware.action.didFailToFinish';
 
@@ -216,7 +225,7 @@ function didFailToFinishCreator(
 
 function didFailToFinishCreator(
     reason: FailToFinishReasonType.BadMetadata,
-    property: keyof FirmwareMetadata,
+    property: string,
     problem: MetadataProblem,
 ): {
     type: typeof didFailToFinishType;
@@ -260,7 +269,7 @@ function didFailToFinishCreator(
 } {
     if (reason === FailToFinishReasonType.BleError) {
         // istanbul ignore if: programmer error give wrong arg
-        if (!(arg1 instanceof Error)) {
+        if (!isError(arg1)) {
             throw new Error('missing or invalid err');
         }
         return {
@@ -312,7 +321,9 @@ function didFailToFinishCreator(
             arg1 !== 'mpy-abi-version' &&
             arg1 !== 'mpy-cross-options' &&
             arg1 !== 'user-mpy-offset' &&
-            arg1 !== 'max-firmware-size'
+            arg1 !== 'max-firmware-size' &&
+            arg1 !== 'checksum-size' &&
+            arg1 !== 'hub-name-size'
         ) {
             throw new Error('missing or invalid property');
         }
@@ -328,7 +339,7 @@ function didFailToFinishCreator(
 
     if (reason === FailToFinishReasonType.Unknown) {
         // istanbul ignore if: programmer error give wrong arg
-        if (!(arg1 instanceof Error)) {
+        if (!isError(arg1)) {
             throw new Error('missing or invalid err');
         }
         return {

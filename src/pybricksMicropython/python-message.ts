@@ -99,3 +99,20 @@ export const pythonMessageDidFailToGetSignature = createAction((error: Error) =>
     type: 'python.message.didFailToGetSignature',
     error,
 }));
+
+export const pythonMessageWriteUserFile = createAction(
+    (path: string, contents: string) => ({
+        type: 'python.message.writeUserFile',
+        path,
+        contents,
+    }),
+);
+
+export const pythonMessageDeleteUserFile = createAction((path: string) => ({
+    type: 'python.message.deleteUserFile',
+    path,
+}));
+
+export const pythonMessageDidMountUserFileSystem = createAction(() => ({
+    type: 'python.message.didMountUserFileSystem',
+}));

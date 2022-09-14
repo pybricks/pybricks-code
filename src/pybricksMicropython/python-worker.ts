@@ -11,15 +11,18 @@ import pyodidePackage from 'pyodide/package.json';
 import { ensureError } from '../utils';
 import {
     pythonMessageComplete,
+    pythonMessageDeleteUserFile,
     pythonMessageDidComplete,
     pythonMessageDidFailToComplete,
     pythonMessageDidFailToGetSignature,
     pythonMessageDidFailToInit,
     pythonMessageDidGetSignature,
     pythonMessageDidInit,
+    pythonMessageDidMountUserFileSystem,
     pythonMessageGetSignature,
     pythonMessageInit,
     pythonMessageSetInterruptBuffer,
+    pythonMessageWriteUserFile,
 } from './python-message';
 
 /**
@@ -60,6 +63,34 @@ async function init(): Promise<void> {
         // REVISIT: would make more sense provide our own
         lockFileURL: new URL('pyodide/repodata.json', import.meta.url).toString(),
     });
+
+    // REVISIT: it would be nice if we could make a custom driver to mount
+    // the custom Pybricks Code Dexie-based file system directly instead of
+    // mirroring it
+    const mountDir = '/user';
+    pyodide.FS.mkdir(mountDir);
+    pyodide.FS.mount(pyodide.FS.filesystems.MEMFS, { root: '.' }, mountDir);
+
+    self.addEventListener('message', async (e) => {
+        if (pythonMessageWriteUserFile.matches(e.data)) {
+            pyodide.FS.writeFile(`${mountDir}/${e.data.path}`, e.data.contents);
+            console.debug('copied', e.data.path, 'to emscripten fs');
+            return;
+        }
+
+        if (pythonMessageDeleteUserFile.matches(e.data)) {
+            pyodide.FS.unlink(`${mountDir}/${e.data.path}`);
+            console.debug('removed', e.data.path, ' from emscripten fs');
+            return;
+        }
+    });
+
+    // separate message for file system ready since it takes a long time for
+    // the rest of the init
+    self.postMessage(pythonMessageDidMountUserFileSystem());
+
+    // add user directory to sys.path for code completion
+    await pyodide.runPythonAsync(`import sys; sys.path.append("${mountDir}")`);
 
     // NB: using URL+import.meta.url for webpack magic - don't try to optimize it
     await pyodide.loadPackage(

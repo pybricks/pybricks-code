@@ -7,6 +7,8 @@ import {
     FirmwareReaderError,
     HubType,
     encodeHubName,
+    metadataIsV100,
+    metadataIsV110,
 } from '@pybricks/firmware';
 import cityHubZip from '@pybricks/firmware/build/cityhub.zip';
 import moveHubZip from '@pybricks/firmware/build/movehub.zip';
@@ -29,11 +31,6 @@ import {
     takeEvery,
 } from 'typed-redux-saga/macro';
 import { alertsDidShowAlert, alertsShowAlert } from '../alerts/actions';
-import {
-    fileStorageDidFailToReadFile,
-    fileStorageDidReadFile,
-    fileStorageReadFile,
-} from '../fileStorage/actions';
 import {
     checksumRequest,
     checksumResponse,
@@ -190,11 +187,10 @@ function* firmwareIterator(data: DataView, maxSize: number): Generator<number> {
  * Loads Pybricks firmware from a .zip file.
  *
  * @param data The zip file raw data
- * @param program User program or `undefined` to use main.py from firmware.zip
+ * @param hubName Optional custom name for the hub.
  */
 function* loadFirmware(
     data: ArrayBuffer,
-    program: string | undefined,
     hubName: string,
 ): SagaGenerator<{ firmware: Uint8Array; deviceId: HubType }> {
     const [reader, readerErr] = yield* call(() => maybe(FirmwareReader.load(data)));
@@ -219,90 +215,136 @@ function* loadFirmware(
     const firmwareBase = yield* call(() => reader.readFirmwareBase());
     const metadata = yield* call(() => reader.readMetadata());
 
-    // if a user program was not given, then use main.py from the firmware.zip
-    if (program === undefined) {
-        program = yield* call(() => reader.readMainPy());
-    }
+    // v1.x allows appending main.py to firmware, later versions do not
+    if (metadataIsV100(metadata) || metadataIsV110(metadata)) {
+        const program = (yield* call(() => reader.readMainPy())) ?? '';
 
-    // REVISIT: the firmware may eventually be changed to allow no main.py
-    // for now, ensure there is a program even if it does nothing
-    if (!program) {
-        program = '';
-    }
+        if (![5, 6].includes(metadata['mpy-abi-version'])) {
+            yield* put(
+                didFailToFinish(
+                    FailToFinishReasonType.BadMetadata,
+                    'mpy-abi-version',
+                    MetadataProblem.NotSupported,
+                ),
+            );
 
-    if (![5, 6].includes(metadata['mpy-abi-version'])) {
+            // FIXME: we should return error/throw instead
+            yield* disconnectAndCancel();
+
+            // istanbul ignore next: needed for typescript flow
+            throw new Error('unreachable');
+        }
+
         yield* put(
-            didFailToFinish(
-                FailToFinishReasonType.BadMetadata,
-                'mpy-abi-version',
-                MetadataProblem.NotSupported,
+            compile(
+                program,
+                metadata['mpy-abi-version'],
+                metadata['mpy-cross-options'],
             ),
         );
+        const { mpy, mpyFail } = yield* race({
+            mpy: take(didCompile),
+            mpyFail: take(didFailToCompile),
+        });
 
-        // FIXME: we should return error/throw instead
-        yield* disconnectAndCancel();
+        if (mpyFail) {
+            // FIXME: we should return error/throw instead
+            yield* put(didFailToFinish(FailToFinishReasonType.FailedToCompile));
+            yield* disconnectAndCancel();
 
-        // istanbul ignore next: needed for typescript flow
-        throw new Error('unreachable');
+            // istanbul ignore next: needed for typescript flow
+            throw new Error('unreachable');
+        }
+
+        defined(mpy);
+
+        // compute offset for checksum - must be aligned to 4-byte boundary
+        const checksumOffset =
+            metadata['user-mpy-offset'] +
+            4 +
+            mpy.data.length +
+            fmod(-mpy.data.length, 4);
+
+        const firmware = new Uint8Array(checksumOffset + 4);
+        const firmwareView = new DataView(firmware.buffer);
+
+        if (firmware.length > metadata['max-firmware-size']) {
+            // FIXME: we should return error/throw instead
+            yield* put(didFailToFinish(FailToFinishReasonType.FirmwareSize));
+            yield* disconnectAndCancel();
+
+            // istanbul ignore next: needed for typescript flow
+            throw new Error('unreachable');
+        }
+
+        firmware.set(firmwareBase);
+        firmwareView.setUint32(metadata['user-mpy-offset'], mpy.data.length, true);
+        firmware.set(mpy.data, metadata['user-mpy-offset'] + 4);
+
+        // if the firmware supports it, we can set a custom hub name
+        if (!metadataIsV100(metadata)) {
+            // empty string means use default name (don't write over firmware)
+            if (hubName) {
+                firmware.set(
+                    encodeHubName(hubName, metadata),
+                    metadata['hub-name-offset'],
+                );
+            }
+        }
+
+        const checksum = (function () {
+            switch (metadata['checksum-type']) {
+                case 'sum':
+                    return sumComplement32(
+                        firmwareIterator(firmwareView, metadata['max-firmware-size']),
+                    );
+                case 'crc32':
+                    return crc32(
+                        firmwareIterator(firmwareView, metadata['max-firmware-size']),
+                    );
+                default:
+                    return undefined;
+            }
+        })();
+
+        if (!checksum) {
+            // FIXME: we should return error/throw instead
+            yield* put(
+                didFailToFinish(
+                    FailToFinishReasonType.BadMetadata,
+                    'checksum-type',
+                    MetadataProblem.NotSupported,
+                ),
+            );
+            yield* disconnectAndCancel();
+
+            // istanbul ignore next: needed for typescript flow
+            throw new Error('unreachable');
+        }
+
+        firmwareView.setUint32(checksumOffset, checksum, true);
+
+        return { firmware, deviceId: metadata['device-id'] };
     }
 
-    yield* put(
-        compile(program, metadata['mpy-abi-version'], metadata['mpy-cross-options']),
-    );
-    const { mpy, mpyFail } = yield* race({
-        mpy: take(didCompile),
-        mpyFail: take(didFailToCompile),
-    });
-
-    if (mpyFail) {
-        // FIXME: we should return error/throw instead
-        yield* put(didFailToFinish(FailToFinishReasonType.FailedToCompile));
-        yield* disconnectAndCancel();
-
-        // istanbul ignore next: needed for typescript flow
-        throw new Error('unreachable');
-    }
-
-    defined(mpy);
-
-    // compute offset for checksum - must be aligned to 4-byte boundary
-    const checksumOffset =
-        metadata['user-mpy-offset'] + 4 + mpy.data.length + fmod(-mpy.data.length, 4);
-
-    const firmware = new Uint8Array(checksumOffset + 4);
+    const firmware = new Uint8Array(firmwareBase.length + 4);
     const firmwareView = new DataView(firmware.buffer);
 
-    if (firmware.length > metadata['max-firmware-size']) {
-        // FIXME: we should return error/throw instead
-        yield* put(didFailToFinish(FailToFinishReasonType.FirmwareSize));
-        yield* disconnectAndCancel();
-
-        // istanbul ignore next: needed for typescript flow
-        throw new Error('unreachable');
-    }
-
     firmware.set(firmwareBase);
-    firmwareView.setUint32(metadata['user-mpy-offset'], mpy.data.length, true);
-    firmware.set(mpy.data, metadata['user-mpy-offset'] + 4);
 
-    // if the firmware supports it, we can set a custom hub name
-    if (metadata['max-hub-name-size']) {
-        // empty string means use default name (don't write over firmware)
-        if (hubName) {
-            firmware.set(encodeHubName(hubName, metadata), metadata['hub-name-offset']);
-        }
+    // empty string means use default name (don't write over firmware)
+    if (hubName) {
+        firmware.set(encodeHubName(hubName, metadata), metadata['hub-name-offset']);
     }
 
     const checksum = (function () {
         switch (metadata['checksum-type']) {
             case 'sum':
                 return sumComplement32(
-                    firmwareIterator(firmwareView, metadata['max-firmware-size']),
+                    firmwareIterator(firmwareView, metadata['checksum-size']),
                 );
             case 'crc32':
-                return crc32(
-                    firmwareIterator(firmwareView, metadata['max-firmware-size']),
-                );
+                return crc32(firmwareIterator(firmwareView, metadata['checksum-size']));
             default:
                 return undefined;
         }
@@ -323,7 +365,7 @@ function* loadFirmware(
         throw new Error('unreachable');
     }
 
-    firmwareView.setUint32(checksumOffset, checksum, true);
+    firmwareView.setUint32(firmwareBase.length, checksum, true);
 
     return { firmware, deviceId: metadata['device-id'] };
 }
@@ -339,37 +381,8 @@ function* handleFlashFirmware(action: ReturnType<typeof flashFirmware>): Generat
         let firmware: Uint8Array | undefined = undefined;
         let deviceId: HubType | undefined = undefined;
 
-        let program: string | undefined = undefined;
-
-        if (action.customProgram) {
-            yield* put(fileStorageReadFile(action.customProgram));
-
-            const { didRead, didFailToRead } = yield* race({
-                didRead: take(
-                    fileStorageDidReadFile.when((a) => a.path === action.customProgram),
-                ),
-                didFailToRead: take(
-                    fileStorageDidFailToReadFile.when(
-                        (a) => a.path === action.customProgram,
-                    ),
-                ),
-            });
-
-            if (didFailToRead) {
-                throw didFailToRead.error;
-            }
-
-            defined(didRead);
-
-            program = didRead.contents;
-        }
-
         if (action.data !== null) {
-            ({ firmware, deviceId } = yield* loadFirmware(
-                action.data,
-                program,
-                action.hubName,
-            ));
+            ({ firmware, deviceId } = yield* loadFirmware(action.data, action.hubName));
         }
 
         yield* put(connect());
@@ -411,11 +424,7 @@ function* handleFlashFirmware(action: ReturnType<typeof flashFirmware>): Generat
             }
 
             const data = yield* call(() => response.arrayBuffer());
-            ({ firmware, deviceId } = yield* loadFirmware(
-                data,
-                program,
-                action.hubName,
-            ));
+            ({ firmware, deviceId } = yield* loadFirmware(data, action.hubName));
 
             if (deviceId !== undefined && info.hubType !== deviceId) {
                 yield* put(didFailToFinish(FailToFinishReasonType.DeviceMismatch));
@@ -689,11 +698,7 @@ function* handleFlashUsbDfu(action: ReturnType<typeof firmwareFlashUsbDfu>): Gen
             }),
         );
 
-        const { firmware, deviceId } = yield* loadFirmware(
-            action.data,
-            undefined,
-            action.hubName,
-        );
+        const { firmware, deviceId } = yield* loadFirmware(action.data, action.hubName);
 
         if (deviceId !== productIdMap.get(device.productId)) {
             yield* put(alertsShowAlert('firmware', 'firmwareMismatch'));
@@ -819,13 +824,7 @@ function* handleInstallPybricks(): Generator {
 
     switch (accepted.flashMethod) {
         case 'ble-lwp3-bootloader':
-            yield* put(
-                flashFirmware(
-                    accepted.firmwareZip,
-                    accepted.customProgram,
-                    accepted.hubName,
-                ),
-            );
+            yield* put(flashFirmware(accepted.firmwareZip, accepted.hubName));
             break;
         case 'usb-lego-dfu':
             yield* put(firmwareFlashUsbDfu(accepted.firmwareZip, accepted.hubName));

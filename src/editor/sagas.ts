@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2022 The Pybricks Authors
 
+import type { DatabaseChangeType, IDatabaseChange } from 'dexie-observable/api';
 import { monaco } from 'react-monaco-editor';
 import { EventChannel, buffers, eventChannel } from 'redux-saga';
 import {
@@ -16,7 +17,7 @@ import {
     take,
     takeEvery,
 } from 'typed-redux-saga/macro';
-import { UUID } from '../fileStorage';
+import { FileStorageDb, UUID } from '../fileStorage';
 import {
     fileStorageDidFailToLoadTextFile,
     fileStorageDidFailToStoreTextFileViewState,
@@ -29,15 +30,18 @@ import {
 } from '../fileStorage/actions';
 import {
     pythonMessageComplete,
+    pythonMessageDeleteUserFile,
     pythonMessageDidComplete,
     pythonMessageDidFailToComplete,
     pythonMessageDidFailToGetSignature,
     pythonMessageDidFailToInit,
     pythonMessageDidGetSignature,
     pythonMessageDidInit,
+    pythonMessageDidMountUserFileSystem,
     pythonMessageGetSignature,
     pythonMessageInit,
     pythonMessageSetInterruptBuffer,
+    pythonMessageWriteUserFile,
 } from '../pybricksMicropython/python-message';
 import { RootState } from '../reducers';
 import { acquireLock, defined, ensureError } from '../utils';
@@ -390,6 +394,97 @@ function* monitorEditors(): Generator {
     }
 }
 
+// HACK: dexie-observable exports const enum, so we have to redefine values
+const DatabaseChangeTypeCreate: DatabaseChangeType.Create = 1;
+const DatabaseChangeTypeUpdate: DatabaseChangeType.Update = 2;
+const DatabaseChangeTypeDelete: DatabaseChangeType.Delete = 3;
+
+/**
+ * Mirrors the Dexie-based file system to the Emscripten file system in the
+ * Python Web Worker.
+ *
+ * @param worker The web worker.
+ */
+function* mirrorFileSystem(worker: Worker): Generator {
+    // wait for file storage to become ready if it isn't already
+    if (!(yield* select((s: RootState) => s.fileStorage.isInitialized))) {
+        yield take(fileStorageDidInitialize);
+    }
+
+    const db = yield* getContext<FileStorageDb>('fileStorage');
+
+    // subscribe to future changes
+    const dbChangedChan = eventChannel<IDatabaseChange[]>((emit) => {
+        db.on('changes').subscribe(emit);
+        return () => db.on('changes').unsubscribe(emit);
+    });
+
+    // copy all existing files
+    yield* call(() =>
+        db.transaction('r', db._contents, () =>
+            db._contents.each((f) =>
+                worker.postMessage(pythonMessageWriteUserFile(f.path, f.contents)),
+            ),
+        ),
+    );
+
+    // handle future changes
+    try {
+        for (;;) {
+            const changes = yield* take(dbChangedChan);
+
+            for (const c of changes) {
+                // only interested in metadata table changes
+                if (c.table !== db.metadata.name) {
+                    continue;
+                }
+
+                switch (c.type) {
+                    case DatabaseChangeTypeCreate:
+                    case DatabaseChangeTypeUpdate:
+                        // only send message if file was created or contents
+                        // changed - ignore other metadata changes
+                        if (
+                            c.type === DatabaseChangeTypeUpdate &&
+                            c.obj.sha256 === c.oldObj.sha256
+                        ) {
+                            break;
+                        }
+
+                        yield* call(() =>
+                            db.transaction('r', db._contents, async () => {
+                                const file = await db._contents.get(c.obj.path);
+
+                                // istanbul ignore if: programmer error if we hit this
+                                if (!file) {
+                                    console.error(
+                                        `could not find file '${c.obj.path}'`,
+                                    );
+                                    return;
+                                }
+
+                                worker.postMessage(
+                                    pythonMessageWriteUserFile(
+                                        file.path,
+                                        file.contents,
+                                    ),
+                                );
+                            }),
+                        );
+
+                        break;
+
+                    case DatabaseChangeTypeDelete:
+                        worker.postMessage(pythonMessageDeleteUserFile(c.oldObj.path));
+                        break;
+                }
+            }
+        }
+    } finally {
+        dbChangedChan.close();
+    }
+}
+
 /**
  * Runs a web worker with Pyodide so that we can use Jedi for intellisense.
  */
@@ -445,6 +540,11 @@ function* runJedi(): Generator {
             }
 
             defined(messageEvent);
+
+            if (pythonMessageDidMountUserFileSystem.matches(messageEvent.data)) {
+                yield* fork(mirrorFileSystem, worker);
+                continue;
+            }
 
             if (pythonMessageDidFailToInit.matches(messageEvent.data)) {
                 yield* put(editorCompletionDidFailToInit());
