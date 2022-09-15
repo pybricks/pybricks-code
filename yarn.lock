@@ -1563,11 +1563,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@blueprintjs/popover2@npm:^1.6.4":
-  version: 1.6.4
-  resolution: "@blueprintjs/popover2@npm:1.6.4"
+"@blueprintjs/popover2@npm:^1.6.4, @blueprintjs/popover2@npm:^1.6.6":
+  version: 1.6.6
+  resolution: "@blueprintjs/popover2@npm:1.6.6"
   dependencies:
-    "@blueprintjs/core": ^4.9.4
+    "@blueprintjs/core": ^4.10.1
     "@juggle/resize-observer": ^3.3.1
     "@popperjs/core": ^2.5.4
     classnames: ^2.2
@@ -1581,7 +1581,7 @@ __metadata:
   peerDependenciesMeta:
     "@types/react":
       optional: true
-  checksum: 357f483379962c893869a40b9923bb4dba377293017872ec1934d10b662a9b6892419b92dbc568aae2430d8aa32ee14752758a58a192d2b2ae735a90bad6e3c1
+  checksum: b7a389b2725a4b70f6aa1802dd0ef1928542baa3b1dd2e772f45fb0af128afc15e317d5bfd771d58d8d1cec99b13ac3a91bc7e06ccffc0257df9890e11241d0c
   languageName: node
   linkType: hard
 
@@ -2412,7 +2412,7 @@ __metadata:
   dependencies:
     "@babel/core": ^7.19.1
     "@blueprintjs/core": ^4.10.1
-    "@blueprintjs/popover2": ^1.6.4
+    "@blueprintjs/popover2": ^1.6.6
     "@blueprintjs/select": ^4.6.4
     "@pmmmwh/react-refresh-webpack-plugin": ^0.5.7
     "@pybricks/firmware": 6.0.1
