@@ -6,8 +6,7 @@
 // NB: We need to be very careful about imports here since many libraries for
 // web aren't compatible with web workers!
 
-import { loadPyodide } from 'pyodide';
-import pyodidePackage from 'pyodide/package.json';
+import { loadPyodide, version as pyodideVersion } from 'pyodide';
 import { ensureError } from '../utils';
 import {
     pythonMessageComplete,
@@ -53,13 +52,11 @@ pybricks_jedi.initialize()
 print('preloading done.')
 `;
 
-const pyodideVersion = `v${pyodidePackage.version}`;
-
 async function init(): Promise<void> {
     console.log('starting Pyodide...');
 
     const pyodide = await loadPyodide({
-        indexURL: `${location.protocol}${location.host}/pyodide/${pyodideVersion}`,
+        indexURL: `pyodide/${pyodideVersion}`,
         // REVISIT: would make more sense provide our own
         lockFileURL: new URL('pyodide/repodata.json', import.meta.url).toString(),
     });
