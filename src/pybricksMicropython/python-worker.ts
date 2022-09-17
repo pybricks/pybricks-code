@@ -6,8 +6,7 @@
 // NB: We need to be very careful about imports here since many libraries for
 // web aren't compatible with web workers!
 
-import { loadPyodide } from 'pyodide';
-import pyodidePackage from 'pyodide/package.json';
+import { loadPyodide, version as pyodideVersion } from 'pyodide';
 import { ensureError } from '../utils';
 import {
     pythonMessageComplete,
@@ -52,8 +51,6 @@ print('preloading pybricks_jedi...')
 pybricks_jedi.initialize()
 print('preloading done.')
 `;
-
-const pyodideVersion = `v${pyodidePackage.version}`;
 
 async function init(): Promise<void> {
     console.log('starting Pyodide...');
