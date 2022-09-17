@@ -127,7 +127,9 @@ const Terminal: React.FC = (_props) => {
             foreground: isDarkMode ? 'white' : 'black',
             cursor: isDarkMode ? 'white' : 'black',
             // transparency is needed to work around https://github.com/xtermjs/xterm.js/issues/2808
-            selection: isDarkMode ? 'rgb(81,81,81,0.5)' : 'rgba(181,213,255,0.5)', // this should match AceEditor theme
+            selectionBackground: isDarkMode
+                ? 'rgb(81,81,81,0.5)'
+                : 'rgba(181,213,255,0.5)', // this should match editor theme
         };
     }, [isDarkMode]);
 
