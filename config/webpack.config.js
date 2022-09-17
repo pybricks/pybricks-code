@@ -76,7 +76,7 @@ const sassRegex = /\.(scss|sass)$/;
 const sassModuleRegex = /\.module\.(scss|sass)$/;
 
 // Pyodide
-const pyodideStaticPath = `pyodide/v${require('pyodide/package.json').version}/`
+const pyodideStaticPath = `static/js/pyodide/${require('pyodide/package.json').version}/`
 
 const hasJsxRuntime = (() => {
   if (process.env.DISABLE_NEW_JSX_TRANSFORM === 'true') {
