@@ -2507,7 +2507,7 @@ __metadata:
     react-dev-utils: ^12.0.1
     react-dom: ^16.13.1
     react-dropzone: ^14.2.2
-    react-joyride: ^2.5.2
+    react-joyride: ^2.5.3
     react-monaco-editor: ^0.49.0
     react-popper: ^2.3.0
     react-redux: ^8.0.2
@@ -9455,6 +9455,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"is-lite@npm:^0.9.2":
+  version: 0.9.2
+  resolution: "is-lite@npm:0.9.2"
+  checksum: 8c4d2c58cf99a8289715925c0c3175dadf63e5ad293ad395ce650430ce90afe533a84ad0ffdeed0ce277dabdae63acdd3dac5d9b629bd61c3c0c620e2376f26e
+  languageName: node
+  linkType: hard
+
 "is-module@npm:^1.0.0":
   version: 1.0.0
   resolution: "is-module@npm:1.0.0"
@@ -12958,23 +12965,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-joyride@npm:^2.5.2":
-  version: 2.5.2
-  resolution: "react-joyride@npm:2.5.2"
+"react-joyride@npm:^2.5.3":
+  version: 2.5.3
+  resolution: "react-joyride@npm:2.5.3"
   dependencies:
     deepmerge: ^4.2.2
     exenv: ^1.2.2
-    is-lite: ^0.8.2
+    is-lite: ^0.9.2
     prop-types: ^15.8.1
     react-floater: ^0.7.6
     react-is: ^16.13.1
     scroll: ^3.0.1
     scrollparent: ^2.0.1
-    tree-changes: ^0.9.1
+    tree-changes: ^0.9.2
   peerDependencies:
     react: 15 - 18
     react-dom: 15 - 18
-  checksum: 9cc26512fe032d1ac0649631a21bb1581d9c6d5c15b9177f07b5ce4f73f7fdb3934c73fbfcf419906511e094b36ce68a049c08d80d1607a8cfe9c0b7218a0ac2
+  checksum: 696b1bbf5583c95dac4f26968752c2ea249abcc600730b2087c3d6f6e6873e0aa2af26d222fce8a4c4442fdf92ce58d6588b68b4fdded15aa5faa3fb1f087c34
   languageName: node
   linkType: hard
 
@@ -14684,13 +14691,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tree-changes@npm:^0.9.1":
-  version: 0.9.1
-  resolution: "tree-changes@npm:0.9.1"
+"tree-changes@npm:^0.9.1, tree-changes@npm:^0.9.2":
+  version: 0.9.3
+  resolution: "tree-changes@npm:0.9.3"
   dependencies:
     "@gilbarbara/deep-equal": ^0.1.1
     is-lite: ^0.8.2
-  checksum: 6749f0213dbbfda592326250cdbbc9bb0f03c6c22e042e7089b1c4d6ab2fc1aa5cde0e02d31d5d7a32c901301146a01ed0c9b90a94007798681aa6af76bd6428
+  checksum: 86d890b18e83f2a20e7257982aec62efa186abbb08de4cead1c8062c50793f5b3c5fd09f98d9f4b8784b921e830687c0ea9bdb42ef4abb2eb9d6782d8c56a673
   languageName: node
   linkType: hard
 
