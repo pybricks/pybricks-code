@@ -66,7 +66,7 @@
         "identity-obj-proxy": "^3.0.0",
         "jest": "^29.0.3",
         "jest-environment-jsdom": "^29.0.3",
-        "jest-mock-extended": "^2.0.7",
+        "jest-mock-extended": "^3.0.1",
         "jest-resolve": "^29.0.0",
         "jest-watch-typeahead": "^2.2.0",
         "jszip": "^3.10.1",
@@ -169,7 +169,6 @@
         "mq-polyfill@1.1.8": "patch:mq-polyfill@npm:1.1.8#.yarn/patches/mq-polyfill-npm-1.1.8-62fe162439.patch",
         "react-error-overlay": "6.0.9",
         "react-dev-utils@^12.0.1": "patch:react-dev-utils@npm:12.0.1#.yarn/patches/react-dev-utils-npm-12.0.1-83ba06e3ee.patch",
-        "jest-mock-extended@^2.0.7": "patch:jest-mock-extended@npm:2.0.7#.yarn/patches/jest-mock-extended-npm-2.0.7-4cdf066556.patch",
         "pyodide@0.21.3": "patch:pyodide@npm:0.21.3#.yarn/patches/pyodide-npm-0.21.3-d43042e749.patch"
     },
     "jest": {
