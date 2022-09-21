@@ -2529,7 +2529,7 @@ __metadata:
     terser-webpack-plugin: ^5.3.6
     typed-redux-saga: ^1.5.0
     typescript: ~4.8.3
-    usehooks-ts: ^2.6.0
+    usehooks-ts: ^2.7.0
     user-agent-data-types: ^0.3.0
     web-vitals: ^3.0.2
     webpack: ^5.74.0
@@ -15039,12 +15039,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"usehooks-ts@npm:^2.6.0":
-  version: 2.6.0
-  resolution: "usehooks-ts@npm:2.6.0"
+"usehooks-ts@npm:^2.7.0":
+  version: 2.7.0
+  resolution: "usehooks-ts@npm:2.7.0"
   peerDependencies:
-    react: ">=16.9.0"
-  checksum: bc21886351a99389870a38cff1ce19521c5bed61c091873914f5de11ea32ed19cd1126ba1695e9bdf58045dc99343c6117465f02e91912e0762c76ac1a137756
+    react: ^16.9.0 || ^17.0.0
+  checksum: fa7c77b6edec8f3e064dd54bb676c3abcec652c7c4ee9e8970fb89f27761459084fd95b1db32a1cdcb85494e110b654ffa5dae5538cbfc803c61702d6575b156
   languageName: node
   linkType: hard
 
