@@ -2467,7 +2467,7 @@ __metadata:
     eslint-config-prettier: ^8.5.0
     eslint-config-react-app: ^7.0.1
     eslint-config-typed-fp: ^2.0.1
-    eslint-plugin-functional: ^4.3.1
+    eslint-plugin-functional: ^4.4.0
     eslint-plugin-import: ^2.26.0
     eslint-plugin-prettier: ^4.2.1
     eslint-plugin-react: ^7.31.8
@@ -7790,9 +7790,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-functional@npm:^4.3.1":
-  version: 4.3.1
-  resolution: "eslint-plugin-functional@npm:4.3.1"
+"eslint-plugin-functional@npm:^4.4.0":
+  version: 4.4.0
+  resolution: "eslint-plugin-functional@npm:4.4.0"
   dependencies:
     "@typescript-eslint/utils": ^5.10.2
     deepmerge-ts: ^4.0.3
@@ -7807,7 +7807,7 @@ __metadata:
       optional: true
     typescript:
       optional: true
-  checksum: 86077b1096911dd591091fb56e56e4b20d3e1cc3e199bf504daa65e99edbf2a90f8fdb9b86eac52f6c04eaf9848955e6c61d30d80ef4af694f6c48704b7b4e77
+  checksum: a535e3dc775112d914728af7dda04798d9870d2ef5aed39f861700712a0d45ba0417543ec6fd41f1c6fa1861d21af3d3306ba0f604a3435c92a32a41abdf1d4c
   languageName: node
   linkType: hard
 
