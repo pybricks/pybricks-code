@@ -2521,7 +2521,7 @@ __metadata:
     sass: ^1.55.0
     sass-loader: ^13.0.2
     semver: ^7.3.5
-    source-map-explorer: ^2.5.2
+    source-map-explorer: ^2.5.3
     source-map-loader: ^4.0.0
     spdx-satisfies: ^5.0.0
     style-loader: ^3.3.1
@@ -13937,9 +13937,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"source-map-explorer@npm:^2.5.2":
-  version: 2.5.2
-  resolution: "source-map-explorer@npm:2.5.2"
+"source-map-explorer@npm:^2.5.3":
+  version: 2.5.3
+  resolution: "source-map-explorer@npm:2.5.3"
   dependencies:
     btoa: ^1.2.1
     chalk: ^4.1.0
@@ -13950,13 +13950,13 @@ __metadata:
     gzip-size: ^6.0.0
     lodash: ^4.17.20
     open: ^7.3.1
-    source-map: ^0.7.3
+    source-map: ^0.7.4
     temp: ^0.9.4
     yargs: ^16.2.0
   bin:
     sme: bin/cli.js
     source-map-explorer: bin/cli.js
-  checksum: ff6748a5e132e03cd7646892e7b3869d10ebae1f2adea6f359145e188f2af5450e3ed9d8f132ed6b2e7fe9359e5e5d2b5becb0264fb8ef7105437ff452981295
+  checksum: 1d4e619d7eb224f38a3dadfb20eb34a56cfc29bd237b4815b60257e7fe5ee9f791fda3e0bba91318e0f2beffec5cca573abb8b5030a95f305ce4abee93296065
   languageName: node
   linkType: hard
 
@@ -14007,10 +14007,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"source-map@npm:^0.7.3":
-  version: 0.7.3
-  resolution: "source-map@npm:0.7.3"
-  checksum: cd24efb3b8fa69b64bf28e3c1b1a500de77e84260c5b7f2b873f88284df17974157cc88d386ee9b6d081f08fdd8242f3fc05c953685a6ad81aad94c7393dedea
+"source-map@npm:^0.7.3, source-map@npm:^0.7.4":
+  version: 0.7.4
+  resolution: "source-map@npm:0.7.4"
+  checksum: 01cc5a74b1f0e1d626a58d36ad6898ea820567e87f18dfc9d24a9843a351aaa2ec09b87422589906d6ff1deed29693e176194dc88bcae7c9a852dc74b311dbf5
   languageName: node
   linkType: hard
 
