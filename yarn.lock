@@ -2490,7 +2490,7 @@ __metadata:
     monaco-editor-webpack-plugin: ^7.0.1
     monaco-themes: ^0.4.2
     mq-polyfill: 1.1.8
-    navigator.locks: ^0.8.5
+    navigator.locks: ^0.8.6
     postcss: ^8.4.16
     postcss-flexbugs-fixes: ^5.0.2
     postcss-loader: ^7.0.1
@@ -11041,10 +11041,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"navigator.locks@npm:^0.8.5":
-  version: 0.8.5
-  resolution: "navigator.locks@npm:0.8.5"
-  checksum: fab379c6dfb49faf4aaa064e98050feadc8023eab22fa96df91f15db35234a978d4ad6a23cdfa1a8a9a6d8acd4c43864bde3a454cfc1c77739e318464f9a44e6
+"navigator.locks@npm:^0.8.6":
+  version: 0.8.6
+  resolution: "navigator.locks@npm:0.8.6"
+  checksum: 6618c830cda03f9c91d1fba2513b60d69df9bb08621e16c7fd9d42ce34ed9f9c8ef1dcd953cb4ddd0d05b94fa7b9a86e4f66d0c883ebf13d589b0ac2131a1f6c
   languageName: node
   linkType: hard
 
