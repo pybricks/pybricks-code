@@ -2015,7 +2015,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jest/environment@npm:^29.1.1, @jest/environment@npm:^29.1.2":
+"@jest/environment@npm:^29.1.2":
   version: 29.1.2
   resolution: "@jest/environment@npm:29.1.2"
   dependencies:
@@ -2046,7 +2046,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jest/fake-timers@npm:^29.1.1, @jest/fake-timers@npm:^29.1.2":
+"@jest/fake-timers@npm:^29.1.2":
   version: 29.1.2
   resolution: "@jest/fake-timers@npm:29.1.2"
   dependencies:
@@ -2177,7 +2177,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jest/types@npm:^29.1.0, @jest/types@npm:^29.1.2":
+"@jest/types@npm:^29.1.2":
   version: 29.1.2
   resolution: "@jest/types@npm:29.1.2"
   dependencies:
@@ -2479,7 +2479,7 @@ __metadata:
     html-webpack-plugin: ^5.5.0
     identity-obj-proxy: ^3.0.0
     jest: ^29.1.2
-    jest-environment-jsdom: ^29.1.1
+    jest-environment-jsdom: ^29.1.2
     jest-mock-extended: ^3.0.1
     jest-resolve: ^29.0.0
     jest-watch-typeahead: ^2.2.0
@@ -9805,19 +9805,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-environment-jsdom@npm:^29.1.1":
-  version: 29.1.1
-  resolution: "jest-environment-jsdom@npm:29.1.1"
+"jest-environment-jsdom@npm:^29.1.2":
+  version: 29.1.2
+  resolution: "jest-environment-jsdom@npm:29.1.2"
   dependencies:
-    "@jest/environment": ^29.1.1
-    "@jest/fake-timers": ^29.1.1
-    "@jest/types": ^29.1.0
+    "@jest/environment": ^29.1.2
+    "@jest/fake-timers": ^29.1.2
+    "@jest/types": ^29.1.2
     "@types/jsdom": ^20.0.0
     "@types/node": "*"
-    jest-mock: ^29.1.1
-    jest-util: ^29.1.0
+    jest-mock: ^29.1.2
+    jest-util: ^29.1.2
     jsdom: ^20.0.0
-  checksum: 89b227c9a2d2af6c34e15ad946ad9ad11c528b68999ea24c6a26e5dcd36209b88c43dc673524c748595e5acf64855dc998995af11e3889a4261a4ff85000f22e
+  checksum: 75737ab504fe6a2ed4e4973724deca46176b80380e4e5b040c8e318af56e31d5ab9679e4a2dd1a1e2a27ca6009312f9a12309c9433d645e3ec09354f52b0e287
   languageName: node
   linkType: hard
 
@@ -9916,7 +9916,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-mock@npm:^29.1.1, jest-mock@npm:^29.1.2":
+"jest-mock@npm:^29.1.2":
   version: 29.1.2
   resolution: "jest-mock@npm:29.1.2"
   dependencies:
@@ -10064,7 +10064,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-util@npm:^29.1.0, jest-util@npm:^29.1.2":
+"jest-util@npm:^29.1.2":
   version: 29.1.2
   resolution: "jest-util@npm:29.1.2"
   dependencies:
