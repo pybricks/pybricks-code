@@ -2456,7 +2456,7 @@ __metadata:
     case-sensitive-paths-webpack-plugin: ^2.4.0
     copy-webpack-plugin: ^11.0.0
     css-loader: ^6.5.1
-    css-minimizer-webpack-plugin: ^4.1.0
+    css-minimizer-webpack-plugin: ^4.2.0
     dexie: ^3.2.2
     dexie-observable: ^4.0.0-beta.13
     dexie-react-hooks: ^1.1.1
@@ -6828,12 +6828,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"css-minimizer-webpack-plugin@npm:^4.1.0":
-  version: 4.1.0
-  resolution: "css-minimizer-webpack-plugin@npm:4.1.0"
+"css-minimizer-webpack-plugin@npm:^4.2.0":
+  version: 4.2.0
+  resolution: "css-minimizer-webpack-plugin@npm:4.2.0"
   dependencies:
     cssnano: ^5.1.8
-    jest-worker: ^27.5.1
+    jest-worker: ^29.0.3
     postcss: ^8.4.13
     schema-utils: ^4.0.0
     serialize-javascript: ^6.0.0
@@ -6843,6 +6843,8 @@ __metadata:
   peerDependenciesMeta:
     "@parcel/css":
       optional: true
+    "@swc/css":
+      optional: true
     clean-css:
       optional: true
     csso:
@@ -6851,7 +6853,7 @@ __metadata:
       optional: true
     lightningcss:
       optional: true
-  checksum: bf3c9e9ca4ab23ab139dac2fdfb1daeee2c60455aa314c91745038d01c188107a2108269ff2f2c82c41bc0d342b636a962826646c3c098946f15edd8ed98f42e
+  checksum: fa95f0ae93b755606c6024f632252de6e60c5307ddbf6928a40447a6b33b551f4bfda274ff6a6c0419aa6c38b5a8b909d9d27d6cd868da6fe55cf16ec2d5de21
   languageName: node
   linkType: hard
 
@@ -10136,7 +10138,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-worker@npm:^27.4.5, jest-worker@npm:^27.5.1":
+"jest-worker@npm:^27.4.5":
   version: 27.5.1
   resolution: "jest-worker@npm:27.5.1"
   dependencies:
@@ -10158,7 +10160,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-worker@npm:^29.1.2":
+"jest-worker@npm:^29.0.3, jest-worker@npm:^29.1.2":
   version: 29.1.2
   resolution: "jest-worker@npm:29.1.2"
   dependencies:
