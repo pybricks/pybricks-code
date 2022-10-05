@@ -53,6 +53,7 @@ const store = configureStore({
                     'data',
                     'firmwareZip',
                     'payload',
+                    'value',
                     // Error is not serializable
                     'error',
                     'props.error',
