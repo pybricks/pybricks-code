@@ -1523,7 +1523,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@blueprintjs/core@npm:^4.10.1, @blueprintjs/core@npm:^4.10.2, @blueprintjs/core@npm:^4.11.2":
+"@blueprintjs/core@npm:^4.10.1, @blueprintjs/core@npm:^4.11.2":
   version: 4.11.2
   resolution: "@blueprintjs/core@npm:4.11.2"
   dependencies:
@@ -1563,7 +1563,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@blueprintjs/popover2@npm:^1.6.7, @blueprintjs/popover2@npm:^1.7.2":
+"@blueprintjs/popover2@npm:^1.7.2":
   version: 1.7.2
   resolution: "@blueprintjs/popover2@npm:1.7.2"
   dependencies:
@@ -1585,13 +1585,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@blueprintjs/select@npm:^4.7.0":
-  version: 4.7.0
-  resolution: "@blueprintjs/select@npm:4.7.0"
+"@blueprintjs/select@npm:^4.8.2":
+  version: 4.8.2
+  resolution: "@blueprintjs/select@npm:4.8.2"
   dependencies:
-    "@blueprintjs/core": ^4.10.2
-    "@blueprintjs/popover2": ^1.6.7
-    classnames: ^2.2
+    "@blueprintjs/core": ^4.11.2
+    "@blueprintjs/popover2": ^1.7.2
+    classnames: ^2.3.2
     tslib: ~2.3.1
   peerDependencies:
     "@types/react": ^16.14.2 || 17 || 18
@@ -1600,7 +1600,7 @@ __metadata:
   peerDependenciesMeta:
     "@types/react":
       optional: true
-  checksum: 802b06a6f913be21abc44bed5546c09bf671bda96a7d0073ffd1fa509ce2c9dc6432ee58957fdd48c8d0e1821c2704b22b7f4195f5b25193ff5ccbd5ed703542
+  checksum: f4a65d4df75d1756a795bb88faf2e28e7b7e37f9868109ddd8ee5700869d3b6e79f4a3e64f76620a535d410619e13d891e55ae47cf91058b4f55510283c30365
   languageName: node
   linkType: hard
 
@@ -2413,7 +2413,7 @@ __metadata:
     "@babel/core": ^7.19.3
     "@blueprintjs/core": ^4.10.1
     "@blueprintjs/popover2": ^1.7.2
-    "@blueprintjs/select": ^4.7.0
+    "@blueprintjs/select": ^4.8.2
     "@pmmmwh/react-refresh-webpack-plugin": ^0.5.7
     "@pybricks/firmware": 6.0.1
     "@pybricks/ide-docs": 2.2.0
@@ -6360,7 +6360,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"classnames@npm:^2.2, classnames@npm:^2.3.2":
+"classnames@npm:^2.3.2":
   version: 2.3.2
   resolution: "classnames@npm:2.3.2"
   checksum: 2c62199789618d95545c872787137262e741f9db13328e216b093eea91c85ef2bfb152c1f9e63027204e2559a006a92eb74147d46c800a9f96297ae1d9f96f4e
