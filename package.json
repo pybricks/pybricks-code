@@ -52,7 +52,7 @@
         "case-sensitive-paths-webpack-plugin": "^2.4.0",
         "copy-webpack-plugin": "^11.0.0",
         "css-loader": "^6.5.1",
-        "css-minimizer-webpack-plugin": "^4.2.0",
+        "css-minimizer-webpack-plugin": "^4.2.1",
         "dexie": "^3.2.2",
         "dexie-observable": "^4.0.0-beta.13",
         "dexie-react-hooks": "^1.1.1",
