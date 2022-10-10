@@ -6642,14 +6642,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"core-js-pure@npm:^3.20.2":
-  version: 3.22.5
-  resolution: "core-js-pure@npm:3.22.5"
-  checksum: 923c7391f20dcd6fae861a2c9cb92caa0158b9d65fd8ff24eb273814cdf84df4b409fe4cf2c3fcff609daa1a408c64ba752c28f030d8bc31ac1128de8616ad1a
-  languageName: node
-  linkType: hard
-
-"core-js-pure@npm:^3.23.3":
+"core-js-pure@npm:^3.20.2, core-js-pure@npm:^3.23.3":
   version: 3.25.5
   resolution: "core-js-pure@npm:3.25.5"
   checksum: e48799a8ab28f00ef3db18377142ff2c578574ab2b18ebddde6cbf12823e0181a57c80e3caa6046ce2a2e439d603a252be767583ddc54248e3d1060bc5012127
