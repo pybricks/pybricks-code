@@ -1552,6 +1552,35 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@blueprintjs/core@npm:^4.11.3":
+  version: 4.11.3
+  resolution: "@blueprintjs/core@npm:4.11.3"
+  dependencies:
+    "@blueprintjs/colors": ^4.1.7
+    "@blueprintjs/icons": ^4.7.0
+    "@juggle/resize-observer": ^3.4.0
+    "@types/dom4": ^2.0.2
+    classnames: ^2.3.2
+    dom4: ^2.1.5
+    normalize.css: ^8.0.1
+    popper.js: ^1.16.1
+    react-popper: ^1.3.7
+    react-transition-group: ^4.4.5
+    tslib: ~2.3.1
+  peerDependencies:
+    "@types/react": ^16.14.32 || 17 || 18
+    react: ^16.8 || 17 || 18
+    react-dom: ^16.8 || 17 || 18
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+  bin:
+    upgrade-blueprint-2.0.0-rename: scripts/upgrade-blueprint-2.0.0-rename.sh
+    upgrade-blueprint-3.0.0-rename: scripts/upgrade-blueprint-3.0.0-rename.sh
+  checksum: 171b5a2b574e1e030973142c41d6cd44dc2bc34a68dadab3919069717f94ecc6b278331233b5f3b5ae393fcca20759fbd7954b0eb79cbcdce63fb485f57d9e22
+  languageName: node
+  linkType: hard
+
 "@blueprintjs/icons@npm:^4.6.3":
   version: 4.6.3
   resolution: "@blueprintjs/icons@npm:4.6.3"
@@ -1560,6 +1589,17 @@ __metadata:
     classnames: ^2.3.2
     tslib: ~2.3.1
   checksum: 85922e7659115d407e3f0e3f82549788b59a7f6ada6c8e23729d0526d3ae3e5fa57fecdcb77aa71afd0c6acbd77000a17e99bcb201391daeb3f8e539b4ea6835
+  languageName: node
+  linkType: hard
+
+"@blueprintjs/icons@npm:^4.7.0":
+  version: 4.7.0
+  resolution: "@blueprintjs/icons@npm:4.7.0"
+  dependencies:
+    change-case: ^4.1.2
+    classnames: ^2.3.2
+    tslib: ~2.3.1
+  checksum: 692ba6230d103f42b9ed11925fdb9150f092061e47da16c544637fa6a6560cb06a1a271e64664a644b3fa206e96da843da74b1629e9ad0b08953c016ec36dfd2
   languageName: node
   linkType: hard
 
@@ -1582,6 +1622,28 @@ __metadata:
     "@types/react":
       optional: true
   checksum: ae32f6288619c8507260b7e72d5f3c00796d13234e9981468cb2bb6272132f4193b6bd0232ac4d375275476b1f4cb0a01fdaf188b0867140025bd1501a9a8a21
+  languageName: node
+  linkType: hard
+
+"@blueprintjs/popover2@npm:^1.7.3":
+  version: 1.7.3
+  resolution: "@blueprintjs/popover2@npm:1.7.3"
+  dependencies:
+    "@blueprintjs/core": ^4.11.3
+    "@juggle/resize-observer": ^3.4.0
+    "@popperjs/core": ^2.11.6
+    classnames: ^2.3.2
+    dom4: ^2.1.5
+    react-popper: ^2.2.4
+    tslib: ~2.3.1
+  peerDependencies:
+    "@types/react": ^16.14.32 || 17 || 18
+    react: ^16.8 || 17 || 18
+    react-dom: ^16.8 || 17 || 18
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+  checksum: 4cbc32594056100d0e982d522fd815e96cae266b99cdf95bb3a1875cbb3fd43e12965ce08b8daeb827019a9e74ca4404e0603f1f636f2687a4aee9f777a0e829
   languageName: node
   linkType: hard
 
@@ -2405,7 +2467,7 @@ __metadata:
   dependencies:
     "@babel/core": ^7.19.3
     "@blueprintjs/core": ^4.10.1
-    "@blueprintjs/popover2": ^1.7.2
+    "@blueprintjs/popover2": ^1.7.3
     "@blueprintjs/select": ^4.8.2
     "@pmmmwh/react-refresh-webpack-plugin": ^0.5.7
     "@pybricks/firmware": 6.0.1
@@ -13013,6 +13075,21 @@ __metadata:
     react: ">=16.6.0"
     react-dom: ">=16.6.0"
   checksum: b67bf5b3e86dbab72d658b9a52a3589e5960583ab28c7c66272427d8fe30d4c7de422d5046ae96bd2683cdf80cc3264b2516f5ce80cae1dbe6cf3ca6dda392c5
+  languageName: node
+  linkType: hard
+
+"react-transition-group@npm:^4.4.5":
+  version: 4.4.5
+  resolution: "react-transition-group@npm:4.4.5"
+  dependencies:
+    "@babel/runtime": ^7.5.5
+    dom-helpers: ^5.0.1
+    loose-envify: ^1.4.0
+    prop-types: ^15.6.2
+  peerDependencies:
+    react: ">=16.6.0"
+    react-dom: ">=16.6.0"
+  checksum: 75602840106aa9c6545149d6d7ae1502fb7b7abadcce70a6954c4b64a438ff1cd16fc77a0a1e5197cdd72da398f39eb929ea06f9005c45b132ed34e056ebdeb1
   languageName: node
   linkType: hard
 
