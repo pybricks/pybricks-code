@@ -18,7 +18,7 @@
         "@pybricks/jedi": "^1.0.1",
         "@pybricks/mpy-cross-v5": "^2.0.0",
         "@pybricks/mpy-cross-v6": "^2.0.0",
-        "@reduxjs/toolkit": "^1.8.5",
+        "@reduxjs/toolkit": "^1.8.6",
         "@shopify/react-i18n": "^7.2.4",
         "@svgr/webpack": "^6.4.0",
         "@testing-library/dom": "^8.18.1",
