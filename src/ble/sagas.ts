@@ -133,10 +133,7 @@ function* handleBleConnectPybricks(): Generator {
                     ],
                 })
                 .catch((err) => {
-                    if (
-                        err instanceof DOMException &&
-                        err.code === DOMException.NOT_FOUND_ERR
-                    ) {
+                    if (err instanceof DOMException && err.name === 'NotFoundError') {
                         // this means the user clicked the cancel button in the scan dialog
                         return undefined;
                     }
@@ -192,10 +189,7 @@ function* handleBleConnectPybricks(): Generator {
 
         const deviceInfoService = yield* call(() =>
             server.getPrimaryService(deviceInformationServiceUUID).catch((err) => {
-                if (
-                    err instanceof DOMException &&
-                    err.code === DOMException.NOT_FOUND_ERR
-                ) {
+                if (err instanceof DOMException && err.name === 'NotFoundError') {
                     return undefined;
                 }
 
@@ -263,10 +257,7 @@ function* handleBleConnectPybricks(): Generator {
 
         const pnpIdChar = yield* call(() =>
             deviceInfoService.getCharacteristic(pnpIdUUID).catch((err) => {
-                if (
-                    err instanceof DOMException &&
-                    err.code === DOMException.NOT_FOUND_ERR
-                ) {
+                if (err instanceof DOMException && err.name === 'NotFoundError') {
                     // istanbul ignore if
                     if (process.env.NODE_ENV !== 'test') {
                         console.warn(
@@ -288,10 +279,7 @@ function* handleBleConnectPybricks(): Generator {
 
         const pybricksService = yield* call(() =>
             server.getPrimaryService(pybricksServiceUUID).catch((err) => {
-                if (
-                    err instanceof DOMException &&
-                    err.code === DOMException.NOT_FOUND_ERR
-                ) {
+                if (err instanceof DOMException && err.name === 'NotFoundError') {
                     return undefined;
                 }
 
@@ -353,10 +341,7 @@ function* handleBleConnectPybricks(): Generator {
 
         const uartService = yield* call(() =>
             server.getPrimaryService(nordicUartServiceUUID).catch((err) => {
-                if (
-                    err instanceof DOMException &&
-                    err.code === DOMException.NOT_FOUND_ERR
-                ) {
+                if (err instanceof DOMException && err.name === 'NotFoundError') {
                     return undefined;
                 }
 
