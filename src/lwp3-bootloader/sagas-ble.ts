@@ -75,7 +75,7 @@ function* handleConnect(): Generator {
             }),
         );
     } catch (err) {
-        if (err instanceof DOMException && err.code === DOMException.NOT_FOUND_ERR) {
+        if (err instanceof DOMException && err.name === 'NotFoundError') {
             // this can happen if the use cancels the dialog
             yield* put(didFailToConnect(Reason.Canceled));
         } else {
@@ -119,7 +119,7 @@ function* handleConnect(): Generator {
     } catch (err) {
         server.disconnect();
         yield* takeMaybe(disconnectChannel);
-        if (err instanceof DOMException && err.code === DOMException.NOT_FOUND_ERR) {
+        if (err instanceof DOMException && err.name === 'NotFoundError') {
             yield* put(didFailToConnect(Reason.GattServiceNotFound));
         } else {
             yield* put(didFailToConnect(Reason.Unknown, ensureError(err)));

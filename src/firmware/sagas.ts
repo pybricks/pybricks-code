@@ -638,10 +638,7 @@ function* handleFlashUsbDfu(action: ReturnType<typeof firmwareFlashUsbDfu>): Gen
                     ],
                 })
                 .catch((err) => {
-                    if (
-                        err instanceof DOMException &&
-                        err.code === DOMException.NOT_FOUND_ERR
-                    ) {
+                    if (err instanceof DOMException && err.name === 'NotFoundError') {
                         // user clicked cancel button
                         return undefined;
                     }
@@ -685,10 +682,7 @@ function* handleFlashUsbDfu(action: ReturnType<typeof firmwareFlashUsbDfu>): Gen
 
         defer.push(() =>
             dfu.close().catch((err) => {
-                if (
-                    err instanceof DOMException &&
-                    err.code === DOMException.NETWORK_ERR
-                ) {
+                if (err instanceof DOMException && err.name === 'NetworkError') {
                     // device was disconnected
                     return;
                 }
