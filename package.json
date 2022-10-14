@@ -91,7 +91,7 @@
         "react-complex-tree": "^1.1.11",
         "react-dev-utils": "^12.0.1",
         "react-dom": "^16.13.1",
-        "react-dropzone": "^14.2.2",
+        "react-dropzone": "^14.2.3",
         "react-joyride": "^2.5.3",
         "react-monaco-editor": "^0.49.0",
         "react-popper": "^2.3.0",
