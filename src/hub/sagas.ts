@@ -4,24 +4,40 @@
 import {
     SagaGenerator,
     actionChannel,
+    call,
     delay,
     getContext,
     put,
     race,
+    select,
     take,
     takeEvery,
 } from 'typed-redux-saga/macro';
+import { alertsShowAlert } from '../alerts/actions';
 import { didFailToWrite, didWrite, write } from '../ble-nordic-uart-service/actions';
 import { nordicUartSafeTxCharLength } from '../ble-nordic-uart-service/protocol';
 import {
     didFailToSendCommand,
     didSendCommand,
+    sendStartReplCommand,
+    sendStartUserProgramCommand,
     sendStopUserProgramCommand,
+    sendWriteUserProgramMetaCommand,
+    sendWriteUserRamCommand,
 } from '../ble-pybricks-service/actions';
+import { FileFormat } from '../ble-pybricks-service/protocol';
 import { bleDidConnectPybricks } from '../ble/actions';
 import { editorGetValue } from '../editor/sagas';
-import { compile, didCompile, didFailToCompile } from '../mpy/actions';
-import { defined } from '../utils';
+import {
+    compile,
+    didCompile,
+    didFailToCompile,
+    mpyCompileMulti6,
+    mpyDidCompileMulti6,
+    mpyDidFailToCompileMulti6,
+} from '../mpy/actions';
+import { RootState } from '../reducers';
+import { defined, ensureError } from '../utils';
 import { xor8 } from '../utils/math';
 import {
     checksum,
@@ -46,15 +62,17 @@ function* waitForWrite(id: number): SagaGenerator<{
     });
 }
 
-function* handleDownloadAndRun(action: ReturnType<typeof downloadAndRun>): Generator {
+function* handleLegacyDownloadAndRun(
+    action: ReturnType<typeof downloadAndRun>,
+): Generator {
     const script = yield* editorGetValue();
 
     yield* put(
         compile(
             script,
-            action.abiVersion,
+            action.fileFormat === FileFormat.Mpy5 ? 5 : 6,
             // no-unicode option was removed in MPY ABI v6
-            action.abiVersion < 6 ? ['-mno-unicode'] : [],
+            action.fileFormat === FileFormat.Mpy5 ? ['-mno-unicode'] : [],
         ),
     );
 
@@ -160,12 +178,159 @@ function* handleDownloadAndRun(action: ReturnType<typeof downloadAndRun>): Gener
     yield* put(didFinishDownload());
 }
 
-// SPACE, SPACE, SPACE, SPACE
-const startReplCommand = new Uint8Array([0x20, 0x20, 0x20, 0x20]);
+function* handleDownloadAndRun(action: ReturnType<typeof downloadAndRun>): Generator {
+    if (action.useLegacyDownload) {
+        yield* handleLegacyDownloadAndRun(action);
+        return;
+    }
 
-function* handleRepl(): Generator {
+    try {
+        // TODO: should everything before didStartDownload be in try block?
+
+        if (action.fileFormat !== FileFormat.MultiMpy6) {
+            // TODO: show error message?
+            throw new Error('unsupported file format');
+        }
+
+        // REVISIT: these are not valid if hub is not connected
+        const chunkSize = (yield* select((s: RootState) => s.hub.maxBleWriteSize)) - 5;
+        const maxUserProgramSize = yield* select(
+            (s: RootState) => s.hub.maxUserProgramSize,
+        );
+
+        yield* put(mpyCompileMulti6());
+
+        const { didCompile, didFailToCompile } = yield* race({
+            didCompile: take(mpyDidCompileMulti6),
+            didFailToCompile: take(mpyDidFailToCompileMulti6),
+        });
+
+        if (didFailToCompile) {
+            return;
+        }
+
+        defined(didCompile);
+
+        if (process.env.NODE_ENV !== 'test') {
+            console.log(`Downloading ${didCompile.file.size} bytes`);
+        }
+
+        if (didCompile.file.size >= maxUserProgramSize) {
+            // TODO: proper error notification
+            throw new Error('file too big');
+        }
+
+        // let everyone know the runtime is busy loading the program
+        yield* put(didStartDownload());
+
+        const nextMessageId = yield* getContext<() => number>('nextMessageId');
+
+        const writeUserMetaMessageId = nextMessageId();
+
+        // write size of 0 to invalidate any existing user program
+        yield* put(sendWriteUserProgramMetaCommand(writeUserMetaMessageId, 0));
+
+        const { didFailToSend } = yield* race({
+            didSend: take(didSendCommand.when((a) => a.id === writeUserMetaMessageId)),
+            didFailToSend: take(
+                didFailToSendCommand.when((a) => a.id === writeUserMetaMessageId),
+            ),
+        });
+
+        if (didFailToSend) {
+            throw didFailToSend.err;
+        }
+
+        for (let i = 0; i < didCompile.file.size; i += chunkSize) {
+            yield* put(didProgressDownload((i * chunkSize) / didCompile.file.size));
+
+            const writeUserRamMessageId = nextMessageId();
+
+            const data = yield* call(() =>
+                didCompile.file.slice(i * chunkSize, (i + 1) * chunkSize).arrayBuffer(),
+            );
+
+            yield* put(
+                sendWriteUserRamCommand(writeUserRamMessageId, i * chunkSize, data),
+            );
+
+            const { didFailToSend } = yield* race({
+                didSend: take(
+                    didSendCommand.when((a) => a.id === writeUserRamMessageId),
+                ),
+                didFailToSend: take(
+                    didFailToSendCommand.when((a) => a.id === writeUserRamMessageId),
+                ),
+            });
+
+            if (didFailToSend) {
+                throw didFailToSend.err;
+            }
+        }
+
+        const writeUserMetaMessageId2 = nextMessageId();
+
+        yield* put(
+            sendWriteUserProgramMetaCommand(
+                writeUserMetaMessageId2,
+                didCompile.file.size,
+            ),
+        );
+
+        const { didFailToSend2 } = yield* race({
+            didSend2: take(
+                didSendCommand.when((a) => a.id === writeUserMetaMessageId2),
+            ),
+            didFailToSend2: take(
+                didFailToSendCommand.when((a) => a.id === writeUserMetaMessageId2),
+            ),
+        });
+
+        if (didFailToSend2) {
+            throw didFailToSend2.err;
+        }
+
+        yield* put(didFinishDownload());
+
+        const startUserProgramId = nextMessageId();
+        yield* put(sendStartUserProgramCommand(startUserProgramId));
+
+        const { didFailToStart } = yield* race({
+            didStart: take(didSendCommand.when((a) => a.id === startUserProgramId)),
+            didFailToStart: take(
+                didFailToSendCommand.when((a) => a.id === startUserProgramId),
+            ),
+        });
+
+        if (didFailToStart) {
+            throw didFailToStart.err;
+        }
+    } catch (err) {
+        // istanbul ignore if
+        if (process.env.NODE_ENV !== 'test') {
+            console.error(err);
+        }
+
+        yield* put(
+            alertsShowAlert('alerts', 'unexpectedError', { error: ensureError(err) }),
+        );
+
+        yield* put(didFailToFinishDownload());
+    }
+}
+
+// SPACE, SPACE, SPACE, SPACE
+const legacyStartReplCommand = new Uint8Array([0x20, 0x20, 0x20, 0x20]);
+
+function* handleRepl(action: ReturnType<typeof repl>): Generator {
     const nextMessageId = yield* getContext<() => number>('nextMessageId');
-    yield* put(write(nextMessageId(), startReplCommand));
+
+    if (action.useLegacyDownload) {
+        yield* put(write(nextMessageId(), legacyStartReplCommand));
+        return;
+    }
+
+    yield* put(sendStartReplCommand(nextMessageId()));
 }
 
 function* handleStop(): Generator {

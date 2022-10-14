@@ -2,6 +2,7 @@
 // Copyright (c) 2020-2022 The Pybricks Authors
 
 import { createAction } from '../actions';
+import { FileFormat } from '../ble-pybricks-service/protocol';
 
 /**
  * Action that indicates the hub has sent a checksum.
@@ -13,10 +14,13 @@ export const checksum = createAction((checksum: number) => ({
 
 // High-level hub actions.
 
-export const downloadAndRun = createAction((abiVersion: number) => ({
-    type: 'hub.action.downloadAndRun',
-    abiVersion,
-}));
+export const downloadAndRun = createAction(
+    (fileFormat: FileFormat | null, useLegacyDownload: boolean) => ({
+        type: 'hub.action.downloadAndRun',
+        fileFormat,
+        useLegacyDownload,
+    }),
+);
 
 export const didStartDownload = createAction(() => ({
     type: 'hub.action.didStartDownload',
@@ -39,6 +43,7 @@ export const stop = createAction(() => ({
     type: 'hub.action.stop',
 }));
 
-export const repl = createAction(() => ({
+export const repl = createAction((useLegacyDownload: boolean) => ({
     type: 'hub.action.repl',
+    useLegacyDownload,
 }));

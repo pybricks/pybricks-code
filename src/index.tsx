@@ -49,8 +49,9 @@ const store = configureStore({
                     'meta.baseQueryMeta',
                     // monoco view state has class-based object but is technically serializable
                     'viewState.viewState.firstPosition',
-                    // contain ArrayBuffer or DataView
+                    // contain ArrayBuffer, Blob or DataView
                     'data',
+                    'file',
                     'firmwareZip',
                     'payload',
                     'value',
