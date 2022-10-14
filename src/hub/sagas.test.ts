@@ -7,6 +7,7 @@ import {
     didSendCommand,
     sendStopUserProgramCommand,
 } from '../ble-pybricks-service/actions';
+import { FileFormat } from '../ble-pybricks-service/protocol';
 import { editorGetValueRequest, editorGetValueResponse } from '../editor/actions';
 import { compile, didCompile } from '../mpy/actions';
 import { createCountFunc } from '../utils/iter';
@@ -31,7 +32,7 @@ describe('downloadAndRun', () => {
 
         saga.updateState({ editor: { isReady: true } });
 
-        saga.put(downloadAndRun(5));
+        saga.put(downloadAndRun(FileFormat.Mpy5, true));
 
         // first, it gets the value from the current editor
         const editorValueAction = await saga.take();
@@ -87,7 +88,7 @@ describe('downloadAndRun', () => {
 test('repl', async () => {
     const saga = new AsyncSaga(hub, { nextMessageId: createCountFunc() });
 
-    saga.put(repl());
+    saga.put(repl(true));
 
     const action = await saga.take();
     expect(action).toEqual(write(0, new Uint8Array([32, 32, 32, 32])));

@@ -19,5 +19,5 @@ it('should dispatch action when clicked', async () => {
 
     await user.click(button.getByRole('button', { name: 'REPL' }));
 
-    expect(dispatch).toHaveBeenCalledWith(repl());
+    expect(dispatch).toHaveBeenCalledWith(repl(false));
 });

@@ -10,6 +10,7 @@ import {
     bleDIServiceDidReceiveSoftwareRevision,
 } from '../ble-device-info-service/actions';
 import {
+    PnpId,
     deviceInformationServiceUUID,
     firmwareRevisionStringUUID,
     pnpIdUUID,
@@ -22,8 +23,9 @@ import {
     nordicUartServiceUUID,
     nordicUartTxCharUUID,
 } from '../ble-nordic-uart-service/protocol';
+import { blePybricksServiceDidNotReceiveHubCapabilities } from '../ble-pybricks-service/actions';
 import {
-    pybricksControlCharacteristicUUID,
+    pybricksControlEventCharacteristicUUID,
     pybricksServiceUUID,
 } from '../ble-pybricks-service/protocol';
 import { firmwareInstallPybricks } from '../firmware/actions';
@@ -106,7 +108,7 @@ function createMocks(): Mocks {
 
     const pybricksService = mock<BluetoothRemoteGATTService>();
     pybricksService.getCharacteristic
-        .calledWith(pybricksControlCharacteristicUUID)
+        .calledWith(pybricksControlEventCharacteristicUUID)
         .mockResolvedValue(pybricksChar);
 
     const uartRxChar = mock<BluetoothRemoteGATTCharacteristic>();
@@ -182,6 +184,7 @@ enum ConnectRunPoint {
     DidReceiveFirmwareRevision,
     DidReceiveSoftwareRevision,
     DidReceivePnpId,
+    DidNotReceiveHubCapabilities,
     DidConnect,
 }
 
@@ -218,16 +221,24 @@ async function runConnectUntil(saga: AsyncSaga, point: ConnectRunPoint): Promise
         return;
     }
 
-    await expect(saga.take()).resolves.toEqual(
-        bleDIServiceDidReceivePnPId({
-            productId: 0x80,
-            productVersion: 0,
-            vendorId: 919,
-            vendorIdSource: 1,
-        }),
-    );
+    const pnpId: PnpId = {
+        productId: 0x80,
+        productVersion: 0,
+        vendorId: 919,
+        vendorIdSource: 1,
+    };
+
+    await expect(saga.take()).resolves.toEqual(bleDIServiceDidReceivePnPId(pnpId));
 
     if (point === ConnectRunPoint.DidReceivePnpId) {
+        return;
+    }
+
+    await expect(saga.take()).resolves.toEqual(
+        blePybricksServiceDidNotReceiveHubCapabilities(pnpId, '3.2.0b3'),
+    );
+
+    if (point === ConnectRunPoint.DidNotReceiveHubCapabilities) {
         return;
     }
 
@@ -400,19 +411,6 @@ describe('connect action is dispatched', () => {
             expect(mocks.gatt.disconnect).toHaveBeenCalled();
         });
 
-        it('should skip bleDIServiceDidReceivePnPId action if getting pnp id characteristic fails', async () => {
-            const testError = new DOMException('test error', 'NotFoundError');
-            mocks.deviceInfoService.getCharacteristic
-                .calledWith(pnpIdUUID)
-                .mockRejectedValueOnce(testError);
-
-            await runConnectUntil(saga, ConnectRunPoint.DidReceiveSoftwareRevision);
-
-            await expect(saga.take()).resolves.toEqual(
-                bleDidConnectPybricks('test-id', 'test name'),
-            );
-        });
-
         it('should fail if reading pnp id characteristic fails', async () => {
             const testError = new Error('test error');
             mocks.pnpIdChar.readValue.mockRejectedValue(testError);
@@ -449,7 +447,7 @@ describe('connect action is dispatched', () => {
         it('should fail if getting pybricks characteristic fails', async () => {
             const testError = new Error('test error');
             mocks.pybricksService.getCharacteristic
-                .calledWith(pybricksControlCharacteristicUUID)
+                .calledWith(pybricksControlEventCharacteristicUUID)
                 .mockRejectedValue(testError);
 
             await runConnectUntil(saga, ConnectRunPoint.DidReceivePnpId);
@@ -496,7 +494,7 @@ describe('connect action is dispatched', () => {
                 .calledWith(nordicUartServiceUUID)
                 .mockRejectedValueOnce(testError);
 
-            await runConnectUntil(saga, ConnectRunPoint.DidReceivePnpId);
+            await runConnectUntil(saga, ConnectRunPoint.DidNotReceiveHubCapabilities);
 
             await expect(saga.take()).resolves.toEqual(
                 alertsShowAlert('ble', 'missingService', {
@@ -515,7 +513,7 @@ describe('connect action is dispatched', () => {
                 .calledWith(nordicUartRxCharUUID)
                 .mockRejectedValue(testError);
 
-            await runConnectUntil(saga, ConnectRunPoint.DidReceivePnpId);
+            await runConnectUntil(saga, ConnectRunPoint.DidNotReceiveHubCapabilities);
 
             await expect(saga.take()).resolves.toEqual(
                 alertsShowAlert('alerts', 'unexpectedError', { error: testError }),
@@ -531,7 +529,7 @@ describe('connect action is dispatched', () => {
                 .calledWith(nordicUartTxCharUUID)
                 .mockRejectedValue(testError);
 
-            await runConnectUntil(saga, ConnectRunPoint.DidReceivePnpId);
+            await runConnectUntil(saga, ConnectRunPoint.DidNotReceiveHubCapabilities);
 
             await expect(saga.take()).resolves.toEqual(
                 alertsShowAlert('alerts', 'unexpectedError', { error: testError }),
@@ -545,7 +543,7 @@ describe('connect action is dispatched', () => {
             const testError = new Error('test error');
             mocks.uartTxChar.stopNotifications.mockRejectedValue(testError);
 
-            await runConnectUntil(saga, ConnectRunPoint.DidReceivePnpId);
+            await runConnectUntil(saga, ConnectRunPoint.DidNotReceiveHubCapabilities);
 
             await expect(saga.take()).resolves.toEqual(
                 alertsShowAlert('alerts', 'unexpectedError', { error: testError }),
@@ -559,7 +557,7 @@ describe('connect action is dispatched', () => {
             const testError = new Error('test error');
             mocks.uartTxChar.startNotifications.mockRejectedValue(testError);
 
-            await runConnectUntil(saga, ConnectRunPoint.DidReceivePnpId);
+            await runConnectUntil(saga, ConnectRunPoint.DidNotReceiveHubCapabilities);
 
             await expect(saga.take()).resolves.toEqual(
                 alertsShowAlert('alerts', 'unexpectedError', { error: testError }),

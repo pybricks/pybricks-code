@@ -3,9 +3,18 @@
 
 import { Reducer, combineReducers } from 'redux';
 import * as semver from 'semver';
-import { bleDIServiceDidReceiveFirmwareRevision } from '../ble-device-info-service/actions';
-import { didReceiveStatusReport } from '../ble-pybricks-service/actions';
-import { Status, statusToFlag } from '../ble-pybricks-service/protocol';
+import { HubType } from '../ble-lwp3-service/protocol';
+import {
+    blePybricksServiceDidNotReceiveHubCapabilities,
+    blePybricksServiceDidReceiveHubCapabilities,
+    didReceiveStatusReport,
+} from '../ble-pybricks-service/actions';
+import {
+    FileFormat,
+    HubCapabilityFlag,
+    Status,
+    statusToFlag,
+} from '../ble-pybricks-service/protocol';
 import { bleDidConnectPybricks, bleDidDisconnectPybricks } from '../ble/actions';
 import { pythonVersionToSemver } from '../utils/version';
 import {
@@ -121,18 +130,105 @@ const downloadProgress: Reducer<number | null> = (state = null, action) => {
     return state;
 };
 
-const mpyAbiVersion: Reducer<number> = (state = 6, action) => {
-    if (bleDIServiceDidReceiveFirmwareRevision.matches(action)) {
-        // HACK: there is not a good way to get the supported MPY ABI version
-        // from a running hub, so we use heuristics on the firmware version.
-        if (semver.satisfies(pythonVersionToSemver(action.version), '>=3.2.0-beta.2')) {
-            return 6;
-        }
-
-        return 5;
+/**
+ * The maximum number of bytes that can be written to a BLE characteristic value
+ * without triggering a long write.
+ *
+ * This value is only valid when connected to a hub and {@link useLegacyDownload}
+ * is false.
+ */
+const maxBleWriteSize: Reducer<number> = (state = 0, action) => {
+    if (blePybricksServiceDidReceiveHubCapabilities.matches(action)) {
+        return action.maxWriteSize;
     }
 
     return state;
 };
 
-export default combineReducers({ runtime, downloadProgress, mpyAbiVersion });
+/**
+ * The maximum number of bytes for the user program size.
+ *
+ * This value is only valid when connected to a hub and {@link useLegacyDownload}
+ * is false.
+ */
+const maxUserProgramSize: Reducer<number> = (state = 0, action) => {
+    if (blePybricksServiceDidReceiveHubCapabilities.matches(action)) {
+        return action.maxUserProgramSize;
+    }
+
+    return state;
+};
+
+/**
+ * Indicates if the connected hub supports a REPL.
+ */
+const hasRepl: Reducer<boolean> = (state = false, action) => {
+    if (blePybricksServiceDidReceiveHubCapabilities.matches(action)) {
+        return Boolean(action.flags & HubCapabilityFlag.HasRepl);
+    }
+
+    // for older firmware without hub capabilities characteristic, infer
+    // REPL support from hub type (move hub is only one without REPL).
+    if (blePybricksServiceDidNotReceiveHubCapabilities.matches(action)) {
+        return action.pnpId.productId !== HubType.MoveHub;
+    }
+
+    return state;
+};
+
+/**
+ * The preferred file format of the connected hub or null if the hub does not
+ * support any file formats that Pybricks Code supports.
+ */
+const preferredFileFormat: Reducer<FileFormat | null> = (state = null, action) => {
+    if (blePybricksServiceDidReceiveHubCapabilities.matches(action)) {
+        if (action.flags & HubCapabilityFlag.UserProgramMultiMpy6) {
+            return FileFormat.MultiMpy6;
+        }
+
+        // no supported format
+        return null;
+    }
+
+    if (blePybricksServiceDidNotReceiveHubCapabilities.matches(action)) {
+        // HACK: there is not a good way to get the supported MPY ABI version
+        // from a running hub, so we use heuristics on the firmware version.
+        if (
+            semver.satisfies(
+                pythonVersionToSemver(action.firmwareVersion),
+                '>=3.2.0-beta.2',
+            )
+        ) {
+            return FileFormat.Mpy6;
+        }
+
+        return FileFormat.Mpy5;
+    }
+
+    return state;
+};
+
+/**
+ * When true, use NUS for download and run instead of Pybricks control characteristic.
+ */
+const useLegacyDownload: Reducer<boolean> = (state = false, action) => {
+    if (blePybricksServiceDidReceiveHubCapabilities.matches(action)) {
+        return false;
+    }
+
+    if (blePybricksServiceDidNotReceiveHubCapabilities.matches(action)) {
+        return true;
+    }
+
+    return state;
+};
+
+export default combineReducers({
+    runtime,
+    downloadProgress,
+    maxBleWriteSize,
+    maxUserProgramSize,
+    hasRepl,
+    preferredFileFormat,
+    useLegacyDownload,
+});

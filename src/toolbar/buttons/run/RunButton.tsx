@@ -13,9 +13,8 @@ import icon from './icon.svg';
 type RunButtonProps = Pick<ActionButtonProps, 'id'>;
 
 const RunButton: React.VoidFunctionComponent<RunButtonProps> = ({ id }) => {
-    const downloadProgress = useSelector((s) => s.hub.downloadProgress);
-    const mpyAbiVersion = useSelector((s) => s.hub.mpyAbiVersion);
-    const runtime = useSelector((s) => s.hub.runtime);
+    const { downloadProgress, preferredFileFormat, runtime, useLegacyDownload } =
+        useSelector((s) => s.hub);
     const activeFile = useSelector((s) => s.editor.activeFileUuid);
     const keyboardShortcut = 'F5';
 
@@ -38,7 +37,9 @@ const RunButton: React.VoidFunctionComponent<RunButtonProps> = ({ id }) => {
             enabled={activeFile !== null && runtime === HubRuntimeState.Idle}
             showProgress={runtime === HubRuntimeState.Loading}
             progress={downloadProgress === null ? undefined : downloadProgress}
-            onAction={() => dispatch(downloadAndRun(mpyAbiVersion))}
+            onAction={() =>
+                dispatch(downloadAndRun(preferredFileFormat, useLegacyDownload))
+            }
         />
     );
 };

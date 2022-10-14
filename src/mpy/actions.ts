@@ -22,3 +22,17 @@ export const didFailToCompile = createAction((err: string[]) => ({
     type: 'mpy.action.didFailToCompile',
     err,
 }));
+
+export const mpyCompileMulti6 = createAction(() => ({
+    type: 'mpy.action.compileMulti6',
+}));
+
+export const mpyDidCompileMulti6 = createAction((file: Blob) => ({
+    type: 'mpy.action.didCompileMulti6',
+    file,
+}));
+
+export const mpyDidFailToCompileMulti6 = createAction((error: string[]) => ({
+    type: 'mpy.action.didFailToCompileMulti6',
+    error,
+}));

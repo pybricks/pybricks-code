@@ -19,8 +19,12 @@ test('initial state', () => {
     expect(reducers(undefined, {} as AnyAction)).toMatchInlineSnapshot(`
         {
           "downloadProgress": null,
-          "mpyAbiVersion": 6,
+          "hasRepl": false,
+          "maxBleWriteSize": 0,
+          "maxUserProgramSize": 0,
+          "preferredFileFormat": null,
           "runtime": "hub.runtime.disconnected",
+          "useLegacyDownload": false,
         }
     `);
 });

@@ -4,6 +4,7 @@
 // Actions for Bluetooth Low Energy Pybricks service
 
 import { createAction } from '../actions';
+import { PnpId } from '../ble-device-info-service/protocol';
 
 // Low-level connection actions.
 
@@ -53,6 +54,52 @@ export const sendStopUserProgramCommand = createAction((id: number) => ({
 }));
 
 /**
+ * Action that requests a start user program to be sent.
+ * @param id Unique identifier for this transaction.
+ */
+export const sendStartUserProgramCommand = createAction((id: number) => ({
+    type: 'blePybricksServiceCommand.action.sendStartUserProgram',
+    id,
+}));
+
+/**
+ * Action that requests a start interactive REPL to be sent.
+ * @param id Unique identifier for this transaction.
+ */
+export const sendStartReplCommand = createAction((id: number) => ({
+    type: 'blePybricksServiceCommand.action.sendStartRepl',
+    id,
+}));
+
+/**
+ * Action that requests to write user program metadata.
+ * @param id Unique identifier for this transaction.
+ * @param size The size of the user program in bytes.
+ */
+export const sendWriteUserProgramMetaCommand = createAction(
+    (id: number, size: number) => ({
+        type: 'blePybricksServiceCommand.action.sendWriteUserProgramMeta',
+        id,
+        size,
+    }),
+);
+
+/**
+ * Action that requests to write to user RAM.
+ * @param id Unique identifier for this transaction.
+ * @param offset The offset in bytes from the user RAM base address.
+ * @param payload The bytes to write.
+ */
+export const sendWriteUserRamCommand = createAction(
+    (id: number, offset: number, payload: ArrayBuffer) => ({
+        type: 'blePybricksServiceCommand.action.sendWriteUserRamCommand',
+        id,
+        offset,
+        payload,
+    }),
+);
+
+/**
  *  Action that indicates that a command was successfully sent.
  * @param id Unique identifier for the transaction from the corresponding "send" command.
  */
@@ -91,3 +138,28 @@ export const eventProtocolError = createAction((err: Error) => ({
     type: 'blePybricksServiceEvent.action.protocolError',
     err,
 }));
+
+/**
+ * Action that is called when the Pybricks Hub Capbailities characteristic
+ * is read.
+ */
+export const blePybricksServiceDidReceiveHubCapabilities = createAction(
+    (maxWriteSize: number, flags: number, maxUserProgramSize: number) => ({
+        type: 'blePybricksServiceEvent.action.didReceiveHubCapabilities',
+        maxWriteSize,
+        flags,
+        maxUserProgramSize,
+    }),
+);
+
+/**
+ * For compatibility with older firmware that does not have Pybricks Hub
+ * Capabilities characteristic.
+ */
+export const blePybricksServiceDidNotReceiveHubCapabilities = createAction(
+    (pnpId: PnpId, firmwareVersion: string) => ({
+        type: 'blePybricksServiceEvent.action.didNotReceiveHubCapabilities',
+        pnpId,
+        firmwareVersion,
+    }),
+);

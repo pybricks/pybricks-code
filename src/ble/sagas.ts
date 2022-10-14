@@ -45,13 +45,16 @@ import {
     nordicUartTxCharUUID,
 } from '../ble-nordic-uart-service/protocol';
 import {
+    blePybricksServiceDidNotReceiveHubCapabilities,
+    blePybricksServiceDidReceiveHubCapabilities,
     didFailToWriteCommand,
     didNotifyEvent,
     didWriteCommand,
     writeCommand,
 } from '../ble-pybricks-service/actions';
 import {
-    pybricksControlCharacteristicUUID,
+    pybricksControlEventCharacteristicUUID,
+    pybricksHubCapabilitiesCharacteristicUUID,
     pybricksServiceUUID,
 } from '../ble-pybricks-service/protocol';
 import { firmwareInstallPybricks } from '../firmware/actions';
@@ -79,7 +82,7 @@ function* handleWriteCommand(
     action: ReturnType<typeof writeCommand>,
 ): Generator {
     try {
-        yield* call(() => char.writeValueWithoutResponse(action.value.buffer));
+        yield* call(() => char.writeValueWithResponse(action.value.buffer));
         yield* put(didWriteCommand(action.id));
     } catch (err) {
         yield* put(didFailToWriteCommand(action.id, ensureError(err)));
@@ -258,13 +261,6 @@ function* handleBleConnectPybricks(): Generator {
         const pnpIdChar = yield* call(() =>
             deviceInfoService.getCharacteristic(pnpIdUUID).catch((err) => {
                 if (err instanceof DOMException && err.name === 'NotFoundError') {
-                    // istanbul ignore if
-                    if (process.env.NODE_ENV !== 'test') {
-                        console.warn(
-                            'PnP ID characteristic requires Pybricks firmware v3.1.0a1 or later',
-                        );
-                    }
-
                     return undefined;
                 }
 
@@ -272,10 +268,13 @@ function* handleBleConnectPybricks(): Generator {
             }),
         );
 
-        if (pnpIdChar) {
-            const pnpId = decodePnpId(yield* call(() => pnpIdChar.readValue()));
-            yield* put(bleDIServiceDidReceivePnPId(pnpId));
+        if (!pnpIdChar) {
+            // possible with firmware < v3.1.0
+            throw new Error('missing PnP ID characteristic');
         }
+
+        const pnpId = decodePnpId(yield* call(() => pnpIdChar.readValue()));
+        yield* put(bleDIServiceDidReceivePnPId(pnpId));
 
         const pybricksService = yield* call(() =>
             server.getPrimaryService(pybricksServiceUUID).catch((err) => {
@@ -299,7 +298,7 @@ function* handleBleConnectPybricks(): Generator {
         }
 
         const pybricksControlChar = yield* call(() =>
-            pybricksService.getCharacteristic(pybricksControlCharacteristicUUID),
+            pybricksService.getCharacteristic(pybricksControlEventCharacteristicUUID),
         );
 
         const pybricksControlChannel = eventChannel<DataView>((emit) => {
@@ -338,6 +337,35 @@ function* handleBleConnectPybricks(): Generator {
         tasks.push(
             yield* takeEvery(writeCommand, handleWriteCommand, pybricksControlChar),
         );
+
+        // hub capabilities characteristic was introduced in Pybricks Profile v1.2.0
+        if (satisfies(softwareRevision, '^1.2.0')) {
+            const pybricksHubCapabilitiesChar = yield* call(() =>
+                pybricksService.getCharacteristic(
+                    pybricksHubCapabilitiesCharacteristicUUID,
+                ),
+            );
+
+            const hubCapabilitiesValue = yield* call(() =>
+                pybricksHubCapabilitiesChar.readValue(),
+            );
+
+            const maxWriteSize = hubCapabilitiesValue.getUint16(0, true);
+            const flags = hubCapabilitiesValue.getUint32(2, true);
+            const maxUserProgramSize = hubCapabilitiesValue.getUint32(6, true);
+
+            yield* put(
+                blePybricksServiceDidReceiveHubCapabilities(
+                    maxWriteSize,
+                    flags,
+                    maxUserProgramSize,
+                ),
+            );
+        } else {
+            yield* put(
+                blePybricksServiceDidNotReceiveHubCapabilities(pnpId, firmwareVersion),
+            );
+        }
 
         const uartService = yield* call(() =>
             server.getPrimaryService(nordicUartServiceUUID).catch((err) => {

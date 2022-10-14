@@ -21,13 +21,21 @@ import {
     didSendCommand,
     didWriteCommand,
     eventProtocolError,
+    sendStartReplCommand,
+    sendStartUserProgramCommand,
     sendStopUserProgramCommand,
+    sendWriteUserProgramMetaCommand,
+    sendWriteUserRamCommand,
     writeCommand,
 } from './actions';
 import {
     EventType,
     ProtocolError,
+    createStartReplCommand,
+    createStartUserProgramCommand,
     createStopUserProgramCommand,
+    createWriteUserProgramMetaCommand,
+    createWriteUserRamCommand,
     getEventType,
     parseStatusReport,
 } from './protocol';
@@ -51,6 +59,21 @@ function* encodeRequest(): Generator {
         /* istanbul ignore else: should not be possible to reach */
         if (sendStopUserProgramCommand.matches(action)) {
             yield* put(writeCommand(action.id, createStopUserProgramCommand()));
+        } else if (sendStartUserProgramCommand.matches(action)) {
+            yield* put(writeCommand(action.id, createStartUserProgramCommand()));
+        } else if (sendStartReplCommand.matches(action)) {
+            yield* put(writeCommand(action.id, createStartReplCommand()));
+        } else if (sendWriteUserProgramMetaCommand.matches(action)) {
+            yield* put(
+                writeCommand(action.id, createWriteUserProgramMetaCommand(action.size)),
+            );
+        } else if (sendWriteUserRamCommand.matches(action)) {
+            yield* put(
+                writeCommand(
+                    action.id,
+                    createWriteUserRamCommand(action.offset, action.payload),
+                ),
+            );
         } else {
             console.error(`Unknown Pybricks service command ${action.type}`);
             continue;
