@@ -192,7 +192,10 @@ function* showFlashFirmwareError(
             yield* showSingleton(Level.Error, I18nId.FlashFirmwareTimedOut);
             break;
         case FailToFinishReasonType.BleError:
-            yield* showUnexpectedError(I18nId.FlashFirmwareBleError, action.reason.err);
+            yield* showUnexpectedError(
+                I18nId.FlashFirmwareBleError,
+                action.reason.error,
+            );
             break;
         case FailToFinishReasonType.Disconnected:
             yield* showSingleton(Level.Error, I18nId.FlashFirmwareDisconnected);
@@ -238,7 +241,7 @@ function* showFlashFirmwareError(
         case FailToFinishReasonType.Unknown:
             yield* showUnexpectedError(
                 I18nId.FlashFirmwareUnexpectedError,
-                action.reason.err,
+                action.reason.error,
             );
             break;
     }

@@ -60,7 +60,7 @@ export type FailToFinishReasonFailedToConnect =
 export type FailToFinishReasonTimedOut = Reason<FailToFinishReasonType.TimedOut>;
 
 export type FailToFinishReasonBleError = Reason<FailToFinishReasonType.BleError> & {
-    err: Error;
+    error: Error;
 };
 
 export type FailToFinishReasonDisconnected =
@@ -97,7 +97,7 @@ export type FailToFinishReasonFailedToCompile =
     Reason<FailToFinishReasonType.FailedToCompile>;
 
 export type FailToFinishReasonUnknown = Reason<FailToFinishReasonType.Unknown> & {
-    err: Error;
+    error: Error;
 };
 
 export type FailToFinishReason =
@@ -178,7 +178,7 @@ function didFailToFinishCreator(reason: FailToFinishReasonType.TimedOut): {
 
 function didFailToFinishCreator(
     reason: FailToFinishReasonType.BleError,
-    err: Error,
+    error: Error,
 ): {
     type: typeof didFailToFinishType;
     reason: FailToFinishReasonBleError;
@@ -244,7 +244,7 @@ function didFailToFinishCreator(reason: FailToFinishReasonType.FailedToCompile):
 
 function didFailToFinishCreator(
     reason: FailToFinishReasonType.Unknown,
-    err: Error,
+    error: Error,
 ): {
     type: typeof didFailToFinishType;
     reason: FailToFinishReasonUnknown;
@@ -274,7 +274,7 @@ function didFailToFinishCreator(
         }
         return {
             type: didFailToFinishType,
-            reason: { reason, err: arg1 },
+            reason: { reason, error: arg1 },
         };
     }
 
@@ -344,7 +344,7 @@ function didFailToFinishCreator(
         }
         return {
             type: didFailToFinishType,
-            reason: { reason, err: arg1 },
+            reason: { reason, error: arg1 },
         };
     }
 

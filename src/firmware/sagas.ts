@@ -113,7 +113,7 @@ function* waitForDidRequest(id: number): SagaGenerator<ReturnType<typeof didRequ
 
     if (failedToRequest) {
         yield* put(
-            didFailToFinish(FailToFinishReasonType.BleError, failedToRequest.err),
+            didFailToFinish(FailToFinishReasonType.BleError, failedToRequest.error),
         );
         yield* disconnectAndCancel();
     }
