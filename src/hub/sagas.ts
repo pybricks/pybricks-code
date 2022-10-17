@@ -242,7 +242,7 @@ function* handleDownloadAndRun(action: ReturnType<typeof downloadAndRun>): Gener
         }
 
         for (let i = 0; i < didCompile.file.size; i += chunkSize) {
-            yield* put(didProgressDownload((i * chunkSize) / didCompile.file.size));
+            yield* put(didProgressDownload(i / didCompile.file.size));
 
             const writeUserRamMessageId = nextMessageId();
 
