@@ -34,7 +34,7 @@
         "@types/redux-logger": "^3.0.9",
         "@types/semver": "^7.3.12",
         "@types/w3c-web-usb": "^1.0.6",
-        "@types/web-bluetooth": "^0.0.15",
+        "@types/web-bluetooth": "^0.0.16",
         "@types/web-locks-api": "^0.0.2",
         "@types/wicg-file-system-access": "^2020.9.5",
         "@types/zen-push": "^0.1.1",
