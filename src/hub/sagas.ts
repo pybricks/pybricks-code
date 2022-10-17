@@ -247,12 +247,10 @@ function* handleDownloadAndRun(action: ReturnType<typeof downloadAndRun>): Gener
             const writeUserRamMessageId = nextMessageId();
 
             const data = yield* call(() =>
-                didCompile.file.slice(i * chunkSize, (i + 1) * chunkSize).arrayBuffer(),
+                didCompile.file.slice(i, i + chunkSize).arrayBuffer(),
             );
 
-            yield* put(
-                sendWriteUserRamCommand(writeUserRamMessageId, i * chunkSize, data),
-            );
+            yield* put(sendWriteUserRamCommand(writeUserRamMessageId, i, data));
 
             const { didFailToSend } = yield* race({
                 didSend: take(
