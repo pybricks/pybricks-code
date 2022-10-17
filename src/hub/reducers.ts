@@ -120,7 +120,7 @@ const downloadProgress: Reducer<number | null> = (state = null, action) => {
     }
 
     if (didFinishDownload.matches(action)) {
-        return 1;
+        return null;
     }
 
     if (didFailToFinishDownload.matches(action)) {
