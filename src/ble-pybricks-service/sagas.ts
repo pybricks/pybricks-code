@@ -85,7 +85,7 @@ function* encodeRequest(): Generator {
         });
 
         if (failedToSend) {
-            yield* put(didFailToSendCommand(action.id, failedToSend.err));
+            yield* put(didFailToSendCommand(action.id, failedToSend.error));
         } else {
             yield* put(didSendCommand(action.id));
         }

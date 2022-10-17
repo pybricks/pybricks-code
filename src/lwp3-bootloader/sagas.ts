@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020,2022 The Pybricks Authors
+// Copyright (c) 2020-2022 The Pybricks Authors
 //
 // Handles LEGO Wireless Protocol v3 Bootloader protocol.
 
@@ -121,7 +121,7 @@ function* encodeRequest(): Generator {
         });
 
         if (failedToSend) {
-            yield* put(didFailToRequest(action.id, failedToSend.err));
+            yield* put(didFailToRequest(action.id, failedToSend.error));
         } else {
             yield* put(didRequest(action.id));
         }

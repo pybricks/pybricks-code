@@ -238,7 +238,7 @@ function* handleDownloadAndRun(action: ReturnType<typeof downloadAndRun>): Gener
         });
 
         if (didFailToSend) {
-            throw didFailToSend.err;
+            throw didFailToSend.error;
         }
 
         for (let i = 0; i < didCompile.file.size; i += chunkSize) {
@@ -262,7 +262,7 @@ function* handleDownloadAndRun(action: ReturnType<typeof downloadAndRun>): Gener
             });
 
             if (didFailToSend) {
-                throw didFailToSend.err;
+                throw didFailToSend.error;
             }
         }
 
@@ -285,7 +285,7 @@ function* handleDownloadAndRun(action: ReturnType<typeof downloadAndRun>): Gener
         });
 
         if (didFailToSend2) {
-            throw didFailToSend2.err;
+            throw didFailToSend2.error;
         }
 
         yield* put(didFinishDownload());
@@ -301,7 +301,7 @@ function* handleDownloadAndRun(action: ReturnType<typeof downloadAndRun>): Gener
         });
 
         if (didFailToStart) {
-            throw didFailToStart.err;
+            throw didFailToStart.error;
         }
     } catch (err) {
         // istanbul ignore if
@@ -344,7 +344,7 @@ function* handleStop(): Generator {
     if (failedToSend) {
         // TODO: probably want to check error. If hub disconnected, ignore error
         // otherwise indicate error to user
-        console.error(failedToSend.err);
+        console.error(failedToSend.error);
     }
 }
 

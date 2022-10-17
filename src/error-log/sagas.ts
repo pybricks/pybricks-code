@@ -14,13 +14,13 @@ import {
 function handlePybricksEventProtocolError(
     action: ReturnType<typeof pybricksEventProtocolError>,
 ): void {
-    console.error(action.err);
+    console.error(action.error);
 }
 
 function handleBleUartDidFailToWrite(
     action: ReturnType<typeof bleUartDidFailToWrite>,
 ): void {
-    console.error(action.err);
+    console.error(action.error);
 }
 
 function handleBootloaderDidFailToConnect(
@@ -32,7 +32,7 @@ function handleBootloaderDidFailToConnect(
 }
 
 function handleBootloaderDidError(action: ReturnType<typeof bootloaderDidError>): void {
-    console.error(action.err);
+    console.error(action.error);
 }
 
 function handleFileStorageDidFailToStoreTextFileValue(

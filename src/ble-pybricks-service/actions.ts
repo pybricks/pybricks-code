@@ -28,10 +28,10 @@ export const didWriteCommand = createAction((id: number) => ({
 /**
  * Action that indicates sending a command to the Pybricks service control characteristic failed.
  */
-export const didFailToWriteCommand = createAction((id: number, err: Error) => ({
+export const didFailToWriteCommand = createAction((id: number, error: Error) => ({
     type: 'blePybricksService.action.didFailToWriteCommand',
     id,
-    err,
+    error,
 }));
 
 /**
@@ -113,10 +113,10 @@ export const didSendCommand = createAction((id: number) => ({
  * @param id Unique identifier for the transaction from the corresponding "send" command.
  * @param err The error that was raised.
  */
-export const didFailToSendCommand = createAction((id: number, err: Error) => ({
+export const didFailToSendCommand = createAction((id: number, error: Error) => ({
     type: 'blePybricksServiceCommand.action.didFailToSend',
     id,
-    err,
+    error,
 }));
 
 /** Action types for events received from the Pybricks service control characteristic. */
@@ -132,11 +132,11 @@ export const didReceiveStatusReport = createAction((statusFlags: number) => ({
 
 /**
  * Pseudo-event  = actionCreator((not received from hub) indicating that there was a protocol error.
- * @param err The error that was caught.
+ * @param error The error that was caught.
  */
-export const eventProtocolError = createAction((err: Error) => ({
+export const eventProtocolError = createAction((error: Error) => ({
     type: 'blePybricksServiceEvent.action.protocolError',
-    err,
+    error,
 }));
 
 /**

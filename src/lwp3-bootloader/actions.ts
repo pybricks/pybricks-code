@@ -63,10 +63,10 @@ function didFailToConnectCreator(
 
 function didFailToConnectCreator(
     reason: BootloaderConnectionFailureReason.Unknown,
-    err: Error,
+    error: Error,
 ): Action<typeof didFailToConnectType> & {
     reason: BootloaderConnectionFailureReason.Unknown;
-    err: Error;
+    error: Error;
 };
 
 function didFailToConnectCreator<T extends BootloaderConnectionFailureReason>(
@@ -103,9 +103,9 @@ export const didFailToConnect = createAction(didFailToConnectCreator);
 /**
  * There was a connection error.
  */
-export const didError = createAction((err: Error) => ({
+export const didError = createAction((error: Error) => ({
     type: 'bootloader.action.connection.didError',
-    err,
+    error,
 }));
 
 /**
@@ -127,9 +127,9 @@ export const didSend = createAction(() => ({
 /**
  * Sending a message failed with error.
  */
-export const didFailToSend = createAction((err: Error) => ({
+export const didFailToSend = createAction((error: Error) => ({
     type: 'bootloader.action.connection.didFailToSend',
-    err,
+    error,
 }));
 
 /**
@@ -249,12 +249,12 @@ export const didRequest = createAction((id: number) => ({
 /**
  * Creates an action that indicates a request failed to send.
  * @param id The unique identifier of the action.
- * @param err The error message.
+ * @param error The error message.
  */
-export const didFailToRequest = createAction((id: number, err: Error) => ({
+export const didFailToRequest = createAction((id: number, error: Error) => ({
     type: 'bootloader.action.didFailToRequest',
     id,
-    err,
+    error,
 }));
 
 // Bootloader response actions for receiving responses from the connection.

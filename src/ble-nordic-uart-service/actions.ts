@@ -16,11 +16,12 @@ export const didWrite = createAction((id: number) => ({
     id,
 }));
 
-export const didFailToWrite = createAction((id: number, err: Error) => ({
+export const didFailToWrite = createAction((id: number, error: Error) => ({
     type: 'bleUart.action.didFailToWrite',
     id,
-    err,
+    error,
 }));
+
 export const didNotify = createAction((value: DataView) => ({
     type: 'bleUart.action.didNotify',
     value,
