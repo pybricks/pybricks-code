@@ -2146,26 +2146,26 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jest/transform@npm:^29.2.0":
-  version: 29.2.0
-  resolution: "@jest/transform@npm:29.2.0"
+"@jest/transform@npm:^29.2.0, @jest/transform@npm:^29.2.1":
+  version: 29.2.1
+  resolution: "@jest/transform@npm:29.2.1"
   dependencies:
     "@babel/core": ^7.11.6
-    "@jest/types": ^29.2.0
+    "@jest/types": ^29.2.1
     "@jridgewell/trace-mapping": ^0.3.15
     babel-plugin-istanbul: ^6.1.1
     chalk: ^4.0.0
     convert-source-map: ^1.4.0
     fast-json-stable-stringify: ^2.1.0
     graceful-fs: ^4.2.9
-    jest-haste-map: ^29.2.0
+    jest-haste-map: ^29.2.1
     jest-regex-util: ^29.2.0
-    jest-util: ^29.2.0
+    jest-util: ^29.2.1
     micromatch: ^4.0.4
     pirates: ^4.0.4
     slash: ^3.0.0
     write-file-atomic: ^4.0.1
-  checksum: 8e3794d1b77e6d52d342a692186cd574b2a637ce255f75824a029fc82cad93623d7bc5796566c1632fb51673eea2bf5194f4aac6bbc8cf879a5c29b12dbfb32a
+  checksum: bb50bfce34d8c648475a7d65e91787a0232cdcc0445331dba8d3d80180dff1b43d97872568be795c8f92d419b3f0e6114297349cc892fdf50e8471cb227f674a
   languageName: node
   linkType: hard
 
@@ -2434,7 +2434,7 @@ __metadata:
     "@types/zen-push": ^0.1.1
     "@typescript-eslint/eslint-plugin": ^5.40.0
     "@typescript-eslint/parser": ^5.40.0
-    babel-jest: ^29.1.0
+    babel-jest: ^29.2.1
     babel-loader: ^8.2.3
     babel-plugin-macros: ^3.0.1
     babel-plugin-named-asset-import: ^0.3.8
@@ -5697,11 +5697,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-jest@npm:^29.1.0, babel-jest@npm:^29.2.0":
-  version: 29.2.0
-  resolution: "babel-jest@npm:29.2.0"
+"babel-jest@npm:^29.2.0, babel-jest@npm:^29.2.1":
+  version: 29.2.1
+  resolution: "babel-jest@npm:29.2.1"
   dependencies:
-    "@jest/transform": ^29.2.0
+    "@jest/transform": ^29.2.1
     "@types/babel__core": ^7.1.14
     babel-plugin-istanbul: ^6.1.1
     babel-preset-jest: ^29.2.0
@@ -5710,7 +5710,7 @@ __metadata:
     slash: ^3.0.0
   peerDependencies:
     "@babel/core": ^7.8.0
-  checksum: 1629bc32829d0b6d9b7121538ef1ff8ae577432ff5be9e5102c9211163aa6d2f667a299fca4ffc1a16cd51fc3c32a6b9999afdbb3dca6ae906a01c6ab4e3f222
+  checksum: c340c10d8cee4b3ef5990443627b5f70dbe2649faa1fef671c8b4fd4a9f8d559b78e5644e18de8063974cd6606033caf1afcaa52744309f6e3176c0b37c2e8f9
   languageName: node
   linkType: hard
 
