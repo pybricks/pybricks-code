@@ -61,7 +61,7 @@ export function validateFileName(
         return FileNameValidationResult.HasInvalidFirstCharacter;
     }
 
-    if (!fileName.match(/^[a-zA-Z0-9_-]+$/)) {
+    if (!fileName.match(/^[a-zA-Z0-9_]+$/)) {
         return FileNameValidationResult.HasInvalidCharacters;
     }
 

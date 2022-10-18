@@ -34,9 +34,9 @@ describe('validateFileName', () => {
         );
     });
 
-    it('should allow file names with dashes', () => {
+    it('should not allow file names with dashes', () => {
         expect(validateFileName('file-name', pythonFileExtension, [])).toBe(
-            FileNameValidationResult.IsOk,
+            FileNameValidationResult.HasInvalidCharacters,
         );
     });
 
