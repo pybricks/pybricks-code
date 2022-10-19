@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2021-2022 The Pybricks Authors
 
-import type { ToasterInstance } from '@blueprintjs/core';
 import {
     FirmwareMetadata,
     FirmwareMetadataV110,
@@ -9,10 +8,9 @@ import {
     FirmwareReaderError,
     FirmwareReaderErrorCode,
 } from '@pybricks/firmware';
-import { mock } from 'jest-mock-extended';
 import JSZip from 'jszip';
 import { AsyncSaga } from '../../test';
-import { alertsShowAlert } from '../alerts/actions';
+import { alertsHideAlert, alertsShowAlert } from '../alerts/actions';
 import {
     BootloaderConnectionFailureReason,
     checksumRequest,
@@ -83,7 +81,6 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
-                toasterRef: { current: mock<ToasterInstance>() },
             });
 
             // saga is triggered by this action
@@ -267,7 +264,6 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
-                toasterRef: { current: mock<ToasterInstance>() },
             });
 
             // saga is triggered by this action
@@ -433,7 +429,6 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
-                toasterRef: { current: mock<ToasterInstance>() },
             });
 
             // saga is triggered by this action
@@ -483,7 +478,6 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
-                toasterRef: { current: mock<ToasterInstance>() },
             });
 
             // saga is triggered by this action
@@ -524,6 +518,10 @@ describe('flashFirmware', () => {
             // this to happen.
             saga.put(didFailToRequest(0, new Error('failed due to disconnect')));
 
+            await expect(saga.take()).resolves.toEqual(
+                alertsHideAlert('firmware.ble.progress'),
+            );
+
             await saga.end();
         });
 
@@ -551,7 +549,6 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
-                toasterRef: { current: mock<ToasterInstance>() },
             });
 
             // saga is triggered by this action
@@ -585,6 +582,10 @@ describe('flashFirmware', () => {
 
             // should request to disconnect after failure
 
+            await expect(saga.take()).resolves.toEqual(
+                alertsHideAlert('firmware.ble.progress'),
+            );
+
             action = await saga.take();
             expect(action).toEqual(disconnect());
 
@@ -615,7 +616,6 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
-                toasterRef: { current: mock<ToasterInstance>() },
             });
 
             // saga is triggered by this action
@@ -652,6 +652,10 @@ describe('flashFirmware', () => {
 
             // should request to disconnect after failure
 
+            await expect(saga.take()).resolves.toEqual(
+                alertsHideAlert('firmware.ble.progress'),
+            );
+
             action = await saga.take();
             expect(action).toEqual(disconnect());
 
@@ -682,7 +686,6 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
-                toasterRef: { current: mock<ToasterInstance>() },
             });
 
             // saga is triggered by this action
@@ -713,6 +716,10 @@ describe('flashFirmware', () => {
 
             // should request to disconnect after failure
 
+            await expect(saga.take()).resolves.toEqual(
+                alertsHideAlert('firmware.ble.progress'),
+            );
+
             action = await saga.take();
             expect(action).toEqual(disconnect());
 
@@ -742,7 +749,6 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
-                toasterRef: { current: mock<ToasterInstance>() },
             });
 
             // saga is triggered by this action
@@ -778,6 +784,10 @@ describe('flashFirmware', () => {
 
             // should request to disconnect after failure
 
+            await expect(saga.take()).resolves.toEqual(
+                alertsHideAlert('firmware.ble.progress'),
+            );
+
             action = await saga.take();
             expect(action).toEqual(disconnect());
 
@@ -808,7 +818,6 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
-                toasterRef: { current: mock<ToasterInstance>() },
             });
 
             // saga is triggered by this action
@@ -861,6 +870,10 @@ describe('flashFirmware', () => {
 
             // should request to disconnect after failure
 
+            await expect(saga.take()).resolves.toEqual(
+                alertsHideAlert('firmware.ble.progress'),
+            );
+
             action = await saga.take();
             expect(action).toEqual(disconnect());
 
@@ -891,7 +904,6 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
-                toasterRef: { current: mock<ToasterInstance>() },
             });
 
             // saga is triggered by this action
@@ -927,6 +939,10 @@ describe('flashFirmware', () => {
 
             // should request to disconnect after failure
 
+            await expect(saga.take()).resolves.toEqual(
+                alertsHideAlert('firmware.ble.progress'),
+            );
+
             action = await saga.take();
             expect(action).toEqual(disconnect());
 
@@ -957,7 +973,6 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
-                toasterRef: { current: mock<ToasterInstance>() },
             });
 
             // saga is triggered by this action
@@ -1036,6 +1051,10 @@ describe('flashFirmware', () => {
 
             // should request to disconnect after failure
 
+            await expect(saga.take()).resolves.toEqual(
+                alertsHideAlert('firmware.ble.progress'),
+            );
+
             action = await saga.take();
             expect(action).toEqual(disconnect());
 
@@ -1066,7 +1085,6 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
-                toasterRef: { current: mock<ToasterInstance>() },
             });
 
             // saga is triggered by this action
@@ -1154,6 +1172,10 @@ describe('flashFirmware', () => {
 
             // should request to disconnect after failure
 
+            await expect(saga.take()).resolves.toEqual(
+                alertsHideAlert('firmware.ble.progress'),
+            );
+
             action = await saga.take();
             expect(action).toEqual(disconnect());
 
@@ -1184,7 +1206,6 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
-                toasterRef: { current: mock<ToasterInstance>() },
             });
 
             // saga is triggered by this action
@@ -1325,6 +1346,10 @@ describe('flashFirmware', () => {
 
             // should request to disconnect after failure
 
+            await expect(saga.take()).resolves.toEqual(
+                alertsHideAlert('firmware.ble.progress'),
+            );
+
             action = await saga.take();
             expect(action).toEqual(disconnect());
 
@@ -1355,7 +1380,6 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
-                toasterRef: { current: mock<ToasterInstance>() },
             });
 
             // saga is triggered by this action
@@ -1496,6 +1520,10 @@ describe('flashFirmware', () => {
 
             // should request to disconnect after failure
 
+            await expect(saga.take()).resolves.toEqual(
+                alertsHideAlert('firmware.ble.progress'),
+            );
+
             action = await saga.take();
             expect(action).toEqual(disconnect());
 
@@ -1524,7 +1552,6 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
-                toasterRef: { current: mock<ToasterInstance>() },
             });
 
             // saga is triggered by this action
@@ -1712,7 +1739,6 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
-                toasterRef: { current: mock<ToasterInstance>() },
             });
 
             // saga is triggered by this action
@@ -1734,6 +1760,10 @@ describe('flashFirmware', () => {
                         FirmwareReaderErrorCode.MissingFirmwareBaseBin,
                     ),
                 ),
+            );
+
+            await expect(saga.take()).resolves.toEqual(
+                alertsHideAlert('firmware.ble.progress'),
             );
 
             await saga.end();
@@ -1759,7 +1789,6 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
-                toasterRef: { current: mock<ToasterInstance>() },
             });
 
             // saga is triggered by this action
@@ -1780,6 +1809,10 @@ describe('flashFirmware', () => {
                     'mpy-abi-version',
                     MetadataProblem.NotSupported,
                 ),
+            );
+
+            await expect(saga.take()).resolves.toEqual(
+                alertsHideAlert('firmware.ble.progress'),
             );
 
             await saga.end();
@@ -1805,7 +1838,6 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
-                toasterRef: { current: mock<ToasterInstance>() },
             });
 
             // saga is triggered by this action
@@ -1842,6 +1874,10 @@ describe('flashFirmware', () => {
                 didFailToFinish(FailToFinishReasonType.FailedToCompile),
             );
 
+            await expect(saga.take()).resolves.toEqual(
+                alertsHideAlert('firmware.ble.progress'),
+            );
+
             await saga.end();
         });
 
@@ -1865,7 +1901,6 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
-                toasterRef: { current: mock<ToasterInstance>() },
             });
 
             // saga is triggered by this action
@@ -1902,6 +1937,10 @@ describe('flashFirmware', () => {
                 didFailToFinish(FailToFinishReasonType.FirmwareSize),
             );
 
+            await expect(saga.take()).resolves.toEqual(
+                alertsHideAlert('firmware.ble.progress'),
+            );
+
             await saga.end();
         });
 
@@ -1926,7 +1965,6 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
-                toasterRef: { current: mock<ToasterInstance>() },
             });
 
             // saga is triggered by this action
@@ -1967,6 +2005,10 @@ describe('flashFirmware', () => {
                 ),
             );
 
+            await expect(saga.take()).resolves.toEqual(
+                alertsHideAlert('firmware.ble.progress'),
+            );
+
             await saga.end();
         });
 
@@ -1990,7 +2032,6 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
-                toasterRef: { current: mock<ToasterInstance>() },
             });
 
             // saga is triggered by this action
@@ -2048,6 +2089,10 @@ describe('flashFirmware', () => {
 
             // should request to disconnect after failure
 
+            await expect(saga.take()).resolves.toEqual(
+                alertsHideAlert('firmware.ble.progress'),
+            );
+
             action = await saga.take();
             expect(action).toEqual(disconnect());
 
@@ -2079,7 +2124,6 @@ describe('flashFirmware', () => {
 
         const saga = new AsyncSaga(flashFirmware, {
             nextMessageId: createCountFunc(),
-            toasterRef: { current: mock<ToasterInstance>() },
         });
 
         // saga is triggered by this action

@@ -29,7 +29,11 @@ import {
     take,
     takeEvery,
 } from 'typed-redux-saga/macro';
-import { alertsDidShowAlert, alertsShowAlert } from '../alerts/actions';
+import {
+    alertsDidShowAlert,
+    alertsHideAlert,
+    alertsShowAlert,
+} from '../alerts/actions';
 import {
     checksumRequest,
     checksumResponse,
@@ -55,7 +59,6 @@ import { MaxProgramFlashSize, Result } from '../lwp3-bootloader/protocol';
 import { BootloaderConnectionState } from '../lwp3-bootloader/reducers';
 import { compile, didCompile, didFailToCompile } from '../mpy/actions';
 import { RootState } from '../reducers';
-import type { ToasterRef } from '../toasterTypes';
 import { LegoUsbProductId, legoUsbVendorId } from '../usb';
 import { defined, ensureError, hex, maybe } from '../utils';
 import { crc32, fmod, sumComplement32 } from '../utils/math';
@@ -93,10 +96,7 @@ const firmwareBleProgressToastId = 'firmware.ble.progress';
  * parent task).
  */
 function* disconnectAndCancel(): SagaGenerator<void> {
-    const toaster = (yield* getContext<ToasterRef>('toasterRef')).current;
-    defined(toaster);
-
-    toaster.dismiss(firmwareBleProgressToastId);
+    yield* put(alertsHideAlert(firmwareBleProgressToastId));
 
     const connection = yield* select((s: RootState) => s.bootloader.connection);
 
@@ -749,9 +749,6 @@ function* handleFlashUsbDfu(action: ReturnType<typeof firmwareFlashUsbDfu>): Gen
         dfu.dfuseStartAddress = dfuFirmwareStartAddress;
         const writeProc = dfu.write(1024, firmware, true);
 
-        const toaster = (yield* getContext<ToasterRef>('toasterRef')).current;
-        defined(toaster);
-
         const eraseProcessChan = eventChannel<{
             bytesSent: number;
             expectedSize: number;
@@ -813,7 +810,7 @@ function* handleFlashUsbDfu(action: ReturnType<typeof firmwareFlashUsbDfu>): Gen
                 console.error(error);
             }
 
-            toaster.dismiss(firmwareDfuProgressToastId);
+            yield* put(alertsHideAlert(firmwareDfuProgressToastId));
             yield* put(firmwareDidFailToFlashUsbDfu());
 
             yield* put(alertsShowAlert('firmware', 'dfuError'));

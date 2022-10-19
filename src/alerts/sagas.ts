@@ -6,7 +6,7 @@ import { delay, getContext, put, take, takeEvery } from 'typed-redux-saga/macro'
 import { getAlertProps } from '../alerts';
 import type { ToasterRef } from '../toasterTypes';
 import { defined } from '../utils';
-import { alertsDidShowAlert, alertsShowAlert } from './actions';
+import { alertsDidShowAlert, alertsHideAlert, alertsShowAlert } from './actions';
 
 export type AlertsSagaContext = { toasterRef: ToasterRef };
 
@@ -48,7 +48,14 @@ function* handleShowAlert(action: ReturnType<typeof alertsShowAlert>): Generator
         chan.close();
     }
 }
+function* handleHideAlert(action: ReturnType<typeof alertsHideAlert>): Generator {
+    const toaster = (yield* getContext<ToasterRef>('toasterRef')).current;
+    defined(toaster);
+
+    toaster.dismiss(action.key);
+}
 
 export default function* (): Generator {
     yield* takeEvery(alertsShowAlert, handleShowAlert);
+    yield* takeEvery(alertsHideAlert, handleHideAlert);
 }
