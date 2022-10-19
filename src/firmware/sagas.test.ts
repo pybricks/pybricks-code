@@ -137,6 +137,16 @@ describe('flashFirmware', () => {
             // erase first
 
             action = await saga.take();
+            expect(action).toEqual(
+                alertsShowAlert(
+                    'firmware',
+                    'flashProgress',
+                    { action: 'erase', progress: undefined },
+                    'firmware.ble.progress',
+                ),
+            );
+
+            action = await saga.take();
             expect(action).toEqual(alertsShowAlert('firmware', 'releaseButton'));
 
             action = await saga.take();
@@ -170,6 +180,19 @@ describe('flashFirmware', () => {
                 action = await saga.take();
                 expect(action).toEqual(didProgress(offset / totalFirmwareSize));
 
+                action = await saga.take();
+                expect(action).toEqual(
+                    alertsShowAlert(
+                        'firmware',
+                        'flashProgress',
+                        {
+                            action: 'flash',
+                            progress: offset / totalFirmwareSize,
+                        },
+                        'firmware.ble.progress',
+                    ),
+                );
+
                 // Have to be careful that a checksum request is not sent after
                 // last payload is sent, otherwise the hub gets confused.
 
@@ -193,6 +216,19 @@ describe('flashFirmware', () => {
 
             action = await saga.take();
             expect(action).toEqual(didProgress(1));
+
+            action = await saga.take();
+            expect(action).toEqual(
+                alertsShowAlert(
+                    'firmware',
+                    'flashProgress',
+                    {
+                        action: 'flash',
+                        progress: 1,
+                    },
+                    'firmware.ble.progress',
+                ),
+            );
 
             // and finally reboot the hub
 
@@ -265,6 +301,16 @@ describe('flashFirmware', () => {
             // erase first
 
             action = await saga.take();
+            expect(action).toEqual(
+                alertsShowAlert(
+                    'firmware',
+                    'flashProgress',
+                    { action: 'erase', progress: undefined },
+                    'firmware.ble.progress',
+                ),
+            );
+
+            action = await saga.take();
             expect(action).toEqual(alertsShowAlert('firmware', 'releaseButton'));
 
             action = await saga.take();
@@ -298,6 +344,19 @@ describe('flashFirmware', () => {
                 action = await saga.take();
                 expect(action).toEqual(didProgress(offset / totalFirmwareSize));
 
+                action = await saga.take();
+                expect(action).toEqual(
+                    alertsShowAlert(
+                        'firmware',
+                        'flashProgress',
+                        {
+                            action: 'flash',
+                            progress: offset / totalFirmwareSize,
+                        },
+                        'firmware.ble.progress',
+                    ),
+                );
+
                 // Have to be careful that a checksum request is not sent after
                 // last payload is sent, otherwise the hub gets confused.
 
@@ -321,6 +380,19 @@ describe('flashFirmware', () => {
 
             action = await saga.take();
             expect(action).toEqual(didProgress(1));
+
+            action = await saga.take();
+            expect(action).toEqual(
+                alertsShowAlert(
+                    'firmware',
+                    'flashProgress',
+                    {
+                        action: 'flash',
+                        progress: 1,
+                    },
+                    'firmware.ble.progress',
+                ),
+            );
 
             // and finally reboot the hub
 
@@ -937,6 +1009,16 @@ describe('flashFirmware', () => {
             // erase first
 
             action = await saga.take();
+            expect(action).toEqual(
+                alertsShowAlert(
+                    'firmware',
+                    'flashProgress',
+                    { action: 'erase', progress: undefined },
+                    'firmware.ble.progress',
+                ),
+            );
+
+            action = await saga.take();
             expect(action).toEqual(alertsShowAlert('firmware', 'releaseButton'));
 
             action = await saga.take();
@@ -1034,6 +1116,16 @@ describe('flashFirmware', () => {
             expect(action).toEqual(didStart());
 
             // erase first
+
+            action = await saga.take();
+            expect(action).toEqual(
+                alertsShowAlert(
+                    'firmware',
+                    'flashProgress',
+                    { action: 'erase', progress: undefined },
+                    'firmware.ble.progress',
+                ),
+            );
 
             action = await saga.take();
             expect(action).toEqual(alertsShowAlert('firmware', 'releaseButton'));
@@ -1144,6 +1236,16 @@ describe('flashFirmware', () => {
             // erase first
 
             action = await saga.take();
+            expect(action).toEqual(
+                alertsShowAlert(
+                    'firmware',
+                    'flashProgress',
+                    { action: 'erase', progress: undefined },
+                    'firmware.ble.progress',
+                ),
+            );
+
+            action = await saga.take();
             expect(action).toEqual(alertsShowAlert('firmware', 'releaseButton'));
 
             action = await saga.take();
@@ -1176,6 +1278,19 @@ describe('flashFirmware', () => {
 
                 action = await saga.take();
                 expect(action).toEqual(didProgress(offset / totalFirmwareSize));
+
+                action = await saga.take();
+                expect(action).toEqual(
+                    alertsShowAlert(
+                        'firmware',
+                        'flashProgress',
+                        {
+                            action: 'flash',
+                            progress: offset / totalFirmwareSize,
+                        },
+                        'firmware.ble.progress',
+                    ),
+                );
 
                 // Have to be careful that a checksum request is not sent after
                 // last payload is sent, otherwise the hub gets confused.
@@ -1292,6 +1407,16 @@ describe('flashFirmware', () => {
             // erase first
 
             action = await saga.take();
+            expect(action).toEqual(
+                alertsShowAlert(
+                    'firmware',
+                    'flashProgress',
+                    { action: 'erase', progress: undefined },
+                    'firmware.ble.progress',
+                ),
+            );
+
+            action = await saga.take();
             expect(action).toEqual(alertsShowAlert('firmware', 'releaseButton'));
 
             action = await saga.take();
@@ -1324,6 +1449,19 @@ describe('flashFirmware', () => {
 
                 action = await saga.take();
                 expect(action).toEqual(didProgress(offset / totalFirmwareSize));
+
+                action = await saga.take();
+                expect(action).toEqual(
+                    alertsShowAlert(
+                        'firmware',
+                        'flashProgress',
+                        {
+                            action: 'flash',
+                            progress: offset / totalFirmwareSize,
+                        },
+                        'firmware.ble.progress',
+                    ),
+                );
 
                 // Have to be careful that a checksum request is not sent after
                 // last payload is sent, otherwise the hub gets confused.
@@ -1445,6 +1583,16 @@ describe('flashFirmware', () => {
             // erase first
 
             action = await saga.take();
+            expect(action).toEqual(
+                alertsShowAlert(
+                    'firmware',
+                    'flashProgress',
+                    { action: 'erase', progress: undefined },
+                    'firmware.ble.progress',
+                ),
+            );
+
+            action = await saga.take();
             expect(action).toEqual(alertsShowAlert('firmware', 'releaseButton'));
 
             action = await saga.take();
@@ -1479,6 +1627,19 @@ describe('flashFirmware', () => {
                 action = await saga.take();
                 expect(action).toEqual(didProgress(offset / totalFirmwareSize));
 
+                action = await saga.take();
+                expect(action).toEqual(
+                    alertsShowAlert(
+                        'firmware',
+                        'flashProgress',
+                        {
+                            action: 'flash',
+                            progress: offset / totalFirmwareSize,
+                        },
+                        'firmware.ble.progress',
+                    ),
+                );
+
                 // Have to be careful that a checksum request is not sent after
                 // last payload is sent, otherwise the hub gets confused.
 
@@ -1502,6 +1663,19 @@ describe('flashFirmware', () => {
 
             action = await saga.take();
             expect(action).toEqual(didProgress(1));
+
+            action = await saga.take();
+            expect(action).toEqual(
+                alertsShowAlert(
+                    'firmware',
+                    'flashProgress',
+                    {
+                        action: 'flash',
+                        progress: 1,
+                    },
+                    'firmware.ble.progress',
+                ),
+            );
 
             // and finally reboot the hub
 
@@ -1957,6 +2131,16 @@ describe('flashFirmware', () => {
         // erase first
 
         action = await saga.take();
+        expect(action).toEqual(
+            alertsShowAlert(
+                'firmware',
+                'flashProgress',
+                { action: 'erase', progress: undefined },
+                'firmware.ble.progress',
+            ),
+        );
+
+        action = await saga.take();
         expect(action).toEqual(alertsShowAlert('firmware', 'releaseButton'));
 
         action = await saga.take();
@@ -1989,6 +2173,19 @@ describe('flashFirmware', () => {
             action = await saga.take();
             expect(action).toEqual(didProgress(offset / totalFirmwareSize));
 
+            action = await saga.take();
+            expect(action).toEqual(
+                alertsShowAlert(
+                    'firmware',
+                    'flashProgress',
+                    {
+                        action: 'flash',
+                        progress: offset / totalFirmwareSize,
+                    },
+                    'firmware.ble.progress',
+                ),
+            );
+
             // Have to be careful that a checksum request is not sent after
             // last payload is sent, otherwise the hub gets confused.
 
@@ -2011,6 +2208,19 @@ describe('flashFirmware', () => {
 
         action = await saga.take();
         expect(action).toEqual(didProgress(1));
+
+        action = await saga.take();
+        expect(action).toEqual(
+            alertsShowAlert(
+                'firmware',
+                'flashProgress',
+                {
+                    action: 'flash',
+                    progress: 1,
+                },
+                'firmware.ble.progress',
+            ),
+        );
 
         // and finally reboot the hub
 

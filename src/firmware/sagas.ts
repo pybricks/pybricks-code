@@ -74,7 +74,6 @@ import {
     firmwareInstallPybricks,
     flashFirmware,
 } from './actions';
-import { flashProgress } from './alerts/FlashProgress';
 import {
     firmwareInstallPybricksDialogAccept,
     firmwareInstallPybricksDialogCancel,
@@ -87,6 +86,8 @@ const firmwareZipMap = new Map<HubType, string>([
     [HubType.MoveHub, moveHubZip],
 ]);
 
+const firmwareBleProgressToastId = 'firmware.ble.progress';
+
 /**
  * Disconnects the BLE if we are connected and cancels the task (including the
  * parent task).
@@ -95,7 +96,7 @@ function* disconnectAndCancel(): SagaGenerator<void> {
     const toaster = (yield* getContext<ToasterRef>('toasterRef')).current;
     defined(toaster);
 
-    toaster.dismiss('firmware.ble.progress');
+    toaster.dismiss(firmwareBleProgressToastId);
 
     const connection = yield* select((s: RootState) => s.bootloader.connection);
 
@@ -376,9 +377,6 @@ function* loadFirmware(
  * @param action The action that triggered this saga.
  */
 function* handleFlashFirmware(action: ReturnType<typeof flashFirmware>): Generator {
-    const toaster = (yield* getContext<ToasterRef>('toasterRef')).current;
-    defined(toaster);
-
     try {
         let firmware: Uint8Array | undefined = undefined;
         let deviceId: HubType | undefined = undefined;
@@ -436,12 +434,16 @@ function* handleFlashFirmware(action: ReturnType<typeof flashFirmware>): Generat
 
         yield* put(didStart());
 
-        toaster.show(
-            flashProgress(() => undefined, {
-                action: 'erase',
-                progress: undefined,
-            }),
-            'firmware.ble.progress',
+        yield* put(
+            alertsShowAlert(
+                'firmware',
+                'flashProgress',
+                {
+                    action: 'erase',
+                    progress: undefined,
+                },
+                firmwareBleProgressToastId,
+            ),
         );
 
         yield* put(alertsShowAlert('firmware', 'releaseButton'));
@@ -497,12 +499,16 @@ function* handleFlashFirmware(action: ReturnType<typeof flashFirmware>): Generat
 
             yield* put(didProgress(offset / firmware.length));
 
-            toaster.show(
-                flashProgress(() => undefined, {
-                    action: 'flash',
-                    progress: offset / firmware.length,
-                }),
-                'firmware.ble.progress',
+            yield* put(
+                alertsShowAlert(
+                    'firmware',
+                    'flashProgress',
+                    {
+                        action: 'flash',
+                        progress: offset / firmware.length,
+                    },
+                    firmwareBleProgressToastId,
+                ),
             );
 
             // we don't want to request checksum if this is the last packet since
@@ -578,12 +584,16 @@ function* handleFlashFirmware(action: ReturnType<typeof flashFirmware>): Generat
 
         yield* put(didProgress(1));
 
-        toaster.show(
-            flashProgress(() => undefined, {
-                action: 'flash',
-                progress: 1,
-            }),
-            'firmware.ble.progress',
+        yield* put(
+            alertsShowAlert(
+                'firmware',
+                'flashProgress',
+                {
+                    action: 'flash',
+                    progress: 1,
+                },
+                firmwareBleProgressToastId,
+            ),
         );
 
         // this will cause the remote device to disconnect and reboot
@@ -608,6 +618,40 @@ const productIdMap: ReadonlyMap<LegoUsbProductId, HubType> = new Map([
 const dfuFirmwareStartAddress = 0x08008000;
 
 const firmwareDfuProgressToastId = 'firmware.dfu.progress';
+
+function* handleDfuEraseProcess(event: {
+    bytesSent: number;
+    expectedSize: number;
+}): Generator {
+    yield* put(
+        alertsShowAlert(
+            'firmware',
+            'flashProgress',
+            {
+                action: 'erase',
+                progress: event.bytesSent / event.expectedSize,
+            },
+            firmwareDfuProgressToastId,
+        ),
+    );
+}
+
+function* handleDfuWriteProcess(event: {
+    bytesSent: number;
+    expectedSize: number;
+}): Generator {
+    yield* put(
+        alertsShowAlert(
+            'firmware',
+            'flashProgress',
+            {
+                action: 'flash',
+                progress: event.bytesSent / event.expectedSize,
+            },
+            firmwareDfuProgressToastId,
+        ),
+    );
+}
 
 function* handleFlashUsbDfu(action: ReturnType<typeof firmwareFlashUsbDfu>): Generator {
     const defer = new Array<() => void>();
@@ -708,29 +752,31 @@ function* handleFlashUsbDfu(action: ReturnType<typeof firmwareFlashUsbDfu>): Gen
         const toaster = (yield* getContext<ToasterRef>('toasterRef')).current;
         defined(toaster);
 
-        defer.push(
-            writeProc.events.on('erase/process', (sent, total) => {
-                toaster.show(
-                    flashProgress(() => undefined, {
-                        action: 'erase',
-                        progress: sent / total,
-                    }),
-                    firmwareDfuProgressToastId,
-                );
-            }),
-        );
+        const eraseProcessChan = eventChannel<{
+            bytesSent: number;
+            expectedSize: number;
+        }>((emit) => {
+            return writeProc.events.on('erase/process', (bytesSent, expectedSize) =>
+                emit({ bytesSent, expectedSize }),
+            );
+        });
 
-        defer.push(
-            writeProc.events.on('write/process', (sent, total) => {
-                toaster.show(
-                    flashProgress(() => undefined, {
-                        action: 'flash',
-                        progress: sent / total,
-                    }),
-                    firmwareDfuProgressToastId,
-                );
-            }),
-        );
+        defer.push(() => eraseProcessChan.close());
+
+        yield* takeEvery(eraseProcessChan, handleDfuEraseProcess);
+
+        const writeProcessChan = eventChannel<{
+            bytesSent: number;
+            expectedSize: number;
+        }>((emit) => {
+            return writeProc.events.on('write/process', (bytesSent, expectedSize) =>
+                emit({ bytesSent, expectedSize }),
+            );
+        });
+
+        defer.push(() => writeProcessChan.close());
+
+        yield* takeEvery(writeProcessChan, handleDfuWriteProcess);
 
         const endChan = eventChannel<boolean>((emit) => {
             // can't emit null or undefined, so have to emit something

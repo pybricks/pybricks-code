@@ -10,20 +10,22 @@ import { AlertActions, AlertDomain, AlertProps, AlertSpecific } from '../alerts'
  * @param domain The alert domain (app subsystem).
  * @param specific The specific alert for the domain.
  * @param props Any additional properties required by this specific alert.
+ * @param key Optional key to use as unique identifier for toast instead `<domain>.<specific>.<props>`.
  */
 export const alertsShowAlert = createAction(
     <D extends AlertDomain, S extends AlertSpecific<D>>(
         domain: D,
         specific: S,
-        ...props: AlertProps<D, S> extends never
+        ...args: AlertProps<D, S> extends never
             ? [props?: never]
-            : [props: AlertProps<D, S>]
+            : [props: AlertProps<D, S>, key?: string]
     ) => ({
         type: 'alerts.action.showAlert',
         domain,
         specific,
-        // HACK: using varargs to allow props to be optional, but it is only one arg
-        props: props.at(0),
+        // HACK: using varargs to allow props and key to be optional
+        props: args.at(0),
+        key: args.at(1),
     }),
 );
 

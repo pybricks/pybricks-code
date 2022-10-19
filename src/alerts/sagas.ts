@@ -15,7 +15,9 @@ function* handleShowAlert(action: ReturnType<typeof alertsShowAlert>): Generator
     const toaster = (yield* getContext<ToasterRef>('toasterRef')).current;
     defined(toaster);
 
-    const key = `${action.domain}.${action.specific}.${JSON.stringify(action.props)}`;
+    const key =
+        action.key ??
+        `${action.domain}.${action.specific}.${JSON.stringify(action.props)}`;
 
     const existing = toaster.getToasts().filter((t) => t.key === key);
 
