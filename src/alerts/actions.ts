@@ -49,3 +49,13 @@ export const alertsDidShowAlert = createAction(
         action,
     }),
 );
+
+/**
+ * Action that requests to hide an alert.
+ * @param key The key that matches `<domain>.<specific>.<props>` or the
+ *  overridden key if used.
+ */
+export const alertsHideAlert = createAction((key: string) => ({
+    type: 'alters.action.hideAlert',
+    key,
+}));
