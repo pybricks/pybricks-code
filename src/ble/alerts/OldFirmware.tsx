@@ -4,7 +4,7 @@
 import './index.scss';
 import { Button, Intent } from '@blueprintjs/core';
 import React from 'react';
-import { CreateToast } from '../../i18nToaster';
+import type { CreateToast } from '../../toasterTypes';
 import { useI18n } from './i18n';
 
 type OldFirmwareProps = {

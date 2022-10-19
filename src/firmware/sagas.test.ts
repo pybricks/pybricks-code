@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2021-2022 The Pybricks Authors
 
-import { ToasterInstance } from '@blueprintjs/core';
+import type { ToasterInstance } from '@blueprintjs/core';
 import {
     FirmwareMetadata,
     FirmwareMetadataV110,
@@ -83,7 +83,7 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
-                toaster: mock<ToasterInstance>(),
+                toasterRef: { current: mock<ToasterInstance>() },
             });
 
             // saga is triggered by this action
@@ -231,7 +231,7 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
-                toaster: mock<ToasterInstance>(),
+                toasterRef: { current: mock<ToasterInstance>() },
             });
 
             // saga is triggered by this action
@@ -361,7 +361,7 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
-                toaster: mock<ToasterInstance>(),
+                toasterRef: { current: mock<ToasterInstance>() },
             });
 
             // saga is triggered by this action
@@ -411,7 +411,7 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
-                toaster: mock<ToasterInstance>(),
+                toasterRef: { current: mock<ToasterInstance>() },
             });
 
             // saga is triggered by this action
@@ -479,7 +479,7 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
-                toaster: mock<ToasterInstance>(),
+                toasterRef: { current: mock<ToasterInstance>() },
             });
 
             // saga is triggered by this action
@@ -543,7 +543,7 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
-                toaster: mock<ToasterInstance>(),
+                toasterRef: { current: mock<ToasterInstance>() },
             });
 
             // saga is triggered by this action
@@ -610,7 +610,7 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
-                toaster: mock<ToasterInstance>(),
+                toasterRef: { current: mock<ToasterInstance>() },
             });
 
             // saga is triggered by this action
@@ -670,7 +670,7 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
-                toaster: mock<ToasterInstance>(),
+                toasterRef: { current: mock<ToasterInstance>() },
             });
 
             // saga is triggered by this action
@@ -736,7 +736,7 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
-                toaster: mock<ToasterInstance>(),
+                toasterRef: { current: mock<ToasterInstance>() },
             });
 
             // saga is triggered by this action
@@ -819,7 +819,7 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
-                toaster: mock<ToasterInstance>(),
+                toasterRef: { current: mock<ToasterInstance>() },
             });
 
             // saga is triggered by this action
@@ -885,7 +885,7 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
-                toaster: mock<ToasterInstance>(),
+                toasterRef: { current: mock<ToasterInstance>() },
             });
 
             // saga is triggered by this action
@@ -984,7 +984,7 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
-                toaster: mock<ToasterInstance>(),
+                toasterRef: { current: mock<ToasterInstance>() },
             });
 
             // saga is triggered by this action
@@ -1092,7 +1092,7 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
-                toaster: mock<ToasterInstance>(),
+                toasterRef: { current: mock<ToasterInstance>() },
             });
 
             // saga is triggered by this action
@@ -1240,7 +1240,7 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
-                toaster: mock<ToasterInstance>(),
+                toasterRef: { current: mock<ToasterInstance>() },
             });
 
             // saga is triggered by this action
@@ -1386,7 +1386,7 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
-                toaster: mock<ToasterInstance>(),
+                toasterRef: { current: mock<ToasterInstance>() },
             });
 
             // saga is triggered by this action
@@ -1538,7 +1538,7 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
-                toaster: mock<ToasterInstance>(),
+                toasterRef: { current: mock<ToasterInstance>() },
             });
 
             // saga is triggered by this action
@@ -1585,7 +1585,7 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
-                toaster: mock<ToasterInstance>(),
+                toasterRef: { current: mock<ToasterInstance>() },
             });
 
             // saga is triggered by this action
@@ -1631,7 +1631,7 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
-                toaster: mock<ToasterInstance>(),
+                toasterRef: { current: mock<ToasterInstance>() },
             });
 
             // saga is triggered by this action
@@ -1691,7 +1691,7 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
-                toaster: mock<ToasterInstance>(),
+                toasterRef: { current: mock<ToasterInstance>() },
             });
 
             // saga is triggered by this action
@@ -1752,7 +1752,7 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
-                toaster: mock<ToasterInstance>(),
+                toasterRef: { current: mock<ToasterInstance>() },
             });
 
             // saga is triggered by this action
@@ -1816,7 +1816,7 @@ describe('flashFirmware', () => {
 
             const saga = new AsyncSaga(flashFirmware, {
                 nextMessageId: createCountFunc(),
-                toaster: mock<ToasterInstance>(),
+                toasterRef: { current: mock<ToasterInstance>() },
             });
 
             // saga is triggered by this action
@@ -1905,7 +1905,7 @@ describe('flashFirmware', () => {
 
         const saga = new AsyncSaga(flashFirmware, {
             nextMessageId: createCountFunc(),
-            toaster: mock<ToasterInstance>(),
+            toasterRef: { current: mock<ToasterInstance>() },
         });
 
         // saga is triggered by this action

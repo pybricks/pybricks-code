@@ -54,7 +54,7 @@ describe('handleShowAlert', () => {
         toaster = new TestToaster();
         jest.spyOn(toaster, 'show');
         jest.spyOn(toaster, 'dismiss');
-        saga = new AsyncSaga(alerts, { toaster });
+        saga = new AsyncSaga(alerts, { toasterRef: { current: toaster } });
     });
 
     it('should show toast', async () => {

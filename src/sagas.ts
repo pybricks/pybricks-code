@@ -16,7 +16,7 @@ import hub from './hub/sagas';
 import lwp3BootloaderProtocol from './lwp3-bootloader/sagas';
 import lwp3BootloaderBle from './lwp3-bootloader/sagas-ble';
 import mpy from './mpy/sagas';
-import notifications, { NotificationSagaContext } from './notifications/sagas';
+import notifications from './notifications/sagas';
 import terminal, { TerminalSagaContext } from './terminal/sagas';
 
 /* istanbul ignore next */
@@ -48,5 +48,4 @@ export type RootSagaContext = {
     nextMessageId: () => number;
 } & AlertsSagaContext &
     FileStorageSageContext &
-    NotificationSagaContext &
     TerminalSagaContext;

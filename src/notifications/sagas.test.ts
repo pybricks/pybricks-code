@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2021-2022 The Pybricks Authors
 
-import { ToasterInstance } from '@blueprintjs/core';
+import type { IToastOptions, ToasterInstance } from '@blueprintjs/core';
 import { FirmwareReaderError, FirmwareReaderErrorCode } from '@pybricks/firmware';
-import { I18nManager } from '@shopify/react-i18n';
+import { mock } from 'jest-mock-extended';
 import { AnyAction } from 'redux';
 import { AsyncSaga, uuid } from '../../test';
 import { appDidCheckForUpdate } from '../app/actions';
@@ -23,7 +23,6 @@ import {
     MetadataProblem,
     didFailToFinish,
 } from '../firmware/actions';
-import * as i18nToaster from '../i18nToaster';
 import {
     BootloaderConnectionFailureReason,
     didFailToConnect as bootloaderDidFailToConnect,
@@ -38,15 +37,27 @@ import { I18nId } from './i18n';
 import notification from './sagas';
 
 function createTestToasterSaga(): { toaster: ToasterInstance; saga: AsyncSaga } {
-    const i18n = new I18nManager({ locale: 'en' });
-    const toaster = i18nToaster.create(i18n);
+    const toasts = new Map<string, IToastOptions>();
+
+    const toaster = mock<ToasterInstance>({
+        show: (props, key) => {
+            return key ?? '';
+        },
+        dismiss: (key) => {
+            toasts.delete(key);
+        },
+        clear: () => {
+            toasts.clear();
+        },
+        getToasts: () => [...toasts.values()],
+    });
 
     jest.spyOn(toaster, 'clear');
     jest.spyOn(toaster, 'dismiss');
     jest.spyOn(toaster, 'getToasts');
     jest.spyOn(toaster, 'show');
 
-    const saga = new AsyncSaga(notification, { notification: { toaster } });
+    const saga = new AsyncSaga(notification, { toasterRef: { current: toaster } });
 
     return { toaster, saga };
 }

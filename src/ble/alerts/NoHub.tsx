@@ -5,7 +5,7 @@ import './index.scss';
 import { AnchorButton, Button, Intent } from '@blueprintjs/core';
 import React from 'react';
 import { appName, pybricksBluetoothTroubleshootingUrl } from '../../app/constants';
-import { CreateToast } from '../../i18nToaster';
+import type { CreateToast } from '../../toasterTypes';
 import ExternalLinkIcon from '../../utils/ExternalLinkIcon';
 import { useI18n } from './i18n';
 

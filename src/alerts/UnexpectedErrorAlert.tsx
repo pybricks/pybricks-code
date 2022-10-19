@@ -12,7 +12,7 @@ import {
 } from '@blueprintjs/core';
 import React, { useState } from 'react';
 import { useId } from 'react-aria';
-import { CreateToast } from '../i18nToaster';
+import type { CreateToast } from '../toasterTypes';
 import { useI18n } from './i18n';
 
 type UnexpectedErrorAlertProps = {
