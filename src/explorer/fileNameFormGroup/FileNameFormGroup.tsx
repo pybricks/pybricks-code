@@ -34,7 +34,7 @@ function removeFileExtension(value: string): string {
  * @returns The fixed up string.
  */
 function replaceInvalidCharacters(value: string): string {
-    return value.trim().replaceAll(/[^A-Za-z0-9-_]+/g, '_');
+    return value.trim().replaceAll(/[^A-Za-z0-9_]+/g, '_');
 }
 
 type FixItButtonProps = Pick<AriaButtonProps<'a'>, 'onPress'>;
