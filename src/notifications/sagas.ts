@@ -3,13 +3,7 @@
 
 // Saga for managing notifications (toasts)
 
-import {
-    ActionProps,
-    IconName,
-    Intent,
-    LinkProps,
-    ToasterInstance,
-} from '@blueprintjs/core';
+import { ActionProps, IconName, Intent, LinkProps } from '@blueprintjs/core';
 import { Replacements } from '@shopify/react-i18n';
 import React from 'react';
 import { channel } from 'redux-saga';
@@ -34,21 +28,12 @@ import {
 } from '../lwp3-bootloader/actions';
 import { didCompile, didFailToCompile } from '../mpy/actions';
 import { serviceWorkerDidUpdate } from '../service-worker/actions';
+import type { ToasterRef } from '../toasterTypes';
+import { defined } from '../utils';
 import NotificationAction from './NotificationAction';
 import NotificationMessage from './NotificationMessage';
 import { add as addNotification } from './actions';
 import { I18nId } from './i18n';
-
-type NotificationContext = {
-    toaster: ToasterInstance;
-};
-
-/**
- * Partial saga context type for context used in the notification sagas.
- */
-export type NotificationSagaContext = {
-    notification: NotificationContext;
-};
 
 /** Severity level of notification. */
 enum Level {
@@ -126,7 +111,8 @@ function* showSingleton(
     action?: ActionProps & LinkProps,
     onDismiss?: (didTimeoutExpire: boolean) => void,
 ): Generator {
-    const { toaster } = yield* getContext<NotificationContext>('notification');
+    const toaster = (yield* getContext<ToasterRef>('toasterRef')).current;
+    defined(toaster);
 
     // if the message is already showing, close it and wait some time so that
     // users can see that something triggered the message again
@@ -158,7 +144,9 @@ function* showSingleton(
 
 /** Shows a special notification for unexpected errors. */
 function* showUnexpectedError(messageId: I18nId, error: Error): Generator {
-    const { toaster } = yield* getContext<NotificationContext>('notification');
+    const toaster = (yield* getContext<ToasterRef>('toasterRef')).current;
+    defined(toaster);
+
     const key = `alerts.unexpectedError.${messageId}`;
 
     toaster.show(
@@ -248,7 +236,9 @@ function* showFlashFirmwareError(
 }
 
 function* dismissCompilerError(): Generator {
-    const { toaster } = yield* getContext<NotificationContext>('notification');
+    const toaster = (yield* getContext<ToasterRef>('toasterRef')).current;
+    defined(toaster);
+
     toaster.dismiss(I18nId.MpyError);
 }
 
@@ -263,7 +253,8 @@ function* showCompilerError(action: ReturnType<typeof didFailToCompile>): Genera
 }
 
 function* handleAddNotification(action: ReturnType<typeof addNotification>): Generator {
-    const { toaster } = yield* getContext<NotificationContext>('notification');
+    const toaster = (yield* getContext<ToasterRef>('toasterRef')).current;
+    defined(toaster);
 
     toaster.show({
         intent: mapIntent(action.level as Level),
@@ -303,7 +294,9 @@ function* showNoUpdateInfo(action: ReturnType<typeof appDidCheckForUpdate>): Gen
         return;
     }
 
-    const { toaster } = yield* getContext<NotificationContext>('notification');
+    const toaster = (yield* getContext<ToasterRef>('toasterRef')).current;
+    defined(toaster);
+
     toaster.show({
         intent: mapIntent(Level.Info),
         icon: mapIcon(Level.Info),

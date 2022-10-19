@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2022 The Pybricks Authors
 
-import { ToasterInstance } from '@blueprintjs/core';
 import {
     FirmwareReader,
     FirmwareReaderError,
@@ -56,6 +55,7 @@ import { MaxProgramFlashSize, Result } from '../lwp3-bootloader/protocol';
 import { BootloaderConnectionState } from '../lwp3-bootloader/reducers';
 import { compile, didCompile, didFailToCompile } from '../mpy/actions';
 import { RootState } from '../reducers';
+import type { ToasterRef } from '../toasterTypes';
 import { LegoUsbProductId, legoUsbVendorId } from '../usb';
 import { defined, ensureError, hex, maybe } from '../utils';
 import { crc32, fmod, sumComplement32 } from '../utils/math';
@@ -92,7 +92,8 @@ const firmwareZipMap = new Map<HubType, string>([
  * parent task).
  */
 function* disconnectAndCancel(): SagaGenerator<void> {
-    const toaster = yield* getContext<ToasterInstance>('toaster');
+    const toaster = (yield* getContext<ToasterRef>('toasterRef')).current;
+    defined(toaster);
 
     toaster.dismiss('firmware.ble.progress');
 
@@ -375,7 +376,8 @@ function* loadFirmware(
  * @param action The action that triggered this saga.
  */
 function* handleFlashFirmware(action: ReturnType<typeof flashFirmware>): Generator {
-    const toaster = yield* getContext<ToasterInstance>('toaster');
+    const toaster = (yield* getContext<ToasterRef>('toasterRef')).current;
+    defined(toaster);
 
     try {
         let firmware: Uint8Array | undefined = undefined;
@@ -703,7 +705,8 @@ function* handleFlashUsbDfu(action: ReturnType<typeof firmwareFlashUsbDfu>): Gen
         dfu.dfuseStartAddress = dfuFirmwareStartAddress;
         const writeProc = dfu.write(1024, firmware, true);
 
-        const toaster = yield* getContext<ToasterInstance>('toaster');
+        const toaster = (yield* getContext<ToasterRef>('toasterRef')).current;
+        defined(toaster);
 
         defer.push(
             writeProc.events.on('erase/process', (sent, total) => {

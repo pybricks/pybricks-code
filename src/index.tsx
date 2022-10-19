@@ -2,7 +2,7 @@
 // Copyright (c) 2020-2022 The Pybricks Authors
 
 import './index.scss';
-import { HotkeysProvider } from '@blueprintjs/core';
+import { HotkeysProvider, Toaster } from '@blueprintjs/core';
 import { configureStore } from '@reduxjs/toolkit';
 import { I18nContext } from '@shopify/react-i18n';
 import React from 'react';
@@ -15,7 +15,6 @@ import App from './app/App';
 import { appVersion } from './app/constants';
 import { db } from './fileStorage/context';
 import { i18nManager } from './i18n';
-import * as I18nToaster from './i18nToaster';
 import { rootReducer } from './reducers';
 import reportWebVitals from './reportWebVitals';
 import rootSaga, { RootSagaContext } from './sagas';
@@ -23,15 +22,14 @@ import { defaultTerminalContext } from './terminal/TerminalContext';
 import ViewHeightSensor from './utils/ViewHeightSensor';
 import { createCountFunc } from './utils/iter';
 
-const toaster = I18nToaster.create(i18nManager);
+const toasterRef = React.createRef<Toaster>();
 
 const sagaMiddleware = createSagaMiddleware<RootSagaContext>({
     context: {
         nextMessageId: createCountFunc(),
-        notification: { toaster },
         terminal: defaultTerminalContext,
         fileStorage: db,
-        toaster,
+        toasterRef,
     },
 });
 
@@ -103,6 +101,7 @@ ReactDOM.render(
                         <App />
                     </HotkeysProvider>
                 </OverlayProvider>
+                <Toaster ref={toasterRef} />
             </I18nContext.Provider>
         </Provider>
     </React.StrictMode>,
