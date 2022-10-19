@@ -29,7 +29,7 @@ export type FileMetadata = Readonly<{
  *
  * IMPORTANT: if this type is changed, we need to modify the database schema to match
  */
-type FileContents = {
+export type FileContents = {
     /** The path of the file in storage. */
     path: string;
     /** The contents of the file. */

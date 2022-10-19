@@ -7,7 +7,8 @@ import { compile as mpyCrossCompileV6 } from '@pybricks/mpy-cross-v6';
 import wasmV6 from '@pybricks/mpy-cross-v6/build/mpy-cross-v6.wasm';
 import { call, getContext, put, select, takeEvery } from 'typed-redux-saga/macro';
 import { editorGetValue } from '../editor/sagas';
-import { FileStorageDb } from '../fileStorage';
+import { FileContents, FileStorageDb } from '../fileStorage';
+import { findImportedModules, resolveModule } from '../pybricksMicropython/lib';
 import { RootState } from '../reducers';
 import {
     compile,
@@ -19,6 +20,27 @@ import {
 } from './actions';
 
 const encoder = new TextEncoder();
+
+/**
+ * Converts JavaScript string to C string.
+ * @param str A string.
+ * @returns Zero-terminated, UTF-8 encoded byte array.
+ */
+function cString(str: string): Uint8Array {
+    return encoder.encode(str + '\x00');
+}
+
+/**
+ * Encodes *value* as a 32-bit unsigned integer in little endian order.
+ * @param value An integer between 0 and 2^32.
+ * @returns A 4-byte array containing the encoded valued.
+ */
+function encodeUInt32LE(value: number): ArrayBuffer {
+    const buf = new ArrayBuffer(4);
+    const view = new DataView(buf);
+    view.setUint32(0, value, true);
+    return buf;
+}
 
 /**
  * Compiles a script to .mpy and dispatches either didCompile on success or
@@ -77,6 +99,12 @@ function* handleCompile(action: ReturnType<typeof compile>): Generator {
     }
 }
 
+/**
+ * Compiles code into the Pybricks multi-mpy6 file format.
+ *
+ * This includes a __main__ module which is the file currently open in the
+ * editor and any imported modules that can be found in the user file system.
+ */
 function* handleCompileMulti6(): Generator {
     // REVISIT: should we be getting the active file here or have it as an
     // action parameter?
@@ -98,31 +126,79 @@ function* handleCompileMulti6(): Generator {
         return;
     }
 
-    const script = yield* editorGetValue();
+    const mainPy = yield* editorGetValue();
 
-    const result = yield* call(() =>
-        mpyCrossCompileV6(
-            metadata.path ?? '__main__.py',
-            script,
-            undefined,
-            // HACK: testing user agent for jsdom is needed only for getting unit tests to work
-            navigator.userAgent.includes('jsdom') ? undefined : wasmV6,
-        ),
-    );
+    const pyFiles = new Map<string, FileContents>([
+        ['__main__', { path: metadata.path ?? '__main__.py', contents: mainPy }],
+    ]);
 
-    // TODO: add support for imports and append to blob
+    const checkedModules = new Set<string>(['__main__']);
+    const uncheckedScripts = new Array<string>(mainPy);
 
-    if (result.status === 0 && result.mpy) {
-        const sizeBuf = new ArrayBuffer(4);
-        const sizeView = new DataView(sizeBuf);
-        sizeView.setUint32(0, result.mpy.length, true);
+    for (;;) {
+        // parse all unchecked scripts to find imported modules that haven't
+        // been checked yet
 
-        const blob = new Blob([sizeBuf, encoder.encode('__main__\x00'), result.mpy]);
+        const uncheckedModules = new Set<string>();
 
-        yield* put(mpyDidCompileMulti6(blob));
-    } else {
-        yield* put(mpyDidFailToCompileMulti6(result.err));
+        for (const uncheckedScript of uncheckedScripts) {
+            const importedModules = findImportedModules(uncheckedScript);
+
+            for (const m of importedModules) {
+                if (!checkedModules.has(m)) {
+                    uncheckedModules.add(m);
+                }
+            }
+        }
+
+        // all of the scripts have been checked now, so clear the unchecked list
+        uncheckedScripts.length = 0;
+
+        // when no more new modules are found, we are done
+        if (uncheckedModules.size === 0) {
+            break;
+        }
+
+        // try to resolve unchecked modules in the file system
+        for (const m of uncheckedModules) {
+            const file = yield* call(() => resolveModule(db, m));
+
+            // if found, queue the module to be compiled and to be parsed
+            // for additional imports
+            if (file) {
+                pyFiles.set(m, file);
+                uncheckedScripts.push(file.contents);
+            }
+
+            checkedModules.add(m);
+        }
     }
+
+    const blobParts: BlobPart[] = [];
+
+    for (const [m, py] of pyFiles) {
+        const result = yield* call(() =>
+            mpyCrossCompileV6(
+                py.path,
+                py.contents,
+                undefined,
+                // HACK: testing user agent for jsdom is needed only for getting unit tests to work
+                navigator.userAgent.includes('jsdom') ? undefined : wasmV6,
+            ),
+        );
+
+        if (result.status !== 0 || !result.mpy) {
+            yield* put(mpyDidFailToCompileMulti6(result.err));
+            return;
+        }
+
+        // each file is encoded as the size, module name, and mpy binary
+        blobParts.push(encodeUInt32LE(result.mpy.length));
+        blobParts.push(cString(m));
+        blobParts.push(result.mpy);
+    }
+
+    yield* put(mpyDidCompileMulti6(new Blob(blobParts)));
 }
 
 export default function* (): Generator {
