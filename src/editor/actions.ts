@@ -112,3 +112,12 @@ export const editorDidFailToActivateFile = createAction((uuid: UUID, error: Erro
     uuid,
     error,
 }));
+
+/**
+ * Requests to activate a file and show line.
+ */
+export const editorGoto = createAction((uuid: UUID, line: number) => ({
+    type: 'editor.action.goto',
+    uuid,
+    line,
+}));
