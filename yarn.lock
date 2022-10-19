@@ -1523,12 +1523,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@blueprintjs/core@npm:^4.10.1, @blueprintjs/core@npm:^4.11.3":
-  version: 4.11.3
-  resolution: "@blueprintjs/core@npm:4.11.3"
+"@blueprintjs/core@npm:^4.10.1, @blueprintjs/core@npm:^4.11.4":
+  version: 4.11.4
+  resolution: "@blueprintjs/core@npm:4.11.4"
   dependencies:
     "@blueprintjs/colors": ^4.1.7
-    "@blueprintjs/icons": ^4.7.0
+    "@blueprintjs/icons": ^4.8.0
     "@juggle/resize-observer": ^3.4.0
     "@types/dom4": ^2.0.2
     classnames: ^2.3.2
@@ -1548,26 +1548,26 @@ __metadata:
   bin:
     upgrade-blueprint-2.0.0-rename: scripts/upgrade-blueprint-2.0.0-rename.sh
     upgrade-blueprint-3.0.0-rename: scripts/upgrade-blueprint-3.0.0-rename.sh
-  checksum: 171b5a2b574e1e030973142c41d6cd44dc2bc34a68dadab3919069717f94ecc6b278331233b5f3b5ae393fcca20759fbd7954b0eb79cbcdce63fb485f57d9e22
+  checksum: 16d6302984b6c757f7785c4601f6ef40d91b465307eac1b8791ce7f8c56cbde6e62254f09832bc213810e4749e1a56eadc77a2f4ed882a1d2d995af9bb00920f
   languageName: node
   linkType: hard
 
-"@blueprintjs/icons@npm:^4.7.0":
-  version: 4.7.0
-  resolution: "@blueprintjs/icons@npm:4.7.0"
+"@blueprintjs/icons@npm:^4.8.0":
+  version: 4.8.0
+  resolution: "@blueprintjs/icons@npm:4.8.0"
   dependencies:
     change-case: ^4.1.2
     classnames: ^2.3.2
     tslib: ~2.3.1
-  checksum: 692ba6230d103f42b9ed11925fdb9150f092061e47da16c544637fa6a6560cb06a1a271e64664a644b3fa206e96da843da74b1629e9ad0b08953c016ec36dfd2
+  checksum: fa63a62adee8b5eb396870f4c18a365ad16f055724cf84c1a10b90accd717618f0b94ac49416985a11ac6cccef94e48860c5d04c29ddadc7a8ac136a82cc2510
   languageName: node
   linkType: hard
 
-"@blueprintjs/popover2@npm:^1.7.3":
-  version: 1.7.3
-  resolution: "@blueprintjs/popover2@npm:1.7.3"
+"@blueprintjs/popover2@npm:^1.7.3, @blueprintjs/popover2@npm:^1.7.4":
+  version: 1.7.4
+  resolution: "@blueprintjs/popover2@npm:1.7.4"
   dependencies:
-    "@blueprintjs/core": ^4.11.3
+    "@blueprintjs/core": ^4.11.4
     "@juggle/resize-observer": ^3.4.0
     "@popperjs/core": ^2.11.6
     classnames: ^2.3.2
@@ -1581,16 +1581,16 @@ __metadata:
   peerDependenciesMeta:
     "@types/react":
       optional: true
-  checksum: 4cbc32594056100d0e982d522fd815e96cae266b99cdf95bb3a1875cbb3fd43e12965ce08b8daeb827019a9e74ca4404e0603f1f636f2687a4aee9f777a0e829
+  checksum: c88257c9e277ba9ce2d7a706827072d7fdb6e8ba4c5194e95bc43436635ad57665cde9dec547696660f1c8f30ab3aa8876e6533ec08a35a26c78f61643af6b3a
   languageName: node
   linkType: hard
 
-"@blueprintjs/select@npm:^4.8.3":
-  version: 4.8.3
-  resolution: "@blueprintjs/select@npm:4.8.3"
+"@blueprintjs/select@npm:^4.8.4":
+  version: 4.8.4
+  resolution: "@blueprintjs/select@npm:4.8.4"
   dependencies:
-    "@blueprintjs/core": ^4.11.3
-    "@blueprintjs/popover2": ^1.7.3
+    "@blueprintjs/core": ^4.11.4
+    "@blueprintjs/popover2": ^1.7.4
     classnames: ^2.3.2
     tslib: ~2.3.1
   peerDependencies:
@@ -1600,7 +1600,7 @@ __metadata:
   peerDependenciesMeta:
     "@types/react":
       optional: true
-  checksum: c3ad48923795fe42c3e87b5c19ffe471148d0535e9902129b35aa3537372aed953abc74d93632e65003a44fd2f8d56444d02c28896df960ccfd1bc9b98ae0ae5
+  checksum: 27e80f67f85aa5baceb493ff852d7fc6eaa5429ee31d93cd2b834df7d17891ee0b19f62f950297aa791d481c49a55cf93e6e0673ba4a43274abe02e1bfd8a360
   languageName: node
   linkType: hard
 
@@ -2405,7 +2405,7 @@ __metadata:
     "@babel/core": ^7.19.3
     "@blueprintjs/core": ^4.10.1
     "@blueprintjs/popover2": ^1.7.3
-    "@blueprintjs/select": ^4.8.3
+    "@blueprintjs/select": ^4.8.4
     "@pmmmwh/react-refresh-webpack-plugin": ^0.5.8
     "@pybricks/firmware": 6.0.1
     "@pybricks/ide-docs": 2.2.0
@@ -2523,7 +2523,7 @@ __metadata:
     typescript: ~4.8.4
     usehooks-ts: ^2.9.1
     user-agent-data-types: ^0.3.0
-    web-vitals: ^3.0.3
+    web-vitals: ^3.0.4
     webpack: ^5.74.0
     webpack-dev-server: ^4.11.1
     webpack-manifest-plugin: ^5.0.0
@@ -15082,10 +15082,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"web-vitals@npm:^3.0.3":
-  version: 3.0.3
-  resolution: "web-vitals@npm:3.0.3"
-  checksum: 77df36f83590afbab6872f94f01e9df536ec4b0a4421833b500306f5ee5f9cdebdcd9139cfd94801edfb555a56ad61d8a5d28529ade8c645f6c82b76aebca19e
+"web-vitals@npm:^3.0.4":
+  version: 3.0.4
+  resolution: "web-vitals@npm:3.0.4"
+  checksum: b618a8e049e0c64948eea09c372db490802bcc8bcb30230a2bc69d9e243b1a2fa54d0f0ae19d5e63f19381df86db2a9260ca15ef620e10024888eab487a77d56
   languageName: node
   linkType: hard
 
