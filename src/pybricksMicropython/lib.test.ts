@@ -3,6 +3,7 @@
 
 import {
     FileNameValidationResult,
+    findImportedModules,
     pythonFileExtension,
     pythonFileExtensionRegex,
     validateFileName,
@@ -75,4 +76,47 @@ describe('validateFileName', () => {
             FileNameValidationResult.AlreadyExists,
         );
     });
+});
+
+test('findImportedModules', async () => {
+    const script = `
+import a
+import b, c
+import d.d
+import e.e as e
+import f.f as f, g
+from h import x
+from h import x as y
+from i import (x, y)
+from i import (x as y, z)
+from j import *
+from . import x
+from . import x as y
+from .r import x
+from ..r import x
+from ...r import x
+from ....r import x
+`;
+
+    const modules = findImportedModules(script);
+
+    expect(modules).toEqual(
+        new Set([
+            'a',
+            'b',
+            'c',
+            'd.d',
+            'e.e',
+            'f.f',
+            'g',
+            'h',
+            'i',
+            'j',
+            '.',
+            '.r',
+            '..r',
+            '...r',
+            '....r',
+        ]),
+    );
 });
