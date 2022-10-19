@@ -25,3 +25,18 @@ export function useFileStoragePath(uuid: UUID): string | undefined {
     const db = useContext(FileStorageContext);
     return useLiveQuery(() => db.metadata.get(uuid, (x) => x?.path));
 }
+
+/**
+ * Gets the file path for a file UUID.
+ *
+ * If the file is renamed, the returned value will be automatically updated.
+ */
+export function useFileStorageUuid(path: string): UUID | undefined {
+    const db = useContext(FileStorageContext);
+    return useLiveQuery(() =>
+        db.metadata
+            .where('path')
+            .equals(path)
+            .first((x) => x?.uuid),
+    );
+}

@@ -6,6 +6,7 @@ import alerts from './alerts/alerts';
 import ble from './ble/alerts';
 import explorer from './explorer/alerts';
 import firmware from './firmware/alerts';
+import mpy from './mpy/alerts';
 import type { CreateToast } from './toasterTypes';
 
 /** This collects alerts from all of the subsystems of the app */
@@ -14,6 +15,7 @@ const alertDomains = {
     ble,
     explorer,
     firmware,
+    mpy,
 };
 
 /** Gets the type of available alert domains. */

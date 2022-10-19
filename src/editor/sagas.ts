@@ -60,6 +60,7 @@ import {
     editorDidOpenFile,
     editorGetValueRequest,
     editorGetValueResponse,
+    editorGoto,
     editorOpenFile,
 } from './actions';
 import { EditorError } from './error';
@@ -265,6 +266,34 @@ function* handleEditorActivateFile(
     }
 }
 
+function* handleEditorGoto(
+    editor: monaco.editor.ICodeEditor,
+    action: ReturnType<typeof editorGoto>,
+): Generator {
+    yield* put(editorActivateFile(action.uuid));
+
+    const { didActivate, didFailToActivate } = yield* race({
+        didActivate: take(editorDidActivateFile.when((a) => a.uuid === action.uuid)),
+        didFailToActivate: take(
+            editorDidFailToActivateFile.when((a) => a.uuid === action.uuid),
+        ),
+    });
+
+    if (didFailToActivate) {
+        return;
+    }
+
+    defined(didActivate);
+
+    editor.revealLineInCenterIfOutsideViewport(action.line);
+    editor.setSelection({
+        startColumn: 1,
+        startLineNumber: action.line,
+        endColumn: Infinity,
+        endLineNumber: action.line,
+    });
+}
+
 function* handleEditorDidCloseFile(
     activeFileHistory: ActiveFileHistoryManager,
     action: ReturnType<typeof editorDidCloseFile>,
@@ -356,6 +385,7 @@ function* handleDidCreateEditor(editor: monaco.editor.ICodeEditor): Generator {
         openFiles,
         activeFileHistory,
     );
+    yield* takeEvery(editorGoto, handleEditorGoto, editor);
     yield* takeEvery(editorDidCloseFile, handleEditorDidCloseFile, activeFileHistory);
     yield* fork(monitorViewState, editor);
 

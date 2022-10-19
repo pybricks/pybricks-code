@@ -206,6 +206,16 @@ function* handleDownloadAndRun(action: ReturnType<typeof downloadAndRun>): Gener
         });
 
         if (didFailToCompile) {
+            yield* put(
+                alertsShowAlert(
+                    'mpy',
+                    'compilerError',
+                    {
+                        error: didFailToCompile.error,
+                    },
+                    'mpy.compilerError',
+                ),
+            );
             return;
         }
 
