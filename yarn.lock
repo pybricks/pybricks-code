@@ -2479,7 +2479,7 @@ __metadata:
     jszip: ^3.10.1
     license-webpack-plugin: ^3.0.0
     mini-css-extract-plugin: ^2.6.1
-    monaco-editor: ^0.33.0
+    monaco-editor: ^0.34.1
     monaco-editor-webpack-plugin: ^7.0.1
     monaco-themes: ^0.4.2
     mq-polyfill: 1.1.8
@@ -10906,10 +10906,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"monaco-editor@npm:^0.33.0":
-  version: 0.33.0
-  resolution: "monaco-editor@npm:0.33.0"
-  checksum: f88fd1c9be0d6845436aa92ee7f7bcc49f9e9bf452f73bb5efbbe52e50678d1c2aec4d612a943310f5e2282c1d9fcc41b792b65a5b9008e6054908e7e10311ea
+"monaco-editor@npm:^0.34.1":
+  version: 0.34.1
+  resolution: "monaco-editor@npm:0.34.1"
+  checksum: 4c6b35d7c566ec414b758cdd45dfb08d6fe46e2e8fdeed88b619a52c47592ce6df476d9490a58e5d450339c4a93f09d500adc9c017a348179277b98aa6009fa4
   languageName: node
   linkType: hard
 
