@@ -2464,7 +2464,7 @@ __metadata:
     eslint-plugin-import: ^2.26.0
     eslint-plugin-prettier: ^4.2.1
     eslint-plugin-react: ^7.31.10
-    eslint-plugin-total-functions: ^5.0.1
+    eslint-plugin-total-functions: ^6.0.0
     eslint-webpack-plugin: ^3.2.0
     fake-indexeddb: ^4.0.0
     file-loader: ^6.2.0
@@ -4871,7 +4871,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/eslint-plugin@npm:^5.40.1, @typescript-eslint/eslint-plugin@npm:^5.5.0, @typescript-eslint/eslint-plugin@npm:^5.8.0":
+"@typescript-eslint/eslint-plugin@npm:^5.27.1, @typescript-eslint/eslint-plugin@npm:^5.40.1, @typescript-eslint/eslint-plugin@npm:^5.5.0":
   version: 5.40.1
   resolution: "@typescript-eslint/eslint-plugin@npm:5.40.1"
   dependencies:
@@ -4893,7 +4893,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/experimental-utils@npm:^5.0.0, @typescript-eslint/experimental-utils@npm:^5.8.0":
+"@typescript-eslint/experimental-utils@npm:^5.0.0":
   version: 5.27.0
   resolution: "@typescript-eslint/experimental-utils@npm:5.27.0"
   dependencies:
@@ -4904,7 +4904,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/parser@npm:^5.40.1, @typescript-eslint/parser@npm:^5.5.0, @typescript-eslint/parser@npm:^5.8.0":
+"@typescript-eslint/experimental-utils@npm:^5.27.1":
+  version: 5.40.1
+  resolution: "@typescript-eslint/experimental-utils@npm:5.40.1"
+  dependencies:
+    "@typescript-eslint/utils": 5.40.1
+  peerDependencies:
+    eslint: ^6.0.0 || ^7.0.0 || ^8.0.0
+  checksum: bc8d68ce8a7800506c66895d961c613752bc2d09697471d03b9a3dc21db09f4c19f05dce7b6a75970844f07c7d7d623e45531b75e80b50a63b509f1352d4ab13
+  languageName: node
+  linkType: hard
+
+"@typescript-eslint/parser@npm:^5.27.1, @typescript-eslint/parser@npm:^5.40.1, @typescript-eslint/parser@npm:^5.5.0":
   version: 5.40.1
   resolution: "@typescript-eslint/parser@npm:5.40.1"
   dependencies:
@@ -7906,18 +7917,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-total-functions@npm:^5.0.1":
-  version: 5.0.1
-  resolution: "eslint-plugin-total-functions@npm:5.0.1"
+"eslint-plugin-total-functions@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "eslint-plugin-total-functions@npm:6.0.0"
   dependencies:
-    "@typescript-eslint/eslint-plugin": ^5.8.0
-    "@typescript-eslint/experimental-utils": ^5.8.0
-    "@typescript-eslint/parser": ^5.8.0
+    "@typescript-eslint/eslint-plugin": ^5.27.1
+    "@typescript-eslint/experimental-utils": ^5.27.1
+    "@typescript-eslint/parser": ^5.27.1
     tsutils: ^3.17.1
   peerDependencies:
-    eslint: ^8.5.0
-    typescript: ^4.5.4
-  checksum: 00a61a31b938d9b051f439ffa359cadc363fdffd619dbd12fa0891ddbba20dfee5f95417f575dfd2b17811c177675c3aedf5525379f792aa89b2641671cd883a
+    eslint: ^8.17.0
+    typescript: ^4.7.3
+  checksum: 17380753331d8fc2666a3949d98470872ec255b45b3fd74e28a317ad8ec5b27fea5e5306207c6870d4f11f42838c1e2e5a5bcafa7d35df4d9c99a268b4920fdd
   languageName: node
   linkType: hard
 
