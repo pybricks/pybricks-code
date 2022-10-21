@@ -13,7 +13,7 @@ import icon from './icon.svg';
 type ReplButtonProps = Pick<ActionButtonProps, 'id'>;
 
 const ReplButton: React.VoidFunctionComponent<ReplButtonProps> = ({ id }) => {
-    const { runtime, useLegacyDownload } = useSelector((s) => s.hub);
+    const { runtime, useLegacyDownload, hasRepl } = useSelector((s) => s.hub);
     const i18n = useI18n();
     const dispatch = useDispatch();
 
@@ -28,7 +28,7 @@ const ReplButton: React.VoidFunctionComponent<ReplButtonProps> = ({ id }) => {
             label={i18n.translate('label')}
             tooltip={i18n.translate('tooltip')}
             icon={icon}
-            enabled={runtime === HubRuntimeState.Idle}
+            enabled={hasRepl && runtime === HubRuntimeState.Idle}
             onAction={action}
         />
     );

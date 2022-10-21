@@ -14,7 +14,7 @@ afterEach(() => {
 
 it('should dispatch action when clicked', async () => {
     const [user, button, dispatch] = testRender(<ReplButton id="test-repl-button" />, {
-        hub: { runtime: HubRuntimeState.Idle },
+        hub: { hasRepl: true, runtime: HubRuntimeState.Idle },
     });
 
     await user.click(button.getByRole('button', { name: 'REPL' }));
