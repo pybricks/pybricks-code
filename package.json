@@ -15,7 +15,7 @@
         "@pmmmwh/react-refresh-webpack-plugin": "^0.5.8",
         "@pybricks/firmware": "6.0.1",
         "@pybricks/ide-docs": "2.3.0",
-        "@pybricks/jedi": "^1.0.1",
+        "@pybricks/jedi": "^1.2.0",
         "@pybricks/mpy-cross-v5": "^2.0.0",
         "@pybricks/mpy-cross-v6": "^2.0.0",
         "@reduxjs/toolkit": "^1.8.6",
