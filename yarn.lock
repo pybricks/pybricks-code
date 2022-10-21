@@ -2377,10 +2377,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pybricks/jedi@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "@pybricks/jedi@npm:1.0.1"
-  checksum: 62beb12046add1949df8df3de38b1ffa21b52b47eb6827d5e43cf71ef8c4169c1d5b2248a4497a0ebe38d9858b90301f7c40b13f5e1417e4487fae6e5f4d0ea2
+"@pybricks/jedi@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "@pybricks/jedi@npm:1.2.0"
+  checksum: 851cd8d081fce8601c2b8a4c1c8dedb679f3820c1e2581a899e6a9eff75fb03c3994ddc60524c9976abed53deb0d9eaf97651f1228c3602f984181e81fcc63d9
   languageName: node
   linkType: hard
 
@@ -2409,7 +2409,7 @@ __metadata:
     "@pmmmwh/react-refresh-webpack-plugin": ^0.5.8
     "@pybricks/firmware": 6.0.1
     "@pybricks/ide-docs": 2.3.0
-    "@pybricks/jedi": ^1.0.1
+    "@pybricks/jedi": ^1.2.0
     "@pybricks/mpy-cross-v5": ^2.0.0
     "@pybricks/mpy-cross-v6": ^2.0.0
     "@reduxjs/toolkit": ^1.8.6
