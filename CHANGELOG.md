@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [2.0.0-beta.6] - 2022-10-21
+
 ### Added
 - Added feature to install custom firmware from file ([pybricks-code#1020]).
 - Added support for multi-file programs ([support#189]).
@@ -421,7 +423,8 @@ Prerelease changes are documented at [support#48].
 
 <!-- links for version headings -->
 
-[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.5...HEAD
+[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.6...HEAD
+[2.0.0-beta.6]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.5...v2.0.0-beta.6
 [2.0.0-beta.5]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.4...v2.0.0-beta.5
 [2.0.0-beta.4]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.3...v2.0.0-beta.4
 [2.0.0-beta.3]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.2...v2.0.0-beta.3
