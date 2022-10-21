@@ -2370,10 +2370,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pybricks/ide-docs@npm:2.2.0":
-  version: 2.2.0
-  resolution: "@pybricks/ide-docs@npm:2.2.0"
-  checksum: bac6af073e33f95a166c85d1ad634bff61ff19a32aab995c1e39c0ced65944b71973092c5e84452b4a532749c1b920acc72127bb46d3146784e2e6f3898485c2
+"@pybricks/ide-docs@npm:2.3.0":
+  version: 2.3.0
+  resolution: "@pybricks/ide-docs@npm:2.3.0"
+  checksum: 0af60587b9fb5a60e97a75afb77f9e573a11aceccf286115e59342e271232695b396d6389a8b7bf72dc1104c83d780fbc8e9de026b1f49974025226531d8b71c
   languageName: node
   linkType: hard
 
@@ -2408,7 +2408,7 @@ __metadata:
     "@blueprintjs/select": ^4.8.4
     "@pmmmwh/react-refresh-webpack-plugin": ^0.5.8
     "@pybricks/firmware": 6.0.1
-    "@pybricks/ide-docs": 2.2.0
+    "@pybricks/ide-docs": 2.3.0
     "@pybricks/jedi": ^1.0.1
     "@pybricks/mpy-cross-v5": ^2.0.0
     "@pybricks/mpy-cross-v6": ^2.0.0
