@@ -363,7 +363,7 @@ function* handleBleConnectPybricks(): Generator {
             );
         } else {
             yield* put(
-                blePybricksServiceDidNotReceiveHubCapabilities(pnpId, firmwareVersion),
+                blePybricksServiceDidNotReceiveHubCapabilities(pnpId, firmwareRevision),
             );
         }
 

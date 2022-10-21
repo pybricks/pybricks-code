@@ -235,7 +235,7 @@ async function runConnectUntil(saga: AsyncSaga, point: ConnectRunPoint): Promise
     }
 
     await expect(saga.take()).resolves.toEqual(
-        blePybricksServiceDidNotReceiveHubCapabilities(pnpId, '3.2.0b4'),
+        blePybricksServiceDidNotReceiveHubCapabilities(pnpId, '3.2.0b2'),
     );
 
     if (point === ConnectRunPoint.DidNotReceiveHubCapabilities) {
