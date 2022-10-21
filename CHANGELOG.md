@@ -4,8 +4,58 @@
 
 ## [Unreleased]
 
+## [2.0.0-beta.6] - 2022-10-21
+
 ### Added
 - Added feature to install custom firmware from file ([pybricks-code#1020]).
+- Added support for multi-file programs ([support#189]).
+
+### Changed
+- Updated dependencies.
+- Updated documentation.
+- Updated APIs for code completions.
+- Update hub firmware to v3.2.0b4:
+
+  ### Added
+  - Added hub shutdown status light indication.
+  - Added boot and shutdown light matrix animations.
+  - Added new indication for over-charging battery (blinking green light).
+  - Added iterator protocol support to `geometry.Matrix` class.
+  - Added support for multi-file projects ([pybricks-micropython#115]).
+  - Added new `System.storage()` API ([support#85]).
+
+  ### Changed
+  - Battery full indication (green light) comes on earlier ([support#647]).
+  - User program is saved to non-volatile memory at shutdown on all hubs.
+  - Restored the `Motor.speed()` method and `DriveBase` equivalent to provide
+    speed as a numerical derivative of the motor position.
+  - Starting REPL automatically imports all modules ([support#741]).
+  - Updated Bluetooth to [Pybricks Profile v1.2.0][pp1.2.0].
+  - Bluetooth now uses random private address instead of static public address
+    ([support#600]).
+
+  ### Fixed
+  - Fixed motors going out of sync when starting program ([support#679]).
+  - Fixed motor torque signal overflowing under load ([support#729]).
+  - Fixed city hub turning back on after shutdown ([support#692]).
+  - Fixed IMU I2C bus lockup on SPIKE hubs ([support#232]).
+  - Fixed REPL history corrupt after soft reset ([support#699]).
+  - Fixed "ValueError: incompatible .mpy file" when pressing the button when
+    there is no program yet ([support#599]).
+
+  [pp1.2.0]: https://github.com/pybricks/technical-info/blob/master/pybricks-ble-profile.md#profile-v120
+  [pybricks-micropython#115]: https://github.com/pybricks/pybricks-micropython/pull/115
+  [support#85]: https://github.com/pybricks/support/issues/85
+  [support#232]: https://github.com/pybricks/support/issues/232
+  [support#599]: https://github.com/pybricks/support/issues/599
+  [support#600]: https://github.com/pybricks/support/issues/600
+  [support#647]: https://github.com/pybricks/support/issues/647
+  [support#679]: https://github.com/pybricks/support/issues/679
+  [support#692]: https://github.com/pybricks/support/issues/692
+  [support#699]: https://github.com/pybricks/support/issues/699
+  [support#729]: https://github.com/pybricks/support/issues/729
+  [support#741]: https://github.com/pybricks/support/issues/741
+
 
 ### Fixed
 - Fixed run button enabled when no file open ([support#691]).
@@ -16,10 +66,12 @@
 
 ### Removed
 - Removed feature to include custom `main.py` when flashing firmware.
+- Removed support for file names containing `-`.
 
 [pybricks-code#938]: https://github.com/pybricks/pybricks-code/issues/938
 [pybricks-code#1011]: https://github.com/pybricks/pybricks-code/issues/1011
 [pybricks-code#1020]: https://github.com/pybricks/pybricks-code/issues/1020
+[support#189]: https://github.com/pybricks/support/issues/189
 [support#691]: https://github.com/pybricks/support/issues/691
 [support#694]: https://github.com/pybricks/support/issues/694
 [support#717]: https://github.com/pybricks/support/issues/717
@@ -371,7 +423,8 @@ Prerelease changes are documented at [support#48].
 
 <!-- links for version headings -->
 
-[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.5...HEAD
+[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.6...HEAD
+[2.0.0-beta.6]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.5...v2.0.0-beta.6
 [2.0.0-beta.5]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.4...v2.0.0-beta.5
 [2.0.0-beta.4]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.3...v2.0.0-beta.4
 [2.0.0-beta.3]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.2...v2.0.0-beta.3

@@ -28,20 +28,25 @@ const UnexpectedErrorAlert: React.VoidFunctionComponent<UnexpectedErrorAlertProp
 
     return (
         <>
-            <p>{i18n.translate('message', { errorMessage: error.message })}</p>
-            <span>
-                <Button
-                    aria-labelledby={labelId}
-                    minimal={true}
-                    small={true}
-                    icon={isExpanded ? 'chevron-down' : 'chevron-right'}
-                    onClick={() => setIsExpanded((v) => !v)}
-                />
-                <span id={labelId}>{i18n.translate('technicalInfo')}</span>
-            </span>
-            <Collapse isOpen={isExpanded}>
-                <Pre className="pb-alerts-stack-trace">{error.stack}</Pre>
-            </Collapse>
+            <p>{i18n.translate('message')}</p>
+            <p>{error.message}</p>
+            {error.stack && (
+                <>
+                    <span>
+                        <Button
+                            aria-labelledby={labelId}
+                            minimal={true}
+                            small={true}
+                            icon={isExpanded ? 'chevron-down' : 'chevron-right'}
+                            onClick={() => setIsExpanded((v) => !v)}
+                        />
+                        <span id={labelId}>{i18n.translate('technicalInfo')}</span>
+                    </span>
+                    <Collapse isOpen={isExpanded}>
+                        <Pre className="pb-alerts-stack-trace">{error.stack}</Pre>
+                    </Collapse>
+                </>
+            )}
             <div>
                 <ButtonGroup minimal={true} fill={true}>
                     <Button

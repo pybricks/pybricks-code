@@ -140,6 +140,7 @@ describe('flashFirmware', () => {
                     'flashProgress',
                     { action: 'erase', progress: undefined },
                     'firmware.ble.progress',
+                    true,
                 ),
             );
 
@@ -187,6 +188,7 @@ describe('flashFirmware', () => {
                             progress: offset / totalFirmwareSize,
                         },
                         'firmware.ble.progress',
+                        true,
                     ),
                 );
 
@@ -224,6 +226,7 @@ describe('flashFirmware', () => {
                         progress: 1,
                     },
                     'firmware.ble.progress',
+                    true,
                 ),
             );
 
@@ -303,6 +306,7 @@ describe('flashFirmware', () => {
                     'flashProgress',
                     { action: 'erase', progress: undefined },
                     'firmware.ble.progress',
+                    true,
                 ),
             );
 
@@ -350,6 +354,7 @@ describe('flashFirmware', () => {
                             progress: offset / totalFirmwareSize,
                         },
                         'firmware.ble.progress',
+                        true,
                     ),
                 );
 
@@ -387,6 +392,7 @@ describe('flashFirmware', () => {
                         progress: 1,
                     },
                     'firmware.ble.progress',
+                    true,
                 ),
             );
 
@@ -1030,6 +1036,7 @@ describe('flashFirmware', () => {
                     'flashProgress',
                     { action: 'erase', progress: undefined },
                     'firmware.ble.progress',
+                    true,
                 ),
             );
 
@@ -1142,6 +1149,7 @@ describe('flashFirmware', () => {
                     'flashProgress',
                     { action: 'erase', progress: undefined },
                     'firmware.ble.progress',
+                    true,
                 ),
             );
 
@@ -1263,6 +1271,7 @@ describe('flashFirmware', () => {
                     'flashProgress',
                     { action: 'erase', progress: undefined },
                     'firmware.ble.progress',
+                    true,
                 ),
             );
 
@@ -1310,6 +1319,7 @@ describe('flashFirmware', () => {
                             progress: offset / totalFirmwareSize,
                         },
                         'firmware.ble.progress',
+                        true,
                     ),
                 );
 
@@ -1437,6 +1447,7 @@ describe('flashFirmware', () => {
                     'flashProgress',
                     { action: 'erase', progress: undefined },
                     'firmware.ble.progress',
+                    true,
                 ),
             );
 
@@ -1484,6 +1495,7 @@ describe('flashFirmware', () => {
                             progress: offset / totalFirmwareSize,
                         },
                         'firmware.ble.progress',
+                        true,
                     ),
                 );
 
@@ -1616,6 +1628,7 @@ describe('flashFirmware', () => {
                     'flashProgress',
                     { action: 'erase', progress: undefined },
                     'firmware.ble.progress',
+                    true,
                 ),
             );
 
@@ -1664,6 +1677,7 @@ describe('flashFirmware', () => {
                             progress: offset / totalFirmwareSize,
                         },
                         'firmware.ble.progress',
+                        true,
                     ),
                 );
 
@@ -1701,6 +1715,7 @@ describe('flashFirmware', () => {
                         progress: 1,
                     },
                     'firmware.ble.progress',
+                    true,
                 ),
             );
 
@@ -2181,6 +2196,7 @@ describe('flashFirmware', () => {
                 'flashProgress',
                 { action: 'erase', progress: undefined },
                 'firmware.ble.progress',
+                true,
             ),
         );
 
@@ -2227,6 +2243,7 @@ describe('flashFirmware', () => {
                         progress: offset / totalFirmwareSize,
                     },
                     'firmware.ble.progress',
+                    true,
                 ),
             );
 
@@ -2263,6 +2280,7 @@ describe('flashFirmware', () => {
                     progress: 1,
                 },
                 'firmware.ble.progress',
+                true,
             ),
         );
 
