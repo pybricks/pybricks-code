@@ -23,7 +23,7 @@ function* handleShowAlert(action: ReturnType<typeof alertsShowAlert>): Generator
 
     // if a toast with the same parameters is already open, close it so we
     // can open it again without duplicates.
-    if (existing.length > 0) {
+    if (!action.update && existing.length > 0) {
         toaster.dismiss(key);
         yield* delay(500);
     }

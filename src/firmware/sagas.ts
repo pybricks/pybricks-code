@@ -443,6 +443,7 @@ function* handleFlashFirmware(action: ReturnType<typeof flashFirmware>): Generat
                     progress: undefined,
                 },
                 firmwareBleProgressToastId,
+                true,
             ),
         );
 
@@ -508,6 +509,7 @@ function* handleFlashFirmware(action: ReturnType<typeof flashFirmware>): Generat
                         progress: offset / firmware.length,
                     },
                     firmwareBleProgressToastId,
+                    true,
                 ),
             );
 
@@ -593,6 +595,7 @@ function* handleFlashFirmware(action: ReturnType<typeof flashFirmware>): Generat
                     progress: 1,
                 },
                 firmwareBleProgressToastId,
+                true,
             ),
         );
 
@@ -632,6 +635,7 @@ function* handleDfuEraseProcess(event: {
                 progress: event.bytesSent / event.expectedSize,
             },
             firmwareDfuProgressToastId,
+            true,
         ),
     );
 }
@@ -649,6 +653,7 @@ function* handleDfuWriteProcess(event: {
                 progress: event.bytesSent / event.expectedSize,
             },
             firmwareDfuProgressToastId,
+            true,
         ),
     );
 }
