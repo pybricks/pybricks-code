@@ -2502,7 +2502,7 @@ __metadata:
     react-dom: ^16.13.1
     react-dropzone: ^14.2.3
     react-joyride: ^2.5.3
-    react-monaco-editor: ^0.49.0
+    react-monaco-editor: ^0.50.1
     react-popper: ^2.3.0
     react-redux: ^8.0.4
     react-refresh: ^0.14.0
@@ -12934,16 +12934,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-monaco-editor@npm:^0.49.0":
-  version: 0.49.0
-  resolution: "react-monaco-editor@npm:0.49.0"
+"react-monaco-editor@npm:^0.50.1":
+  version: 0.50.1
+  resolution: "react-monaco-editor@npm:0.50.1"
   dependencies:
     prop-types: ^15.8.1
   peerDependencies:
     "@types/react": ">=17 <= 18"
-    monaco-editor: ^0.33.0
+    monaco-editor: ^0.34.0
     react: ">=17 <= 18"
-  checksum: 10dccb818554cee14c6ebea8596581002d04d82e8b7336d8ec6fb9004247b0b0cad558d258dc73142f1319050de510d5f8dd3751550c87f41cb42064c2b41592
+  checksum: 509a9675bc878adb515d93c4cbfac1b1818f5cf54505aa50a40d9e848e9c243a75257c1ab13b505a9d8cbdbb2b09f90117bcf618e2d1ec1ffe2bf22fd16a3a03
   languageName: node
   linkType: hard
 
