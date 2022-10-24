@@ -4,6 +4,11 @@
 
 ## [Unreleased]
 
+### Fixed
+- Fixed UI temporary freeze when downloading and running programs ([support#750]).
+
+[support#750]: https://github.com/pybricks/support/issues/750
+
 ## [2.0.0-beta.6] - 2022-10-21
 
 ### Added
