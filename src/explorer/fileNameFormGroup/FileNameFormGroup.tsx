@@ -119,7 +119,6 @@ const FileNameHelpText: React.VoidFunctionComponent<FileNameHelpTextProps> = ({
                     {i18n.translate('helpText.hasInvalidCharacters', {
                         letters: <Code className={Classes.CODE}>a…z</Code>,
                         numbers: <Code className={Classes.CODE}>0…9</Code>,
-                        dash: <Code className={Classes.CODE}>-</Code>,
                         underscore: <Code className={Classes.CODE}>_</Code>,
                     })}{' '}
                     <FixItButton onPress={handleHasInvalidCharacters} />
