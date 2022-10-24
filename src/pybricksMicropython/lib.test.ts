@@ -96,6 +96,17 @@ from .r import x
 from ..r import x
 from ...r import x
 from ....r import x
+
+# import q
+# from q import q
+"""
+import q
+from q import q
+"""
+'''
+import q
+from q import q
+'''
 `;
 
     const modules = findImportedModules(script);

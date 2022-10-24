@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2022 The Pybricks Authors
 
-import { parse, walk } from 'python-ast';
+import { parse, walk } from '@qoretechnologies/python-parser';
 import type { FileContents, FileStorageDb } from '../fileStorage';
 
 /** The Python file extension ('.py') */
@@ -82,47 +82,17 @@ export function findImportedModules(py: string): ReadonlySet<string> {
     const tree = parse(py);
 
     // find all import statements in the syntax tree and collect imported modules
-    walk(
-        {
-            enterImport_stmt: (ctx) => {
-                // import statements have two forms:
-                // import_stmt: import_name | import_from;
-
-                // import_name: 'import' dotted_as_names
-                const name = ctx.import_name();
-
-                if (name) {
-                    // dotted_as_names: dotted_as_name (',' dotted_as_name)*;
-                    // dotted_as_name: dotted_name ('as' NAME)?;
-                    for (const dottedAsName of name
-                        .dotted_as_names()
-                        .dotted_as_name()) {
-                        // dotted_name: NAME ('.' NAME)*;
-                        modules.add(dottedAsName.dotted_name().text);
-                    }
+    walk(tree, {
+        onEnterNode(node, _ancestors) {
+            if (node.type === 'import') {
+                for (const name of node.names) {
+                    modules.add(name.path);
                 }
-
-                // import_from: ('from' (('.' | '...')* dotted_name | ('.' | '...')+) 'import' ('*' | '(' import_as_names ')' | import_as_names ));
-                const from = ctx.import_from();
-
-                if (from) {
-                    // the leading dots aren't included in dotted_name, so
-                    // we need to collect them separately
-                    const leadingDots = from
-                        .DOT()
-                        .concat(from.ELLIPSIS())
-                        .map((n) => n.symbol.text)
-                        .join('');
-
-                    // dotted_name: NAME ('.' NAME)*;
-                    const dottedName = from.dotted_name()?.text ?? '';
-
-                    modules.add(leadingDots + dottedName);
-                }
-            },
+            } else if (node.type === 'from') {
+                modules.add(node.base);
+            }
         },
-        tree,
-    );
+    });
 
     return modules;
 }
