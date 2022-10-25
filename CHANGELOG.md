@@ -4,6 +4,11 @@
 
 ## [Unreleased]
 
+### Added
+- Added feature to close editor tab on middle click ([support#758]).
+
+[support#758]: https://github.com/pybricks/support/issues/758
+
 ## [2.0.0-beta.8] - 2022-10-25
 
 ### Fixed
