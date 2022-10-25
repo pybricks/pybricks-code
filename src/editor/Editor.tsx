@@ -373,6 +373,7 @@ const Editor: React.VFC = () => {
             contextmenu: false,
             rulers: [80],
             lineNumbersMinChars: 4,
+            wordBasedSuggestions: false,
         }),
         [],
     );

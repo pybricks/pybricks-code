@@ -7,6 +7,10 @@
 ### Added
 - Added feature to close editor tab on middle click ([support#758]).
 
+### Removed
+- Removed word-based autocompletion ([support#757]).
+
+[support#757]: https://github.com/pybricks/support/issues/757
 [support#758]: https://github.com/pybricks/support/issues/758
 
 ## [2.0.0-beta.8] - 2022-10-25
