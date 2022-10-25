@@ -74,25 +74,37 @@ export function validateFileName(
 /**
  * Finds modules imported by a Python script.
  *
+ * Returns an empty list if there are syntax errors.
+ *
  * @param py A Python Script.
  * @returns A list of the names of modules imported by this file.
  */
 export function findImportedModules(py: string): ReadonlySet<string> {
     const modules = new Set<string>();
-    const tree = parse(py);
 
-    // find all import statements in the syntax tree and collect imported modules
-    walk(tree, {
-        onEnterNode(node, _ancestors) {
-            if (node.type === 'import') {
-                for (const name of node.names) {
-                    modules.add(name.path);
+    try {
+        const tree = parse(py);
+
+        // find all import statements in the syntax tree and collect imported modules
+        walk(tree, {
+            onEnterNode(node, _ancestors) {
+                if (node.type === 'import') {
+                    for (const name of node.names) {
+                        modules.add(name.path);
+                    }
+                } else if (node.type === 'from') {
+                    modules.add(node.base);
                 }
-            } else if (node.type === 'from') {
-                modules.add(node.base);
-            }
-        },
-    });
+            },
+        });
+    } catch (err) {
+        // istanbul ignore if
+        if (process.env.NODE_ENV === 'development') {
+            console.debug(err);
+        }
+
+        // files with syntax errors are ignored
+    }
 
     return modules;
 }

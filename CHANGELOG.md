@@ -4,6 +4,13 @@
 
 ## [Unreleased]
 
+## [2.0.0-beta.8] - 2022-10-25
+
+### Fixed
+- Fixed crash when user program contains syntax error ([support#755]).
+
+[support#755]: https://github.com/pybricks/support/issues/755
+
 ## [2.0.0-beta.7] - 2022-10-24
 
 ### Fixed
@@ -430,7 +437,8 @@ Prerelease changes are documented at [support#48].
 
 <!-- links for version headings -->
 
-[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.7...HEAD
+[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.8...HEAD
+[2.0.0-beta.8]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.7...v2.0.0-beta.8
 [2.0.0-beta.7]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.6...v2.0.0-beta.7
 [2.0.0-beta.6]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.5...v2.0.0-beta.6
 [2.0.0-beta.5]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.4...v2.0.0-beta.5
