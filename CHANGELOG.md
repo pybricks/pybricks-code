@@ -4,6 +4,11 @@
 
 ## [Unreleased]
 
+### Fixed
+- Fixed crash when user program contains syntax error ([support#755]).
+
+[support#755]: https://github.com/pybricks/support/issues/755
+
 ## [2.0.0-beta.7] - 2022-10-24
 
 ### Fixed
