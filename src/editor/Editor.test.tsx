@@ -81,6 +81,22 @@ describe('Editor', () => {
 
             expect(dispatch).toHaveBeenCalledWith(editorCloseFile(testFile.uuid));
         });
+
+        it('should dispatch close action when tab is middle clicked', async () => {
+            jest.mocked(useFileStorageMetadata).mockReturnValue([testFile]);
+            jest.mocked(useFileStoragePath).mockReturnValue(testFile.path);
+
+            const [user, editor, dispatch] = testRender(<Editor />, {
+                editor: { openFileUuids: [testFile.uuid] },
+            });
+
+            await user.pointer({
+                keys: '[MouseMiddle]',
+                target: editor.getByRole('tab', { name: 'test.file' }),
+            });
+
+            expect(dispatch).toHaveBeenCalledWith(editorCloseFile(testFile.uuid));
+        });
     });
 
     describe('context menu', () => {

@@ -265,6 +265,18 @@ const EditorTabs: React.VoidFunctionComponent<EditorTabsProps> = ({ onChange }) 
         [dispatch],
     );
 
+    // close tab when middle-clicked
+    const handleMouseDown = useCallback(
+        (e: React.MouseEvent, uuid: UUID) => {
+            if (e.button === 1) {
+                dispatch(editorCloseFile(uuid));
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        },
+        [dispatch],
+    );
+
     const tabsRef = useRef<Tabs>(null);
 
     // HACK: call private Tabs method to fix selection indicator animation when
@@ -287,6 +299,7 @@ const EditorTabs: React.VoidFunctionComponent<EditorTabsProps> = ({ onChange }) 
                     key={uuid}
                     id={uuid}
                     onKeyDown={(e) => handleKeyDown(e, uuid)}
+                    onMouseDown={(e) => handleMouseDown(e, uuid)}
                 >
                     <TabLabel
                         id={`${labelId}.${uuid}`}
