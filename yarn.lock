@@ -1523,7 +1523,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@blueprintjs/core@npm:^4.11.4, @blueprintjs/core@npm:^4.11.5":
+"@blueprintjs/core@npm:^4.11.5":
   version: 4.11.5
   resolution: "@blueprintjs/core@npm:4.11.5"
   dependencies:
@@ -1563,29 +1563,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@blueprintjs/popover2@npm:^1.7.3":
-  version: 1.7.4
-  resolution: "@blueprintjs/popover2@npm:1.7.4"
-  dependencies:
-    "@blueprintjs/core": ^4.11.4
-    "@juggle/resize-observer": ^3.4.0
-    "@popperjs/core": ^2.11.6
-    classnames: ^2.3.2
-    dom4: ^2.1.5
-    react-popper: ^2.2.4
-    tslib: ~2.3.1
-  peerDependencies:
-    "@types/react": ^16.14.32 || 17 || 18
-    react: ^16.8 || 17 || 18
-    react-dom: ^16.8 || 17 || 18
-  peerDependenciesMeta:
-    "@types/react":
-      optional: true
-  checksum: c88257c9e277ba9ce2d7a706827072d7fdb6e8ba4c5194e95bc43436635ad57665cde9dec547696660f1c8f30ab3aa8876e6533ec08a35a26c78f61643af6b3a
-  languageName: node
-  linkType: hard
-
-"@blueprintjs/popover2@npm:^1.8.0":
+"@blueprintjs/popover2@npm:^1.7.3, @blueprintjs/popover2@npm:^1.8.0":
   version: 1.8.0
   resolution: "@blueprintjs/popover2@npm:1.8.0"
   dependencies:
@@ -6326,7 +6304,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"classnames@npm:^2.3.1, classnames@npm:^2.3.2":
+"classnames@npm:^2.3.1":
   version: 2.3.2
   resolution: "classnames@npm:2.3.2"
   checksum: 2c62199789618d95545c872787137262e741f9db13328e216b093eea91c85ef2bfb152c1f9e63027204e2559a006a92eb74147d46c800a9f96297ae1d9f96f4e
