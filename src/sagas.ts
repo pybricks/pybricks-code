@@ -1,9 +1,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2022 The Pybricks Authors
 
-import { all, put } from 'typed-redux-saga/macro';
+import { all } from 'typed-redux-saga/macro';
 import alerts, { AlertsSagaContext } from './alerts/sagas';
-import { didStart } from './app/actions';
 import app from './app/sagas';
 import blePybricksService from './ble-pybricks-service/sagas';
 import ble from './ble/sagas';
@@ -37,7 +36,6 @@ export default function* (): Generator {
         mpy(),
         notifications(),
         terminal(),
-        put(didStart()),
     ]);
 }
 

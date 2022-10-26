@@ -43,8 +43,3 @@ export const appDidResolveInstallPrompt = createAction(
 export const didInstall = createAction(() => ({
     type: 'app.action.didInstall',
 }));
-
-/** Creates an action that indicates the app has just started. */
-export const didStart = createAction(() => ({
-    type: 'app.action.didStart',
-}));
