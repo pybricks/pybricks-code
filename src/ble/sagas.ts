@@ -60,6 +60,7 @@ import {
 import { firmwareInstallPybricks } from '../firmware/actions';
 import { RootState } from '../reducers';
 import { ensureError } from '../utils';
+import { isLinux } from '../utils/os';
 import { pythonVersionToSemver } from '../utils/version';
 import {
     bleConnectPybricks as bleConnectPybricks,
@@ -432,6 +433,16 @@ function* handleBleConnectPybricks(): Generator {
 
         // wait for disconnection
         yield* take(disconnectChannel);
+
+        // HACK: Disconnection event comes early on Linux, so scanning again
+        // can show that the previous connection is still "paired" and trying
+        // to select it results in infinite wait. To work around this, we need
+        // to wait long enough for BlueZ to actually disconnect the device.
+        // https://github.com/pybricks/support/issues/600#issuecomment-1286606624
+        // istanbul ignore if
+        if (process.env.NODE_ENV !== 'test' && isLinux()) {
+            yield* delay(5000);
+        }
 
         yield* put(bleDidDisconnectPybricks());
     } catch (err) {
