@@ -218,7 +218,7 @@ const TabCloseButton: React.VoidFunctionComponent<TabCloseButtonProps> = ({ uuid
             })}
             minimal={true}
             small={true}
-            icon={'cross'}
+            icon="cross"
             // tabs are closed with delete button by keyboard, so
             // don't focus the close button
             tabIndex={-1}
