@@ -16,7 +16,7 @@ import lwp3BootloaderProtocol from './lwp3-bootloader/sagas';
 import lwp3BootloaderBle from './lwp3-bootloader/sagas-ble';
 import mpy from './mpy/sagas';
 import notifications from './notifications/sagas';
-import terminal, { TerminalSagaContext } from './terminal/sagas';
+import type { TerminalSagaContext } from './terminal/sagas';
 
 /**
  * Listens to the 'pb-lazy-saga' event to spawn sagas from a React.lazy() initializer.
@@ -53,7 +53,6 @@ export default function* (): Generator {
         hub(),
         mpy(),
         notifications(),
-        terminal(),
         lazySagas(),
     ]);
 }
