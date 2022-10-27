@@ -27,7 +27,6 @@ import MonacoEditor, {
 } from 'react-monaco-editor';
 import { useDispatch } from 'react-redux';
 import { useTernaryDarkMode } from 'usehooks-ts';
-import { IDisposable } from 'xterm';
 import { UUID } from '../fileStorage';
 import { useFileStoragePath } from '../fileStorage/hooks';
 import { compile } from '../mpy/actions';
@@ -42,7 +41,7 @@ import { UntitledHintContribution } from './untitledHint';
 
 monaco.languages.register({ id: pybricksMicroPythonId });
 
-const toDispose = new Array<IDisposable>();
+const toDispose = new Array<monaco.IDisposable>();
 toDispose.push(
     monaco.languages.setLanguageConfiguration(
         pybricksMicroPythonId,

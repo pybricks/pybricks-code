@@ -13,7 +13,6 @@ import { InstallPybricksDialog } from '../firmware/installPybricksDialog/Install
 import RestoreOfficialDialog from '../firmware/restoreOfficialDialog/RestoreOfficialDialog';
 import { useSettingIsShowDocsEnabled } from '../settings/hooks';
 import StatusBar from '../status-bar/StatusBar';
-import Terminal from '../terminal/Terminal';
 import Toolbar from '../toolbar/Toolbar';
 import Tour from '../tour/Tour';
 import { isMacOS } from '../utils/os';
@@ -23,6 +22,19 @@ const Editor = React.lazy(async () => {
     const [sagaModule, componentModule] = await Promise.all([
         import('../editor/sagas'),
         import('../editor/Editor'),
+    ]);
+
+    window.dispatchEvent(
+        new CustomEvent('pb-lazy-saga', { detail: { saga: sagaModule.default } }),
+    );
+
+    return componentModule;
+});
+
+const Terminal = React.lazy(async () => {
+    const [sagaModule, componentModule] = await Promise.all([
+        import('../terminal/sagas'),
+        import('../terminal/Terminal'),
     ]);
 
     window.dispatchEvent(
@@ -205,7 +217,11 @@ const App: React.VFC = () => {
                                 </React.Suspense>
                             </div>
                             <div className="pb-app-terminal">
-                                <Terminal />
+                                <React.Suspense
+                                    fallback={<Spinner className="h-100" />}
+                                >
+                                    <Terminal />
+                                </React.Suspense>
                             </div>
                         </SplitterLayout>
                         <div className="pb-app-docs">
