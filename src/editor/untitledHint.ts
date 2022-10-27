@@ -4,7 +4,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { monaco } from 'react-monaco-editor';
+import type { monaco } from 'react-monaco-editor';
 
 export class UntitledHintContribution implements monaco.editor.IEditorContribution {
     public static readonly ID = 'editor.contrib.untitledHint';
@@ -79,7 +79,7 @@ class UntitledHintContentWidget implements monaco.editor.IContentWidget {
     getPosition(): monaco.editor.IContentWidgetPosition | null {
         return {
             position: { lineNumber: 1, column: 1 },
-            preference: [monaco.editor.ContentWidgetPositionPreference.EXACT],
+            preference: [<monaco.editor.ContentWidgetPositionPreference.EXACT>0],
         };
     }
 

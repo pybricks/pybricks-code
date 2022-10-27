@@ -5,7 +5,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { monaco } from 'react-monaco-editor';
+import type { monaco } from 'react-monaco-editor';
 
 /** The Pybricks MicroPython language identifier. */
 export const pybricksMicroPythonId = 'pybricks-micropython';
@@ -39,7 +39,7 @@ export const conf: monaco.languages.LanguageConfiguration = {
             beforeText: new RegExp(
                 '^\\s*(?:def|class|for|if|elif|else|while|try|with|finally|except|async).*?:\\s*$',
             ),
-            action: { indentAction: monaco.languages.IndentAction.Indent },
+            action: { indentAction: <monaco.languages.IndentAction.Indent>1 },
         },
     ],
     folding: {
@@ -361,7 +361,7 @@ export const templateSnippetCompletions = <monaco.languages.CompletionItemProvid
             .filter((x) => x.label.startsWith(textUntilPosition))
             .map<monaco.languages.CompletionItem>((x) => ({
                 detail: x.insertText,
-                kind: monaco.languages.CompletionItemKind.Snippet,
+                kind: <monaco.languages.CompletionItemKind.Snippet>27,
                 range,
                 ...x,
             }));

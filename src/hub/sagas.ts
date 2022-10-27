@@ -27,7 +27,7 @@ import {
 } from '../ble-pybricks-service/actions';
 import { FileFormat } from '../ble-pybricks-service/protocol';
 import { bleDidConnectPybricks } from '../ble/actions';
-import { editorGetValue } from '../editor/sagas';
+import { editorGetValue } from '../editor/sagaLib';
 import {
     compile,
     didCompile,
