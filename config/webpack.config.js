@@ -586,6 +586,10 @@ module.exports = function (webpackEnv) {
       ].filter(Boolean),
     },
     plugins: [
+      // https://github.com/palantir/blueprint/issues/2193
+      new webpack.NormalModuleReplacementPlugin(
+        /.*\/@blueprintjs\/icons\/lib\/esm\/iconSvgPaths.*/,
+        path.resolve(__dirname, "../src/blueprintjs-icons.js")),
       new CopyPlugin({
         patterns: [
           {
