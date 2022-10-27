@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [2.0.0-beta.9] - 2022-10-27
+
 ### Added
 - Added feature to close editor tab on middle click ([support#758]).
 
@@ -449,7 +451,8 @@ Prerelease changes are documented at [support#48].
 
 <!-- links for version headings -->
 
-[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.8...HEAD
+[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.9...HEAD
+[2.0.0-beta.9]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.8...v2.0.0-beta.9
 [2.0.0-beta.8]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.7...v2.0.0-beta.8
 [2.0.0-beta.7]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.6...v2.0.0-beta.7
 [2.0.0-beta.6]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.5...v2.0.0-beta.6
