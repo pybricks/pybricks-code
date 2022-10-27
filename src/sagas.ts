@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2022 The Pybricks Authors
 
-import { all } from 'typed-redux-saga/macro';
+import { eventChannel } from 'redux-saga';
+import { all, spawn, take } from 'typed-redux-saga/macro';
 import alerts, { AlertsSagaContext } from './alerts/sagas';
 import app from './app/sagas';
 import blePybricksService from './ble-pybricks-service/sagas';
 import ble from './ble/sagas';
-import editor from './editor/sagas';
 import errorLog from './error-log/sagas';
 import explorer from './explorer/sagas';
 import fileStorage, { FileStorageSageContext } from './fileStorage/sagas';
@@ -18,6 +18,25 @@ import mpy from './mpy/sagas';
 import notifications from './notifications/sagas';
 import terminal, { TerminalSagaContext } from './terminal/sagas';
 
+/**
+ * Listens to the 'pb-lazy-saga' event to spawn sagas from a React.lazy() initializer.
+ */
+function* lazySagas(): Generator {
+    const chan = eventChannel<CustomEvent<{ saga: () => void }>>((emit) => {
+        window.addEventListener('pb-lazy-saga', emit as EventListener);
+        return () => window.removeEventListener('pb-lazy-saga', emit as EventListener);
+    });
+
+    try {
+        for (;;) {
+            const event = yield* take(chan);
+            yield* spawn(event.detail.saga);
+        }
+    } finally {
+        chan.close();
+    }
+}
+
 /* istanbul ignore next */
 export default function* (): Generator {
     yield* all([
@@ -25,7 +44,6 @@ export default function* (): Generator {
         app(),
         blePybricksService(),
         ble(),
-        editor(),
         fileStorage(),
         lwp3BootloaderBle(),
         lwp3BootloaderProtocol(),
@@ -36,6 +54,7 @@ export default function* (): Generator {
         mpy(),
         notifications(),
         terminal(),
+        lazySagas(),
     ]);
 }
 

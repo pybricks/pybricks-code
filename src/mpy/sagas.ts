@@ -6,7 +6,7 @@ import wasmV5 from '@pybricks/mpy-cross-v5/build/mpy-cross.wasm';
 import { compile as mpyCrossCompileV6 } from '@pybricks/mpy-cross-v6';
 import wasmV6 from '@pybricks/mpy-cross-v6/build/mpy-cross-v6.wasm';
 import { call, getContext, put, select, takeEvery } from 'typed-redux-saga/macro';
-import { editorGetValue } from '../editor/sagas';
+import { editorGetValue } from '../editor/sagaLib';
 import { FileContents, FileStorageDb } from '../fileStorage';
 import { findImportedModules, resolveModule } from '../pybricksMicropython/lib';
 import { RootState } from '../reducers';

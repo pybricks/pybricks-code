@@ -3,13 +3,12 @@
 
 import 'react-splitter-layout/lib/index.css';
 import './app.scss';
-import { Classes } from '@blueprintjs/core';
+import { Classes, Spinner } from '@blueprintjs/core';
 import docsPackage from '@pybricks/ide-docs/package.json';
 import React, { useEffect, useState } from 'react';
 import SplitterLayout from 'react-splitter-layout';
 import { useLocalStorage, useTernaryDarkMode } from 'usehooks-ts';
 import Activities from '../activities/Activities';
-import Editor from '../editor/Editor';
 import { InstallPybricksDialog } from '../firmware/installPybricksDialog/InstallPybricksDialog';
 import RestoreOfficialDialog from '../firmware/restoreOfficialDialog/RestoreOfficialDialog';
 import { useSettingIsShowDocsEnabled } from '../settings/hooks';
@@ -19,6 +18,19 @@ import Toolbar from '../toolbar/Toolbar';
 import Tour from '../tour/Tour';
 import { isMacOS } from '../utils/os';
 import { httpServerHeadersVersion } from './constants';
+
+const Editor = React.lazy(async () => {
+    const [sagaModule, componentModule] = await Promise.all([
+        import('../editor/sagas'),
+        import('../editor/Editor'),
+    ]);
+
+    window.dispatchEvent(
+        new CustomEvent('pb-lazy-saga', { detail: { saga: sagaModule.default } }),
+    );
+
+    return componentModule;
+});
 
 const Docs: React.VFC = () => {
     const { setIsSettingShowDocsEnabled } = useSettingIsShowDocsEnabled();
@@ -186,7 +198,11 @@ const App: React.VFC = () => {
                         >
                             <div className="pb-app-editor">
                                 <Toolbar />
-                                <Editor />
+                                <React.Suspense
+                                    fallback={<Spinner className="pb-editor" />}
+                                >
+                                    <Editor />
+                                </React.Suspense>
                             </div>
                             <div className="pb-app-terminal">
                                 <Terminal />

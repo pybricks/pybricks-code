@@ -7,6 +7,9 @@
 ### Added
 - Added feature to close editor tab on middle click ([support#758]).
 
+### Fixed
+- Fixed long time until UI visible on resource-constrained systems.
+
 ### Removed
 - Removed word-based autocompletion ([support#757]).
 
