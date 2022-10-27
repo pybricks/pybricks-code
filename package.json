@@ -33,7 +33,7 @@
         "@types/react-dom": "^16.9.14",
         "@types/react-splitter-layout": "^3.0.2",
         "@types/redux-logger": "^3.0.9",
-        "@types/semver": "^7.3.12",
+        "@types/semver": "^7.3.13",
         "@types/w3c-web-usb": "^1.0.6",
         "@types/web-bluetooth": "^0.0.16",
         "@types/web-locks-api": "^0.0.2",
