@@ -6,8 +6,10 @@
 
 ### Added
 - Added feature create new empty file ([pybricks-code#771]).
+- Added sponsor button ([support#719]).
 
 [pybricks-code#771]: https://github.com/pybricks/pybricks-code/issues/771
+[support#719]: https://github.com/pybricks/support/issues/719
 
 ## [2.0.0-beta.9] - 2022-10-27
 

@@ -11,6 +11,7 @@ import fileStorage from './fileStorage/reducers';
 import firmware from './firmware/reducers';
 import hub from './hub/reducers';
 import bootloader from './lwp3-bootloader/reducers';
+import sponsor from './sponsor/reducers';
 import tour from './tour/reducers';
 
 /**
@@ -26,6 +27,7 @@ export const rootReducer = combineReducers({
     firmware,
     hub,
     tour,
+    sponsor,
 });
 
 /**
