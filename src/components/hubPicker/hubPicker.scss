@@ -11,5 +11,9 @@
     .#{bp.$ns}-radio {
         display: flex;
         align-items: center;
+
+        &.#{bp.$ns}-disabled img {
+            opacity: 50%;
+        }
     }
 }

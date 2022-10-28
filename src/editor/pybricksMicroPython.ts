@@ -337,7 +337,9 @@ const templateSnippets: Array<
  * Gets the template text for a Pybricks MicroPython file.
  * @param hub The hub label.
  */
-export function getPybricksMicroPythonFileTemplate(hub: HubLabel): string | undefined {
+export function getPybricksMicroPythonFileTemplate(
+    hub: HubLabel | undefined,
+): string | undefined {
     return templateSnippets.find((t) => t.label === hub)?.insertText;
 }
 

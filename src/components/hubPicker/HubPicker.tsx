@@ -16,13 +16,20 @@ const HubIcon: React.VoidFunctionComponent<HubIconProps> = ({ url, label }) => {
     return <img src={url.toString()} width={64} height={64} title={label} />;
 };
 
-export const HubPicker: React.VoidFunctionComponent = () => {
+type HubPickerProps = {
+    disabled?: boolean;
+};
+
+export const HubPicker: React.VoidFunctionComponent<HubPickerProps> = ({
+    disabled,
+}) => {
     const [selectedHub, setSelectedHub] = useHubPickerSelectedHub();
 
     return (
         <RadioGroup
             className="pb-hub-picker"
             selectedValue={selectedHub}
+            disabled={disabled}
             onChange={(e) => setSelectedHub(e.currentTarget.value as Hub)}
         >
             <Radio value={Hub.Move}>

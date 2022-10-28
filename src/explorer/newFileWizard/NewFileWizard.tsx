@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2022 The Pybricks Authors
 
-import { Button, Classes, Dialog, FormGroup } from '@blueprintjs/core';
+import { Button, Classes, Dialog, FormGroup, Switch } from '@blueprintjs/core';
 import React, { useCallback, useRef, useState } from 'react';
 import { useId } from 'react-aria';
 import { useDispatch } from 'react-redux';
+import { useLocalStorage } from 'usehooks-ts';
 import { HubPicker } from '../../components/hubPicker/HubPicker';
 import { useHubPickerSelectedHub } from '../../components/hubPicker/hooks';
 import { useFileStorageMetadata } from '../../fileStorage/hooks';
@@ -22,6 +23,10 @@ const NewFileWizard: React.VoidFunctionComponent = () => {
     const i18n = useI18n();
     const dispatch = useDispatch();
 
+    const [emptyFile, setEmptyFile] = useLocalStorage(
+        'explorer.newFileWizard.emptyFile',
+        false,
+    );
     const isOpen = useSelector((s) => s.explorer.newFileWizard.isOpen);
     const [fileName, setFileName] = useState('');
     const files = useFileStorageMetadata() ?? [];
@@ -37,9 +42,15 @@ const NewFileWizard: React.VoidFunctionComponent = () => {
     const handleSubmit = useCallback<React.FormEventHandler>(
         (e) => {
             e.preventDefault();
-            dispatch(newFileWizardDidAccept(fileName, pythonFileExtension, hubType));
+            dispatch(
+                newFileWizardDidAccept(
+                    fileName,
+                    pythonFileExtension,
+                    emptyFile ? undefined : hubType,
+                ),
+            );
         },
-        [dispatch, fileName, pythonFileExtension, hubType],
+        [dispatch, fileName, pythonFileExtension, hubType, emptyFile],
     );
 
     const handleClose = useCallback(() => {
@@ -66,9 +77,20 @@ const NewFileWizard: React.VoidFunctionComponent = () => {
                         inputRef={fileNameInputRef}
                         onChange={setFileName}
                     />
-                    <FormGroup label={i18n.translate('smartHub.label')}>
-                        <HubPicker />
+                    <FormGroup
+                        label={i18n.translate('template.label')}
+                        disabled={emptyFile}
+                    >
+                        <HubPicker disabled={emptyFile} />
                     </FormGroup>
+                    <Switch
+                        checked={emptyFile}
+                        onChange={(e) =>
+                            setEmptyFile((e.target as HTMLInputElement).checked)
+                        }
+                    >
+                        {i18n.translate('emptyFile.label')}
+                    </Switch>
                 </div>
                 <div className={Classes.DIALOG_FOOTER}>
                     <div className={Classes.DIALOG_FOOTER_ACTIONS}>
