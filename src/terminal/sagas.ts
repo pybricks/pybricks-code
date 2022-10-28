@@ -20,7 +20,7 @@ import {
     write,
 } from '../ble-nordic-uart-service/actions';
 import { nordicUartSafeTxCharLength } from '../ble-nordic-uart-service/protocol';
-import { checksum } from '../hub/actions';
+import { checksum, repl } from '../hub/actions';
 import { HubRuntimeState } from '../hub/reducers';
 import { RootState } from '../reducers';
 import { defined } from '../utils';
@@ -94,8 +94,13 @@ function* sendTerminalData(action: ReturnType<typeof sendData>): Generator {
     dataSource.next(action.value);
 }
 
+function handleRepl(): void {
+    dispatchEvent(new CustomEvent('pb-terminal-focus'));
+}
+
 export default function* (): Generator {
     yield* takeEvery(didNotify, receiveUartData);
     yield* fork(receiveTerminalData);
     yield* takeEvery(sendData, sendTerminalData);
+    yield* takeEvery(repl, handleRepl);
 }

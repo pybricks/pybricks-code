@@ -177,6 +177,16 @@ const Terminal: React.FC = (_props) => {
         [createContextMenu, xterm],
     );
 
+    useEffect(() => {
+        const listener = () => {
+            xterm.focus();
+        };
+
+        addEventListener('pb-terminal-focus', listener);
+
+        return () => removeEventListener('pb-terminal-focus', listener);
+    }, [xterm]);
+
     return (
         <ContextMenu2
             className="h-100"
