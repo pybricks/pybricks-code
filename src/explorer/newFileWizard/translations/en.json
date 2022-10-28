@@ -1,7 +1,10 @@
 {
     "title": "Create a new file",
-    "smartHub": {
-        "label": "Smart hub"
+    "template": {
+        "label": "Template"
+    },
+    "emptyFile": {
+        "label": "Create an empty file"
     },
     "action": {
         "create": "Create"

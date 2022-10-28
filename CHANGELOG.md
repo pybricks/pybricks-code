@@ -4,6 +4,11 @@
 
 ## [Unreleased]
 
+### Added
+- Added feature create new empty file ([pybricks-code#771]).
+
+[pybricks-code#771]: https://github.com/pybricks/pybricks-code/issues/771
+
 ## [2.0.0-beta.9] - 2022-10-27
 
 ### Added
