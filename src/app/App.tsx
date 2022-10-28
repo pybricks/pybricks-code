@@ -12,6 +12,7 @@ import Activities from '../activities/Activities';
 import { InstallPybricksDialog } from '../firmware/installPybricksDialog/InstallPybricksDialog';
 import RestoreOfficialDialog from '../firmware/restoreOfficialDialog/RestoreOfficialDialog';
 import { useSettingIsShowDocsEnabled } from '../settings/hooks';
+import SponsorDialog from '../sponsor/SponsorDialog';
 import StatusBar from '../status-bar/StatusBar';
 import Toolbar from '../toolbar/Toolbar';
 import Tour from '../tour/Tour';
@@ -235,6 +236,7 @@ const App: React.VFC = () => {
             <Tour />
             <InstallPybricksDialog />
             <RestoreOfficialDialog />
+            <SponsorDialog />
         </div>
     );
 };
