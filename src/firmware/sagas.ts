@@ -309,7 +309,7 @@ function* loadFirmware(
             }
         })();
 
-        if (!checksum) {
+        if (checksum === undefined) {
             // FIXME: we should return error/throw instead
             yield* put(
                 didFailToFinish(
@@ -352,7 +352,7 @@ function* loadFirmware(
         }
     })();
 
-    if (!checksum) {
+    if (checksum === undefined) {
         // FIXME: we should return error/throw instead
         yield* put(
             didFailToFinish(
