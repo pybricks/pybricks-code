@@ -125,7 +125,7 @@
         "workbox-webpack-plugin": "^6.5.4",
         "xterm": "^5.0.0",
         "xterm-addon-fit": "^0.6.0",
-        "zen-push": "^0.2.1"
+        "zen-push": "^0.3.1"
     },
     "scripts": {
         "analyze": "source-map-explorer 'build/static/js/*.js'",
