@@ -2810,7 +2810,7 @@ __metadata:
     workbox-webpack-plugin: ^6.5.4
     xterm: ^5.0.0
     xterm-addon-fit: ^0.6.0
-    zen-push: ^0.2.1
+    zen-push: ^0.3.1
   languageName: unknown
   linkType: soft
 
@@ -16101,18 +16101,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zen-observable@npm:^0.7.0":
-  version: 0.7.1
-  resolution: "zen-observable@npm:0.7.1"
-  checksum: 06b32e70f1eda5a0a5771a091d1b894c65549164fe68dffeee951c9cf1f909353843e313cb2d95ebb611713e8fcc0f0e1d783799919be98d7ed085a82c28dafe
+"zen-observable@npm:^0.9.0":
+  version: 0.9.0
+  resolution: "zen-observable@npm:0.9.0"
+  checksum: d770639f7cb47c89e442b0b87e6955079b9d0f3f7da220f081c3a478ee7b837ee792be4ae8764f2d49fe0afaaa3fbcdc7a88042c3ed471df9ae551de90e82ea2
   languageName: node
   linkType: hard
 
-"zen-push@npm:^0.2.1":
-  version: 0.2.1
-  resolution: "zen-push@npm:0.2.1"
+"zen-push@npm:^0.3.1":
+  version: 0.3.1
+  resolution: "zen-push@npm:0.3.1"
   dependencies:
-    zen-observable: ^0.7.0
-  checksum: cdc1b5f8cef96b07c1e96ad951e6b14a622c7de5b15503d7a55d96892fe89f26cfb0bccaac51aae463d5d8f4083f0378192e67b94a88c56616e71808566329f8
+    zen-observable: ^0.9.0
+  checksum: bd814d2c0d34480c2fbbf726fcb1a26d51c832b494770d953225cdc4a54cf4f938de04b2b8aa4c18f4d3ea7a2f9c9ba0e51f296396a3ff5a09c79b4c2937f6e0
   languageName: node
   linkType: hard
