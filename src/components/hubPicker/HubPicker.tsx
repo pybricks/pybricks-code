@@ -28,7 +28,7 @@ export const HubPicker: React.VoidFunctionComponent<HubPickerProps> = ({
     return (
         <RadioGroup
             className="pb-hub-picker"
-            selectedValue={selectedHub}
+            selectedValue={disabled ? undefined : selectedHub}
             disabled={disabled}
             onChange={(e) => setSelectedHub(e.currentTarget.value as Hub)}
         >
