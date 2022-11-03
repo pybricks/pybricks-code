@@ -23,9 +23,9 @@ const NewFileWizard: React.VoidFunctionComponent = () => {
     const i18n = useI18n();
     const dispatch = useDispatch();
 
-    const [emptyFile, setEmptyFile] = useLocalStorage(
-        'explorer.newFileWizard.emptyFile',
-        false,
+    const [useTemplate, setuseTemplate] = useLocalStorage(
+        'explorer.newFileWizard.useTemplate',
+        true,
     );
     const isOpen = useSelector((s) => s.explorer.newFileWizard.isOpen);
     const [fileName, setFileName] = useState('');
@@ -46,11 +46,11 @@ const NewFileWizard: React.VoidFunctionComponent = () => {
                 newFileWizardDidAccept(
                     fileName,
                     pythonFileExtension,
-                    emptyFile ? undefined : hubType,
+                    useTemplate ? hubType : undefined,
                 ),
             );
         },
-        [dispatch, fileName, pythonFileExtension, hubType, emptyFile],
+        [dispatch, fileName, pythonFileExtension, hubType, useTemplate],
     );
 
     const handleClose = useCallback(() => {
@@ -77,20 +77,20 @@ const NewFileWizard: React.VoidFunctionComponent = () => {
                         inputRef={fileNameInputRef}
                         onChange={setFileName}
                     />
-                    <FormGroup
-                        label={i18n.translate('template.label')}
-                        disabled={emptyFile}
-                    >
-                        <HubPicker disabled={emptyFile} />
-                    </FormGroup>
                     <Switch
-                        checked={emptyFile}
+                        checked={useTemplate}
                         onChange={(e) =>
-                            setEmptyFile((e.target as HTMLInputElement).checked)
+                            setuseTemplate((e.target as HTMLInputElement).checked)
                         }
                     >
-                        {i18n.translate('emptyFile.label')}
+                        {i18n.translate('useTemplate.label')}
                     </Switch>
+                    <FormGroup
+                        label={i18n.translate('template.label')}
+                        disabled={!useTemplate}
+                    >
+                        <HubPicker disabled={!useTemplate} />
+                    </FormGroup>
                 </div>
                 <div className={Classes.DIALOG_FOOTER}>
                     <div className={Classes.DIALOG_FOOTER_ACTIONS}>

@@ -3,8 +3,8 @@
     "template": {
         "label": "Template"
     },
-    "emptyFile": {
-        "label": "Create an empty file"
+    "useTemplate": {
+        "label": "Include template"
     },
     "action": {
         "create": "Create"
