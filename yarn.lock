@@ -2648,10 +2648,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pybricks/images@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "@pybricks/images@npm:1.1.0"
-  checksum: 5a635c17ebafcaaec913dfc52789a24ea8b896e7e05598be9f2c431014b3fd6bbd4431f2ad4f8540f6f5bc025e989cc470db9a4bf3ff86a75b5e160f51b7e5dd
+"@pybricks/images@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "@pybricks/images@npm:1.2.0"
+  checksum: 9189defdccfe6d4143ad906f6c4d359a06c5122e40126f22972b8c0829099a90f4608c0f1f02155c67d301e7b86165fef6f149dd758f6c22ca92a7d9ca5bd933
   languageName: node
   linkType: hard
 
@@ -2687,7 +2687,7 @@ __metadata:
     "@pmmmwh/react-refresh-webpack-plugin": ^0.5.8
     "@pybricks/firmware": 6.1.0
     "@pybricks/ide-docs": 2.3.0
-    "@pybricks/images": ^1.1.0
+    "@pybricks/images": ^1.2.0
     "@pybricks/jedi": ^1.2.0
     "@pybricks/mpy-cross-v5": ^2.0.0
     "@pybricks/mpy-cross-v6": ^2.0.0
