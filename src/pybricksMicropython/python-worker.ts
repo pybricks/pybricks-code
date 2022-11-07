@@ -90,24 +90,14 @@ async function init(): Promise<void> {
     await pyodide.runPythonAsync(`import sys; sys.path.append("${mountDir}")`);
 
     // NB: using URL+import.meta.url for webpack magic - don't try to optimize it
-    await pyodide.loadPackage(
+    await pyodide.loadPackage([
         new URL('@pybricks/jedi/docstring-parser.whl', import.meta.url).toString(),
-    );
-    await pyodide.loadPackage(
         new URL('@pybricks/jedi/jedi.whl', import.meta.url).toString(),
-    );
-    await pyodide.loadPackage(
         new URL('@pybricks/jedi/parso.whl', import.meta.url).toString(),
-    );
-    await pyodide.loadPackage(
         new URL('@pybricks/jedi/pybricks-jedi.whl', import.meta.url).toString(),
-    );
-    await pyodide.loadPackage(
         new URL('@pybricks/jedi/pybricks.whl', import.meta.url).toString(),
-    );
-    await pyodide.loadPackage(
         new URL('@pybricks/jedi/typing_extensions.whl', import.meta.url).toString(),
-    );
+    ]);
 
     await pyodide.runPythonAsync(setUpPythonEnvironment);
 
