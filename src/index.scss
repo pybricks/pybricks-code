@@ -130,6 +130,7 @@ a.#{bp.$ns}-button {
     flex-wrap: wrap;
     row-gap: 10px;
 }
+
 .#{bp.$ns}-control {
     & input:checked ~ .#{bp.$ns}-control-indicator,
     &.#{bp.$ns}-switch input:checked ~ .#{bp.$ns}-control-indicator {
@@ -137,6 +138,18 @@ a.#{bp.$ns}-button {
 
         .#{bp.$ns}-dark & {
             background-color: pb.$pybricks-blue;
+        }
+    }
+
+    // make disabled:checked radio buttons appear as not checked
+    &.#{bp.$ns}-radio input:disabled:checked ~ .bp4-control-indicator {
+        // color definition is same as $minimal-button-background-color-hover,
+        // which is used to define $control-background-color-disabled and
+        // $dark-control-background-color-disabled variables
+        background: rgba(bp.$gray3, 0.15);
+
+        &:before {
+            background-image: unset;
         }
     }
 }
