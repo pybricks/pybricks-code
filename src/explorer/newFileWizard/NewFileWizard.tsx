@@ -1,7 +1,15 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2022 The Pybricks Authors
 
-import { Button, Classes, Dialog, FormGroup, Switch } from '@blueprintjs/core';
+import {
+    Button,
+    Classes,
+    ControlGroup,
+    Dialog,
+    FormGroup,
+    Switch,
+    Text,
+} from '@blueprintjs/core';
 import React, { useCallback, useRef, useState } from 'react';
 import { useId } from 'react-aria';
 import { useDispatch } from 'react-redux';
@@ -77,18 +85,27 @@ const NewFileWizard: React.VoidFunctionComponent = () => {
                         inputRef={fileNameInputRef}
                         onChange={setFileName}
                     />
-                    <Switch
-                        checked={useTemplate}
-                        onChange={(e) =>
-                            setuseTemplate((e.target as HTMLInputElement).checked)
-                        }
-                    >
-                        {i18n.translate('useTemplate.label')}
-                    </Switch>
-                    <FormGroup
-                        label={i18n.translate('template.label')}
-                        disabled={!useTemplate}
-                    >
+                    <FormGroup label={i18n.translate('template.label')}>
+                        <ControlGroup vertical>
+                            <Switch
+                                checked={useTemplate}
+                                onChange={(e) =>
+                                    setuseTemplate(
+                                        (e.target as HTMLInputElement).checked,
+                                    )
+                                }
+                            >
+                                {i18n.translate('useTemplate.label')}
+                            </Switch>
+                            <Text className={Classes.TEXT_MUTED}>
+                                {useTemplate
+                                    ? i18n.translate('useTemplate.description.checked')
+                                    : i18n.translate(
+                                          'useTemplate.description.unchecked',
+                                      )}
+                            </Text>
+                        </ControlGroup>
+                        <div className="pb-spacer" />
                         <HubPicker disabled={!useTemplate} />
                     </FormGroup>
                 </div>

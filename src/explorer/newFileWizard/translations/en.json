@@ -4,7 +4,11 @@
         "label": "Template"
     },
     "useTemplate": {
-        "label": "Include template"
+        "label": "Use a template",
+        "description": {
+            "checked": "Create a new file for the selected hub.",
+            "unchecked": "Create a new empty file."
+        }
     },
     "action": {
         "create": "Create"
