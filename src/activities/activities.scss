@@ -26,6 +26,8 @@
     }
 
     &-tabview {
+        display: flex;
+        flex-direction: column;
         width: bp.$pt-grid-size * 25;
         padding: bp.$pt-grid-size;
         @include pb.background-contrast(0%);
