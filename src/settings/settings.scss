@@ -6,6 +6,8 @@
 @use '@blueprintjs/core/lib/scss/variables' as bp;
 
 .pb-settings {
+    overflow-y: auto;
+
     .#{bp.$ns}-control-group {
         .#{bp.$ns}-button {
             margin-bottom: 3px;

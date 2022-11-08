@@ -10,9 +10,11 @@
 
 ### Fixed
 - Fixed firmware checksum validation when checksum === 0.
+- Fixed activity views not scrolling when contents don't fit ([support#782]).
 
 [pybricks-code#771]: https://github.com/pybricks/pybricks-code/issues/771
 [support#719]: https://github.com/pybricks/support/issues/719
+[support#782]: https://github.com/pybricks/support/issues/782
 
 ## [2.0.0-beta.9] - 2022-10-27
 
