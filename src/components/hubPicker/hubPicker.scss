@@ -6,11 +6,13 @@
 .pb-hub-picker {
     display: flex;
     flex-wrap: wrap;
-    gap: bp.$pt-grid-size * 2;
+    column-gap: bp.$pt-grid-size * 2;
+    row-gap: bp.$pt-grid-size * 0.5;
 
     .#{bp.$ns}-radio {
         display: flex;
         align-items: center;
+        margin: unset;
 
         &.#{bp.$ns}-disabled img {
             opacity: 50%;

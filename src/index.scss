@@ -83,6 +83,10 @@ body {
     }
 }
 
+.pb-spacer {
+    height: bp.$pt-grid-size * 2;
+}
+
 // global style tweaks
 
 .#{bp.$ns}-toast {
