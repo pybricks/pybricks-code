@@ -10,7 +10,9 @@ import ExternalLinkIcon from '../utils/ExternalLinkIcon';
 import patreonLogo from './Digital-Patreon-Logo_White.png';
 import gitHubIcon from './GitHub-Mark-Light-32px.png';
 import { sponsorHideDialog } from './actions';
+import ethIcon from './eth_logo.svg';
 import { useI18n } from './i18n';
+import paypalIcon from './paypal_logo.svg';
 
 const SponsorDialog: React.VoidFunctionComponent = () => {
     const { showDialog } = useSelector((s) => s.sponsor);
@@ -51,6 +53,30 @@ const SponsorDialog: React.VoidFunctionComponent = () => {
                     >
                         Patreon
                         <ExternalLinkIcon />
+                    </AnchorButton>
+                </p>
+                <p>
+                    <AnchorButton
+                        large={true}
+                        intent={Intent.PRIMARY}
+                        icon={<img src={paypalIcon} width={24} height={24} />}
+                        fill={true}
+                        href="https://paypal.me/pybricks"
+                        target="_blank"
+                        rel="noreferrer"
+                    >
+                        Paypal
+                        <ExternalLinkIcon />
+                    </AnchorButton>
+                </p>
+                <p>
+                    <AnchorButton
+                        large={true}
+                        intent={Intent.PRIMARY}
+                        icon={<img src={ethIcon} width={24} height={24} />}
+                        fill={true}
+                    >
+                        pybricks.eth
                     </AnchorButton>
                 </p>
             </div>
