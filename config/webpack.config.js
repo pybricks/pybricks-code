@@ -556,16 +556,6 @@ module.exports = function (webpackEnv) {
                 'sass-loader'
               ),
             },
-            // Adds support for wasm that runs as an application.
-            // https://github.com/webpack/webpack/issues/7352
-            {
-              test: /\.wasm$/,
-              type: 'javascript/auto',
-              loader: 'file-loader',
-              options: {
-                name: 'static/[name].[hash:8].[ext]',
-              },
-            },
             // "file" loader makes sure those assets get served by WebpackDevServer.
             // When you `import` an asset, you get its (virtual) filename.
             // In production, they would get copied to the `build` folder.
