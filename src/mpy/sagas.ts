@@ -2,9 +2,7 @@
 // Copyright (c) 2020-2022 The Pybricks Authors
 
 import { compile as mpyCrossCompileV5 } from '@pybricks/mpy-cross-v5';
-import wasmV5 from '@pybricks/mpy-cross-v5/build/mpy-cross.wasm';
 import { compile as mpyCrossCompileV6 } from '@pybricks/mpy-cross-v6';
-import wasmV6 from '@pybricks/mpy-cross-v6/build/mpy-cross-v6.wasm';
 import { call, getContext, put, select, takeEvery } from 'typed-redux-saga/macro';
 import { editorGetValue } from '../editor/sagaLib';
 import { FileContents, FileStorageDb } from '../fileStorage';
@@ -56,8 +54,12 @@ function* handleCompile(action: ReturnType<typeof compile>): Generator {
                         'main.py',
                         action.script,
                         action.options,
-                        // HACK: testing user agent for jsdom is needed only for getting unit tests to work
-                        navigator.userAgent.includes('jsdom') ? undefined : wasmV5,
+                        process.env.NODE_ENV === 'test'
+                            ? undefined
+                            : new URL(
+                                  '@pybricks/mpy-cross-v5/build/mpy-cross.wasm',
+                                  import.meta.url,
+                              ).toString(),
                     ),
                 );
                 if (result.status === 0 && result.mpy) {
@@ -75,8 +77,12 @@ function* handleCompile(action: ReturnType<typeof compile>): Generator {
                         'main.py',
                         action.script,
                         action.options,
-                        // HACK: testing user agent for jsdom is needed only for getting unit tests to work
-                        navigator.userAgent.includes('jsdom') ? undefined : wasmV6,
+                        process.env.NODE_ENV === 'test'
+                            ? undefined
+                            : new URL(
+                                  '@pybricks/mpy-cross-v6/build/mpy-cross-v6.wasm',
+                                  import.meta.url,
+                              ).toString(),
                     ),
                 );
                 if (result.status === 0 && result.mpy) {
@@ -182,8 +188,12 @@ function* handleCompileMulti6(): Generator {
                 py.path,
                 py.contents,
                 undefined,
-                // HACK: testing user agent for jsdom is needed only for getting unit tests to work
-                navigator.userAgent.includes('jsdom') ? undefined : wasmV6,
+                process.env.NODE_ENV === 'test'
+                    ? undefined
+                    : new URL(
+                          '@pybricks/mpy-cross-v6/build/mpy-cross-v6.wasm',
+                          import.meta.url,
+                      ).toString(),
             ),
         );
 
