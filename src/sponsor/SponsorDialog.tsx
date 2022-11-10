@@ -5,6 +5,7 @@ import { AnchorButton, Classes, Dialog, Intent } from '@blueprintjs/core';
 import classNames from 'classnames';
 import React from 'react';
 import { useDispatch } from 'react-redux';
+import { pybricksTeamUrl } from '../app/constants';
 import { useSelector } from '../reducers';
 import ExternalLinkIcon from '../utils/ExternalLinkIcon';
 import patreonLogo from './Digital-Patreon-Logo_White.png';
@@ -27,6 +28,30 @@ const SponsorDialog: React.VoidFunctionComponent = () => {
             icon="heart"
         >
             <div className={classNames(Classes.DIALOG_BODY, Classes.RUNNING_TEXT)}>
+                <h4>{i18n.translate('whoAreWe.heading')}</h4>
+                <p>
+                    {i18n.translate('whoAreWe.team')}{' '}
+                    <a href={pybricksTeamUrl} target="_blank" rel="noreferrer">
+                        {i18n.translate('whoAreWe.learnMore')}
+                    </a>
+                    <ExternalLinkIcon />
+                </p>
+
+                <p>{i18n.translate('whoAreWe.mission')}</p>
+                <h4>{i18n.translate('whyDonate.heading')}</h4>
+                <p>{i18n.translate('whyDonate.body')}</p>
+                <p>
+                    <ul>
+                        <li>{i18n.translate('donateReason.keepPybricksFree')}</li>
+                        <li>{i18n.translate('donateReason.supportNewHubs')}</li>
+                        <li>{i18n.translate('donateReason.writeDocs')}</li>
+                        <li>{i18n.translate('donateReason.exploreFeatures')}</li>
+                        <li>{i18n.translate('donateReason.supportOthers')}</li>
+                    </ul>
+                </p>
+                <h4>{i18n.translate('donateOptions.heading')}</h4>
+                <p>{i18n.translate('donateOptions.options')}</p>
+                <p>{i18n.translate('donateOptions.thanks')}</p>
                 <p>
                     <AnchorButton
                         large={true}

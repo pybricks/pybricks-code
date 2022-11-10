@@ -1,3 +1,25 @@
 {
-    "title": "Sponsor {pybricks}"
+    "title": "Sponsor {pybricks}",
+    "whoAreWe": {
+        "heading": "Who are we?",
+        "team": "Pybricks is run by a small team, supported by a community of open source coding enthusiasts from all around the world.",
+        "learnMore": "Learn more.",
+        "mission": "Our mission is to make robotics fun and accessible and teach a million people how to code. And you can help!"
+    },
+    "whyDonate": {
+        "heading": "Why donate?",
+        "body": "Donations help us to:"
+    },
+    "donateReason": {
+        "keepPybricksFree": "Keep Pybricks free for everyone.",
+        "supportNewHubs": "Support Pybricks on new hubs, motors and sensors.",
+        "writeDocs": "Create documentation and tutorials.",
+        "exploreFeatures": "Explore big new features like multi-tasking or block-based coding.",
+        "supportOthers": "Support projects that Pybricks builds on, like MicroPython."
+    },
+    "donateOptions": {
+        "heading": "How to donate",
+        "options": "You can use the links below for a one-time or monthly donation.",
+        "thanks": "Thank you, we really appreciate it!"
+    }
 }
