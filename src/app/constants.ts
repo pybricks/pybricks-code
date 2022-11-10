@@ -20,6 +20,9 @@ export const changelogUrl =
 /** URL to main Pybricks website. */
 export const pybricksWebsiteUrl = 'https://pybricks.com';
 
+/** URL to Pybricks team page. */
+export const pybricksTeamUrl = 'https://pybricks.com/about/#the-pybricks-team';
+
 /** URL to Pybricks support site. */
 export const pybricksSupportUrl = 'https://github.com/pybricks/support/discussions';
 
