@@ -2,8 +2,10 @@
     "title": "Sponsor {pybricks}",
     "whoAreWe": {
         "heading": "Who are we?",
-        "team": "Pybricks is run by a small team, supported by a community of open source coding enthusiasts from all around the world.",
-        "learnMore": "Learn more.",
+        "team": {
+            "about": "Pybricks is run by a small {team}, supported by a community of open source coding enthusiasts from all around the world.",
+            "team": "team"
+        },
         "mission": "Our mission is to make robotics fun and accessible and teach a million people how to code. And you can help!"
     },
     "whyDonate": {
