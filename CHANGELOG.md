@@ -8,6 +8,27 @@
 - Added feature create new empty file ([pybricks-code#771]).
 - Added sponsor button ([support#719]).
 
+### Changed
+- Updated documentation.
+- Updated other dependencies.
+- Update Pybricks firmware to v3.2.0a5:
+
+    ### Added
+    - Added `DriveBase.stalled()` for convenient stall detection.
+    - Added `DriveBase.done()` for convenient completion detection.
+    - Added `Motor.done()` for convenient completion detection.
+
+    ### Fixed
+    - Fixed brief hub freeze on `pybricks.common.Logger.save()` when not connected
+      to the computer ([support#738]).
+    - Fixed drive base stall flags being set while not stalled ([support#767]).
+    - Fixed `Motor.run_target` raising exception for short moves ([support#786]).
+
+    [support#738]: https://github.com/pybricks/support/issues/738
+    [support#767]: https://github.com/pybricks/support/issues/767
+    [support#786]: https://github.com/pybricks/support/issues/786
+
+
 ### Fixed
 - Fixed firmware checksum validation when checksum === 0.
 - Fixed activity views not scrolling when contents don't fit ([support#782]).
