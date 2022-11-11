@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [2.0.0-beta.11] - 2022-11-11
+
 ### Fixed
 - Fixed app freezing when checking for updates and update server is unreachable ([pybricks-code#1299]).
 - Added delay to try to mitigate errors when flashing firmware on city hubs ([support#792]).
@@ -493,7 +495,8 @@ Prerelease changes are documented at [support#48].
 
 <!-- links for version headings -->
 
-[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.10...HEAD
+[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.11...HEAD
+[2.0.0-beta.11]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.10...v2.0.0-beta.11
 [2.0.0-beta.10]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.9...v2.0.0-beta.10
 [2.0.0-beta.9]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.8...v2.0.0-beta.9
 [2.0.0-beta.8]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.7...v2.0.0-beta.8
