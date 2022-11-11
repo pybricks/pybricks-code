@@ -26,6 +26,8 @@ export enum CommandType {
     WriteUserProgramMeta = 3,
     /** Request to write to user RAM. */
     WriteUserRam = 4,
+    /** Request to reboot in firmware update mode. */
+    ResetInUpdateMode = 5,
 }
 
 /**
