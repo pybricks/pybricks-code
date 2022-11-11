@@ -9,6 +9,7 @@ import {
 import {
     appCheckForUpdate,
     appDidCheckForUpdate,
+    appDidFailToCheckForUpdate,
     appDidReceiveBeforeInstallPrompt,
     appDidResolveInstallPrompt,
     appShowInstallPrompt,
@@ -57,6 +58,10 @@ test('checkingForUpdate', () => {
     ).toBe(true);
     expect(
         reducers({ checkingForUpdate: true } as State, appDidCheckForUpdate(false))
+            .checkingForUpdate,
+    ).toBe(false);
+    expect(
+        reducers({ checkingForUpdate: true } as State, appDidFailToCheckForUpdate())
             .checkingForUpdate,
     ).toBe(false);
     expect(

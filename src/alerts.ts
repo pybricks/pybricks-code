@@ -3,6 +3,7 @@
 
 import { ToastProps } from '@blueprintjs/core';
 import alerts from './alerts/alerts';
+import app from './app/alerts';
 import ble from './ble/alerts';
 import explorer from './explorer/alerts';
 import firmware from './firmware/alerts';
@@ -12,6 +13,7 @@ import type { CreateToast } from './toasterTypes';
 /** This collects alerts from all of the subsystems of the app */
 const alertDomains = {
     alerts,
+    app,
     ble,
     explorer,
     firmware,

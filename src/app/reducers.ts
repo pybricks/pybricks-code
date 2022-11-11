@@ -11,6 +11,7 @@ import {
 import {
     appCheckForUpdate,
     appDidCheckForUpdate,
+    appDidFailToCheckForUpdate,
     appDidReceiveBeforeInstallPrompt,
     appDidResolveInstallPrompt,
     appShowInstallPrompt,
@@ -37,6 +38,10 @@ const checkingForUpdate: Reducer<boolean> = (state = false, action) => {
         }
         // otherwise we wait for service worker to download everything
         return state;
+    }
+
+    if (appDidFailToCheckForUpdate.matches(action)) {
+        return false;
     }
 
     if (serviceWorkerDidUpdate.matches(action)) {

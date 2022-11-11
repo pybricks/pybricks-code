@@ -3,15 +3,18 @@
 
 import { eventChannel } from 'redux-saga';
 import { call, delay, fork, put, take, takeEvery } from 'typed-redux-saga/macro';
+import { alertsShowAlert } from '../alerts/actions';
 import {
     serviceWorkerDidSucceed,
     serviceWorkerDidUpdate,
 } from '../service-worker/actions';
 import * as serviceWorkerRegistration from '../serviceWorkerRegistration';
+import { ensureError } from '../utils';
 import { BeforeInstallPromptEvent } from '../utils/dom';
 import {
     appCheckForUpdate,
     appDidCheckForUpdate,
+    appDidFailToCheckForUpdate,
     appDidReceiveBeforeInstallPrompt,
     appDidResolveInstallPrompt,
     appReload,
@@ -36,9 +39,23 @@ function* handleAppReload(registration: ServiceWorkerRegistration): Generator {
  * Must be called (forked) with serviceWorkerRegistration context set.
  */
 function* handleAppCheckForUpdate(registration: ServiceWorkerRegistration): Generator {
-    yield* call(() => registration.update());
-    const updateFound = registration.installing !== null;
-    yield* put(appDidCheckForUpdate(updateFound));
+    try {
+        yield* call(() => registration.update());
+        const updateFound = registration.installing !== null;
+        yield* put(appDidCheckForUpdate(updateFound));
+    } catch (err) {
+        if (err instanceof TypeError) {
+            yield* put(alertsShowAlert('app', 'updateServerFailure'));
+        } else {
+            yield* put(
+                alertsShowAlert('alerts', 'unexpectedError', {
+                    error: ensureError(err),
+                }),
+            );
+        }
+
+        yield* put(appDidFailToCheckForUpdate());
+    }
 }
 
 /**
