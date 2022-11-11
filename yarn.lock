@@ -2679,19 +2679,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pybricks/firmware@npm:6.1.0":
-  version: 6.1.0
-  resolution: "@pybricks/firmware@npm:6.1.0"
+"@pybricks/firmware@npm:6.2.0":
+  version: 6.2.0
+  resolution: "@pybricks/firmware@npm:6.2.0"
   dependencies:
     jszip: ^3.7.1
-  checksum: 688e9207ddb412e60e4704592480688b6e6d56dc9e8299933cc385a2846e80906411118820f612a1a3b317a05dc118c9987120df04a38ce20df1a7ec50a4a8f0
+  checksum: 0b963483a754e55822290c84b704e7b4097d03ec9a988501721e7ad13ffe84fa2aa6dd4812852962a6c22df2d8bae6022b8a572e498b7a9cffcbc20c62498291
   languageName: node
   linkType: hard
 
-"@pybricks/ide-docs@npm:2.3.0":
-  version: 2.3.0
-  resolution: "@pybricks/ide-docs@npm:2.3.0"
-  checksum: 0af60587b9fb5a60e97a75afb77f9e573a11aceccf286115e59342e271232695b396d6389a8b7bf72dc1104c83d780fbc8e9de026b1f49974025226531d8b71c
+"@pybricks/ide-docs@npm:2.4.0":
+  version: 2.4.0
+  resolution: "@pybricks/ide-docs@npm:2.4.0"
+  checksum: 38e17bb8670f473b611a9856b7a5147fc2af12af51b0b8de5daaf66e73fa60c495bf06e7bc5fbf8e8f74a1ed5b5dc710eb48395d18086b6accafc986bad9af63
   languageName: node
   linkType: hard
 
@@ -2702,10 +2702,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pybricks/jedi@npm:^1.2.0":
-  version: 1.2.0
-  resolution: "@pybricks/jedi@npm:1.2.0"
-  checksum: 851cd8d081fce8601c2b8a4c1c8dedb679f3820c1e2581a899e6a9eff75fb03c3994ddc60524c9976abed53deb0d9eaf97651f1228c3602f984181e81fcc63d9
+"@pybricks/jedi@npm:1.3.0":
+  version: 1.3.0
+  resolution: "@pybricks/jedi@npm:1.3.0"
+  checksum: 5c3ab7e56f84ecde0a1d9f175f441a304b804b0270826ea91bf8c9f30a804c6ae428944ea22c1512f14ce7dddcd3b8a20115e7779b71fb72ccfed95408cb8291
   languageName: node
   linkType: hard
 
@@ -2732,10 +2732,10 @@ __metadata:
     "@blueprintjs/popover2": ^1.8.1
     "@blueprintjs/select": ^4.8.6
     "@pmmmwh/react-refresh-webpack-plugin": ^0.5.8
-    "@pybricks/firmware": 6.1.0
-    "@pybricks/ide-docs": 2.3.0
+    "@pybricks/firmware": 6.2.0
+    "@pybricks/ide-docs": 2.4.0
     "@pybricks/images": ^1.2.1
-    "@pybricks/jedi": ^1.2.0
+    "@pybricks/jedi": 1.3.0
     "@pybricks/mpy-cross-v5": ^2.0.0
     "@pybricks/mpy-cross-v6": ^2.0.0
     "@qoretechnologies/python-parser": ^0.4.10
