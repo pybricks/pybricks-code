@@ -6,8 +6,10 @@
 
 ### Fixed
 - Fixed app freezing when checking for updates and update server is unreachable ([pybricks-code#1299]).
+- Added delay to try to mitigate errors when flashing firmware on city hubs ([support#792]).
 
 [pybricks-code#1299]: https://github.com/pybricks/pybricks-code/issues/1299
+[support#792]: https://github.com/orgs/pybricks/discussions/792
 
 ## [2.0.0-beta.10] - 2022-11-11
 

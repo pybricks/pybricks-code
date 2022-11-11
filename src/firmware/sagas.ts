@@ -393,6 +393,12 @@ function* handleFlashFirmware(action: ReturnType<typeof flashFirmware>): Generat
             return;
         }
 
+        // istanbul ignore if
+        if (process.env.NODE_ENV !== 'test') {
+            // give OS Bluetooth stack some time to settle
+            yield* delay(1000);
+        }
+
         const nextMessageId = yield* getContext<() => number>('nextMessageId');
 
         const infoAction = yield* put(infoRequest(nextMessageId()));
