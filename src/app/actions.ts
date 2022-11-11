@@ -21,6 +21,11 @@ export const appDidCheckForUpdate = createAction((updateFound: boolean) => ({
     updateFound,
 }));
 
+/** Action that indicates that checking for an update failed. */
+export const appDidFailToCheckForUpdate = createAction(() => ({
+    type: 'app.action.didFailToCheckForUpdate',
+}));
+
 /* Action that indicates the browser wants to prompt the use to install the app. */
 export const appDidReceiveBeforeInstallPrompt = createAction(() => ({
     type: 'app.action.didBeforeInstallPrompt',

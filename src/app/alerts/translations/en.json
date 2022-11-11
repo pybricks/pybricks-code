@@ -1,0 +1,5 @@
+{
+    "updateServerFailure": {
+        "message": "Failed to connect to update server. The Internet connection or the server may be down. Try again later."
+    }
+}
