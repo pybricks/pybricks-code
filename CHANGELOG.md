@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [2.0.0-beta.10] - 2022-11-11
+
 ### Added
 - Added feature create new empty file ([pybricks-code#771]).
 - Added sponsor button ([support#719]).
@@ -484,7 +486,8 @@ Prerelease changes are documented at [support#48].
 
 <!-- links for version headings -->
 
-[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.9...HEAD
+[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.10...HEAD
+[2.0.0-beta.10]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.9...v2.0.0-beta.10
 [2.0.0-beta.9]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.8...v2.0.0-beta.9
 [2.0.0-beta.8]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.7...v2.0.0-beta.8
 [2.0.0-beta.7]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.6...v2.0.0-beta.7
