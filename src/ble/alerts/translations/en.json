@@ -7,7 +7,8 @@
     },
     "bluetoothNotAvailable": {
         "message": "No Bluetooth adapter could be found.",
-        "suggestion": "Please connect or enable a Bluetooth Low Energy adapter and restart the browser."
+        "suggestion": "Please connect or enable a Bluetooth Low Energy adapter and restart the browser.",
+        "browserSupport": "Some browsers like Brave and Opera do not support Web Bluetooth. Be sure to use a supported browser such as Chrome or Edge."
     },
     "noGatt": {
         "message": "The web browser did not give permission to use Bluetooth Low Energy."
