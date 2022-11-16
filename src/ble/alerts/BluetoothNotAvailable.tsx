@@ -12,6 +12,7 @@ const BluetoothNotAvailable: React.VoidFunctionComponent = () => {
         <>
             <p>{i18n.translate('bluetoothNotAvailable.message')}</p>
             <p>{i18n.translate('bluetoothNotAvailable.suggestion')}</p>
+            <p>{i18n.translate('bluetoothNotAvailable.browserSupport')}</p>
         </>
     );
 };
