@@ -8643,7 +8643,7 @@ __metadata:
 
 "fsevents@patch:fsevents@^2.3.2#~builtin<compat/fsevents>, fsevents@patch:fsevents@~2.3.2#~builtin<compat/fsevents>":
   version: 2.3.2
-  resolution: "fsevents@patch:fsevents@npm%3A2.3.2#~builtin<compat/fsevents>::version=2.3.2&hash=18f3a7"
+  resolution: "fsevents@patch:fsevents@npm%3A2.3.2#~builtin<compat/fsevents>::version=2.3.2&hash=df0bf1"
   dependencies:
     node-gyp: latest
   conditions: os=darwin
@@ -11049,7 +11049,7 @@ __metadata:
 
 "mq-polyfill@patch:mq-polyfill@npm:1.1.8#.yarn/patches/mq-polyfill-npm-1.1.8-62fe162439.patch::locator=%40pybricks%2Fpybricks-code%40workspace%3A.":
   version: 1.1.8
-  resolution: "mq-polyfill@patch:mq-polyfill@npm%3A1.1.8#.yarn/patches/mq-polyfill-npm-1.1.8-62fe162439.patch::version=1.1.8&hash=504382&locator=%40pybricks%2Fpybricks-code%40workspace%3A."
+  resolution: "mq-polyfill@patch:mq-polyfill@npm%3A1.1.8#.yarn/patches/mq-polyfill-npm-1.1.8-62fe162439.patch::version=1.1.8&hash=bc102d&locator=%40pybricks%2Fpybricks-code%40workspace%3A."
   checksum: 194ca010f95506baf86642c5d88189c3dcaa96a0adb54d5a238003666daaa9e94e0553745936bc0637215b89aee235971469db1b5c70dc96aabd513c3913a55c
   languageName: node
   linkType: hard
@@ -12753,7 +12753,7 @@ __metadata:
 
 "pyodide@patch:pyodide@npm:0.21.3#.yarn/patches/pyodide-npm-0.21.3-d43042e749.patch::locator=%40pybricks%2Fpybricks-code%40workspace%3A.":
   version: 0.21.3
-  resolution: "pyodide@patch:pyodide@npm%3A0.21.3#.yarn/patches/pyodide-npm-0.21.3-d43042e749.patch::version=0.21.3&hash=6135eb&locator=%40pybricks%2Fpybricks-code%40workspace%3A."
+  resolution: "pyodide@patch:pyodide@npm%3A0.21.3#.yarn/patches/pyodide-npm-0.21.3-d43042e749.patch::version=0.21.3&hash=e62b29&locator=%40pybricks%2Fpybricks-code%40workspace%3A."
   dependencies:
     base-64: ^1.0.0
     node-fetch: ^2.6.1
@@ -12922,7 +12922,7 @@ __metadata:
 
 "react-dev-utils@patch:react-dev-utils@npm:12.0.1#.yarn/patches/react-dev-utils-npm-12.0.1-83ba06e3ee.patch::locator=%40pybricks%2Fpybricks-code%40workspace%3A.":
   version: 12.0.1
-  resolution: "react-dev-utils@patch:react-dev-utils@npm%3A12.0.1#.yarn/patches/react-dev-utils-npm-12.0.1-83ba06e3ee.patch::version=12.0.1&hash=2f4baa&locator=%40pybricks%2Fpybricks-code%40workspace%3A."
+  resolution: "react-dev-utils@patch:react-dev-utils@npm%3A12.0.1#.yarn/patches/react-dev-utils-npm-12.0.1-83ba06e3ee.patch::version=12.0.1&hash=7cc38e&locator=%40pybricks%2Fpybricks-code%40workspace%3A."
   dependencies:
     "@babel/code-frame": ^7.16.0
     address: ^1.1.2
@@ -13493,7 +13493,7 @@ __metadata:
 
 "resolve@patch:resolve@^1.1.7#~builtin<compat/resolve>, resolve@patch:resolve@^1.14.2#~builtin<compat/resolve>, resolve@patch:resolve@^1.19.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.20.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.22.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.22.1#~builtin<compat/resolve>":
   version: 1.22.1
-  resolution: "resolve@patch:resolve@npm%3A1.22.1#~builtin<compat/resolve>::version=1.22.1&hash=07638b"
+  resolution: "resolve@patch:resolve@npm%3A1.22.1#~builtin<compat/resolve>::version=1.22.1&hash=c3c19d"
   dependencies:
     is-core-module: ^2.9.0
     path-parse: ^1.0.7
@@ -13506,7 +13506,7 @@ __metadata:
 
 "resolve@patch:resolve@^2.0.0-next.3#~builtin<compat/resolve>":
   version: 2.0.0-next.3
-  resolution: "resolve@patch:resolve@npm%3A2.0.0-next.3#~builtin<compat/resolve>::version=2.0.0-next.3&hash=07638b"
+  resolution: "resolve@patch:resolve@npm%3A2.0.0-next.3#~builtin<compat/resolve>::version=2.0.0-next.3&hash=c3c19d"
   dependencies:
     is-core-module: ^2.2.0
     path-parse: ^1.0.6
@@ -14931,11 +14931,11 @@ __metadata:
 
 "typescript@patch:typescript@~4.9.3#~builtin<compat/typescript>":
   version: 4.9.3
-  resolution: "typescript@patch:typescript@npm%3A4.9.3#~builtin<compat/typescript>::version=4.9.3&hash=bda367"
+  resolution: "typescript@patch:typescript@npm%3A4.9.3#~builtin<compat/typescript>::version=4.9.3&hash=d73830"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: ef65c22622d864497d0a0c5db693523329b3284c15fe632e93ad9aa059e8dc38ef3bd767d6f26b1e5ecf9446f49bd0f6c4e5714a2eeaf352805dc002479843d1
+  checksum: 67ca21a387c0572f1c04936e638dde7782c5aa520c3754aadc7cc9b7c915da9ebc3e27c601bfff4ccb7d7264e82dce6d277ada82ec09dc75024349e0ef64926d
   languageName: node
   linkType: hard
 
