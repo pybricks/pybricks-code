@@ -18,6 +18,7 @@ import {
 import LicenseDialog from '../licenses/LicenseDialog';
 import ExternalLinkIcon from '../utils/ExternalLinkIcon';
 import { useI18n } from './i18n';
+import icon from './icon.svg';
 
 import './about.scss';
 
@@ -39,7 +40,7 @@ const AboutDialog: React.VoidFunctionComponent<AboutDialogProps> = ({
         >
             <div className={Classes.DIALOG_BODY}>
                 <div className="pb-about-icon">
-                    <img src="favicon.ico" />
+                    <img src={icon} alt="Pybricks logo" />
                 </div>
                 <p>
                     <strong>
