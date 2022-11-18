@@ -11,6 +11,7 @@ import {
     appVersion,
     changelogUrl,
     legoDisclaimer,
+    legoRegisteredTrademark,
     pybricksCopyright,
     pybricksWebsiteUrl,
 } from '../app/constants';
@@ -41,7 +42,11 @@ const AboutDialog: React.VoidFunctionComponent<AboutDialogProps> = ({
                     <img src="favicon.ico" />
                 </div>
                 <p>
-                    <strong>{i18n.translate('description')}</strong>
+                    <strong>
+                        {i18n.translate('description', {
+                            lego: legoRegisteredTrademark,
+                        })}
+                    </strong>
                 </p>
                 <p>{`v${firmwareVersion} (${appName} v${appVersion})`}</p>
                 <p>{pybricksCopyright}</p>
