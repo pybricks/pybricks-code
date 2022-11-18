@@ -37,10 +37,14 @@ import {
     Trash,
     Undo,
     Virus,
+    WarningSign,
 } from '@blueprintjs/icons/lib/esm/generated/16px/paths';
 import {
     Cog as Cog20,
     Document as Document20,
+    Error as Error20,
+    InfoSign as InfoSign20,
+    WarningSign as WarningSign20,
 } from '@blueprintjs/icons/lib/esm/generated/20px/paths';
 import { pascalCase } from 'change-case';
 
@@ -81,6 +85,13 @@ export const IconSvgPaths16 = {
     Trash,
     Undo,
     Virus,
+    WarningSign,
 };
 
-export const IconSvgPaths20 = { Cog: Cog20, Document: Document20 };
+export const IconSvgPaths20 = {
+    Cog: Cog20,
+    Document: Document20,
+    Error: Error20,
+    InfoSign: InfoSign20,
+    WarningSign: WarningSign20,
+};
