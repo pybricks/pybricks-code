@@ -616,13 +616,6 @@ function* handleFlashFirmware(action: ReturnType<typeof flashFirmware>): Generat
     }
 }
 
-/** Maps USB Product ID to LWP3 hub type ID */
-const productIdMap: ReadonlyMap<LegoUsbProductId, HubType> = new Map([
-    [LegoUsbProductId.SpikePrimeBootloader, HubType.PrimeHub],
-    [LegoUsbProductId.SpikeEssentialBootloader, HubType.EssentialHub],
-    [LegoUsbProductId.MindstormsRobotInventorBootloader, HubType.PrimeHub],
-]);
-
 // currently all hubs use the same start address
 const dfuFirmwareStartAddress = 0x08008000;
 
@@ -664,6 +657,31 @@ function* handleDfuWriteProcess(event: {
     );
 }
 
+function getUsbDeviceFiltersForHub(hubType: HubType): USBDeviceFilter[] {
+    switch (hubType) {
+        case HubType.PrimeHub:
+            return [
+                {
+                    vendorId: legoUsbVendorId,
+                    productId: LegoUsbProductId.SpikePrimeBootloader,
+                },
+                {
+                    vendorId: legoUsbVendorId,
+                    productId: LegoUsbProductId.MindstormsRobotInventorBootloader,
+                },
+            ];
+        case HubType.EssentialHub:
+            return [
+                {
+                    vendorId: legoUsbVendorId,
+                    productId: LegoUsbProductId.SpikeEssentialBootloader,
+                },
+            ];
+        default:
+            throw new Error(`unsupported hub type: ${hubType}`);
+    }
+}
+
 function* handleFlashUsbDfu(action: ReturnType<typeof firmwareFlashUsbDfu>): Generator {
     const defer = new Array<() => void>();
 
@@ -678,21 +696,7 @@ function* handleFlashUsbDfu(action: ReturnType<typeof firmwareFlashUsbDfu>): Gen
         const device = yield* call(() =>
             navigator.usb
                 .requestDevice({
-                    filters: [
-                        {
-                            vendorId: legoUsbVendorId,
-                            productId: LegoUsbProductId.SpikePrimeBootloader,
-                        },
-                        {
-                            vendorId: legoUsbVendorId,
-                            productId: LegoUsbProductId.SpikeEssentialBootloader,
-                        },
-                        {
-                            vendorId: legoUsbVendorId,
-                            productId:
-                                LegoUsbProductId.MindstormsRobotInventorBootloader,
-                        },
-                    ],
+                    filters: getUsbDeviceFiltersForHub(action.hubType),
                 })
                 .catch((err) => {
                     if (err instanceof DOMException && err.name === 'NotFoundError') {
@@ -749,16 +753,8 @@ function* handleFlashUsbDfu(action: ReturnType<typeof firmwareFlashUsbDfu>): Gen
             }),
         );
 
-        const { firmware, deviceId } = yield* loadFirmware(action.data, action.hubName);
-
-        if (deviceId !== productIdMap.get(device.productId)) {
-            yield* put(alertsShowAlert('firmware', 'firmwareMismatch'));
-            yield* put(firmwareDidFailToFlashUsbDfu());
-            return;
-        }
-
         dfu.dfuseStartAddress = dfuFirmwareStartAddress;
-        const writeProc = dfu.write(1024, firmware, true);
+        const writeProc = dfu.write(1024, action.firmware, true);
 
         const eraseProcessChan = eventChannel<{
             bytesSent: number;
@@ -817,6 +813,7 @@ function* handleFlashUsbDfu(action: ReturnType<typeof firmwareFlashUsbDfu>): Gen
         // errors can happen, e.g. if the USB cable is disconnected while
         // flashing the firmware
         if (error) {
+            // istanbul ignore if
             if (process.env.NODE_ENV !== 'test') {
                 console.error(error);
             }
@@ -844,6 +841,7 @@ function* handleFlashUsbDfu(action: ReturnType<typeof firmwareFlashUsbDfu>): Gen
 
         yield* put(firmwareDidFlashUsbDfu());
     } catch (err) {
+        // istanbul ignore if
         if (process.env.NODE_ENV !== 'test') {
             console.error(err);
         }
@@ -878,7 +876,25 @@ function* handleInstallPybricks(): Generator {
             yield* put(flashFirmware(accepted.firmwareZip, accepted.hubName));
             break;
         case 'usb-lego-dfu':
-            yield* put(firmwareFlashUsbDfu(accepted.firmwareZip, accepted.hubName));
+            try {
+                const { firmware, deviceId } = yield* loadFirmware(
+                    accepted.firmwareZip,
+                    accepted.hubName,
+                );
+
+                yield* put(firmwareFlashUsbDfu(firmware, deviceId));
+            } catch (err) {
+                // istanbul ignore if
+                if (process.env.NODE_ENV !== 'test') {
+                    console.error(err);
+                }
+
+                yield* put(
+                    alertsShowAlert('alerts', 'unexpectedError', {
+                        error: ensureError(err),
+                    }),
+                );
+            }
             break;
     }
 }

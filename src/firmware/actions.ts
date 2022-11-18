@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2022 The Pybricks Authors
 
-import { FirmwareReaderError } from '@pybricks/firmware';
+import { FirmwareReaderError, HubType } from '@pybricks/firmware';
 import { createAction } from '../actions';
 import { Hub } from '../components/hubPicker';
 
@@ -360,14 +360,14 @@ export const didFailToFinish = createAction(didFailToFinishCreator);
 
 /**
  * Low-level action to flash firmware using LEGO's DFU over USB.
- * @param data The firmware zip file data.
- * @param hubName A custom hub name or an empty string to use the default name.
+ * @param firmware The firmware binary blob.
+ * @param hubType The hub type the firmware blob is for.
  */
 export const firmwareFlashUsbDfu = createAction(
-    (data: ArrayBuffer, hubName: string) => ({
+    (firmware: ArrayBuffer, hubType: HubType) => ({
         type: 'firmware.action.flashUsbDfu',
-        data,
-        hubName,
+        firmware,
+        hubType,
     }),
 );
 

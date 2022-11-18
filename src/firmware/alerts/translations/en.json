@@ -20,9 +20,6 @@
     "noDfuInterface": {
         "message": "This is very unusual. The USB device did not contain the expected interface."
     },
-    "firmwareMismatch": {
-        "message": "Cannot flash firmware. The firmware file is for a different kind of hub."
-    },
     "flashProgress": {
         "erasing": "Erasing internal flash memory: {percent}",
         "flashing": "Writing new firmware: {percent}"
