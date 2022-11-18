@@ -4,6 +4,11 @@
 
 ## [Unreleased]
 
+### Changed
+- Firmware restore for hubs with USB is now done in-app ([pybricks-code#1104]).
+
+[pybricks-code#1104]: https://github.com/pybricks/pybricks-code/issues/1104
+
 ### Fixed
 - Fixed missing warning sign icon.
 

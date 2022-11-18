@@ -34,6 +34,7 @@ import {
     alertsHideAlert,
     alertsShowAlert,
 } from '../alerts/actions';
+import { Hub } from '../components/hubPicker';
 import {
     checksumRequest,
     checksumResponse,
@@ -72,9 +73,12 @@ import {
     didProgress,
     didStart,
     firmwareDidFailToFlashUsbDfu,
+    firmwareDidFailToRestoreOfficialDfu,
     firmwareDidFlashUsbDfu,
+    firmwareDidRestoreOfficialDfu,
     firmwareFlashUsbDfu,
     firmwareInstallPybricks,
+    firmwareRestoreOfficialDfu,
     flashFirmware,
 } from './actions';
 import {
@@ -899,8 +903,82 @@ function* handleInstallPybricks(): Generator {
     }
 }
 
+function getUrlForHubType(hub: Hub): URL {
+    switch (hub) {
+        case Hub.Prime:
+        case Hub.Inventor:
+            return new URL('./assets/prime-v1.3.00.0000-e8c274a.bin', import.meta.url);
+        case Hub.Essential:
+            return new URL(
+                './assets/essential-v1.0.00.0071-191f3ad.bin',
+                import.meta.url,
+            );
+        default:
+            throw new Error(`unsupported hub: ${hub}`);
+    }
+}
+
+function getHubTypeForHub(hub: Hub): HubType {
+    switch (hub) {
+        case Hub.Prime:
+        case Hub.Inventor:
+            return HubType.PrimeHub;
+        case Hub.Essential:
+            return HubType.EssentialHub;
+        default:
+            throw new Error(`unsupported hub: ${hub}`);
+    }
+}
+
+function* handleRestoreOfficialDfu(
+    action: ReturnType<typeof firmwareRestoreOfficialDfu>,
+): Generator {
+    try {
+        const url = getUrlForHubType(action.hub);
+
+        const response = yield* call(() => fetch(url));
+
+        if (!response.ok) {
+            // TODO: replace with proper alert
+            // istanbul ignore if
+            if (process.env.NODE_ENV !== 'test') {
+                console.error(response);
+            }
+            throw new Error('failed to fetch');
+        }
+
+        const firmwareBlob = yield* call(() => response.blob());
+        const firmware = yield* call(() => firmwareBlob.arrayBuffer());
+
+        yield* put(firmwareFlashUsbDfu(firmware, getHubTypeForHub(action.hub)));
+
+        const { didFailToFlash } = yield* race({
+            didFlash: take(firmwareDidFlashUsbDfu),
+            didFailToFlash: take(firmwareDidFailToFlashUsbDfu),
+        });
+
+        if (didFailToFlash) {
+            yield* put(firmwareDidFailToRestoreOfficialDfu());
+            return;
+        }
+
+        yield* put(firmwareDidRestoreOfficialDfu());
+    } catch (err) {
+        // istanbul ignore if
+        if (process.env.NODE_ENV !== 'test') {
+            console.error(err);
+        }
+
+        yield* put(
+            alertsShowAlert('alerts', 'unexpectedError', { error: ensureError(err) }),
+        );
+        yield* put(firmwareDidFailToRestoreOfficialDfu());
+    }
+}
+
 export default function* (): Generator {
     yield* takeEvery(flashFirmware, handleFlashFirmware);
     yield* takeEvery(firmwareFlashUsbDfu, handleFlashUsbDfu);
     yield* takeEvery(firmwareInstallPybricks, handleInstallPybricks);
+    yield* takeEvery(firmwareRestoreOfficialDfu, handleRestoreOfficialDfu);
 }
