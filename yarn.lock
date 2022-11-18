@@ -2878,7 +2878,7 @@ __metadata:
     mini-css-extract-plugin: ^2.6.1
     monaco-editor: ^0.34.1
     monaco-editor-webpack-plugin: ^7.0.1
-    monaco-themes: ^0.4.2
+    monaco-themes: ^0.4.3
     mq-polyfill: 1.1.8
     navigator.locks: ^0.8.6
     postcss: ^8.4.18
@@ -11663,12 +11663,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"monaco-themes@npm:^0.4.2":
-  version: 0.4.2
-  resolution: "monaco-themes@npm:0.4.2"
+"monaco-themes@npm:^0.4.3":
+  version: 0.4.3
+  resolution: "monaco-themes@npm:0.4.3"
   dependencies:
     fast-plist: ^0.1.2
-  checksum: 35f05265144f16e3a4f36beb759463fa562bee97121c59aa7b6cdf9724bfcd88919293648673ed50e141029fd949ae7bc149025879b1623bcfe2c314ecf25684
+  checksum: 4cf15a5d7678937ee5a87fff4ecb626ad26f261bbccf952d7a8d4d454c00b5b6ca6ec5cdbb45135aeca7fa56b6b726d0a129bc645c5bd9dddfff7a28c029bb7b
   languageName: node
   linkType: hard
 
