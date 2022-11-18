@@ -3,6 +3,7 @@
 
 import { FirmwareReaderError } from '@pybricks/firmware';
 import { createAction } from '../actions';
+import { Hub } from '../components/hubPicker';
 
 export enum MetadataProblem {
     Missing = 'metadata.missing',
@@ -405,4 +406,26 @@ export const firmwareDidInstallPybricks = createAction(() => ({
  */
 export const firmwareDidFailToInstallPybricks = createAction(() => ({
     type: 'firmware.action.didFailToInstallPybricks',
+}));
+
+/**
+ * Action that triggers the restore official DFU firmware saga.
+ */
+export const firmwareRestoreOfficialDfu = createAction((hub: Hub) => ({
+    type: 'firmware.action.restoreOfficialDfu',
+    hub,
+}));
+
+/**
+ * Action that indicates {@link firmwareRestoreOfficialDfu} succeeded.
+ */
+export const firmwareDidRestoreOfficialDfu = createAction(() => ({
+    type: 'firmware.action.didRestoreOfficialDfu',
+}));
+
+/**
+ * Action that indicates {@link firmwareRestoreOfficialDfu} failed.
+ */
+export const firmwareDidFailToRestoreOfficialDfu = createAction(() => ({
+    type: 'firmware.action.didFailToRestoreOfficialDfu',
 }));
