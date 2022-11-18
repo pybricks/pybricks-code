@@ -21,7 +21,7 @@
             "message": "{appName} requires a special firmware to be flashed to your hub in order to run the program on the hub."
         },
         "restoreOfficialFirmware": {
-            "message": "You can always restore the official LEGO® firmware after using the special Pybricks firmware."
+            "message": "You can always restore the official {lego} firmware after using the special Pybricks firmware."
         },
         "connectToHub": {
             "message": "One you have flashed the Pybricks firmware, click the Bluetooth button to connect to the hub."

@@ -14,6 +14,7 @@ import { useTernaryDarkMode } from 'usehooks-ts';
 import AboutDialog from '../about/AboutDialog';
 import { appCheckForUpdate, appReload, appShowInstallPrompt } from '../app/actions';
 import {
+    legoRegisteredTrademark,
     pybricksBugReportsUrl,
     pybricksGitterUrl,
     pybricksProjectsUrl,
@@ -106,7 +107,9 @@ const Settings: React.VoidFunctionComponent = () => {
                     id="pb-settings-flash-official-button"
                     minimal={true}
                     icon="download"
-                    label={i18n.translate('firmware.flashLegoButton.label')}
+                    label={i18n.translate('firmware.flashLegoButton.label', {
+                        lego: legoRegisteredTrademark,
+                    })}
                     onPress={() => dispatch(firmwareRestoreOfficialDialogShow())}
                 />
             </FormGroup>

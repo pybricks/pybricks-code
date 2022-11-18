@@ -20,7 +20,7 @@
             "label": "Install Pybricks Firmware"
         },
         "flashLegoButton": {
-            "label": "Restore Official LEGO® Firmware"
+            "label": "Restore Official {lego} Firmware"
         }
     },
     "help": {

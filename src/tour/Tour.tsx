@@ -15,7 +15,7 @@ import Joyride, {
 import { useDispatch } from 'react-redux';
 import { useEffectOnce, useLocalStorage, useTernaryDarkMode } from 'usehooks-ts';
 import { Activity, useActivitiesSelectedActivity } from '../activities/hooks';
-import { appName } from '../app/constants';
+import { appName, legoRegisteredTrademark } from '../app/constants';
 import { useSelector } from '../reducers';
 import { tourStart, tourStop } from './actions';
 import { useI18n } from './i18n';
@@ -77,7 +77,13 @@ const FlashPybricksFirmwareStep = React.memo(function FlashPybricksFirmwareStep(
 const RestoreOfficialFirmwareStep = React.memo(function RestoreOfficialFirmwareStep() {
     const i18n = useI18n();
 
-    return <p>{i18n.translate('steps.restoreOfficialFirmware.message')}</p>;
+    return (
+        <p>
+            {i18n.translate('steps.restoreOfficialFirmware.message', {
+                lego: legoRegisteredTrademark,
+            })}
+        </p>
+    );
 });
 
 const ConnectToHubStep = React.memo(function ConnectToHubStep() {
