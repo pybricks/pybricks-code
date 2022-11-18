@@ -21,7 +21,7 @@
         "@pybricks/mpy-cross-v6": "^2.0.0",
         "@qoretechnologies/python-parser": "^0.4.10",
         "@reduxjs/toolkit": "^1.8.6",
-        "@shopify/react-i18n": "^7.3.0",
+        "@shopify/react-i18n": "^7.4.0",
         "@svgr/webpack": "^6.5.1",
         "@testing-library/dom": "^8.19.0",
         "@testing-library/jest-dom": "^5.16.5",
