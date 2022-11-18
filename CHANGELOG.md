@@ -4,6 +4,9 @@
 
 ## [Unreleased]
 
+### Fixed
+- Fixed missing warning sign icon.
+
 ## [2.0.0-beta.11] - 2022-11-11
 
 ### Fixed
