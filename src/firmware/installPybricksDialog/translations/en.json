@@ -54,34 +54,6 @@
     },
     "bootloaderPanel": {
         "title": "Place hub in bootloader mode",
-        "warning": {
-            "linux": "If you have never used Pybricks with USB on Linux, you will need to configure udev rules to allow permission before you can flash the hub firmware.",
-            "windows": " If you have never used Pybricks with USB on Windows, you may need to manually install a USB driver before you can flash the hub firmware.",
-            "learnMore": "Learn more."
-        },
-        "instruction1": "To flash the firmware, the hub must be placed in bootloader mode. Follow the steps below to do this:",
-        "button": {
-            "bluetooth": "Bluetooth button",
-            "power": "power button"
-        },
-        "light": {
-            "bluetooth": "Bluetooth light",
-            "status": "hub status light"
-        },
-        "lightPattern": {
-            "bluetooth": "pink-green-blue-off",
-            "status": "light purple"
-        },
-        "step": {
-            "disconnectUsb": "Disconnect the USB cable from the hub.",
-            "powerOff": "Turn off the hub.",
-            "disconnectIo": "Disconnect all motors and sensors from the I/O ports on the hub.",
-            "holdButton": "Press and hold the {button} on the hub.",
-            "connectUsb": "Connect the USB cable.",
-            "waitForLight": "Keep holding the {button} and wait for the {light} to start flashing {lightPattern}. This takes about 5 seconds.",
-            "releaseButton": "Release the {button}",
-            "keepHolding": "Keep holding the {button}."
-        },
         "instruction2": "Then click the {flashFirmware} button below to connect to the hub and flash the firmware."
     },
     "backButton": {
