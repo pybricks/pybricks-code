@@ -615,7 +615,7 @@ module.exports = function (webpackEnv) {
       new LicensePlugin(require('./licenses')),
       new MonacoWebpackPlugin({
         languages: ['python'],
-        filename: '[name].worker.[contenthash].js',
+        filename: 'static/js/[name].worker.[contenthash].js',
       }),
       // Generates an `index.html` file with the <script> injected.
       new HtmlWebpackPlugin(
