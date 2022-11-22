@@ -9,6 +9,7 @@ import explorer from './explorer/alerts';
 import firmware from './firmware/alerts';
 import hub from './hub/alerts';
 import mpy from './mpy/alerts';
+import sponsor from './sponsor/alerts';
 import type { CreateToast } from './toasterTypes';
 
 /** This collects alerts from all of the subsystems of the app */
@@ -20,6 +21,7 @@ const alertDomains = {
     firmware,
     hub,
     mpy,
+    sponsor,
 };
 
 /** Gets the type of available alert domains. */
