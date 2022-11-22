@@ -7,6 +7,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { pybricksTeamUrl } from '../app/constants';
 import { useSelector } from '../reducers';
+import ClipboardIcon from '../utils/ClipboardIcon';
 import ExternalLinkIcon from '../utils/ExternalLinkIcon';
 import patreonLogo from './Digital-Patreon-Logo_White.png';
 import gitHubIcon from './GitHub-Mark-Light-32px.png';
@@ -106,8 +107,10 @@ const SponsorDialog: React.VoidFunctionComponent = () => {
                         intent={Intent.PRIMARY}
                         icon={<img src={ethIcon} width={24} height={24} />}
                         fill={true}
+                        onClick={() => navigator.clipboard.writeText('pybricks.eth')}
                     >
                         pybricks.eth
+                        <ClipboardIcon />
                     </AnchorButton>
                 </div>
             </div>

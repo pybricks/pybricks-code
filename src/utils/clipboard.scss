@@ -1,0 +1,13 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2021-2022 The Pybricks Authors
+
+@use '@blueprintjs/core/lib/scss/variables' as bp;
+
+span.pb-clipboard {
+    white-space: nowrap;
+}
+
+// override some button magic in case this is used in a button
+.#{bp.$ns}-button .pb-clipboard .#{bp.$ns}-icon:first-child:last-child {
+    margin: 0;
+}
