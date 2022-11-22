@@ -137,15 +137,7 @@ describe('Editor', () => {
                 expect(editor.getByRole('menuitem', { name: 'Copy' })).toHaveFocus(),
             );
 
-            // FIXME: use userEvent instead of fireEvent
-            // blocked by https://github.com/palantir/blueprint/pull/5349
-            // await user.keyboard('{Escape}');
-            user;
-            fireEvent.keyDown(document.activeElement ?? document, {
-                key: 'Escape',
-                keyCode: 27,
-                which: 27,
-            });
+            await user.keyboard('{Escape}');
 
             await waitFor(() => expect(contextMenu).not.toBeInTheDocument());
 
