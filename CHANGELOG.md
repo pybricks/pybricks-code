@@ -11,6 +11,7 @@
 
 ### Fixed
 - Fixed missing warning sign icon.
+- Fixed error message for program too big for download ([support#810]).
 
 ## [2.0.0-beta.11] - 2022-11-11
 
@@ -20,6 +21,7 @@
 
 [pybricks-code#1299]: https://github.com/pybricks/pybricks-code/issues/1299
 [support#792]: https://github.com/orgs/pybricks/discussions/792
+[support#810]: https://github.com/pybricks/support/issues/810
 
 ## [2.0.0-beta.10] - 2022-11-11
 
