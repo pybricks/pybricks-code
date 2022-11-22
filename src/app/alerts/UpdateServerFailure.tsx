@@ -11,11 +11,9 @@ const UpdateServerFailure: React.VoidFunctionComponent = () => {
     return <p>{i18n.translate('updateServerFailure.message')}</p>;
 };
 
-export const updateServerFailure: CreateToast = (onAction) => {
-    return {
-        message: <UpdateServerFailure />,
-        icon: 'error',
-        intent: Intent.DANGER,
-        onDismiss: () => onAction('dismiss'),
-    };
-};
+export const updateServerFailure: CreateToast = (onAction) => ({
+    message: <UpdateServerFailure />,
+    icon: 'error',
+    intent: Intent.DANGER,
+    onDismiss: () => onAction('dismiss'),
+});

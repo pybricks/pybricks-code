@@ -76,11 +76,12 @@ const UnexpectedErrorAlert: React.VoidFunctionComponent<UnexpectedErrorAlertProp
     );
 };
 
-export const unexpectedError: CreateToast<{ error: Error }> = (onAction, { error }) => {
-    return {
-        message: <UnexpectedErrorAlert error={error} />,
-        icon: 'error',
-        intent: Intent.DANGER,
-        onDismiss: () => onAction('dismiss'),
-    };
-};
+export const unexpectedError: CreateToast<{ error: Error }> = (
+    onAction,
+    { error },
+) => ({
+    message: <UnexpectedErrorAlert error={error} />,
+    icon: 'error',
+    intent: Intent.DANGER,
+    onDismiss: () => onAction('dismiss'),
+});

@@ -11,11 +11,9 @@ const NoGatt: React.VoidFunctionComponent = () => {
     return <p>{i18n.translate('noGatt.message')}</p>;
 };
 
-export const noGatt: CreateToast = (onAction) => {
-    return {
-        message: <NoGatt />,
-        icon: 'error',
-        intent: Intent.DANGER,
-        onDismiss: () => onAction('dismiss'),
-    };
-};
+export const noGatt: CreateToast = (onAction) => ({
+    message: <NoGatt />,
+    icon: 'error',
+    intent: Intent.DANGER,
+    onDismiss: () => onAction('dismiss'),
+});

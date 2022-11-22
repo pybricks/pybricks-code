@@ -33,11 +33,9 @@ const NoDfuHub: React.VoidFunctionComponent = () => {
     );
 };
 
-export const noDfuHub: CreateToast = (onAction) => {
-    return {
-        message: <NoDfuHub />,
-        icon: 'info-sign',
-        intent: Intent.PRIMARY,
-        onDismiss: () => onAction('dismiss'),
-    };
-};
+export const noDfuHub: CreateToast = (onAction) => ({
+    message: <NoDfuHub />,
+    icon: 'info-sign',
+    intent: Intent.PRIMARY,
+    onDismiss: () => onAction('dismiss'),
+});

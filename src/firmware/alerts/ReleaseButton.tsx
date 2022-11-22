@@ -11,11 +11,9 @@ const ReleaseButton: React.VoidFunctionComponent = () => {
     return <p>{i18n.translate('releaseButton.message')}</p>;
 };
 
-export const releaseButton: CreateToast = (onAction) => {
-    return {
-        message: <ReleaseButton />,
-        icon: 'info-sign',
-        intent: Intent.PRIMARY,
-        onDismiss: () => onAction('dismiss'),
-    };
-};
+export const releaseButton: CreateToast = (onAction) => ({
+    message: <ReleaseButton />,
+    icon: 'info-sign',
+    intent: Intent.PRIMARY,
+    onDismiss: () => onAction('dismiss'),
+});

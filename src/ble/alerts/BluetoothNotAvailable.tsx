@@ -17,11 +17,9 @@ const BluetoothNotAvailable: React.VoidFunctionComponent = () => {
     );
 };
 
-export const bluetoothNotAvailable: CreateToast = (onAction) => {
-    return {
-        message: <BluetoothNotAvailable />,
-        icon: 'error',
-        intent: Intent.DANGER,
-        onDismiss: () => onAction('dismiss'),
-    };
-};
+export const bluetoothNotAvailable: CreateToast = (onAction) => ({
+    message: <BluetoothNotAvailable />,
+    icon: 'error',
+    intent: Intent.DANGER,
+    onDismiss: () => onAction('dismiss'),
+});

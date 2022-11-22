@@ -25,11 +25,9 @@ const MissingService: React.VoidFunctionComponent<MissingServiceProps> = ({
     );
 };
 
-export const missingService: CreateToast<MissingServiceProps> = (onAction, props) => {
-    return {
-        message: <MissingService {...props} />,
-        icon: 'error',
-        intent: Intent.DANGER,
-        onDismiss: () => onAction('dismiss'),
-    };
-};
+export const missingService: CreateToast<MissingServiceProps> = (onAction, props) => ({
+    message: <MissingService {...props} />,
+    icon: 'error',
+    intent: Intent.DANGER,
+    onDismiss: () => onAction('dismiss'),
+});

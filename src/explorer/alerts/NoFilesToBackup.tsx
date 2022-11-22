@@ -17,11 +17,9 @@ const NoFilesToBackup: React.VoidFunctionComponent = () => {
     );
 };
 
-export const noFilesToBackup: CreateToast = (onAction) => {
-    return {
-        message: <NoFilesToBackup />,
-        icon: 'info-sign',
-        intent: Intent.PRIMARY,
-        onDismiss: () => onAction('dismiss'),
-    };
-};
+export const noFilesToBackup: CreateToast = (onAction) => ({
+    message: <NoFilesToBackup />,
+    icon: 'info-sign',
+    intent: Intent.PRIMARY,
+    onDismiss: () => onAction('dismiss'),
+});

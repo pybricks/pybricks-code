@@ -39,11 +39,9 @@ const NoWebBluetooth: React.VoidFunctionComponent = () => {
     );
 };
 
-export const noWebBluetooth: CreateToast = (onAction) => {
-    return {
-        message: <NoWebBluetooth />,
-        icon: 'error',
-        intent: Intent.DANGER,
-        onDismiss: () => onAction('dismiss'),
-    };
-};
+export const noWebBluetooth: CreateToast = (onAction) => ({
+    message: <NoWebBluetooth />,
+    icon: 'error',
+    intent: Intent.DANGER,
+    onDismiss: () => onAction('dismiss'),
+});

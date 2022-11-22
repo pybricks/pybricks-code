@@ -45,12 +45,10 @@ const NoHub: React.VoidFunctionComponent<NoHubProps> = ({ onFlashFirmware }) => 
     );
 };
 
-export const noHub: CreateToast<never, 'dismiss' | 'flashFirmware'> = (onAction) => {
-    return {
-        message: <NoHub onFlashFirmware={() => onAction('flashFirmware')} />,
-        icon: 'info-sign',
-        intent: Intent.PRIMARY,
-        timeout: 15000,
-        onDismiss: () => onAction('dismiss'),
-    };
-};
+export const noHub: CreateToast<never, 'dismiss' | 'flashFirmware'> = (onAction) => ({
+    message: <NoHub onFlashFirmware={() => onAction('flashFirmware')} />,
+    icon: 'info-sign',
+    intent: Intent.PRIMARY,
+    timeout: 15000,
+    onDismiss: () => onAction('dismiss'),
+});
