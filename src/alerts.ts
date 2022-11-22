@@ -7,6 +7,7 @@ import app from './app/alerts';
 import ble from './ble/alerts';
 import explorer from './explorer/alerts';
 import firmware from './firmware/alerts';
+import hub from './hub/alerts';
 import mpy from './mpy/alerts';
 import type { CreateToast } from './toasterTypes';
 
@@ -17,6 +18,7 @@ const alertDomains = {
     ble,
     explorer,
     firmware,
+    hub,
     mpy,
 };
 

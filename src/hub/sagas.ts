@@ -225,9 +225,14 @@ function* handleDownloadAndRun(action: ReturnType<typeof downloadAndRun>): Gener
             console.log(`Downloading ${didCompile.file.size} bytes`);
         }
 
-        if (didCompile.file.size >= maxUserProgramSize) {
-            // TODO: proper error notification
-            throw new Error('file too big');
+        if (didCompile.file.size > maxUserProgramSize) {
+            yield* put(
+                alertsShowAlert('hub', 'userProgramSize', {
+                    actual: didCompile.file.size,
+                    max: maxUserProgramSize,
+                }),
+            );
+            return;
         }
 
         // let everyone know the runtime is busy loading the program
