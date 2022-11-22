@@ -5,6 +5,7 @@ import { AnchorButton, Classes, Dialog, Intent } from '@blueprintjs/core';
 import classNames from 'classnames';
 import React from 'react';
 import { useDispatch } from 'react-redux';
+import { alertsShowAlert } from '../alerts/actions';
 import { pybricksTeamUrl } from '../app/constants';
 import { useSelector } from '../reducers';
 import ClipboardIcon from '../utils/ClipboardIcon';
@@ -107,7 +108,10 @@ const SponsorDialog: React.VoidFunctionComponent = () => {
                         intent={Intent.PRIMARY}
                         icon={<img src={ethIcon} width={24} height={24} />}
                         fill={true}
-                        onClick={() => navigator.clipboard.writeText('pybricks.eth')}
+                        onClick={() => {
+                            navigator.clipboard.writeText('pybricks.eth');
+                            dispatch(alertsShowAlert('sponsor', 'addressCopied'));
+                        }}
                     >
                         pybricks.eth
                         <ClipboardIcon />
