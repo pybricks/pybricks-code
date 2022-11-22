@@ -429,25 +429,6 @@ const Editor: React.VFC = () => {
         [],
     );
 
-    useEditor(
-        editor,
-        (editor) => {
-            // TODO: can be removed when https://github.com/microsoft/vscode/pull/146968 is merged
-            // HACK: The editor eats context menu key press events event when
-            // the monaco context menu is disabled so we have to fake it
-            const subscription = editor.onKeyDown((e) => {
-                if (e.keyCode === monaco.KeyCode.ContextMenu) {
-                    e.target.dispatchEvent(
-                        new MouseEvent('contextmenu', { bubbles: true }),
-                    );
-                }
-            });
-
-            return () => subscription.dispose();
-        },
-        [],
-    );
-
     const handleEditorDidMount = useCallback<EditorDidMount>(
         (editor) => {
             editor.focus();

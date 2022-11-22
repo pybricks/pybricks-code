@@ -58,6 +58,10 @@ const specialCases: Record<string, string> = {
 function addWhichToKeyboardEvent(e: KeyboardEvent) {
     // blueprints and testing-library both don't do this one
     if (e.key === 'ContextMenu') {
+        // HACK: work around lack of ContextMenu key support in user-events
+        if (e.target !== null) {
+            e.target.dispatchEvent(new MouseEvent('contextmenu', { bubbles: true }));
+        }
         return;
     }
 
