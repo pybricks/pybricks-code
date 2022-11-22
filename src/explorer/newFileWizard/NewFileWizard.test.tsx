@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2022 The Pybricks Authors
 
-import { fireEvent, waitFor } from '@testing-library/dom';
+import { waitFor } from '@testing-library/dom';
 import { cleanup } from '@testing-library/react';
 import React from 'react';
 import { testRender } from '../../../test';
@@ -67,15 +67,7 @@ describe('cancel', () => {
             expect(dialog.getByRole('textbox', { name: 'File name' })).toHaveFocus(),
         );
 
-        // FIXME: use userEvent instead of fireEvent
-        // blocked by https://github.com/palantir/blueprint/pull/5349
-        // await user.keyboard('{Escape}');
-        user;
-        fireEvent.keyDown(document.activeElement ?? document, {
-            key: 'Escape',
-            keyCode: 27,
-            which: 27,
-        });
+        await user.keyboard('{Escape}');
 
         expect(dispatch).toHaveBeenCalledWith(newFileWizardDidCancel());
     });
