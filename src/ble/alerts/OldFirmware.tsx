@@ -30,11 +30,9 @@ const OldFirmware: React.VoidFunctionComponent<OldFirmwareProps> = ({
 
 export const oldFirmware: CreateToast<never, 'dismiss' | 'flashFirmware'> = (
     onAction,
-) => {
-    return {
-        message: <OldFirmware onFlashFirmware={() => onAction('flashFirmware')} />,
-        icon: 'info-sign',
-        intent: Intent.PRIMARY,
-        onDismiss: () => onAction('dismiss'),
-    };
-};
+) => ({
+    message: <OldFirmware onFlashFirmware={() => onAction('flashFirmware')} />,
+    icon: 'info-sign',
+    intent: Intent.PRIMARY,
+    onDismiss: () => onAction('dismiss'),
+});

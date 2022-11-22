@@ -40,13 +40,11 @@ const FlashProgress: React.VoidFunctionComponent<FlashProgressProps> = ({
     );
 };
 
-export const flashProgress: CreateToast<FlashProgressProps> = (onAction, props) => {
-    return {
-        message: <FlashProgress {...props} />,
-        icon: 'download',
-        intent: Intent.PRIMARY,
-        // close one second after progress is complete
-        timeout: (props.progress ?? 0) < 1 ? 0 : 1000,
-        onDismiss: () => onAction('dismiss'),
-    };
-};
+export const flashProgress: CreateToast<FlashProgressProps> = (onAction, props) => ({
+    message: <FlashProgress {...props} />,
+    icon: 'download',
+    intent: Intent.PRIMARY,
+    // close one second after progress is complete
+    timeout: (props.progress ?? 0) < 1 ? 0 : 1000,
+    onDismiss: () => onAction('dismiss'),
+});

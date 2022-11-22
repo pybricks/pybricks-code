@@ -20,11 +20,9 @@ const FileInUseAlert: React.VoidFunctionComponent<FileInUseAlertProps> = ({
 export const fileInUse: CreateToast<{ fileName: string }> = (
     onAction,
     { fileName },
-) => {
-    return {
-        message: <FileInUseAlert fileName={fileName} />,
-        icon: 'error',
-        intent: Intent.DANGER,
-        onDismiss: () => onAction('dismiss'),
-    };
-};
+) => ({
+    message: <FileInUseAlert fileName={fileName} />,
+    icon: 'error',
+    intent: Intent.DANGER,
+    onDismiss: () => onAction('dismiss'),
+});

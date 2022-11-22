@@ -47,12 +47,10 @@ const CompilerError: React.VoidFunctionComponent<CompilerErrorProps> = ({ error 
 export const compilerError: CreateToast<CompilerErrorProps, 'dismiss' | 'gotoError'> = (
     onAction,
     props,
-) => {
-    return {
-        message: <CompilerError {...props} />,
-        icon: 'error',
-        intent: Intent.DANGER,
-        timeout: 0,
-        onDismiss: () => onAction('dismiss'),
-    };
-};
+) => ({
+    message: <CompilerError {...props} />,
+    icon: 'error',
+    intent: Intent.DANGER,
+    timeout: 0,
+    onDismiss: () => onAction('dismiss'),
+});

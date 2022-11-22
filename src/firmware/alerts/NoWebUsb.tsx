@@ -16,11 +16,9 @@ const NoWebUsb: React.VoidFunctionComponent = () => {
     );
 };
 
-export const noWebUsb: CreateToast = (onAction) => {
-    return {
-        message: <NoWebUsb />,
-        icon: 'error',
-        intent: Intent.DANGER,
-        onDismiss: () => onAction('dismiss'),
-    };
-};
+export const noWebUsb: CreateToast = (onAction) => ({
+    message: <NoWebUsb />,
+    icon: 'error',
+    intent: Intent.DANGER,
+    onDismiss: () => onAction('dismiss'),
+});

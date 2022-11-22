@@ -11,11 +11,9 @@ const NoDfuInterface: React.VoidFunctionComponent = () => {
     return <p>{i18n.translate('noDfuInterface.message')}</p>;
 };
 
-export const noDfuInterface: CreateToast = (onAction) => {
-    return {
-        message: <NoDfuInterface />,
-        icon: 'error',
-        intent: Intent.DANGER,
-        onDismiss: () => onAction('dismiss'),
-    };
-};
+export const noDfuInterface: CreateToast = (onAction) => ({
+    message: <NoDfuInterface />,
+    icon: 'error',
+    intent: Intent.DANGER,
+    onDismiss: () => onAction('dismiss'),
+});

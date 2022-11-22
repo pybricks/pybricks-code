@@ -23,11 +23,9 @@ const DfuError: React.VoidFunctionComponent<DfuErrorProps> = ({ onTryAgain }) =>
     );
 };
 
-export const dfuError: CreateToast<never, 'dismiss' | 'tryAgain'> = (onAction) => {
-    return {
-        message: <DfuError onTryAgain={() => onAction('tryAgain')} />,
-        icon: 'error',
-        intent: Intent.DANGER,
-        onDismiss: () => onAction('dismiss'),
-    };
-};
+export const dfuError: CreateToast<never, 'dismiss' | 'tryAgain'> = (onAction) => ({
+    message: <DfuError onTryAgain={() => onAction('tryAgain')} />,
+    icon: 'error',
+    intent: Intent.DANGER,
+    onDismiss: () => onAction('dismiss'),
+});
