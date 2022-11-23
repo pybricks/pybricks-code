@@ -139,7 +139,9 @@ function* handleExplorerArchiveAllFiles(): Generator {
     } catch (err) {
         const error = ensureError(err);
 
-        if (error instanceof ExplorerError && error.name === 'NoFiles') {
+        if (error instanceof DOMException && error.name === 'AbortError') {
+            // user canceled, don't show error message
+        } else if (error instanceof ExplorerError && error.name === 'NoFiles') {
             yield* put(alertsShowAlert('explorer', 'noFilesToBackup'));
         } else {
             yield* put(
