@@ -112,8 +112,6 @@ const ActionButton: React.VoidFunctionComponent<ActionButtonProps> = ({
                     {...mergeProps(tooltipTargetProps, {
                         className: classNames(enabled === false && Classes.DISABLED),
                     })}
-                    // https://github.com/palantir/blueprint/pull/5300
-                    aria-haspopup={undefined}
                     intent={Intent.PRIMARY}
                     onClick={handleClick}
                     {...toolbarItemFocusProps}
