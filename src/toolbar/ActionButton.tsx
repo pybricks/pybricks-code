@@ -1,9 +1,18 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2022 The Pybricks Authors
 
-import { Button, Intent, Spinner, SpinnerSize, useHotkeys } from '@blueprintjs/core';
+import {
+    Button,
+    Classes,
+    Intent,
+    Spinner,
+    SpinnerSize,
+    useHotkeys,
+} from '@blueprintjs/core';
 import { Tooltip2 } from '@blueprintjs/popover2';
-import React, { useEffect, useMemo, useState } from 'react';
+import { mergeProps } from '@react-aria/utils';
+import classNames from 'classnames';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { tooltipDelay } from '../app/constants';
 import { useToolbarItemFocus } from '../components/toolbar/aria';
 
@@ -80,6 +89,12 @@ const ActionButton: React.VoidFunctionComponent<ActionButtonProps> = ({
 
     const { toolbarItemFocusProps, excludeFromTabOrder } = useToolbarItemFocus({ id });
 
+    const handleClick = useCallback(() => {
+        if (enabled !== false) {
+            onAction();
+        }
+    }, [enabled, onAction]);
+
     return (
         <Tooltip2
             content={tooltip}
@@ -94,12 +109,13 @@ const ActionButton: React.VoidFunctionComponent<ActionButtonProps> = ({
                     id={id}
                     aria-label={label}
                     elementRef={tooltipTargetRef as React.Ref<HTMLButtonElement>}
-                    {...tooltipTargetProps}
+                    {...mergeProps(tooltipTargetProps, {
+                        className: classNames(enabled === false && Classes.DISABLED),
+                    })}
                     // https://github.com/palantir/blueprint/pull/5300
                     aria-haspopup={undefined}
                     intent={Intent.PRIMARY}
-                    onClick={onAction}
-                    disabled={enabled === false}
+                    onClick={handleClick}
                     {...toolbarItemFocusProps}
                     tabIndex={excludeFromTabOrder ? -1 : 0}
                 >
