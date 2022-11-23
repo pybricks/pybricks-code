@@ -205,9 +205,9 @@ function* handleEditorActivateFile(
             yield* put(editorOpenFile(action.uuid));
 
             const { didFailToOpen } = yield* race({
-                didOpen: take(editorDidOpenFile.when((a) => a.uuid == action.uuid)),
+                didOpen: take(editorDidOpenFile.when((a) => a.uuid === action.uuid)),
                 didFailToOpen: take(
-                    editorDidFailToOpenFile.when((a) => a.uuid == action.uuid),
+                    editorDidFailToOpenFile.when((a) => a.uuid === action.uuid),
                 ),
             });
 

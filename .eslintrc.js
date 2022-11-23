@@ -17,6 +17,7 @@ module.exports = {
     plugins: ['react'],
     rules: {
         curly: 'error',
+        eqeqeq: 'error',
         'no-multi-spaces': 'error',
         'no-trailing-spaces': 'error',
         'no-multiple-empty-lines': 'error',
