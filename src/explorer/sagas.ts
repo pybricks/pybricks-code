@@ -177,7 +177,7 @@ function* handleExplorerImportFiles(): Generator {
 
             const result = validateFileName(baseName, pythonFileExtension, []);
 
-            if (result != FileNameValidationResult.IsOk) {
+            if (result !== FileNameValidationResult.IsOk) {
                 yield* put(renameImportDialogShow(file.name));
 
                 const { accepted, cancelled } = yield* race({

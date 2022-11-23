@@ -128,7 +128,7 @@ const Docs: React.VFC = () => {
                             ? e.metaKey && !e.ctrlKey
                             : e.ctrlKey && !e.metaKey) &&
                         !e.altKey &&
-                        e.key == 'd'
+                        e.key === 'd'
                     ) {
                         e.preventDefault();
                         // since the iframe is only visible when docs are shown
