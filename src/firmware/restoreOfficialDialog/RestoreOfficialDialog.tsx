@@ -15,11 +15,11 @@ import {
     legoRegisteredTrademark,
     pybricksBleFirmwareRestoreVideoUrl,
 } from '../../app/constants';
+import ExternalLinkIcon from '../../components/ExternalLinkIcon';
 import { hubHasUSB } from '../../components/hubPicker';
 import { HubPicker } from '../../components/hubPicker/HubPicker';
 import { useHubPickerSelectedHub } from '../../components/hubPicker/hooks';
 import { useSelector } from '../../reducers';
-import ExternalLinkIcon from '../../utils/ExternalLinkIcon';
 import { firmwareRestoreOfficialDfu } from '../actions';
 import BootloaderInstructions from '../bootloaderInstructions/BootloaderInstructions';
 import { firmwareRestoreOfficialDialogHide } from './actions';

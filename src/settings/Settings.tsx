@@ -21,12 +21,12 @@ import {
     pybricksSupportUrl,
 } from '../app/constants';
 import { Button } from '../components/Button';
+import ExternalLinkIcon from '../components/ExternalLinkIcon';
 import HelpButton from '../components/HelpButton';
 import { firmwareInstallPybricks } from '../firmware/actions';
 import { firmwareRestoreOfficialDialogShow } from '../firmware/restoreOfficialDialog/actions';
 import { pseudolocalize } from '../i18n';
 import { useSelector } from '../reducers';
-import ExternalLinkIcon from '../utils/ExternalLinkIcon';
 import { isMacOS } from '../utils/os';
 import { useSettingIsShowDocsEnabled } from './hooks';
 import { useI18n } from './i18n';

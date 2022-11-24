@@ -4,8 +4,8 @@
 import { AnchorButton, Intent } from '@blueprintjs/core';
 import React from 'react';
 import { pybricksUsbDfuTroubleshootingUrl } from '../../app/constants';
+import ExternalLinkIcon from '../../components/ExternalLinkIcon';
 import type { CreateToast } from '../../toasterTypes';
-import ExternalLinkIcon from '../../utils/ExternalLinkIcon';
 import { isLinux, isWindows } from '../../utils/os';
 import { useI18n } from './i18n';
 

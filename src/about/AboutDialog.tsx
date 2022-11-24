@@ -15,8 +15,8 @@ import {
     pybricksCopyright,
     pybricksWebsiteUrl,
 } from '../app/constants';
+import ExternalLinkIcon from '../components/ExternalLinkIcon';
 import LicenseDialog from '../licenses/LicenseDialog';
-import ExternalLinkIcon from '../utils/ExternalLinkIcon';
 import { useI18n } from './i18n';
 import icon from './icon.svg';
 
