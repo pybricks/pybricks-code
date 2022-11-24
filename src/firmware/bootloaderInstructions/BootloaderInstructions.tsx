@@ -7,8 +7,8 @@ import {
     pybricksUsbDfuWindowsDriverInstallUrl,
     pybricksUsbLinuxUdevRulesUrl,
 } from '../../app/constants';
+import ExternalLinkIcon from '../../components/ExternalLinkIcon';
 import { Hub, hubHasBluetoothButton, hubHasUSB } from '../../components/hubPicker';
-import ExternalLinkIcon from '../../utils/ExternalLinkIcon';
 import { isLinux, isWindows } from '../../utils/os';
 import { useI18n } from './i18n';
 
