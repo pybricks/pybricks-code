@@ -13,13 +13,13 @@ import { createLogger } from 'redux-logger';
 import createSagaMiddleware from 'redux-saga';
 import App from './app/App';
 import { appVersion } from './app/constants';
+import ViewHeightSensor from './components/ViewHeightSensor';
 import { db } from './fileStorage/context';
 import { i18nManager } from './i18n';
 import { rootReducer } from './reducers';
 import reportWebVitals from './reportWebVitals';
 import rootSaga, { RootSagaContext } from './sagas';
 import { defaultTerminalContext } from './terminal/TerminalContext';
-import ViewHeightSensor from './utils/ViewHeightSensor';
 import { createCountFunc } from './utils/iter';
 
 const toasterRef = React.createRef<Toaster>();
