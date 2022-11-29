@@ -95,7 +95,7 @@
         "react-dom": "^16.13.1",
         "react-dropzone": "^14.2.3",
         "react-joyride": "^2.5.3",
-        "react-monaco-editor": "^0.50.1",
+        "react-monaco-editor": "^0.51.0",
         "react-popper": "^2.3.0",
         "react-redux": "^8.0.5",
         "react-refresh": "^0.14.0",
