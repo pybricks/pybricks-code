@@ -2,7 +2,7 @@
 // Copyright (c) 2022 The Pybricks Authors
 
 import dexieObservable from 'dexie-observable';
-import type { monaco } from 'react-monaco-editor';
+import type * as monaco from 'monaco-editor';
 import { UUID } from '../fileStorage';
 
 // HACK: Using window.name to detect page reloads vs. tab duplication.

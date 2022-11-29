@@ -3,8 +3,8 @@
 
 import { Classes } from '@blueprintjs/core';
 import { cleanup, fireEvent, waitFor } from '@testing-library/react';
+import * as monaco from 'monaco-editor';
 import React from 'react';
-import { monaco } from 'react-monaco-editor';
 import { testRender, uuid } from '../../test';
 import { FileMetadata } from '../fileStorage';
 import { useFileStorageMetadata, useFileStoragePath } from '../fileStorage/hooks';

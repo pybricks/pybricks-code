@@ -3,7 +3,7 @@
 
 import 'dexie-observable';
 import Dexie, { Table } from 'dexie';
-import type { monaco } from 'react-monaco-editor';
+import type * as monaco from 'monaco-editor';
 
 /** Type to avoid mixing UUID with regular string. */
 export type UUID = string & { _uuidBrand: undefined };

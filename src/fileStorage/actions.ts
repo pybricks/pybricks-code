@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2022 The Pybricks Authors
 
-import type { monaco } from 'react-monaco-editor';
+import type * as monaco from 'monaco-editor';
 import { createAction } from '../actions';
 import { FileMetadata, UUID } from '.';
 

@@ -16,17 +16,13 @@ import {
     Text,
 } from '@blueprintjs/core';
 import { ContextMenu2, ResizeSensor2 } from '@blueprintjs/popover2';
+import * as monaco from 'monaco-editor';
 import tomorrowNightEightiesTheme from 'monaco-themes/themes/Tomorrow-Night-Eighties.json';
 import xcodeTheme from 'monaco-themes/themes/Xcode_default.json';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useId } from 'react-aria';
-import MonacoEditor, {
-    EditorDidMount,
-    EditorWillUnmount,
-    monaco,
-} from 'react-monaco-editor';
 import { useDispatch } from 'react-redux';
-import { useTernaryDarkMode } from 'usehooks-ts';
+import { useEffectOnce, useTernaryDarkMode } from 'usehooks-ts';
 import { UUID } from '../fileStorage';
 import { useFileStoragePath } from '../fileStorage/hooks';
 import { compile } from '../mpy/actions';
@@ -364,18 +360,9 @@ const Editor: React.VFC = () => {
 
     const i18n = useI18n();
 
-    const options = useMemo<monaco.editor.IStandaloneEditorConstructionOptions>(
-        () => ({
-            model: null,
-            fontSize: 18,
-            minimap: { enabled: false },
-            contextmenu: false,
-            rulers: [80],
-            lineNumbersMinChars: 4,
-            wordBasedSuggestions: false,
-        }),
-        [],
-    );
+    useEffect(() => {
+        monaco.editor.setTheme(isDarkMode ? tomorrowNightEightiesId : xcodeId);
+    }, [isDarkMode]);
 
     useEditor(
         editor,
@@ -429,18 +416,6 @@ const Editor: React.VFC = () => {
         [],
     );
 
-    const handleEditorDidMount = useCallback<EditorDidMount>(
-        (editor) => {
-            editor.focus();
-            setEditor(editor);
-        },
-        [setEditor],
-    );
-
-    const handleEditorWillUnmount = useCallback<EditorWillUnmount>(() => {
-        setEditor(undefined);
-    }, [setEditor]);
-
     const popoverProps = useMemo<IOverlayLifecycleProps>(
         () => ({
             onOpened: (e) => {
@@ -462,6 +437,34 @@ const Editor: React.VFC = () => {
         [editor],
     );
 
+    const editorRef = useRef<HTMLDivElement>(null);
+
+    useEffectOnce(() => {
+        // istanbul ignore if: should never happen
+        if (!editorRef.current) {
+            console.error('no editorRef!');
+            return;
+        }
+
+        const monacoEditor = monaco.editor.create(editorRef.current, {
+            model: null,
+            fontSize: 18,
+            minimap: { enabled: false },
+            contextmenu: false,
+            rulers: [80],
+            lineNumbersMinChars: 4,
+            wordBasedSuggestions: false,
+        });
+
+        monacoEditor.focus();
+        setEditor(monacoEditor);
+
+        return () => {
+            setEditor(undefined);
+            monacoEditor.dispose();
+        };
+    });
+
     return (
         <div className="pb-editor">
             <EditorTabs onChange={() => editor?.focus()} />
@@ -475,12 +478,7 @@ const Editor: React.VFC = () => {
                     content={() => <EditorContextMenu editor={editor} />}
                     popoverProps={popoverProps}
                 >
-                    <MonacoEditor
-                        theme={isDarkMode ? tomorrowNightEightiesId : xcodeId}
-                        options={options}
-                        editorDidMount={handleEditorDidMount}
-                        editorWillUnmount={handleEditorWillUnmount}
-                    />
+                    <div className="pb-editor-monaco" ref={editorRef} />
                 </ContextMenu2>
             </ResizeSensor2>
         </div>

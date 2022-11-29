@@ -22,8 +22,6 @@ import {
 } from './actions';
 import hub from './sagas';
 
-jest.mock('react-monaco-editor');
-
 describe('downloadAndRun', () => {
     test('no errors', async () => {
         const saga = new AsyncSaga(hub, {

@@ -2,7 +2,7 @@
 // Copyright (c) 2022 The Pybricks Authors
 
 import { mock } from 'jest-mock-extended';
-import type { monaco } from 'react-monaco-editor';
+import type * as monaco from 'monaco-editor';
 import { uuid } from '../../test';
 import { ActiveFileHistoryManager, OpenFileInfo, OpenFileManager } from './lib';
 

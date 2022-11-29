@@ -2,7 +2,7 @@
 // Copyright (c) 2022 The Pybricks Authors
 
 import type { DatabaseChangeType, IDatabaseChange } from 'dexie-observable/api';
-import { monaco } from 'react-monaco-editor';
+import * as monaco from 'monaco-editor';
 import { EventChannel, buffers, eventChannel } from 'redux-saga';
 import {
     call,
