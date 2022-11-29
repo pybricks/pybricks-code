@@ -95,7 +95,6 @@
         "react-dom": "^16.13.1",
         "react-dropzone": "^14.2.3",
         "react-joyride": "^2.5.3",
-        "react-monaco-editor": "^0.50.1",
         "react-popper": "^2.3.0",
         "react-redux": "^8.0.5",
         "react-refresh": "^0.14.0",
@@ -198,11 +197,12 @@
             "^(?!.*\\.(js|jsx|mjs|cjs|ts|tsx|css|json)$)": "<rootDir>/config/jest/fileTransform.mjs"
         },
         "transformIgnorePatterns": [
-            "[/\\\\]node_modules[/\\\\](?!(monaco-editor|react-monaco-editor|nanoevents)[/\\\\]).+\\.(js|jsx|mjs|cjs|ts|tsx)$",
+            "[/\\\\]node_modules[/\\\\](?!(monaco-editor|nanoevents)[/\\\\]).+\\.(js|jsx|mjs|cjs|ts|tsx)$",
             "^.+\\.module\\.(css|sass|scss)$"
         ],
         "modulePaths": [],
         "moduleNameMapper": {
+            "^monaco-editor$": "monaco-editor/esm/vs/editor/editor.api",
             "^react-native$": "react-native-web",
             "^.+\\.module\\.(css|sass|scss)$": "identity-obj-proxy"
         },

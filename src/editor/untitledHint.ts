@@ -4,7 +4,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import type { monaco } from 'react-monaco-editor';
+import type * as monaco from 'monaco-editor';
 
 export class UntitledHintContribution implements monaco.editor.IEditorContribution {
     public static readonly ID = 'editor.contrib.untitledHint';

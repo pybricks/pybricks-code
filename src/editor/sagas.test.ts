@@ -2,7 +2,7 @@
 // Copyright (c) 2022 The Pybricks Authors
 
 import { mock } from 'jest-mock-extended';
-import { monaco } from 'react-monaco-editor';
+import * as monaco from 'monaco-editor';
 import { AsyncSaga, uuid } from '../../test';
 import {
     fileStorageDidFailToLoadTextFile,
