@@ -16,6 +16,7 @@ import {
     Text,
 } from '@blueprintjs/core';
 import { ContextMenu2, ResizeSensor2 } from '@blueprintjs/popover2';
+import classNames from 'classnames';
 import * as monaco from 'monaco-editor';
 import tomorrowNightEightiesTheme from 'monaco-themes/themes/Tomorrow-Night-Eighties.json';
 import xcodeTheme from 'monaco-themes/themes/Xcode_default.json';
@@ -29,6 +30,7 @@ import { compile } from '../mpy/actions';
 import { useSelector } from '../reducers';
 import { useSettingIsShowDocsEnabled } from '../settings/hooks';
 import { isMacOS } from '../utils/os';
+import Welcome from './Welcome';
 import { editorActivateFile, editorCloseFile } from './actions';
 import { useI18n } from './i18n';
 import * as pybricksMicroPython from './pybricksMicroPython';
@@ -465,12 +467,14 @@ const Editor: React.VFC = () => {
         };
     });
 
+    const isEmpty = useSelector((s) => s.editor.openFileUuids.length === 0);
+
     return (
         <div className="pb-editor">
             <EditorTabs onChange={() => editor?.focus()} />
             <ResizeSensor2 onResize={() => editor?.layout()}>
                 <ContextMenu2
-                    className="pb-editor-tabpanel"
+                    className={classNames('pb-editor-tabpanel', isEmpty && 'pb-empty')}
                     role="tabpanel"
                     // NB: we have to create a new context menu each time it is
                     // shown in order to get some state, like canUndo and canRedo
@@ -478,6 +482,7 @@ const Editor: React.VFC = () => {
                     content={() => <EditorContextMenu editor={editor} />}
                     popoverProps={popoverProps}
                 >
+                    <Welcome isVisible={isEmpty} />
                     <div className="pb-editor-monaco" ref={editorRef} />
                 </ContextMenu2>
             </ResizeSensor2>
