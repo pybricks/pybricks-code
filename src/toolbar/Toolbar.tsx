@@ -10,7 +10,6 @@ import ReplButton from './buttons/repl/ReplButton';
 import RunButton from './buttons/run/RunButton';
 import SponsorButton from './buttons/sponsor/SponsorButton';
 import StopButton from './buttons/stop/StopButton';
-import TourButton from './buttons/tour/TourButton';
 
 import './toolbar.scss';
 
@@ -18,7 +17,6 @@ import './toolbar.scss';
 const bluetoothButtonId = 'pb-toolbar-bluetooth-button';
 const runButtonId = 'pb-toolbar-run-button';
 const sponsorButtonId = 'pb-toolbar-sponsor-button';
-const tourButtonId = 'pb-toolbar-tour-button';
 
 const Toolbar: React.VFC = () => {
     const flashButtonId = useId();
@@ -37,7 +35,6 @@ const Toolbar: React.VFC = () => {
             </ButtonGroup>
             <ButtonGroup className="pb-toolbar-group pb-align-right">
                 <SponsorButton id={sponsorButtonId} />
-                <TourButton id={tourButtonId} />
             </ButtonGroup>
         </UtilsToolbar>
     );

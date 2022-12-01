@@ -27,6 +27,7 @@ import { firmwareInstallPybricks } from '../firmware/actions';
 import { firmwareRestoreOfficialDialogShow } from '../firmware/restoreOfficialDialog/actions';
 import { pseudolocalize } from '../i18n';
 import { useSelector } from '../reducers';
+import { tourStart } from '../tour/actions';
 import { isMacOS } from '../utils/os';
 import { useSettingIsShowDocsEnabled } from './hooks';
 import { useI18n } from './i18n';
@@ -180,6 +181,15 @@ const Settings: React.VoidFunctionComponent = () => {
                         icon="info-sign"
                         onPress={() => {
                             setIsAboutDialogOpen(true);
+                            return true;
+                        }}
+                    />
+                    <Button
+                        id="pb-settings-tour-button"
+                        label={i18n.translate('app.tour.label')}
+                        icon="info-sign"
+                        onPress={() => {
+                            dispatch(tourStart());
                             return true;
                         }}
                     />
