@@ -3,6 +3,7 @@
 
 import {
     Button,
+    Classes,
     Icon,
     IconSize,
     Intent,
@@ -10,6 +11,7 @@ import {
     Spinner,
 } from '@blueprintjs/core';
 import { Classes as Classes2, Popover2, Popover2Props } from '@blueprintjs/popover2';
+import classNames from 'classnames';
 import React, { useMemo } from 'react';
 import { BleConnectionState } from '../ble/reducers';
 import { CompletionEngineStatus } from '../editor/redux/codeCompletion';
@@ -142,7 +144,11 @@ const StatusBar: React.VFC = (_props) => {
     const connection = useSelector((s) => s.ble.connection);
 
     return (
-        <div className="pb-status-bar" role="status" aria-live="off">
+        <div
+            className={classNames('pb-status-bar', Classes.DARK)}
+            role="status"
+            aria-live="off"
+        >
             <div className="pb-status-bar-group">
                 <CompletionEngineIndicator />
             </div>
