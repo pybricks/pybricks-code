@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2022 The Pybricks Authors
 
-import { Icon } from '@blueprintjs/core';
+import { Colors, Icon } from '@blueprintjs/core';
 import React, { useCallback, useMemo, useState } from 'react';
 import Joyride, {
     ACTIONS,
@@ -15,7 +15,7 @@ import Joyride, {
 import { useDispatch } from 'react-redux';
 import { useEffectOnce, useLocalStorage, useTernaryDarkMode } from 'usehooks-ts';
 import { Activity, useActivitiesSelectedActivity } from '../activities/hooks';
-import { appName, legoRegisteredTrademark } from '../app/constants';
+import { appName, legoRegisteredTrademark, pybricksBlue } from '../app/constants';
 import { useSelector } from '../reducers';
 import { tourStart, tourStop } from './actions';
 import { useI18n } from './i18n';
@@ -174,15 +174,13 @@ const Tour: React.VoidFunctionComponent = () => {
 
     const styles = useMemo<Styles>(
         () => ({
-            // colors come from variables.scss
             options: {
-                // $pybricks-blue
-                primaryColor: '#0088ce',
+                primaryColor: pybricksBlue,
                 // $pt-dark-text-color / $pt-text-color
-                textColor: isDarkMode ? '#f6f7f9' : '#1c2127',
+                textColor: isDarkMode ? Colors.LIGHT_GRAY5 : Colors.DARK_GRAY1,
                 // $pt-dark-app-background-color / $pt-app-background-color
-                backgroundColor: isDarkMode ? '#252a31' : '#f6f7f9',
-                arrowColor: isDarkMode ? '#252a31' : '#f6f7f9',
+                backgroundColor: isDarkMode ? Colors.DARK_GRAY2 : Colors.LIGHT_GRAY5,
+                arrowColor: isDarkMode ? Colors.DARK_GRAY2 : Colors.LIGHT_GRAY5,
             },
         }),
         [isDarkMode],
