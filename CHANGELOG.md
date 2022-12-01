@@ -4,6 +4,9 @@
 
 ## [Unreleased]
 
+### Added
+- Added Pybricks logo when no files open.
+
 ### Changed
 - Firmware restore for hubs with USB is now done in-app ([pybricks-code#1104]).
 

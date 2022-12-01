@@ -63,9 +63,23 @@
         flex: 1 1 auto;
     }
 
+    &-welcome {
+        display: none;
+
+        .pb-editor-tabpanel.pb-empty > & {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+    }
+
     &-monaco {
         width: 100%;
         height: 100%;
+
+        .pb-editor-tabpanel.pb-empty > & {
+            display: none;
+        }
     }
 
     &-placeholder {

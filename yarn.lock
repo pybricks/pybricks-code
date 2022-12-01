@@ -2525,6 +2525,7 @@ __metadata:
     style-loader: ^3.3.1
     tailwindcss: ^3.2.4
     terser-webpack-plugin: ^5.3.6
+    two.js: ^0.8.10
     typed-redux-saga: ^1.5.0
     typescript: ~4.9.3
     usehooks-ts: ^2.9.1
@@ -14766,6 +14767,13 @@ __metadata:
   peerDependencies:
     typescript: ">=2.8.0 || >= 3.2.0-dev || >= 3.3.0-dev || >= 3.4.0-dev || >= 3.5.0-dev || >= 3.6.0-dev || >= 3.6.0-beta || >= 3.7.0-dev || >= 3.7.0-beta"
   checksum: 1843f4c1b2e0f975e08c4c21caa4af4f7f65a12ac1b81b3b8489366826259323feb3fc7a243123453d2d1a02314205a7634e048d4a8009921da19f99755cdc48
+  languageName: node
+  linkType: hard
+
+"two.js@npm:^0.8.10":
+  version: 0.8.10
+  resolution: "two.js@npm:0.8.10"
+  checksum: 1550d4a406ca7580c981c7753cc7aab7f595b63f0488ff08cd6d05938faa308e62ac2d1719c9422d4361bac83c41295f63d4e2434ca763bd10bc5258def2cb47
   languageName: node
   linkType: hard
 
