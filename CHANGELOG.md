@@ -9,6 +9,7 @@
 
 ### Changed
 - Firmware restore for hubs with USB is now done in-app ([pybricks-code#1104]).
+- Moved *Tour* button from toolbar to settings.
 
 [pybricks-code#1104]: https://github.com/pybricks/pybricks-code/issues/1104
 

@@ -119,25 +119,12 @@ const Tour: React.VoidFunctionComponent = () => {
     const steps = useMemo<Step[]>(
         () => [
             {
-                target: '#pb-toolbar-tour-button',
+                target:
+                    selectedActivity === Activity.Settings
+                        ? '#pb-settings-tour-button'
+                        : '[itemId=pb-activities-settings-tab]',
                 content: <WelcomeStep />,
-                disableBeacon: true,
-            },
-            {
-                target:
-                    selectedActivity === Activity.Explorer
-                        ? '#pb-explorer-add-button'
-                        : '[itemId=pb-activities-explorer-tab]',
-                content: <AddFileStep />,
-                disableBeacon: selectedActivity === Activity.Explorer,
-            },
-            {
-                target:
-                    selectedActivity === Activity.Explorer
-                        ? '#pb-explorer-archive-button'
-                        : '[itemId=pb-activities-explorer-tab]',
-                content: <BackupFilesStep />,
-                disableBeacon: selectedActivity === Activity.Explorer,
+                disableBeacon: selectedActivity === Activity.Settings,
             },
             {
                 target:
@@ -154,6 +141,22 @@ const Tour: React.VoidFunctionComponent = () => {
                         : '[itemId=pb-activities-settings-tab]',
                 content: <RestoreOfficialFirmwareStep />,
                 disableBeacon: selectedActivity === Activity.Settings,
+            },
+            {
+                target:
+                    selectedActivity === Activity.Explorer
+                        ? '#pb-explorer-add-button'
+                        : '[itemId=pb-activities-explorer-tab]',
+                content: <AddFileStep />,
+                disableBeacon: selectedActivity === Activity.Explorer,
+            },
+            {
+                target:
+                    selectedActivity === Activity.Explorer
+                        ? '#pb-explorer-archive-button'
+                        : '[itemId=pb-activities-explorer-tab]',
+                content: <BackupFilesStep />,
+                disableBeacon: selectedActivity === Activity.Explorer,
             },
             {
                 target: '#pb-toolbar-bluetooth-button',
@@ -202,6 +205,7 @@ const Tour: React.VoidFunctionComponent = () => {
             if (event.action === ACTIONS.CLOSE || event.status === STATUS.FINISHED) {
                 dispatch(tourStop());
                 setStepIndex(0);
+                return;
             }
 
             if (event.type === EVENTS.STEP_AFTER) {

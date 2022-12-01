@@ -52,6 +52,9 @@
         },
         "about": {
             "label": "About"
+        },
+        "tour": {
+            "label": "Welcome Tour"
         }
     }
 }
