@@ -5,6 +5,7 @@
 ## [Unreleased]
 
 ### Added
+- Added in-app LEGO firmware restore for USB/DFU hubs.
 - Added Pybricks logo when no files open.
 
 ### Changed
