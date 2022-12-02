@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [2.0.0-beta.12] - 2022-12-02
+
 ### Added
 - Added in-app LEGO firmware restore for USB/DFU hubs.
 - Added Pybricks logo when no files open.
@@ -538,7 +540,8 @@ Prerelease changes are documented at [support#48].
 
 <!-- links for version headings -->
 
-[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.11...HEAD
+[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.12...HEAD
+[2.0.0-beta.12]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.11...v2.0.0-beta.12
 [2.0.0-beta.11]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.10...v2.0.0-beta.11
 [2.0.0-beta.10]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.9...v2.0.0-beta.10
 [2.0.0-beta.9]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.8...v2.0.0-beta.9
