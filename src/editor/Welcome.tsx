@@ -39,7 +39,7 @@ type Action =
 function reduce(state: State, action: Action): State {
     switch (action.type) {
         case ActionType.Stop:
-            return { ...state, rotation: defaultRotation, rotationSpeed: 0 };
+            return { ...state, rotation: state.rotation, rotationSpeed: 0 };
         case ActionType.ChangeSpeed:
             return { ...state, rotationSpeed: state.rotationSpeed + action.amount };
         case ActionType.Update:
