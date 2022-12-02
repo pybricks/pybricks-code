@@ -11,7 +11,7 @@
         "@babel/core": "^7.20.5",
         "@blueprintjs/core": "^4.13.0",
         "@blueprintjs/popover2": "^1.10.2",
-        "@blueprintjs/select": "^4.8.11",
+        "@blueprintjs/select": "^4.8.12",
         "@pmmmwh/react-refresh-webpack-plugin": "^0.5.10",
         "@pybricks/firmware": "6.2.0",
         "@pybricks/ide-docs": "2.4.0",
