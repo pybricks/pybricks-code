@@ -17,6 +17,11 @@
     &-file-tree {
         overflow-y: auto;
 
+        & .#{bp.$ns}-tree-node-list {
+            // make foucus outline fit
+            margin: 2px;
+        }
+
         // don't need extra padding around toolbar
         & .#{bp.$ns}-tree-node-secondary-label {
             padding: unset;

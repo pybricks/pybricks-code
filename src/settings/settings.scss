@@ -7,6 +7,7 @@
 
 .pb-settings {
     overflow-y: auto;
+    padding: bp.$pt-grid-size;
 
     .#{bp.$ns}-control-group {
         .#{bp.$ns}-button {
