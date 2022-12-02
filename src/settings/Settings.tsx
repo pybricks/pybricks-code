@@ -116,6 +116,15 @@ const Settings: React.VoidFunctionComponent = () => {
             </FormGroup>
             <FormGroup label={i18n.translate('help.title')}>
                 <ButtonGroup minimal={true} vertical={true} alignText="left">
+                    <Button
+                        id="pb-settings-tour-button"
+                        label={i18n.translate('app.tour.label')}
+                        icon="info-sign"
+                        onPress={() => {
+                            dispatch(tourStart());
+                            return true;
+                        }}
+                    />
                     <AnchorButton
                         icon="lightbulb"
                         href={pybricksProjectsUrl}
@@ -181,15 +190,6 @@ const Settings: React.VoidFunctionComponent = () => {
                         icon="info-sign"
                         onPress={() => {
                             setIsAboutDialogOpen(true);
-                            return true;
-                        }}
-                    />
-                    <Button
-                        id="pb-settings-tour-button"
-                        label={i18n.translate('app.tour.label')}
-                        icon="info-sign"
-                        onPress={() => {
-                            dispatch(tourStart());
                             return true;
                         }}
                     />
