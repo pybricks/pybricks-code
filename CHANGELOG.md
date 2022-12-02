@@ -8,6 +8,7 @@
 
 ### Added
 - Added in-app LEGO firmware restore for USB/DFU hubs.
+- Added heart button to support Pybricks.
 - Added Pybricks logo when no files open.
 
 ### Changed
