@@ -11,6 +11,34 @@
 ### Changed
 - Firmware restore for hubs with USB is now done in-app ([pybricks-code#1104]).
 - Moved *Tour* button from toolbar to settings.
+- Updated docs, code completion and other dependencies.
+- Updated firmware to v3.2.0b6:
+
+  - Added support for `PBIO_PYBRICKS_COMMAND_REBOOT_TO_UPDATE_MODE` Pybricks
+    Profile BLE command.
+  - Implemented `Motor.load()` which now measures load both during active
+    conditions (`run`) and passive conditions (`dc`).
+
+  ### Changed
+  - The Pybricks Code stop button will force the program to exit even if the user
+    catches the `SystemExit` exception ([pybricks-micropython#117]).
+  - Changed `PrimeHub.display.image()` to `PrimeHub.display.icon()` and renamed
+    its kwarg from `image` to `icon` ([support#409]).
+  - Deprecated `Control.load()`, `Control.stalled()`, and `Control.done()`
+    methods ([support#822]).
+
+  ### Fixed
+  - Fixed connecting `Remote` on BOOST move hub ([support#793]).
+
+  ### Removed
+  - Removed `hub.system.reset()` method.
+  - Disabled `micropython` module on Move Hub.
+
+  [pybricks-micropython#117]: https://github.com/pybricks/pybricks-micropython/pull/117
+  [support#409]: https://github.com/pybricks/support/issues/409
+  [support#793]: https://github.com/pybricks/support/issues/793
+  [support#793]: https://github.com/pybricks/support/issues/822
+
 
 [pybricks-code#1104]: https://github.com/pybricks/pybricks-code/issues/1104
 
