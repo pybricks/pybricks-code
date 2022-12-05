@@ -18,6 +18,7 @@ afterEach(() => {
     cleanup();
     jest.resetAllMocks();
     localStorage.clear();
+    sessionStorage.clear();
 });
 
 it.each([false, true])('should render', (darkMode) => {
