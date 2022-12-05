@@ -11,6 +11,7 @@ afterEach(() => {
     cleanup();
     jest.resetAllMocks();
     localStorage.clear();
+    sessionStorage.clear();
 });
 
 describe('Activities', () => {
