@@ -7,6 +7,7 @@
 ### Fixed
 - Fixed first tour item not shown if settings is not open ([support#823]).
 - Fixed selected activity tab not controlled independently per window ([support#807]);
+- Fixed selected documentation visibility not controlled independently per window ([support#807]);
 
 [support#807]: https://github.com/pybricks/support/issues/807
 [support#823]: https://github.com/pybricks/support/issues/823

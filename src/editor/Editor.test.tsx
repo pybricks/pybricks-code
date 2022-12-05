@@ -21,6 +21,9 @@ const testFile: FileMetadata = {
 jest.setTimeout(1000000);
 afterEach(() => {
     cleanup();
+    jest.resetAllMocks();
+    localStorage.clear();
+    sessionStorage.clear();
 });
 
 describe('Editor', () => {

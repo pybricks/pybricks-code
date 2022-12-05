@@ -10,7 +10,9 @@ import Settings from './Settings';
 
 afterEach(() => {
     cleanup();
+    jest.resetAllMocks();
     localStorage.clear();
+    sessionStorage.clear();
 });
 
 describe('showDocs setting switch', () => {
