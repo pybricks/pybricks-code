@@ -241,6 +241,7 @@ const Tour: React.VoidFunctionComponent = () => {
     // automatically show the tour on the first run only
     useEffectOnce(() => {
         if (showOnStartup) {
+            setSelectedActivity(Activity.Settings);
             dispatch(tourStart());
             setShowOnStartup(false);
         }

@@ -4,6 +4,11 @@
 
 ## [Unreleased]
 
+### Fixed
+- Fixed first tour item not shown if settings is not open ([support#823]).
+
+[support#823]: https://github.com/pybricks/support/issues/823
+
 ## [2.0.0-beta.12] - 2022-12-02
 
 ### Added
