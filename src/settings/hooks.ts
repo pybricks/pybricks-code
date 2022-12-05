@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2022 The Pybricks Authors
 
-import { useCallback } from 'react';
-import { useLocalStorage } from 'usehooks-ts';
+import { useCallback, useEffect } from 'react';
+import { useEffectOnce, useLocalStorage, useSessionStorage } from 'usehooks-ts';
 
 /** Hook for "showDocs" setting. */
 export function useSettingIsShowDocsEnabled(): {
@@ -10,10 +10,20 @@ export function useSettingIsShowDocsEnabled(): {
     setIsSettingShowDocsEnabled: (value: boolean) => void;
     toggleIsSettingShowDocsEnabled: () => void;
 } {
-    const [isSettingShowDocsEnabled, setIsSettingShowDocsEnabled] = useLocalStorage(
+    const [isLastSettingShowDocsEnabled, setIsLastSettingShowDocsEnabled] =
+        useLocalStorage('setting.showDocs', window.innerWidth >= 1024);
+
+    const [isSettingShowDocsEnabled, setIsSettingShowDocsEnabled] = useSessionStorage(
         'setting.showDocs',
-        window.innerWidth >= 1024,
+        isLastSettingShowDocsEnabled,
     );
+
+    // Force writing to session storage since default value is not constant.
+    useEffectOnce(() => setIsSettingShowDocsEnabled(isSettingShowDocsEnabled));
+
+    useEffect(() => {
+        setIsLastSettingShowDocsEnabled(isSettingShowDocsEnabled);
+    }, [isSettingShowDocsEnabled]);
 
     const toggleIsSettingShowDocsEnabled = useCallback(
         () => setIsSettingShowDocsEnabled((x) => !x),
