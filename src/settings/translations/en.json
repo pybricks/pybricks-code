@@ -2,10 +2,6 @@
     "title": "Settings & Help",
     "appearance": {
         "title": "Appearance",
-        "documentation": {
-            "label": "Documentation",
-            "help": "Enable to show the documentation and disable to hide the documentation."
-        },
         "darkMode": {
             "label": "Dark mode",
             "help": "Enable to set theme to dark mode and disable to set theme to light mode."

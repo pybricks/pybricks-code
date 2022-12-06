@@ -29,13 +29,10 @@ import { pseudolocalize } from '../i18n';
 import { useSelector } from '../reducers';
 import { tourStart } from '../tour/actions';
 import { isMacOS } from '../utils/os';
-import { useSettingIsShowDocsEnabled } from './hooks';
 import { useI18n } from './i18n';
 import './settings.scss';
 
 const Settings: React.VoidFunctionComponent = () => {
-    const { isSettingShowDocsEnabled, setIsSettingShowDocsEnabled } =
-        useSettingIsShowDocsEnabled();
     const [isAboutDialogOpen, setIsAboutDialogOpen] = useState(false);
     const { isDarkMode, setTernaryDarkMode } = useTernaryDarkMode();
 
@@ -63,21 +60,6 @@ const Settings: React.VoidFunctionComponent = () => {
                     out: <span>{isMacOS() ? 'Cmd' : 'Ctrl'}--</span>,
                 })}
             >
-                <ControlGroup>
-                    <Switch
-                        label={i18n.translate('appearance.documentation.label')}
-                        checked={isSettingShowDocsEnabled}
-                        onChange={(e) =>
-                            setIsSettingShowDocsEnabled(
-                                (e.target as HTMLInputElement).checked,
-                            )
-                        }
-                    />
-                    <HelpButton
-                        helpForLabel={i18n.translate('appearance.documentation.label')}
-                        content={i18n.translate('appearance.documentation.help')}
-                    />
-                </ControlGroup>
                 <ControlGroup>
                     <Switch
                         label={i18n.translate('appearance.darkMode.label')}

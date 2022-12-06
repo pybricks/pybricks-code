@@ -357,7 +357,8 @@ const Editor: React.VFC = () => {
     const dispatch = useDispatch();
 
     const [editor, setEditor] = useState<monaco.editor.IStandaloneCodeEditor>();
-    const { toggleIsSettingShowDocsEnabled } = useSettingIsShowDocsEnabled();
+    const { isSettingShowDocsEnabled, toggleIsSettingShowDocsEnabled } =
+        useSettingIsShowDocsEnabled();
     const { isDarkMode } = useTernaryDarkMode();
 
     const i18n = useI18n();
@@ -486,6 +487,18 @@ const Editor: React.VFC = () => {
                     <div className="pb-editor-monaco" ref={editorRef} />
                 </ContextMenu2>
             </ResizeSensor2>
+            <Button
+                className="pb-editor-doc-button"
+                minimal
+                large
+                icon="manual"
+                title={
+                    isSettingShowDocsEnabled
+                        ? i18n.translate('docs.hide')
+                        : i18n.translate('docs.show')
+                }
+                onClick={toggleIsSettingShowDocsEnabled}
+            />
         </div>
     );
 };

@@ -8,5 +8,9 @@
     "undo": "Undo",
     "redo": "Redo",
     "closeFile": { "tooltip": "Close {fileName}" },
-    "contextMenu": { "label": "Editor context menu" }
+    "contextMenu": { "label": "Editor context menu" },
+    "docs": {
+        "show": "Show documentation",
+        "hide": "Hide documentation"
+    }
 }

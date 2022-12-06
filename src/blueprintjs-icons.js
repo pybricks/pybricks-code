@@ -27,6 +27,7 @@ import {
     Import,
     InfoSign,
     Lightbulb,
+    Manual,
     Play,
     Plus,
     Redo,
@@ -44,6 +45,7 @@ import {
     Document as Document20,
     Error as Error20,
     InfoSign as InfoSign20,
+    Manual as Manual20,
     Trash as Trash20,
     WarningSign as WarningSign20,
 } from '@blueprintjs/icons/lib/esm/generated/20px/paths';
@@ -76,6 +78,7 @@ export const IconSvgPaths16 = {
     Import,
     InfoSign,
     Lightbulb,
+    Manual,
     Play,
     Plus,
     Redo,
@@ -94,6 +97,7 @@ export const IconSvgPaths20 = {
     Document: Document20,
     Error: Error20,
     InfoSign: InfoSign20,
+    Manual: Manual20,
     Trash: Trash20,
     WarningSign: WarningSign20,
 };
