@@ -63,7 +63,6 @@ import { RootState } from '../reducers';
 import { LegoUsbProductId, legoUsbVendorId } from '../usb';
 import { defined, ensureError, hex, maybe } from '../utils';
 import { crc32, fmod, sumComplement32 } from '../utils/math';
-import { isAndroid } from '../utils/os';
 import {
     FailToFinishReasonType,
     HubError,
@@ -485,9 +484,8 @@ function* handleFlashFirmware(action: ReturnType<typeof flashFirmware>): Generat
             yield* disconnectAndCancel();
         }
 
-        // 14 is "safe" size for all hubs and Android
-        const maxDataSize =
-            (!isAndroid() && MaxProgramFlashSize.get(info.hubType)) || 14;
+        // 14 is "safe" size for all hubs
+        const maxDataSize = MaxProgramFlashSize.get(info.hubType) || 14;
 
         let runningChecksum = 0xff;
 

@@ -9,9 +9,11 @@
 
 ### Fixed
 - Fixed first tour item not shown if settings is not open ([support#823]).
-- Fixed selected activity tab not controlled independently per window ([support#807]);
-- Fixed selected documentation visibility not controlled independently per window ([support#807]);
+- Fixed selected activity tab not controlled independently per window ([support#807]).
+- Fixed selected documentation visibility not controlled independently per window ([support#807]).
+- Fixed slow firmware flash on Android ([support#438]).
 
+[support#438]: https://github.com/pybricks/support/issues/438
 [support#778]: https://github.com/pybricks/support/issues/778
 [support#807]: https://github.com/pybricks/support/issues/807
 [support#823]: https://github.com/pybricks/support/issues/823
