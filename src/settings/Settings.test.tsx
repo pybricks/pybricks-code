@@ -15,18 +15,6 @@ afterEach(() => {
     sessionStorage.clear();
 });
 
-describe('showDocs setting switch', () => {
-    it('should toggle setting', async () => {
-        const [user, settings] = testRender(<Settings />);
-
-        const showDocs = settings.getByLabelText('Documentation');
-        expect(showDocs).toBeChecked();
-
-        await user.click(showDocs);
-        expect(showDocs).not.toBeChecked();
-    });
-});
-
 describe('darkMode setting switch', () => {
     it('should toggle setting', async () => {
         const [user, settings] = testRender(<Settings />);
