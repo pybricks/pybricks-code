@@ -3,8 +3,14 @@
 
 // Custom styling for the App control.
 
+@use 'sass:color';
+@use 'sass:map';
+
 @use '@blueprintjs/core/lib/scss/variables' as bp;
+@use '@blueprintjs/icons/lib/scss/variables' as bpi;
 @use '../variables' as pb;
+
+@import '@blueprintjs/icons/lib/css/blueprint-icons.css';
 
 .pb-app {
     width: 100%;
@@ -68,12 +74,92 @@
     }
 }
 
-// make layout splitter match app color scheme
-.splitter-layout > .layout-splitter {
-    background-color: bp.$pt-divider-black;
+$splitter-background-color: bp.$light-gray2;
+$splitter-background-color-hover: bp.$gray4;
+$dark-splitter-background-color: bp.$dark-gray5;
+$dark-splitter-background-color-hover: bp.$gray2;
+
+$splitter-constrast: -15%;
+$dark-splitter-constrast: 20%;
+
+$splitter-color: color.adjust(
+    $splitter-background-color,
+    $lightness: $splitter-constrast
+);
+$splitter-color-hover: color.adjust(
+    $splitter-background-color-hover,
+    $lightness: $splitter-constrast
+);
+$dark-splitter-color: color.adjust(
+    $dark-splitter-background-color,
+    $lightness: $dark-splitter-constrast
+);
+$dark-splitter-color-hover: color.adjust(
+    $dark-splitter-background-color-hover,
+    $lightness: $dark-splitter-constrast
+);
+
+.layout-splitter:before {
+    $width: 1.5;
+    $height: 2.7;
+    $radius: 0.4;
+
+    content: map.get(bpi.$blueprint-icon-codepoints, 'drag-handle-vertical');
+    height: bp.$pt-grid-size * $height;
+    width: bp.$pt-grid-size * $width;
+    top: calc(50% - bp.$pt-grid-size * $height * 0.5);
+    left: bp.$pt-grid-size * $width * -0.5 + 2px;
+
+    .splitter-layout-vertical & {
+        $width: 2.7;
+        $height: 1.4;
+
+        content: map.get(bpi.$blueprint-icon-codepoints, 'drag-handle-horizontal');
+        height: bp.$pt-grid-size * $height;
+        width: bp.$pt-grid-size * $width;
+        top: bp.$pt-grid-size * $height * -0.5 + 2px;
+        left: calc(50% - bp.$pt-grid-size * $width * 0.5);
+    }
+
+    font-family: bpi.$blueprint-icons-16-font;
+    font-size: large;
+    display: flex;
+    position: relative;
+    border-radius: bp.$pt-grid-size * $radius;
+    padding: bp.$pt-grid-size * 0.5;
+    align-items: center;
+    justify-content: center;
+    z-index: bp.$pt-z-index-overlay;
+
+    color: $splitter-color;
+    background-color: $splitter-background-color;
 
     .#{bp.$ns}-dark & {
-        background-color: bp.$pt-dark-divider-white;
+        color: $dark-splitter-color;
+        background-color: $dark-splitter-background-color;
+    }
+}
+
+// make layout splitter match app color scheme
+.splitter-layout > .layout-splitter {
+    color: $splitter-color;
+    background-color: $splitter-background-color;
+
+    &:hover,
+    &:hover:before {
+        color: $splitter-color-hover;
+        background-color: $splitter-background-color-hover;
+    }
+
+    .#{bp.$ns}-dark & {
+        color: $dark-splitter-color;
+        background-color: $dark-splitter-background-color;
+
+        &:hover,
+        &:hover:before {
+            color: $dark-splitter-color-hover;
+            background-color: $dark-splitter-background-color-hover;
+        }
     }
 }
 
