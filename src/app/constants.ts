@@ -54,7 +54,7 @@ export const pybricksBleFirmwareRestoreVideoUrl =
     'https://pybricks.com/install/technic-boost-city/#restoring-the-original-firmware';
 
 /** Pybricks copyright statement. */
-export const pybricksCopyright = 'Copyright (c) 2020-2022 The Pybricks Authors';
+export const pybricksCopyright = 'Copyright (c) 2020-2023 The Pybricks Authors';
 
 /** The LEGO name with registered trademark symbol. */
 export const legoRegisteredTrademark = 'LEGO®';
