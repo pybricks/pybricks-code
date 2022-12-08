@@ -20,12 +20,15 @@ import { FileStorageDb, UUID } from '../fileStorage';
 import {
     fileStorageDidFailToLoadTextFile,
     fileStorageDidFailToStoreTextFileViewState,
+    fileStorageDidFailToWriteFile,
     fileStorageDidInitialize,
     fileStorageDidLoadTextFile,
     fileStorageDidStoreTextFileViewState,
+    fileStorageDidWriteFile,
     fileStorageLoadTextFile,
     fileStorageStoreTextFileValue,
     fileStorageStoreTextFileViewState,
+    fileStorageWriteFile,
 } from '../fileStorage/actions';
 import {
     pythonMessageComplete,
@@ -46,6 +49,7 @@ import { RootState } from '../reducers';
 import { acquireLock, defined, ensureError } from '../utils';
 import { createCountFunc } from '../utils/iter';
 import {
+    editorActivateExample,
     editorActivateFile,
     editorCloseFile,
     editorCompletionDidFailToInit,
@@ -339,6 +343,28 @@ function* monitorViewState(editor: monaco.editor.ICodeEditor): Generator {
     }
 }
 
+function* handleEditorActivateExample(
+    action: ReturnType<typeof editorActivateExample>,
+): Generator {
+    yield* put(fileStorageWriteFile(action.fileName, action.content));
+
+    const { didWrite, didFailToWrite } = yield* race({
+        didWrite: take(fileStorageDidWriteFile.when((a) => a.path === action.fileName)),
+        didFailToWrite: take(
+            fileStorageDidFailToWriteFile.when((a) => a.path === action.fileName),
+        ),
+    });
+
+    if (didFailToWrite) {
+        console.error(didFailToWrite.error);
+        return;
+    }
+
+    defined(didWrite);
+
+    yield* put(editorActivateFile(didWrite.uuid));
+}
+
 function* handleDidCreateEditor(editor: monaco.editor.ICodeEditor): Generator {
     // first, we need to be sure that file storage is ready
 
@@ -362,6 +388,7 @@ function* handleDidCreateEditor(editor: monaco.editor.ICodeEditor): Generator {
         openFiles,
         activeFileHistory,
     );
+    yield* takeEvery(editorActivateExample, handleEditorActivateExample);
     yield* takeEvery(editorGoto, handleEditorGoto, editor);
     yield* takeEvery(editorDidCloseFile, handleEditorDidCloseFile, activeFileHistory);
     yield* fork(monitorViewState, editor);

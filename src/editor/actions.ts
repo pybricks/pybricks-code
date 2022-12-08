@@ -121,3 +121,11 @@ export const editorGoto = createAction((uuid: UUID, line: number) => ({
     uuid,
     line,
 }));
+
+export const editorActivateExample = createAction(
+    (fileName: string, content: string) => ({
+        type: 'editor.action.activateExample',
+        fileName,
+        content,
+    }),
+);

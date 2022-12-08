@@ -6,9 +6,11 @@ import './app.scss';
 import { Classes, Spinner } from '@blueprintjs/core';
 import docsPackage from '@pybricks/ide-docs/package.json';
 import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import SplitterLayout from 'react-splitter-layout';
 import { useLocalStorage, useTernaryDarkMode } from 'usehooks-ts';
 import Activities from '../activities/Activities';
+import { editorActivateExample } from '../editor/actions';
 import { InstallPybricksDialog } from '../firmware/installPybricksDialog/InstallPybricksDialog';
 import RestoreOfficialDialog from '../firmware/restoreOfficialDialog/RestoreOfficialDialog';
 import { useSettingIsShowDocsEnabled } from '../settings/hooks';
@@ -47,6 +49,7 @@ const Terminal = React.lazy(async () => {
 
 const Docs: React.VFC = () => {
     const { setIsSettingShowDocsEnabled } = useSettingIsShowDocsEnabled();
+    const dispatch = useDispatch();
 
     return (
         <iframe
@@ -140,6 +143,22 @@ const Docs: React.VFC = () => {
                 if (document.body.classList.contains(Classes.DARK)) {
                     contentWindow.document.documentElement.classList.add(Classes.DARK);
                 }
+
+                for (const preElement of contentWindow.document.getElementsByTagName(
+                    'pre',
+                )) {
+                    const tryMe = contentWindow.document.createElement('button');
+                    tryMe.innerText = 'try me!';
+                    tryMe.addEventListener('click', () => {
+                        dispatch(
+                            editorActivateExample('example.py', preElement.innerText),
+                        );
+                    });
+
+                    preElement.parentNode?.insertBefore(tryMe, preElement);
+                }
+
+                console.log('onload', contentWindow.location.href);
             }}
             src={`static/docs/v${docsPackage.version}/index.html?v${httpServerHeadersVersion}`}
             allowFullScreen={true}
