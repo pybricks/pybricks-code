@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2021-2022 The Pybricks Authors
+import docsPackage from '@pybricks/ide-docs/package.json';
 
 // Definitions for compile-time UI settings.
 
@@ -74,3 +75,9 @@ export const legoDisclaimer =
  *      Cross-Origin-Embedder-Policy: require-corp
  */
 export const httpServerHeadersVersion = 2;
+
+/** Path to directory where docs are copied by webpack. */
+export const docsPathPrefix = `static/docs/v${docsPackage.version}/`;
+
+/** The index page of the docs. */
+export const docsDefaultPage = `${docsPathPrefix}index.html`;

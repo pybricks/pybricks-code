@@ -4,7 +4,6 @@
 import 'react-splitter-layout/lib/index.css';
 import './app.scss';
 import { Classes, Spinner } from '@blueprintjs/core';
-import docsPackage from '@pybricks/ide-docs/package.json';
 import React, { useEffect, useState } from 'react';
 import SplitterLayout from 'react-splitter-layout';
 import { useLocalStorage, useTernaryDarkMode } from 'usehooks-ts';
@@ -17,7 +16,7 @@ import StatusBar from '../status-bar/StatusBar';
 import Toolbar from '../toolbar/Toolbar';
 import Tour from '../tour/Tour';
 import { isMacOS } from '../utils/os';
-import { httpServerHeadersVersion } from './constants';
+import { useAppLastDocsPageSetting } from './hooks';
 
 const Editor = React.lazy(async () => {
     const [sagaModule, componentModule] = await Promise.all([
@@ -47,6 +46,7 @@ const Terminal = React.lazy(async () => {
 
 const Docs: React.VFC = () => {
     const { setIsSettingShowDocsEnabled } = useSettingIsShowDocsEnabled();
+    const { initialDocsPage, setLastDocsPage } = useAppLastDocsPageSetting();
 
     return (
         <iframe
@@ -140,8 +140,10 @@ const Docs: React.VFC = () => {
                 if (document.body.classList.contains(Classes.DARK)) {
                     contentWindow.document.documentElement.classList.add(Classes.DARK);
                 }
+
+                setLastDocsPage(contentWindow.location.href);
             }}
-            src={`static/docs/v${docsPackage.version}/index.html?v${httpServerHeadersVersion}`}
+            src={initialDocsPage}
             allowFullScreen={true}
             role="documentation"
             width="100%"

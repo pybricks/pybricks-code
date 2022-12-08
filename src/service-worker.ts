@@ -17,6 +17,7 @@ import { clientsClaim } from 'workbox-core';
 import { createHandlerBoundToURL, precacheAndRoute } from 'workbox-precaching';
 import { registerRoute } from 'workbox-routing';
 import { CacheFirst } from 'workbox-strategies';
+import { docsDefaultPage, docsPathPrefix } from './app/constants';
 
 declare const self: ServiceWorkerGlobalScope;
 
@@ -60,6 +61,25 @@ registerRoute(
         return true;
     },
     createHandlerBoundToURL(process.env.PUBLIC_URL + '/index.html'),
+);
+
+// route to fall back to docs index if a bad docs page is requested
+registerRoute(
+    // Return false to exempt requests from being fulfilled by index.html.
+    ({ request, url }) => {
+        // If this isn't a navigation, skip.
+        if (request.mode !== 'navigate') {
+            return false;
+        }
+
+        if (!url.pathname.startsWith(`/${docsPathPrefix}`)) {
+            return false;
+        }
+
+        // Return true to signal that we want to use the handler.
+        return true;
+    },
+    createHandlerBoundToURL(`${process.env.PUBLIC_URL}${docsDefaultPage}`),
 );
 
 // An example runtime caching route for requests that aren't handled by the
