@@ -34,9 +34,14 @@ precacheAndRoute(self.__WB_MANIFEST, { ignoreURLParametersMatching: [/.*/] });
 const fileExtensionRegexp = new RegExp('/[^/?]+\\.[^/]+$');
 registerRoute(
     // Return false to exempt requests from being fulfilled by index.html.
-    ({ request, url }: { request: Request; url: URL }) => {
+    ({ request, url }) => {
         // If this isn't a navigation, skip.
         if (request.mode !== 'navigate') {
+            return false;
+        }
+
+        // If this is a URL for a static resource, skip.
+        if (url.pathname.startsWith('/static/')) {
             return false;
         }
 
