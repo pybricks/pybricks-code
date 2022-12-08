@@ -129,7 +129,7 @@ $dark-splitter-color-hover: color.adjust(
     padding: bp.$pt-grid-size * 0.5;
     align-items: center;
     justify-content: center;
-    z-index: bp.$pt-z-index-overlay;
+    z-index: bp.$pt-z-index-content;
 
     color: $splitter-color;
     background-color: $splitter-background-color;
