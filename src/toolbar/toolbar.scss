@@ -9,6 +9,8 @@
 .pb-toolbar {
     padding: bp.$pt-grid-size bp.$pt-grid-size * 1.5;
     z-index: bp.$pt-z-index-content;
+    display: flex;
+    flex-wrap: nowrap;
 
     // make small buttons more square and slightly smaller (some of this is
     // done in react)
@@ -24,15 +26,11 @@
 }
 
 .pb-toolbar-group {
-    align-items: center;
-
     &.pb-align-left {
-        float: left;
         margin-right: bp.$pt-grid-size * 2;
     }
 
     &.pb-align-right {
-        float: right;
-        margin-left: bp.$pt-grid-size * 2;
+        margin-left: auto;
     }
 }
