@@ -4,7 +4,11 @@
         "windows": " If you have never used Pybricks with USB on Windows, you may need to manually install a USB driver before you can flash the hub firmware.",
         "learnMore": "Learn more."
     },
-    "instruction": "To flash the firmware, the hub must be placed in bootloader mode. Follow the steps below to do this:",
+    "instruction": "To flash the firmware, the hub must be placed in bootloader mode. {startPoweredOff}, then follow the instructions below:",
+    "startPoweredOff": {
+        "default": "Start with the hub powered off",
+        "usb": "Start with the hub powered off and the USB cable disconnected"
+    },
     "button": {
         "bluetooth": "Bluetooth button",
         "power": "power button"
@@ -18,8 +22,6 @@
         "status": "light purple"
     },
     "step": {
-        "disconnectUsb": "Disconnect the USB cable from the hub.",
-        "powerOff": "Turn off the hub.",
         "disconnectIo": "Disconnect all motors and sensors from the I/O ports on the hub.",
         "holdButton": "Press and hold the {button} on the hub.",
         "connectUsb": "Connect the USB cable.",

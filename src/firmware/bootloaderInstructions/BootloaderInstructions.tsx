@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2022 The Pybricks Authors
 
+import './bootloaderInstructions.scss';
 import { Callout, Intent } from '@blueprintjs/core';
-import React, { useMemo } from 'react';
+import classNames from 'classnames';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
     pybricksUsbDfuWindowsDriverInstallUrl,
     pybricksUsbLinuxUdevRulesUrl,
@@ -10,11 +12,41 @@ import {
 import ExternalLinkIcon from '../../components/ExternalLinkIcon';
 import { Hub, hubHasBluetoothButton, hubHasUSB } from '../../components/hubPicker';
 import { isLinux, isWindows } from '../../utils/os';
+import cityHubMp4 from './assets/bootloader-cityhub-540.mp4';
+import cityHubVtt from './assets/bootloader-cityhub-metadata.vtt';
+import essentialHubMp4 from './assets/bootloader-essentialhub-540.mp4';
+import essentialHubVtt from './assets/bootloader-essentialhub-metadata.vtt';
+import inventorHubMp4 from './assets/bootloader-inventorhub-540.mp4';
+import inventorHubVtt from './assets/bootloader-inventorhub-metadata.vtt';
+import moveHubMp4 from './assets/bootloader-movehub-540.mp4';
+import moveHubVtt from './assets/bootloader-movehub-metadata.vtt';
+import primeHubMp4 from './assets/bootloader-primehub-540.mp4';
+import primeHubVtt from './assets/bootloader-primehub-metadata.vtt';
+import technicHubMp4 from './assets/bootloader-technichub-540.mp4';
+import technicHubVtt from './assets/bootloader-technichub-metadata.vtt';
 import { useI18n } from './i18n';
 
 type BootloaderInstructionsProps = {
     hubType: Hub;
 };
+
+const videoFileMap: ReadonlyMap<Hub, string> = new Map([
+    [Hub.City, cityHubMp4],
+    [Hub.Essential, essentialHubMp4],
+    [Hub.Inventor, inventorHubMp4],
+    [Hub.Move, moveHubMp4],
+    [Hub.Prime, primeHubMp4],
+    [Hub.Technic, technicHubMp4],
+]);
+
+const metadataFileMap: ReadonlyMap<Hub, string> = new Map([
+    [Hub.City, cityHubVtt],
+    [Hub.Essential, essentialHubVtt],
+    [Hub.Inventor, inventorHubVtt],
+    [Hub.Move, moveHubVtt],
+    [Hub.Prime, primeHubVtt],
+    [Hub.Technic, technicHubVtt],
+]);
 
 /**
  * Provides customized instructions on how to enter bootloader mode based
@@ -40,6 +72,36 @@ const BootloaderInstructions: React.VoidFunctionComponent<
             ),
         };
     }, [i18n, hubType]);
+
+    const metadataTrackRef = useRef<HTMLTrackElement>(null);
+    const [activeStep, setActiveStep] = useState('');
+
+    useEffect(() => {
+        const element = metadataTrackRef.current;
+
+        // istanbul ignore if: should not happen
+        if (element === null) {
+            return;
+        }
+
+        // istanbul ignore else: jsdom doesn't support video
+        if (process.env.NODE_ENV === 'test') {
+            return;
+        }
+
+        const handleCueChange = (e: Event) => {
+            const track = e.target as TextTrack;
+            setActiveStep(track.activeCues?.[0]?.id ?? '');
+        };
+
+        element.track.addEventListener('cuechange', handleCueChange);
+        element.track.mode = 'hidden';
+
+        return () => {
+            element.track.removeEventListener('cuechange', handleCueChange);
+            element.track.mode = 'disabled';
+        };
+    }, [setActiveStep]);
 
     return (
         <>
@@ -69,20 +131,68 @@ const BootloaderInstructions: React.VoidFunctionComponent<
                     <ExternalLinkIcon />
                 </Callout>
             )}
-            <p>{i18n.translate('instruction')}</p>
+
+            <video
+                controls
+                controlsList="nodownload nofullscreen"
+                muted
+                disablePictureInPicture
+                className="pb-bootloader-video"
+            >
+                <source src={videoFileMap.get(hubType)} type="video/mp4" />
+                <track
+                    kind="metadata"
+                    src={metadataFileMap.get(hubType)}
+                    ref={metadataTrackRef}
+                />
+            </video>
+
+            <div className="pb-spacer" />
+
+            <p>
+                {i18n.translate('instruction', {
+                    startPoweredOff: hubHasUSB(hubType)
+                        ? i18n.translate('startPoweredOff.usb')
+                        : i18n.translate('startPoweredOff.default'),
+                })}
+            </p>
             <ol>
-                {hubHasUSB(hubType) && <li>{i18n.translate('step.disconnectUsb')}</li>}
-
-                <li>{i18n.translate('step.powerOff')}</li>
-
                 {/* City hub has power issues and requires disconnecting motors/sensors */}
-                {hubType === Hub.City && <li>{i18n.translate('step.disconnectIo')}</li>}
+                {hubType === Hub.City && (
+                    <li
+                        className={classNames(
+                            activeStep === 'disconnect-io' && 'pb-active-step',
+                        )}
+                    >
+                        {i18n.translate('step.disconnectIo')}
+                    </li>
+                )}
 
-                <li>{i18n.translate('step.holdButton', { button })}</li>
+                <li
+                    className={classNames(
+                        activeStep === 'hold-button' && 'pb-active-step',
+                    )}
+                >
+                    {i18n.translate('step.holdButton', { button })}
+                </li>
 
-                {hubHasUSB(hubType) && <li>{i18n.translate('step.connectUsb')}</li>}
+                {/* not strictly necessary, but order is swapped in the video,
+                    so we match it here. */}
+                {hubType !== Hub.Essential && hubHasUSB(hubType) && (
+                    <li
+                        className={classNames(
+                            activeStep === 'connect-usb' && 'pb-active-step',
+                        )}
+                    >
+                        {i18n.translate('step.connectUsb')}
+                    </li>
+                )}
 
-                <li>
+                <li
+                    className={classNames(
+                        activeStep === 'wait-for-light' && 'pb-active-step',
+                    )}
+                >
                     {i18n.translate('step.waitForLight', {
                         button,
                         light,
@@ -90,15 +200,38 @@ const BootloaderInstructions: React.VoidFunctionComponent<
                     })}
                 </li>
 
-                <li>
-                    {i18n.translate(
-                        /* hubs with USB will keep the power on, but other hubs won't */
-                        hubHasUSB(hubType) ? 'step.releaseButton' : 'step.keepHolding',
-                        {
+                {hubType === Hub.Essential && hubHasUSB(hubType) && (
+                    <li
+                        className={classNames(
+                            activeStep === 'connect-usb' && 'pb-active-step',
+                        )}
+                    >
+                        {i18n.translate('step.connectUsb')}
+                    </li>
+                )}
+
+                {/* hubs with USB will keep the power on, but other hubs won't */}
+                {hubHasUSB(hubType) ? (
+                    <li
+                        className={classNames(
+                            activeStep === 'release-button' && 'pb-active-step',
+                        )}
+                    >
+                        {i18n.translate('step.releaseButton', {
                             button,
-                        },
-                    )}
-                </li>
+                        })}
+                    </li>
+                ) : (
+                    <li
+                        className={classNames(
+                            activeStep === 'keep-holding' && 'pb-active-step',
+                        )}
+                    >
+                        {i18n.translate('step.keepHolding', {
+                            button,
+                        })}
+                    </li>
+                )}
             </ol>
         </>
     );
