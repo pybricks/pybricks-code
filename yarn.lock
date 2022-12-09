@@ -2420,7 +2420,7 @@ __metadata:
     "@pybricks/mpy-cross-v6": ^2.0.0
     "@qoretechnologies/python-parser": ^0.4.10
     "@reduxjs/toolkit": ^1.9.1
-    "@shopify/react-i18n": ^7.4.0
+    "@shopify/react-i18n": ^7.5.0
     "@svgr/webpack": ^6.5.1
     "@testing-library/dom": ^8.19.0
     "@testing-library/jest-dom": ^5.16.5
@@ -4084,9 +4084,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@shopify/react-i18n@npm:^7.4.0":
-  version: 7.4.0
-  resolution: "@shopify/react-i18n@npm:7.4.0"
+"@shopify/react-i18n@npm:^7.5.0":
+  version: 7.5.0
+  resolution: "@shopify/react-i18n@npm:7.5.0"
   dependencies:
     "@babel/template": ^7.0.0
     "@babel/traverse": ^7.0.0
@@ -4115,7 +4115,7 @@ __metadata:
       optional: true
     fs-extra:
       optional: true
-  checksum: e2c7cc0daf499efe632148e86ea4f38d25771ff3aaa40cf54ec28a74f2439b2822b4291a30b18c20a1874e1aa7c8c9c91ff77f53101b4207c9a6a66d1a9de895
+  checksum: 4a5c00cc91467c9b974f549606da7f03732e8b1d9acbefaa36d0f19faa3368c8ed3f186df15668b80e3e3f7bcb0bf8e43c7dfc5f815a9a25b21642970f87e165
   languageName: node
   linkType: hard
 
