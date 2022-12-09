@@ -4,6 +4,9 @@
 
 ## [Unreleased]
 
+### Added
+- Added videos to firmware flash dialogs ([support#728]).
+
 ### Changed
 - Moved documentation show/hide button from settings to editor area ([support#778]).
 
@@ -14,6 +17,7 @@
 - Fixed slow firmware flash on Android ([support#438]).
 
 [support#438]: https://github.com/pybricks/support/issues/438
+[support#728]: https://github.com/pybricks/support/issues/728
 [support#778]: https://github.com/pybricks/support/issues/778
 [support#807]: https://github.com/pybricks/support/issues/807
 [support#823]: https://github.com/pybricks/support/issues/823

@@ -1,0 +1,13 @@
+WEBVTT
+
+hold-button
+00:00.100 --> 00:05.000
+
+wait-for-light
+00:05.000 --> 00:09.000
+
+connect-usb
+00:09.000 --> 00:15.000
+
+release-button
+00:15.000 --> 00:21.000

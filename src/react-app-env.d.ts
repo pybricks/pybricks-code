@@ -83,6 +83,15 @@ declare module '*.zip' {
     export default src;
 }
 
+declare module '*.mp4' {
+    const src: string;
+    export default src;
+}
+
+declare module '*.vtt' {
+    const src: string;
+    export default src;
+}
 // https://webpack.js.org/api/hot-module-replacement/
 interface NodeModule {
     hot?: { dispose: (callback: (data) => void) => void };
