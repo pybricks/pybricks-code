@@ -2382,10 +2382,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pybricks/jedi@npm:1.5.0":
-  version: 1.5.0
-  resolution: "@pybricks/jedi@npm:1.5.0"
-  checksum: 466d7ab90823036a9cf5a254d6353592bfe0259e469a9da4345483b378878a8a34774764322345594d4d4e9c498bf1c39795e6d53244a239b0bc0e0c673800c6
+"@pybricks/jedi@npm:1.6.0":
+  version: 1.6.0
+  resolution: "@pybricks/jedi@npm:1.6.0"
+  checksum: 982154fa8b3de0e8fcd023e89b6a6223c55948a673e47f25876eba18305d068d97f56012226eb2a217109dc924a43e8f912aae82f7c944eeb398448d90ff3f78
   languageName: node
   linkType: hard
 
@@ -2415,7 +2415,7 @@ __metadata:
     "@pybricks/firmware": 6.3.0
     "@pybricks/ide-docs": 2.6.0
     "@pybricks/images": ^1.2.1
-    "@pybricks/jedi": 1.5.0
+    "@pybricks/jedi": 1.6.0
     "@pybricks/mpy-cross-v5": ^2.0.0
     "@pybricks/mpy-cross-v6": ^2.0.0
     "@qoretechnologies/python-parser": ^0.4.10
