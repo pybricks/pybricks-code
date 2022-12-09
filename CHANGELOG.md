@@ -4,11 +4,41 @@
 
 ## [Unreleased]
 
+## [2.0.0-rc.1] - 2022-12-09
+
 ### Added
 - Added videos to firmware flash dialogs ([support#728]).
 
 ### Changed
 - Moved documentation show/hide button from settings to editor area ([support#778]).
+- Updated documentation and other dependencies.
+- Updated firmware to v3.2.0c1:
+
+  #### Fixed
+  - Fixed `motor.control.limits()` not working if acceleration was `None`.
+  - Fixed crash on calling methods on uninitialized objects ([support#805]).
+  - Fixed crash on calling methods in `__init__(self, ...)` before
+    calling `super().__init(...)` on uninitialized objects ([support#777]).
+  - Reverted Pybricks Code stop button raises `SystemAbort` instead of
+    `SystemExit` ([support#834]).
+  - Improved stop message raised on `SystemExit` and `SystemAbort` ([support#836]).
+  - Fixed Technic Hub and City Hub sometimes not shutting down when a Bluetooth
+    operation is busy ([support#814]).
+  - Fixed `hub.system` methods not working ([support#837]).
+
+  #### Changed
+  - Changed default XYZ orientation of the Technic Hub and the Essential Hub to
+    match the SPIKE Prime Hub and Move Hub ([support#848]).
+
+  [support#777]: https://github.com/pybricks/support/issues/777
+  [support#805]: https://github.com/pybricks/support/issues/805
+  [support#814]: https://github.com/pybricks/support/issues/814
+  [support#826]: https://github.com/pybricks/support/issues/826
+  [support#834]: https://github.com/pybricks/support/issues/834
+  [support#836]: https://github.com/pybricks/support/issues/836
+  [support#837]: https://github.com/pybricks/support/issues/837
+  [support#848]: https://github.com/pybricks/support/issues/848
+
 
 ### Fixed
 - Fixed first tour item not shown if settings is not open ([support#823]).
@@ -39,7 +69,7 @@
   - Implemented `Motor.load()` which now measures load both during active
     conditions (`run`) and passive conditions (`dc`).
 
-  ### Changed
+  #### Changed
   - The Pybricks Code stop button will force the program to exit even if the user
     catches the `SystemExit` exception ([pybricks-micropython#117]).
   - Changed `PrimeHub.display.image()` to `PrimeHub.display.icon()` and renamed
@@ -47,10 +77,10 @@
   - Deprecated `Control.load()`, `Control.stalled()`, and `Control.done()`
     methods ([support#822]).
 
-  ### Fixed
+  #### Fixed
   - Fixed connecting `Remote` on BOOST move hub ([support#793]).
 
-  ### Removed
+  #### Removed
   - Removed `hub.system.reset()` method.
   - Disabled `micropython` module on Move Hub.
 
@@ -88,12 +118,12 @@
 - Updated other dependencies.
 - Update Pybricks firmware to v3.2.0a5:
 
-    ### Added
+    #### Added
     - Added `DriveBase.stalled()` for convenient stall detection.
     - Added `DriveBase.done()` for convenient completion detection.
     - Added `Motor.done()` for convenient completion detection.
 
-    ### Fixed
+    #### Fixed
     - Fixed brief hub freeze on `pybricks.common.Logger.save()` when not connected
       to the computer ([support#738]).
     - Fixed drive base stall flags being set while not stalled ([support#767]).
@@ -152,7 +182,7 @@
 - Updated APIs for code completions.
 - Update hub firmware to v3.2.0b4:
 
-  ### Added
+  #### Added
   - Added hub shutdown status light indication.
   - Added boot and shutdown light matrix animations.
   - Added new indication for over-charging battery (blinking green light).
@@ -160,7 +190,7 @@
   - Added support for multi-file projects ([pybricks-micropython#115]).
   - Added new `System.storage()` API ([support#85]).
 
-  ### Changed
+  #### Changed
   - Battery full indication (green light) comes on earlier ([support#647]).
   - User program is saved to non-volatile memory at shutdown on all hubs.
   - Restored the `Motor.speed()` method and `DriveBase` equivalent to provide
@@ -170,7 +200,7 @@
   - Bluetooth now uses random private address instead of static public address
     ([support#600]).
 
-  ### Fixed
+  #### Fixed
   - Fixed motors going out of sync when starting program ([support#679]).
   - Fixed motor torque signal overflowing under load ([support#729]).
   - Fixed city hub turning back on after shutdown ([support#692]).
@@ -232,10 +262,10 @@
 - Updated dependencies.
 - Updated firmware to Pybricks v3.2.0b3:
 
-  ### Fixed
+  #### Fixed
   - Fix integral control not working properly.
 
-  ### Changed
+  #### Changed
   - `Motor.run_time` no longer raises an exception for negative time values.
 
 ### Fixed
@@ -250,17 +280,17 @@
 - Updated dependencies.
 - Updated firmware to Pybricks v3.2.0b2:
 
-  ### Added
+  #### Added
   - Added `Motor.stalled()` method.
 
-  ### Fixed
+  #### Fixed
   - Fixed motor not stopping at the end of `run_until_stalled` ([support#662]).
   - Fixed incorrect battery current reading on Technic hub ([support#665]).
   - Fixed non-zero speed reported when motor stalled.
   - Fixed I/O devices not syncing at high baud rate.
   - Fixed `ENODEV` error while device connection manager is busy ([support#674]).
 
-  ### Changed
+  #### Changed
   - Reworked internal motor model that is used to estimate speed.
   - Speed methods now use estimated speed instead of reported speed.
   - Changed drive base default speed to go a little slower.
@@ -287,7 +317,7 @@
 - Updated documentation.
 - Updated firmware to v3.2.0b1:
   
-  ### Added
+  #### Added
   - Added `Stop.NONE` as `then` option for motors.
   - Added `Stop.COAST_SMART` as `then` option for motors.
   - Made motor deceleration configurable separately from acceleration.
@@ -295,7 +325,7 @@
   - Added ability to use more than one `DriveBase` in the same script.
   - Added support for battery charging on Prime and essential hubs.
 
-  ### Changed
+  #### Changed
   - Changed how `DriveBases` and `Motor` classes can be used together.
   - Raise asynchronous `OSError` instead of `SystemExit` if motor is disconnected
     while a program is running.
@@ -307,7 +337,7 @@
   - Changed imu.acceleration() units to mm/s/s ([pybricks-micropython#88]) for
     Move Hub, Technic Hub, and Prime Hub.
 
-  ### Fixed
+  #### Fixed
   - Fixed color calibration on Powered Up remote control ([support#424]).
   - Fixed 3x3 Light Matrix colors with hue > 255 not working correctly ([support#619]).
 
@@ -347,10 +377,10 @@
 - Updated dependencies.
 - Updated to Pybricks Firmware v3.1.0:
 
-  ### Changed
+  #### Changed
   - Renamed new `DCMotor.dc_settings()` method to `DCMotor.settings()` ([support#536]).
 
-  ### Fixed
+  #### Fixed
   - Fixed direction for `DriveBase.turn()` and `Drivebase.curve()` for some
     arguments ([support#535]).
   - Fixed `then=Stop.COAST` not working in `DriveBase` methods ([support#535]).
@@ -360,11 +390,11 @@
 
 - Updated docs:
 
-  ### Added
+  #### Added
   - Added maximum voltage setter for `DCMotor` and `Motor`.
   - Documented `DriveBase.curve()` method.
 
-  ### Changed
+  #### Changed
   - Removed `duty` setting from `Control.limits` method.
   - Removed `integral_range` setting from `Control.pid` method.
 
@@ -376,11 +406,11 @@
 ### Changed
 - Updated to Pybricks firmware v3.1.0c1:
 
-  ### Added
+  #### Added
   - Added `DriveBase.curve()` method to drive an arc segment.
   - Added `then` and `wait` arguments to `DriveBase` methods ([support#57]).
 
-  ### Changed
+  #### Changed
   - Dropped `integral_range` argument from `Control.pid()`. This setting was
     ineffective and never used. When set incorrectly, the motor could get stuck
     for certain combinations of `kp` and `ki`.
@@ -389,7 +419,7 @@
   - Changed how the duty cycle limit is set for `Motor` and `DCMotor`. It is now
     set as a voltage limit via a dedicated method, instead of `Motor.control`.
 
-  ### Fixed
+  #### Fixed
   - Fixed `then=Stop.COAST` being ignored in most motor commands.
   - Fixed `brake()`/`light.off()` not working on Move hub I/O port C ([support#501]).
   - Fixed `Remote()` failing to connect when hub is connected to 2019 or newer
@@ -406,7 +436,7 @@
 
 - Updated docs:
 
-  ### Added
+  #### Added
   - Added `ColorLightMatrix` class.
   - Added `LWP3Device` class.
 
@@ -421,20 +451,20 @@
 - Updated dependencies.
 - Updated to Pybricks firmware v3.1.0b1:
 
-  ### Added
+  #### Added
   - Support for LEGO Technic Color Light Matrix ([support#440]).
   - Support for LEGO UART devices with a new battery power flag. This is
     required to support the new LEGO Technic Color Light Matrix ([support#440]).
   - Support for the SPIKE Essential hub/Technic Small hub ([support#439]).
 
-  ### Fixed
+  #### Fixed
   - Fixed Ultrasonic Sensor and Color Sensor turning off when a
     user script ends ([support#456]).
   - Hub reset due to watchdog timer when writing data to UART I/O device
     ([support#304]).
   - City/Technic hubs not connecting via Bluetooth on macOS 12 ([support#489]).
 
-  ### Changed:
+  #### Changed:
   - Updated to MicroPython v1.17.
 
   [support#304]: https://github.com/pybricks/support/issues/304
@@ -450,7 +480,7 @@
 ### Changed
 - Updated to Pybricks firmware v3.1.0a4:
 
-  ### Added
+  #### Added
   - Enabled builtin `bytearray` ([pybricks-code#60]).
   - Enabled `ustruct` module ([pybricks-code#60]).
   - Added alpha support for dual boot installation on the SPIKE Prime Hub.
@@ -461,7 +491,7 @@
   - Added `pybricks.iodevices.LWP3Device` to communicate with a device that supports
     the LEGO Wireless Protocol 3.0.00 ([pybricks-code#68])
 
-  ### Changed
+  #### Changed
   - Move Hub Bluetooth optimizations to reduce firmware size ([pybricks-code#49]).
   - Disabled `pybricks.iodevices` module on Move Hub to reduce firmware size.
   - Improvements to `pybricks.pupdevices.Remote`:
@@ -479,11 +509,11 @@
 
 - Updated documentation:
 
-  ### Added
+  #### Added
   - MicroPython module documentation.
   - Examples for hub system functions including stop button and shutdown.
 
-  ### Changed
+  #### Changed
   - Build IDE docs as main docs with minor changes, instead of a completely
     separate build.
   - Moved motor control documentation to the motor page.
@@ -559,7 +589,8 @@ Prerelease changes are documented at [support#48].
 
 <!-- links for version headings -->
 
-[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.12...HEAD
+[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-rc.1...HEAD
+[2.0.0-rc.1]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.12...v2.0.0-rc.1
 [2.0.0-beta.12]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.11...v2.0.0-beta.12
 [2.0.0-beta.11]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.10...v2.0.0-beta.11
 [2.0.0-beta.10]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.9...v2.0.0-beta.10
