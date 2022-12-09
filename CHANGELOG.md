@@ -9,6 +9,34 @@
 
 ### Changed
 - Moved documentation show/hide button from settings to editor area ([support#778]).
+- Updated documentation and other dependencies.
+- Updated firmware to v3.2.0c1:
+
+  ### Fixed
+  - Fixed `motor.control.limits()` not working if acceleration was `None`.
+  - Fixed crash on calling methods on uninitialized objects ([support#805]).
+  - Fixed crash on calling methods in `__init__(self, ...)` before
+    calling `super().__init(...)` on uninitialized objects ([support#777]).
+  - Reverted Pybricks Code stop button raises `SystemAbort` instead of
+    `SystemExit` ([support#834]).
+  - Improved stop message raised on `SystemExit` and `SystemAbort` ([support#836]).
+  - Fixed Technic Hub and City Hub sometimes not shutting down when a Bluetooth
+    operation is busy ([support#814]).
+  - Fixed `hub.system` methods not working ([support#837]).
+
+  ### Changed
+  - Changed default XYZ orientation of the Technic Hub and the Essential Hub to
+    match the SPIKE Prime Hub and Move Hub ([support#848]).
+
+  [support#777]: https://github.com/pybricks/support/issues/777
+  [support#805]: https://github.com/pybricks/support/issues/805
+  [support#814]: https://github.com/pybricks/support/issues/814
+  [support#826]: https://github.com/pybricks/support/issues/826
+  [support#834]: https://github.com/pybricks/support/issues/834
+  [support#836]: https://github.com/pybricks/support/issues/836
+  [support#837]: https://github.com/pybricks/support/issues/837
+  [support#848]: https://github.com/pybricks/support/issues/848
+
 
 ### Fixed
 - Fixed first tour item not shown if settings is not open ([support#823]).
