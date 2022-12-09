@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [2.0.0-rc.1] - 2022-12-09
+
 ### Added
 - Added videos to firmware flash dialogs ([support#728]).
 
@@ -587,7 +589,8 @@ Prerelease changes are documented at [support#48].
 
 <!-- links for version headings -->
 
-[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.12...HEAD
+[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-rc.1...HEAD
+[2.0.0-rc.1]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.12...v2.0.0-rc.1
 [2.0.0-beta.12]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.11...v2.0.0-beta.12
 [2.0.0-beta.11]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.10...v2.0.0-beta.11
 [2.0.0-beta.10]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.9...v2.0.0-beta.10
