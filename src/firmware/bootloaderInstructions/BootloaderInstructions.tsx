@@ -6,6 +6,7 @@ import { Callout, Intent } from '@blueprintjs/core';
 import classNames from 'classnames';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
+    legoRegisteredTrademark,
     pybricksUsbDfuWindowsDriverInstallUrl,
     pybricksUsbLinuxUdevRulesUrl,
 } from '../../app/constants';
@@ -24,10 +25,24 @@ import primeHubMp4 from './assets/bootloader-primehub-540.mp4';
 import primeHubVtt from './assets/bootloader-primehub-metadata.vtt';
 import technicHubMp4 from './assets/bootloader-technichub-540.mp4';
 import technicHubVtt from './assets/bootloader-technichub-metadata.vtt';
+import cityHubRecoveryMp4 from './assets/recover-cityhub-540.mp4';
+import cityHubRecoveryVtt from './assets/recover-cityhub-metadata.vtt';
+import moveHubRecoveryMp4 from './assets/recover-movehub-540.mp4';
+import moveHubRecoveryVtt from './assets/recover-movehub-metadata.vtt';
+import technicHubRecoveryMp4 from './assets/recover-technichub-540.mp4';
+import technicHubRecoveryVtt from './assets/recover-technichub-metadata.vtt';
 import { useI18n } from './i18n';
 
 type BootloaderInstructionsProps = {
+    /**
+     * The instructions and video will be customized for this hub.
+     */
     hubType: Hub;
+    /**
+     * If true, show official firmware recovery video and steps for supported hubs.
+     * @default false
+     */
+    recovery?: boolean;
 };
 
 const videoFileMap: ReadonlyMap<Hub, string> = new Map([
@@ -48,13 +63,30 @@ const metadataFileMap: ReadonlyMap<Hub, string> = new Map([
     [Hub.Technic, technicHubVtt],
 ]);
 
+const recoveryVideoFileMap: ReadonlyMap<Hub, string> = new Map([
+    [Hub.City, cityHubRecoveryMp4],
+    [Hub.Essential, essentialHubMp4],
+    [Hub.Inventor, inventorHubMp4],
+    [Hub.Move, moveHubRecoveryMp4],
+    [Hub.Prime, primeHubMp4],
+    [Hub.Technic, technicHubRecoveryMp4],
+]);
+
+const recoveryMetadataFileMap: ReadonlyMap<Hub, string> = new Map([
+    [Hub.City, cityHubRecoveryVtt],
+    [Hub.Essential, essentialHubVtt],
+    [Hub.Inventor, inventorHubVtt],
+    [Hub.Move, moveHubRecoveryVtt],
+    [Hub.Prime, primeHubVtt],
+    [Hub.Technic, technicHubRecoveryVtt],
+]);
 /**
  * Provides customized instructions on how to enter bootloader mode based
  * on the hub type.
  */
 const BootloaderInstructions: React.VoidFunctionComponent<
     BootloaderInstructionsProps
-> = ({ hubType }) => {
+> = ({ hubType, recovery }) => {
     const i18n = useI18n();
 
     const { button, light, lightPattern } = useMemo(() => {
@@ -139,10 +171,21 @@ const BootloaderInstructions: React.VoidFunctionComponent<
                 disablePictureInPicture
                 className="pb-bootloader-video"
             >
-                <source src={videoFileMap.get(hubType)} type="video/mp4" />
+                <source
+                    src={
+                        recovery
+                            ? recoveryVideoFileMap.get(hubType)
+                            : videoFileMap.get(hubType)
+                    }
+                    type="video/mp4"
+                />
                 <track
                     kind="metadata"
-                    src={metadataFileMap.get(hubType)}
+                    src={
+                        recovery
+                            ? recoveryMetadataFileMap.get(hubType)
+                            : metadataFileMap.get(hubType)
+                    }
                     ref={metadataTrackRef}
                 />
             </video>
@@ -153,6 +196,10 @@ const BootloaderInstructions: React.VoidFunctionComponent<
                 {i18n.translate('instruction', {
                     startPoweredOff: hubHasUSB(hubType)
                         ? i18n.translate('startPoweredOff.usb')
+                        : recovery
+                        ? i18n.translate('startPoweredOff.recovery', {
+                              lego: legoRegisteredTrademark,
+                          })
                         : i18n.translate('startPoweredOff.default'),
                 })}
             </p>
@@ -210,8 +257,18 @@ const BootloaderInstructions: React.VoidFunctionComponent<
                     </li>
                 )}
 
+                {recovery && !hubHasUSB(hubType) && (
+                    <li
+                        className={classNames(
+                            activeStep === 'wait-app-connect' && 'pb-active-step',
+                        )}
+                    >
+                        {i18n.translate('step.waitAppConnect')}
+                    </li>
+                )}
+
                 {/* hubs with USB will keep the power on, but other hubs won't */}
-                {hubHasUSB(hubType) ? (
+                {recovery || hubHasUSB(hubType) ? (
                     <li
                         className={classNames(
                             activeStep === 'release-button' && 'pb-active-step',

@@ -1,0 +1,13 @@
+WEBVTT
+
+hold-button
+00:05.000 --> 00:08.000
+
+wait-for-light
+00:08.000 --> 00:14.000
+
+wait-app-connect
+00:14.000 --> 00:21.000
+
+release-button
+00:21.000 --> 00:24.000

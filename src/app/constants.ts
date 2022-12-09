@@ -51,9 +51,6 @@ export const pybricksUsbDfuWindowsDriverInstallUrl =
 export const pybricksUsbLinuxUdevRulesUrl =
     'https://github.com/pybricks/support/discussions/688#discussioncomment-3239099';
 
-export const pybricksBleFirmwareRestoreVideoUrl =
-    'https://pybricks.com/install/technic-boost-city/#restoring-the-original-firmware';
-
 /** Pybricks copyright statement. */
 export const pybricksCopyright = 'Copyright (c) 2020-2023 The Pybricks Authors';
 

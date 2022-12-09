@@ -11,11 +11,7 @@ import {
 import classNames from 'classnames';
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import {
-    legoRegisteredTrademark,
-    pybricksBleFirmwareRestoreVideoUrl,
-} from '../../app/constants';
-import ExternalLinkIcon from '../../components/ExternalLinkIcon';
+import { legoRegisteredTrademark } from '../../app/constants';
 import { hubHasUSB } from '../../components/hubPicker';
 import { HubPicker } from '../../components/hubPicker/HubPicker';
 import { useHubPickerSelectedHub } from '../../components/hubPicker/hooks';
@@ -51,7 +47,7 @@ const RestoreFirmwarePanel: React.VoidFunctionComponent = () => {
 
     return (
         <div className={classNames(Classes.DIALOG_BODY, Classes.RUNNING_TEXT)}>
-            <BootloaderInstructions hubType={hubType} />
+            <BootloaderInstructions hubType={hubType} recovery />
             {hubHasUSB(hubType) ? (
                 <>
                     <p>
@@ -73,25 +69,7 @@ const RestoreFirmwarePanel: React.VoidFunctionComponent = () => {
                     </Button>
                 </>
             ) : (
-                <p>
-                    {i18n.translate('restoreFirmwarePanel.instruction2.ble.message', {
-                        lego: legoRegisteredTrademark,
-                        thisVideo: (
-                            <>
-                                <a
-                                    href={pybricksBleFirmwareRestoreVideoUrl}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                >
-                                    {i18n.translate(
-                                        'restoreFirmwarePanel.instruction2.ble.thisVideo',
-                                    )}
-                                </a>
-                                <ExternalLinkIcon />
-                            </>
-                        ),
-                    })}
-                </p>
+                <p>{i18n.translate('restoreFirmwarePanel.instruction2.ble.message')}</p>
             )}
         </div>
     );
