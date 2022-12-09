@@ -1,0 +1,16 @@
+WEBVTT
+
+disconnect-io
+00:00.100 --> 00:07.000
+
+hold-button
+00:07.000 --> 00:11.000
+
+wait-for-light
+00:11.000 --> 00:19.000
+
+wait-app-connect
+00:19.000 --> 00:25.000
+
+release-button
+00:25.000 --> 00:28.000

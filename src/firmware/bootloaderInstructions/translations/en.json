@@ -7,7 +7,8 @@
     "instruction": "To flash the firmware, the hub must be placed in bootloader mode. {startPoweredOff}, then follow the instructions below:",
     "startPoweredOff": {
         "default": "Start with the hub powered off",
-        "usb": "Start with the hub powered off and the USB cable disconnected"
+        "usb": "Start with the hub powered off and the USB cable disconnected",
+        "recovery": "Start with the hub powered off and the {lego} PoweredUp app opened to any 'Create' program"
     },
     "button": {
         "bluetooth": "Bluetooth button",
@@ -26,7 +27,8 @@
         "holdButton": "Press and hold the {button} on the hub.",
         "connectUsb": "Connect the USB cable.",
         "waitForLight": "Keep holding the {button} and wait for the {light} to start flashing {lightPattern}. This takes about 5 seconds.",
-        "releaseButton": "Release the {button}",
+        "waitAppConnect": "The app will automatically connect and start flashing the firmware.",
+        "releaseButton": "Release the {button}.",
         "keepHolding": "Keep holding the {button}."
     }
 }
