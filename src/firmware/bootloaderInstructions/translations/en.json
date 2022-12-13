@@ -1,33 +1,35 @@
 {
     "warning": {
-        "linux": "If you have never used Pybricks with USB on Linux, you will need to configure udev rules to allow permission before you can flash the hub firmware.",
+        "linux": "If you have never used Pybricks with USB on Linux, you will need to configure udev rules before you can install the firmware.",
         "windows": " If you have never used Pybricks with USB on Windows, you may need to manually install a USB driver before you can flash the hub firmware.",
         "learnMore": "Learn more."
     },
-    "instruction": "To flash the firmware, the hub must be placed in bootloader mode. {startPoweredOff}, then follow the instructions below:",
-    "startPoweredOff": {
-        "default": "Start with the hub powered off",
-        "usb": "Start with the hub powered off and the USB cable disconnected",
-        "recovery": "Start with the hub powered off and the {lego} PoweredUp app opened to any 'Create' program"
+    "prepare": {
+        "start": "Now place the hub in update mode. To prepare:",
+        "batteries": "Make sure the hub has fresh batteries.",
+        "turnOff": "Make sure the hub is turned off.",
+        "usb": "Disconnect the USB cable.",
+        "app": "Open the {lego} PoweredUp app in 'Create' mode and start a new project."
     },
     "button": {
         "bluetooth": "Bluetooth button",
-        "power": "power button"
+        "power": "button"
     },
     "light": {
         "bluetooth": "Bluetooth light",
-        "status": "hub status light"
+        "status": "hub light"
     },
     "lightPattern": {
         "bluetooth": "pink-green-blue-off",
         "status": "light purple"
     },
     "step": {
-        "disconnectIo": "Disconnect all motors and sensors from the I/O ports on the hub.",
+        "start": "Now follow these steps:",
+        "disconnectIo": "Disconnect any device from port A on the hub.",
         "holdButton": "Press and hold the {button} on the hub.",
         "connectUsb": "Connect the USB cable.",
-        "waitForLight": "Keep holding the {button} and wait for the {light} to start flashing {lightPattern}. This takes about 5 seconds.",
-        "waitAppConnect": "The app will automatically connect and start flashing the firmware.",
+        "waitForLight": "Wait for the {light} to start blinking {lightPattern}.",
+        "waitAppConnect": "The app will automatically connect and start restoring the firmware.",
         "releaseButton": "Release the {button}.",
         "keepHolding": "Keep holding the {button}."
     }

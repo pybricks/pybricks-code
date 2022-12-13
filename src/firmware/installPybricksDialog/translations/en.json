@@ -53,7 +53,7 @@
         }
     },
     "bootloaderPanel": {
-        "title": "Place hub in bootloader mode",
+        "title": "Enter update mode",
         "instruction2": "Then click the {flashFirmware} button below to connect to the hub and flash the firmware."
     },
     "backButton": {
