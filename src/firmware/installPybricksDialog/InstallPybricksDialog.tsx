@@ -400,15 +400,11 @@ const BootloaderModePanel: React.VoidFunctionComponent<BootloaderModePanelProps>
     const i18n = useI18n();
 
     return (
-        <div className={dialogBody}>
-            <BootloaderInstructions hubType={hubType} />
-            <p>
-                {i18n.translate('bootloaderPanel.instruction2', {
-                    flashFirmware: (
-                        <strong>{i18n.translate('flashFirmwareButton.label')}</strong>
-                    ),
-                })}
-            </p>
+        <div className={classNames(Classes.DIALOG_BODY, Classes.RUNNING_TEXT)}>
+            <BootloaderInstructions
+                hubType={hubType}
+                flashButtonText={i18n.translate('flashFirmwareButton.label')}
+            />
         </div>
     );
 };

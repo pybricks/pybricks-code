@@ -5,7 +5,7 @@
         "learnMore": "Learn more."
     },
     "prepare": {
-        "start": "Now place the hub in update mode. To prepare:",
+        "start": "Preparation:",
         "batteries": "Make sure the hub has fresh batteries.",
         "turnOff": "Make sure the hub is turned off.",
         "usb": "Disconnect the USB cable.",
@@ -24,7 +24,7 @@
         "status": "light purple"
     },
     "step": {
-        "start": "Now follow these steps:",
+        "start": "Enter update mode (see video):",
         "disconnectIo": "Disconnect any device from port A on the hub.",
         "holdButton": "Press and hold the {button} on the hub.",
         "connectUsb": "Connect the USB cable.",
@@ -32,5 +32,11 @@
         "waitAppConnect": "The app will automatically connect and start restoring the firmware.",
         "releaseButton": "Release the {button}.",
         "keepHolding": "Keep holding the {button}."
+    },
+    "connect": {
+        "start": "Activate the connection:",
+        "clickConnectAndFlash": "Click the {flashButton} button below.",
+        "selectDevice": "In the pop-up dialog, select {deviceName} and click {connectButton}.",
+        "connectButton": "Connect"
     }
 }

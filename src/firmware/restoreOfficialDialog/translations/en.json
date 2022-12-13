@@ -14,8 +14,9 @@
             "ble": {
                 "message": "When the progress bar is done, the hub will reboot and the app will connect. The official firmware has been restored."
             },
-            "dfu": "Then click the {flashFirmware} button below to connect to the hub and flash the firmware. After flashing is complete, connect the hub to one of the official {lego} apps and use it to update to the latest official firmware."
+            "updateApp": "Once the recovery is complete, use the {app} app to get the latest official firmware.",
+            "updateAppVersion": "You can use version 2 (legacy) or version 3 to do so."
         },
-        "flashButton": "Flash"
+        "flashButton": "Restore"
     }
 }
