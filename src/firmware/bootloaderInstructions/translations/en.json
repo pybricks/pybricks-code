@@ -34,7 +34,7 @@
         "keepHolding": "Keep holding the {button}."
     },
     "connect": {
-        "start": "Activate the connection:",
+        "start": "Install:",
         "clickConnectAndFlash": "Click the {flashButton} button below.",
         "selectDevice": "In the pop-up dialog, select {deviceName} and click {connectButton}.",
         "connectButton": "Connect"

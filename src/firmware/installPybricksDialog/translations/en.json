@@ -2,22 +2,24 @@
     "title": "Install Pybricks Firmware",
     "selectHubPanel": {
         "title": "Select hub type",
-        "message": "Which kind of hub do you want to use?",
+        "message": "Select your hub.",
         "notOnListButton": {
-            "label": "My hub is not in the list.",
+            "label": "What about other hubs?",
             "info": {
                 "mindstorms": {
-                    "title": "MINDSTORMS Programmable Bricks",
-                    "rcx": "RCX - not enough memory to run Pybricks",
-                    "nxt": "NXT - maybe some day",
-                    "ev3": "EV3 - supported using VS Code instead of Pybricks Code"
+                    "title": "{legoMindstormsRegisteredTrademark} bricks",
+                    "intro": "{appName} does not currently support previous generations of {legoMindstormsRegisteredTrademark}.",
+                    "help": "But with your help, it can! Click the ♥ icon in the top right to learn more.",
+                    "rcx": "RCX: Might work in streaming mode.",
+                    "nxt": "NXT: We have tested this. It works!",
+                    "ev3": "EV3: Supported using Visual Studio Code."
                 },
                 "poweredUp": {
-                    "title": "Unsupported Powered Up Hubs",
-                    "wedo2": "WeDo 2.0 Smart hub",
-                    "duploTrain": "Duplo Train hub",
-                    "mario": "Mario/Luigi/Peach",
-                    "footnote": "firmware cannot be updated"
+                    "title": "Other hubs",
+                    "intro": "Support for these hubs is currently not planned.",
+                    "wedo2": "WeDo 2.0 Smart hub.",
+                    "duploTrain": "Duplo Train hub.",
+                    "mario": "Mario/Luigi/Peach."
                 }
             }
         },

@@ -27,6 +27,7 @@ import { useDropzone } from 'react-dropzone';
 import { useDispatch } from 'react-redux';
 import { useLocalStorage } from 'usehooks-ts';
 import { alertsShowAlert } from '../../alerts/actions';
+import { appName, legoMindstormsRegisteredTrademark } from '../../app/constants';
 import HelpButton from '../../components/HelpButton';
 import { Hub, hubBootloaderType } from '../../components/hubPicker';
 import { HubPicker } from '../../components/hubPicker/HubPicker';
@@ -92,8 +93,23 @@ const UnsupportedHubs: React.VoidFunctionComponent = () => {
     return (
         <div className={Classes.RUNNING_TEXT}>
             <h4>
-                {i18n.translate('selectHubPanel.notOnListButton.info.mindstorms.title')}
+                {i18n.translate(
+                    'selectHubPanel.notOnListButton.info.mindstorms.title',
+                    { legoMindstormsRegisteredTrademark },
+                )}
             </h4>
+            <p>
+                {i18n.translate(
+                    'selectHubPanel.notOnListButton.info.mindstorms.intro',
+                    {
+                        appName,
+                        legoMindstormsRegisteredTrademark,
+                    },
+                )}
+            </p>
+            <p>
+                {i18n.translate('selectHubPanel.notOnListButton.info.mindstorms.help')}
+            </p>
             <ul>
                 <li>
                     {i18n.translate(
@@ -114,18 +130,19 @@ const UnsupportedHubs: React.VoidFunctionComponent = () => {
             <h4>
                 {i18n.translate('selectHubPanel.notOnListButton.info.poweredUp.title')}
             </h4>
+            <p>
+                {i18n.translate('selectHubPanel.notOnListButton.info.poweredUp.intro')}
+            </p>
             <ul>
                 <li>
                     {i18n.translate(
                         'selectHubPanel.notOnListButton.info.poweredUp.wedo2',
                     )}
-                    <em>*</em>
                 </li>
                 <li>
                     {i18n.translate(
                         'selectHubPanel.notOnListButton.info.poweredUp.duploTrain',
                     )}
-                    <em>*</em>
                 </li>
                 <li>
                     {i18n.translate(
@@ -133,13 +150,6 @@ const UnsupportedHubs: React.VoidFunctionComponent = () => {
                     )}
                 </li>
             </ul>
-
-            <em>
-                *{' '}
-                {i18n.translate(
-                    'selectHubPanel.notOnListButton.info.poweredUp.footnote',
-                )}
-            </em>
         </div>
     );
 };
