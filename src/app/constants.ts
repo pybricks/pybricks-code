@@ -57,6 +57,12 @@ export const pybricksCopyright = 'Copyright (c) 2020-2023 The Pybricks Authors';
 /** The LEGO name with registered trademark symbol. */
 export const legoRegisteredTrademark = 'LEGO®';
 
+/** The LEGO Education SPIKE name with registered trademark symbol. */
+export const legoEducationSpikeRegisteredTrademark = 'LEGO® Education™ SPIKE™';
+
+/** The LEGO MINDSTORMS name with registered trademark symbol. */
+export const legoMindstormsRegisteredTrademark = 'LEGO® MINDSTORMS®';
+
 // https://www.lego.com/en-us/legal/notices-and-policies/fair-play/
 /** LEGO "fair play" disclaimer */
 export const legoDisclaimer =

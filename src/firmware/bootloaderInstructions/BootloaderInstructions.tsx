@@ -43,7 +43,20 @@ type BootloaderInstructionsProps = {
      * @default false
      */
     recovery?: boolean;
+    /**
+     * Flash button name that can be referenced in the instructions.
+     */
+    flashButtonText: string;
 };
+
+const bootloaderDeviceNameMap: ReadonlyMap<Hub, string> = new Map([
+    [Hub.City, 'LEGO Bootloader'],
+    [Hub.Essential, 'LEGO Technic Small Hub in DFU Mode'],
+    [Hub.Inventor, 'LEGO Technic Large Hub in DFU Mode'],
+    [Hub.Move, 'LEGO Bootloader'],
+    [Hub.Prime, 'LEGO Technic Large Hub in DFU Mode'],
+    [Hub.Technic, 'LEGO Bootloader'],
+]);
 
 const videoFileMap: ReadonlyMap<Hub, string> = new Map([
     [Hub.City, cityHubMp4],
@@ -86,10 +99,10 @@ const recoveryMetadataFileMap: ReadonlyMap<Hub, string> = new Map([
  */
 const BootloaderInstructions: React.VoidFunctionComponent<
     BootloaderInstructionsProps
-> = ({ hubType, recovery }) => {
+> = ({ hubType, recovery, flashButtonText }) => {
     const i18n = useI18n();
 
-    const { button, light, lightPattern } = useMemo(() => {
+    const { button, light, lightPattern, flashButton } = useMemo(() => {
         return {
             button: i18n.translate(
                 hubHasBluetoothButton(hubType) ? 'button.bluetooth' : 'button.power',
@@ -102,6 +115,7 @@ const BootloaderInstructions: React.VoidFunctionComponent<
                     ? 'lightPattern.bluetooth'
                     : 'lightPattern.status',
             ),
+            flashButton: flashButtonText,
         };
     }, [i18n, hubType]);
 
@@ -192,38 +206,31 @@ const BootloaderInstructions: React.VoidFunctionComponent<
 
             <div className="pb-spacer" />
 
-            <p>{i18n.translate('prepare.start')}</p>
+            <p>
+                <strong>{i18n.translate('prepare.start')}</strong>
+            </p>
             <ol>
-                {hubHasUSB(hubType) ? (
-                    <>
-                        <li>{i18n.translate('prepare.usb')}</li>
-                        <li>{i18n.translate('prepare.turnOff')}</li>
-                    </>
+                <li>
+                    {i18n.translate(
+                        hubHasUSB(hubType) ? 'prepare.usb' : 'prepare.batteries',
+                    )}
+                </li>
+                <li>{i18n.translate('prepare.turnOff')}</li>
+                {/* For non-usb recovery, show step about official app */}
+                {recovery && !hubHasUSB(hubType) ? (
+                    <li>
+                        {i18n.translate('prepare.app', {
+                            lego: legoRegisteredTrademark,
+                        })}
+                    </li>
                 ) : (
-                    <>
-                        {recovery ? (
-                            <>
-                                <li>
-                                    {i18n.translate('prepare.batteries')}{' '}
-                                    {i18n.translate('prepare.turnOff')}
-                                </li>
-                                <li>
-                                    {i18n.translate('prepare.app', {
-                                        lego: legoRegisteredTrademark,
-                                    })}
-                                </li>
-                            </>
-                        ) : (
-                            <>
-                                <li>{i18n.translate('prepare.batteries')}</li>
-                                <li>{i18n.translate('prepare.turnOff')}</li>
-                            </>
-                        )}
-                    </>
+                    <></>
                 )}
             </ol>
-            <p>{i18n.translate('step.start')}</p>
-            <ol start={3}>
+            <p>
+                <strong>{i18n.translate('step.start')}</strong>
+            </p>
+            <ol>
                 {/* City hub has power issues and requires disconnecting motors/sensors */}
                 {hubType === Hub.City && (
                     <li
@@ -310,6 +317,36 @@ const BootloaderInstructions: React.VoidFunctionComponent<
                     </li>
                 )}
             </ol>
+            {hubHasUSB(hubType) || (!hubHasUSB(hubType) && !recovery) ? (
+                <>
+                    <p>
+                        <strong>{i18n.translate('connect.start')}</strong>
+                    </p>
+                    <ol>
+                        <li>
+                            {i18n.translate('connect.clickConnectAndFlash', {
+                                flashButton: <strong>{flashButton}</strong>,
+                            })}
+                        </li>
+                        <li>
+                            {i18n.translate('connect.selectDevice', {
+                                deviceName: (
+                                    <strong>
+                                        {bootloaderDeviceNameMap.get(hubType)}
+                                    </strong>
+                                ),
+                                connectButton: (
+                                    <strong>
+                                        {i18n.translate('connect.connectButton')}
+                                    </strong>
+                                ),
+                            })}
+                        </li>
+                    </ol>
+                </>
+            ) : (
+                <></>
+            )}
         </>
     );
 };

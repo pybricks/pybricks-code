@@ -52,7 +52,7 @@ describe('flashing', () => {
 
             await user.click(dialog.getByRole('radio', { name: hubName }));
             await user.click(dialog.getByRole('button', { name: 'Next' }));
-            await user.click(dialog.getByRole('button', { name: 'Flash' }));
+            await user.click(dialog.getByRole('button', { name: 'Restore' }));
 
             expect(dispatch).toHaveBeenCalledWith(firmwareRestoreOfficialDfu(hub));
         },

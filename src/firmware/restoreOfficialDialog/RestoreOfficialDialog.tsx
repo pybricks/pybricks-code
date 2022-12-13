@@ -11,8 +11,12 @@ import {
 import classNames from 'classnames';
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { legoRegisteredTrademark } from '../../app/constants';
-import { hubHasUSB } from '../../components/hubPicker';
+import {
+    legoEducationSpikeRegisteredTrademark,
+    legoMindstormsRegisteredTrademark,
+    legoRegisteredTrademark,
+} from '../../app/constants';
+import { Hub, hubHasUSB } from '../../components/hubPicker';
 import { HubPicker } from '../../components/hubPicker/HubPicker';
 import { useHubPickerSelectedHub } from '../../components/hubPicker/hooks';
 import { useSelector } from '../../reducers';
@@ -47,18 +51,25 @@ const RestoreFirmwarePanel: React.VoidFunctionComponent = () => {
 
     return (
         <div className={classNames(Classes.DIALOG_BODY, Classes.RUNNING_TEXT)}>
-            <BootloaderInstructions hubType={hubType} recovery />
+            <BootloaderInstructions
+                hubType={hubType}
+                recovery
+                flashButtonText={i18n.translate('restoreFirmwarePanel.flashButton')}
+            />
             {hubHasUSB(hubType) ? (
                 <>
                     <p>
-                        {i18n.translate('restoreFirmwarePanel.instruction2.dfu', {
-                            flashFirmware: (
-                                <strong>
-                                    {i18n.translate('restoreFirmwarePanel.flashButton')}
-                                </strong>
-                            ),
-                            lego: legoRegisteredTrademark,
-                        })}
+                        {i18n.translate('restoreFirmwarePanel.instruction2.updateApp', {
+                            app:
+                                hubType === Hub.Inventor
+                                    ? legoMindstormsRegisteredTrademark
+                                    : legoEducationSpikeRegisteredTrademark,
+                        })}{' '}
+                        {hubType !== Hub.Inventor
+                            ? i18n.translate(
+                                  'restoreFirmwarePanel.instruction2.updateAppVersion',
+                              )
+                            : ''}
                     </p>
                     <div className="pb-spacer" />
                     <Button
