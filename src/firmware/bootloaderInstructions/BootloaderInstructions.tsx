@@ -192,18 +192,38 @@ const BootloaderInstructions: React.VoidFunctionComponent<
 
             <div className="pb-spacer" />
 
-            <p>
-                {i18n.translate('instruction', {
-                    startPoweredOff: hubHasUSB(hubType)
-                        ? i18n.translate('startPoweredOff.usb')
-                        : recovery
-                        ? i18n.translate('startPoweredOff.recovery', {
-                              lego: legoRegisteredTrademark,
-                          })
-                        : i18n.translate('startPoweredOff.default'),
-                })}
-            </p>
+            <p>{i18n.translate('prepare.start')}</p>
             <ol>
+                {hubHasUSB(hubType) ? (
+                    <>
+                        <li>{i18n.translate('prepare.usb')}</li>
+                        <li>{i18n.translate('prepare.turnOff')}</li>
+                    </>
+                ) : (
+                    <>
+                        {recovery ? (
+                            <>
+                                <li>
+                                    {i18n.translate('prepare.batteries')}{' '}
+                                    {i18n.translate('prepare.turnOff')}
+                                </li>
+                                <li>
+                                    {i18n.translate('prepare.app', {
+                                        lego: legoRegisteredTrademark,
+                                    })}
+                                </li>
+                            </>
+                        ) : (
+                            <>
+                                <li>{i18n.translate('prepare.batteries')}</li>
+                                <li>{i18n.translate('prepare.turnOff')}</li>
+                            </>
+                        )}
+                    </>
+                )}
+            </ol>
+            <p>{i18n.translate('step.start')}</p>
+            <ol start={3}>
                 {/* City hub has power issues and requires disconnecting motors/sensors */}
                 {hubType === Hub.City && (
                     <li
