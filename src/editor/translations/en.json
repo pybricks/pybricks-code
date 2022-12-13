@@ -1,10 +1,10 @@
 {
     "placeholder": "Write your program here...",
-    "check": "Check Syntax",
-    "toggleDocs": "Toggle Documentation",
+    "check": "Check syntax",
+    "toggleDocs": "Toggle documentation",
     "copy": "Copy",
     "paste": "Paste",
-    "selectAll": "Select All",
+    "selectAll": "Select all",
     "undo": "Undo",
     "redo": "Redo",
     "closeFile": { "tooltip": "Close {fileName}" },

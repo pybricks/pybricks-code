@@ -19,7 +19,7 @@ describe('darkMode setting switch', () => {
     it('should toggle setting', async () => {
         const [user, settings] = testRender(<Settings />);
 
-        const darkMode = settings.getByLabelText('Dark mode');
+        const darkMode = settings.getByLabelText('Dark Mode');
         expect(darkMode).not.toBeChecked();
         expect(localStorage.getItem('usehooks-ts-ternary-dark-mode')).toBe(null);
 
