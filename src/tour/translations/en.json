@@ -15,19 +15,20 @@
         },
         "backupFiles": {
             "message": "Don't lose your work.",
-            "action": "Click the {icon} button to backup all of your programs."
+            "action": "Click {icon} to back up your programs."
         },
         "flashPybricksFirmware": {
-            "message": "{appName} requires a special firmware to be flashed to your hub in order to run the program on the hub."
+            "message": "To use {appName}, you have to install the Pybricks firmware."
         },
         "restoreOfficialFirmware": {
-            "message": "You can always restore the official {lego} firmware after using the special Pybricks firmware."
+            "message": "You can restore the official {lego} firmware at any time."
         },
         "connectToHub": {
-            "message": "One you have flashed the Pybricks firmware, click the Bluetooth button to connect to the hub."
+            "message": "Click the Bluetooth button to connect."
         },
         "downloadAndRun": {
-            "message": "After you are connected to the hub, click the {icon} button to download and run your program."
+            "message": "Once connected, click the {icon} button to run your program.",
+            "runAgain": "The program is now saved on the hub. Press the button on the hub to run it again."
         }
     }
 }

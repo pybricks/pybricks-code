@@ -96,11 +96,14 @@ const DownloadAndRunStep = React.memo(function DownloadAndRunStep() {
     const i18n = useI18n();
 
     return (
-        <p>
-            {i18n.translate('steps.downloadAndRun.message', {
-                icon: <Icon icon="play" style={{ verticalAlign: 'text-top' }} />,
-            })}
-        </p>
+        <>
+            <p>
+                {i18n.translate('steps.downloadAndRun.message', {
+                    icon: <Icon icon="play" style={{ verticalAlign: 'text-top' }} />,
+                })}
+            </p>
+            <p>{i18n.translate('steps.downloadAndRun.runAgain')}</p>
+        </>
     );
 });
 
