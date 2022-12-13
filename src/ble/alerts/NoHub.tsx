@@ -4,7 +4,7 @@
 import './index.scss';
 import { AnchorButton, Button, Intent } from '@blueprintjs/core';
 import React from 'react';
-import { appName, pybricksBluetoothTroubleshootingUrl } from '../../app/constants';
+import { pybricksBluetoothTroubleshootingUrl } from '../../app/constants';
 import ExternalLinkIcon from '../../components/ExternalLinkIcon';
 import type { CreateToast } from '../../toasterTypes';
 import { useI18n } from './i18n';
@@ -19,15 +19,7 @@ const NoHub: React.VoidFunctionComponent<NoHubProps> = ({ onFlashFirmware }) => 
     return (
         <>
             <p>{i18n.translate('noHub.message')}</p>
-            <p>
-                {i18n.translate('noHub.suggestion1', {
-                    appName,
-                    buttonName: (
-                        <strong>{i18n.translate('noHub.flashFirmwareButton')}</strong>
-                    ),
-                })}
-            </p>
-            <p>{i18n.translate('noHub.suggestion2')}</p>
+            <p>{i18n.translate('noHub.suggestion')}</p>
             <div className="pb-ble-alerts-buttons">
                 <Button icon="download" onClick={onFlashFirmware}>
                     {i18n.translate('noHub.flashFirmwareButton')}
