@@ -102,7 +102,7 @@ const BootloaderInstructions: React.VoidFunctionComponent<
 > = ({ hubType, recovery, flashButtonText }) => {
     const i18n = useI18n();
 
-    const { button, light, lightPattern, flashButton } = useMemo(() => {
+    const { button, light, lightPattern } = useMemo(() => {
         return {
             button: i18n.translate(
                 hubHasBluetoothButton(hubType) ? 'button.bluetooth' : 'button.power',
@@ -115,7 +115,6 @@ const BootloaderInstructions: React.VoidFunctionComponent<
                     ? 'lightPattern.bluetooth'
                     : 'lightPattern.status',
             ),
-            flashButton: flashButtonText,
         };
     }, [i18n, hubType]);
 
@@ -325,7 +324,7 @@ const BootloaderInstructions: React.VoidFunctionComponent<
                     <ol className="continuedList">
                         <li>
                             {i18n.translate('connect.clickConnectAndFlash', {
-                                flashButton: <strong>{flashButton}</strong>,
+                                flashButton: <strong>{flashButtonText}</strong>,
                             })}
                         </li>
                         <li>
