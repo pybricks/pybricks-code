@@ -110,7 +110,10 @@ const ActionButton: React.VoidFunctionComponent<ActionButtonProps> = ({
                     aria-label={label}
                     elementRef={tooltipTargetRef as React.Ref<HTMLButtonElement>}
                     {...mergeProps(tooltipTargetProps, {
-                        className: classNames(enabled === false && Classes.DISABLED),
+                        className: classNames(
+                            'pb-toolbar-action-button',
+                            enabled === false && Classes.DISABLED,
+                        ),
                     })}
                     intent={Intent.PRIMARY}
                     onClick={handleClick}

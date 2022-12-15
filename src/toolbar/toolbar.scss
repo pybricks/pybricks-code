@@ -19,18 +19,24 @@
             padding: 5px;
         }
     }
-}
 
-.pb-toolbar * {
-    box-shadow: unset !important;
-}
-
-.pb-toolbar-group {
-    &.pb-align-left {
-        margin-right: bp.$pt-grid-size * 2;
+    // override blueprint.js style
+    & * {
+        box-shadow: unset !important;
     }
 
-    &.pb-align-right {
-        margin-left: auto;
+    &-group {
+        &.pb-align-left {
+            margin-right: bp.$pt-grid-size * 2;
+        }
+
+        &.pb-align-right {
+            margin-left: auto;
+        }
+    }
+
+    &-action-button:focus-visible:not(.pb-focus-managed) {
+        // to get contrast since button background and focus ring are both blue
+        outline-offset: 4px;
     }
 }
