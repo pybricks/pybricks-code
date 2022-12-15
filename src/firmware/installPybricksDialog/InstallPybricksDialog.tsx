@@ -23,6 +23,7 @@ import { FirmwareMetadata, HubType } from '@pybricks/firmware';
 import { fileOpen } from 'browser-fs-access';
 import classNames from 'classnames';
 import React, { useCallback, useState } from 'react';
+import { VisuallyHidden } from 'react-aria';
 import { useDropzone } from 'react-dropzone';
 import { useDispatch } from 'react-redux';
 import { useLocalStorage } from 'usehooks-ts';
@@ -108,9 +109,21 @@ const UnsupportedHubs: React.VoidFunctionComponent = () => {
                 )}
             </p>
             <p>
-                {i18n.translate('selectHubPanel.notOnListButton.info.mindstorms.help', {
-                    icon: '♥',
-                })}
+                {i18n.translate(
+                    'selectHubPanel.notOnListButton.info.mindstorms.help.message',
+                    {
+                        sponsor: (
+                            <>
+                                <VisuallyHidden elementType="span">
+                                    {i18n.translate(
+                                        'selectHubPanel.notOnListButton.info.mindstorms.help.sponsor',
+                                    )}
+                                </VisuallyHidden>
+                                <Icon icon="heart" />
+                            </>
+                        ),
+                    },
+                )}
             </p>
             <ul>
                 <li>
