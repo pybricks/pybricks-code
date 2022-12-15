@@ -3,8 +3,8 @@
     "appearance": {
         "title": "Appearance",
         "darkMode": {
-            "label": "Dark mode",
-            "help": "Enable to set theme to dark mode and disable to set theme to light mode."
+            "label": "Dark Mode",
+            "help": "Enable to choose dark mode. Disable to choose light mode."
         },
         "zoom": {
             "help": "Use {in} and {out} to zoom."
