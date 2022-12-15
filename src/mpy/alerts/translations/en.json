@@ -1,6 +1,6 @@
 {
     "compilerError": {
         "message": "Failed to compile MicroPython file.",
-        "gotoErrorButton": "Goto error"
+        "gotoErrorButton": "Go to error"
     }
 }
