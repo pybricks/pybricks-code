@@ -206,19 +206,21 @@ const BootloaderInstructions: React.VoidFunctionComponent<
             <div className="pb-spacer" />
 
             <p>
-                <strong>{i18n.translate('prepare.start')}</strong>
+                <strong>{i18n.translate('instructionGroup.prepare.title')}</strong>
             </p>
             <ol className="firstList">
                 <li>
                     {i18n.translate(
-                        hubHasUSB(hubType) ? 'prepare.usb' : 'prepare.batteries',
+                        hubHasUSB(hubType)
+                            ? 'instructionGroup.prepare.usb'
+                            : 'instructionGroup.prepare.batteries',
                     )}
                 </li>
-                <li>{i18n.translate('prepare.turnOff')}</li>
+                <li>{i18n.translate('instructionGroup.prepare.turnOff')}</li>
                 {/* For non-usb recovery, show step about official app */}
                 {recovery && !hubHasUSB(hubType) ? (
                     <li>
-                        {i18n.translate('prepare.app', {
+                        {i18n.translate('instructionGroup.prepare.app', {
                             lego: legoRegisteredTrademark,
                         })}
                     </li>
@@ -227,7 +229,9 @@ const BootloaderInstructions: React.VoidFunctionComponent<
                 )}
             </ol>
             <p>
-                <strong>{i18n.translate('step.start')}</strong>
+                <strong>
+                    {i18n.translate('instructionGroup.bootloaderMode.title')}
+                </strong>
             </p>
             <ol className="continuedList">
                 {/* City hub has power issues and requires disconnecting motors/sensors */}
@@ -237,7 +241,7 @@ const BootloaderInstructions: React.VoidFunctionComponent<
                             activeStep === 'disconnect-io' && 'pb-active-step',
                         )}
                     >
-                        {i18n.translate('step.disconnectIo')}
+                        {i18n.translate('instructionGroup.bootloaderMode.disconnectIo')}
                     </li>
                 )}
 
@@ -246,7 +250,9 @@ const BootloaderInstructions: React.VoidFunctionComponent<
                         activeStep === 'hold-button' && 'pb-active-step',
                     )}
                 >
-                    {i18n.translate('step.holdButton', { button })}
+                    {i18n.translate('instructionGroup.bootloaderMode.holdButton', {
+                        button,
+                    })}
                 </li>
 
                 {/* not strictly necessary, but order is swapped in the video,
@@ -257,7 +263,7 @@ const BootloaderInstructions: React.VoidFunctionComponent<
                             activeStep === 'connect-usb' && 'pb-active-step',
                         )}
                     >
-                        {i18n.translate('step.connectUsb')}
+                        {i18n.translate('instructionGroup.bootloaderMode.connectUsb')}
                     </li>
                 )}
 
@@ -266,7 +272,7 @@ const BootloaderInstructions: React.VoidFunctionComponent<
                         activeStep === 'wait-for-light' && 'pb-active-step',
                     )}
                 >
-                    {i18n.translate('step.waitForLight', {
+                    {i18n.translate('instructionGroup.bootloaderMode.waitForLight', {
                         button,
                         light,
                         lightPattern,
@@ -279,7 +285,7 @@ const BootloaderInstructions: React.VoidFunctionComponent<
                             activeStep === 'connect-usb' && 'pb-active-step',
                         )}
                     >
-                        {i18n.translate('step.connectUsb')}
+                        {i18n.translate('instructionGroup.bootloaderMode.connectUsb')}
                     </li>
                 )}
 
@@ -289,7 +295,9 @@ const BootloaderInstructions: React.VoidFunctionComponent<
                             activeStep === 'wait-app-connect' && 'pb-active-step',
                         )}
                     >
-                        {i18n.translate('step.waitAppConnect')}
+                        {i18n.translate(
+                            'instructionGroup.bootloaderMode.waitAppConnect',
+                        )}
                     </li>
                 )}
 
@@ -300,9 +308,12 @@ const BootloaderInstructions: React.VoidFunctionComponent<
                             activeStep === 'release-button' && 'pb-active-step',
                         )}
                     >
-                        {i18n.translate('step.releaseButton', {
-                            button,
-                        })}
+                        {i18n.translate(
+                            'instructionGroup.bootloaderMode.releaseButton',
+                            {
+                                button,
+                            },
+                        )}
                     </li>
                 ) : (
                     <li
@@ -310,7 +321,7 @@ const BootloaderInstructions: React.VoidFunctionComponent<
                             activeStep === 'keep-holding' && 'pb-active-step',
                         )}
                     >
-                        {i18n.translate('step.keepHolding', {
+                        {i18n.translate('instructionGroup.bootloaderMode.keepHolding', {
                             button,
                         })}
                     </li>
@@ -319,16 +330,21 @@ const BootloaderInstructions: React.VoidFunctionComponent<
             {hubHasUSB(hubType) || (!hubHasUSB(hubType) && !recovery) ? (
                 <>
                     <p>
-                        <strong>{i18n.translate('connect.start')}</strong>
+                        <strong>
+                            {i18n.translate('instructionGroup.connect.title')}
+                        </strong>
                     </p>
                     <ol className="continuedList">
                         <li>
-                            {i18n.translate('connect.clickConnectAndFlash', {
-                                flashButton: <strong>{flashButtonText}</strong>,
-                            })}
+                            {i18n.translate(
+                                'instructionGroup.connect.clickConnectAndFlash',
+                                {
+                                    flashButton: <strong>{flashButtonText}</strong>,
+                                },
+                            )}
                         </li>
                         <li>
-                            {i18n.translate('connect.selectDevice', {
+                            {i18n.translate('instructionGroup.connect.selectDevice', {
                                 deviceName: (
                                     <strong>
                                         {bootloaderDeviceNameMap.get(hubType)}
@@ -336,7 +352,9 @@ const BootloaderInstructions: React.VoidFunctionComponent<
                                 ),
                                 connectButton: (
                                     <strong>
-                                        {i18n.translate('connect.connectButton')}
+                                        {i18n.translate(
+                                            'instructionGroup.connect.connectButton',
+                                        )}
                                     </strong>
                                 ),
                             })}
