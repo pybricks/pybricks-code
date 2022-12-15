@@ -22,7 +22,7 @@
     },
     "flashProgress": {
         "erasing": "Erasing the old firmware: {percent}",
-        "flashing": "Installing new firmware: {percent}"
+        "flashing": "Installing the new firmware: {percent}"
     },
     "releaseButton": {
         "message": "You may release the power button on the hub now."
