@@ -21,10 +21,9 @@ ol.firstList {
 ol.firstList li,
 ol.continuedList li {
     counter-increment: listCounter;
-}
 
-// Use counter value to set marker, no matter which list.
-ol.firstList li::marker,
-ol.continuedList li::marker {
-    content: counter(listCounter, decimal) '. ';
+    // Use counter value to set marker.
+    &::marker {
+        content: counter(listCounter, decimal) '. ';
+    }
 }
