@@ -209,7 +209,7 @@ const BootloaderInstructions: React.VoidFunctionComponent<
             <p>
                 <strong>{i18n.translate('prepare.start')}</strong>
             </p>
-            <ol>
+            <ol className="firstList">
                 <li>
                     {i18n.translate(
                         hubHasUSB(hubType) ? 'prepare.usb' : 'prepare.batteries',
@@ -230,7 +230,7 @@ const BootloaderInstructions: React.VoidFunctionComponent<
             <p>
                 <strong>{i18n.translate('step.start')}</strong>
             </p>
-            <ol>
+            <ol className="continuedList">
                 {/* City hub has power issues and requires disconnecting motors/sensors */}
                 {hubType === Hub.City && (
                     <li
@@ -322,7 +322,7 @@ const BootloaderInstructions: React.VoidFunctionComponent<
                     <p>
                         <strong>{i18n.translate('connect.start')}</strong>
                     </p>
-                    <ol>
+                    <ol className="continuedList">
                         <li>
                             {i18n.translate('connect.clickConnectAndFlash', {
                                 flashButton: <strong>{flashButton}</strong>,
