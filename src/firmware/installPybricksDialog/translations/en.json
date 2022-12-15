@@ -9,9 +9,9 @@
                 "mindstorms": {
                     "title": "{legoMindstormsRegisteredTrademark} bricks",
                     "intro": "{appName} does not currently support previous generations of {legoMindstormsRegisteredTrademark}.",
-                    "help": "But with your help, it can! Click the ♥ icon in the top right to learn more.",
+                    "help": "But with your help, it can! Click the {icon} icon in the top right to see how you can support us.",
                     "rcx": "RCX: Might work in streaming mode.",
-                    "nxt": "NXT: We have tested this. It works!",
+                    "nxt": "NXT: We have tested this. It could work!",
                     "ev3": "EV3: Supported using Visual Studio Code."
                 },
                 "poweredUp": {
