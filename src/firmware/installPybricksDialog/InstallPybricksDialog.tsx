@@ -108,7 +108,9 @@ const UnsupportedHubs: React.VoidFunctionComponent = () => {
                 )}
             </p>
             <p>
-                {i18n.translate('selectHubPanel.notOnListButton.info.mindstorms.help')}
+                {i18n.translate('selectHubPanel.notOnListButton.info.mindstorms.help', {
+                    icon: '♥',
+                })}
             </p>
             <ul>
                 <li>
