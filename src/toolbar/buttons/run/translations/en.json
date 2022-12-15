@@ -1,7 +1,7 @@
 {
     "label": "Run",
     "tooltip": {
-        "action": "Download and run this program ({key})",
+        "action": "Run this program ({key})",
         "progress": "Downloading… {percent}"
     }
 }
