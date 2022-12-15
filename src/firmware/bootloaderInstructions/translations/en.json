@@ -6,7 +6,7 @@
     },
     "prepare": {
         "start": "Preparation:",
-        "batteries": "Make sure the hub has fresh batteries.",
+        "batteries": "Make sure the hub has new or fully-charged batteries.",
         "turnOff": "Make sure the hub is turned off.",
         "usb": "Disconnect the USB cable.",
         "app": "Open the {lego} PoweredUp app in 'Create' mode and start a new project."
