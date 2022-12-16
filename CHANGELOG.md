@@ -4,6 +4,11 @@
 
 ## [Unreleased]
 
+### Changed
+- Clicking empty area of file list focuses the list ([support#856]).
+
+[support#856]: https://github.com/pybricks/support/issues/856
+
 ## [2.0.0-rc.1] - 2022-12-09
 
 ### Added

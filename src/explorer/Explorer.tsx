@@ -12,7 +12,13 @@ import {
     IconName,
     useHotkeys,
 } from '@blueprintjs/core';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, {
+    MouseEventHandler,
+    useCallback,
+    useMemo,
+    useRef,
+    useState,
+} from 'react';
 import { useId } from 'react-aria';
 import {
     ControlledTreeEnvironment,
@@ -20,6 +26,7 @@ import {
     Tree,
     TreeItem,
     TreeItemIndex,
+    TreeRef,
     useTree,
     useTreeEnvironment,
 } from 'react-complex-tree';
@@ -383,6 +390,19 @@ const FileTree: React.VoidFunctionComponent = () => {
     const dispatch = useDispatch();
     const i18n = useI18n();
 
+    const treeRef = useRef<TreeRef>(null);
+
+    const handleMouseDown = useCallback<MouseEventHandler>(
+        (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+
+            // clicking the empty area of the tree should focus the tree
+            treeRef.current?.focusTree();
+        },
+        [treeRef],
+    );
+
     return (
         <ControlledTreeEnvironment<FileTreeItemData>
             {...renderers}
@@ -399,11 +419,12 @@ const FileTree: React.VoidFunctionComponent = () => {
                 )
             }
         >
-            <div className="pb-explorer-file-tree">
+            <div className="pb-explorer-file-tree" onMouseDown={handleMouseDown}>
                 <Tree
                     treeId={treeId}
                     rootItem={rootItemIndex}
                     treeLabel={i18n.translate('tree.label')}
+                    ref={treeRef}
                 />
             </div>
         </ControlledTreeEnvironment>
