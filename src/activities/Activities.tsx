@@ -85,9 +85,20 @@ const Activities: React.VoidFunctionComponent = () => {
         }
     }, [tabsRef]);
 
+    useEffect(() => {
+        // @ts-expect-error: using private property
+        const tablist: HTMLDivElement = tabsRef.current?.tablistElement;
+
+        // istanbul-ignore-if: should not happen
+        if (!tablist) {
+            return;
+        }
+
+        tablist.setAttribute('aria-label', i18n.translate('title'));
+    }, [i18n]);
+
     return (
         <Tabs
-            aria-label={i18n.translate('title')}
             vertical={true}
             className="pb-activities"
             selectedTabId={selectedActivity}
