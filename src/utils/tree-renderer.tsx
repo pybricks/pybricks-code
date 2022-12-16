@@ -93,7 +93,7 @@ export const renderers: Omit<
                         )}
                         {...props.context.itemContainerWithoutChildrenProps}
                     >
-                        {props.item.hasChildren ? (
+                        {props.item.isFolder ? (
                             props.arrow
                         ) : (
                             <span className={Classes.TREE_NODE_CARET_NONE} />
