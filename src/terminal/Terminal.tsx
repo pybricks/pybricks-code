@@ -113,9 +113,11 @@ const Terminal: React.FC = (_props) => {
         xterm.open(terminalRef.current);
         fitAddon.fit();
 
-        // HACK: remove tabindex from main xterm element, otherwise it takes
-        // two tabs to get to the text area
+        // HACK: remove terminal from keyboard tab focus
+        // Since it steals tab key presses, there is no way
+        // to get out of it, so we use landmark navigation instead.
         xterm.element?.removeAttribute('tabindex');
+        xterm.textarea?.setAttribute('tabindex', '-1');
 
         return () => xterm.dispose();
     }, [xterm]);
