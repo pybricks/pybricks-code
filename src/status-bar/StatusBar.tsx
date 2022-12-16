@@ -59,6 +59,8 @@ const CompletionEngineIndicator: React.VoidFunctionComponent = () => {
         <Popover2 {...commonPopoverProps} content={message}>
             <div
                 aria-label={i18n.translate('completionEngineStatus.label')}
+                role="button"
+                aria-haspopup="dialog"
                 style={{ cursor: 'pointer' }}
             >
                 {icon}
