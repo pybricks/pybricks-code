@@ -19,12 +19,11 @@ const runButtonId = 'pb-toolbar-run-button';
 const sponsorButtonId = 'pb-toolbar-sponsor-button';
 
 const Toolbar: React.VFC = () => {
-    const flashButtonId = useId();
     const stopButtonId = useId();
     const replButtonId = useId();
 
     return (
-        <UtilsToolbar className="pb-toolbar" firstFocusableItemId={flashButtonId}>
+        <UtilsToolbar className="pb-toolbar" firstFocusableItemId={bluetoothButtonId}>
             <ButtonGroup className="pb-toolbar-group pb-align-left">
                 <BluetoothButton id={bluetoothButtonId} />
             </ButtonGroup>
