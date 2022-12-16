@@ -23,7 +23,7 @@ export function useFileStorageMetadata(): FileMetadata[] | undefined {
  */
 export function useFileStoragePath(uuid: UUID): string | undefined {
     const db = useContext(FileStorageContext);
-    return useLiveQuery(() => db.metadata.get(uuid, (x) => x?.path));
+    return useLiveQuery(() => db.metadata.get(uuid, (x) => x?.path), [uuid]);
 }
 
 /**
