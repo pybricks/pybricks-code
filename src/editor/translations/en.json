@@ -1,4 +1,8 @@
 {
+    "tablist": {
+        "label": "Editor"
+    },
+    "welcome": "Welcome",
     "placeholder": "Write your program here...",
     "check": "Check syntax",
     "toggleDocs": "Toggle documentation",
