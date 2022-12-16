@@ -8,7 +8,7 @@
         }
     },
     "tree": {
-        "label": "File Explorer",
+        "label": "Files",
         "liveDescriptor": {
             "intro": {
                 "accessibilityGuide": "Accessibility guide for tree {treeLabel}.",
