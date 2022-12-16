@@ -47,6 +47,10 @@
             position: absolute;
         }
     }
+
+    & iframe {
+        border: none;
+    }
 }
 
 .pb-app-body {

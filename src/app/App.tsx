@@ -148,7 +148,6 @@ const Docs: React.VFC = () => {
             role="documentation"
             width="100%"
             height="100%"
-            frameBorder="none"
         />
     );
 };
