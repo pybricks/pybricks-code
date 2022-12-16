@@ -17,6 +17,7 @@ import Toolbar from '../toolbar/Toolbar';
 import Tour from '../tour/Tour';
 import { isMacOS } from '../utils/os';
 import { useAppLastDocsPageSetting } from './hooks';
+import { useI18n } from './i18n';
 
 const Editor = React.lazy(async () => {
     const [sagaModule, componentModule] = await Promise.all([
@@ -145,7 +146,6 @@ const Docs: React.VFC = () => {
             }}
             src={initialDocsPage}
             allowFullScreen={true}
-            role="documentation"
             width="100%"
             height="100%"
         />
@@ -153,6 +153,7 @@ const Docs: React.VFC = () => {
 };
 
 const App: React.VFC = () => {
+    const i18n = useI18n();
     const { isDarkMode } = useTernaryDarkMode();
     const { isSettingShowDocsEnabled } = useSettingIsShowDocsEnabled();
     const [isDragging, setIsDragging] = useState(false);
@@ -189,9 +190,12 @@ const App: React.VFC = () => {
     return (
         <div className="pb-app" onContextMenu={(e) => e.preventDefault()}>
             <div className="pb-app-body">
-                <div className="pb-app-activities">
+                <aside
+                    className="pb-app-activities"
+                    aria-label={i18n.translate('landmark.activities')}
+                >
                     <Activities />
-                </div>
+                </aside>
                 {/* need a container with position: relative; for SplitterLayout since it uses position: absolute; */}
                 <div className="pb-app-main" style={{ position: 'relative' }}>
                     <SplitterLayout
@@ -210,26 +214,35 @@ const App: React.VFC = () => {
                             secondaryInitialSize={terminalSplit}
                             onSecondaryPaneSizeChange={setTerminalSplit}
                         >
-                            <div className="pb-app-editor">
+                            <main
+                                className="pb-app-editor"
+                                aria-label={i18n.translate('landmark.editor')}
+                            >
                                 <Toolbar />
                                 <React.Suspense
                                     fallback={<Spinner className="pb-editor" />}
                                 >
                                     <Editor />
                                 </React.Suspense>
-                            </div>
-                            <div className="pb-app-terminal">
+                            </main>
+                            <aside
+                                className="pb-app-terminal"
+                                aria-label={i18n.translate('landmark.terminal')}
+                            >
                                 <React.Suspense
                                     fallback={<Spinner className="h-100" />}
                                 >
                                     <Terminal />
                                 </React.Suspense>
-                            </div>
+                            </aside>
                         </SplitterLayout>
-                        <div className="pb-app-docs">
+                        <aside
+                            className="pb-app-docs"
+                            aria-label={i18n.translate('landmark.documentation')}
+                        >
                             {isDragging && <div className="pb-app-docs-drag-helper" />}
                             <Docs />
-                        </div>
+                        </aside>
                     </SplitterLayout>
                 </div>
             </div>
