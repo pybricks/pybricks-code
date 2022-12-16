@@ -141,6 +141,9 @@ const Welcome: React.VoidFunctionComponent<WelcomeProps> = ({ isVisible }) => {
             passive: true,
         });
 
+        // this animation is just for fun, screen readers don't need to know about it
+        two.renderer.domElement.setAttribute('aria-hidden', 'true');
+
         return () => {
             two.renderer.domElement.removeEventListener('wheel', handleWheel);
             two.renderer.domElement.removeEventListener('pointerdown', handleClick);
