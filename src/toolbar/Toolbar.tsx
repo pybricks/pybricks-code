@@ -10,6 +10,7 @@ import ReplButton from './buttons/repl/ReplButton';
 import RunButton from './buttons/run/RunButton';
 import SponsorButton from './buttons/sponsor/SponsorButton';
 import StopButton from './buttons/stop/StopButton';
+import { useI18n } from './i18n';
 
 import './toolbar.scss';
 
@@ -19,11 +20,16 @@ const runButtonId = 'pb-toolbar-run-button';
 const sponsorButtonId = 'pb-toolbar-sponsor-button';
 
 const Toolbar: React.VFC = () => {
+    const i18n = useI18n();
     const stopButtonId = useId();
     const replButtonId = useId();
 
     return (
-        <UtilsToolbar className="pb-toolbar" firstFocusableItemId={bluetoothButtonId}>
+        <UtilsToolbar
+            aria-label={i18n.translate('label')}
+            className="pb-toolbar"
+            firstFocusableItemId={bluetoothButtonId}
+        >
             <ButtonGroup className="pb-toolbar-group pb-align-left">
                 <BluetoothButton id={bluetoothButtonId} />
             </ButtonGroup>
