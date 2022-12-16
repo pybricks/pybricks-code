@@ -282,6 +282,20 @@ const EditorTabs: React.VoidFunctionComponent<EditorTabsProps> = ({ onChange }) 
         tabsRef.current?.['moveSelectionIndicator']();
     }, [tabsRef]);
 
+    const i18n = useI18n();
+
+    useEffect(() => {
+        // @ts-expect-error: using private property
+        const tablist: HTMLDivElement = tabsRef.current?.tablistElement;
+
+        // istanbul-ignore-if: should not happen
+        if (!tablist) {
+            return;
+        }
+
+        tablist.setAttribute('aria-label', i18n.translate('tablist.label'));
+    }, [i18n]);
+
     return (
         <Tabs
             className="pb-editor-tablist"
@@ -469,6 +483,9 @@ const Editor: React.VFC = () => {
     });
 
     const isEmpty = useSelector((s) => s.editor.openFileUuids.length === 0);
+    const { activeFileUuid } = useSelector((s) => s.editor);
+    const fileName = useFileStoragePath(activeFileUuid ?? ('' as UUID));
+    console.log(fileName);
 
     return (
         <div className="pb-editor">
@@ -477,6 +494,7 @@ const Editor: React.VFC = () => {
                 <ContextMenu2
                     className={classNames('pb-editor-tabpanel', isEmpty && 'pb-empty')}
                     role="tabpanel"
+                    aria-label={isEmpty ? i18n.translate('welcome') : fileName}
                     // NB: we have to create a new context menu each time it is
                     // shown in order to get some state, like canUndo and canRedo
                     // that don't have events to monitor changes.
