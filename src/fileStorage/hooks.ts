@@ -33,10 +33,12 @@ export function useFileStoragePath(uuid: UUID): string | undefined {
  */
 export function useFileStorageUuid(path: string): UUID | undefined {
     const db = useContext(FileStorageContext);
-    return useLiveQuery(() =>
-        db.metadata
-            .where('path')
-            .equals(path)
-            .first((x) => x?.uuid),
+    return useLiveQuery(
+        () =>
+            db.metadata
+                .where('path')
+                .equals(path)
+                .first((x) => x?.uuid),
+        [path],
     );
 }
