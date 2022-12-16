@@ -23,7 +23,6 @@
 
     &-activities {
         display: flex;
-        @include pb.focus-within();
     }
 
     &-terminal {
@@ -31,7 +30,6 @@
         padding-top: 8px;
         padding-left: 8px;
         background-color: white;
-        @include pb.focus-within();
 
         .#{bp.$ns}-dark & {
             background-color: black;
