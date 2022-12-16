@@ -107,6 +107,7 @@ const ActionButton: React.VoidFunctionComponent<ActionButtonProps> = ({
             }) => (
                 <Button
                     id={id}
+                    aria-disabled={enabled === false}
                     aria-label={label}
                     elementRef={tooltipTargetRef as React.Ref<HTMLButtonElement>}
                     {...mergeProps(tooltipTargetProps, {
