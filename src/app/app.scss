@@ -108,7 +108,7 @@ $dark-splitter-color-hover: color.adjust(
     $height: 2.7;
     $radius: 0.4;
 
-    content: map.get(bpi.$blueprint-icon-codepoints, 'drag-handle-vertical');
+    content: map.get(bpi.$blueprint-icon-codepoints, 'drag-handle-vertical') / '';
     height: bp.$pt-grid-size * $height;
     width: bp.$pt-grid-size * $width;
     top: calc(50% - bp.$pt-grid-size * $height * 0.5);
@@ -118,7 +118,7 @@ $dark-splitter-color-hover: color.adjust(
         $width: 2.7;
         $height: 1.4;
 
-        content: map.get(bpi.$blueprint-icon-codepoints, 'drag-handle-horizontal');
+        content: map.get(bpi.$blueprint-icon-codepoints, 'drag-handle-horizontal') / '';
         height: bp.$pt-grid-size * $height;
         width: bp.$pt-grid-size * $width;
         top: bp.$pt-grid-size * $height * -0.5 + 2px;
