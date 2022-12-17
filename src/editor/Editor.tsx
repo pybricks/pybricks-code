@@ -444,7 +444,7 @@ const Editor: React.VFC = () => {
 
                 // istanbul ignore if: should not be reachable
                 if (!(firstItem instanceof HTMLElement)) {
-                    console.log(`bug: firstItem is not an HTMLElement: ${firstItem}`);
+                    console.error(`bug: firstItem is not an HTMLElement: ${firstItem}`);
                     return;
                 }
 
