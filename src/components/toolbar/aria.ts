@@ -39,7 +39,7 @@ type ToolbarItemFocusAria = {
  */
 export function useToolbarItemFocus(props: { id: string }): ToolbarItemFocusAria {
     const { id } = props;
-    const state = useContext(ToolbarStateContext);
+    const { lastFocusedItem, setLastFocusedItem } = useContext(ToolbarStateContext);
     const focusManager = useFocusManager();
 
     const onKeyDown = useCallback<KeyboardEventHandler<HTMLElement>>(
@@ -66,11 +66,12 @@ export function useToolbarItemFocus(props: { id: string }): ToolbarItemFocusAria
 
     const onFocus = useCallback<FocusEventHandler<HTMLElement>>(
         (e) => {
-            state.setLastFocusedItem(e.target.id);
+            setLastFocusedItem(e.target.id);
         },
-        [state.setLastFocusedItem],
+        [setLastFocusedItem],
     );
-    const excludeFromTabOrder = id !== state.lastFocusedItem;
+
+    const excludeFromTabOrder = id !== lastFocusedItem;
 
     return { toolbarItemFocusProps: { onKeyDown, onFocus }, excludeFromTabOrder };
 }

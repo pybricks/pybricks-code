@@ -58,7 +58,7 @@ const NewFileWizard: React.VoidFunctionComponent = () => {
                 ),
             );
         },
-        [dispatch, fileName, pythonFileExtension, hubType, useTemplate],
+        [dispatch, fileName, hubType, useTemplate],
     );
 
     const handleClose = useCallback(() => {

@@ -202,7 +202,7 @@ export function useCustomFirmware(zipFile: File | undefined) {
         };
 
         readFile();
-    }, [zipFile, isMounted]);
+    }, [zipFile, isMounted, reduxDispatch]);
 
     const isCustomFirmwareRequested = useMemo(
         () => state.firmwareData !== undefined,

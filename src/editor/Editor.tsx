@@ -343,7 +343,8 @@ function useEditor(
         }
 
         return callback(maybeEditor);
-    }, [maybeEditor, ...deps]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [maybeEditor, callback, ...deps]);
 }
 
 /**
