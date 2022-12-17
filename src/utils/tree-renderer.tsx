@@ -18,6 +18,7 @@ import {
 import React, { createContext } from 'react';
 import { TreeItem, TreeRenderProps, useTree } from 'react-complex-tree';
 import { useBoolean } from 'usehooks-ts';
+import { assert } from '.';
 
 /** Combines class names into a string. */
 const cx = (...classNames: Array<string | undefined | false>): string =>
@@ -99,7 +100,7 @@ export const renderers: Omit<
                         )}
                         {...props.context.itemContainerWithoutChildrenProps}
                     >
-                        {props.item.hasChildren ? (
+                        {props.item.isFolder ? (
                             props.arrow
                         ) : (
                             <span className={Classes.TREE_NODE_CARET_NONE} />
@@ -201,17 +202,23 @@ export const renderers: Omit<
         </form>
     ),
 
-    renderSearchInput: (props) => (
-        <div className={cx('rct-tree-search-input-container')}>
-            <InputGroup
-                {...(props.inputProps as Omit<
-                    React.HTMLAttributes<HTMLInputElement>,
-                    'defaultValue'
-                >)}
-                placeholder="Search..."
-            />
-        </div>
-    ),
+    renderSearchInput: (props) => {
+        const { ref, defaultValue, value, ...inputProps } = props.inputProps;
+
+        assert(typeof ref !== 'string', 'cannot be a legacy ref');
+
+        // unused - have to be excluded from inputProps for InputGroup typing compatibility
+        defaultValue;
+        value;
+
+        // TODO: translate placeholder and inputProps.aria-label
+
+        return (
+            <div className={cx('rct-tree-search-input-container')}>
+                <InputGroup inputRef={ref} {...inputProps} placeholder="Search..." />
+            </div>
+        );
+    },
 
     renderDepthOffset: 1,
 };
