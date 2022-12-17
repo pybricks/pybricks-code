@@ -187,12 +187,15 @@ const SelectHubPanel: React.VoidFunctionComponent<SelectHubPanelProps> = ({
     const i18n = useI18n();
     const dispatch = useDispatch();
 
-    const onDrop = useCallback((acceptedFiles: File[]) => {
-        // should only be one file since multiple={false}
-        acceptedFiles.forEach((f) => {
-            onCustomFirmwareZip(f);
-        });
-    }, []);
+    const onDrop = useCallback(
+        (acceptedFiles: File[]) => {
+            // should only be one file since multiple={false}
+            acceptedFiles.forEach((f) => {
+                onCustomFirmwareZip(f);
+            });
+        },
+        [onCustomFirmwareZip],
+    );
 
     const onClick = useCallback(async () => {
         try {
@@ -218,7 +221,7 @@ const SelectHubPanel: React.VoidFunctionComponent<SelectHubPanelProps> = ({
                 );
             }
         }
-    }, []);
+    }, [dispatch, onCustomFirmwareZip]);
 
     const onKeyDown = useCallback(
         (e: React.KeyboardEvent) => {

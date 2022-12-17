@@ -172,7 +172,7 @@ const Tour: React.VoidFunctionComponent = () => {
                 disableBeacon: true,
             },
         ],
-        [selectedActivity, i18n],
+        [selectedActivity],
     );
 
     const styles = useMemo<Styles>(
@@ -231,14 +231,7 @@ const Tour: React.VoidFunctionComponent = () => {
                 setStepIndex(nextIndex);
             }
         },
-        [
-            dispatch,
-            selectedActivity,
-            setSelectedActivity,
-            stepIndex,
-            setStepIndex,
-            steps,
-        ],
+        [dispatch, setSelectedActivity, stepIndex, setStepIndex, steps],
     );
 
     // automatically show the tour on the first run only

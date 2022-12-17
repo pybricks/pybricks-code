@@ -81,13 +81,15 @@ const Welcome: React.VoidFunctionComponent<WelcomeProps> = ({ isVisible }) => {
             return;
         }
 
+        const element = elementRef.current;
+
         // istanbul ignore if: should not happen
-        if (!elementRef.current) {
-            console.error('elementRef was null!');
+        if (!element) {
+            console.error('elementRef.current was null!');
             return;
         }
 
-        const two = new Two({ fitted: true }).appendTo(elementRef.current);
+        const two = new Two({ fitted: true }).appendTo(element);
 
         const logo = two.load(logoSvg, (g) => {
             g.center();
@@ -113,7 +115,7 @@ const Welcome: React.VoidFunctionComponent<WelcomeProps> = ({ isVisible }) => {
             two.fit();
         });
 
-        observer.observe(elementRef.current);
+        observer.observe(element);
 
         const handleClick = (e: Event) => {
             e.stopPropagation();
@@ -149,7 +151,7 @@ const Welcome: React.VoidFunctionComponent<WelcomeProps> = ({ isVisible }) => {
             two.renderer.domElement.removeEventListener('pointerdown', handleClick);
             observer.disconnect();
             two.removeEventListener('update');
-            elementRef.current?.removeChild(two.renderer.domElement);
+            element.removeChild(two.renderer.domElement);
             two.clear();
         };
     }, [isVisible]);

@@ -83,7 +83,7 @@ const ActionButton: React.VoidFunctionComponent<ActionButtonProps> = ({
                 },
             },
         ];
-    }, [keyboardShortcut, tooltip, enabled, label, onAction]);
+    }, [keyboardShortcut, enabled, label, onAction]);
 
     useHotkeys(hotkeys);
 

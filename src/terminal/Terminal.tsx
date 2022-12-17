@@ -52,7 +52,7 @@ function createXTerm(): { xterm: XTerm; fitAddon: FitAddon } {
 function createContextMenu(
     xterm: XTerm,
 ): (props: ContextMenu2ContentProps) => JSX.Element {
-    const contextMenu = (_props: ContextMenu2ContentProps): JSX.Element => {
+    const ContextMenu = (_props: ContextMenu2ContentProps): JSX.Element => {
         const i18n = useI18n();
 
         return (
@@ -92,7 +92,7 @@ function createContextMenu(
         );
     };
 
-    return contextMenu;
+    return ContextMenu;
 }
 
 const Terminal: React.FC = (_props) => {
@@ -120,7 +120,7 @@ const Terminal: React.FC = (_props) => {
         xterm.textarea?.setAttribute('tabindex', '-1');
 
         return () => xterm.dispose();
-    }, [xterm]);
+    }, [xterm, fitAddon]);
 
     // wire up isDarkMode to terminal
     useEffect(() => {
@@ -133,7 +133,7 @@ const Terminal: React.FC = (_props) => {
                 ? 'rgb(81,81,81,0.5)'
                 : 'rgba(181,213,255,0.5)', // this should match editor theme
         };
-    }, [isDarkMode]);
+    }, [isDarkMode, xterm]);
 
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent): void => {
@@ -166,18 +166,15 @@ const Terminal: React.FC = (_props) => {
         });
 
         return () => subscription.unsubscribe();
-    }, [terminalStream]);
+    }, [terminalStream, xterm]);
 
     // wire terminal input to actions
     useEffect(() => {
         const onDataHandle = xterm.onData((d) => dispatch(receiveData(d)));
         return () => onDataHandle.dispose();
-    }, [dispatch]);
+    }, [dispatch, xterm]);
 
-    const contextMenu = useMemo(
-        () => createContextMenu(xterm),
-        [createContextMenu, xterm],
-    );
+    const contextMenu = useMemo(() => createContextMenu(xterm), [xterm]);
 
     useEffect(() => {
         const listener = () => {

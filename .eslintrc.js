@@ -3,6 +3,7 @@ module.exports = {
     extends: [
         'eslint:recommended',
         'plugin:react/recommended',
+        'plugin:react-hooks/recommended',
         'plugin:@typescript-eslint/eslint-recommended',
         'plugin:@typescript-eslint/recommended',
         'plugin:prettier/recommended',
@@ -25,6 +26,7 @@ module.exports = {
         'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
         'sort-imports': ['error', { ignoreDeclarationSort: true }],
         'import/order': ['error', { alphabetize: { order: 'asc' } }],
+        'react-hooks/exhaustive-deps': 'error',
     },
     settings: {
         react: { version: 'detect' },

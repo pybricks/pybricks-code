@@ -36,7 +36,12 @@ import { useToolbarItemFocus } from '../components/toolbar/aria';
 import { UUID } from '../fileStorage';
 import { useFileStorageMetadata } from '../fileStorage/hooks';
 import { isMacOS } from '../utils/os';
-import { TreeItemContext, TreeItemData, renderers } from '../utils/tree-renderer';
+import {
+    RenderProps,
+    TreeItemContext,
+    TreeItemData,
+    renderers,
+} from '../utils/tree-renderer';
 import {
     explorerArchiveAllFiles,
     explorerCreateNewFile,
@@ -257,7 +262,9 @@ function useLiveDescriptors(): LiveDescriptors {
  * REVISIT: maybe there will be a better way to do this some day:
  * https://github.com/lukasbach/react-complex-tree/issues/47
  */
-const renderTreeContainer: typeof renderers.renderTreeContainer = (props) => {
+const TreeContainer: React.VoidFunctionComponent<RenderProps<'renderTreeContainer'>> = (
+    props,
+) => {
     const dispatch = useDispatch();
     const { treeId } = useTree();
     const environment = useTreeEnvironment();
@@ -272,28 +279,28 @@ const renderTreeContainer: typeof renderers.renderTreeContainer = (props) => {
             const fileName = environment.getItemTitle(environment.items[focusedItem]);
             dispatch(explorerRenameFile(fileName));
         }
-    }, [environment]);
+    }, [focusedItem, environment, dispatch]);
 
     const handleDuplicateKeyDown = useCallback(() => {
         if (focusedItem !== undefined) {
             const fileName = environment.getItemTitle(environment.items[focusedItem]);
             dispatch(explorerDuplicateFile(fileName));
         }
-    }, [environment]);
+    }, [focusedItem, environment, dispatch]);
 
     const handleDeleteKeyDown = useCallback(() => {
         if (focusedItem !== undefined) {
             const fileName = environment.getItemTitle(environment.items[focusedItem]);
             dispatch(explorerDeleteFile(fileName, focusedItem as UUID));
         }
-    }, [environment]);
+    }, [focusedItem, environment, dispatch]);
 
     const handleExportKeyDown = useCallback(() => {
         if (focusedItem !== undefined) {
             const fileName = environment.getItemTitle(environment.items[focusedItem]);
             dispatch(explorerExportFile(fileName));
         }
-    }, [environment]);
+    }, [focusedItem, environment, dispatch]);
 
     const hotkeys = useMemo<readonly HotkeyConfig[]>(
         () => [
@@ -330,7 +337,13 @@ const renderTreeContainer: typeof renderers.renderTreeContainer = (props) => {
                 onKeyDown: handleExportKeyDown,
             },
         ],
-        [hotKeyActive, handleDeleteKeyDown],
+        [
+            hotKeyActive,
+            handleDeleteKeyDown,
+            handleExportKeyDown,
+            handleDuplicateKeyDown,
+            handleRenameKeyDown,
+        ],
     );
 
     const { handleKeyDown } = useHotkeys(hotkeys);
@@ -340,43 +353,45 @@ const renderTreeContainer: typeof renderers.renderTreeContainer = (props) => {
 
 const FileTree: React.VoidFunctionComponent = () => {
     const [focusedItem, setFocusedItem] = useState<TreeItemIndex>();
-    const files = useFileStorageMetadata() ?? [];
+    const files = useFileStorageMetadata();
     const liveDescriptors = useLiveDescriptors();
 
     const rootItemIndex = 'root';
 
-    const treeItems = useMemo(
-        () =>
-            files.reduce(
-                (obj, file) => {
-                    const index = file.uuid;
+    const treeItems = useMemo(() => {
+        if (files === undefined) {
+            return {};
+        }
 
-                    obj[index] = {
-                        index,
-                        data: {
-                            fileName: file.path,
-                            icon: 'document',
-                            secondaryLabel: (
-                                <TreeItemContext.Consumer>
-                                    {(item) => <FileActionButtonGroup item={item} />}
-                                </TreeItemContext.Consumer>
-                            ),
-                        },
-                    };
+        return files.reduce<Record<TreeItemIndex, FileTreeItem>>(
+            (obj, file) => {
+                const index = file.uuid;
 
-                    return obj;
-                },
-                {
-                    [rootItemIndex]: {
-                        index: rootItemIndex,
-                        data: { fileName: '/' },
-                        isFolder: true,
-                        children: [...files].map((f) => f.uuid),
+                obj[index] = {
+                    index,
+                    data: {
+                        fileName: file.path,
+                        icon: 'document',
+                        secondaryLabel: (
+                            <TreeItemContext.Consumer>
+                                {(item) => <FileActionButtonGroup item={item} />}
+                            </TreeItemContext.Consumer>
+                        ),
                     },
-                } as Record<TreeItemIndex, FileTreeItem>,
-            ),
-        [files],
-    );
+                };
+
+                return obj;
+            },
+            {
+                [rootItemIndex]: {
+                    index: rootItemIndex,
+                    data: { fileName: '/' },
+                    isFolder: true,
+                    children: [...files].map((f) => f.uuid),
+                },
+            },
+        );
+    }, [files]);
 
     const getItemTitle = useCallback((item: FileTreeItem) => item.data.fileName, []);
 
@@ -406,7 +421,7 @@ const FileTree: React.VoidFunctionComponent = () => {
     return (
         <ControlledTreeEnvironment<FileTreeItemData>
             {...renderers}
-            renderTreeContainer={renderTreeContainer}
+            renderTreeContainer={TreeContainer}
             items={treeItems}
             getItemTitle={getItemTitle}
             viewState={viewState}

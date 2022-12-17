@@ -23,7 +23,7 @@ export function useSettingIsShowDocsEnabled(): {
 
     useEffect(() => {
         setIsLastSettingShowDocsEnabled(isSettingShowDocsEnabled);
-    }, [isSettingShowDocsEnabled]);
+    }, [isSettingShowDocsEnabled, setIsLastSettingShowDocsEnabled]);
 
     const toggleIsSettingShowDocsEnabled = useCallback(
         () => setIsSettingShowDocsEnabled((x) => !x),

@@ -39,7 +39,7 @@ export function useActivitiesSelectedActivity(): ReturnType<
 
     useEffect(() => {
         setLastSelectedActivity(selectedActivity);
-    }, [selectedActivity]);
+    }, [selectedActivity, setLastSelectedActivity]);
 
     return [selectedActivity, setSelectedActivity];
 }
