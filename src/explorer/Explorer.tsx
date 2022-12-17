@@ -370,7 +370,7 @@ const FileTree: React.VoidFunctionComponent = () => {
                     [rootItemIndex]: {
                         index: rootItemIndex,
                         data: { fileName: '/' },
-                        isFolder: true,
+                        hasChildren: true,
                         children: [...files].map((f) => f.uuid),
                     },
                 } as Record<TreeItemIndex, FileTreeItem>,
