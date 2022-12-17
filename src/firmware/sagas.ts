@@ -751,7 +751,7 @@ function* handleFlashUsbDfu(action: ReturnType<typeof firmwareFlashUsbDfu>): Gen
                 }
 
                 // not expected
-                console.log(err);
+                console.error(err);
             }),
         );
 
