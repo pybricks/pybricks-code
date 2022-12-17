@@ -486,7 +486,6 @@ const Editor: React.VFC = () => {
     const isEmpty = useSelector((s) => s.editor.openFileUuids.length === 0);
     const { activeFileUuid } = useSelector((s) => s.editor);
     const fileName = useFileStoragePath(activeFileUuid ?? ('' as UUID));
-    console.log(fileName);
 
     return (
         <div className="pb-editor">
