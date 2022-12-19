@@ -16,7 +16,7 @@ import {
     MaybeElement,
 } from '@blueprintjs/core';
 import React, { createContext } from 'react';
-import { TreeItem, TreeRenderProps, useTree } from 'react-complex-tree';
+import { TreeItem, TreeRenderProps } from 'react-complex-tree';
 import { useBoolean } from 'usehooks-ts';
 import { assert } from '.';
 
@@ -52,14 +52,10 @@ export type RenderProps<T extends keyof RendererFuncs> = Parameters<
 const TreeContainer: React.VoidFunctionComponent<RenderProps<'renderTreeContainer'>> = (
     props,
 ) => {
-    // work around https://github.com/lukasbach/react-complex-tree/issues/195
-    const { treeLabel } = useTree();
-
     return (
         <div
             className={cx(Classes.TREE, Classes.FOCUS_STYLE_MANAGER_IGNORE)}
             {...props.containerProps}
-            aria-label={treeLabel}
         >
             {props.children}
         </div>
