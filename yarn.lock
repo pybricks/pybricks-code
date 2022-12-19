@@ -2516,7 +2516,7 @@ __metadata:
     redux-saga: ^1.2.2
     resolve: ^1.22.1
     resolve-url-loader: ^5.0.0
-    sass: ^1.56.2
+    sass: ^1.57.0
     sass-loader: ^13.2.0
     semver: ^7.3.8
     source-map-explorer: ^2.5.3
@@ -13616,16 +13616,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sass@npm:^1.56.2":
-  version: 1.56.2
-  resolution: "sass@npm:1.56.2"
+"sass@npm:^1.57.0":
+  version: 1.57.0
+  resolution: "sass@npm:1.57.0"
   dependencies:
     chokidar: ">=3.0.0 <4.0.0"
     immutable: ^4.0.0
     source-map-js: ">=0.6.2 <2.0.0"
   bin:
     sass: sass.js
-  checksum: 7b1f524d04bc42df3bac6dc5201ff7475635b7df9a1390430ed5bd58b6a73ea1ae58b83ccea8da293cb77b85b4c848faf5f2779ca4b91b9303948c251d0ddca4
+  checksum: fb6358b9541dc7a5bc23dbbae85223e99fbadc1f4ae911e7c32c6e22fd7b617e20a0e8cd1213f23c97c621b067bfb0b9ca45e65d6ce4ca5fea5949f41bd428ed
   languageName: node
   linkType: hard
 
