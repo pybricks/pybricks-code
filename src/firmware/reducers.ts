@@ -3,6 +3,7 @@
 
 import { Reducer, combineReducers } from 'redux';
 import { didFailToFinish, didFinish, didProgress, didStart } from './actions';
+import dfuWindowsDriverInstallDialog from './dfuWindowsDriverInstallDialog/reducers';
 import installPybricksDialog from './installPybricksDialog/reducers';
 import restoreOfficialDialog from './restoreOfficialDialog/reducers';
 
@@ -31,6 +32,7 @@ const progress: Reducer<number | null> = (state = null, action) => {
 };
 
 export default combineReducers({
+    dfuWindowsDriverInstallDialog,
     installPybricksDialog,
     restoreOfficialDialog,
     flashing,

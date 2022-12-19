@@ -1,0 +1,55 @@
+{
+    "title": "Windows DFU USB driver installation instructions",
+    "nextButton": {
+        "label": "Next"
+    },
+    "doneButton": {
+        "label": "Done"
+    },
+    "step": {
+        "1": {
+            "message": "Right-click the Windows {startMenu} to open the context menu, then click {deviceManager} to open the Windows Device Manager.",
+            "startMenu": "Start Menu",
+            "deviceManager": "Device Manager"
+        },
+        "2": {
+            "message": "In the Device Manager window, look for {dfuUsbHubName} under {otherDevices}. If it is there, right-click it and select {properties}. If it is not there, then the driver is already installed and you do not need to continue.",
+            "otherDevices": "Other Devices",
+            "properties": "Properties"
+        },
+        "3": {
+            "message": "In the {properties} dialog, click the {updateDriver} button.",
+            "properties": "{dfuUsbHubName} Properties",
+            "updateDriver": "Update Driver..."
+        },
+        "4": {
+            "message": "In the {updateDrivers} dialog, click the {browse} button.",
+            "updateDrivers": "Update Drivers",
+            "browse": "Browse my computer for drivers"
+        },
+        "5": {
+            "message": "Then click the {letMePick} button.",
+            "letMePick": "Let me pick from a list of available drivers on my computer"
+        },
+        "6": {
+            "message": "In the list of device types, select {usbDevices}, then click the {next} button.",
+            "usbDevices": "Universal Serial Bus devices",
+            "next": "Next"
+        },
+        "7": {
+            "message": "In the {manufacturer} list, select {winUsbDevice}. Then in the {model} list, also select {winUsbDevice}. Then click the {next} button.",
+            "manufacturer": "Manufacturer",
+            "winUsbDevice": "WinUsb Device",
+            "model": "Model",
+            "next": "Next"
+        },
+        "8": {
+            "message": "A warning dialog will open stating that the driver is not recommended. Click the {yes} button to use the driver anyway. The the driver is compatible.",
+            "yes": "Yes"
+        },
+        "9": {
+            "message": "The driver installation is complete. Click the {close} button.",
+            "close": "Close"
+        }
+    }
+}

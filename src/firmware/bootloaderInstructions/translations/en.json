@@ -1,8 +1,13 @@
 {
     "warning": {
-        "linux": "If you have never used Pybricks with USB on Linux, you will need to configure udev rules before you can install the firmware.",
-        "windows": " If you have never used Pybricks with USB on Windows, you may need to manually install a USB driver before you can flash the hub firmware.",
-        "learnMore": "Learn more."
+        "linux": {
+            "message": "If you have never used Pybricks with USB on Linux, you will need to configure udev rules before you can install the firmware. {learnMore}",
+            "learnMore": "Learn more."
+        },
+        "windows": {
+            "message": "If you have never used Pybricks with USB on Windows, you may need to manually install a USB driver before you can connect to the device. {instructions}",
+            "instructions": "Click for instructions."
+        }
     },
     "button": {
         "bluetooth": "Bluetooth button",

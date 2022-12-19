@@ -45,9 +45,6 @@ export const pybricksBluetoothTroubleshootingUrl =
 export const pybricksUsbDfuTroubleshootingUrl =
     'https://github.com/pybricks/support/discussions/688';
 
-export const pybricksUsbDfuWindowsDriverInstallUrl =
-    'https://github.com/pybricks/support/discussions/688#discussioncomment-3201466';
-
 export const pybricksUsbLinuxUdevRulesUrl =
     'https://github.com/pybricks/support/discussions/688#discussioncomment-3239099';
 
