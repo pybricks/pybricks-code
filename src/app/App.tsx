@@ -8,6 +8,7 @@ import React, { useEffect, useState } from 'react';
 import SplitterLayout from 'react-splitter-layout';
 import { useLocalStorage, useTernaryDarkMode } from 'usehooks-ts';
 import Activities from '../activities/Activities';
+import DfuWindowsDriverInstallDialog from '../firmware/dfuWindowsDriverInstallDialog/DfuWindowsDriverInstallDialog';
 import { InstallPybricksDialog } from '../firmware/installPybricksDialog/InstallPybricksDialog';
 import RestoreOfficialDialog from '../firmware/restoreOfficialDialog/RestoreOfficialDialog';
 import { useSettingIsShowDocsEnabled } from '../settings/hooks';
@@ -248,6 +249,7 @@ const App: React.VFC = () => {
             </div>
             <StatusBar />
             <Tour />
+            <DfuWindowsDriverInstallDialog />
             <InstallPybricksDialog />
             <RestoreOfficialDialog />
             <SponsorDialog />

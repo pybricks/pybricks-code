@@ -5,14 +5,15 @@ import './bootloaderInstructions.scss';
 import { Callout, Intent } from '@blueprintjs/core';
 import classNames from 'classnames';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import {
     legoRegisteredTrademark,
-    pybricksUsbDfuWindowsDriverInstallUrl,
     pybricksUsbLinuxUdevRulesUrl,
 } from '../../app/constants';
 import ExternalLinkIcon from '../../components/ExternalLinkIcon';
 import { Hub, hubHasBluetoothButton, hubHasUSB } from '../../components/hubPicker';
 import { isLinux, isWindows } from '../../utils/os';
+import { firmwareDfuWindowsDriverInstallDialogDialogShow } from '../dfuWindowsDriverInstallDialog/actions';
 import cityHubMp4 from './assets/bootloader-cityhub-540.mp4';
 import cityHubVtt from './assets/bootloader-cityhub-metadata.vtt';
 import essentialHubMp4 from './assets/bootloader-essentialhub-540.mp4';
@@ -100,6 +101,7 @@ const recoveryMetadataFileMap: ReadonlyMap<Hub, string> = new Map([
 const BootloaderInstructions: React.VoidFunctionComponent<
     BootloaderInstructionsProps
 > = ({ hubType, recovery, flashButtonText }) => {
+    const dispatch = useDispatch();
     const i18n = useI18n();
 
     const { button, light, lightPattern } = useMemo(() => {
@@ -150,33 +152,6 @@ const BootloaderInstructions: React.VoidFunctionComponent<
 
     return (
         <>
-            {hubHasUSB(hubType) && isLinux() && (
-                <Callout intent={Intent.WARNING} icon="warning-sign">
-                    {i18n.translate('warning.linux')}{' '}
-                    <a
-                        href={pybricksUsbLinuxUdevRulesUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                    >
-                        {i18n.translate('warning.learnMore')}
-                    </a>
-                    <ExternalLinkIcon />
-                </Callout>
-            )}
-            {hubHasUSB(hubType) && isWindows() && (
-                <Callout intent={Intent.WARNING} icon="warning-sign">
-                    {i18n.translate('warning.windows')}{' '}
-                    <a
-                        href={pybricksUsbDfuWindowsDriverInstallUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                    >
-                        {i18n.translate('warning.learnMore')}
-                    </a>
-                    <ExternalLinkIcon />
-                </Callout>
-            )}
-
             <video
                 controls
                 controlsList="nodownload nofullscreen"
@@ -363,6 +338,46 @@ const BootloaderInstructions: React.VoidFunctionComponent<
                 </>
             ) : (
                 <></>
+            )}
+
+            {hubHasUSB(hubType) && isLinux() && (
+                <Callout intent={Intent.WARNING} icon="warning-sign">
+                    {i18n.translate('warning.linux.message', {
+                        learnMore: (
+                            <>
+                                <a
+                                    href={pybricksUsbLinuxUdevRulesUrl}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
+                                    {i18n.translate('warning.linux.learnMore')}
+                                </a>
+                                <ExternalLinkIcon />
+                            </>
+                        ),
+                    })}
+                </Callout>
+            )}
+
+            {hubHasUSB(hubType) && isWindows() && (
+                <Callout intent={Intent.WARNING} icon="warning-sign">
+                    {i18n.translate('warning.windows.message', {
+                        instructions: (
+                            <a
+                                onMouseDown={(e) => {
+                                    e.stopPropagation();
+                                    e.preventDefault();
+
+                                    dispatch(
+                                        firmwareDfuWindowsDriverInstallDialogDialogShow(),
+                                    );
+                                }}
+                            >
+                                {i18n.translate('warning.windows.instructions')}
+                            </a>
+                        ),
+                    })}
+                </Callout>
             )}
         </>
     );

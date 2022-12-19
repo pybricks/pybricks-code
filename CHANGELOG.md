@@ -4,10 +4,14 @@
 
 ## [Unreleased]
 
+### Added
+- Added Windows DFU USB driver installation instructions ([support#858]).
+
 ### Changed
 - Clicking empty area of file list focuses the list ([support#856]).
 
 [support#856]: https://github.com/pybricks/support/issues/856
+[support#858]: https://github.com/pybricks/support/issues/858
 
 ## [2.0.0-rc.1] - 2022-12-09
 

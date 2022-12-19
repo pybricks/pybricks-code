@@ -16,6 +16,9 @@ type State = ReturnType<typeof reducers>;
 test('initial state', () => {
     expect(reducers(undefined, {} as AnyAction)).toMatchInlineSnapshot(`
         {
+          "dfuWindowsDriverInstallDialog": {
+            "isOpen": false,
+          },
           "flashing": false,
           "installPybricksDialog": {
             "isOpen": false,

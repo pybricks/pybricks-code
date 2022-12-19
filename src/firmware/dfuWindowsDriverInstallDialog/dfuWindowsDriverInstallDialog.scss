@@ -1,0 +1,32 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2022 The Pybricks Authors
+
+@use '@blueprintjs/core/lib/scss/variables' as bp;
+
+.pb-dfu-windows-driver-install-dialog {
+    & .#{bp.$ns}-multistep-dialog-panels {
+        min-height: bp.$pt-grid-size * 75;
+
+        & .#{bp.$ns}-multistep-dialog-left-panel {
+            display: none;
+        }
+
+        & .#{bp.$ns}-multistep-dialog-right-panel {
+            display: flex;
+            flex-direction: column;
+
+            & .#{bp.$ns}-card {
+                margin-block: bp.$pt-grid-size * 1.5;
+                margin-inline: auto;
+                padding: unset;
+                border-radius: unset;
+                width: fit-content;
+                height: fit-content;
+
+                & img {
+                    display: block;
+                }
+            }
+        }
+    }
+}
