@@ -1,12 +1,17 @@
 {
     "title": "Restore official {lego} Firmware",
+    "backButton": {
+        "label": "Back"
+    },
+    "nextButton": {
+        "label": "Next"
+    },
     "doneButton": {
         "label": "Done"
     },
     "selectHubPanel": {
         "title": "Select hub",
-        "message": "Select the hub to restore the official {lego} firmware on, then click {next}.",
-        "nextButton": "Next"
+        "message": "Select the hub to restore the official {lego} firmware on, then click {next}."
     },
     "restoreFirmwarePanel": {
         "title": "Restore firmware",

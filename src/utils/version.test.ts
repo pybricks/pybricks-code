@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021 The Pybricks Authors
+// Copyright (c) 2021-2022 The Pybricks Authors
 
+import { lt } from 'semver';
 import { pythonVersionToSemver } from './version';
 
 describe('pythonVersionToSemver', () => {
@@ -12,6 +13,16 @@ describe('pythonVersionToSemver', () => {
         ['v1.0.0f4', 'v1.0.0-final.4'],
     ])('valid version %s', (version, expected) => {
         expect(pythonVersionToSemver(version)).toBe(expected);
+    });
+
+    test.each([
+        ['v1.0.0a1', 'v1.0.0b1'],
+        ['v1.0.0b1', 'v1.0.0c1'],
+        ['v1.0.0c1', 'v1.0.0'],
+    ])('%s < %s', (first, second) => {
+        expect(
+            lt(pythonVersionToSemver(first), pythonVersionToSemver(second)),
+        ).toBeTruthy();
     });
 
     test('invalid version', () => {

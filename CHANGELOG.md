@@ -4,11 +4,33 @@
 
 ## [Unreleased]
 
+## [2.0.0] - 2022-12-20
+
 ### Added
 - Added Windows DFU USB driver installation instructions ([support#858]).
 
 ### Changed
 - Clicking empty area of file list focuses the list ([support#856]).
+- Various text, style and accessibility fixes and improvements.
+- Updated dependencies.
+- Updated firmware to v3.2.0:
+
+  #### Changed
+  - Buffered stdout is flushed before ending user program.
+
+  #### Fixed
+  - Fixed SPIKE/MINDSTORMS hubs advertising after disconnect while user program
+    is still running ([support#849]).
+  - Fixed Essential hub hanging on boot when bootloader entered but USB cable
+    not connected ([support#821]).
+  - Fixed button needs debouncing on City/Technic/Essential hubs ([support#716]).
+  - Fixed motor hold drifting away under external input movement ([support#863]).
+
+  [support#716]: https://github.com/pybricks/support/issues/716
+  [support#821]: https://github.com/pybricks/support/issues/821
+  [support#849]: https://github.com/pybricks/support/issues/849
+  [support#863]: https://github.com/pybricks/support/issues/863
+
 
 [support#856]: https://github.com/pybricks/support/issues/856
 [support#858]: https://github.com/pybricks/support/issues/858
@@ -598,7 +620,8 @@ Prerelease changes are documented at [support#48].
 
 <!-- links for version headings -->
 
-[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-rc.1...HEAD
+[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-rc.1...v2.0.0
 [2.0.0-rc.1]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.12...v2.0.0-rc.1
 [2.0.0-beta.12]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.11...v2.0.0-beta.12
 [2.0.0-beta.11]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.10...v2.0.0-beta.11

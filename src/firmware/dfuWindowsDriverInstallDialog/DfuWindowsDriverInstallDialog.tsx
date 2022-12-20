@@ -358,57 +358,23 @@ const DfuWindowsDriverInstallDialog: React.VoidFunctionComponent = () => {
             className="pb-dfu-windows-driver-install-dialog"
             isOpen={isOpen}
             onClose={() => dispatch(firmwareDfuWindowsDriverInstallDialogDialogHide())}
+            backButtonProps={{ text: i18n.translate('backButton.label') }}
+            nextButtonProps={{ text: i18n.translate('nextButton.label') }}
             finalButtonProps={{
                 text: i18n.translate('doneButton.label'),
                 onClick: () =>
                     dispatch(firmwareDfuWindowsDriverInstallDialogDialogHide()),
             }}
         >
-            <DialogStep
-                id="1"
-                panel={<Step1 />}
-                nextButtonProps={{ text: i18n.translate('nextButton.label') }}
-            />
-            <DialogStep
-                id="2"
-                panel={<Step2 hub={hub} />}
-                nextButtonProps={{ text: i18n.translate('nextButton.label') }}
-            />
-            <DialogStep
-                id="3"
-                panel={<Step3 hub={hub} />}
-                nextButtonProps={{ text: i18n.translate('nextButton.label') }}
-            />
-            <DialogStep
-                id="4"
-                panel={<Step4 hub={hub} />}
-                nextButtonProps={{ text: i18n.translate('nextButton.label') }}
-            />
-            <DialogStep
-                id="5"
-                panel={<Step5 hub={hub} />}
-                nextButtonProps={{ text: i18n.translate('nextButton.label') }}
-            />
-            <DialogStep
-                id="6"
-                panel={<Step6 hub={hub} />}
-                nextButtonProps={{ text: i18n.translate('nextButton.label') }}
-            />
-            <DialogStep
-                id="7"
-                panel={<Step7 hub={hub} />}
-                nextButtonProps={{ text: i18n.translate('nextButton.label') }}
-            />
-            <DialogStep
-                id="8"
-                panel={<Step8 />}
-                nextButtonProps={{ text: i18n.translate('nextButton.label') }}
-            />
-            <DialogStep
-                id="9"
-                panel={<Step9 hub={hub} />}
-                nextButtonProps={{ text: i18n.translate('nextButton.label') }}
-            />
+            <DialogStep id="1" panel={<Step1 />} />
+            <DialogStep id="2" panel={<Step2 hub={hub} />} />
+            <DialogStep id="3" panel={<Step3 hub={hub} />} />
+            <DialogStep id="4" panel={<Step4 hub={hub} />} />
+            <DialogStep id="5" panel={<Step5 hub={hub} />} />
+            <DialogStep id="6" panel={<Step6 hub={hub} />} />
+            <DialogStep id="7" panel={<Step7 hub={hub} />} />
+            <DialogStep id="8" panel={<Step8 />} />
+            <DialogStep id="9" panel={<Step9 hub={hub} />} />
         </MultistepDialog>
     );
 };

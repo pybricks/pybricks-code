@@ -1,5 +1,8 @@
 {
     "title": "Windows DFU USB driver installation instructions",
+    "backButton": {
+        "label": "Back"
+    },
     "nextButton": {
         "label": "Next"
     },
@@ -18,7 +21,7 @@
             "properties": "Properties",
             "listedWithWarning": "If it is listed with a warning sign, right-click it and select {properties}.",
             "listedWithoutWarning": "If it is listed somewhere else without a warning sign, then the driver is already installed. You may close this window.",
-            "notListed": "If you don't see it at all, make sure the hub is in DFU update mode (see video on the previous page) and try again."
+            "notListed": "If you don't see it at all, make sure that the hub is in DFU update mode and try again. Close this window to watch the video instructions."
         },
         "3": {
             "message": "In the {properties} dialog, click the {updateDriver} button.",
