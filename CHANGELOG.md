@@ -4,11 +4,15 @@
 
 ## [Unreleased]
 
+## [2.0.0] - 2022-12-20
+
 ### Added
 - Added Windows DFU USB driver installation instructions ([support#858]).
 
 ### Changed
 - Clicking empty area of file list focuses the list ([support#856]).
+- Various text, style and accessibility fixes and improvements.
+- Updated dependencies.
 - Updated firmware to v3.2.0:
 
   #### Changed
@@ -616,7 +620,8 @@ Prerelease changes are documented at [support#48].
 
 <!-- links for version headings -->
 
-[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-rc.1...HEAD
+[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-rc.1...v2.0.0
 [2.0.0-rc.1]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.12...v2.0.0-rc.1
 [2.0.0-beta.12]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.11...v2.0.0-beta.12
 [2.0.0-beta.11]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.10...v2.0.0-beta.11
