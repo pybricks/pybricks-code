@@ -348,7 +348,7 @@ const BootloaderInstructions: React.VoidFunctionComponent<
                                 <a
                                     href={pybricksUsbLinuxUdevRulesUrl}
                                     target="_blank"
-                                    rel="noreferrer"
+                                    rel="noopener"
                                 >
                                     {i18n.translate('warning.linux.learnMore')}
                                 </a>

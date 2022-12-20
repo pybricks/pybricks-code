@@ -75,11 +75,12 @@ function mapIcon(level: Level): IconName | undefined {
  * Converts a URL to an action that can be passed to `ToasterInstance.show()`.
  * @param helpUrl A URL.
  */
-function helpAction(helpUrl: string): ActionProps & LinkProps {
+function helpAction(helpUrl: string): ActionProps & LinkProps & { rel: string } {
     return {
         icon: 'help',
         href: helpUrl,
         target: '_blank',
+        rel: 'noopener',
     };
 }
 

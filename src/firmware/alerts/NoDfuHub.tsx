@@ -38,6 +38,7 @@ const NoDfuHub: React.VoidFunctionComponent<NoDfuHubProps> = ({
                         icon="help"
                         href={pybricksUsbLinuxUdevRulesUrl}
                         target="_blank"
+                        rel="noopener"
                     >
                         {i18n.translate('noDfuHub.configureUdevRulesButton')}
                         <ExternalLinkIcon />
@@ -47,6 +48,7 @@ const NoDfuHub: React.VoidFunctionComponent<NoDfuHubProps> = ({
                     icon="help"
                     href={pybricksUsbDfuTroubleshootingUrl}
                     target="_blank"
+                    rel="noopener"
                 >
                     {i18n.translate('noDfuHub.troubleshootButton')}
                     <ExternalLinkIcon />

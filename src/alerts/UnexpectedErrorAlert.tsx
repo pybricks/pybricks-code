@@ -67,6 +67,7 @@ const UnexpectedErrorAlert: React.VoidFunctionComponent<UnexpectedErrorAlertProp
                             'is:issue',
                         )}+${encodeURIComponent(error.message)}`}
                         target="_blank"
+                        rel="noopener"
                     >
                         {i18n.translate('reportBug')}
                     </AnchorButton>

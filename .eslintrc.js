@@ -27,6 +27,7 @@ module.exports = {
         'sort-imports': ['error', { ignoreDeclarationSort: true }],
         'import/order': ['error', { alphabetize: { order: 'asc' } }],
         'react-hooks/exhaustive-deps': 'error',
+        'react/jsx-no-target-blank': ['error', { allowReferrer: true }],
     },
     settings: {
         react: { version: 'detect' },
