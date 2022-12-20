@@ -8,14 +8,17 @@
     },
     "step": {
         "1": {
-            "message": "Right-click the Windows {startMenu} to open the context menu, then click {deviceManager} to open the Windows Device Manager.",
+            "message": "Right-click the Windows {startMenu}, then click {deviceManager}.",
             "startMenu": "Start Menu",
             "deviceManager": "Device Manager"
         },
         "2": {
-            "message": "In the Device Manager window, look for {dfuUsbHubName} under {otherDevices}. If it is there, right-click it and select {properties}. If it is not there, then the driver is already installed and you do not need to continue.",
+            "message": "Look for {dfuUsbHubName} under {otherDevices}.",
             "otherDevices": "Other Devices",
-            "properties": "Properties"
+            "properties": "Properties",
+            "listedWithWarning": "If it is listed with a warning sign, right-click it and select {properties}.",
+            "listedWithoutWarning": "If it is listed somewhere else without a warning sign, then the driver is already installed. You may close this window.",
+            "notListed": "If you don't see it at all, make sure the hub is in DFU update mode (see video on the previous page) and try again."
         },
         "3": {
             "message": "In the {properties} dialog, click the {updateDriver} button.",
@@ -44,7 +47,7 @@
             "next": "Next"
         },
         "8": {
-            "message": "A warning dialog will open stating that the driver is not recommended. Click the {yes} button to use the driver anyway. The the driver is compatible.",
+            "message": "A warning dialog says that the driver is not recommended. Click {yes} to proceed anyway. The driver is compatible.",
             "yes": "Yes"
         },
         "9": {
