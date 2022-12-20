@@ -5,7 +5,7 @@
 
 .pb-dfu-windows-driver-install-dialog {
     & .#{bp.$ns}-multistep-dialog-panels {
-        min-height: bp.$pt-grid-size * 75;
+        min-height: bp.$pt-grid-size * 77;
 
         & .#{bp.$ns}-multistep-dialog-left-panel {
             display: none;

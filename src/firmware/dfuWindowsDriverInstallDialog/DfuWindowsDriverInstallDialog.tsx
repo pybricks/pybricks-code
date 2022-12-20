@@ -150,6 +150,15 @@ const Step2: React.VoidFunctionComponent<HubTypeProps> = ({ hub }) => {
                         properties: <em>{i18n.translate('step.2.properties')}</em>,
                     })}
                 </p>
+                <ul>
+                    <li>
+                        {i18n.translate('step.2.listedWithWarning', {
+                            properties: <em>{i18n.translate('step.2.properties')}</em>,
+                        })}
+                    </li>
+                    <li>{i18n.translate('step.2.listedWithoutWarning')}</li>
+                    <li>{i18n.translate('step.2.notListed')}</li>
+                </ul>
             </div>
         </div>
     );

@@ -5,7 +5,7 @@
             "learnMore": "Learn more."
         },
         "windows": {
-            "message": "If you have never used Pybricks with USB on Windows, you may need to manually install a USB driver before you can connect to the device. {instructions}",
+            "message": "Are you using Pybricks on this computer for the first time? You may need to manually install the USB driver for this hub type. {instructions}",
             "instructions": "Click for instructions."
         }
     },
