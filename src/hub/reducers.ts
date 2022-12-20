@@ -193,12 +193,7 @@ const preferredFileFormat: Reducer<FileFormat | null> = (state = null, action) =
     if (blePybricksServiceDidNotReceiveHubCapabilities.matches(action)) {
         // HACK: there is not a good way to get the supported MPY ABI version
         // from a running hub, so we use heuristics on the firmware version.
-        if (
-            semver.satisfies(
-                pythonVersionToSemver(action.firmwareVersion),
-                '>=3.2.0-beta.2',
-            )
-        ) {
+        if (semver.lte(pythonVersionToSemver(action.firmwareVersion), '3.2.0-beta.2')) {
             return FileFormat.Mpy6;
         }
 

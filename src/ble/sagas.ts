@@ -8,7 +8,7 @@
 
 import { firmwareVersion } from '@pybricks/firmware';
 import { Task, buffers, eventChannel } from 'redux-saga';
-import { satisfies } from 'semver';
+import { lt, satisfies } from 'semver';
 import {
     call,
     cancel,
@@ -223,9 +223,9 @@ function* handleBleConnectPybricks(): Generator {
 
         // notify user if old firmware
         if (
-            satisfies(
+            lt(
                 pythonVersionToSemver(firmwareRevision),
-                `<${pythonVersionToSemver(firmwareVersion)}`,
+                pythonVersionToSemver(firmwareVersion),
             )
         ) {
             yield* put(alertsShowAlert('ble', 'oldFirmware'));
