@@ -9,6 +9,24 @@
 
 ### Changed
 - Clicking empty area of file list focuses the list ([support#856]).
+- Updated firmware to v3.2.0:
+
+  #### Changed
+  - Buffered stdout is flushed before ending user program.
+
+  #### Fixed
+  - Fixed SPIKE/MINDSTORMS hubs advertising after disconnect while user program
+    is still running ([support#849]).
+  - Fixed Essential hub hanging on boot when bootloader entered but USB cable
+    not connected ([support#821]).
+  - Fixed button needs debouncing on City/Technic/Essential hubs ([support#716]).
+  - Fixed motor hold drifting away under external input movement ([support#863]).
+
+  [support#716]: https://github.com/pybricks/support/issues/716
+  [support#821]: https://github.com/pybricks/support/issues/821
+  [support#849]: https://github.com/pybricks/support/issues/849
+  [support#863]: https://github.com/pybricks/support/issues/863
+
 
 [support#856]: https://github.com/pybricks/support/issues/856
 [support#858]: https://github.com/pybricks/support/issues/858
