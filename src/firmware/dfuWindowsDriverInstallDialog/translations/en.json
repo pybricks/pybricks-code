@@ -1,5 +1,8 @@
 {
     "title": "Windows DFU USB driver installation instructions",
+    "backButton": {
+        "label": "Back"
+    },
     "nextButton": {
         "label": "Next"
     },
