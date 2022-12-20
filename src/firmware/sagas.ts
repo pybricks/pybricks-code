@@ -80,6 +80,7 @@ import {
     firmwareRestoreOfficialDfu,
     flashFirmware,
 } from './actions';
+import { firmwareDfuWindowsDriverInstallDialogDialogShow } from './dfuWindowsDriverInstallDialog/actions';
 import {
     firmwareInstallPybricksDialogAccept,
     firmwareInstallPybricksDialogCancel,
@@ -713,6 +714,19 @@ function* handleFlashUsbDfu(action: ReturnType<typeof firmwareFlashUsbDfu>): Gen
         if (!device) {
             yield* put(alertsShowAlert('firmware', 'noDfuHub'));
             yield* put(firmwareDidFailToFlashUsbDfu());
+
+            const { action } = yield* take<
+                ReturnType<typeof alertsDidShowAlert<'firmware', 'noDfuHub'>>
+            >(
+                alertsDidShowAlert.when(
+                    (a) => a.domain === 'firmware' && a.specific === 'noDfuHub',
+                ),
+            );
+
+            if (action === 'installWindowsDriver') {
+                yield* put(firmwareDfuWindowsDriverInstallDialogDialogShow());
+            }
+
             return;
         }
 
