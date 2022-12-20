@@ -15,7 +15,8 @@
             "linux": "You may need to add udev rules before you can connect to your hub."
         },
         "troubleshootButton": "Troubleshooting Tips",
-        "installUsbDriverButton": "Install USB Driver"
+        "installUsbDriverButton": "Install USB Driver",
+        "configureUdevRulesButton": "Configure udev rules"
     },
     "noDfuInterface": {
         "message": "This is very unusual. The USB device did not contain the expected interface."

@@ -46,7 +46,7 @@ export const pybricksUsbDfuTroubleshootingUrl =
     'https://github.com/pybricks/support/discussions/688';
 
 export const pybricksUsbLinuxUdevRulesUrl =
-    'https://github.com/pybricks/support/discussions/688#discussioncomment-3239099';
+    'https://pybricks.com/projects/tutorials/dev/tools/linux/';
 
 /** Pybricks copyright statement. */
 export const pybricksCopyright = 'Copyright (c) 2020-2023 The Pybricks Authors';

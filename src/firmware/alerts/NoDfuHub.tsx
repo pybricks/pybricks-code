@@ -3,7 +3,10 @@
 
 import { AnchorButton, Button, Intent } from '@blueprintjs/core';
 import React from 'react';
-import { pybricksUsbDfuTroubleshootingUrl } from '../../app/constants';
+import {
+    pybricksUsbDfuTroubleshootingUrl,
+    pybricksUsbLinuxUdevRulesUrl,
+} from '../../app/constants';
 import ExternalLinkIcon from '../../components/ExternalLinkIcon';
 import type { CreateToast } from '../../toasterTypes';
 import { isLinux, isWindows } from '../../utils/os';
@@ -29,6 +32,16 @@ const NoDfuHub: React.VoidFunctionComponent<NoDfuHubProps> = ({
                     <Button icon="download" onClick={onInstallWindowsDriver}>
                         {i18n.translate('noDfuHub.installUsbDriverButton')}
                     </Button>
+                )}
+                {isLinux() && (
+                    <AnchorButton
+                        icon="help"
+                        href={pybricksUsbLinuxUdevRulesUrl}
+                        target="_blank"
+                    >
+                        {i18n.translate('noDfuHub.configureUdevRulesButton')}
+                        <ExternalLinkIcon />
+                    </AnchorButton>
                 )}
                 <AnchorButton
                     icon="help"
