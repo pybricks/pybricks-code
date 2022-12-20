@@ -33,9 +33,7 @@ const SelectHubPanel: React.VoidFunctionComponent = () => {
             <p>
                 {i18n.translate('selectHubPanel.message', {
                     lego: legoRegisteredTrademark,
-                    next: (
-                        <strong>{i18n.translate('selectHubPanel.nextButton')}</strong>
-                    ),
+                    next: <strong>{i18n.translate('nextButton.label')}</strong>,
                 })}
             </p>
             <div className="pb-spacer" />
@@ -96,6 +94,8 @@ const RestoreOfficialDialog: React.VoidFunctionComponent = () => {
             isOpen={isOpen}
             title={i18n.translate('title', { lego: legoRegisteredTrademark })}
             onClose={() => dispatch(firmwareRestoreOfficialDialogHide())}
+            backButtonProps={{ text: i18n.translate('backButton.label') }}
+            nextButtonProps={{ text: i18n.translate('nextButton.label') }}
             finalButtonProps={{
                 text: i18n.translate('doneButton.label'),
                 onClick: () => dispatch(firmwareRestoreOfficialDialogHide()),
@@ -105,7 +105,6 @@ const RestoreOfficialDialog: React.VoidFunctionComponent = () => {
                 id="hub"
                 title={i18n.translate('selectHubPanel.title')}
                 panel={<SelectHubPanel />}
-                nextButtonProps={{ text: i18n.translate('selectHubPanel.nextButton') }}
             />
             <DialogStep
                 id="restore"

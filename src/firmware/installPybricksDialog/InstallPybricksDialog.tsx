@@ -461,6 +461,8 @@ export const InstallPybricksDialog: React.VoidFunctionComponent = () => {
             title={i18n.translate('title')}
             isOpen={isOpen}
             onClose={() => dispatch(firmwareInstallPybricksDialogCancel())}
+            backButtonProps={{ text: i18n.translate('backButton.label') }}
+            nextButtonProps={{ text: i18n.translate('nextButton.label') }}
             finalButtonProps={{
                 text: i18n.translate('flashFirmwareButton.label'),
                 onClick: () =>
@@ -482,7 +484,6 @@ export const InstallPybricksDialog: React.VoidFunctionComponent = () => {
                         onCustomFirmwareZip={setCustomFirmwareZip}
                     />
                 }
-                nextButtonProps={{ text: i18n.translate('nextButton.label') }}
             />
             <DialogStep
                 id="license"
@@ -495,7 +496,6 @@ export const InstallPybricksDialog: React.VoidFunctionComponent = () => {
                         onLicenseAcceptedChanged={setLicenseAccepted}
                     />
                 }
-                backButtonProps={{ text: i18n.translate('backButton.label') }}
                 nextButtonProps={{
                     disabled: !licenseAccepted,
                     text: i18n.translate('nextButton.label'),
@@ -510,14 +510,11 @@ export const InstallPybricksDialog: React.VoidFunctionComponent = () => {
                         onChangeHubName={setHubName}
                     />
                 }
-                backButtonProps={{ text: i18n.translate('backButton.label') }}
-                nextButtonProps={{ text: i18n.translate('nextButton.label') }}
             />
             <DialogStep
                 id="bootloader"
                 title={i18n.translate('bootloaderPanel.title')}
                 panel={<BootloaderModePanel hubType={selectedHubType} />}
-                backButtonProps={{ text: i18n.translate('backButton.label') }}
             />
         </MultistepDialog>
     );
