@@ -28,6 +28,7 @@ const NoHub: React.VoidFunctionComponent<NoHubProps> = ({ onFlashFirmware }) => 
                     icon="help"
                     href={pybricksBluetoothTroubleshootingUrl}
                     target="_blank"
+                    rel="noopener"
                 >
                     {i18n.translate('noHub.troubleshootButton')}
                     <ExternalLinkIcon />

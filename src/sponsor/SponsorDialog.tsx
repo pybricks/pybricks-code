@@ -38,7 +38,7 @@ const SponsorDialog: React.VoidFunctionComponent = () => {
                                 <a
                                     href={pybricksTeamUrl}
                                     target="_blank"
-                                    rel="noreferrer"
+                                    rel="noopener"
                                 >
                                     {i18n.translate('whoAreWe.team.team')}
                                 </a>
@@ -74,7 +74,7 @@ const SponsorDialog: React.VoidFunctionComponent = () => {
                         fill={true}
                         href="https://github.com/sponsors/pybricks"
                         target="_blank"
-                        rel="noreferrer"
+                        rel="noopener"
                     >
                         GitHub Sponsors
                         <ExternalLinkIcon />
@@ -86,7 +86,7 @@ const SponsorDialog: React.VoidFunctionComponent = () => {
                         fill={true}
                         href="https://www.patreon.com/pybricks"
                         target="_blank"
-                        rel="noreferrer"
+                        rel="noopener"
                     >
                         Patreon
                         <ExternalLinkIcon />
@@ -98,7 +98,7 @@ const SponsorDialog: React.VoidFunctionComponent = () => {
                         fill={true}
                         href="https://paypal.me/pybricks"
                         target="_blank"
-                        rel="noreferrer"
+                        rel="noopener"
                     >
                         Paypal
                         <ExternalLinkIcon />
