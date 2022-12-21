@@ -6,7 +6,9 @@
 
 ### Fixed
 - Fixed terminal scroll not working ([support#866]).
+- Fixed terminal breaks if input is given before hub is connected ([support#865]).
 
+[support#865]: https://github.com/pybricks/support/issues/865
 [support#866]: https://github.com/pybricks/support/issues/866
 
 ## [2.0.0] - 2022-12-20

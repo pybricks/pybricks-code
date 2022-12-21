@@ -71,6 +71,7 @@ describe('Terminal data source responds to receive data actions', () => {
 
     test('basic function works', async () => {
         const saga = new AsyncSaga(terminal, { nextMessageId: createCountFunc() });
+        saga.updateState({ hub: { runtime: HubRuntimeState.Running } });
 
         saga.put(receiveData('test1234'));
 
@@ -82,6 +83,7 @@ describe('Terminal data source responds to receive data actions', () => {
 
     test('messages are queued until previous has completed', async () => {
         const saga = new AsyncSaga(terminal, { nextMessageId: createCountFunc() });
+        saga.updateState({ hub: { runtime: HubRuntimeState.Running } });
 
         saga.put(receiveData('test1234'));
         await delay(50); // without delay, messages are combined
@@ -108,6 +110,7 @@ describe('Terminal data source responds to receive data actions', () => {
 
     test('messages are queued until previous has failed', async () => {
         const saga = new AsyncSaga(terminal, { nextMessageId: createCountFunc() });
+        saga.updateState({ hub: { runtime: HubRuntimeState.Running } });
 
         saga.put(receiveData('test1234'));
         await delay(50); // without delay, messages are combined
@@ -134,6 +137,7 @@ describe('Terminal data source responds to receive data actions', () => {
 
     test('small messages are combined', async () => {
         const saga = new AsyncSaga(terminal, { nextMessageId: createCountFunc() });
+        saga.updateState({ hub: { runtime: HubRuntimeState.Running } });
 
         saga.put(receiveData('test1234'));
         saga.put(receiveData('test1234'));
@@ -148,6 +152,7 @@ describe('Terminal data source responds to receive data actions', () => {
         const testData = '012345678901234567890123456789';
 
         const saga = new AsyncSaga(terminal, { nextMessageId: createCountFunc() });
+        saga.updateState({ hub: { runtime: HubRuntimeState.Running } });
 
         saga.put(receiveData(testData));
 
@@ -161,6 +166,16 @@ describe('Terminal data source responds to receive data actions', () => {
 
         saga.put(didWrite(1));
 
+        await saga.end();
+    });
+
+    test('if user program is not running, do not dispatch write', async () => {
+        const saga = new AsyncSaga(terminal, { nextMessageId: createCountFunc() });
+        saga.updateState({ hub: { runtime: HubRuntimeState.Disconnected } });
+
+        saga.put(receiveData('test1234'));
+
+        // line below will fail with unhandled pending dispatches if not working correctly
         await saga.end();
     });
 });
