@@ -79,6 +79,8 @@ function* receiveTerminalData(): Generator {
         // it should be fine as long a the logic for the state doesn't change.
         if (!isUserProgramRunning) {
             // if no user program is running, input goes to /dev/null
+            // print the BEL character (^G) to notify the user that the input was ignored
+            yield* put(sendData('\x07'));
             continue;
         }
 

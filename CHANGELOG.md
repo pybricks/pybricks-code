@@ -4,6 +4,9 @@
 
 ## [Unreleased]
 
+### Added
+- Added audio and visual feedback when typing into terminal while user program is not running.
+
 ## [2.0.1] - 2022-12-21
 
 ### Fixed
