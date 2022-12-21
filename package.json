@@ -123,8 +123,8 @@
         "webpack-dev-server": "^4.11.1",
         "webpack-manifest-plugin": "^5.0.0",
         "workbox-webpack-plugin": "^6.5.4",
-        "xterm": "5.0.0",
-        "xterm-addon-fit": "^0.6.0",
+        "xterm": "^5.1.0",
+        "xterm-addon-fit": "^0.7.0",
         "zen-push": "^0.3.1"
     },
     "scripts": {
