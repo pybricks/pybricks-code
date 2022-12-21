@@ -94,6 +94,13 @@ const recoveryMetadataFileMap: ReadonlyMap<Hub, string> = new Map([
     [Hub.Prime, primeHubVtt],
     [Hub.Technic, technicHubRecoveryVtt],
 ]);
+
+function countValidChildren(children: React.ReactNode) {
+    return React.Children.toArray(children).filter((child) =>
+        React.isValidElement(child),
+    ).length;
+}
+
 /**
  * Provides customized instructions on how to enter bootloader mode based
  * on the hub type.
@@ -150,40 +157,9 @@ const BootloaderInstructions: React.VoidFunctionComponent<
         };
     }, [setActiveStep]);
 
-    return (
-        <>
-            <video
-                controls
-                controlsList="nodownload nofullscreen"
-                muted
-                disablePictureInPicture
-                className="pb-bootloader-video"
-            >
-                <source
-                    src={
-                        recovery
-                            ? recoveryVideoFileMap.get(hubType)
-                            : videoFileMap.get(hubType)
-                    }
-                    type="video/mp4"
-                />
-                <track
-                    kind="metadata"
-                    src={
-                        recovery
-                            ? recoveryMetadataFileMap.get(hubType)
-                            : metadataFileMap.get(hubType)
-                    }
-                    ref={metadataTrackRef}
-                />
-            </video>
-
-            <div className="pb-spacer" />
-
-            <p>
-                <strong>{i18n.translate('instructionGroup.prepare.title')}</strong>
-            </p>
-            <ol className="firstList">
+    const prepareSteps = useMemo(
+        () => (
+            <>
                 <li>
                     {i18n.translate(
                         hubHasUSB(hubType)
@@ -193,22 +169,21 @@ const BootloaderInstructions: React.VoidFunctionComponent<
                 </li>
                 <li>{i18n.translate('instructionGroup.prepare.turnOff')}</li>
                 {/* For non-usb recovery, show step about official app */}
-                {recovery && !hubHasUSB(hubType) ? (
+                {recovery && !hubHasUSB(hubType) && (
                     <li>
                         {i18n.translate('instructionGroup.prepare.app', {
                             lego: legoRegisteredTrademark,
                         })}
                     </li>
-                ) : (
-                    <></>
                 )}
-            </ol>
-            <p>
-                <strong>
-                    {i18n.translate('instructionGroup.bootloaderMode.title')}
-                </strong>
-            </p>
-            <ol className="continuedList">
+            </>
+        ),
+        [i18n, recovery, hubType],
+    );
+
+    const bootloaderModeSteps = useMemo(
+        () => (
+            <>
                 {/* City hub has power issues and requires disconnecting motors/sensors */}
                 {hubType === Hub.City && (
                     <li
@@ -301,15 +276,67 @@ const BootloaderInstructions: React.VoidFunctionComponent<
                         })}
                     </li>
                 )}
+            </>
+        ),
+        [recovery, activeStep, i18n, button, hubType, light, lightPattern],
+    );
+
+    return (
+        <>
+            <video
+                controls
+                controlsList="nodownload nofullscreen"
+                muted
+                disablePictureInPicture
+                className="pb-bootloader-video"
+            >
+                <source
+                    src={
+                        recovery
+                            ? recoveryVideoFileMap.get(hubType)
+                            : videoFileMap.get(hubType)
+                    }
+                    type="video/mp4"
+                />
+                <track
+                    kind="metadata"
+                    src={
+                        recovery
+                            ? recoveryMetadataFileMap.get(hubType)
+                            : metadataFileMap.get(hubType)
+                    }
+                    ref={metadataTrackRef}
+                />
+            </video>
+
+            <div className="pb-spacer" />
+
+            <p>
+                <strong>{i18n.translate('instructionGroup.prepare.title')}</strong>
+            </p>
+            <ol>{prepareSteps}</ol>
+            <p>
+                <strong>
+                    {i18n.translate('instructionGroup.bootloaderMode.title')}
+                </strong>
+            </p>
+            <ol start={countValidChildren(prepareSteps.props.children) + 1}>
+                {bootloaderModeSteps}
             </ol>
-            {hubHasUSB(hubType) || (!hubHasUSB(hubType) && !recovery) ? (
+            {(hubHasUSB(hubType) || (!hubHasUSB(hubType) && !recovery)) && (
                 <>
                     <p>
                         <strong>
                             {i18n.translate('instructionGroup.connect.title')}
                         </strong>
                     </p>
-                    <ol className="continuedList">
+                    <ol
+                        start={
+                            countValidChildren(prepareSteps.props.children) +
+                            countValidChildren(bootloaderModeSteps.props.children) +
+                            1
+                        }
+                    >
                         <li>
                             {i18n.translate(
                                 'instructionGroup.connect.clickConnectAndFlash',
@@ -336,8 +363,6 @@ const BootloaderInstructions: React.VoidFunctionComponent<
                         </li>
                     </ol>
                 </>
-            ) : (
-                <></>
             )}
 
             {hubHasUSB(hubType) && isLinux() && (

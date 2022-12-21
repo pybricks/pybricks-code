@@ -11,19 +11,3 @@
     display: block;
     margin: 0 auto;
 }
-
-// Only first ol should reset.
-ol.firstList {
-    counter-reset: listCounter 0;
-}
-
-// Increment on each li, no matter which list.
-ol.firstList li,
-ol.continuedList li {
-    counter-increment: listCounter;
-
-    // Use counter value to set marker.
-    &::marker {
-        content: counter(listCounter, decimal) '. ';
-    }
-}
