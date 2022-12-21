@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2022 The Pybricks Authors
 
+import 'xterm/css/xterm.css';
+import './terminal.scss';
 import { Menu, MenuDivider, MenuItem, ResizeSensor } from '@blueprintjs/core';
 import { ContextMenu2, ContextMenu2ContentProps } from '@blueprintjs/popover2';
 import React, { useContext, useEffect, useMemo, useRef } from 'react';
@@ -13,7 +15,12 @@ import { TerminalContext } from './TerminalContext';
 import { receiveData } from './actions';
 import { useI18n } from './i18n';
 
-import 'xterm/css/xterm.css';
+// Source: https://freesound.org/people/altemark/sounds/45759/
+// This sound is released under the Creative Commons Attribution 3.0 Unported
+// (CC BY 3.0) license. It was created by 'altemark'. No modifications have been
+// made, apart from the conversion to base64.
+const BELL_SOUND =
+    'data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4LjMyLjEwNAAAAAAAAAAAAAAA//tQxAADB8AhSmxhIIEVCSiJrDCQBTcu3UrAIwUdkRgQbFAZC1CQEwTJ9mjRvBA4UOLD8nKVOWfh+UlK3z/177OXrfOdKl7pyn3Xf//WreyTRUoAWgBgkOAGbZHBgG1OF6zM82DWbZaUmMBptgQhGjsyYqc9ae9XFz280948NMBWInljyzsNRFLPWdnZGWrddDsjK1unuSrVN9jJsK8KuQtQCtMBjCEtImISdNKJOopIpBFpNSMbIHCSRpRR5iakjTiyzLhchUUBwCgyKiweBv/7UsQbg8isVNoMPMjAAAA0gAAABEVFGmgqK////9bP/6XCykxBTUUzLjEwMKqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq';
 
 function handleKeyEvent(event: KeyboardEvent): boolean {
     if (
@@ -186,12 +193,46 @@ const Terminal: React.FC = (_props) => {
         return () => removeEventListener('pb-terminal-focus', listener);
     }, [xterm]);
 
+    // audio and visual notification of bell
+
+    const bellRef = useRef<HTMLAudioElement>(null);
+    const bellOverlayRef = useRef<HTMLDivElement>(null);
+    const bellTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
+
+    useEffect(() => {
+        const audioElement = bellRef.current;
+        const overlayElement = bellOverlayRef.current;
+
+        if (process.env.NODE_ENV === 'test' || !audioElement || !overlayElement) {
+            return;
+        }
+
+        const subscription = xterm.onBell(() => {
+            if (bellTimeoutRef.current) {
+                clearTimeout(bellTimeoutRef.current);
+            }
+
+            audioElement.play();
+            overlayElement.classList.add('pb-bell');
+
+            bellTimeoutRef.current = setTimeout(() => {
+                overlayElement.classList.remove('pb-bell');
+            }, 150);
+        });
+
+        return () => subscription.dispose();
+    }, [xterm, bellRef, bellOverlayRef, bellTimeoutRef]);
+
     return (
         <ContextMenu2
             className="h-100"
             content={contextMenu}
             popoverProps={{ onClosed: () => xterm.focus() }}
         >
+            <audio hidden preload="auto" ref={bellRef}>
+                <source src={BELL_SOUND} />
+            </audio>
+            <div className="pb-terminal-bell-overlay" ref={bellOverlayRef} />
             <ResizeSensor onResize={(): void => fitAddon.fit()}>
                 <div ref={terminalRef} className="h-100" />
             </ResizeSensor>
