@@ -4,6 +4,11 @@
 
 ## [Unreleased]
 
+### Fixed
+- Fixed terminal scroll not working ([support#866]).
+
+[support#866]: https://github.com/pybricks/support/issues/866
+
 ## [2.0.0] - 2022-12-20
 
 ### Added
