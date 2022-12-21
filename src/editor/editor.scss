@@ -101,3 +101,9 @@
         z-index: bp.$pt-z-index-overlay;
     }
 }
+
+// override iOS keyboard button position
+.monaco-editor .iPadShowKeyboard {
+    right: unset !important;
+    left: 20px;
+}
