@@ -4,6 +4,15 @@
 
 ## [Unreleased]
 
+## [2.0.1] - 2022-12-21
+
+### Fixed
+- Fixed terminal scroll not working ([support#866]).
+- Fixed terminal breaks if input is given before hub is connected ([support#865]).
+
+[support#865]: https://github.com/pybricks/support/issues/865
+[support#866]: https://github.com/pybricks/support/issues/866
+
 ## [2.0.0] - 2022-12-20
 
 ### Added
@@ -620,7 +629,8 @@ Prerelease changes are documented at [support#48].
 
 <!-- links for version headings -->
 
-[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.0.0...HEAD
+[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.0.1...HEAD
+[2.0.1]: https://github.com/pybricks/pybricks-code/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-rc.1...v2.0.0
 [2.0.0-rc.1]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.12...v2.0.0-rc.1
 [2.0.0-beta.12]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-beta.11...v2.0.0-beta.12

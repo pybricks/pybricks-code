@@ -49,8 +49,10 @@ function* receiveUartData(action: ReturnType<typeof didNotify>): Generator {
 }
 
 function* receiveTerminalData(): Generator {
+    const nextMessageId = yield* getContext<() => number>('nextMessageId');
     const channel = yield* actionChannel(receiveData);
-    while (true) {
+
+    for (;;) {
         // wait for input from terminal
         const action = yield* take(channel);
         let value = action.value;
@@ -68,10 +70,21 @@ function* receiveTerminalData(): Generator {
             value += action.value;
         }
 
-        const nextMessageId = yield* getContext<() => number>('nextMessageId');
+        const isUserProgramRunning = yield* select(
+            (s: RootState) => s.hub.runtime === HubRuntimeState.Running,
+        );
+
+        // REVISIT: this test is a bit dangerous since it is not actually
+        // testing that handleWriteUart in ble/sagas is running. In theory
+        // it should be fine as long a the logic for the state doesn't change.
+        if (!isUserProgramRunning) {
+            // if no user program is running, input goes to /dev/null
+            continue;
+        }
 
         // stdin gets piped to BLE connection
         const data = encoder.encode(value);
+
         for (let i = 0; i < data.length; i += nordicUartSafeTxCharLength) {
             const { id } = yield* put(
                 write(nextMessageId(), data.slice(i, i + nordicUartSafeTxCharLength)),
