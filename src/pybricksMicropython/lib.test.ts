@@ -131,3 +131,18 @@ from q import q
         ]),
     );
 });
+
+test('https://github.com/pybricks/support/issues/873 regression', () => {
+    const script = `
+from my_module import data
+
+async def hello():
+    print("hello")
+
+print(data)
+`;
+
+    const modules = findImportedModules(script);
+
+    expect(modules).toEqual(new Set(['my_module']));
+});

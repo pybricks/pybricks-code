@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2022 The Pybricks Authors
 
-import { parse, walk } from '@qoretechnologies/python-parser';
+import { parse, walk } from '@pybricks/python-program-analysis';
 import type { FileContents, FileStorageDb } from '../fileStorage';
 
 /** The Python file extension ('.py') */
@@ -99,7 +99,7 @@ export function findImportedModules(py: string): ReadonlySet<string> {
         });
     } catch (err) {
         // istanbul ignore if
-        if (process.env.NODE_ENV !== 'test') {
+        if (process.env.NODE_ENV === 'test') {
             console.error(err);
         }
 

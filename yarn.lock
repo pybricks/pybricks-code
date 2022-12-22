@@ -2418,7 +2418,7 @@ __metadata:
     "@pybricks/jedi": 1.6.0
     "@pybricks/mpy-cross-v5": ^2.0.0
     "@pybricks/mpy-cross-v6": ^2.0.0
-    "@qoretechnologies/python-parser": ^0.4.10
+    "@pybricks/python-program-analysis": ^1.0.1
     "@reduxjs/toolkit": ^1.9.1
     "@shopify/react-i18n": ^7.5.1
     "@svgr/webpack": ^6.5.1
@@ -2541,12 +2541,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@qoretechnologies/python-parser@npm:^0.4.10":
-  version: 0.4.10
-  resolution: "@qoretechnologies/python-parser@npm:0.4.10"
+"@pybricks/python-program-analysis@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@pybricks/python-program-analysis@npm:1.0.1"
   dependencies:
     lodash: ^4.17.15
-  checksum: ab0d91719a8301b64f9c7fb1a7711721d52d78325abbf0c7c75940a48fd4a3d2b07456c95f8507af19faa333bf87116dd62f18e6c8e76486a57673e3224ac3ee
+  checksum: f34171e8b315b4f81c7f0768ce644c22965e3f9fc2c2514fa6256601e05f2e4c9df0518b2a591ac8455f4d54f48929cd8c741f8751dd6d6e792a2520339ca7bb
   languageName: node
   linkType: hard
 
