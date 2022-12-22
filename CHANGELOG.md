@@ -7,6 +7,11 @@
 ### Added
 - Added audio and visual feedback when typing into terminal while user program is not running.
 
+### Changed
+- Changed app display from "fullscreen" to "standalone" ([support#867]).
+
+[support#867]: https://github.com/pybricks/support/issues/867
+
 ## [2.0.1] - 2022-12-21
 
 ### Fixed
