@@ -37,7 +37,7 @@
             "waitForLight": "Wait for the {light} to start blinking {lightPattern}.",
             "waitAppConnect": "The app will automatically connect and start restoring the firmware.",
             "releaseButton": "Release the {button}.",
-            "keepHolding": "Keep holding the {button}."
+            "keepHolding": "Keep holding the {button} in the next steps. We'll tell you when to let go."
         },
         "connect": {
             "title": "Install:",
