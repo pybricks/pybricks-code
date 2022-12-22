@@ -99,8 +99,8 @@ export function findImportedModules(py: string): ReadonlySet<string> {
         });
     } catch (err) {
         // istanbul ignore if
-        if (process.env.NODE_ENV === 'development') {
-            console.debug(err);
+        if (process.env.NODE_ENV !== 'test') {
+            console.error(err);
         }
 
         // files with syntax errors are ignored
