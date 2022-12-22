@@ -38,7 +38,7 @@
             top: 0px;
             // FIXME: this should be a variable
             left: 47px;
-            height: 100%;
+            height: calc(100% - pb.$status-bar-height);
             z-index: bp.$pt-z-index-overlay;
         }
     }

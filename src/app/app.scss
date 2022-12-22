@@ -16,6 +16,8 @@
     width: 100%;
     height: 100%;
     background-color: bp.$pt-app-background-color;
+    display: flex;
+    flex-direction: column;
 
     .#{bp.$ns}-dark & {
         background-color: bp.$pt-dark-app-background-color;
@@ -52,9 +54,9 @@
 }
 
 .pb-app-body {
-    // height makes everything fit without scrolling
-    height: calc(var(--pb-vh, 100vh) - #{pb.$status-bar-height}) !important;
-    position: relative;
+    min-height: 0;
+    flex: 1 1 auto;
+
     display: flex;
     flex-direction: row;
 

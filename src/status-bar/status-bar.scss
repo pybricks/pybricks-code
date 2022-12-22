@@ -7,8 +7,6 @@
 @use '../variables' as pb;
 
 .pb-status-bar {
-    position: fixed;
-    top: calc(var(--pb-vh, 100vh) - #{pb.$status-bar-height});
     background-color: pb.$pybricks-blue;
     height: pb.$status-bar-height;
     width: 100vw;
