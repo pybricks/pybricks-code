@@ -283,31 +283,33 @@ const BootloaderInstructions: React.VoidFunctionComponent<
 
     return (
         <>
-            <video
-                controls
-                controlsList="nodownload nofullscreen"
-                muted
-                disablePictureInPicture
-                className="pb-bootloader-video"
-            >
-                <source
-                    src={
-                        recovery
-                            ? recoveryVideoFileMap.get(hubType)
-                            : videoFileMap.get(hubType)
-                    }
-                    type="video/mp4"
-                />
-                <track
-                    kind="metadata"
-                    src={
-                        recovery
-                            ? recoveryMetadataFileMap.get(hubType)
-                            : metadataFileMap.get(hubType)
-                    }
-                    ref={metadataTrackRef}
-                />
-            </video>
+            {process.env.NODE_ENV !== 'test' && (
+                <video
+                    controls
+                    controlsList="nodownload nofullscreen"
+                    muted
+                    disablePictureInPicture
+                    className="pb-bootloader-video"
+                >
+                    <source
+                        src={
+                            recovery
+                                ? recoveryVideoFileMap.get(hubType)
+                                : videoFileMap.get(hubType)
+                        }
+                        type="video/mp4"
+                    />
+                    <track
+                        kind="metadata"
+                        src={
+                            recovery
+                                ? recoveryMetadataFileMap.get(hubType)
+                                : metadataFileMap.get(hubType)
+                        }
+                        ref={metadataTrackRef}
+                    />
+                </video>
+            )}
 
             <div className="pb-spacer" />
 
