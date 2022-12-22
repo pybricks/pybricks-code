@@ -13,7 +13,6 @@ import { createLogger } from 'redux-logger';
 import createSagaMiddleware from 'redux-saga';
 import App from './app/App';
 import { appVersion } from './app/constants';
-import ViewHeightSensor from './components/ViewHeightSensor';
 import { db } from './fileStorage/context';
 import { i18nManager } from './i18n';
 import { rootReducer } from './reducers';
@@ -95,7 +94,6 @@ ReactDOM.render(
     <React.StrictMode>
         <Provider store={store}>
             <I18nContext.Provider value={i18nManager}>
-                <ViewHeightSensor />
                 <OverlayProvider>
                     <HotkeysProvider>
                         <App />
