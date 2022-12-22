@@ -10,7 +10,11 @@
 ### Changed
 - Changed app display from "fullscreen" to "standalone" ([support#867]).
 
+### Fixed
+- Fixed imports in scripts that use `async` or `await` keywords ([support#873]).
+
 [support#867]: https://github.com/pybricks/support/issues/867
+[support#873]: https://github.com/pybricks/support/issues/873
 
 ## [2.0.1] - 2022-12-21
 
