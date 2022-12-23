@@ -50,7 +50,7 @@
         "browser-fs-access": "^0.31.1",
         "browserslist": "^4.21.4",
         "camelcase": "^7.0.0",
-        "canvas": "^2.10.2",
+        "canvas": "^2.11.0",
         "case-sensitive-paths-webpack-plugin": "^2.4.0",
         "copy-webpack-plugin": "^11.0.0",
         "css-loader": "^6.7.3",
