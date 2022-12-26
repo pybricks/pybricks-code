@@ -4,6 +4,14 @@
 
 ## [Unreleased]
 
+### Changed
+- Updated firmware to v3.2.1:
+
+  #### Fixed
+  - Fixed `imu.angular_velocity` returning the values of `imu.acceleration`.
+
+  [support#885]: https://github.com/pybricks/support/issues/885
+
 ## [2.1.0-beta.1] - 2022-12-23
 
 ### Added
