@@ -4,6 +4,16 @@
 
 ## [Unreleased]
 
+## [2.1.0-beta.2] - 2022-12-26
+
+### Changed
+- Updated firmware to v3.2.1:
+
+  #### Fixed
+  - Fixed `imu.angular_velocity` returning the values of `imu.acceleration`.
+
+  [support#885]: https://github.com/pybricks/support/issues/885
+
 ## [2.1.0-beta.1] - 2022-12-23
 
 ### Added
@@ -643,7 +653,8 @@ Prerelease changes are documented at [support#48].
 
 <!-- links for version headings -->
 
-[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.1.0-beta.1...HEAD
+[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.1.0-beta.2...HEAD
+[2.1.0-beta.2]: https://github.com/pybricks/pybricks-code/compare/v2.1.0-beta.1...v2.1.0-beta.2
 [2.1.0-beta.1]: https://github.com/pybricks/pybricks-code/compare/v2.0.1...v2.1.0-beta.1
 [2.0.1]: https://github.com/pybricks/pybricks-code/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/pybricks/pybricks-code/compare/v2.0.0-rc.1...v2.0.0
