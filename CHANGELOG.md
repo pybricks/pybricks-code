@@ -5,7 +5,7 @@
 ## [Unreleased]
 
 ### Changed
-- Improved syntax highlighting for numeric literals.
+- Improved syntax highlighting for operators and numeric literals.
 
 ## [2.1.0-beta.2] - 2022-12-26
 
