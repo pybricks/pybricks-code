@@ -180,13 +180,12 @@ export const language = <monaco.languages.IMonarchLanguage>{
             { include: '@whitespace' },
             { include: '@numbers' },
             { include: '@strings' },
-            { include: '@operators' },
-
-            [/[,:;]/, 'delimiter'],
-            [/[{}[\]()]/, '@brackets'],
-
             [/@[a-zA-Z_]\w*/, 'tag'],
-
+            [/\.\.\./, 'keyword'],
+            [/->/, 'delimiter'],
+            { include: '@operators' },
+            [/[,:.;=]/, 'delimiter'],
+            [/[{}[\]()]/, '@brackets'],
             [
                 /[a-zA-Z_]\w*/,
                 {
@@ -249,7 +248,12 @@ export const language = <monaco.languages.IMonarchLanguage>{
             [/\\$/, 'string'],
         ],
 
-        operators: [[/[=+\-*/%@&|<>!~^]/, 'keyword.operator']],
+        operators: [
+            [
+                /(\*\*|\/\/|<<|>>|:=|<=|>=|==|!=|\+=|-=|\*-|\/=|\.\.=|%=|@=|&=|\|=|\^=|>>=|<<=|\*\*=|[+\-*/%@&|^~<>])/,
+                'keyword.operator',
+            ],
+        ],
 
         attributes: [
             [/\b/, '@pop'],
