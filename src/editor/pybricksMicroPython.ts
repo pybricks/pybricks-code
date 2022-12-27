@@ -309,7 +309,7 @@ export const language = <monaco.languages.IMonarchLanguage>{
 function createTemplate(hubClassName: string, deviceClassNames: string[]): string {
     return `from pybricks.hubs import ${hubClassName}
 from pybricks.pupdevices import ${deviceClassNames.join(', ')}
-from pybricks.parameters import Button, Color, Direction, Port, Stop
+from pybricks.parameters import Button, Color, Direction, Port, Side, Stop
 from pybricks.robotics import DriveBase
 from pybricks.tools import wait, StopWatch
 
