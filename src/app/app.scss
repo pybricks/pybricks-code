@@ -167,8 +167,10 @@ $dark-splitter-color-hover: color.adjust(
     }
 }
 
-.splitter-layout .layout-pane {
-    overflow: hidden;
+// we want overflow visible for editor overlays but it breaks resizing
+// so we can only apply this when not resizing
+.splitter-layout:not(.layout-changing) > .layout-pane {
+    overflow: visible;
 }
 
 // hide the docs and resize separator

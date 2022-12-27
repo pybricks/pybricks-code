@@ -7,6 +7,9 @@
 ### Changed
 - Improved syntax highlighting for f-strings, operators and numeric literals.
 
+### Fixed
+- Fixed clipping of code completion popup by terminal.
+
 ## [2.1.0-beta.2] - 2022-12-26
 
 ### Changed
