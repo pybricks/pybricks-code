@@ -192,6 +192,7 @@ export const language = <monaco.languages.IMonarchLanguage>{
                     cases: {
                         '@keywords': 'keyword',
                         '@builtins': 'support.function',
+                        '[A-Z_]+': 'support.constant',
                         '@default': 'identifier',
                     },
                 },
