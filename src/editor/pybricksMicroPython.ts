@@ -219,10 +219,12 @@ export const language = <monaco.languages.IMonarchLanguage>{
             [/"/, 'string'],
         ],
 
-        // Recognize hex, negatives, decimals, imaginaries, longs, and scientific notation
+        // Recognize binary, octal, hex, decimals, imaginary, and scientific notation
         numbers: [
-            [/-?0x([abcdef]|[ABCDEF]|\d)+[lL]?/, 'constant.numeric.hex'],
-            [/-?(\d*\.)?\d+([eE][+-]?\d+)?[jJ]?[lL]?/, 'constant.numeric'],
+            [/\b0[bB](0|1|_)+/, 'constant.numeric.bin'],
+            [/\b0[oO]([0-7]|_)+/, 'constant.numeric.oct'],
+            [/\b0[xX]([abcdef]|[ABCDEF]|\d|_)+/, 'constant.numeric.hex'],
+            [/\b([\d_]*\.)?[\d_]+([eE][+-]?[\d_]+)?[jJ]?/, 'constant.numeric'],
         ],
 
         // Recognize strings, including those broken across lines with \ (but not without)
