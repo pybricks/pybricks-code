@@ -229,9 +229,43 @@ export const language = <monaco.languages.IMonarchLanguage>{
         // Recognize strings, including those broken across lines with \ (but not without)
         strings: [
             [/'$/, 'string.escape', '@popall'],
-            [/'/, 'string.escape', '@stringBody'],
+            [/([fF]|[fF][rR]|[rR][fF])?'/, 'string.escape', '@fStringBody'],
+            [/[rRuUbB]?'/, 'string.escape', '@stringBody'],
             [/"$/, 'string.escape', '@popall'],
-            [/"/, 'string.escape', '@dblStringBody'],
+            [/([fF]|[fF][rR]|[rR][fF])?"/, 'string.escape', '@dblFStringBody'],
+            [/[rRuUbB]?"/, 'string.escape', '@dblStringBody'],
+        ],
+        fStringBody: [
+            [/([^\\'{}]|\{\{|\}\}(?!\}[^}]))+$/, 'string', '@popall'],
+            [/([^\\'{}]|\{\{|\}\}(?!\}[^}]))+/, 'string'],
+            [/\\./, 'string'],
+            [/'/, 'string.escape', '@popall'],
+            [/\\$/, 'string'],
+            [
+                /\{/,
+                {
+                    token: 'delimiter.curly',
+                    next: '@fStringReplacement',
+                    nextEmbedded: pybricksMicroPythonId,
+                },
+            ],
+            [/\}/, 'delimiter.curly'],
+        ],
+        dblFStringBody: [
+            [/([^\\"{}]|\{\{|\}\}(?!\}[^}]))+$/, 'string', '@popall'],
+            [/([^\\"{}]|\{\{|\}\}(?!\}[^}]))+/, 'string'],
+            [/\\./, 'string'],
+            [/"/, 'string.escape', '@popall'],
+            [/\\$/, 'string'],
+            [
+                /\{/,
+                {
+                    token: 'delimiter.curly',
+                    next: '@fStringReplacement',
+                    nextEmbedded: pybricksMicroPythonId,
+                },
+            ],
+            [/\}/, 'delimiter.curly'],
         ],
         stringBody: [
             [/[^\\']+$/, 'string', '@popall'],
@@ -246,6 +280,9 @@ export const language = <monaco.languages.IMonarchLanguage>{
             [/\\./, 'string'],
             [/"/, 'string.escape', '@popall'],
             [/\\$/, 'string'],
+        ],
+        fStringReplacement: [
+            [/\}/, { token: '@rematch', next: '@pop', nextEmbedded: '@pop' }],
         ],
 
         operators: [
