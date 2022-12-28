@@ -224,7 +224,7 @@ export const language = <monaco.languages.IMonarchLanguage>{
             [/\b0[bB](0|1|_)+/, 'constant.numeric.bin'],
             [/\b0[oO]([0-7]|_)+/, 'constant.numeric.oct'],
             [/\b0[xX]([abcdef]|[ABCDEF]|\d|_)+/, 'constant.numeric.hex'],
-            [/\b([\d_]*\.)?[\d_]+([eE][+-]?[\d_]+)?[jJ]?/, 'constant.numeric'],
+            [/\b(\d[\d_]*\.|\.)?\d[\d_]*([eE][+-]?[\d_]+)?[jJ]?/, 'constant.numeric'],
         ],
 
         // Recognize strings, including those broken across lines with \ (but not without)

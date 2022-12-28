@@ -698,7 +698,15 @@ function* runJedi(): Generator {
                         }
 
                         if (pythonMessageDidComplete.matches(msg.data)) {
-                            const list = JSON.parse(msg.data.completionListJson);
+                            const list: monaco.languages.CompletionItem[] = JSON.parse(
+                                msg.data.completionListJson,
+                            );
+
+                            // maintain sort order from jedi
+                            for (const [i, item] of list.entries()) {
+                                item.sortText = String(i).padStart(5, '0');
+                            }
+
                             console.debug(list);
                             complete.resolve({ suggestions: list });
                             console.debug(`${id}: resolved: ${msg.data.type}`);

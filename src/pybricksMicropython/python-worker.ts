@@ -43,12 +43,25 @@ function fixUpError(err: unknown): Error {
     return error;
 }
 
+/**
+ * Naively converts a file system path to a python module name.
+ *
+ * Assumes `.py` file extension and no invalid characters.
+ *
+ * @param path The path.
+ */
+function pathToModule(path: string): string {
+    return path.slice(0, path.length - 3).replaceAll('/', '.');
+}
+
 const setUpPythonEnvironment = `
 import jedi
 import pybricks_jedi
 
 print('preloading pybricks_jedi...')
 pybricks_jedi.initialize()
+# TODO: this could be moved to pybricks_jedi.initialize()
+pybricks_jedi.complete("from ", 1, 6)
 print('preloading done.')
 `;
 
@@ -68,16 +81,20 @@ async function init(): Promise<void> {
     pyodide.FS.mkdir(mountDir);
     pyodide.FS.mount(pyodide.FS.filesystems.MEMFS, { root: '.' }, mountDir);
 
+    const userModules = new Set<string>();
+
     self.addEventListener('message', async (e) => {
         if (pythonMessageWriteUserFile.matches(e.data)) {
             pyodide.FS.writeFile(`${mountDir}/${e.data.path}`, e.data.contents);
             console.debug('copied', e.data.path, 'to emscripten fs');
+            userModules.add(pathToModule(e.data.path));
             return;
         }
 
         if (pythonMessageDeleteUserFile.matches(e.data)) {
             pyodide.FS.unlink(`${mountDir}/${e.data.path}`);
             console.debug('removed', e.data.path, ' from emscripten fs');
+            userModules.delete(pathToModule(e.data.path));
             return;
         }
     });
@@ -103,6 +120,7 @@ async function init(): Promise<void> {
 
     const complete = pyodide.runPython('pybricks_jedi.complete');
     const getSignatures = pyodide.runPython('pybricks_jedi.get_signatures');
+    const updateUserModules = pyodide.runPython('pybricks_jedi.update_user_modules');
 
     self.addEventListener('message', async (e) => {
         if (pythonMessageSetInterruptBuffer.matches(e.data)) {
@@ -113,6 +131,7 @@ async function init(): Promise<void> {
         if (pythonMessageComplete.matches(e.data)) {
             console.debug('worker received complete message');
             try {
+                updateUserModules(userModules);
                 const { code, lineNumber, column } = e.data;
                 const list = complete(code, lineNumber, column);
                 self.postMessage(pythonMessageDidComplete(list));
@@ -125,6 +144,7 @@ async function init(): Promise<void> {
         if (pythonMessageGetSignature.matches(e.data)) {
             console.debug('worker received getSignatures message');
             try {
+                updateUserModules(userModules);
                 const { code, lineNumber, column } = e.data;
                 const list = getSignatures(code, lineNumber, column);
                 self.postMessage(pythonMessageDidGetSignature(list));
