@@ -11,6 +11,9 @@
 - Fixed clipping of code completion popup by terminal.
 - Fixed code completion for builtin types.
 - Fixed code completion for names starting with `_`.
+- Fixed code completion for `from ...` for user modules ([support#759]).
+
+[support#759]: https://github.com/pybricks/support/issues/759
 
 ## [2.1.0-beta.2] - 2022-12-26
 
