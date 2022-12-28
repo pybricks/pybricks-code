@@ -9,6 +9,8 @@
 
 ### Fixed
 - Fixed clipping of code completion popup by terminal.
+- Fixed code completion for builtin types.
+- Fixed code completion for names starting with `_`.
 
 ## [2.1.0-beta.2] - 2022-12-26
 
