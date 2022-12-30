@@ -4,6 +4,9 @@
 
 ## [Unreleased]
 
+### Fixed
+- Fixed terminal layout issues when resizing window vertically.
+
 ## [2.1.0-beta.3] - 2022-12-28
 
 ### Changed

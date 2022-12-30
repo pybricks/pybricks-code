@@ -169,8 +169,18 @@ $dark-splitter-color-hover: color.adjust(
 
 // we want overflow visible for editor overlays but it breaks resizing
 // so we can only apply this when not resizing
-.splitter-layout:not(.layout-changing) > .layout-pane {
+.splitter-layout:not(.layout-changing) > .layout-pane:has(.pb-app-editor) {
     overflow: visible;
+}
+
+.splitter-layout .layout-pane {
+    // fix double scroll bars in terminal when resizing
+    overflow: hidden;
+
+    &.layout-pane-primary {
+        // fix resizing window vertically
+        min-height: 0;
+    }
 }
 
 // hide the docs and resize separator
