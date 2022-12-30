@@ -606,7 +606,7 @@ function* runJedi(): Generator {
             const subscription = monaco.languages.registerCompletionItemProvider(
                 pybricksMicroPythonId,
                 {
-                    triggerCharacters: ['.', ' '],
+                    triggerCharacters: ['.'],
                     provideCompletionItems(
                         model,
                         position,
