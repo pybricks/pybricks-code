@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [2.1.0-beta.4] - 2022-12-30
+
 ### Changed
 - Code completion trigger improvements ([support#894]).
 
@@ -675,7 +677,8 @@ Prerelease changes are documented at [support#48].
 
 <!-- links for version headings -->
 
-[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.1.0-beta.3...HEAD
+[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.1.0-beta.4...HEAD
+[2.1.0-beta.4]: https://github.com/pybricks/pybricks-code/compare/v2.1.0-beta.3...v2.1.0-beta.4
 [2.1.0-beta.3]: https://github.com/pybricks/pybricks-code/compare/v2.1.0-beta.2...v2.1.0-beta.3
 [2.1.0-beta.2]: https://github.com/pybricks/pybricks-code/compare/v2.1.0-beta.1...v2.1.0-beta.2
 [2.1.0-beta.1]: https://github.com/pybricks/pybricks-code/compare/v2.0.1...v2.1.0-beta.1
