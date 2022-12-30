@@ -635,8 +635,8 @@ function* runJedi(): Generator {
             const subscription = monaco.languages.registerSignatureHelpProvider(
                 pybricksMicroPythonId,
                 {
-                    signatureHelpTriggerCharacters: ['('],
-                    signatureHelpRetriggerCharacters: [','],
+                    signatureHelpTriggerCharacters: ['(', ','],
+                    signatureHelpRetriggerCharacters: [')'],
                     provideSignatureHelp(model, position, token, context) {
                         return new Promise((resolve) => {
                             emit({ model, position, token, context, resolve });

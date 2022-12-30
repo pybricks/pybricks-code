@@ -4,6 +4,9 @@
 
 ## [Unreleased]
 
+### Changed
+- Code completion trigger improvements.
+
 ### Fixed
 - Fixed terminal layout issues when resizing window vertically.
 - Fixed editor find widget visible over modal dialogs.
