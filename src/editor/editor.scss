@@ -102,8 +102,20 @@
     }
 }
 
-// override iOS keyboard button position
-.monaco-editor .iPadShowKeyboard {
-    right: unset !important;
-    left: 20px;
+.monaco-editor {
+    // override iOS keyboard button position
+    & .iPadShowKeyboard {
+        right: unset !important;
+        left: 20px;
+    }
+
+    // fix find widget in front of dialogs
+    & .overflow-guard {
+        z-index: bp.$pt-z-index-content - 1;
+    }
+
+    // allow overflow to overlay content outside of editor
+    & .overflowingContentWidget {
+        z-index: bp.$pt-z-index-overlay - 1;
+    }
 }
