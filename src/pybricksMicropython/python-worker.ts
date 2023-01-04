@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
 // This file runs as a web worker.
 
 // NB: We need to be very careful about imports here since many libraries for
 // web aren't compatible with web workers!
 
-import { loadPyodide, version as pyodideVersion } from 'pyodide';
+import { PyodideInterface, loadPyodide, version as pyodideVersion } from 'pyodide';
 import { ensureError } from '../utils';
 import {
     pythonMessageComplete,
@@ -24,6 +24,12 @@ import {
     pythonMessageWriteUserFile,
 } from './python-message';
 
+type PythonError = InstanceType<PyodideInterface['PythonError']>;
+
+function isPythonError(err: Error): err is PythonError {
+    return err.constructor.name === 'PythonError';
+}
+
 /**
  * Wrapper around {@link ensureError} that also converts KeyboardInterrupt to
  * AbortError.
@@ -33,11 +39,8 @@ import {
 function fixUpError(err: unknown): Error {
     const error = ensureError(err);
 
-    if (
-        error.constructor.name === 'PythonError' &&
-        error.message.match(/KeyboardInterrupt/)
-    ) {
-        return new DOMException('cancelled', 'AbortError');
+    if (isPythonError(error) && error.type === 'KeyboardInterrupt') {
+        return new DOMException('cancelled via KeyboardInterrupt', 'AbortError');
     }
 
     return error;
