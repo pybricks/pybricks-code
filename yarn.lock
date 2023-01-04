@@ -2499,7 +2499,7 @@ __metadata:
     prettier: ^2.8.1
     prompts: ^2.4.2
     prop-types: ^15.8.1
-    pyodide: 0.21.3
+    pyodide: 0.22.0
     react: ^16.14.0
     react-app-polyfill: ^3.0.0
     react-aria: ^3.22.0
@@ -12882,25 +12882,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pyodide@npm:0.21.3":
-  version: 0.21.3
-  resolution: "pyodide@npm:0.21.3"
+"pyodide@npm:0.22.0":
+  version: 0.22.0
+  resolution: "pyodide@npm:0.22.0"
   dependencies:
     base-64: ^1.0.0
     node-fetch: ^2.6.1
     ws: ^8.5.0
-  checksum: 340a05278073896c172f237f6da69deb9d6fb686c7808e6091e0be4f8609cc41d227196974acdac1262b1d0877d5c99e91145a19cad300dc995fa3d572687cb1
-  languageName: node
-  linkType: hard
-
-"pyodide@patch:pyodide@npm:0.21.3#.yarn/patches/pyodide-npm-0.21.3-d43042e749.patch::locator=%40pybricks%2Fpybricks-code%40workspace%3A.":
-  version: 0.21.3
-  resolution: "pyodide@patch:pyodide@npm%3A0.21.3#.yarn/patches/pyodide-npm-0.21.3-d43042e749.patch::version=0.21.3&hash=e62b29&locator=%40pybricks%2Fpybricks-code%40workspace%3A."
-  dependencies:
-    base-64: ^1.0.0
-    node-fetch: ^2.6.1
-    ws: ^8.5.0
-  checksum: 69fd9a7e7d39b973c91b06a146c149ae4fde546d7256595ca96fa33355d2d3e58726469209847ace78d248d611099c1d08eff0c055ab491adc56dac2824c6a92
+  checksum: a0a4de362d5bccb2c327b1df6ef0af439098c5ef509f707a817670428510e8770b74f2678f1b4bf9b8ea9322d0bc1c0ce7060337c3fae4b72d414b8c40e11a6a
   languageName: node
   linkType: hard
 
