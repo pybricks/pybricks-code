@@ -2360,12 +2360,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pybricks/firmware@npm:6.6.0":
-  version: 6.6.0
-  resolution: "@pybricks/firmware@npm:6.6.0"
+"@pybricks/firmware@npm:6.7.0":
+  version: 6.7.0
+  resolution: "@pybricks/firmware@npm:6.7.0"
   dependencies:
     jszip: ^3.7.1
-  checksum: 9f57db8bc558994ddf8ca0e2ceeb9cb9ca01d829b2e9ad3981a6d70e1cce2cb5065313e13654d4069ce6423e4b0c8a7d2a24bc50d91e68457b335e9dc6fbb8a7
+  checksum: 934edfa4c198fda9a9730197c9451e98a3219f3819f76c285bbaff0fd15b0a8b2716aaa6b6783cf84437cfdf3ea2808dedf275d6548fc4a6c3f165a37a1be4d0
   languageName: node
   linkType: hard
 
@@ -2413,7 +2413,7 @@ __metadata:
     "@blueprintjs/popover2": ^1.10.2
     "@blueprintjs/select": ^4.8.12
     "@pmmmwh/react-refresh-webpack-plugin": ^0.5.10
-    "@pybricks/firmware": 6.6.0
+    "@pybricks/firmware": 6.7.0
     "@pybricks/ide-docs": 2.7.0
     "@pybricks/images": ^1.3.0
     "@pybricks/jedi": 1.7.0
