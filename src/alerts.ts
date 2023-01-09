@@ -31,7 +31,7 @@ export type AlertDomain = keyof typeof alertDomains;
  * Gets the type of available specific alerts for a domain.
  * @template D The domain.
  */
-export type AlertSpecific<D extends AlertDomain> = keyof typeof alertDomains[D];
+export type AlertSpecific<D extends AlertDomain> = keyof (typeof alertDomains)[D];
 
 /**
  * Gets the instance type of the object in the lookup table.
@@ -41,7 +41,7 @@ export type AlertSpecific<D extends AlertDomain> = keyof typeof alertDomains[D];
 type AlertInstance<
     D extends AlertDomain,
     S extends AlertSpecific<D>,
-> = typeof alertDomains[D][S] extends CreateToast<infer P, infer A>
+> = (typeof alertDomains)[D][S] extends CreateToast<infer P, infer A>
     ? CreateToast<P, A>
     : never;
 
