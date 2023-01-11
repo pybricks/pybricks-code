@@ -39,7 +39,7 @@ import {
     Undo,
     Virus,
     WarningSign,
-} from '@blueprintjs/icons/lib/esm/generated/16px/paths';
+} from '@blueprintjs/icons/lib/esm/generated-icons/16px/paths';
 import {
     Cog as Cog20,
     Document as Document20,
@@ -48,7 +48,7 @@ import {
     Manual as Manual20,
     Trash as Trash20,
     WarningSign as WarningSign20,
-} from '@blueprintjs/icons/lib/esm/generated/20px/paths';
+} from '@blueprintjs/icons/lib/esm/generated-icons/20px/paths';
 import { pascalCase } from 'change-case';
 
 export function iconNameToPathsRecordKey(name) {
