@@ -3,6 +3,7 @@
 
 import { Reducer, combineReducers } from 'redux';
 import * as semver from 'semver';
+import { bleDidConnectPybricks, bleDidDisconnectPybricks } from '../ble/actions';
 import { HubType } from '../ble-lwp3-service/protocol';
 import {
     blePybricksServiceDidNotReceiveHubCapabilities,
@@ -15,7 +16,6 @@ import {
     Status,
     statusToFlag,
 } from '../ble-pybricks-service/protocol';
-import { bleDidConnectPybricks, bleDidDisconnectPybricks } from '../ble/actions';
 import { pythonVersionToSemver } from '../utils/version';
 import {
     didFailToFinishDownload,
