@@ -14,6 +14,7 @@ import {
     takeEvery,
 } from 'typed-redux-saga/macro';
 import { alertsShowAlert } from '../alerts/actions';
+import { bleDidConnectPybricks } from '../ble/actions';
 import { didFailToWrite, didWrite, write } from '../ble-nordic-uart-service/actions';
 import { nordicUartSafeTxCharLength } from '../ble-nordic-uart-service/protocol';
 import {
@@ -26,7 +27,6 @@ import {
     sendWriteUserRamCommand,
 } from '../ble-pybricks-service/actions';
 import { FileFormat } from '../ble-pybricks-service/protocol';
-import { bleDidConnectPybricks } from '../ble/actions';
 import { editorGetValue } from '../editor/sagaLib';
 import {
     compile,

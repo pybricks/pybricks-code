@@ -2,9 +2,9 @@
 // Copyright (c) 2021-2022 The Pybricks Authors
 
 import { AnyAction } from 'redux';
+import { bleDidConnectPybricks, bleDidDisconnectPybricks } from '../ble/actions';
 import { didReceiveStatusReport } from '../ble-pybricks-service/actions';
 import { Status, statusToFlag } from '../ble-pybricks-service/protocol';
-import { bleDidConnectPybricks, bleDidDisconnectPybricks } from '../ble/actions';
 import {
     didFailToFinishDownload,
     didFinishDownload,
