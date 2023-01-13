@@ -47,7 +47,7 @@
         "babel-plugin-transform-import-meta": "^2.2.0",
         "babel-preset-react-app": "^10.0.1",
         "bfj": "^7.0.2",
-        "browser-fs-access": "^0.31.1",
+        "browser-fs-access": "^0.31.2",
         "browserslist": "^4.21.4",
         "camelcase": "^7.0.0",
         "canvas": "^2.11.0",
