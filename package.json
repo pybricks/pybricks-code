@@ -55,7 +55,7 @@
         "copy-webpack-plugin": "^11.0.0",
         "css-loader": "^6.7.3",
         "css-minimizer-webpack-plugin": "^4.2.2",
-        "dexie": "^3.2.2",
+        "dexie": "^3.2.3",
         "dexie-observable": "^4.0.0-beta.13",
         "dexie-react-hooks": "^1.1.1",
         "dfu": "^0.1.5",
