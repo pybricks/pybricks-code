@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2022 The Pybricks Authors
+// Copyright (c) 2020-2023 The Pybricks Authors
 
 import {
     Button,
@@ -9,7 +9,7 @@ import {
     SpinnerSize,
     useHotkeys,
 } from '@blueprintjs/core';
-import { Tooltip2 } from '@blueprintjs/popover2';
+import { Popover2HoverTargetHandlers, Tooltip2 } from '@blueprintjs/popover2';
 import { mergeProps } from '@react-aria/utils';
 import classNames from 'classnames';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
@@ -110,7 +110,8 @@ const ActionButton: React.VoidFunctionComponent<ActionButtonProps> = ({
                     aria-disabled={enabled === false}
                     aria-label={label}
                     elementRef={tooltipTargetRef as React.Ref<HTMLButtonElement>}
-                    {...mergeProps(tooltipTargetProps, {
+                    // https://github.com/palantir/blueprint/issues/5889
+                    {...mergeProps(tooltipTargetProps as Popover2HoverTargetHandlers, {
                         className: classNames(
                             'pb-toolbar-action-button',
                             enabled === false && Classes.DISABLED,
