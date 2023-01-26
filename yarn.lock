@@ -2684,7 +2684,7 @@ __metadata:
     prettier: ^2.8.3
     prompts: ^2.4.2
     prop-types: ^15.8.1
-    pyodide: 0.22.0
+    pyodide: 0.22.1
     react: ^16.14.0
     react-app-polyfill: ^3.0.0
     react-aria: ^3.22.0
@@ -13289,14 +13289,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pyodide@npm:0.22.0":
-  version: 0.22.0
-  resolution: "pyodide@npm:0.22.0"
+"pyodide@npm:0.22.1":
+  version: 0.22.1
+  resolution: "pyodide@npm:0.22.1"
   dependencies:
     base-64: ^1.0.0
     node-fetch: ^2.6.1
     ws: ^8.5.0
-  checksum: a0a4de362d5bccb2c327b1df6ef0af439098c5ef509f707a817670428510e8770b74f2678f1b4bf9b8ea9322d0bc1c0ce7060337c3fae4b72d414b8c40e11a6a
+  checksum: 52f5e4df068cdb356104aeecb4e44c0504d6cc4cccb3dd609f06bb4c92482e9f474721bf334d223db640b49168bdef9c783c8ce732cf614d9e1c4099153b2c1b
   languageName: node
   linkType: hard
 
