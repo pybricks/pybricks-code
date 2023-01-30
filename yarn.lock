@@ -2680,7 +2680,7 @@ __metadata:
     postcss-flexbugs-fixes: ^5.0.2
     postcss-loader: ^7.0.2
     postcss-normalize: ^10.0.1
-    postcss-preset-env: ^8.0.0
+    postcss-preset-env: ^8.0.1
     prettier: ^2.8.3
     prompts: ^2.4.2
     prop-types: ^15.8.1
@@ -12950,9 +12950,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss-preset-env@npm:^8.0.0":
-  version: 8.0.0
-  resolution: "postcss-preset-env@npm:8.0.0"
+"postcss-preset-env@npm:^8.0.1":
+  version: 8.0.1
+  resolution: "postcss-preset-env@npm:8.0.1"
   dependencies:
     "@csstools/postcss-cascade-layers": ^3.0.0
     "@csstools/postcss-color-function": ^2.0.0
@@ -13009,7 +13009,7 @@ __metadata:
     postcss-value-parser: ^4.2.0
   peerDependencies:
     postcss: ^8.4
-  checksum: a6ba95ae98262bb55fb2293b7721abcdd7ca6aa732b3ca116a5ada7032f84cd6b104fad889828ac1d995d881da3b686070faa28545e7797ffb9bb264b9375bd0
+  checksum: 18326a03dd2bdbe2fa8c39f40ae4ac3a48d7de1deb2a1c51d84c5ed05d5ad8993bb5a50b039e452e26b793cf3cd67facd9cf744d5f3f1bf1a9d5208b2475ced9
   languageName: node
   linkType: hard
 
