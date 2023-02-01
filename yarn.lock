@@ -1609,28 +1609,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@blueprintjs/popover2@npm:^1.12.0":
-  version: 1.12.0
-  resolution: "@blueprintjs/popover2@npm:1.12.0"
-  dependencies:
-    "@blueprintjs/core": ^4.15.0
-    "@juggle/resize-observer": ^3.4.0
-    "@popperjs/core": ^2.11.6
-    classnames: ^2.3.1
-    dom4: ^2.1.5
-    react-popper: ^2.3.0
-    tslib: ~2.3.1
-  peerDependencies:
-    "@types/react": ^16.14.32 || 17 || 18
-    react: ^16.8 || 17 || 18
-    react-dom: ^16.8 || 17 || 18
-  peerDependenciesMeta:
-    "@types/react":
-      optional: true
-  checksum: 06bd0bb749221eac71c92c899bfed4544083afbbb5953b449581915108c17744a0e60f62624e157174a96f6d9809aec97aec68822fa3e234f75755ed8a85acfc
-  languageName: node
-  linkType: hard
-
 "@blueprintjs/popover2@npm:^1.12.1":
   version: 1.12.1
   resolution: "@blueprintjs/popover2@npm:1.12.1"
@@ -1653,12 +1631,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@blueprintjs/select@npm:^4.8.17":
-  version: 4.8.17
-  resolution: "@blueprintjs/select@npm:4.8.17"
+"@blueprintjs/select@npm:^4.8.18":
+  version: 4.8.18
+  resolution: "@blueprintjs/select@npm:4.8.18"
   dependencies:
-    "@blueprintjs/core": ^4.15.0
-    "@blueprintjs/popover2": ^1.12.0
+    "@blueprintjs/core": ^4.15.1
+    "@blueprintjs/popover2": ^1.12.1
     classnames: ^2.3.1
     tslib: ~2.3.1
   peerDependencies:
@@ -1668,7 +1646,7 @@ __metadata:
   peerDependenciesMeta:
     "@types/react":
       optional: true
-  checksum: ad60b5ea186b593d3f267e27f2d3ca545f9eb449748bc94f22144599ba4e2ca49d5e8d9a032e8dcf5c5d392cffab4d47e21cb2d97bfe5c6fa33751ca12bc76fe
+  checksum: c479649ce09bb66c2c136804aa820e5ff98ce757bfe124133184a0c838ffb43d325dd1c15571a7792b4bb4cfd7a39e709f296bfca88c8df2c875256c6747b6f6
   languageName: node
   linkType: hard
 
@@ -2597,7 +2575,7 @@ __metadata:
     "@babel/core": ^7.20.12
     "@blueprintjs/core": ^4.15.0
     "@blueprintjs/popover2": ^1.12.1
-    "@blueprintjs/select": ^4.8.17
+    "@blueprintjs/select": ^4.8.18
     "@pmmmwh/react-refresh-webpack-plugin": ^0.5.10
     "@pybricks/firmware": 6.7.0
     "@pybricks/ide-docs": 2.7.0
