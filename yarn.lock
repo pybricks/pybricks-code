@@ -2584,7 +2584,7 @@ __metadata:
     eslint-config-prettier: ^8.5.0
     eslint-config-react-app: ^7.0.1
     eslint-config-typed-fp: ^4.0.1
-    eslint-plugin-functional: ^5.0.0
+    eslint-plugin-functional: ^5.0.1
     eslint-plugin-import: ^2.27.5
     eslint-plugin-prettier: ^4.2.1
     eslint-plugin-react: ^7.32.2
@@ -8104,14 +8104,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-functional@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "eslint-plugin-functional@npm:5.0.0"
+"eslint-plugin-functional@npm:^5.0.1":
+  version: 5.0.1
+  resolution: "eslint-plugin-functional@npm:5.0.1"
   dependencies:
     "@typescript-eslint/utils": ^5.49.0
     deepmerge-ts: ^4.2.2
     escape-string-regexp: ^4.0.0
-    is-immutable-type: ^1.2.3
+    is-immutable-type: ^1.2.4
     semver: ^7.3.8
   peerDependencies:
     eslint: ^8.0.0
@@ -8119,7 +8119,7 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: b611a183aa5d10d5a7c3222604347028e66dfff76ec2eea1803bc898950a944c7245998a5d967d98620adb97dce9651ecdddb7253a5e79ea613ede35294dcfcd
+  checksum: f6f70fa54d39fef16d5cb2b59e228be7770ff3bab33ec36ce92f9b5c7ae4f5a1982c931bd121facbb1232e580218e9c682f05b85f4339e1cbb6f714600d07517
   languageName: node
   linkType: hard
 
@@ -9739,14 +9739,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-immutable-type@npm:^1.2.3":
-  version: 1.2.3
-  resolution: "is-immutable-type@npm:1.2.3"
+"is-immutable-type@npm:^1.2.4":
+  version: 1.2.4
+  resolution: "is-immutable-type@npm:1.2.4"
   peerDependencies:
     "@typescript-eslint/type-utils": ">=5.30.5"
     "@typescript-eslint/utils": ">=5.30.5"
     typescript: ">=4.7.4"
-  checksum: 3dca8d8c1982a6d7cc84e3adc022f40b1ebbe84d31ea4076d6256e19a849e2e97e4bc264528e0bab3bf4b10e926151bbb5f7bb3ac3d39709017d5b0ededbb826
+  checksum: a5601bc35e5e0a4155ef92a9ba8229756faf5b61b1db23e37fdc9b3d33c031553e938a53d0c833fa03be21f46ad11bc44d20a72751fbfa4f88ba083aa609a369
   languageName: node
   linkType: hard
 
