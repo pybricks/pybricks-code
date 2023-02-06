@@ -2584,7 +2584,7 @@ __metadata:
     eslint-config-prettier: ^8.5.0
     eslint-config-react-app: ^7.0.1
     eslint-config-typed-fp: ^4.0.1
-    eslint-plugin-functional: ^5.0.1
+    eslint-plugin-functional: ^5.0.4
     eslint-plugin-import: ^2.27.5
     eslint-plugin-prettier: ^4.2.1
     eslint-plugin-react: ^7.32.2
@@ -5186,7 +5186,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/type-utils@npm:5.50.0":
+"@typescript-eslint/type-utils@npm:5.50.0, @typescript-eslint/type-utils@npm:^5.50.0":
   version: 5.50.0
   resolution: "@typescript-eslint/type-utils@npm:5.50.0"
   dependencies:
@@ -5296,7 +5296,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/utils@npm:5.49.0, @typescript-eslint/utils@npm:^5.13.0, @typescript-eslint/utils@npm:^5.49.0":
+"@typescript-eslint/utils@npm:5.49.0, @typescript-eslint/utils@npm:^5.13.0":
   version: 5.49.0
   resolution: "@typescript-eslint/utils@npm:5.49.0"
   dependencies:
@@ -5314,7 +5314,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/utils@npm:5.50.0":
+"@typescript-eslint/utils@npm:5.50.0, @typescript-eslint/utils@npm:^5.50.0":
   version: 5.50.0
   resolution: "@typescript-eslint/utils@npm:5.50.0"
   dependencies:
@@ -8104,11 +8104,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-functional@npm:^5.0.1":
-  version: 5.0.1
-  resolution: "eslint-plugin-functional@npm:5.0.1"
+"eslint-plugin-functional@npm:^5.0.4":
+  version: 5.0.4
+  resolution: "eslint-plugin-functional@npm:5.0.4"
   dependencies:
-    "@typescript-eslint/utils": ^5.49.0
+    "@typescript-eslint/type-utils": ^5.50.0
+    "@typescript-eslint/utils": ^5.50.0
     deepmerge-ts: ^4.2.2
     escape-string-regexp: ^4.0.0
     is-immutable-type: ^1.2.4
@@ -8119,7 +8120,7 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: f6f70fa54d39fef16d5cb2b59e228be7770ff3bab33ec36ce92f9b5c7ae4f5a1982c931bd121facbb1232e580218e9c682f05b85f4339e1cbb6f714600d07517
+  checksum: f4deaadbc7958d096fd846817a256a2991fe99e3d1904da67f8fa2ca9747c488149e157954c3145bec44a2cbc7392a04cecbf463a48e64ef20cd0d6693ba69b3
   languageName: node
   linkType: hard
 
