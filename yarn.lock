@@ -2670,7 +2670,7 @@ __metadata:
     jest: ^29.4.1
     jest-environment-jsdom: ^29.4.2
     jest-mock-extended: ^3.0.1
-    jest-resolve: ^29.4.1
+    jest-resolve: ^29.4.2
     jest-watch-typeahead: ^2.2.2
     jszip: ^3.10.1
     license-webpack-plugin: ^3.0.0
@@ -10367,6 +10367,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jest-get-type@npm:^29.4.2":
+  version: 29.4.2
+  resolution: "jest-get-type@npm:29.4.2"
+  checksum: 52b69cfdc8817a106ed58b44ac0ee77df36073d0deb7357ea9eb208fd8fb9be2abcc2cc6d72019460b7ca262687da482c47bd9c357eb2fbe52279397739e8c11
+  languageName: node
+  linkType: hard
+
 "jest-haste-map@npm:^29.4.1":
   version: 29.4.1
   resolution: "jest-haste-map@npm:29.4.1"
@@ -10556,6 +10563,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jest-resolve@npm:^29.4.2":
+  version: 29.4.2
+  resolution: "jest-resolve@npm:29.4.2"
+  dependencies:
+    chalk: ^4.0.0
+    graceful-fs: ^4.2.9
+    jest-haste-map: ^29.4.2
+    jest-pnp-resolver: ^1.2.2
+    jest-util: ^29.4.2
+    jest-validate: ^29.4.2
+    resolve: ^1.20.0
+    resolve.exports: ^2.0.0
+    slash: ^3.0.0
+  checksum: 94fac5d1438d90aefc24d4ee29f89a96c4b35ab8effdd582341310a1478b895bd3d48f4ccadbc69e56344f6bb5d03bcce8eba045b5a71609f571d91bb5c0ef73
+  languageName: node
+  linkType: hard
+
 "jest-runner@npm:^29.4.1":
   version: 29.4.1
   resolution: "jest-runner@npm:29.4.1"
@@ -10687,6 +10711,20 @@ __metadata:
     leven: ^3.1.0
     pretty-format: ^29.4.1
   checksum: f2cd98293ed961e79bc75935fbc8fc18e57bcd207175a4119baf810da38542704545afa8ca402456e34d298e44c7564570400645537c31dab9bf27e18284a650
+  languageName: node
+  linkType: hard
+
+"jest-validate@npm:^29.4.2":
+  version: 29.4.2
+  resolution: "jest-validate@npm:29.4.2"
+  dependencies:
+    "@jest/types": ^29.4.2
+    camelcase: ^6.2.0
+    chalk: ^4.0.0
+    jest-get-type: ^29.4.2
+    leven: ^3.1.0
+    pretty-format: ^29.4.2
+  checksum: ea7f724a0e5d58742594b9d72240bbac5154a4f3f5dd54a6062c408744ec931055a30a436d852ef85af43bf1f5ddb0b4b51b67bff9aabd03985c3a8063d93f29
   languageName: node
   linkType: hard
 
