@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021-2022 The Pybricks Authors
+// Copyright (c) 2021-2023 The Pybricks Authors
 
 import { Classes } from '@blueprintjs/core';
 import { cleanup, fireEvent, waitFor } from '@testing-library/react';
@@ -11,6 +11,11 @@ import { useFileStorageMetadata, useFileStoragePath } from '../fileStorage/hooks
 import { defined } from '../utils';
 import Editor from './Editor';
 import { editorActivateFile, editorCloseFile } from './actions';
+
+// not entirely clear why but this is needed since monaco-editor@0.35.0
+// has something to do with @jest/fake-timers replacing window.performance
+// https://jestjs.io/docs/timer-mocks#selective-faking
+window.performance.mark = jest.fn();
 
 const testFile: FileMetadata = {
     uuid: uuid(0),
