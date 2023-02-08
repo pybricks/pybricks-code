@@ -164,7 +164,7 @@
         "eslint-plugin-react": "^7.32.2",
         "eslint-plugin-total-functions": "^6.0.0",
         "eslint-webpack-plugin": "^4.0.0",
-        "prettier": "^2.8.3"
+        "prettier": "^2.8.4"
     },
     "packageManager": "yarn@3.3.0",
     "resolutions": {
