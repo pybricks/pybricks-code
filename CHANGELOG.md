@@ -4,6 +4,11 @@
 
 ## [Unreleased]
 
+### Fixed
+- Show error message when go to syntax error fails to activate file ([support#924]).
+
+[support#924]: https://github.com/pybricks/support/issues/924
+
 ## [2.1.0] - 2023-01-06
 
 ### Changed
