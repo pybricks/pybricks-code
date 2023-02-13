@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
 import type { DatabaseChangeType, IDatabaseChange } from 'dexie-observable/api';
 import * as monaco from 'monaco-editor';
@@ -16,6 +16,7 @@ import {
     take,
     takeEvery,
 } from 'typed-redux-saga/macro';
+import { alertsShowAlert } from '../alerts/actions';
 import { FileStorageDb, UUID } from '../fileStorage';
 import {
     fileStorageDidFailToLoadTextFile,
@@ -257,6 +258,27 @@ function* handleEditorGoto(
     });
 
     if (didFailToActivate) {
+        if (
+            didFailToActivate.error instanceof EditorError &&
+            didFailToActivate.error.name === 'FileInUse'
+        ) {
+            const db = yield* getContext<FileStorageDb>('fileStorage');
+
+            const metadata = yield* call(() => db.metadata.get(action.uuid));
+
+            yield* put(
+                alertsShowAlert('explorer', 'fileInUse', {
+                    fileName: metadata?.path ?? '<unknown>',
+                }),
+            );
+        } else {
+            yield* put(
+                alertsShowAlert('alerts', 'unexpectedError', {
+                    error: didFailToActivate.error,
+                }),
+            );
+        }
+
         return;
     }
 
