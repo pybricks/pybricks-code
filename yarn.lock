@@ -2577,7 +2577,7 @@ __metadata:
   resolution: "@pybricks/pybricks-code@workspace:."
   dependencies:
     "@babel/core": ^7.20.12
-    "@blueprintjs/core": ^4.16.0
+    "@blueprintjs/core": ^4.16.2
     "@blueprintjs/popover2": ^1.13.2
     "@blueprintjs/select": ^4.9.0
     "@pmmmwh/react-refresh-webpack-plugin": ^0.5.10
