@@ -1551,6 +1551,35 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@blueprintjs/core@npm:^4.16.2":
+  version: 4.16.2
+  resolution: "@blueprintjs/core@npm:4.16.2"
+  dependencies:
+    "@blueprintjs/colors": ^4.1.15
+    "@blueprintjs/icons": ^4.13.2
+    "@juggle/resize-observer": ^3.4.0
+    "@types/dom4": ^2.0.2
+    classnames: ^2.3.1
+    dom4: ^2.1.5
+    normalize.css: ^8.0.1
+    popper.js: ^1.16.1
+    react-popper: ^1.3.11
+    react-transition-group: ^4.4.5
+    tslib: ~2.3.1
+  peerDependencies:
+    "@types/react": ^16.14.32 || 17 || 18
+    react: ^16.8 || 17 || 18
+    react-dom: ^16.8 || 17 || 18
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+  bin:
+    upgrade-blueprint-2.0.0-rename: scripts/upgrade-blueprint-2.0.0-rename.sh
+    upgrade-blueprint-3.0.0-rename: scripts/upgrade-blueprint-3.0.0-rename.sh
+  checksum: fbcae1079e39d87739c3b74b23a56bf7982de731d92afc2d401819bc1f99d7e35a9425c23ab30a5257c801753f99016e9171b788e10c25f18b35c4248f4a46ba
+  languageName: node
+  linkType: hard
+
 "@blueprintjs/icons@npm:^4.13.2":
   version: 4.13.2
   resolution: "@blueprintjs/icons@npm:4.13.2"
@@ -1581,6 +1610,28 @@ __metadata:
     "@types/react":
       optional: true
   checksum: 2fba1c209c6e7cf5926ee998865bf5bc671a28d3535ac451390fcff62bcbb7dbecfd8dd4cc3ec2fc7ad2ea2236e9a74f655a81ead009f760b9fc82947ff8bb3c
+  languageName: node
+  linkType: hard
+
+"@blueprintjs/popover2@npm:^1.13.2":
+  version: 1.13.2
+  resolution: "@blueprintjs/popover2@npm:1.13.2"
+  dependencies:
+    "@blueprintjs/core": ^4.16.2
+    "@juggle/resize-observer": ^3.4.0
+    "@popperjs/core": ^2.11.6
+    classnames: ^2.3.1
+    dom4: ^2.1.5
+    react-popper: ^2.3.0
+    tslib: ~2.3.1
+  peerDependencies:
+    "@types/react": ^16.14.32 || 17 || 18
+    react: ^16.8 || 17 || 18
+    react-dom: ^16.8 || 17 || 18
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+  checksum: 6e56be26a7033ac70fd73391265ffd098cf927315e9de7aa09003260b8a8f9d0ff45abc374ba3bb1da9e0288508d772875a8c9a4bda258b212d455945055c4be
   languageName: node
   linkType: hard
 
@@ -2527,7 +2578,7 @@ __metadata:
   dependencies:
     "@babel/core": ^7.20.12
     "@blueprintjs/core": ^4.16.0
-    "@blueprintjs/popover2": ^1.13.0
+    "@blueprintjs/popover2": ^1.13.2
     "@blueprintjs/select": ^4.9.0
     "@pmmmwh/react-refresh-webpack-plugin": ^0.5.10
     "@pybricks/firmware": 6.7.0
