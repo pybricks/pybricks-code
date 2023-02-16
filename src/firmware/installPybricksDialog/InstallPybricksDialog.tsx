@@ -376,15 +376,17 @@ const AcceptLicensePanel: React.VoidFunctionComponent<AcceptLicensePanelProps> =
 
 type SelectOptionsPanelProps = {
     hubName: string;
+    metadata: FirmwareMetadata | undefined;
     onChangeHubName(hubName: string): void;
 };
 
 const ConfigureOptionsPanel: React.VoidFunctionComponent<SelectOptionsPanelProps> = ({
     hubName,
+    metadata,
     onChangeHubName,
 }) => {
     const i18n = useI18n();
-    const isHubNameValid = validateHubName(hubName);
+    const isHubNameValid = metadata ? validateHubName(hubName, metadata) : true;
 
     return (
         <div className={dialogBody}>
@@ -512,6 +514,11 @@ export const InstallPybricksDialog: React.VoidFunctionComponent = () => {
                 panel={
                     <ConfigureOptionsPanel
                         hubName={hubName}
+                        metadata={
+                            isCustomFirmwareRequested
+                                ? customFirmwareData?.metadata
+                                : firmwareData?.metadata
+                        }
                         onChangeHubName={setHubName}
                     />
                 }

@@ -1,7 +1,12 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2022-2023 The Pybricks Authors
 
-import { FirmwareMetadata, HubType } from '@pybricks/firmware';
+import {
+    FirmwareMetadata,
+    FirmwareMetadataV110,
+    FirmwareMetadataV200,
+    HubType,
+} from '@pybricks/firmware';
 import * as semver from 'semver';
 
 const encoder = new TextEncoder();
@@ -9,17 +14,21 @@ const encoder = new TextEncoder();
 /**
  * Validates the hub name.
  * @param hubName The hub name.
+ * @param metadata The firmware metadata.
  * @returns True if the name if valid, otherwise false.
  */
-export function validateHubName(hubName: string): boolean {
+export function validateHubName(hubName: string, metadata: FirmwareMetadata): boolean {
     const encoded = encoder.encode(hubName);
 
-    // Technically, the max hub name size is determined by each individual
-    // firmware file, so we can't check until the firmware has been selected.
-    // However all firmware currently have 16 bytes allocated (including zero-
-    // termination), so we can hard code the check here to allow notifying the
-    // user earlier for better UX.
-    return encoded.length < 16;
+    if (semver.satisfies(metadata['metadata-version'], '^1.1')) {
+        return encoded.length < (metadata as FirmwareMetadataV110)['max-hub-name-size'];
+    }
+
+    if (semver.satisfies(metadata['metadata-version'], '^2.0')) {
+        return encoded.length < (metadata as FirmwareMetadataV200)['hub-name-size'];
+    }
+
+    return false;
 }
 
 const supportHubs: readonly HubType[] = [
