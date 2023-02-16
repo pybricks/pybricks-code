@@ -14,6 +14,7 @@ import { useIsMounted } from 'usehooks-ts';
 import { alertsShowAlert } from '../../alerts/actions';
 import { Hub } from '../../components/hubPicker';
 import { ensureError } from '../../utils';
+import { validateMetadata } from './';
 
 export type FirmwareData = {
     firmwareZip: ArrayBuffer;
@@ -175,6 +176,9 @@ export function useCustomFirmware(zipFile: File | undefined) {
                 const reader = await FirmwareReader.load(firmwareZip);
                 const licenseText = await reader.readReadMeOss();
                 const metadata = await reader.readMetadata();
+
+                validateMetadata(metadata);
+
                 const data = {
                     firmwareZip,
                     licenseText,
