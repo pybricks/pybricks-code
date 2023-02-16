@@ -408,7 +408,7 @@ const ConfigureOptionsPanel: React.VoidFunctionComponent<SelectOptionsPanelProps
                                 <Icon
                                     icon="error"
                                     intent={Intent.DANGER}
-                                    itemType="div"
+                                    tagName="div"
                                 />
                             )
                         }
