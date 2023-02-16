@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
 import './installPybricksDialog.scss';
 import {
@@ -40,7 +40,7 @@ import {
     firmwareInstallPybricksDialogAccept,
     firmwareInstallPybricksDialogCancel,
 } from './actions';
-import { useCustomFirmware, useFirmware } from './hooks';
+import { FirmwareData, useCustomFirmware, useFirmware } from './hooks';
 import { useI18n } from './i18n';
 import { validateHubName } from '.';
 
@@ -170,16 +170,16 @@ const UnsupportedHubs: React.VoidFunctionComponent = () => {
 };
 
 type SelectHubPanelProps = {
-    customFirmwareZip: File | undefined;
+    isCustomFirmwareRequested: boolean;
+    customFirmwareData: FirmwareData | undefined;
     onCustomFirmwareZip: (firmwareZip: File | undefined) => void;
 };
 
 const SelectHubPanel: React.VoidFunctionComponent<SelectHubPanelProps> = ({
-    customFirmwareZip,
+    isCustomFirmwareRequested,
+    customFirmwareData,
     onCustomFirmwareZip,
 }) => {
-    const { isCustomFirmwareRequested, customFirmwareData } =
-        useCustomFirmware(customFirmwareZip);
     const [isAdvancedOpen, setIsAdvancedOpen] = useLocalStorage(
         'installPybricksDialog.isAdvancedOpen',
         false,
@@ -323,19 +323,21 @@ const SelectHubPanel: React.VoidFunctionComponent<SelectHubPanelProps> = ({
 type AcceptLicensePanelProps = {
     hubType: Hub;
     licenseAccepted: boolean;
-    customFirmwareZip: File | undefined;
+    isCustomFirmwareRequested: boolean;
+    customFirmwareData: FirmwareData | undefined;
+    customFirmwareError: Error | undefined;
     onLicenseAcceptedChanged: (accepted: boolean) => void;
 };
 
 const AcceptLicensePanel: React.VoidFunctionComponent<AcceptLicensePanelProps> = ({
     hubType,
     licenseAccepted,
-    customFirmwareZip,
+    isCustomFirmwareRequested,
+    customFirmwareData,
+    customFirmwareError,
     onLicenseAcceptedChanged,
 }) => {
     const { firmwareData, firmwareError } = useFirmware(hubType);
-    const { isCustomFirmwareRequested, customFirmwareData, customFirmwareError } =
-        useCustomFirmware(customFirmwareZip);
     const i18n = useI18n();
 
     const selectedFirmwareData = isCustomFirmwareRequested
@@ -445,7 +447,7 @@ export const InstallPybricksDialog: React.VoidFunctionComponent = () => {
     const [hubType] = useHubPickerSelectedHub();
     const { firmwareData } = useFirmware(hubType);
     const [customFirmwareZip, setCustomFirmwareZip] = useState<File>();
-    const { isCustomFirmwareRequested, customFirmwareData } =
+    const { isCustomFirmwareRequested, customFirmwareData, customFirmwareError } =
         useCustomFirmware(customFirmwareZip);
     const i18n = useI18n();
 
@@ -480,7 +482,8 @@ export const InstallPybricksDialog: React.VoidFunctionComponent = () => {
                 title={i18n.translate('selectHubPanel.title')}
                 panel={
                     <SelectHubPanel
-                        customFirmwareZip={customFirmwareZip}
+                        isCustomFirmwareRequested={isCustomFirmwareRequested}
+                        customFirmwareData={customFirmwareData}
                         onCustomFirmwareZip={setCustomFirmwareZip}
                     />
                 }
@@ -492,7 +495,9 @@ export const InstallPybricksDialog: React.VoidFunctionComponent = () => {
                     <AcceptLicensePanel
                         hubType={selectedHubType}
                         licenseAccepted={licenseAccepted}
-                        customFirmwareZip={customFirmwareZip}
+                        isCustomFirmwareRequested={isCustomFirmwareRequested}
+                        customFirmwareData={customFirmwareData}
+                        customFirmwareError={customFirmwareError}
                         onLicenseAcceptedChanged={setLicenseAccepted}
                     />
                 }
