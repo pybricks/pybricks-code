@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 // based on https://usehooks-ts.com/react-hook/use-fetch
 
 import { FirmwareMetadata, FirmwareReader } from '@pybricks/firmware';
@@ -15,7 +15,7 @@ import { alertsShowAlert } from '../../alerts/actions';
 import { Hub } from '../../components/hubPicker';
 import { ensureError } from '../../utils';
 
-type FirmwareData = {
+export type FirmwareData = {
     firmwareZip: ArrayBuffer;
     licenseText: string;
     metadata: FirmwareMetadata;
