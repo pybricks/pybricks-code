@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2022 The Pybricks Authors
+// Copyright (c) 2020-2023 The Pybricks Authors
 
 // css files
 @use 'normalize.css/normalize';
@@ -175,8 +175,20 @@ a.#{bp.$ns}-button {
     font-weight: bolder;
 }
 
-.#{bp.$ns}-input-group .#{bp.$ns}-icon {
-    margin: 7px;
+.#{bp.$ns}-input-group {
+    & .#{bp.$ns}-icon {
+        margin: 7px;
+
+        &.#{bp.$ns}-intent-danger {
+            color: bp.$red4;
+        }
+    }
+
+    & .#{bp.$ns}-input-action {
+        bottom: 0;
+        display: flex;
+        align-items: center;
+    }
 }
 
 // don't take up so much space when there is no caret
