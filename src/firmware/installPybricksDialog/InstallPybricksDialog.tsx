@@ -321,8 +321,9 @@ const SelectHubPanel: React.VoidFunctionComponent<SelectHubPanelProps> = ({
 };
 
 type AcceptLicensePanelProps = {
-    hubType: Hub;
     licenseAccepted: boolean;
+    firmwareData: FirmwareData | undefined;
+    firmwareError: Error | undefined;
     isCustomFirmwareRequested: boolean;
     customFirmwareData: FirmwareData | undefined;
     customFirmwareError: Error | undefined;
@@ -330,14 +331,14 @@ type AcceptLicensePanelProps = {
 };
 
 const AcceptLicensePanel: React.VoidFunctionComponent<AcceptLicensePanelProps> = ({
-    hubType,
     licenseAccepted,
+    firmwareData,
+    firmwareError,
     isCustomFirmwareRequested,
     customFirmwareData,
     customFirmwareError,
     onLicenseAcceptedChanged,
 }) => {
-    const { firmwareData, firmwareError } = useFirmware(hubType);
     const i18n = useI18n();
 
     const selectedFirmwareData = isCustomFirmwareRequested
@@ -447,7 +448,7 @@ export const InstallPybricksDialog: React.VoidFunctionComponent = () => {
     const [hubName, setHubName] = useState('');
     const [licenseAccepted, setLicenseAccepted] = useState(false);
     const [hubType] = useHubPickerSelectedHub();
-    const { firmwareData } = useFirmware(hubType);
+    const { firmwareData, firmwareError } = useFirmware(hubType);
     const [customFirmwareZip, setCustomFirmwareZip] = useState<File>();
     const { isCustomFirmwareRequested, customFirmwareData, customFirmwareError } =
         useCustomFirmware(customFirmwareZip);
@@ -495,8 +496,9 @@ export const InstallPybricksDialog: React.VoidFunctionComponent = () => {
                 title={i18n.translate('licensePanel.title')}
                 panel={
                     <AcceptLicensePanel
-                        hubType={selectedHubType}
                         licenseAccepted={licenseAccepted}
+                        firmwareData={firmwareData}
+                        firmwareError={firmwareError}
                         isCustomFirmwareRequested={isCustomFirmwareRequested}
                         customFirmwareData={customFirmwareData}
                         customFirmwareError={customFirmwareError}
