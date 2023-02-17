@@ -4,6 +4,24 @@
 
 ## [Unreleased]
 
+## [2.1.1] - 2023-02-17
+
+### Changed
+- Updated firmware to v3.2.3:
+
+  #### Added
+  - Added `close()` method to `DCMotor` and `Motor` so they can be closed and
+    re-initialized later ([support#904]).
+
+  #### Fixed
+  - Fixed `Light` controlling wrong ports on Move hub ([support#913]).
+  - Fixed type checking optimized out on Move hub ([support#950]).
+
+  [support#904]: https://github.com/pybricks/support/issues/904
+  [support#913]: https://github.com/pybricks/support/issues/913
+  [support#950]: https://github.com/pybricks/support/issues/950
+
+
 ### Fixed
 - Show error message when go to syntax error fails to activate file ([support#924]).
 
@@ -694,7 +712,8 @@ Prerelease changes are documented at [support#48].
 
 <!-- links for version headings -->
 
-[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.1.0...HEAD
+[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.1.1...HEAD
+[2.1.1]: https://github.com/pybricks/pybricks-code/compare/v2.1.0...v2.1.1
 [2.1.0]: https://github.com/pybricks/pybricks-code/compare/v2.1.0-beta.4...v2.1.0
 [2.1.0-beta.4]: https://github.com/pybricks/pybricks-code/compare/v2.1.0-beta.3...v2.1.0-beta.4
 [2.1.0-beta.3]: https://github.com/pybricks/pybricks-code/compare/v2.1.0-beta.2...v2.1.0-beta.3
