@@ -4,6 +4,22 @@
 
 ## [Unreleased]
 
+### Changed
+- Updated firmware to v3.2.3:
+
+  #### Added
+  - Added `close()` method to `DCMotor` and `Motor` so they can be closed and
+    re-initialized later ([support#904]).
+
+  #### Fixed
+  - Fixed `Light` controlling wrong ports on Move hub ([support#913]).
+  - Fixed type checking optimized out on Move hub ([support#950]).
+
+  [support#904]: https://github.com/pybricks/support/issues/904
+  [support#913]: https://github.com/pybricks/support/issues/913
+  [support#950]: https://github.com/pybricks/support/issues/950
+
+
 ### Fixed
 - Show error message when go to syntax error fails to activate file ([support#924]).
 
