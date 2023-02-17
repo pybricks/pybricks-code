@@ -23,7 +23,7 @@
         "@reduxjs/toolkit": "^1.9.2",
         "@shopify/react-i18n": "^7.6.0",
         "@svgr/webpack": "^6.5.1",
-        "@testing-library/dom": "^8.20.0",
+        "@testing-library/dom": "^9.0.0",
         "@testing-library/jest-dom": "^5.16.5",
         "@testing-library/react": "^12.1.5",
         "@testing-library/user-event": "^14.4.3",
