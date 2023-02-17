@@ -20,13 +20,13 @@ jobs:
     - uses: actions/setup-node@v1
       with:
         node-version: '16.x'
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: yarn install
     - run: |
         yarn lint
         git diff --exit-code
     - run: yarn coverage
-    - uses: codecov/codecov-action@v2
+    - uses: codecov/codecov-action@v3
       with:
         directory: coverage
     - run: yarn build
