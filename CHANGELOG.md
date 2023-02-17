@@ -4,6 +4,35 @@
 
 ## [Unreleased]
 
+### Changed
+
+- Updated firmware to v3.3.0b1:
+
+  #### Added
+  - Added `close()` method to `DCMotor` and `Motor` so they can be closed and
+    re-initialized later ([support#904]).
+  - Fixed workaround for motor hold drifting away under external input
+    movement ([support#863]).
+  - Added `Motor.model` object to interact with the motor state estimator.
+  - Added `Stop.BRAKE_SMART` as `then` option for motors. It works just like
+    `SMART_COAST`, but with passive electrical braking.
+  - Added logging support for control stall and pause state.
+
+  #### Fixed
+  - Fixed `Light` controlling wrong ports on Move hub ([support#913]).
+  - Reduced motor motion while holding position and added configurable setter and
+    getter for this deadzone.
+  - Fixed type checking optimized out on Move hub ([support#950]).
+  - Fixed end-user stall flag coming up too early in position based control.
+  - Further reduced stutter at low motor speeds  ([support#366]).
+
+  [support#366]: https://github.com/pybricks/support/issues/366
+  [support#829]: https://github.com/pybricks/support/issues/829
+  [support#863]: https://github.com/pybricks/support/issues/863
+  [support#904]: https://github.com/pybricks/support/issues/904
+  [support#913]: https://github.com/pybricks/support/issues/913
+  [support#950]: https://github.com/pybricks/support/issues/950
+
 ### Fixed
 - Show error message when go to syntax error fails to activate file ([support#924]).
 
