@@ -2676,7 +2676,7 @@ __metadata:
     eslint-plugin-import: ^2.27.5
     eslint-plugin-prettier: ^4.2.1
     eslint-plugin-react: ^7.32.2
-    eslint-plugin-total-functions: ^6.0.0
+    eslint-plugin-total-functions: ^6.1.0
     eslint-webpack-plugin: ^4.0.0
     fake-indexeddb: ^4.0.1
     file-loader: ^6.2.0
@@ -5151,7 +5151,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/eslint-plugin@npm:^5.27.1, @typescript-eslint/eslint-plugin@npm:^5.5.0":
+"@typescript-eslint/eslint-plugin@npm:^5.5.0":
   version: 5.53.0
   resolution: "@typescript-eslint/eslint-plugin@npm:5.53.0"
   dependencies:
@@ -5199,7 +5199,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/experimental-utils@npm:^5.0.0, @typescript-eslint/experimental-utils@npm:^5.27.1":
+"@typescript-eslint/experimental-utils@npm:^5.0.0":
   version: 5.40.1
   resolution: "@typescript-eslint/experimental-utils@npm:5.40.1"
   dependencies:
@@ -5210,7 +5210,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/parser@npm:^5.27.1, @typescript-eslint/parser@npm:^5.5.0":
+"@typescript-eslint/parser@npm:^5.5.0":
   version: 5.53.0
   resolution: "@typescript-eslint/parser@npm:5.53.0"
   dependencies:
@@ -5291,7 +5291,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/type-utils@npm:5.54.0":
+"@typescript-eslint/type-utils@npm:5.54.0, @typescript-eslint/type-utils@npm:^5.54.0":
   version: 5.54.0
   resolution: "@typescript-eslint/type-utils@npm:5.54.0"
   dependencies:
@@ -5419,7 +5419,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/utils@npm:5.54.0":
+"@typescript-eslint/utils@npm:5.54.0, @typescript-eslint/utils@npm:^5.54.0":
   version: 5.54.0
   resolution: "@typescript-eslint/utils@npm:5.54.0"
   dependencies:
@@ -8325,18 +8325,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-total-functions@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "eslint-plugin-total-functions@npm:6.0.0"
+"eslint-plugin-total-functions@npm:^6.1.0":
+  version: 6.1.0
+  resolution: "eslint-plugin-total-functions@npm:6.1.0"
   dependencies:
-    "@typescript-eslint/eslint-plugin": ^5.27.1
-    "@typescript-eslint/experimental-utils": ^5.27.1
-    "@typescript-eslint/parser": ^5.27.1
-    tsutils: ^3.17.1
+    "@typescript-eslint/eslint-plugin": ^5.54.0
+    "@typescript-eslint/parser": ^5.54.0
+    "@typescript-eslint/type-utils": ^5.54.0
+    "@typescript-eslint/utils": ^5.54.0
+    tsutils: ^3.21.0
   peerDependencies:
-    eslint: ^8.17.0
-    typescript: ^4.7.3
-  checksum: 17380753331d8fc2666a3949d98470872ec255b45b3fd74e28a317ad8ec5b27fea5e5306207c6870d4f11f42838c1e2e5a5bcafa7d35df4d9c99a268b4920fdd
+    eslint: ^8.35.0
+    typescript: ^4.9.5
+  checksum: ca776298a11f42294f80ddc3979df9fbc913e30e238ebe3d8ac632bae7b1c941cbe40fcdc926c97d62cb2369cdb04a14743ca4e82e91969e0b77b65cf3457817
   languageName: node
   linkType: hard
 
@@ -15074,7 +15075,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsutils@npm:^3.17.1, tsutils@npm:^3.21.0":
+"tsutils@npm:^3.21.0":
   version: 3.21.0
   resolution: "tsutils@npm:3.21.0"
   dependencies:
