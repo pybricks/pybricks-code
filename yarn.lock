@@ -2666,7 +2666,7 @@ __metadata:
     typed-redux-saga: ^1.5.0
     typescript: ~4.9.5
     usehooks-ts: ^2.9.1
-    user-agent-data-types: ^0.3.0
+    user-agent-data-types: ^0.3.1
     web-vitals: ^3.1.1
     webpack: ^5.75.0
     webpack-dev-server: ^4.11.1
@@ -15332,10 +15332,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"user-agent-data-types@npm:^0.3.0":
-  version: 0.3.0
-  resolution: "user-agent-data-types@npm:0.3.0"
-  checksum: 73a61ddfba17e7289a1312fc98c4f1f98d6353e6ace3e3159b36735e6a679b05bcb2afdfb8e602d690a89e6af44669783045ed9059f4bd0890f8e0ee8a772ee5
+"user-agent-data-types@npm:^0.3.1":
+  version: 0.3.1
+  resolution: "user-agent-data-types@npm:0.3.1"
+  checksum: b1e00d85fe1471d1adb203c371a99c4eba8b478d648611f2fcdad4fba31428fdc5f777739c14d58b8995e5ab54bccd6b92e169e9594ca7a07294846fd70c3d4b
   languageName: node
   linkType: hard
 
