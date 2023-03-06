@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
 import { fileOpen, fileSave } from 'browser-fs-access';
 import JSZip from 'jszip';
 import { call, put, race, select, take, takeEvery } from 'typed-redux-saga/macro';
 import { alertsShowAlert } from '../alerts/actions';
+import { zipFileExtension, zipFileMimeType } from '../app/constants';
 import {
     editorActivateFile,
     editorCloseFile,
@@ -122,14 +123,14 @@ function* handleExplorerArchiveAllFiles(): Generator {
 
         const zipData = yield* call(() => zip.generateAsync({ type: 'blob' }));
 
-        const fileName = `pybricks-backup-${timestamp()}.zip`;
+        const fileName = `pybricks-backup-${timestamp()}${zipFileExtension}`;
 
         yield* call(() =>
             fileSave(zipData, {
                 id: 'pybricksCodeFileStorageArchive',
                 fileName,
-                extensions: ['.zip'],
-                mimeTypes: ['application/zip'],
+                extensions: [zipFileExtension],
+                mimeTypes: [zipFileMimeType],
                 // TODO: translate description
                 description: 'Zip Files',
             }),
