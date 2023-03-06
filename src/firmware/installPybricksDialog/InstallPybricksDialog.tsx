@@ -28,7 +28,12 @@ import { useDropzone } from 'react-dropzone';
 import { useDispatch } from 'react-redux';
 import { useLocalStorage } from 'usehooks-ts';
 import { alertsShowAlert } from '../../alerts/actions';
-import { appName, legoMindstormsRegisteredTrademark } from '../../app/constants';
+import {
+    appName,
+    legoMindstormsRegisteredTrademark,
+    zipFileExtension,
+    zipFileMimeType,
+} from '../../app/constants';
 import HelpButton from '../../components/HelpButton';
 import { Hub, hubBootloaderType } from '../../components/hubPicker';
 import { HubPicker } from '../../components/hubPicker/HubPicker';
@@ -201,8 +206,8 @@ const SelectHubPanel: React.VoidFunctionComponent<SelectHubPanelProps> = ({
         try {
             const file = await fileOpen({
                 id: 'customFirmware',
-                mimeTypes: ['application/zip'],
-                extensions: ['.zip'],
+                mimeTypes: [zipFileMimeType],
+                extensions: [zipFileExtension],
                 // TODO: translate description
                 description: 'Zip Files',
                 excludeAcceptAllOption: true,
@@ -236,7 +241,7 @@ const SelectHubPanel: React.VoidFunctionComponent<SelectHubPanelProps> = ({
     );
 
     const { getRootProps, getInputProps } = useDropzone({
-        accept: { 'application/zip': ['.zip'] },
+        accept: { [zipFileMimeType]: [zipFileExtension] },
         multiple: false,
         // react-dropzone doesn't allow full control of File System API, so we
         // implement our own using browser-fs-access instead.
