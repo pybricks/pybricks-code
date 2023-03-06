@@ -2638,7 +2638,7 @@ __metadata:
     pyodide: 0.22.1
     react: ^16.14.0
     react-app-polyfill: ^3.0.0
-    react-aria: ^3.23.0
+    react-aria: ^3.23.1
     react-complex-tree: ^2.1.1
     react-dev-utils: ^12.0.1
     react-dom: ^16.14.0
@@ -2760,17 +2760,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-aria/combobox@npm:^3.5.0":
-  version: 3.5.0
-  resolution: "@react-aria/combobox@npm:3.5.0"
+"@react-aria/combobox@npm:^3.5.1":
+  version: 3.5.1
+  resolution: "@react-aria/combobox@npm:3.5.1"
   dependencies:
     "@react-aria/i18n": ^3.7.0
     "@react-aria/interactions": ^3.14.0
-    "@react-aria/listbox": ^3.8.0
+    "@react-aria/listbox": ^3.8.1
     "@react-aria/live-announcer": ^3.2.0
-    "@react-aria/menu": ^3.8.0
+    "@react-aria/menu": ^3.8.1
     "@react-aria/overlays": ^3.13.0
-    "@react-aria/selection": ^3.13.0
+    "@react-aria/selection": ^3.13.1
     "@react-aria/textfield": ^3.9.0
     "@react-aria/utils": ^3.15.0
     "@react-stately/collections": ^3.6.0
@@ -2783,7 +2783,7 @@ __metadata:
   peerDependencies:
     react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
     react-dom: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
-  checksum: 5f0c0586eae1a341a7b5cf950035fc6c105662222d8ac873d02e4473a67f360d6b949784db790e85893dc15bc8d366f4d335b6c3e0acffe5628a856c591b0fba
+  checksum: 589d81349d7d3e4eda88b2f9033a61d97eef0fc170a068975f107d5402943fc79388f24e129ea5015ecc9a49bd8f0b2052cbf839fefcaf076db426cf792178ce
   languageName: node
   linkType: hard
 
@@ -2868,15 +2868,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-aria/grid@npm:^3.6.0":
-  version: 3.6.0
-  resolution: "@react-aria/grid@npm:3.6.0"
+"@react-aria/grid@npm:^3.6.1":
+  version: 3.6.1
+  resolution: "@react-aria/grid@npm:3.6.1"
   dependencies:
     "@react-aria/focus": ^3.11.0
     "@react-aria/i18n": ^3.7.0
     "@react-aria/interactions": ^3.14.0
     "@react-aria/live-announcer": ^3.2.0
-    "@react-aria/selection": ^3.13.0
+    "@react-aria/selection": ^3.13.1
     "@react-aria/utils": ^3.15.0
     "@react-stately/grid": ^3.5.0
     "@react-stately/selection": ^3.12.0
@@ -2888,19 +2888,19 @@ __metadata:
   peerDependencies:
     react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
     react-dom: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
-  checksum: 3dc247e00e64ade276ecf9eb4bdb702379721f87adb1d198c8c5e3916ecbc238f0540dbd8a1dae03e533ea63d5d76797015c284041820af4e07fde2c162516ff
+  checksum: a29061405e8d7fd077029b678451d146b0dc660805287778788049c9a178817887d108ceb57055992cad1f2d5a3bdc51afc2373f7db7d7c503f1693c4a3c84a0
   languageName: node
   linkType: hard
 
-"@react-aria/gridlist@npm:^3.2.0":
-  version: 3.2.0
-  resolution: "@react-aria/gridlist@npm:3.2.0"
+"@react-aria/gridlist@npm:^3.2.1":
+  version: 3.2.1
+  resolution: "@react-aria/gridlist@npm:3.2.1"
   dependencies:
     "@react-aria/focus": ^3.11.0
-    "@react-aria/grid": ^3.6.0
+    "@react-aria/grid": ^3.6.1
     "@react-aria/i18n": ^3.7.0
     "@react-aria/interactions": ^3.14.0
-    "@react-aria/selection": ^3.13.0
+    "@react-aria/selection": ^3.13.1
     "@react-aria/utils": ^3.15.0
     "@react-stately/list": ^3.7.0
     "@react-types/checkbox": ^3.4.2
@@ -2908,7 +2908,7 @@ __metadata:
     "@swc/helpers": ^0.4.14
   peerDependencies:
     react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
-  checksum: f33ee7325df7584ee77f9bd656dcd8902cf3a2f78e8b23d28b4d44adf9d49c0ac98e5d24ba62f62033378ccf4c95d1ad0124a10b1cd3377b957d101d31ddc327
+  checksum: fb8787d59db46593dab1c2c76073324bdcea99933f700b9fc9d6a40abbad48e7b0de0d307678654442763c7716bdb03c95aa490371d23dd250dcf24c03174701
   languageName: node
   linkType: hard
 
@@ -2973,14 +2973,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-aria/listbox@npm:^3.8.0":
-  version: 3.8.0
-  resolution: "@react-aria/listbox@npm:3.8.0"
+"@react-aria/listbox@npm:^3.8.1":
+  version: 3.8.1
+  resolution: "@react-aria/listbox@npm:3.8.1"
   dependencies:
     "@react-aria/focus": ^3.11.0
     "@react-aria/interactions": ^3.14.0
     "@react-aria/label": ^3.5.0
-    "@react-aria/selection": ^3.13.0
+    "@react-aria/selection": ^3.13.1
     "@react-aria/utils": ^3.15.0
     "@react-stately/collections": ^3.6.0
     "@react-stately/list": ^3.7.0
@@ -2989,7 +2989,7 @@ __metadata:
     "@swc/helpers": ^0.4.14
   peerDependencies:
     react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
-  checksum: 99b3ab140d024a8740545a76c04311d76e4403038b2b3fee7f89a180af9350a06a450796c88d8df012b9325d4234fd8dadbd9e8b821aeb0f83f67e7e71271cf7
+  checksum: 7848de8a89384a6ab29fb37ed6ef05fa5d7e05861e8c6ecf1fda7979a9fa80edfa3b7c321c5b5e0e2bad944f50d65a7baf2b0f6f69193f4a540dd3038851bc22
   languageName: node
   linkType: hard
 
@@ -3002,14 +3002,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-aria/menu@npm:^3.8.0":
-  version: 3.8.0
-  resolution: "@react-aria/menu@npm:3.8.0"
+"@react-aria/menu@npm:^3.8.1":
+  version: 3.8.1
+  resolution: "@react-aria/menu@npm:3.8.1"
   dependencies:
     "@react-aria/i18n": ^3.7.0
     "@react-aria/interactions": ^3.14.0
     "@react-aria/overlays": ^3.13.0
-    "@react-aria/selection": ^3.13.0
+    "@react-aria/selection": ^3.13.1
     "@react-aria/utils": ^3.15.0
     "@react-stately/collections": ^3.6.0
     "@react-stately/menu": ^3.5.0
@@ -3021,7 +3021,7 @@ __metadata:
   peerDependencies:
     react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
     react-dom: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
-  checksum: 4ae183aa6b1bbb5fb7f90d7ce5e6acaa82307751a156c81bc7f9d49c3aac105a8aa5b98682e7410b7ffca13a8d3d8fcb2c0ae697ac9e7712caa18c17b26f464c
+  checksum: 8a8155dcbb6b1bae31e575d528c9dece97b694862dd9080c7025c1f30dd4f02a087f53c6422769900e9c48af4c0682a863e7095d72930e7e8e3becc3a3271b95
   languageName: node
   linkType: hard
 
@@ -3138,16 +3138,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-aria/select@npm:^3.9.0":
-  version: 3.9.0
-  resolution: "@react-aria/select@npm:3.9.0"
+"@react-aria/select@npm:^3.9.1":
+  version: 3.9.1
+  resolution: "@react-aria/select@npm:3.9.1"
   dependencies:
     "@react-aria/i18n": ^3.7.0
     "@react-aria/interactions": ^3.14.0
     "@react-aria/label": ^3.5.0
-    "@react-aria/listbox": ^3.8.0
-    "@react-aria/menu": ^3.8.0
-    "@react-aria/selection": ^3.13.0
+    "@react-aria/listbox": ^3.8.1
+    "@react-aria/menu": ^3.8.1
+    "@react-aria/selection": ^3.13.1
     "@react-aria/utils": ^3.15.0
     "@react-aria/visually-hidden": ^3.7.0
     "@react-stately/select": ^3.4.0
@@ -3158,13 +3158,13 @@ __metadata:
   peerDependencies:
     react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
     react-dom: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
-  checksum: de5e1d3c8508a909bed03ab99c76125f18224eff5571270237c2b7161b8d15ad8d2a379b52e433ee77d76aa3fbbe0130c18364cdd926c0c434d508fd69443667
+  checksum: 8f6f8cb3e657bc89e6c1a54d926343bd241f27035eb238ef28910aaaedbfb9bdbbd3bbede9acfce34a2341825f9e40b784bc556a64c001536460c9e41f688237
   languageName: node
   linkType: hard
 
-"@react-aria/selection@npm:^3.13.0":
-  version: 3.13.0
-  resolution: "@react-aria/selection@npm:3.13.0"
+"@react-aria/selection@npm:^3.13.1":
+  version: 3.13.1
+  resolution: "@react-aria/selection@npm:3.13.1"
   dependencies:
     "@react-aria/focus": ^3.11.0
     "@react-aria/i18n": ^3.7.0
@@ -3176,7 +3176,7 @@ __metadata:
     "@swc/helpers": ^0.4.14
   peerDependencies:
     react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
-  checksum: 11069304b30bb299d9bd7fe486ed5f67222002fccd865386f7c52d18a4adda242a8feffa65454093060005ac95e2c062af0c2767cda5827046e59017dea4aaeb
+  checksum: 240766af913c9b0f55782bb8ce4163ba993e626597999152ff2ccfcd852fc344d4eb3c7e71417b0eb18e430d2fec459c1ac30e5272905f1572427bfc01413cbb
   languageName: node
   linkType: hard
 
@@ -3256,16 +3256,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-aria/table@npm:^3.8.0":
-  version: 3.8.0
-  resolution: "@react-aria/table@npm:3.8.0"
+"@react-aria/table@npm:^3.8.1":
+  version: 3.8.1
+  resolution: "@react-aria/table@npm:3.8.1"
   dependencies:
     "@react-aria/focus": ^3.11.0
-    "@react-aria/grid": ^3.6.0
+    "@react-aria/grid": ^3.6.1
     "@react-aria/i18n": ^3.7.0
     "@react-aria/interactions": ^3.14.0
     "@react-aria/live-announcer": ^3.2.0
-    "@react-aria/selection": ^3.13.0
+    "@react-aria/selection": ^3.13.1
     "@react-aria/utils": ^3.15.0
     "@react-stately/table": ^3.8.0
     "@react-stately/virtualizer": ^3.5.0
@@ -3277,18 +3277,18 @@ __metadata:
   peerDependencies:
     react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
     react-dom: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
-  checksum: 2823395e9a58337a90a677c6a86603d95e7e33b42f7305a927fef7593e910e9d15ed98df925d10d01e46db8d340fb6d32bfee60eb5dd959fb30e67c3f4011ea8
+  checksum: 25c5b7f14697b3639a8577da1251fb5653ee50b7f7f716a71cfda67d46f2de5002f35657de88893e3d995e5fa793c0c066019d5f446f2bc579bc4650ee49af31
   languageName: node
   linkType: hard
 
-"@react-aria/tabs@npm:^3.4.0":
-  version: 3.4.0
-  resolution: "@react-aria/tabs@npm:3.4.0"
+"@react-aria/tabs@npm:^3.4.1":
+  version: 3.4.1
+  resolution: "@react-aria/tabs@npm:3.4.1"
   dependencies:
     "@react-aria/focus": ^3.11.0
     "@react-aria/i18n": ^3.7.0
     "@react-aria/interactions": ^3.14.0
-    "@react-aria/selection": ^3.13.0
+    "@react-aria/selection": ^3.13.1
     "@react-aria/utils": ^3.15.0
     "@react-stately/list": ^3.7.0
     "@react-stately/tabs": ^3.3.0
@@ -3297,7 +3297,7 @@ __metadata:
     "@swc/helpers": ^0.4.14
   peerDependencies:
     react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
-  checksum: 9e7c928660dc16766d7767d41d3b03f251decd65591ac0ed61a12599969e27ed6eb40cd8992b17b1fc7e438f7c285b688d8852fcbaa429630175fb4c39cd47c3
+  checksum: 330ad19e74d4b150985512bb5061466fa8aeca48121ccb42eaf4a3b9c31c7d40b9434583d2403320ce93516cba1be7efd48f0d8943099fdda16b4aa6af9789d3
   languageName: node
   linkType: hard
 
@@ -13051,40 +13051,40 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-aria@npm:^3.23.0":
-  version: 3.23.0
-  resolution: "react-aria@npm:3.23.0"
+"react-aria@npm:^3.23.1":
+  version: 3.23.1
+  resolution: "react-aria@npm:3.23.1"
   dependencies:
     "@react-aria/breadcrumbs": ^3.5.0
     "@react-aria/button": ^3.7.0
     "@react-aria/calendar": ^3.1.0
     "@react-aria/checkbox": ^3.8.0
-    "@react-aria/combobox": ^3.5.0
+    "@react-aria/combobox": ^3.5.1
     "@react-aria/datepicker": ^3.3.0
     "@react-aria/dialog": ^3.5.0
     "@react-aria/dnd": ^3.1.0
     "@react-aria/focus": ^3.11.0
-    "@react-aria/gridlist": ^3.2.0
+    "@react-aria/gridlist": ^3.2.1
     "@react-aria/i18n": ^3.7.0
     "@react-aria/interactions": ^3.14.0
     "@react-aria/label": ^3.5.0
     "@react-aria/link": ^3.4.0
-    "@react-aria/listbox": ^3.8.0
-    "@react-aria/menu": ^3.8.0
+    "@react-aria/listbox": ^3.8.1
+    "@react-aria/menu": ^3.8.1
     "@react-aria/meter": ^3.4.0
     "@react-aria/numberfield": ^3.4.0
     "@react-aria/overlays": ^3.13.0
     "@react-aria/progress": ^3.4.0
     "@react-aria/radio": ^3.5.0
     "@react-aria/searchfield": ^3.5.0
-    "@react-aria/select": ^3.9.0
-    "@react-aria/selection": ^3.13.0
+    "@react-aria/select": ^3.9.1
+    "@react-aria/selection": ^3.13.1
     "@react-aria/separator": ^3.3.0
     "@react-aria/slider": ^3.3.0
     "@react-aria/ssr": ^3.5.0
     "@react-aria/switch": ^3.4.0
-    "@react-aria/table": ^3.8.0
-    "@react-aria/tabs": ^3.4.0
+    "@react-aria/table": ^3.8.1
+    "@react-aria/tabs": ^3.4.1
     "@react-aria/textfield": ^3.9.0
     "@react-aria/tooltip": ^3.4.0
     "@react-aria/utils": ^3.15.0
@@ -13092,7 +13092,7 @@ __metadata:
   peerDependencies:
     react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
     react-dom: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
-  checksum: 43c5500e557323983de555c7079d23f72eaa026a957c9fe6cedc988d95973f0adf43ad4f5694d00a6b6a49c820c76c0405831204d36f5e22aeddf8b6d890652b
+  checksum: e91ee511f8cf5e521404194c30a17ec198a7c78d98d490522a646cedf89fdb6428f73993677096faee9ad08f78ef2abd370ca2bdb250108f04bd4cbf93f0e8cf
   languageName: node
   linkType: hard
 
