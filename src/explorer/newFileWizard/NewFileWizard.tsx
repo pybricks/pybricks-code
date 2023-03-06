@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
 import {
     Button,
@@ -31,7 +31,7 @@ const NewFileWizard: React.VoidFunctionComponent = () => {
     const i18n = useI18n();
     const dispatch = useDispatch();
 
-    const [useTemplate, setuseTemplate] = useLocalStorage(
+    const [useTemplate, setUseTemplate] = useLocalStorage(
         'explorer.newFileWizard.useTemplate',
         true,
     );
@@ -90,7 +90,7 @@ const NewFileWizard: React.VoidFunctionComponent = () => {
                             <Switch
                                 checked={useTemplate}
                                 onChange={(e) =>
-                                    setuseTemplate(
+                                    setUseTemplate(
                                         (e.target as HTMLInputElement).checked,
                                     )
                                 }
