@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
 // A file explorer control.
 
@@ -58,6 +58,7 @@ import { useI18n } from './i18n';
 import NewFileWizard from './newFileWizard/NewFileWizard';
 import RenameFileDialog from './renameFileDialog/RenameFileDialog';
 import RenameImportDialog from './renameImportDialog/RenameImportDialog';
+import ReplaceImportDialog from './replaceImportDialog/ReplaceImportDialog';
 
 type ActionButtonProps = {
     /** The DOM id for this instance. */
@@ -455,6 +456,7 @@ const Explorer: React.VFC = () => {
             <NewFileWizard />
             <RenameFileDialog />
             <RenameImportDialog />
+            <ReplaceImportDialog />
             <DuplicateFileDialog />
             <DeleteFileAlert />
         </div>

@@ -1,0 +1,12 @@
+{
+    "title": "Replace existing file?",
+    "message": "A file already exists with the same name as the imported file '{fileName}'.",
+    "option": {
+        "remember": "Remember this answer when resolving additional conflicts."
+    },
+    "action": {
+        "skip": "Keep the existing file and skip importing this file",
+        "replace": "Replace the existing file with the imported file",
+        "rename": "Keep the existing file and rename the imported file"
+    }
+}
