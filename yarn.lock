@@ -10923,7 +10923,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsdom@npm:^20.0.0":
+"jsdom@npm:20.0.0":
   version: 20.0.0
   resolution: "jsdom@npm:20.0.0"
   dependencies:
@@ -10960,6 +10960,46 @@ __metadata:
     canvas:
       optional: true
   checksum: f69b40679d8cfaee2353615445aaff08b823c53dc7778ede6592d02ed12b3e9fb4e8db2b6d033551b67e08424a3adb2b79d231caa7dcda2d16019c20c705c11f
+  languageName: node
+  linkType: hard
+
+"jsdom@patch:jsdom@npm%3A20.0.0#./.yarn/patches/jsdom-npm-20.0.0-9c1ad43ab8.patch::locator=%40pybricks%2Fpybricks-code%40workspace%3A.":
+  version: 20.0.0
+  resolution: "jsdom@patch:jsdom@npm%3A20.0.0#./.yarn/patches/jsdom-npm-20.0.0-9c1ad43ab8.patch::version=20.0.0&hash=37efc2&locator=%40pybricks%2Fpybricks-code%40workspace%3A."
+  dependencies:
+    abab: ^2.0.6
+    acorn: ^8.7.1
+    acorn-globals: ^6.0.0
+    cssom: ^0.5.0
+    cssstyle: ^2.3.0
+    data-urls: ^3.0.2
+    decimal.js: ^10.3.1
+    domexception: ^4.0.0
+    escodegen: ^2.0.0
+    form-data: ^4.0.0
+    html-encoding-sniffer: ^3.0.0
+    http-proxy-agent: ^5.0.0
+    https-proxy-agent: ^5.0.1
+    is-potential-custom-element-name: ^1.0.1
+    nwsapi: ^2.2.0
+    parse5: ^7.0.0
+    saxes: ^6.0.0
+    symbol-tree: ^3.2.4
+    tough-cookie: ^4.0.0
+    w3c-hr-time: ^1.0.2
+    w3c-xmlserializer: ^3.0.0
+    webidl-conversions: ^7.0.0
+    whatwg-encoding: ^2.0.0
+    whatwg-mimetype: ^3.0.0
+    whatwg-url: ^11.0.0
+    ws: ^8.8.0
+    xml-name-validator: ^4.0.0
+  peerDependencies:
+    canvas: ^2.5.0
+  peerDependenciesMeta:
+    canvas:
+      optional: true
+  checksum: 642f7fee80de51473cde95ce683d9c10ff7e97971dcb9b0cf1743d9ec49755c8fbaa3fecf23a6d54b2da1646234970aa0d30011620d381eb8b6fa465013d1966
   languageName: node
   linkType: hard
 
