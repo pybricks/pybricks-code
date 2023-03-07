@@ -1593,28 +1593,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@blueprintjs/popover2@npm:^1.13.8":
-  version: 1.13.8
-  resolution: "@blueprintjs/popover2@npm:1.13.8"
-  dependencies:
-    "@blueprintjs/core": ^4.17.4
-    "@juggle/resize-observer": ^3.4.0
-    "@popperjs/core": ^2.11.6
-    classnames: ^2.3.1
-    dom4: ^2.1.5
-    react-popper: ^2.3.0
-    tslib: ~2.3.1
-  peerDependencies:
-    "@types/react": ^16.14.32 || 17 || 18
-    react: ^16.8 || 17 || 18
-    react-dom: ^16.8 || 17 || 18
-  peerDependenciesMeta:
-    "@types/react":
-      optional: true
-  checksum: 9b1452726d3cf0d623b98bc7c850f2fd9aa2907161d60f4d72f3f22cb81e9f80d5a164cc0fa8a8c22b476f8ad780d64be803823ab76ed4cbe70ed9c8ce142f88
-  languageName: node
-  linkType: hard
-
 "@blueprintjs/popover2@npm:^1.13.9":
   version: 1.13.9
   resolution: "@blueprintjs/popover2@npm:1.13.9"
@@ -1637,12 +1615,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@blueprintjs/select@npm:^4.9.8":
-  version: 4.9.8
-  resolution: "@blueprintjs/select@npm:4.9.8"
+"@blueprintjs/select@npm:^4.9.9":
+  version: 4.9.9
+  resolution: "@blueprintjs/select@npm:4.9.9"
   dependencies:
-    "@blueprintjs/core": ^4.17.4
-    "@blueprintjs/popover2": ^1.13.8
+    "@blueprintjs/core": ^4.17.5
+    "@blueprintjs/popover2": ^1.13.9
     classnames: ^2.3.1
     tslib: ~2.3.1
   peerDependencies:
@@ -1652,7 +1630,7 @@ __metadata:
   peerDependenciesMeta:
     "@types/react":
       optional: true
-  checksum: ba88ccdbd0bcd6b171bd8819975364ad7b90edba48d68e12d8ffb9db8f23a8c671896eb0414c26e89b0ea1c266cf54b528aefaf92aa87dece368d92084d5b574
+  checksum: b589a0cb22c2ba551ecd5a52f4d93b31f9f2f643371d7479b5c9187332d7c19a47041c861bd4097c1b6f0d11af0ba01d6302d92a0a42057ef2f07993f48c556c
   languageName: node
   linkType: hard
 
@@ -2635,7 +2613,7 @@ __metadata:
     "@babel/core": ^7.21.0
     "@blueprintjs/core": ^4.17.4
     "@blueprintjs/popover2": ^1.13.9
-    "@blueprintjs/select": ^4.9.8
+    "@blueprintjs/select": ^4.9.9
     "@pmmmwh/react-refresh-webpack-plugin": ^0.5.10
     "@pybricks/firmware": 6.8.0
     "@pybricks/ide-docs": 2.7.0
