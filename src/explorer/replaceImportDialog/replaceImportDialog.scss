@@ -1,0 +1,10 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2023 The Pybricks Authors
+
+@use '@blueprintjs/core/lib/scss/variables' as bp;
+
+.#{bp.$ns}-dialog.pb-explorer-replaceImportDialog {
+    .#{bp.$ns}-dialog-footer-actions {
+        flex-direction: column;
+    }
+}

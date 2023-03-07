@@ -1,9 +1,11 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
 import * as browserFsAccess from 'browser-fs-access';
 import { FileWithHandle } from 'browser-fs-access';
+import Dexie from 'dexie';
 import { mock } from 'jest-mock-extended';
+import JSZip from 'jszip';
 import { AsyncSaga, uuid } from '../../test';
 import { alertsShowAlert } from '../alerts/actions';
 import { Hub } from '../components/hubPicker';
@@ -15,7 +17,7 @@ import {
     editorDidFailToActivateFile,
 } from '../editor/actions';
 import { EditorError } from '../editor/error';
-import { UUID } from '../fileStorage';
+import { FileMetadata, FileStorageDb, UUID } from '../fileStorage';
 import {
     fileStorageCopyFile,
     fileStorageDeleteFile,
@@ -86,6 +88,11 @@ import {
     renameImportDialogDidAccept,
     renameImportDialogShow,
 } from './renameImportDialog/actions';
+import {
+    ReplaceImportDialogAction,
+    replaceImportDialogDidAccept,
+    replaceImportDialogShow,
+} from './replaceImportDialog/actions';
 import explorer from './sagas';
 
 jest.mock('browser-fs-access');
@@ -190,17 +197,38 @@ describe('handleExplorerArchiveAllFiles', () => {
 });
 
 describe('handleExplorerImportFiles', () => {
+    const mockFileStorage = (...files: FileMetadata[]) => {
+        return mock<FileStorageDb>({
+            metadata: { toArray: () => Dexie.Promise.resolve(files) },
+        });
+    };
+
+    const mockPythonFile = (name: string, contents: string) => {
+        return mock<FileWithHandle>({
+            name,
+            type: '',
+            text: () => Promise.resolve(contents),
+        });
+    };
+
+    const mockZipFile = (name: string, contents: ArrayBuffer) => {
+        return mock<FileWithHandle>({
+            name,
+            type: 'application/zip',
+            arrayBuffer: () => Promise.resolve(contents),
+        });
+    };
+
     it('should write file to storage', async () => {
         const testFileName = 'test.py';
         const testFileContents = '# test';
 
-        const saga = new AsyncSaga(explorer);
+        const saga = new AsyncSaga(explorer, {
+            fileStorage: mockFileStorage(),
+        });
 
         jest.spyOn(browserFsAccess, 'fileOpen').mockResolvedValueOnce([
-            mock<FileWithHandle>({
-                name: testFileName,
-                text: () => Promise.resolve(testFileContents),
-            }),
+            mockPythonFile(testFileName, testFileContents),
         ]);
 
         saga.put(explorerImportFiles());
@@ -219,7 +247,9 @@ describe('handleExplorerImportFiles', () => {
     it('should handle user cancellation', async () => {
         const cancelError = new DOMException('test message', 'AbortError');
 
-        const saga = new AsyncSaga(explorer);
+        const saga = new AsyncSaga(explorer, {
+            fileStorage: mockFileStorage(),
+        });
 
         jest.spyOn(browserFsAccess, 'fileOpen').mockRejectedValueOnce(cancelError);
 
@@ -235,13 +265,12 @@ describe('handleExplorerImportFiles', () => {
         const testFileName = 'bad#name.py';
         const testFileContents = '# test';
 
-        const saga = new AsyncSaga(explorer);
+        const saga = new AsyncSaga(explorer, {
+            fileStorage: mockFileStorage(),
+        });
 
         jest.spyOn(browserFsAccess, 'fileOpen').mockResolvedValueOnce([
-            mock<FileWithHandle>({
-                name: testFileName,
-                text: () => Promise.resolve(testFileContents),
-            }),
+            mockPythonFile(testFileName, testFileContents),
         ]);
 
         saga.put(explorerImportFiles());
@@ -259,6 +288,300 @@ describe('handleExplorerImportFiles', () => {
         );
 
         saga.put(fileStorageDidWriteFile(renamedFileName, uuid(0)));
+
+        await expect(saga.take()).resolves.toEqual(explorerDidImportFiles());
+
+        await saga.end();
+    });
+
+    describe('duplicate file name', () => {
+        it.each([false, true])(
+            'should handle user selected replace and remember is %s',
+            async (remember) => {
+                const testFileName1 = 'test1.py';
+                const testFileContents1 = '# test';
+                const testFileUuid1 = uuid(1);
+
+                const testFileName2 = 'test2.py';
+                const testFileContents2 = '# test';
+                const testFileUuid2 = uuid(2);
+
+                const saga = new AsyncSaga(explorer, {
+                    fileStorage: mockFileStorage(
+                        {
+                            uuid: testFileUuid1,
+                            path: testFileName1,
+                            sha256: '',
+                            viewState: null,
+                        },
+                        {
+                            uuid: testFileUuid2,
+                            path: testFileName2,
+                            sha256: '',
+                            viewState: null,
+                        },
+                    ),
+                });
+
+                jest.spyOn(browserFsAccess, 'fileOpen').mockResolvedValueOnce([
+                    mockPythonFile(testFileName1, testFileContents1),
+                    mockPythonFile(testFileName2, testFileContents2),
+                ]);
+
+                saga.put(explorerImportFiles());
+
+                await expect(saga.take()).resolves.toEqual(
+                    replaceImportDialogShow(testFileName1),
+                );
+
+                saga.put(
+                    replaceImportDialogDidAccept(
+                        ReplaceImportDialogAction.Replace,
+                        remember,
+                    ),
+                );
+
+                await expect(saga.take()).resolves.toEqual(
+                    fileStorageWriteFile(testFileName1, testFileContents1),
+                );
+
+                saga.put(fileStorageDidWriteFile(testFileName1, testFileUuid1));
+
+                if (!remember) {
+                    await expect(saga.take()).resolves.toEqual(
+                        replaceImportDialogShow(testFileName2),
+                    );
+
+                    saga.put(
+                        replaceImportDialogDidAccept(
+                            ReplaceImportDialogAction.Replace,
+                            remember,
+                        ),
+                    );
+                }
+
+                await expect(saga.take()).resolves.toEqual(
+                    fileStorageWriteFile(testFileName2, testFileContents2),
+                );
+
+                saga.put(fileStorageDidWriteFile(testFileName2, testFileUuid2));
+
+                await expect(saga.take()).resolves.toEqual(explorerDidImportFiles());
+
+                await saga.end();
+            },
+        );
+
+        it.each([false, true])(
+            'should handle user selected rename and remember is %s',
+            async (remember) => {
+                const testFileName1 = 'test1.py';
+                const testFileContents1 = '# test';
+                const testFileUuid1 = uuid(1);
+
+                const testFileName2 = 'test2.py';
+                const testFileContents2 = '# test';
+                const testFileUuid2 = uuid(2);
+
+                const saga = new AsyncSaga(explorer, {
+                    fileStorage: mockFileStorage(
+                        {
+                            uuid: testFileUuid1,
+                            path: testFileName1,
+                            sha256: '',
+                            viewState: null,
+                        },
+                        {
+                            uuid: testFileUuid2,
+                            path: testFileName2,
+                            sha256: '',
+                            viewState: null,
+                        },
+                    ),
+                });
+
+                jest.spyOn(browserFsAccess, 'fileOpen').mockResolvedValueOnce([
+                    mockPythonFile(testFileName1, testFileContents1),
+                    mockPythonFile(testFileName2, testFileContents2),
+                ]);
+
+                saga.put(explorerImportFiles());
+
+                await expect(saga.take()).resolves.toEqual(
+                    replaceImportDialogShow(testFileName1),
+                );
+
+                saga.put(
+                    replaceImportDialogDidAccept(
+                        ReplaceImportDialogAction.Rename,
+                        remember,
+                    ),
+                );
+
+                await expect(saga.take()).resolves.toEqual(
+                    renameImportDialogShow(testFileName1),
+                );
+
+                const renamedFileName1 = 'good_name1.py';
+                const renamedFileUuid1 = uuid(1);
+
+                saga.put(renameImportDialogDidAccept(testFileName1, renamedFileName1));
+
+                await expect(saga.take()).resolves.toEqual(
+                    fileStorageWriteFile(renamedFileName1, testFileContents1),
+                );
+
+                saga.put(fileStorageDidWriteFile(renamedFileName1, renamedFileUuid1));
+
+                if (!remember) {
+                    await expect(saga.take()).resolves.toEqual(
+                        replaceImportDialogShow(testFileName2),
+                    );
+
+                    saga.put(
+                        replaceImportDialogDidAccept(
+                            ReplaceImportDialogAction.Rename,
+                            remember,
+                        ),
+                    );
+                }
+
+                await expect(saga.take()).resolves.toEqual(
+                    renameImportDialogShow(testFileName2),
+                );
+
+                const renamedFileName2 = 'good_name2.py';
+                const renamedFileUuid2 = uuid(2);
+
+                saga.put(renameImportDialogDidAccept(testFileName2, renamedFileName2));
+
+                await expect(saga.take()).resolves.toEqual(
+                    fileStorageWriteFile(renamedFileName2, testFileContents2),
+                );
+
+                saga.put(fileStorageDidWriteFile(renamedFileName2, renamedFileUuid2));
+
+                await expect(saga.take()).resolves.toEqual(explorerDidImportFiles());
+
+                await saga.end();
+            },
+        );
+
+        it.each([false, true])(
+            'should handle user selected skip and remember is %s',
+            async (remember) => {
+                const testFileName1 = 'test1.py';
+                const testFileContents1 = '# test';
+                const testFileUuid1 = uuid(1);
+
+                const testFileName2 = 'test2.py';
+                const testFileContents2 = '# test';
+                const testFileUuid2 = uuid(2);
+
+                const saga = new AsyncSaga(explorer, {
+                    fileStorage: mockFileStorage(
+                        {
+                            uuid: testFileUuid1,
+                            path: testFileName1,
+                            sha256: '',
+                            viewState: null,
+                        },
+                        {
+                            uuid: testFileUuid2,
+                            path: testFileName2,
+                            sha256: '',
+                            viewState: null,
+                        },
+                    ),
+                });
+
+                jest.spyOn(browserFsAccess, 'fileOpen').mockResolvedValueOnce([
+                    mockPythonFile(testFileName1, testFileContents1),
+                    mockPythonFile(testFileName2, testFileContents2),
+                ]);
+
+                saga.put(explorerImportFiles());
+
+                await expect(saga.take()).resolves.toEqual(
+                    replaceImportDialogShow(testFileName1),
+                );
+
+                saga.put(
+                    replaceImportDialogDidAccept(
+                        ReplaceImportDialogAction.Skip,
+                        remember,
+                    ),
+                );
+
+                if (!remember) {
+                    await expect(saga.take()).resolves.toEqual(
+                        replaceImportDialogShow(testFileName2),
+                    );
+
+                    saga.put(
+                        replaceImportDialogDidAccept(
+                            ReplaceImportDialogAction.Skip,
+                            remember,
+                        ),
+                    );
+                }
+
+                await expect(saga.take()).resolves.toEqual(explorerDidImportFiles());
+
+                await saga.end();
+            },
+        );
+    });
+
+    it('should handle ZIP files', async () => {
+        const testFileName = 'test.py';
+        const testFileContents = '# test';
+
+        const zipFile = new JSZip().file(testFileName, testFileContents);
+
+        const saga = new AsyncSaga(explorer, {
+            fileStorage: mockFileStorage(),
+        });
+
+        jest.spyOn(browserFsAccess, 'fileOpen').mockResolvedValueOnce([
+            mockZipFile(
+                'test.zip',
+                await zipFile.generateAsync({ type: 'arraybuffer' }),
+            ),
+        ]);
+
+        saga.put(explorerImportFiles());
+
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageWriteFile(testFileName, testFileContents),
+        );
+
+        saga.put(fileStorageDidWriteFile(testFileName, uuid(0)));
+
+        await expect(saga.take()).resolves.toEqual(explorerDidImportFiles());
+
+        await saga.end();
+    });
+
+    it('should notify user if ZIP file contains no Python files', async () => {
+        const zipFile = new JSZip();
+
+        const saga = new AsyncSaga(explorer, {
+            fileStorage: mockFileStorage(),
+        });
+
+        jest.spyOn(browserFsAccess, 'fileOpen').mockResolvedValueOnce([
+            mockZipFile(
+                'test.zip',
+                await zipFile.generateAsync({ type: 'arraybuffer' }),
+            ),
+        ]);
+
+        saga.put(explorerImportFiles());
+
+        await expect(saga.take()).resolves.toEqual(
+            alertsShowAlert('explorer', 'noPyFiles'),
+        );
 
         await expect(saga.take()).resolves.toEqual(explorerDidImportFiles());
 

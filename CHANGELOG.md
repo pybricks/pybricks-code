@@ -4,6 +4,14 @@
 
 ## [Unreleased]
 
+### Added
+- Added ability to import ZIP files containing Python files ([support#833]).
+
+### Fixed
+- Fixed importing file with same name overwrites existing without asking user.
+
+[support#833]: https://github.com/pybricks/support/issues/833
+
 ## [2.1.1] - 2023-02-17
 
 ### Changed

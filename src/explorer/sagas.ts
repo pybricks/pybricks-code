@@ -3,7 +3,15 @@
 
 import { fileOpen, fileSave } from 'browser-fs-access';
 import JSZip from 'jszip';
-import { call, put, race, select, take, takeEvery } from 'typed-redux-saga/macro';
+import {
+    call,
+    getContext,
+    put,
+    race,
+    select,
+    take,
+    takeEvery,
+} from 'typed-redux-saga/macro';
 import { alertsShowAlert } from '../alerts/actions';
 import { zipFileExtension, zipFileMimeType } from '../app/constants';
 import {
@@ -15,6 +23,7 @@ import {
 } from '../editor/actions';
 import { EditorError } from '../editor/error';
 import { getPybricksMicroPythonFileTemplate } from '../editor/pybricksMicroPython';
+import { FileStorageDb } from '../fileStorage';
 import {
     fileStorageCopyFile,
     fileStorageDeleteFile,
@@ -95,6 +104,12 @@ import {
     renameImportDialogDidCancel,
     renameImportDialogShow,
 } from './renameImportDialog/actions';
+import {
+    ReplaceImportDialogAction,
+    replaceImportDialogDidAccept,
+    replaceImportDialogDidCancel,
+    replaceImportDialogShow,
+} from './replaceImportDialog/actions';
 
 function* handleExplorerArchiveAllFiles(): Generator {
     try {
@@ -155,59 +170,152 @@ function* handleExplorerArchiveAllFiles(): Generator {
     }
 }
 
+type ImportContext = {
+    rememberedAction?: ReplaceImportDialogAction;
+};
+
+function* importPythonFile(
+    sourceFileName: string,
+    sourceFileContents: string,
+    context: ImportContext,
+): Generator {
+    const [baseName] = sourceFileName.split(pythonFileExtensionRegex);
+    let fileName = `${baseName}${pythonFileExtension}`;
+
+    const db = yield* getContext<FileStorageDb>('fileStorage');
+    const existingFiles = yield* call(() => db.metadata.toArray());
+
+    const result = validateFileName(
+        baseName,
+        pythonFileExtension,
+        existingFiles.map((f) => f.path),
+    );
+
+    let replace = false;
+
+    if (result === FileNameValidationResult.AlreadyExists) {
+        let action = context.rememberedAction;
+
+        if (action === undefined) {
+            yield* put(replaceImportDialogShow(sourceFileName));
+
+            const { accepted, cancelled } = yield* race({
+                accepted: take(replaceImportDialogDidAccept),
+                cancelled: take(replaceImportDialogDidCancel),
+            });
+
+            if (cancelled) {
+                return;
+            }
+
+            defined(accepted);
+
+            if (accepted.remember) {
+                context.rememberedAction = accepted.action;
+            }
+
+            action = accepted.action;
+        }
+
+        if (action === ReplaceImportDialogAction.Skip) {
+            return;
+        }
+
+        if (action === ReplaceImportDialogAction.Replace) {
+            replace = true;
+        }
+    }
+
+    if (result !== FileNameValidationResult.IsOk && !replace) {
+        yield* put(renameImportDialogShow(sourceFileName));
+
+        const { accepted, cancelled } = yield* race({
+            accepted: take(renameImportDialogDidAccept),
+            cancelled: take(renameImportDialogDidCancel),
+        });
+
+        if (cancelled) {
+            return;
+        }
+
+        defined(accepted);
+
+        fileName = accepted.newName;
+    }
+
+    yield* put(fileStorageWriteFile(fileName, sourceFileContents));
+
+    const { didFailToWrite } = yield* race({
+        didWrite: take(fileStorageDidWriteFile.when((a) => a.path === fileName)),
+        didFailToWrite: take(
+            fileStorageDidFailToWriteFile.when((a) => a.path === fileName),
+        ),
+    });
+
+    if (didFailToWrite) {
+        throw didFailToWrite.error;
+    }
+}
+
 function* handleExplorerImportFiles(): Generator {
     try {
         const selectedFiles = yield* call(() =>
-            fileOpen({
-                id: 'pybricks-code-explorer-import',
-                mimeTypes: [pythonFileMimeType],
-                extensions: [pythonFileExtension],
-                // TODO: translate description
-                description: 'Python Files',
-                multiple: true,
-                excludeAcceptAllOption: true,
-            }),
+            fileOpen([
+                {
+                    id: 'pybricks-code-explorer-import',
+                    mimeTypes: [pythonFileMimeType],
+                    extensions: [pythonFileExtension],
+                    // TODO: translate description
+                    description: 'Python Files',
+                    multiple: true,
+                    excludeAcceptAllOption: true,
+                },
+                {
+                    mimeTypes: [zipFileMimeType],
+                    extensions: [zipFileExtension],
+                    // TODO: translate description
+                    description: 'ZIP Files',
+                },
+            ]),
         );
 
+        const context: ImportContext = {};
+
         for (const file of selectedFiles) {
-            // getting the text now to catch possible error *before* user interaction
-            const text = yield* call(() => file.text());
+            switch (file.type) {
+                case '': // empty string means "could not be determined"
+                case pythonFileMimeType:
+                    {
+                        // getting the text now to catch possible error *before* user interaction
+                        const text = yield* call(() => file.text());
+                        yield* importPythonFile(file.name, text, context);
+                    }
+                    break;
+                case zipFileMimeType:
+                    {
+                        const zip = yield* call(() =>
+                            JSZip.loadAsync(file.arrayBuffer()),
+                        );
 
-            const [baseName] = file.name.split(pythonFileExtensionRegex);
-            let fileName = `${baseName}${pythonFileExtension}`;
+                        const zipFiles = zip.filter((_, f) =>
+                            f.name.endsWith(pythonFileExtension),
+                        );
 
-            const result = validateFileName(baseName, pythonFileExtension, []);
+                        if (zipFiles.length === 0) {
+                            yield* put(alertsShowAlert('explorer', 'noPyFiles'));
+                            break;
+                        }
 
-            if (result !== FileNameValidationResult.IsOk) {
-                yield* put(renameImportDialogShow(file.name));
-
-                const { accepted, cancelled } = yield* race({
-                    accepted: take(renameImportDialogDidAccept),
-                    cancelled: take(renameImportDialogDidCancel),
-                });
-
-                if (cancelled) {
-                    continue;
-                }
-
-                defined(accepted);
-
-                fileName = accepted.newName;
-            }
-
-            yield* put(fileStorageWriteFile(fileName, text));
-
-            const { didFailToWrite } = yield* race({
-                didWrite: take(
-                    fileStorageDidWriteFile.when((a) => a.path === fileName),
-                ),
-                didFailToWrite: take(
-                    fileStorageDidFailToWriteFile.when((a) => a.path === fileName),
-                ),
-            });
-
-            if (didFailToWrite) {
-                throw didFailToWrite.error;
+                        for (const zipFile of zipFiles) {
+                            const text = yield* call(() => zipFile.async('text'));
+                            yield* importPythonFile(zipFile.name, text, context);
+                        }
+                    }
+                    break;
+                default:
+                    throw new Error(
+                        `'${file.name}' has unsupported file type: ${file.type}`,
+                    );
             }
         }
 
