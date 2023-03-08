@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
 import { cleanup } from '@testing-library/react';
 import React from 'react';
@@ -26,4 +26,55 @@ describe('should handle all possible validation results', () => {
             />,
         );
     });
+});
+
+it('should fix file names with spaces', async () => {
+    const callback = jest.fn();
+
+    const [user, group] = testRender(
+        <FileNameFormGroup
+            fileName="test name"
+            fileExtension=".file"
+            validationResult={FileNameValidationResult.HasSpaces}
+            onChange={callback}
+        />,
+    );
+
+    await user.click(group.getByRole('button', { name: /fix it/i }));
+
+    expect(callback).toHaveBeenCalledWith('test_name');
+});
+
+it('should fix file names with file extension', async () => {
+    const callback = jest.fn();
+
+    const [user, group] = testRender(
+        <FileNameFormGroup
+            fileName="test.file"
+            fileExtension=".file"
+            validationResult={FileNameValidationResult.HasFileExtension}
+            onChange={callback}
+        />,
+    );
+
+    await user.click(group.getByRole('button', { name: /fix it/i }));
+
+    expect(callback).toHaveBeenCalledWith('test');
+});
+
+it('should fix file names with invalid characters', async () => {
+    const callback = jest.fn();
+
+    const [user, group] = testRender(
+        <FileNameFormGroup
+            fileName="test-name"
+            fileExtension=".file"
+            validationResult={FileNameValidationResult.HasInvalidCharacters}
+            onChange={callback}
+        />,
+    );
+
+    await user.click(group.getByRole('button', { name: /fix it/i }));
+
+    expect(callback).toHaveBeenCalledWith('test_name');
 });

@@ -1,21 +1,18 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
+import { Toast } from '@blueprintjs/core';
 import React from 'react';
 import { testRender } from '../../../test';
 import { userProgramSize } from './UserProgramSize';
 
-it('should be valid', () => {
+it('should dismiss when close is clicked', async () => {
     const callback = jest.fn();
     const toast = userProgramSize(callback, { actual: 10000, max: 8000 });
 
-    // TODO: refactor this to a common function to be used by all alerts
+    const [user, message] = testRender(<Toast {...toast} />);
 
-    // it should render
-    const [, message] = testRender(<>{toast.message}</>);
-    expect(message).toBeDefined();
+    await user.click(message.getByRole('button', { name: /close/i }));
 
-    // it should have a dismiss callback
-    toast.onDismiss?.(false);
     expect(callback).toHaveBeenCalledWith('dismiss');
 });

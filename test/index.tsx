@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2022 The Pybricks Authors
+// Copyright (c) 2020-2023 The Pybricks Authors
 
 import { HotkeysProvider } from '@blueprintjs/core';
 import { ThunkAction, configureStore } from '@reduxjs/toolkit';
@@ -12,6 +12,7 @@ import { AnyAction, PreloadedState, legacy_createStore as createStore } from 're
 import { END, MulticastChannel, Saga, Task, runSaga, stdChannel } from 'redux-saga';
 import { UUID } from '../src/fileStorage';
 import { RootState, rootReducer } from '../src/reducers';
+import { serializableCheck } from '../src/redux';
 import { RootSagaContext } from '../src/sagas';
 
 // HACK: not a public type so can't be imported directly
@@ -167,6 +168,8 @@ export const testRender = (
     const store = configureStore({
         reducer: rootReducer,
         preloadedState: state,
+        middleware: (getDefaultMiddleware) =>
+            getDefaultMiddleware({ serializableCheck }),
     });
     const dispatch = jest.spyOn(store, 'dispatch');
 

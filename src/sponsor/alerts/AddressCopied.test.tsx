@@ -4,11 +4,11 @@
 import { Toast } from '@blueprintjs/core';
 import React from 'react';
 import { testRender } from '../../../test';
-import { fileInUse } from './FileInUseAlert';
+import { addressCopied } from './AddressCopied';
 
 it('should dismiss when close is clicked', async () => {
     const callback = jest.fn();
-    const toast = fileInUse(callback, { fileName: 'test.file' });
+    const toast = addressCopied(callback, undefined as never);
 
     const [user, message] = testRender(<Toast {...toast} />);
 

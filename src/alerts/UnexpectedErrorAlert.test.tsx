@@ -3,12 +3,12 @@
 
 import { Toast } from '@blueprintjs/core';
 import React from 'react';
-import { testRender } from '../../../test';
-import { fileInUse } from './FileInUseAlert';
+import { testRender } from '../../test';
+import { unexpectedError } from './UnexpectedErrorAlert';
 
 it('should dismiss when close is clicked', async () => {
     const callback = jest.fn();
-    const toast = fileInUse(callback, { fileName: 'test.file' });
+    const toast = unexpectedError(callback, { error: new Error('test') });
 
     const [user, message] = testRender(<Toast {...toast} />);
 
