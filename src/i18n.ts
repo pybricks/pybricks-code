@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2022 The Pybricks Authors
+// Copyright (c) 2020-2023 The Pybricks Authors
 
 import { I18n, I18nManager, TranslateOptions } from '@shopify/react-i18n';
 import type {
@@ -16,6 +16,7 @@ export const i18nManager = new I18nManager({
     onError: (err): void => console.error(err),
 });
 
+// istanbul ignore next
 /** Enables or disables pseudolocalization for development. */
 export function pseudolocalize(pseudolocalize: boolean): void {
     i18nManager.update({ ...i18nManager.details, pseudolocalize });

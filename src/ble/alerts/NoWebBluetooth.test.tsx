@@ -4,11 +4,11 @@
 import { Toast } from '@blueprintjs/core';
 import React from 'react';
 import { testRender } from '../../../test';
-import { fileInUse } from './FileInUseAlert';
+import { noWebBluetooth } from './NoWebBluetooth';
 
 it('should dismiss when close is clicked', async () => {
     const callback = jest.fn();
-    const toast = fileInUse(callback, { fileName: 'test.file' });
+    const toast = noWebBluetooth(callback, undefined as never);
 
     const [user, message] = testRender(<Toast {...toast} />);
 

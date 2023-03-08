@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2022 The Pybricks Authors
+// Copyright (c) 2020-2023 The Pybricks Authors
 
 import './index.scss';
 import { HotkeysProvider, Toaster } from '@blueprintjs/core';
@@ -16,6 +16,7 @@ import { appVersion } from './app/constants';
 import { db } from './fileStorage/context';
 import { i18nManager } from './i18n';
 import { rootReducer } from './reducers';
+import { serializableCheck } from './redux';
 import reportWebVitals from './reportWebVitals';
 import rootSaga, { RootSagaContext } from './sagas';
 import { defaultTerminalContext } from './terminal/TerminalContext';
@@ -38,26 +39,7 @@ const loggerMiddleware = createLogger({ predicate: () => false });
 const store = configureStore({
     reducer: rootReducer,
     middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware({
-            serializableCheck: {
-                ignoredActionPaths: [
-                    // copy of defaults
-                    'meta.arg',
-                    'meta.baseQueryMeta',
-                    // monoco view state has class-based object but is technically serializable
-                    'viewState.viewState.firstPosition',
-                    // contain ArrayBuffer, Blob or DataView
-                    'data',
-                    'file',
-                    'firmwareZip',
-                    'payload',
-                    'value',
-                    // Error is not serializable
-                    'error',
-                    'props.error',
-                ],
-            },
-        })
+        getDefaultMiddleware({ serializableCheck })
             .concat(sagaMiddleware)
             .concat(loggerMiddleware),
 });

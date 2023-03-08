@@ -4,6 +4,8 @@
 // HACK: Prevent webpack from picking up all icons.
 // https://github.com/palantir/blueprint/issues/2193
 
+// istanbul ignore file
+
 import {
     Add,
     Archive,

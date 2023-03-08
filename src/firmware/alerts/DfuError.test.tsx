@@ -4,15 +4,26 @@
 import { Toast } from '@blueprintjs/core';
 import React from 'react';
 import { testRender } from '../../../test';
-import { fileInUse } from './FileInUseAlert';
+import { dfuError } from './DfuError';
 
 it('should dismiss when close is clicked', async () => {
     const callback = jest.fn();
-    const toast = fileInUse(callback, { fileName: 'test.file' });
+    const toast = dfuError(callback, undefined as never);
 
     const [user, message] = testRender(<Toast {...toast} />);
 
     await user.click(message.getByRole('button', { name: /close/i }));
 
     expect(callback).toHaveBeenCalledWith('dismiss');
+});
+
+it('should try again when clicked', async () => {
+    const callback = jest.fn();
+    const toast = dfuError(callback, undefined as never);
+
+    const [user, message] = testRender(<Toast {...toast} />);
+
+    await user.click(message.getByRole('button', { name: /again/i }));
+
+    expect(callback).toHaveBeenCalledWith('tryAgain');
 });

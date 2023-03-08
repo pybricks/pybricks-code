@@ -4,15 +4,26 @@
 import { Toast } from '@blueprintjs/core';
 import React from 'react';
 import { testRender } from '../../../test';
-import { fileInUse } from './FileInUseAlert';
+import { oldFirmware } from './OldFirmware';
 
 it('should dismiss when close is clicked', async () => {
     const callback = jest.fn();
-    const toast = fileInUse(callback, { fileName: 'test.file' });
+    const toast = oldFirmware(callback, undefined as never);
 
     const [user, message] = testRender(<Toast {...toast} />);
 
     await user.click(message.getByRole('button', { name: /close/i }));
 
     expect(callback).toHaveBeenCalledWith('dismiss');
+});
+
+it('should flash firmware when button is clicked', async () => {
+    const callback = jest.fn();
+    const toast = oldFirmware(callback, undefined as never);
+
+    const [user, message] = testRender(<Toast {...toast} />);
+
+    await user.click(message.getByRole('button', { name: /firmware/i }));
+
+    expect(callback).toHaveBeenCalledWith('flashFirmware');
 });
