@@ -4,8 +4,39 @@
 
 ## [Unreleased]
 
+## [2.2.0-beta.1] - 2023-03-08
+
 ### Added
 - Added ability to import ZIP files containing Python files ([support#833]).
+
+### Changed
+- Updated firmware to v3.2.0b2:
+
+  ### Added
+  - Added `precision_profile` parameter to `Motor` initializer.
+  - Added `Motor.model` object to interact with the motor state estimator.
+  - Added `Stop.BRAKE_SMART` as `then` option for motors.
+  - Added logging support for control stall and pause state.
+
+  ### Changed
+  - Changed how the PID values are initialized for each motor.
+
+  ### Fixed
+  - Fixed workaround for motor hold drifting away under external input
+    movement ([support#863]).
+  - Reduced motor motion while holding position and added configurable setter and
+    getter for this deadzone.
+  - Fixed end-user stall flag coming up too early in position based control.
+  - Further reduced stutter at low motor speeds  ([support#366]).
+  - Fixed position based commands starting from the wrong position if the
+    previous command was a time based command that could not hit its
+    target ([support#956]).
+  - Fixed long delay when connecting to remote on SPIKE hubs ([support#466]).
+
+  [support#366]: https://github.com/pybricks/support/issues/366
+  [support#466]: https://github.com/pybricks/support/issues/466
+  [support#863]: https://github.com/pybricks/support/issues/863
+  [support#956]: https://github.com/pybricks/support/issues/956
 
 ### Fixed
 - Fixed importing file with same name overwrites existing without asking user.
@@ -720,7 +751,8 @@ Prerelease changes are documented at [support#48].
 
 <!-- links for version headings -->
 
-[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.1.1...HEAD
+[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.2.0-beta.1...HEAD
+[2.2.0-beta.1]: https://github.com/pybricks/pybricks-code/compare/v2.1.1..v2.2.0-beta.1
 [2.1.1]: https://github.com/pybricks/pybricks-code/compare/v2.1.0...v2.1.1
 [2.1.0]: https://github.com/pybricks/pybricks-code/compare/v2.1.0-beta.4...v2.1.0
 [2.1.0-beta.4]: https://github.com/pybricks/pybricks-code/compare/v2.1.0-beta.3...v2.1.0-beta.4
