@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
+import './sponsorsDialog.scss';
 import { AnchorButton, Classes, Dialog, Intent } from '@blueprintjs/core';
 import classNames from 'classnames';
 import React from 'react';
@@ -24,6 +25,7 @@ const SponsorDialog: React.VoidFunctionComponent = () => {
 
     return (
         <Dialog
+            className="pb-sponsors-dialog"
             title={i18n.translate('title', { pybricks: 'Pybricks' })}
             isOpen={showDialog}
             onClose={() => dispatch(sponsorHideDialog())}
