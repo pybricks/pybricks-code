@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2022 The Pybricks Authors
+// Copyright (c) 2020-2023 The Pybricks Authors
 
 import { compile as mpyCrossCompileV5 } from '@pybricks/mpy-cross-v5';
 import { compile as mpyCrossCompileV6 } from '@pybricks/mpy-cross-v6';
@@ -54,12 +54,10 @@ function* handleCompile(action: ReturnType<typeof compile>): Generator {
                         'main.py',
                         action.script,
                         action.options,
-                        process.env.NODE_ENV === 'test'
-                            ? undefined
-                            : new URL(
-                                  '@pybricks/mpy-cross-v5/build/mpy-cross.wasm',
-                                  import.meta.url,
-                              ).toString(),
+                        new URL(
+                            '@pybricks/mpy-cross-v5/build/mpy-cross.wasm',
+                            import.meta.url,
+                        ).toString(),
                     ),
                 );
                 if (result.status === 0 && result.mpy) {
@@ -77,12 +75,10 @@ function* handleCompile(action: ReturnType<typeof compile>): Generator {
                         'main.py',
                         action.script,
                         action.options,
-                        process.env.NODE_ENV === 'test'
-                            ? undefined
-                            : new URL(
-                                  '@pybricks/mpy-cross-v6/build/mpy-cross-v6.wasm',
-                                  import.meta.url,
-                              ).toString(),
+                        new URL(
+                            '@pybricks/mpy-cross-v6/build/mpy-cross-v6.wasm',
+                            import.meta.url,
+                        ).toString(),
                     ),
                 );
                 if (result.status === 0 && result.mpy) {
@@ -188,12 +184,10 @@ function* handleCompileMulti6(): Generator {
                 py.path,
                 py.contents,
                 undefined,
-                process.env.NODE_ENV === 'test'
-                    ? undefined
-                    : new URL(
-                          '@pybricks/mpy-cross-v6/build/mpy-cross-v6.wasm',
-                          import.meta.url,
-                      ).toString(),
+                new URL(
+                    '@pybricks/mpy-cross-v6/build/mpy-cross-v6.wasm',
+                    import.meta.url,
+                ).toString(),
             ),
         );
 
