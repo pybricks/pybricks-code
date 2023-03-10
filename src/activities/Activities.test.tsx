@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
-import { cleanup } from '@testing-library/react';
+import { act, cleanup } from '@testing-library/react';
 import React from 'react';
 import { testRender } from '../../test';
 import Activities from './Activities';
@@ -48,7 +48,7 @@ describe('Activities', () => {
             );
         }
 
-        await user.click(explorerTab);
+        await act(() => user.click(explorerTab));
 
         for (const tab of activities.getAllByRole('tab')) {
             expect(tab).toHaveAttribute('aria-selected', 'false');
@@ -68,7 +68,7 @@ describe('Activities', () => {
             );
         }
 
-        await user.click(settingsTab);
+        await act(() => user.click(settingsTab));
 
         for (const tab of activities.getAllByRole('tab')) {
             expect(tab).toHaveAttribute(

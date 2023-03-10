@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
-import { cleanup } from '@testing-library/react';
+import { act, cleanup } from '@testing-library/react';
 import React from 'react';
 import { testRender } from '../../../test';
 import DfuWindowsDriverInstallDialog from './DfuWindowsDriverInstallDialog';
@@ -19,7 +19,7 @@ it('should dispatch action when the close button is pressed', async () => {
         firmware: { dfuWindowsDriverInstallDialog: { isOpen: true } },
     });
 
-    await user.click(dialog.getByRole('button', { name: 'Close' }));
+    await act(() => user.click(dialog.getByRole('button', { name: 'Close' })));
 
     expect(dispatch).toHaveBeenCalledWith(
         firmwareDfuWindowsDriverInstallDialogDialogHide(),
@@ -32,10 +32,10 @@ it('should navigate when next button is pressed and dispatch action when the don
     });
 
     for (let i = 1; i < 9; i++) {
-        await user.click(dialog.getByRole('button', { name: 'Next' }));
+        await act(() => user.click(dialog.getByRole('button', { name: 'Next' })));
     }
 
-    await user.click(dialog.getByRole('button', { name: 'Done' }));
+    await act(() => user.click(dialog.getByRole('button', { name: 'Done' })));
 
     expect(dispatch).toHaveBeenCalledWith(
         firmwareDfuWindowsDriverInstallDialogDialogHide(),

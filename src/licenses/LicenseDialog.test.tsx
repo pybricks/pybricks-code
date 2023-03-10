@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
 import { Classes } from '@blueprintjs/core';
-import { cleanup } from '@testing-library/react';
+import { act, cleanup } from '@testing-library/react';
 import React from 'react';
 import { testRender } from '../../test';
 import LicenseDialog from './LicenseDialog';
@@ -50,7 +50,7 @@ describe('LicenseDialog', () => {
         expect(dialog.queryByText('Joe Somebody')).toBeNull();
 
         // then when you click on a license name, the license is shown
-        await user.click(treeNode);
+        await act(() => user.click(treeNode));
         expect(dialog.getByText('Joe Somebody')).toBeDefined();
     });
 });

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2022-2023 The Pybricks Authors
 
-import { cleanup } from '@testing-library/react';
+import { act, cleanup } from '@testing-library/react';
 import React from 'react';
 import { testRender } from '../../../test';
 import { InstallPybricksDialog } from './InstallPybricksDialog';
@@ -24,7 +24,7 @@ it('should dispatch when close is clicked', async () => {
         firmware: { installPybricksDialog: { isOpen: true } },
     });
 
-    await user.click(dialog.getByRole('button', { name: /close/i }));
+    await act(() => user.click(dialog.getByRole('button', { name: /close/i })));
 
     expect(dispatch).toHaveBeenCalledWith(firmwareInstallPybricksDialogCancel());
 });
@@ -35,17 +35,17 @@ it('should dispatch when done is clicked', async () => {
     });
 
     // first page - select hub
-    await user.click(dialog.getByRole('button', { name: /next/i }));
+    await act(() => user.click(dialog.getByRole('button', { name: /next/i })));
 
     // second page - accept license
-    await user.click(dialog.getByRole('checkbox', { name: /agree/i }));
-    await user.click(dialog.getByRole('button', { name: /next/i }));
+    await act(() => user.click(dialog.getByRole('checkbox', { name: /agree/i })));
+    await act(() => user.click(dialog.getByRole('button', { name: /next/i })));
 
     // third page - options
-    await user.click(dialog.getByRole('button', { name: /next/i }));
+    await act(() => user.click(dialog.getByRole('button', { name: /next/i })));
 
     // last page
-    await user.click(dialog.getByRole('button', { name: /install/i }));
+    await act(() => user.click(dialog.getByRole('button', { name: /install/i })));
 
     expect(dispatch).toHaveBeenCalledWith(
         firmwareInstallPybricksDialogAccept(

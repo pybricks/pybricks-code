@@ -2,6 +2,7 @@
 // Copyright (c) 2022-2023 The Pybricks Authors
 
 import { waitFor } from '@testing-library/dom';
+import { act } from '@testing-library/react';
 import React from 'react';
 import { testRender } from '../../../test';
 import RenameImportDialog from './ReplaceImportDialog';
@@ -32,11 +33,11 @@ describe('replace button', () => {
                 const rememberCheckBox = dialog.getByRole('checkbox', {
                     name: /remember/i,
                 });
-                await user.click(rememberCheckBox);
+                await act(() => user.click(rememberCheckBox));
             }
 
             const button = dialog.getByRole('button', { name: buttonName });
-            await user.click(button);
+            await act(() => user.click(button));
 
             expect(dispatch).toHaveBeenCalledWith(
                 replaceImportDialogDidAccept(action, remember),
@@ -53,7 +54,7 @@ describe('replace button', () => {
 
         await waitFor(() => expect(button).toBeVisible());
 
-        await user.click(button);
+        await act(() => user.click(button));
         expect(dispatch).toHaveBeenCalledWith(replaceImportDialogDidCancel());
     });
 });

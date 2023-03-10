@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
-import { RenderResult, cleanup } from '@testing-library/react';
+import { RenderResult, act, cleanup } from '@testing-library/react';
 import React from 'react';
 import { testRender } from '../../../test';
 import { Toolbar } from './Toolbar';
@@ -55,7 +55,7 @@ describe('Toolbar', () => {
         expect(button2).toHaveAttribute('tabindex', '-1');
         expect(button3).toHaveAttribute('tabindex', '-1');
 
-        await user.tab();
+        await act(() => user.tab());
 
         expect(button1).toHaveFocus();
         expect(button1).not.toHaveAttribute('tabindex');
@@ -69,7 +69,7 @@ describe('Toolbar', () => {
         const { button1, button2, button3 } = getButtons(toolbar);
 
         button1.focus();
-        await user.keyboard('{ArrowRight}');
+        await act(() => user.keyboard('{ArrowRight}'));
 
         expect(button2).toHaveFocus();
         expect(button1).toHaveAttribute('tabindex', '-1');
@@ -83,7 +83,7 @@ describe('Toolbar', () => {
         const { button1, button2, button3 } = getButtons(toolbar);
 
         button3.focus();
-        await user.keyboard('{ArrowLeft}');
+        await act(() => user.keyboard('{ArrowLeft}'));
 
         expect(button2).toHaveFocus();
         expect(button1).toHaveAttribute('tabindex', '-1');
@@ -97,7 +97,7 @@ describe('Toolbar', () => {
         const { button1, button2, button3 } = getButtons(toolbar);
 
         button3.focus();
-        await user.keyboard('{ArrowRight}');
+        await act(() => user.keyboard('{ArrowRight}'));
 
         expect(button1).toHaveFocus();
         expect(button1).not.toHaveAttribute('tabindex');
@@ -111,7 +111,7 @@ describe('Toolbar', () => {
         const { button1, button2, button3 } = getButtons(toolbar);
 
         button1.focus();
-        await user.keyboard('{ArrowLeft}');
+        await act(() => user.keyboard('{ArrowLeft}'));
 
         expect(button3).toHaveFocus();
         expect(button1).toHaveAttribute('tabindex', '-1');
@@ -125,7 +125,7 @@ describe('Toolbar', () => {
         const { button1, button2, button3 } = getButtons(toolbar);
 
         button3.focus();
-        await user.keyboard('{Home}');
+        await act(() => user.keyboard('{Home}'));
 
         expect(button1).toHaveFocus();
         expect(button1).not.toHaveAttribute('tabindex');
@@ -139,7 +139,7 @@ describe('Toolbar', () => {
         const { button1, button2, button3 } = getButtons(toolbar);
 
         button1.focus();
-        await user.keyboard('{End}');
+        await act(() => user.keyboard('{End}'));
 
         expect(button3).toHaveFocus();
         expect(button1).toHaveAttribute('tabindex', '-1');
@@ -153,7 +153,7 @@ describe('Toolbar', () => {
         const { button1, button2, button3 } = getButtons(toolbar);
 
         button2.focus();
-        await user.keyboard('{ArrowUp}');
+        await act(() => user.keyboard('{ArrowUp}'));
 
         expect(button2).toHaveFocus();
         expect(button1).toHaveAttribute('tabindex', '-1');
@@ -167,7 +167,7 @@ describe('Toolbar', () => {
         const { button1, button2, button3 } = getButtons(toolbar);
 
         button2.focus();
-        await user.keyboard('{ArrowDown}');
+        await act(() => user.keyboard('{ArrowDown}'));
 
         expect(button2).toHaveFocus();
         expect(button1).toHaveAttribute('tabindex', '-1');
@@ -181,7 +181,7 @@ describe('Toolbar', () => {
         const { button1, button2, button3 } = getButtons(toolbar);
 
         button2.focus();
-        await user.tab();
+        await act(() => user.tab());
 
         expect(document.body).toHaveFocus();
         expect(button1).toHaveAttribute('tabindex', '-1');
@@ -194,7 +194,7 @@ describe('Toolbar', () => {
 
         const { button1, button2, button3 } = getButtons(toolbar);
 
-        await user.click(button2);
+        await act(() => user.click(button2));
 
         expect(button2).toHaveFocus();
         expect(button1).toHaveAttribute('tabindex', '-1');

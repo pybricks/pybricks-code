@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021-2022 The Pybricks Authors
+// Copyright (c) 2021-2023 The Pybricks Authors
 
-import { getByLabelText, waitFor } from '@testing-library/react';
+import { act, getByLabelText, waitFor } from '@testing-library/react';
 import React from 'react';
 import { testRender } from '../../test';
 import AboutDialog from './AboutDialog';
@@ -11,7 +11,7 @@ it('should close when the button is clicked', async () => {
 
     const [user, dialog] = testRender(<AboutDialog isOpen={true} onClose={close} />);
 
-    await user.click(dialog.getByLabelText('Close'));
+    await act(() => user.click(dialog.getByLabelText('Close')));
 
     expect(close).toHaveBeenCalled();
 });
@@ -25,7 +25,7 @@ it('should manage license dialog open/close', async () => {
         dialog.queryByRole('dialog', { name: 'Open Source Software Licenses' }),
     ).toBeNull();
 
-    await user.click(dialog.getByText('Software Licenses'));
+    await act(() => user.click(dialog.getByText('Software Licenses')));
 
     const licenseDialog = dialog.getByRole('dialog', {
         name: 'Open Source Software Licenses',
@@ -33,7 +33,7 @@ it('should manage license dialog open/close', async () => {
 
     expect(licenseDialog).toBeVisible();
 
-    await user.click(getByLabelText(licenseDialog, 'Close'));
+    await act(() => user.click(getByLabelText(licenseDialog, 'Close')));
 
     await waitFor(() => expect(licenseDialog).not.toBeVisible());
 });

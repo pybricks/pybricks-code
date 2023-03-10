@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
-import { cleanup } from '@testing-library/react';
+import { act, cleanup } from '@testing-library/react';
 import React from 'react';
 import { testRender } from '../../../test';
 import { Hub } from '../../components/hubPicker';
@@ -21,7 +21,7 @@ describe('closing', () => {
             firmware: { restoreOfficialDialog: { isOpen: true } },
         });
 
-        await user.click(dialog.getByRole('button', { name: 'Close' }));
+        await act(() => user.click(dialog.getByRole('button', { name: 'Close' })));
 
         expect(dispatch).toHaveBeenCalledWith(firmwareRestoreOfficialDialogHide());
     });
@@ -31,8 +31,8 @@ describe('closing', () => {
             firmware: { restoreOfficialDialog: { isOpen: true } },
         });
 
-        await user.click(dialog.getByRole('button', { name: 'Next' }));
-        await user.click(dialog.getByRole('button', { name: 'Done' }));
+        await act(() => user.click(dialog.getByRole('button', { name: 'Next' })));
+        await act(() => user.click(dialog.getByRole('button', { name: 'Done' })));
 
         expect(dispatch).toHaveBeenCalledWith(firmwareRestoreOfficialDialogHide());
     });
@@ -50,9 +50,11 @@ describe('flashing', () => {
                 firmware: { restoreOfficialDialog: { isOpen: true } },
             });
 
-            await user.click(dialog.getByRole('radio', { name: hubName }));
-            await user.click(dialog.getByRole('button', { name: 'Next' }));
-            await user.click(dialog.getByRole('button', { name: 'Restore' }));
+            await act(() => user.click(dialog.getByRole('radio', { name: hubName })));
+            await act(() => user.click(dialog.getByRole('button', { name: 'Next' })));
+            await act(() =>
+                user.click(dialog.getByRole('button', { name: 'Restore' })),
+            );
 
             expect(dispatch).toHaveBeenCalledWith(firmwareRestoreOfficialDfu(hub));
         },

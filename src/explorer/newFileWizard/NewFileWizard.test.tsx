@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
 import { waitFor } from '@testing-library/dom';
-import { cleanup } from '@testing-library/react';
+import { act, cleanup } from '@testing-library/react';
 import React from 'react';
 import { testRender } from '../../../test';
 import { Hub } from '../../components/hubPicker';
@@ -22,10 +22,12 @@ describe('accept', () => {
         const button = dialog.getByLabelText('Create');
 
         // have to type a file name before Create button is enabled
-        await user.type(dialog.getByRole('textbox', { name: 'File name' }), 'test');
+        await act(() =>
+            user.type(dialog.getByRole('textbox', { name: 'File name' }), 'test'),
+        );
         await waitFor(() => expect(button).not.toBeDisabled());
 
-        await user.click(button);
+        await act(() => user.click(button));
         expect(dispatch).toHaveBeenCalledWith(
             newFileWizardDidAccept('test', '.py', Hub.Move),
         );
@@ -36,9 +38,11 @@ describe('accept', () => {
             explorer: { newFileWizard: { isOpen: true } },
         });
 
-        await user.type(
-            dialog.getByRole('textbox', { name: 'File name' }),
-            'test{Enter}',
+        await act(() =>
+            user.type(
+                dialog.getByRole('textbox', { name: 'File name' }),
+                'test{Enter}',
+            ),
         );
 
         expect(dispatch).toHaveBeenCalledWith(
@@ -53,7 +57,7 @@ describe('cancel', () => {
             explorer: { newFileWizard: { isOpen: true } },
         });
 
-        await user.click(dialog.getByRole('button', { name: 'Close' }));
+        await act(() => user.click(dialog.getByRole('button', { name: 'Close' })));
 
         expect(dispatch).toHaveBeenCalledWith(newFileWizardDidCancel());
     });
@@ -67,7 +71,7 @@ describe('cancel', () => {
             expect(dialog.getByRole('textbox', { name: 'File name' })).toHaveFocus(),
         );
 
-        await user.keyboard('{Escape}');
+        await act(() => user.keyboard('{Escape}'));
 
         expect(dispatch).toHaveBeenCalledWith(newFileWizardDidCancel());
     });

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
-import { cleanup } from '@testing-library/react';
+import { act, cleanup } from '@testing-library/react';
 import React from 'react';
 import { testRender } from '../../../../test';
 import { stop } from '../../../hub/actions';
@@ -17,7 +17,7 @@ it('should dispatch action when clicked', async () => {
         hub: { runtime: HubRuntimeState.Running },
     });
 
-    await user.click(button.getByRole('button', { name: 'Stop' }));
+    await act(() => user.click(button.getByRole('button', { name: 'Stop' })));
 
     expect(dispatch).toHaveBeenCalledWith(stop());
 });

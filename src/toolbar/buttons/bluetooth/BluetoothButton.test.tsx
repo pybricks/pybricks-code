@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
-import { cleanup } from '@testing-library/react';
+import { act, cleanup } from '@testing-library/react';
 import React from 'react';
 import { testRender } from '../../../../test';
 import { toggleBluetooth } from '../../../ble/actions';
@@ -16,7 +16,7 @@ it('should dispatch action when clicked', async () => {
         <BluetoothButton id="test-bluetooth-button" />,
     );
 
-    await user.click(button.getByRole('button', { name: 'Bluetooth' }));
+    await act(() => user.click(button.getByRole('button', { name: 'Bluetooth' })));
 
     expect(dispatch).toHaveBeenCalledWith(toggleBluetooth());
 });
