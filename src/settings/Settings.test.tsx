@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
-import { cleanup, getByLabelText, waitFor } from '@testing-library/react';
+import { act, cleanup, getByLabelText, waitFor } from '@testing-library/react';
 import React from 'react';
 import { testRender } from '../../test';
 import { firmwareInstallPybricks } from '../firmware/actions';
@@ -23,11 +23,11 @@ describe('darkMode setting switch', () => {
         expect(darkMode).not.toBeChecked();
         expect(localStorage.getItem('usehooks-ts-ternary-dark-mode')).toBe(null);
 
-        await user.click(darkMode);
+        await act(() => user.click(darkMode));
         expect(darkMode).toBeChecked();
         expect(localStorage.getItem('usehooks-ts-ternary-dark-mode')).toBe('"dark"');
 
-        await user.click(darkMode);
+        await act(() => user.click(darkMode));
         expect(darkMode).not.toBeChecked();
         expect(localStorage.getItem('usehooks-ts-ternary-dark-mode')).toBe('"light"');
     });
@@ -40,7 +40,7 @@ describe('firmware', () => {
         const button = settings.getByRole('button', {
             name: 'Install Pybricks Firmware',
         });
-        await user.click(button);
+        await act(() => user.click(button));
 
         expect(dispatch).toHaveBeenCalledWith(firmwareInstallPybricks());
     });
@@ -51,7 +51,7 @@ describe('firmware', () => {
         const button = settings.getByRole('button', {
             name: 'Restore Official LEGO® Firmware',
         });
-        await user.click(button);
+        await act(() => user.click(button));
 
         expect(dispatch).toHaveBeenCalledWith(firmwareRestoreOfficialDialogShow());
     });
@@ -65,13 +65,13 @@ describe('about dialog', () => {
 
         expect(settings.queryByRole('dialog', { name: `About ${appName}` })).toBeNull();
 
-        await user.click(settings.getByText('About'));
+        await act(() => user.click(settings.getByText('About')));
 
         const dialog = settings.getByRole('dialog', { name: `About ${appName}` });
 
         expect(dialog).toBeVisible();
 
-        await user.click(getByLabelText(dialog, 'Close'));
+        await act(() => user.click(getByLabelText(dialog, 'Close')));
 
         await waitFor(() => expect(dialog).not.toBeVisible());
     });

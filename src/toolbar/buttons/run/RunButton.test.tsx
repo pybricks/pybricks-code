@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
-import { cleanup } from '@testing-library/react';
+import { act, cleanup } from '@testing-library/react';
 import React from 'react';
 import { testRender, uuid } from '../../../../test';
 import { FileFormat } from '../../../ble-pybricks-service/protocol';
@@ -22,7 +22,7 @@ it('should dispatch action when clicked', async () => {
         },
     });
 
-    await user.click(button.getByRole('button', { name: 'Run' }));
+    await act(() => user.click(button.getByRole('button', { name: 'Run' })));
 
     expect(dispatch).toHaveBeenCalledWith(downloadAndRun(FileFormat.MultiMpy6, false));
 });

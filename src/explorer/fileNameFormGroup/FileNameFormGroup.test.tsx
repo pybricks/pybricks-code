@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2022-2023 The Pybricks Authors
 
-import { cleanup } from '@testing-library/react';
+import { act, cleanup } from '@testing-library/react';
 import React from 'react';
 import { testRender } from '../../../test';
 import { FileNameValidationResult } from '../../pybricksMicropython/lib';
@@ -40,7 +40,7 @@ it('should fix file names with spaces', async () => {
         />,
     );
 
-    await user.click(group.getByRole('button', { name: /fix it/i }));
+    await act(() => user.click(group.getByRole('button', { name: /fix it/i })));
 
     expect(callback).toHaveBeenCalledWith('test_name');
 });
@@ -57,7 +57,7 @@ it('should fix file names with file extension', async () => {
         />,
     );
 
-    await user.click(group.getByRole('button', { name: /fix it/i }));
+    await act(() => user.click(group.getByRole('button', { name: /fix it/i })));
 
     expect(callback).toHaveBeenCalledWith('test');
 });
@@ -74,7 +74,7 @@ it('should fix file names with invalid characters', async () => {
         />,
     );
 
-    await user.click(group.getByRole('button', { name: /fix it/i }));
+    await act(() => user.click(group.getByRole('button', { name: /fix it/i })));
 
     expect(callback).toHaveBeenCalledWith('test_name');
 });

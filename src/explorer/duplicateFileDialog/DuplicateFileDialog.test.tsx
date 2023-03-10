@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
 import { waitFor } from '@testing-library/dom';
+import { act } from '@testing-library/react';
 import React from 'react';
 import { testRender } from '../../../test';
 import DuplicateFileDialog from './DuplicateFileDialog';
@@ -20,10 +21,10 @@ describe('duplicate button', () => {
         // have to type a new file name before Duplicate button is enabled
         const input = dialog.getByRole('textbox', { name: 'File name' });
         await waitFor(() => expect(input).toHaveFocus());
-        await user.type(input, 'new', { skipClick: true });
+        await act(() => user.type(input, 'new', { skipClick: true }));
         await waitFor(() => expect(button).not.toBeDisabled());
 
-        await user.click(button);
+        await act(() => user.click(button));
         expect(dispatch).toHaveBeenCalledWith(
             duplicateFileDialogDidAccept('source.file', 'new.file'),
         );
@@ -39,7 +40,7 @@ describe('duplicate button', () => {
         // have to type a new file name before Duplicate button is enabled
         const input = dialog.getByRole('textbox', { name: 'File name' });
         await waitFor(() => expect(input).toHaveFocus());
-        await user.type(input, 'new{Enter}', { skipClick: true });
+        await act(() => user.type(input, 'new{Enter}', { skipClick: true }));
 
         expect(dispatch).toHaveBeenCalledWith(
             duplicateFileDialogDidAccept('source.file', 'new.file'),
@@ -57,7 +58,7 @@ describe('duplicate button', () => {
 
         await waitFor(() => expect(button).toBeVisible());
 
-        await user.click(button);
+        await act(() => user.click(button));
         expect(dispatch).toHaveBeenCalledWith(duplicateFileDialogDidCancel());
     });
 
@@ -72,7 +73,7 @@ describe('duplicate button', () => {
             expect(dialog.getByRole('textbox', { name: 'File name' })).toHaveFocus(),
         );
 
-        await user.keyboard('{Escape}');
+        await act(() => user.keyboard('{Escape}'));
 
         expect(dispatch).toHaveBeenCalledWith(duplicateFileDialogDidCancel());
     });

@@ -2,7 +2,7 @@
 // Copyright (c) 2021-2023 The Pybricks Authors
 
 import { Classes } from '@blueprintjs/core';
-import { cleanup, fireEvent, waitFor } from '@testing-library/react';
+import { act, cleanup, fireEvent, waitFor } from '@testing-library/react';
 import * as monaco from 'monaco-editor';
 import React from 'react';
 import { testRender, uuid } from '../../test';
@@ -41,7 +41,7 @@ describe('Editor', () => {
                 editor: { openFileUuids: [testFile.uuid] },
             });
 
-            await user.click(editor.getByRole('tab', { name: 'test.file' }));
+            await act(() => user.click(editor.getByRole('tab', { name: 'test.file' })));
 
             expect(dispatch).toHaveBeenCalledWith(editorActivateFile(testFile.uuid));
         });
@@ -56,7 +56,9 @@ describe('Editor', () => {
                     editor: { openFileUuids: [testFile.uuid] },
                 });
 
-                await user.type(editor.getByRole('tab', { name: 'test.file' }), key);
+                await act(() =>
+                    user.type(editor.getByRole('tab', { name: 'test.file' }), key),
+                );
 
                 expect(dispatch).toHaveBeenCalledWith(
                     editorActivateFile(testFile.uuid),
@@ -72,7 +74,9 @@ describe('Editor', () => {
                 editor: { openFileUuids: [testFile.uuid] },
             });
 
-            await user.click(editor.getByRole('button', { name: 'Close test.file' }));
+            await act(() =>
+                user.click(editor.getByRole('button', { name: 'Close test.file' })),
+            );
 
             expect(dispatch).toHaveBeenCalledWith(editorCloseFile(testFile.uuid));
         });
@@ -85,7 +89,9 @@ describe('Editor', () => {
                 editor: { openFileUuids: [testFile.uuid] },
             });
 
-            await user.type(editor.getByRole('tab', { name: 'test.file' }), '{Delete}');
+            await act(() =>
+                user.type(editor.getByRole('tab', { name: 'test.file' }), '{Delete}'),
+            );
 
             expect(dispatch).toHaveBeenCalledWith(editorCloseFile(testFile.uuid));
         });
@@ -98,10 +104,12 @@ describe('Editor', () => {
                 editor: { openFileUuids: [testFile.uuid] },
             });
 
-            await user.pointer({
-                keys: '[MouseMiddle]',
-                target: editor.getByRole('tab', { name: 'test.file' }),
-            });
+            await act(() =>
+                user.pointer({
+                    keys: '[MouseMiddle]',
+                    target: editor.getByRole('tab', { name: 'test.file' }),
+                }),
+            );
 
             expect(dispatch).toHaveBeenCalledWith(editorCloseFile(testFile.uuid));
         });
@@ -145,7 +153,7 @@ describe('Editor', () => {
                 expect(editor.getByRole('menuitem', { name: 'Copy' })).toHaveFocus(),
             );
 
-            await user.keyboard('{Escape}');
+            await act(() => user.keyboard('{Escape}'));
 
             await waitFor(() => expect(contextMenu).not.toBeInTheDocument());
 
@@ -169,10 +177,12 @@ describe('Editor', () => {
                 editor.queryByRole('menu', { name: 'Editor context menu' }),
             ).toBeNull();
 
-            await user.pointer({
-                keys: '[MouseRight]',
-                target: editor.getByRole('textbox', { name: /^Editor content/ }),
-            });
+            await act(() =>
+                user.pointer({
+                    keys: '[MouseRight]',
+                    target: editor.getByRole('textbox', { name: /^Editor content/ }),
+                }),
+            );
 
             const contextMenu = await editor.findByRole('menu', {
                 name: 'Editor context menu',
@@ -190,7 +200,7 @@ describe('Editor', () => {
 
             defined(overlay);
 
-            await user.click(overlay);
+            await act(() => user.click(overlay));
 
             await waitFor(() => expect(contextMenu).not.toBeInTheDocument());
 

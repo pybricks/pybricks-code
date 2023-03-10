@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
-import { cleanup, waitFor } from '@testing-library/react';
+import { act, cleanup, waitFor } from '@testing-library/react';
 import React from 'react';
 import { testRender } from '../../../test';
 import DeleteFileAlert from './DeleteFileAlert';
@@ -17,7 +17,7 @@ describe('accept', () => {
             explorer: { deleteFileAlert: { fileName: 'test.file', isOpen: true } },
         });
 
-        await user.click(dialog.getByRole('button', { name: 'Delete' }));
+        await act(() => user.click(dialog.getByRole('button', { name: 'Delete' })));
         expect(dispatch).toHaveBeenCalledWith(deleteFileAlertDidAccept());
     });
 
@@ -29,7 +29,7 @@ describe('accept', () => {
         await waitFor(() =>
             expect(dialog.getByRole('button', { name: 'Delete' })).toHaveFocus(),
         );
-        await user.keyboard('{Enter}');
+        await act(() => user.keyboard('{Enter}'));
 
         expect(dispatch).toHaveBeenCalledWith(deleteFileAlertDidAccept());
     });
@@ -41,7 +41,7 @@ describe('cancel', () => {
             explorer: { deleteFileAlert: { fileName: 'test.file', isOpen: true } },
         });
 
-        await user.click(dialog.getByRole('button', { name: 'Keep' }));
+        await act(() => user.click(dialog.getByRole('button', { name: 'Keep' })));
 
         expect(dispatch).toHaveBeenCalledWith(deleteFileAlertDidCancel());
     });
@@ -55,7 +55,7 @@ describe('cancel', () => {
             expect(dialog.getByRole('button', { name: 'Delete' })).toHaveFocus(),
         );
 
-        await user.keyboard('{Escape}');
+        await act(() => user.keyboard('{Escape}'));
 
         expect(dispatch).toHaveBeenCalledWith(deleteFileAlertDidCancel());
     });

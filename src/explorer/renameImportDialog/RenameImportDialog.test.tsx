@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
 import { waitFor } from '@testing-library/dom';
+import { act } from '@testing-library/react';
 import React from 'react';
 import { testRender } from '../../../test';
 import RenameImportDialog from './RenameImportDialog';
@@ -18,10 +19,10 @@ describe('rename button', () => {
         // have to type a new file name before Rename button is enabled
         const input = dialog.getByLabelText('File name');
         await waitFor(() => expect(input).toHaveFocus());
-        await user.type(input, 'new', { skipClick: true });
+        await act(() => user.type(input, 'new', { skipClick: true }));
         await waitFor(() => expect(button).not.toBeDisabled());
 
-        await user.click(button);
+        await act(() => user.click(button));
         expect(dispatch).toHaveBeenCalledWith(
             renameImportDialogDidAccept('old.file', 'new.file'),
         );
@@ -35,7 +36,7 @@ describe('rename button', () => {
         // have to type a new file name before Rename button is enabled
         const input = dialog.getByLabelText('File name');
         await waitFor(() => expect(input).toHaveFocus());
-        await user.type(input, 'new{Enter}', { skipClick: true });
+        await act(() => user.type(input, 'new{Enter}', { skipClick: true }));
 
         expect(dispatch).toHaveBeenCalledWith(
             renameImportDialogDidAccept('old.file', 'new.file'),
@@ -51,7 +52,7 @@ describe('rename button', () => {
 
         await waitFor(() => expect(button).toBeVisible());
 
-        await user.click(button);
+        await act(() => user.click(button));
         expect(dispatch).toHaveBeenCalledWith(renameImportDialogDidCancel());
     });
 
@@ -64,7 +65,7 @@ describe('rename button', () => {
 
         await waitFor(() => expect(button).toBeVisible());
 
-        await user.click(button);
+        await act(() => user.click(button));
         expect(dispatch).toHaveBeenCalledWith(renameImportDialogDidCancel());
     });
 });

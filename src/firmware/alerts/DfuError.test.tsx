@@ -2,6 +2,7 @@
 // Copyright (c) 2022-2023 The Pybricks Authors
 
 import { Toast } from '@blueprintjs/core';
+import { act } from '@testing-library/react';
 import React from 'react';
 import { testRender } from '../../../test';
 import { dfuError } from './DfuError';
@@ -12,7 +13,7 @@ it('should dismiss when close is clicked', async () => {
 
     const [user, message] = testRender(<Toast {...toast} />);
 
-    await user.click(message.getByRole('button', { name: /close/i }));
+    await act(() => user.click(message.getByRole('button', { name: /close/i })));
 
     expect(callback).toHaveBeenCalledWith('dismiss');
 });
@@ -23,7 +24,7 @@ it('should try again when clicked', async () => {
 
     const [user, message] = testRender(<Toast {...toast} />);
 
-    await user.click(message.getByRole('button', { name: /again/i }));
+    await act(() => user.click(message.getByRole('button', { name: /again/i })));
 
     expect(callback).toHaveBeenCalledWith('tryAgain');
 });

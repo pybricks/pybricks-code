@@ -2,6 +2,7 @@
 // Copyright (c) 2022-2023 The Pybricks Authors
 
 import { Toast } from '@blueprintjs/core';
+import { act } from '@testing-library/react';
 import React from 'react';
 import { testRender } from '../../../test';
 import { isLinux, isWindows } from '../../utils/os';
@@ -19,7 +20,7 @@ it('should dismiss when close is clicked', async () => {
 
     const [user, message] = testRender(<Toast {...toast} />);
 
-    await user.click(message.getByRole('button', { name: /close/i }));
+    await act(() => user.click(message.getByRole('button', { name: /close/i })));
 
     expect(callback).toHaveBeenCalledWith('dismiss');
 });
@@ -33,7 +34,7 @@ it('should install windows driver when clicked', async () => {
 
     const [user, message] = testRender(<Toast {...toast} />);
 
-    await user.click(message.getByRole('button', { name: /driver/i }));
+    await act(() => user.click(message.getByRole('button', { name: /driver/i })));
 
     expect(callback).toHaveBeenCalledWith('installWindowsDriver');
 });
