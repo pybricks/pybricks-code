@@ -2680,7 +2680,7 @@ __metadata:
     eslint: ^8.35.0
     eslint-config-prettier: ^8.5.0
     eslint-config-react-app: ^7.0.1
-    eslint-config-typed-fp: ^4.2.0
+    eslint-config-typed-fp: ^4.4.0
     eslint-plugin-functional: ^5.0.5
     eslint-plugin-import: ^2.27.5
     eslint-plugin-prettier: ^4.2.1
@@ -8129,17 +8129,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-config-typed-fp@npm:^4.2.0":
-  version: 4.2.0
-  resolution: "eslint-config-typed-fp@npm:4.2.0"
+"eslint-config-typed-fp@npm:^4.4.0":
+  version: 4.4.0
+  resolution: "eslint-config-typed-fp@npm:4.4.0"
   peerDependencies:
-    "@typescript-eslint/eslint-plugin": ^5.54.0
-    "@typescript-eslint/parser": ^5.54.0
+    "@typescript-eslint/eslint-plugin": ^5.54.1
+    "@typescript-eslint/parser": ^5.54.1
     eslint: ^8.35.0
-    eslint-plugin-functional: ^5.0.4
-    eslint-plugin-total-functions: ^6.1.0
+    eslint-plugin-functional: ^5.0.5
+    eslint-plugin-total-functions: ^6.2.0
     typescript: ^4.9.5
-  checksum: 5f54630893a0d08391bfa1c5577b6110bfbcbc0390a6c96f8a8851796ef847f5a8471c5f9dbae9e703324dfd0c33176124919d9374292b3c27a76d667cb85561
+  checksum: 92c60bcbcfd6197acf423c05624f10409df8a03dfe86e875f4f34f55d81626e0324fa4b0d38f47b3e449c230ee951c2729ee7c0a5a0b236f6b2791805c0270a9
   languageName: node
   linkType: hard
 
