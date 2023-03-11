@@ -4,8 +4,24 @@
 import { Classes } from '@blueprintjs/core';
 import { act, cleanup } from '@testing-library/react';
 import React from 'react';
+import * as useHooks from 'usehooks-ts';
 import { testRender } from '../../test';
 import LicenseDialog from './LicenseDialog';
+
+beforeEach(() => {
+    // avoid test environment errors by providing fixed response to useFetch()
+    jest.spyOn(useHooks, 'useFetch').mockImplementation(() => ({
+        data: [
+            {
+                name: 'super-duper',
+                version: '1.0.0',
+                author: 'Joe Somebody',
+                license: 'MIT',
+                licenseText: '...',
+            },
+        ],
+    }));
+});
 
 afterEach(() => {
     jest.restoreAllMocks();
@@ -23,20 +39,6 @@ describe('LicenseDialog', () => {
     });
 
     it('should show a license', async () => {
-        jest.spyOn(window, 'fetch').mockResolvedValue(
-            new Response(
-                JSON.stringify([
-                    {
-                        name: 'super-duper',
-                        version: '1.0.0',
-                        author: 'Joe Somebody',
-                        license: 'MIT',
-                        licenseText: '...',
-                    },
-                ]),
-            ),
-        );
-
         const [user, dialog] = testRender(
             <LicenseDialog isOpen={true} onClose={() => undefined} />,
         );
