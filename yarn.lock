@@ -2670,7 +2670,7 @@ __metadata:
     eslint-config-prettier: ^8.5.0
     eslint-config-react-app: ^7.0.1
     eslint-config-typed-fp: ^4.4.0
-    eslint-plugin-functional: ^5.0.5
+    eslint-plugin-functional: ^5.0.6
     eslint-plugin-import: ^2.27.5
     eslint-plugin-prettier: ^4.2.1
     eslint-plugin-react: ^7.32.2
@@ -7494,10 +7494,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"deepmerge-ts@npm:^4.2.2":
-  version: 4.2.2
-  resolution: "deepmerge-ts@npm:4.2.2"
-  checksum: 137c3650519d9b1a220db7e23a3f56304cd02e7f97b2b8392e2767251055a29318425bacdb2ab2ff175a4645f7179643acf0e038d5dafbfdbc11bdf322f79697
+"deepmerge-ts@npm:^4.3.0":
+  version: 4.3.0
+  resolution: "deepmerge-ts@npm:4.3.0"
+  checksum: d5f8a96df9a2bc7177d59544b9390ba76e50fb725f776669068ca04eef319e98ee8870cf7b7ecca9f636b711d57cea571ac61553ee01101a614c045f7a86e0be
   languageName: node
   linkType: hard
 
@@ -8169,15 +8169,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-functional@npm:^5.0.5":
-  version: 5.0.5
-  resolution: "eslint-plugin-functional@npm:5.0.5"
+"eslint-plugin-functional@npm:^5.0.6":
+  version: 5.0.6
+  resolution: "eslint-plugin-functional@npm:5.0.6"
   dependencies:
     "@typescript-eslint/type-utils": ^5.50.0
     "@typescript-eslint/utils": ^5.50.0
-    deepmerge-ts: ^4.2.2
+    deepmerge-ts: ^4.3.0
     escape-string-regexp: ^4.0.0
-    is-immutable-type: ^1.2.4
+    is-immutable-type: ^1.2.5
     semver: ^7.3.8
   peerDependencies:
     eslint: ^8.0.0
@@ -8185,7 +8185,7 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: a561c092623da005e01c816539277d51f833ba793562e68238ecc7c4b239ac2effd62c55fbbd82ab2e6035861bd2cd5d84d7cad6a5495801b66b19f9fff440a1
+  checksum: 4f88008d531426395d3069e0a4d8e7a7cc16081cfafb2eeab145a3bae9c571de7a78b5798552421f6345199077107bf4589cdd551a1dcd869565f5bcbb249997
   languageName: node
   linkType: hard
 
@@ -9820,14 +9820,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-immutable-type@npm:^1.2.4":
-  version: 1.2.4
-  resolution: "is-immutable-type@npm:1.2.4"
+"is-immutable-type@npm:^1.2.5":
+  version: 1.2.5
+  resolution: "is-immutable-type@npm:1.2.5"
   peerDependencies:
     "@typescript-eslint/type-utils": ">=5.30.5"
     "@typescript-eslint/utils": ">=5.30.5"
     typescript: ">=4.7.4"
-  checksum: a5601bc35e5e0a4155ef92a9ba8229756faf5b61b1db23e37fdc9b3d33c031553e938a53d0c833fa03be21f46ad11bc44d20a72751fbfa4f88ba083aa609a369
+  checksum: aa9ae46e03b8c5a48321e75880d049b5a680f2a95d2e8f2b24cb9482797fc64d5824be298eced1a251315b480e9ae000a10eacb30b29a209cef8ac224acab7a3
   languageName: node
   linkType: hard
 
