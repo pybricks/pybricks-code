@@ -2625,7 +2625,7 @@ __metadata:
     eslint-plugin-import: ^2.27.5
     eslint-plugin-prettier: ^4.2.1
     eslint-plugin-react: ^7.32.2
-    eslint-plugin-total-functions: ^6.9.2
+    eslint-plugin-total-functions: ^6.10.5
     eslint-webpack-plugin: ^4.0.0
     fake-indexeddb: ^4.0.1
     file-loader: ^6.2.0
@@ -8153,9 +8153,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-total-functions@npm:^6.9.2":
-  version: 6.9.2
-  resolution: "eslint-plugin-total-functions@npm:6.9.2"
+"eslint-plugin-total-functions@npm:^6.10.5":
+  version: 6.10.5
+  resolution: "eslint-plugin-total-functions@npm:6.10.5"
   dependencies:
     "@typescript-eslint/eslint-plugin": ^5.55.0
     "@typescript-eslint/parser": ^5.55.0
@@ -8165,7 +8165,7 @@ __metadata:
   peerDependencies:
     eslint: ^8.35.0
     typescript: ^4.9.5
-  checksum: fe04700e4121ac6c27394de2b8bc210592e714a0bc61977c07f073b27dd0ab9f53e6e72f4208ac770bb120a1a7354c3b1478571a2cdf02952bdf5957d4bcff57
+  checksum: 53983856793eedcb0ea0ba73a22dbb8a95dd3cb644df260cb3589920967da4fa88593140e97ac2c56d7235c66cfdd3d6ead135a04edf1cf5a9b60683939ca6c0
   languageName: node
   linkType: hard
 

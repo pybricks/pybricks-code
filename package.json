@@ -162,7 +162,7 @@
         "eslint-plugin-import": "^2.27.5",
         "eslint-plugin-prettier": "^4.2.1",
         "eslint-plugin-react": "^7.32.2",
-        "eslint-plugin-total-functions": "^6.9.2",
+        "eslint-plugin-total-functions": "^6.10.5",
         "eslint-webpack-plugin": "^4.0.0",
         "prettier": "^2.8.4"
     },
