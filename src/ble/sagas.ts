@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2022 The Pybricks Authors
+// Copyright (c) 2020-2023 The Pybricks Authors
 //
 // Manages connection to a Bluetooth Low Energy device running Pybricks firmware.
 
@@ -146,6 +146,9 @@ function* handleBleConnectPybricks(): Generator {
                 }),
         );
 
+        // TODO: remove debug print
+        console.log('device', device);
+
         if (!device) {
             yield* put(alertsShowAlert('ble', 'noHub'));
             yield* put(bleDidFailToConnectPybricks());
@@ -181,7 +184,39 @@ function* handleBleConnectPybricks(): Generator {
 
         defer.push(() => disconnectChannel.close());
 
-        const server = yield* call(() => gatt.connect());
+        const timeout = setTimeout(() => {
+            // TODO: remove debug print
+            console.log('calling disconnect');
+            gatt.disconnect();
+        }, 10000);
+
+        const server = yield* call(() =>
+            gatt.connect().catch((err) => {
+                // TODO: remove debug print
+                console.error(err);
+
+                // timeout or other connection problem
+                if (err instanceof DOMException && err.name === 'AbortError') {
+                    return undefined;
+                }
+
+                throw err;
+            }),
+        );
+
+        clearTimeout(timeout);
+
+        // TODO: remove debug print
+        console.log(server);
+
+        if (!server) {
+            yield* put(alertsShowAlert('ble', 'failedToConnect'));
+            yield* put(bleDidFailToConnectPybricks());
+            return;
+        }
+
+        // TODO: remove debug print
+        console.log('server', server);
 
         defer.push(() => server.disconnect());
 
