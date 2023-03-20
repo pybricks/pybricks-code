@@ -76,7 +76,7 @@
         "mini-css-extract-plugin": "^2.7.5",
         "monaco-editor": "^0.36.1",
         "monaco-editor-webpack-plugin": "^7.0.1",
-        "monaco-themes": "^0.4.3",
+        "monaco-themes": "^0.4.4",
         "mq-polyfill": "1.1.8",
         "navigator.locks": "^0.8.6",
         "postcss": "^8.4.21",

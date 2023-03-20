@@ -2642,7 +2642,7 @@ __metadata:
     mini-css-extract-plugin: ^2.7.5
     monaco-editor: ^0.36.1
     monaco-editor-webpack-plugin: ^7.0.1
-    monaco-themes: ^0.4.3
+    monaco-themes: ^0.4.4
     mq-polyfill: 1.1.8
     navigator.locks: ^0.8.6
     postcss: ^8.4.21
@@ -8513,10 +8513,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-plist@npm:^0.1.2":
-  version: 0.1.2
-  resolution: "fast-plist@npm:0.1.2"
-  checksum: 3baf1b4c533024561595f28eae7c36f4fa0782f52374b2f4e067561bd62464240f4bcff8d47b1ed6b981333be5f2bb613ce10229c5ec1e0194dfc271b873ade8
+"fast-plist@npm:^0.1.3":
+  version: 0.1.3
+  resolution: "fast-plist@npm:0.1.3"
+  checksum: e879f548db3a1fc89c654c476e9c9846f4335fdcd2283ec99e5f234c897f5616cee2a0a4201bf4b64ab6269e75c09daafc3933bd4a038c85af943fac0f113caa
   languageName: node
   linkType: hard
 
@@ -11235,12 +11235,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"monaco-themes@npm:^0.4.3":
-  version: 0.4.3
-  resolution: "monaco-themes@npm:0.4.3"
+"monaco-themes@npm:^0.4.4":
+  version: 0.4.4
+  resolution: "monaco-themes@npm:0.4.4"
   dependencies:
-    fast-plist: ^0.1.2
-  checksum: 4cf15a5d7678937ee5a87fff4ecb626ad26f261bbccf952d7a8d4d454c00b5b6ca6ec5cdbb45135aeca7fa56b6b726d0a129bc645c5bd9dddfff7a28c029bb7b
+    fast-plist: ^0.1.3
+  checksum: 98a6e85902799a14716f37ed3f013d82e3c6696e7d65da8400eaf7f35afd81858a17ed51a9543f9410f45c50cb4058e097f92445aec4842f6e1c6e01c99a19de
   languageName: node
   linkType: hard
 
