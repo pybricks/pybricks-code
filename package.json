@@ -158,7 +158,7 @@
         "eslint-config-prettier": "^8.5.0",
         "eslint-config-react-app": "^7.0.1",
         "eslint-config-typed-fp": "^4.4.0",
-        "eslint-plugin-functional": "^5.0.6",
+        "eslint-plugin-functional": "^5.0.7",
         "eslint-plugin-import": "^2.27.5",
         "eslint-plugin-prettier": "^4.2.1",
         "eslint-plugin-react": "^7.32.2",
