@@ -238,6 +238,8 @@ function* handleEditorActivateFile(
         editor.restoreViewState(file.viewState);
         activeFileHistory.push(action.uuid);
 
+        editor.focus();
+
         yield* put(editorDidActivateFile(action.uuid));
     } catch (err) {
         yield* put(editorDidFailToActivateFile(action.uuid, ensureError(err)));
