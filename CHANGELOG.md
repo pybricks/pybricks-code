@@ -4,6 +4,9 @@
 
 ## [Unreleased]
 
+### Changed
+- Focus editor when new file is opened.
+
 ## [2.2.0-beta.1] - 2023-03-08
 
 ### Added
