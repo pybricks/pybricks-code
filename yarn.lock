@@ -2621,7 +2621,7 @@ __metadata:
     eslint-config-prettier: ^8.5.0
     eslint-config-react-app: ^7.0.1
     eslint-config-typed-fp: ^4.4.0
-    eslint-plugin-functional: ^5.0.6
+    eslint-plugin-functional: ^5.0.7
     eslint-plugin-import: ^2.27.5
     eslint-plugin-prettier: ^4.2.1
     eslint-plugin-react: ^7.32.2
@@ -7467,10 +7467,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"deepmerge-ts@npm:^4.3.0":
-  version: 4.3.0
-  resolution: "deepmerge-ts@npm:4.3.0"
-  checksum: d5f8a96df9a2bc7177d59544b9390ba76e50fb725f776669068ca04eef319e98ee8870cf7b7ecca9f636b711d57cea571ac61553ee01101a614c045f7a86e0be
+"deepmerge-ts@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "deepmerge-ts@npm:5.0.0"
+  checksum: d3d9419e201c52c144fad35320abc7390d177ef0a7e83f7d14e10fdda97d8d7df69746a28d0028d661ca444bba55bbc494918496c54b73dd5c3a3385add2d2e9
   languageName: node
   linkType: hard
 
@@ -8142,13 +8142,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-functional@npm:^5.0.6":
-  version: 5.0.6
-  resolution: "eslint-plugin-functional@npm:5.0.6"
+"eslint-plugin-functional@npm:^5.0.7":
+  version: 5.0.7
+  resolution: "eslint-plugin-functional@npm:5.0.7"
   dependencies:
     "@typescript-eslint/type-utils": ^5.50.0
     "@typescript-eslint/utils": ^5.50.0
-    deepmerge-ts: ^4.3.0
+    deepmerge-ts: ^5.0.0
     escape-string-regexp: ^4.0.0
     is-immutable-type: ^1.2.5
     semver: ^7.3.8
@@ -8158,7 +8158,7 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 4f88008d531426395d3069e0a4d8e7a7cc16081cfafb2eeab145a3bae9c571de7a78b5798552421f6345199077107bf4589cdd551a1dcd869565f5bcbb249997
+  checksum: c8992a89ba682ead6a17f0386536cd948a6e2568bce7814ea419ad280afc9b178eed7c24a47e8d22d808fa2e12978a33a5ef4f53219da8e3129855f42e1e5dfe
   languageName: node
   linkType: hard
 
