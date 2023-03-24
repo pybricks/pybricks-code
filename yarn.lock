@@ -2575,7 +2575,7 @@ __metadata:
     "@pybricks/mpy-cross-v6": ^2.0.0
     "@pybricks/python-program-analysis": ^2.0.0
     "@reduxjs/toolkit": ^1.9.3
-    "@shopify/react-i18n": ^7.7.1
+    "@shopify/react-i18n": ^7.7.2
     "@svgr/webpack": ^6.5.1
     "@testing-library/dom": ^9.0.1
     "@testing-library/jest-dom": ^5.16.5
@@ -4222,18 +4222,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@shopify/react-hooks@npm:^3.0.3":
-  version: 3.0.3
-  resolution: "@shopify/react-hooks@npm:3.0.3"
+"@shopify/react-hooks@npm:^3.0.4":
+  version: 3.0.4
+  resolution: "@shopify/react-hooks@npm:3.0.4"
   peerDependencies:
     react: ">=16.8.0 <19.0.0"
-  checksum: 0106cacc3bdee6af18b5c931bb3602bc1e78b36be6707d570a45b0abebb27e3522a1a7cb4ee79d1cf46ac6fd3a089501fa2c833945524b2ff0273a7381198825
+  checksum: 507a9dbebdc883f549bc1b9d9e7b18b6f0fe34d94bb07360b083203e815ccc9f2ce9fe5335ff3b81c8fd6cfee89cf21bdc56ebc27b68f3ed0f3cbf10be670657
   languageName: node
   linkType: hard
 
-"@shopify/react-i18n@npm:^7.7.1":
-  version: 7.7.1
-  resolution: "@shopify/react-i18n@npm:7.7.1"
+"@shopify/react-i18n@npm:^7.7.2":
+  version: 7.7.2
+  resolution: "@shopify/react-i18n@npm:7.7.2"
   dependencies:
     "@babel/template": ^7.0.0
     "@babel/traverse": ^7.0.0
@@ -4241,8 +4241,8 @@ __metadata:
     "@shopify/function-enhancers": ^3.0.1
     "@shopify/i18n": ^2.0.1
     "@shopify/react-effect": ^5.0.3
-    "@shopify/react-hooks": ^3.0.3
-    "@shopify/useful-types": ^5.1.1
+    "@shopify/react-hooks": ^3.0.4
+    "@shopify/useful-types": ^5.1.2
     "@types/hoist-non-react-statics": ^3.0.1
     change-case: ^4.1.2
     fs-extra: ^9.1.0
@@ -4261,14 +4261,14 @@ __metadata:
       optional: true
     fs-extra:
       optional: true
-  checksum: e4f68e68d70e21a0d9029a6e6dce729606b2d2a87e6b04312bd93b0de7d5e9bf278d144b79eba1b00230ccb58eefc0932f28b017afb8b5ee11d8f29666ced363
+  checksum: a17b67cdcf3d4acd25d88b95dba0fb784c0ff2967a88279562dc68be5b667cfba00ff8e10f1efd008ac840b18c3dc0975f4d3bb4a64ac362319210b2ec762297
   languageName: node
   linkType: hard
 
-"@shopify/useful-types@npm:^5.1.1":
-  version: 5.1.1
-  resolution: "@shopify/useful-types@npm:5.1.1"
-  checksum: 9b1139519366859f41a9c37aa5ca9f83247be41913b1f41c86a8bb482b4ecee1f1695b349e21baaaad6348ef5712259c19ea1922d99d5bc3b7af4748478efcb7
+"@shopify/useful-types@npm:^5.1.2":
+  version: 5.1.2
+  resolution: "@shopify/useful-types@npm:5.1.2"
+  checksum: f7731803c945490867900d00279e602b62864047b8866d2d538e6df86cacb747d239f28cadafa7ed02f388893b338ae647fc119370729030851c73b441db4d44
   languageName: node
   linkType: hard
 
