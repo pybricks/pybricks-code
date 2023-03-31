@@ -1,0 +1,12 @@
+diff --git a/package.json b/package.json
+index 6d4001eeced40cc25e9b2475e36fc28e751aeb1d..a5b39dab6c4a9465aabbd885b68b5d3c83846c62 100644
+--- a/package.json
++++ b/package.json
+@@ -52,6 +52,7 @@
+     },
+     "./pyodide.asm.wasm": "./pyodide.asm.wasm",
+     "./pyodide.asm.js": "./pyodide.asm.js",
++    "./python_stdlib.zip": "./python_stdlib.zip",
+     "./pyodide.mjs": "./pyodide.mjs",
+     "./pyodide.js": "./pyodide.js",
+     "./package.json": "./package.json",
