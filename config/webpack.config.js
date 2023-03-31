@@ -593,8 +593,7 @@ module.exports = function (webpackEnv) {
       }),
       new CopyPlugin({
         patterns: [
-          { from: require.resolve("pyodide/pyodide_py.tar"), to: pyodideStaticPath },
-          { from: require.resolve("pyodide/pyodide.asm.data"), to: pyodideStaticPath},
+          { from: require.resolve("pyodide/python_stdlib.zip"), to:pyodideStaticPath },
           { from: require.resolve("pyodide/pyodide.asm.js"), to:pyodideStaticPath },
           { from: require.resolve("pyodide/pyodide.asm.wasm"), to: pyodideStaticPath },
         ],

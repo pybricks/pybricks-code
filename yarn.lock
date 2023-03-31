@@ -13603,6 +13603,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"pyodide@patch:pyodide@npm%3A0.23.0#./.yarn/patches/pyodide-npm-0.23.0-64dc9bd6f1.patch::locator=%40pybricks%2Fpybricks-code%40workspace%3A.":
+  version: 0.23.0
+  resolution: "pyodide@patch:pyodide@npm%3A0.23.0#./.yarn/patches/pyodide-npm-0.23.0-64dc9bd6f1.patch::version=0.23.0&hash=98d06e&locator=%40pybricks%2Fpybricks-code%40workspace%3A."
+  dependencies:
+    base-64: ^1.0.0
+    node-fetch: ^2.6.1
+    ws: ^8.5.0
+  checksum: 67b6ea7688c9b461c7d5b424b4718a4441fcacaf310afa5b670b70e91f473bb161a589c87491d02ac699eef5e43aa70e0e318f49d5371422072b173094ad583b
+  languageName: node
+  linkType: hard
+
 "qs@npm:6.10.3":
   version: 6.10.3
   resolution: "qs@npm:6.10.3"
