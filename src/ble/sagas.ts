@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2022 The Pybricks Authors
+// Copyright (c) 2020-2023 The Pybricks Authors
 //
 // Manages connection to a Bluetooth Low Energy device running Pybricks firmware.
 
@@ -434,14 +434,21 @@ function* handleBleConnectPybricks(): Generator {
         // wait for disconnection
         yield* take(disconnectChannel);
 
-        // HACK: Disconnection event comes early on Linux, so scanning again
-        // can show that the previous connection is still "paired" and trying
-        // to select it results in infinite wait. To work around this, we need
-        // to wait long enough for BlueZ to actually disconnect the device.
+        // HACK: Disconnection event comes early on Linux when server.disconnect()
+        // is called, so scanning again can show that the previous connection is
+        // still "paired" and trying to select it results in an infinite wait.
+        // To work around this, we need to wait long enough for BlueZ to actually
+        // disconnect the device.
         // https://github.com/pybricks/support/issues/600#issuecomment-1286606624
         // istanbul ignore if
         if (process.env.NODE_ENV !== 'test' && isLinux()) {
-            yield* delay(5000);
+            const wasDisconnectRequestedByUser = yield* select(
+                (s: RootState) => s.ble.connection === BleConnectionState.Disconnecting,
+            );
+
+            if (wasDisconnectRequestedByUser) {
+                yield* delay(5000);
+            }
         }
 
         yield* put(bleDidDisconnectPybricks());
