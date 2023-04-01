@@ -27,7 +27,9 @@ import {
     didProgressDownload,
     didStartDownload,
     hubDidFailToStartRepl,
+    hubDidFailToStopUserProgram,
     hubStartRepl,
+    hubStopUserProgram,
 } from './actions';
 
 /**
@@ -48,6 +50,8 @@ export enum HubRuntimeState {
     Running = 'hub.runtime.running',
     /** Busy starting the REPL. */
     StartingRepl = 'hub.runtime.startingRepl',
+    /** Busy stopping user program. */
+    StoppingUserProgram = 'hub.runtime.stoppingUserProgram',
 }
 
 const runtime: Reducer<HubRuntimeState> = (
@@ -116,6 +120,17 @@ const runtime: Reducer<HubRuntimeState> = (
     // change state for both to avoid race condition
 
     if (hubDidFailToStartRepl.matches(action)) {
+        return HubRuntimeState.Unknown;
+    }
+
+    if (hubStopUserProgram.matches(action)) {
+        return HubRuntimeState.StoppingUserProgram;
+    }
+
+    // NB: hubDidStopUserProgram will trigger user program running flag to clear,
+    // so we don't change state for both to avoid race condition
+
+    if (hubDidFailToStopUserProgram.matches(action)) {
         return HubRuntimeState.Unknown;
     }
 

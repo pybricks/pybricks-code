@@ -4,7 +4,7 @@
 import { act, cleanup } from '@testing-library/react';
 import React from 'react';
 import { testRender } from '../../../../test';
-import { stop } from '../../../hub/actions';
+import { hubStopUserProgram } from '../../../hub/actions';
 import { HubRuntimeState } from '../../../hub/reducers';
 import StopButton from './StopButton';
 
@@ -19,5 +19,5 @@ it('should dispatch action when clicked', async () => {
 
     await act(() => user.click(button.getByRole('button', { name: 'Stop' })));
 
-    expect(dispatch).toHaveBeenCalledWith(stop());
+    expect(dispatch).toHaveBeenCalledWith(hubStopUserProgram());
 });

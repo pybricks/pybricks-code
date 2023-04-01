@@ -21,9 +21,11 @@ import {
     didStartDownload,
     downloadAndRun,
     hubDidFailToStartRepl,
+    hubDidFailToStopUserProgram,
     hubDidStartRepl,
+    hubDidStopUserProgram,
     hubStartRepl,
-    stop,
+    hubStopUserProgram,
 } from './actions';
 import hub from './sagas';
 
@@ -136,15 +138,36 @@ describe('hubStartRepl', () => {
     });
 });
 
-test('stop', async () => {
-    const saga = new AsyncSaga(hub, { nextMessageId: createCountFunc() });
+describe('hubStopUserProgram', () => {
+    test('success', async () => {
+        const saga = new AsyncSaga(hub, { nextMessageId: createCountFunc() });
 
-    saga.put(stop());
+        saga.put(hubStopUserProgram());
 
-    const pybricksServiceAction = await saga.take();
-    expect(pybricksServiceAction).toEqual(sendStopUserProgramCommand(0));
+        await expect(saga.take()).resolves.toEqual(sendStopUserProgramCommand(0));
 
-    saga.put(didSendCommand(0));
+        saga.put(didSendCommand(0));
 
-    await saga.end();
+        await expect(saga.take()).resolves.toEqual(hubDidStopUserProgram());
+
+        await saga.end();
+    });
+
+    test('failure due to disconnect', async () => {
+        const saga = new AsyncSaga(hub, { nextMessageId: createCountFunc() });
+
+        saga.put(hubStopUserProgram());
+
+        await expect(saga.take()).resolves.toEqual(sendStopUserProgramCommand(0));
+
+        saga.put(didFailToSendCommand(0, new DOMException('test', 'NetworkError')));
+
+        await expect(saga.take()).resolves.toEqual(
+            alertsShowAlert('ble', 'disconnected'),
+        );
+
+        await expect(saga.take()).resolves.toEqual(hubDidFailToStopUserProgram());
+
+        await saga.end();
+    });
 });
