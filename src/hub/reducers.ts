@@ -1,9 +1,13 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2022 The Pybricks Authors
+// Copyright (c) 2020-2023 The Pybricks Authors
 
 import { Reducer, combineReducers } from 'redux';
 import * as semver from 'semver';
-import { bleDidConnectPybricks, bleDidDisconnectPybricks } from '../ble/actions';
+import {
+    bleDidConnectPybricks,
+    bleDidDisconnectPybricks,
+    bleDisconnectPybricks,
+} from '../ble/actions';
 import { HubType } from '../ble-lwp3-service/protocol';
 import {
     blePybricksServiceDidNotReceiveHubCapabilities,
@@ -59,6 +63,11 @@ const runtime: Reducer<HubRuntimeState> = (
     action,
 ) => {
     if (bleDidConnectPybricks.matches(action)) {
+        return HubRuntimeState.Unknown;
+    }
+
+    if (bleDisconnectPybricks.matches(action)) {
+        // disconnecting
         return HubRuntimeState.Unknown;
     }
 
