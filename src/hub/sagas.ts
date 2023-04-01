@@ -47,9 +47,11 @@ import {
     didStartDownload,
     downloadAndRun,
     hubDidFailToStartRepl,
+    hubDidFailToStopUserProgram,
     hubDidStartRepl,
+    hubDidStopUserProgram,
     hubStartRepl,
-    stop,
+    hubStopUserProgram,
 } from './actions';
 
 const downloadChunkSize = 100;
@@ -387,27 +389,46 @@ function* handleHubStartRepl(action: ReturnType<typeof hubStartRepl>): Generator
     yield* put(hubDidStartRepl());
 }
 
-function* handleStop(): Generator {
+function* handleStopUserProgram(): Generator {
     const nextMessageId = yield* getContext<() => number>('nextMessageId');
     const id = nextMessageId();
     yield* put(sendStopUserProgramCommand(id));
     // REVISIT: may want to disable button while attempting to send command
     // this would mean didSendStop() and didFailToSendStop() actions here
-    const { failedToSend } = yield* race({
-        sent: take(didSendCommand.when((a) => a.id === id)),
-        failedToSend: take(didFailToSendCommand.when((a) => a.id === id)),
+    const { didFailToSend } = yield* race({
+        didSend: take(didSendCommand.when((a) => a.id === id)),
+        didFailToSend: take(didFailToSendCommand.when((a) => a.id === id)),
     });
-    if (failedToSend) {
-        // TODO: probably want to check error. If hub disconnected, ignore error
-        // otherwise indicate error to user
-        console.error(failedToSend.error);
+
+    if (didFailToSend) {
+        if (process.env.NODE_ENV !== 'test') {
+            console.error(didFailToSend.error);
+        }
+
+        if (
+            didFailToSend.error instanceof DOMException &&
+            didFailToSend.error.name === 'NetworkError'
+        ) {
+            yield* put(alertsShowAlert('ble', 'disconnected'));
+        } else {
+            yield* put(
+                alertsShowAlert('alerts', 'unexpectedError', {
+                    error: didFailToSend.error,
+                }),
+            );
+        }
+
+        yield* put(hubDidFailToStopUserProgram());
+        return;
     }
+
+    yield* put(hubDidStopUserProgram());
 }
 
 export default function* (): Generator {
     yield* takeEvery(downloadAndRun, handleDownloadAndRun);
     yield* takeEvery(hubStartRepl, handleHubStartRepl);
-    yield* takeEvery(stop, handleStop);
+    yield* takeEvery(hubStopUserProgram, handleStopUserProgram);
     // calling stop right after connecting should get the hub into a known state
-    yield* takeEvery(bleDidConnectPybricks, handleStop);
+    yield* takeEvery(bleDidConnectPybricks, handleStopUserProgram);
 }

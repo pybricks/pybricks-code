@@ -15,7 +15,9 @@ import {
     didProgressDownload,
     didStartDownload,
     hubDidFailToStartRepl,
+    hubDidFailToStopUserProgram,
     hubStartRepl,
+    hubStopUserProgram,
 } from './actions';
 import reducers, { HubRuntimeState } from './reducers';
 
@@ -185,6 +187,24 @@ describe('runtime', () => {
             reducers(
                 { runtime: HubRuntimeState.Running } as State,
                 hubDidFailToStartRepl(),
+            ).runtime,
+        ).toBe(HubRuntimeState.Unknown);
+    });
+
+    test('hubStopUserProgram', () => {
+        expect(
+            reducers(
+                { runtime: HubRuntimeState.Running } as State,
+                hubStopUserProgram(),
+            ).runtime,
+        ).toBe(HubRuntimeState.StoppingUserProgram);
+    });
+
+    test('hubDidFailToStopUserProgram', () => {
+        expect(
+            reducers(
+                { runtime: HubRuntimeState.Running } as State,
+                hubDidFailToStopUserProgram(),
             ).runtime,
         ).toBe(HubRuntimeState.Unknown);
     });
