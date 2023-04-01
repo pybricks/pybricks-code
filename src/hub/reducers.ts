@@ -58,6 +58,15 @@ const runtime: Reducer<HubRuntimeState> = (
     state = HubRuntimeState.Disconnected,
     action,
 ) => {
+    // Disconnect overrides all other states. If the hub is disconnected, we
+    // can't possibly be in any other state until we get a connect event.
+    if (
+        state === HubRuntimeState.Disconnected &&
+        !bleDidConnectPybricks.matches(action)
+    ) {
+        return state;
+    }
+
     if (bleDidConnectPybricks.matches(action)) {
         return HubRuntimeState.Unknown;
     }
@@ -72,27 +81,15 @@ const runtime: Reducer<HubRuntimeState> = (
     }
 
     if (didStartDownload.matches(action)) {
-        // disconnected overrides download
-        if (state === HubRuntimeState.Disconnected) {
-            return state;
-        }
         return HubRuntimeState.Loading;
     }
 
     if (didFinishDownload.matches(action)) {
-        // disconnected overrides download
-        if (state === HubRuntimeState.Disconnected) {
-            return state;
-        }
         // state is unknown until we receive a status event
         return HubRuntimeState.Unknown;
     }
 
     if (didFailToFinishDownload.matches(action)) {
-        // disconnected overrides download
-        if (state === HubRuntimeState.Disconnected) {
-            return state;
-        }
         return HubRuntimeState.Idle;
     }
 
@@ -100,7 +97,6 @@ const runtime: Reducer<HubRuntimeState> = (
         // The loading state is determined solely by the IDE, so we can't
         // let the hub status interfere with it.
         if (
-            state === HubRuntimeState.Disconnected ||
             state === HubRuntimeState.Loading ||
             state === HubRuntimeState.StartingRepl ||
             state === HubRuntimeState.StoppingUserProgram
@@ -120,17 +116,11 @@ const runtime: Reducer<HubRuntimeState> = (
     }
 
     if (hubDidStartRepl.matches(action)) {
-        if (state === HubRuntimeState.Disconnected) {
-            return state;
-        }
         // state is unknown until we receive a status event
         return HubRuntimeState.Unknown;
     }
 
     if (hubDidFailToStartRepl.matches(action)) {
-        if (state === HubRuntimeState.Disconnected) {
-            return state;
-        }
         // failed to communicate, so state is unknown
         return HubRuntimeState.Unknown;
     }
@@ -140,17 +130,11 @@ const runtime: Reducer<HubRuntimeState> = (
     }
 
     if (hubDidStopUserProgram.matches(action)) {
-        if (state === HubRuntimeState.Disconnected) {
-            return state;
-        }
         // state is unknown until we receive a status event
         return HubRuntimeState.Unknown;
     }
 
     if (hubDidFailToStopUserProgram.matches(action)) {
-        if (state === HubRuntimeState.Disconnected) {
-            return state;
-        }
         // failed to communicate, so state is unknown
         return HubRuntimeState.Unknown;
     }

@@ -56,7 +56,11 @@ describe('runtime', () => {
             expect(
                 reducers({ runtime: startingState } as State, bleDisconnectPybricks())
                     .runtime,
-            ).toBe(HubRuntimeState.Unknown);
+            ).toBe(
+                startingState === HubRuntimeState.Disconnected
+                    ? HubRuntimeState.Disconnected
+                    : HubRuntimeState.Unknown,
+            );
         },
     );
 
