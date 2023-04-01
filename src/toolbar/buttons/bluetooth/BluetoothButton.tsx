@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2022 The Pybricks Authors
+// Copyright (c) 2020-2023 The Pybricks Authors
 
 import React from 'react';
 import { useDispatch } from 'react-redux';
@@ -34,7 +34,10 @@ const BluetoothButton: React.VoidFunctionComponent<BluetoothButtonProps> = ({ id
             )}
             icon={isDisconnected ? disconnectedIcon : connectedIcon}
             enabled={isDisconnected || bleConnection === BleConnectionState.Connected}
-            showProgress={bleConnection === BleConnectionState.Connecting}
+            showProgress={
+                bleConnection === BleConnectionState.Connecting ||
+                bleConnection === BleConnectionState.Disconnecting
+            }
             onAction={() => dispatch(toggleBluetooth())}
         />
     );
