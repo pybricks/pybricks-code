@@ -9,6 +9,7 @@
 
 ### Fixed
 - Fixed run button active while hub is disconnecting ([support#1021]).
+- Fixed error message not shown when starting REPL fails.
 
 [support#1021]: https://github.com/pybricks/support/issues/1021
 

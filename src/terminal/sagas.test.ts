@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2022 The Pybricks Authors
+// Copyright (c) 2020-2023 The Pybricks Authors
 
 import PushStream from 'zen-push';
 import { AsyncSaga, delay } from '../../test';
@@ -9,7 +9,7 @@ import {
     didWrite,
     write,
 } from '../ble-nordic-uart-service/actions';
-import { checksum } from '../hub/actions';
+import { checksum, hubDidStartRepl } from '../hub/actions';
 import { HubRuntimeState } from '../hub/reducers';
 import { createCountFunc } from '../utils/iter';
 import { receiveData, sendData } from './actions';
@@ -178,4 +178,17 @@ describe('Terminal data source responds to receive data actions', () => {
         // line below will fail with unhandled pending dispatches if not working correctly
         await saga.end();
     });
+});
+
+it('should focus terminal when repl is started', async () => {
+    const dispatchEventSpy = jest.spyOn(window, 'dispatchEvent');
+
+    const saga = new AsyncSaga(terminal);
+
+    saga.put(hubDidStartRepl());
+
+    // https://stackoverflow.com/a/64787979/1976323
+    expect(dispatchEventSpy.mock.calls[0][0].type).toBe('pb-terminal-focus');
+
+    await saga.end();
 });

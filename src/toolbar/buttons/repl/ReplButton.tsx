@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2022 The Pybricks Authors
+// Copyright (c) 2020-2023 The Pybricks Authors
 
 import React, { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import { repl } from '../../../hub/actions';
+import { hubStartRepl } from '../../../hub/actions';
 import { HubRuntimeState } from '../../../hub/reducers';
 import { useSelector } from '../../../reducers';
 import ActionButton, { ActionButtonProps } from '../../ActionButton';
@@ -18,7 +18,7 @@ const ReplButton: React.VoidFunctionComponent<ReplButtonProps> = ({ id }) => {
     const dispatch = useDispatch();
 
     const action = useCallback(
-        () => dispatch(repl(useLegacyDownload)),
+        () => dispatch(hubStartRepl(useLegacyDownload)),
         [dispatch, useLegacyDownload],
     );
 
@@ -29,6 +29,7 @@ const ReplButton: React.VoidFunctionComponent<ReplButtonProps> = ({ id }) => {
             tooltip={i18n.translate('tooltip')}
             icon={icon}
             enabled={hasRepl && runtime === HubRuntimeState.Idle}
+            showProgress={runtime === HubRuntimeState.StartingRepl}
             onAction={action}
         />
     );

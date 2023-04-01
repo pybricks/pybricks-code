@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2022 The Pybricks Authors
+// Copyright (c) 2020-2023 The Pybricks Authors
 
 import { AnyAction } from 'redux';
 import {
@@ -20,7 +20,7 @@ import {
     write,
 } from '../ble-nordic-uart-service/actions';
 import { nordicUartSafeTxCharLength } from '../ble-nordic-uart-service/protocol';
-import { checksum, repl } from '../hub/actions';
+import { checksum, hubDidStartRepl } from '../hub/actions';
 import { HubRuntimeState } from '../hub/reducers';
 import { RootState } from '../reducers';
 import { defined } from '../utils';
@@ -109,7 +109,7 @@ function* sendTerminalData(action: ReturnType<typeof sendData>): Generator {
     dataSource.next(action.value);
 }
 
-function handleRepl(): void {
+function handleHubDidStartRepl(): void {
     dispatchEvent(new CustomEvent('pb-terminal-focus'));
 }
 
@@ -117,5 +117,5 @@ export default function* (): Generator {
     yield* takeEvery(didNotify, receiveUartData);
     yield* fork(receiveTerminalData);
     yield* takeEvery(sendData, sendTerminalData);
-    yield* takeEvery(repl, handleRepl);
+    yield* takeEvery(hubDidStartRepl, handleHubDidStartRepl);
 }

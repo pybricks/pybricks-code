@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2022 The Pybricks Authors
+// Copyright (c) 2020-2023 The Pybricks Authors
 
 import { createAction } from '../actions';
 import { FileFormat } from '../ble-pybricks-service/protocol';
@@ -43,7 +43,15 @@ export const stop = createAction(() => ({
     type: 'hub.action.stop',
 }));
 
-export const repl = createAction((useLegacyDownload: boolean) => ({
-    type: 'hub.action.repl',
+export const hubStartRepl = createAction((useLegacyDownload: boolean) => ({
+    type: 'hub.action.startRepl',
     useLegacyDownload,
+}));
+
+export const hubDidStartRepl = createAction(() => ({
+    type: 'hub.action.didStartRepl',
+}));
+
+export const hubDidFailToStartRepl = createAction(() => ({
+    type: 'hub.action.didFailToStartRepl',
 }));

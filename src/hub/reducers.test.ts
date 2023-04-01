@@ -14,6 +14,8 @@ import {
     didFinishDownload,
     didProgressDownload,
     didStartDownload,
+    hubDidFailToStartRepl,
+    hubStartRepl,
 } from './actions';
 import reducers, { HubRuntimeState } from './reducers';
 
@@ -169,5 +171,21 @@ describe('runtime', () => {
                 didReceiveStatusReport(0),
             ).runtime,
         ).toBe(HubRuntimeState.Idle);
+    });
+
+    test('hubStartRepl', () => {
+        expect(
+            reducers({ runtime: HubRuntimeState.Running } as State, hubStartRepl(false))
+                .runtime,
+        ).toBe(HubRuntimeState.StartingRepl);
+    });
+
+    test('hubDidFailToStartRepl', () => {
+        expect(
+            reducers(
+                { runtime: HubRuntimeState.Running } as State,
+                hubDidFailToStartRepl(),
+            ).runtime,
+        ).toBe(HubRuntimeState.Unknown);
     });
 });
