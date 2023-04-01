@@ -3,6 +3,7 @@
 
 import React from 'react';
 import { useDispatch } from 'react-redux';
+import { useDebounce } from 'usehooks-ts';
 import { hubStopUserProgram } from '../../../hub/actions';
 import { HubRuntimeState } from '../../../hub/reducers';
 import { useSelector } from '../../../reducers';
@@ -19,6 +20,8 @@ const StopButton: React.VoidFunctionComponent<StopButtonProps> = ({ id }) => {
     const i18n = useI18n();
     const dispatch = useDispatch();
 
+    const busy = useDebounce(runtime === HubRuntimeState.StoppingUserProgram, 250);
+
     return (
         <ActionButton
             id={id}
@@ -27,7 +30,7 @@ const StopButton: React.VoidFunctionComponent<StopButtonProps> = ({ id }) => {
             tooltip={i18n.translate('tooltip', { key: keyboardShortcut })}
             icon={icon}
             enabled={runtime === HubRuntimeState.Running}
-            showProgress={runtime === HubRuntimeState.StoppingUserProgram}
+            showProgress={busy}
             onAction={() => dispatch(hubStopUserProgram())}
         />
     );
