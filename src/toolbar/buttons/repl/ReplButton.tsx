@@ -3,6 +3,7 @@
 
 import React, { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
+import { useDebounce } from 'usehooks-ts';
 import { hubStartRepl } from '../../../hub/actions';
 import { HubRuntimeState } from '../../../hub/reducers';
 import { useSelector } from '../../../reducers';
@@ -22,6 +23,8 @@ const ReplButton: React.VoidFunctionComponent<ReplButtonProps> = ({ id }) => {
         [dispatch, useLegacyDownload],
     );
 
+    const busy = useDebounce(runtime === HubRuntimeState.StartingRepl, 250);
+
     return (
         <ActionButton
             id={id}
@@ -29,7 +32,7 @@ const ReplButton: React.VoidFunctionComponent<ReplButtonProps> = ({ id }) => {
             tooltip={i18n.translate('tooltip')}
             icon={icon}
             enabled={hasRepl && runtime === HubRuntimeState.Idle}
-            showProgress={runtime === HubRuntimeState.StartingRepl}
+            showProgress={busy}
             onAction={action}
         />
     );
