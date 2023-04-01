@@ -82,12 +82,15 @@ function* handleWriteCommand(
     char: BluetoothRemoteGATTCharacteristic,
     action: ReturnType<typeof writeCommand>,
 ): Generator {
-    try {
-        yield* call(() => char.writeValueWithResponse(action.value.buffer));
-        yield* put(didWriteCommand(action.id));
-    } catch (err) {
-        yield* put(didFailToWriteCommand(action.id, ensureError(err)));
-    }
+    // have to spawn to avoid cancellation
+    yield* spawn(function* () {
+        try {
+            yield* call(() => char.writeValueWithResponse(action.value.buffer));
+            yield* put(didWriteCommand(action.id));
+        } catch (err) {
+            yield* put(didFailToWriteCommand(action.id, ensureError(err)));
+        }
+    });
 }
 
 function* handleUartValueChanged(data: DataView): Generator {
@@ -98,12 +101,15 @@ function* handleWriteUart(
     char: BluetoothRemoteGATTCharacteristic,
     action: ReturnType<typeof writeUart>,
 ): Generator {
-    try {
-        yield* call(() => char.writeValueWithoutResponse(action.value.buffer));
-        yield* put(didWriteUart(action.id));
-    } catch (err) {
-        yield* put(didFailToWriteUart(action.id, ensureError(err)));
-    }
+    // have to spawn to avoid cancellation
+    yield* spawn(function* () {
+        try {
+            yield* call(() => char.writeValueWithoutResponse(action.value.buffer));
+            yield* put(didWriteUart(action.id));
+        } catch (err) {
+            yield* put(didFailToWriteUart(action.id, ensureError(err)));
+        }
+    });
 }
 
 function* handleBleConnectPybricks(): Generator {
