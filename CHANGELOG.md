@@ -4,6 +4,9 @@
 
 ## [Unreleased]
 
+### Changed
+- Better error message when download and run fails due to disconnected hub.
+
 ### Fixed
 - Fixed run button active while hub is disconnecting ([support#1021]).
 
