@@ -46,7 +46,9 @@ import {
     didProgressDownload,
     didStartDownload,
     downloadAndRun,
-    repl,
+    hubDidFailToStartRepl,
+    hubDidStartRepl,
+    hubStartRepl,
     stop,
 } from './actions';
 
@@ -343,15 +345,46 @@ function* handleDownloadAndRun(action: ReturnType<typeof downloadAndRun>): Gener
 // SPACE, SPACE, SPACE, SPACE
 const legacyStartReplCommand = new Uint8Array([0x20, 0x20, 0x20, 0x20]);
 
-function* handleRepl(action: ReturnType<typeof repl>): Generator {
+function* handleHubStartRepl(action: ReturnType<typeof hubStartRepl>): Generator {
     const nextMessageId = yield* getContext<() => number>('nextMessageId');
 
     if (action.useLegacyDownload) {
         yield* put(write(nextMessageId(), legacyStartReplCommand));
+        yield* put(hubDidStartRepl());
         return;
     }
 
-    yield* put(sendStartReplCommand(nextMessageId()));
+    const id = nextMessageId();
+    yield* put(sendStartReplCommand(id));
+
+    const { didFailToSend } = yield* race({
+        didStart: take(didSendCommand.when((a) => a.id === id)),
+        didFailToSend: take(didFailToSendCommand.when((a) => a.id === id)),
+    });
+
+    if (didFailToSend) {
+        if (process.env.NODE_ENV !== 'test') {
+            console.error(didFailToSend.error);
+        }
+
+        if (
+            didFailToSend.error instanceof DOMException &&
+            didFailToSend.error.name === 'NetworkError'
+        ) {
+            yield* put(alertsShowAlert('ble', 'disconnected'));
+        } else {
+            yield* put(
+                alertsShowAlert('alerts', 'unexpectedError', {
+                    error: didFailToSend.error,
+                }),
+            );
+        }
+
+        yield* put(hubDidFailToStartRepl());
+        return;
+    }
+
+    yield* put(hubDidStartRepl());
 }
 
 function* handleStop(): Generator {
@@ -373,7 +406,7 @@ function* handleStop(): Generator {
 
 export default function* (): Generator {
     yield* takeEvery(downloadAndRun, handleDownloadAndRun);
-    yield* takeEvery(repl, handleRepl);
+    yield* takeEvery(hubStartRepl, handleHubStartRepl);
     yield* takeEvery(stop, handleStop);
     // calling stop right after connecting should get the hub into a known state
     yield* takeEvery(bleDidConnectPybricks, handleStop);

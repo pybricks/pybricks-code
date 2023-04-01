@@ -26,36 +26,28 @@ import {
     didFinishDownload,
     didProgressDownload,
     didStartDownload,
+    hubDidFailToStartRepl,
+    hubStartRepl,
 } from './actions';
 
 /**
  * Describes the state of the MicroPython runtime on the hub.
  */
 export enum HubRuntimeState {
-    /**
-     * The hub is not connected.
-     */
+    /** The hub is not connected. */
     Disconnected = 'hub.runtime.disconnected',
-    /**
-     * The hub is connected but the state is not known yet.
-     */
+    /** The hub is connected but the state is not known yet. */
     Unknown = 'hub.runtime.unknown',
-    /**
-     * The runtime is idle waiting for command after soft reboot.
-     */
+    /** The runtime is idle waiting for command after soft reboot. */
     Idle = 'hub.runtime.idle',
-    /**
-     * A user program is being copied to the hub.
-     */
+    /** A user program is being copied to the hub. */
     Loading = 'hub.runtime.loading',
-    /**
-     * A user program has been copied to the hub.
-     */
+    /** A user program has been copied to the hub. */
     Loaded = 'hub.runtime.loaded',
-    /**
-     * A user program is running.
-     */
+    /** A user program is running. */
     Running = 'hub.runtime.running',
+    /** Busy starting the REPL. */
+    StartingRepl = 'hub.runtime.startingRepl',
 }
 
 const runtime: Reducer<HubRuntimeState> = (
@@ -114,6 +106,17 @@ const runtime: Reducer<HubRuntimeState> = (
         }
 
         return HubRuntimeState.Idle;
+    }
+
+    if (hubStartRepl.matches(action)) {
+        return HubRuntimeState.StartingRepl;
+    }
+
+    // NB: hubDidStartRepl will trigger user program running, so we don't
+    // change state for both to avoid race condition
+
+    if (hubDidFailToStartRepl.matches(action)) {
+        return HubRuntimeState.Unknown;
     }
 
     return state;
