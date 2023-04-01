@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2022 The Pybricks Authors
+// Copyright (c) 2020-2023 The Pybricks Authors
 
 import {
     SagaGenerator,
@@ -326,9 +326,15 @@ function* handleDownloadAndRun(action: ReturnType<typeof downloadAndRun>): Gener
             console.error(err);
         }
 
-        yield* put(
-            alertsShowAlert('alerts', 'unexpectedError', { error: ensureError(err) }),
-        );
+        if (err instanceof DOMException && err.name === 'NetworkError') {
+            yield* put(alertsShowAlert('ble', 'disconnected'));
+        } else {
+            yield* put(
+                alertsShowAlert('alerts', 'unexpectedError', {
+                    error: ensureError(err),
+                }),
+            );
+        }
 
         yield* put(didFailToFinishDownload());
     }

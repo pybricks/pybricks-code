@@ -29,5 +29,8 @@
         "flashFirmware": {
             "label": "Update Pybricks firmware"
         }
+    },
+    "disconnected": {
+        "message": "The hub is no longer connected. Please reconnect and try again."
     }
 }
