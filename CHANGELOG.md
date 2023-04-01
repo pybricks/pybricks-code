@@ -4,6 +4,11 @@
 
 ## [Unreleased]
 
+### Fixed
+- Fixed run button active while hub is disconnecting ([support#1021]).
+
+[support#1021]: https://github.com/pybricks/support/issues/1021
+
 ## [2.2.0-beta.2] - 2023-03-24
 
 ### Changed

@@ -1,8 +1,12 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021-2022 The Pybricks Authors
+// Copyright (c) 2021-2023 The Pybricks Authors
 
 import { AnyAction } from 'redux';
-import { bleDidConnectPybricks, bleDidDisconnectPybricks } from '../ble/actions';
+import {
+    bleDidConnectPybricks,
+    bleDidDisconnectPybricks,
+    bleDisconnectPybricks,
+} from '../ble/actions';
 import { didReceiveStatusReport } from '../ble-pybricks-service/actions';
 import { Status, statusToFlag } from '../ble-pybricks-service/protocol';
 import {
@@ -38,6 +42,17 @@ describe('runtime', () => {
             ).runtime,
         ).toBe(HubRuntimeState.Unknown);
     });
+
+    test.each(Object.values(HubRuntimeState))(
+        'bleDisconnectPybricks',
+        (startingState) => {
+            // all states are overridden by disconnect
+            expect(
+                reducers({ runtime: startingState } as State, bleDisconnectPybricks())
+                    .runtime,
+            ).toBe(HubRuntimeState.Unknown);
+        },
+    );
 
     test.each(Object.values(HubRuntimeState))('didDisconnect', (startingState) => {
         // all states are overridden by disconnect
