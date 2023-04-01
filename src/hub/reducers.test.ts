@@ -16,6 +16,8 @@ import {
     didStartDownload,
     hubDidFailToStartRepl,
     hubDidFailToStopUserProgram,
+    hubDidStartRepl,
+    hubDidStopUserProgram,
     hubStartRepl,
     hubStopUserProgram,
 } from './actions';
@@ -111,7 +113,7 @@ describe('runtime', () => {
         expect(
             reducers({ runtime: HubRuntimeState.Loading } as State, didFinishDownload())
                 .runtime,
-        ).toBe(HubRuntimeState.Loaded);
+        ).toBe(HubRuntimeState.Unknown);
     });
 
     test('didFinishDownload', () => {
@@ -153,7 +155,7 @@ describe('runtime', () => {
         // normal operation - user program started
         expect(
             reducers(
-                { runtime: HubRuntimeState.Loaded } as State,
+                { runtime: HubRuntimeState.Unknown } as State,
                 didReceiveStatusReport(statusToFlag(Status.UserProgramRunning)),
             ).runtime,
         ).toBe(HubRuntimeState.Running);
@@ -161,7 +163,7 @@ describe('runtime', () => {
         // really short program run finished before receiving download finished
         expect(
             reducers(
-                { runtime: HubRuntimeState.Loaded } as State,
+                { runtime: HubRuntimeState.Unknown } as State,
                 didReceiveStatusReport(0),
             ).runtime,
         ).toBe(HubRuntimeState.Idle);
@@ -173,6 +175,22 @@ describe('runtime', () => {
                 didReceiveStatusReport(0),
             ).runtime,
         ).toBe(HubRuntimeState.Idle);
+
+        // ignored during start repl command
+        expect(
+            reducers(
+                { runtime: HubRuntimeState.StartingRepl } as State,
+                didReceiveStatusReport(0),
+            ).runtime,
+        ).toBe(HubRuntimeState.StartingRepl);
+
+        // ignored during stop user program command
+        expect(
+            reducers(
+                { runtime: HubRuntimeState.StoppingUserProgram } as State,
+                didReceiveStatusReport(0),
+            ).runtime,
+        ).toBe(HubRuntimeState.StoppingUserProgram);
     });
 
     test('hubStartRepl', () => {
@@ -182,6 +200,21 @@ describe('runtime', () => {
         ).toBe(HubRuntimeState.StartingRepl);
     });
 
+    test('hubDidStartRepl', () => {
+        expect(
+            reducers({ runtime: HubRuntimeState.Running } as State, hubDidStartRepl())
+                .runtime,
+        ).toBe(HubRuntimeState.Unknown);
+
+        // ignored if disconnected
+        expect(
+            reducers(
+                { runtime: HubRuntimeState.Disconnected } as State,
+                hubDidStartRepl(),
+            ).runtime,
+        ).toBe(HubRuntimeState.Disconnected);
+    });
+
     test('hubDidFailToStartRepl', () => {
         expect(
             reducers(
@@ -189,6 +222,14 @@ describe('runtime', () => {
                 hubDidFailToStartRepl(),
             ).runtime,
         ).toBe(HubRuntimeState.Unknown);
+
+        // ignored if disconnected
+        expect(
+            reducers(
+                { runtime: HubRuntimeState.Disconnected } as State,
+                hubDidFailToStartRepl(),
+            ).runtime,
+        ).toBe(HubRuntimeState.Disconnected);
     });
 
     test('hubStopUserProgram', () => {
@@ -200,6 +241,23 @@ describe('runtime', () => {
         ).toBe(HubRuntimeState.StoppingUserProgram);
     });
 
+    test('hubStopUserProgram', () => {
+        expect(
+            reducers(
+                { runtime: HubRuntimeState.Running } as State,
+                hubDidStopUserProgram(),
+            ).runtime,
+        ).toBe(HubRuntimeState.Unknown);
+
+        // ignored if disconnected
+        expect(
+            reducers(
+                { runtime: HubRuntimeState.Disconnected } as State,
+                hubDidStopUserProgram(),
+            ).runtime,
+        ).toBe(HubRuntimeState.Disconnected);
+    });
+
     test('hubDidFailToStopUserProgram', () => {
         expect(
             reducers(
@@ -207,5 +265,13 @@ describe('runtime', () => {
                 hubDidFailToStopUserProgram(),
             ).runtime,
         ).toBe(HubRuntimeState.Unknown);
+
+        // ignored if disconnected
+        expect(
+            reducers(
+                { runtime: HubRuntimeState.Disconnected } as State,
+                hubDidFailToStopUserProgram(),
+            ).runtime,
+        ).toBe(HubRuntimeState.Disconnected);
     });
 });

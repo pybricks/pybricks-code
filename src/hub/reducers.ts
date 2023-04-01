@@ -28,6 +28,8 @@ import {
     didStartDownload,
     hubDidFailToStartRepl,
     hubDidFailToStopUserProgram,
+    hubDidStartRepl,
+    hubDidStopUserProgram,
     hubStartRepl,
     hubStopUserProgram,
 } from './actions';
@@ -44,8 +46,6 @@ export enum HubRuntimeState {
     Idle = 'hub.runtime.idle',
     /** A user program is being copied to the hub. */
     Loading = 'hub.runtime.loading',
-    /** A user program has been copied to the hub. */
-    Loaded = 'hub.runtime.loaded',
     /** A user program is running. */
     Running = 'hub.runtime.running',
     /** Busy starting the REPL. */
@@ -84,7 +84,8 @@ const runtime: Reducer<HubRuntimeState> = (
         if (state === HubRuntimeState.Disconnected) {
             return state;
         }
-        return HubRuntimeState.Loaded;
+        // state is unknown until we receive a status event
+        return HubRuntimeState.Unknown;
     }
 
     if (didFailToFinishDownload.matches(action)) {
@@ -100,7 +101,9 @@ const runtime: Reducer<HubRuntimeState> = (
         // let the hub status interfere with it.
         if (
             state === HubRuntimeState.Disconnected ||
-            state === HubRuntimeState.Loading
+            state === HubRuntimeState.Loading ||
+            state === HubRuntimeState.StartingRepl ||
+            state === HubRuntimeState.StoppingUserProgram
         ) {
             return state;
         }
@@ -116,10 +119,19 @@ const runtime: Reducer<HubRuntimeState> = (
         return HubRuntimeState.StartingRepl;
     }
 
-    // NB: hubDidStartRepl will trigger user program running, so we don't
-    // change state for both to avoid race condition
+    if (hubDidStartRepl.matches(action)) {
+        if (state === HubRuntimeState.Disconnected) {
+            return state;
+        }
+        // state is unknown until we receive a status event
+        return HubRuntimeState.Unknown;
+    }
 
     if (hubDidFailToStartRepl.matches(action)) {
+        if (state === HubRuntimeState.Disconnected) {
+            return state;
+        }
+        // failed to communicate, so state is unknown
         return HubRuntimeState.Unknown;
     }
 
@@ -127,10 +139,19 @@ const runtime: Reducer<HubRuntimeState> = (
         return HubRuntimeState.StoppingUserProgram;
     }
 
-    // NB: hubDidStopUserProgram will trigger user program running flag to clear,
-    // so we don't change state for both to avoid race condition
+    if (hubDidStopUserProgram.matches(action)) {
+        if (state === HubRuntimeState.Disconnected) {
+            return state;
+        }
+        // state is unknown until we receive a status event
+        return HubRuntimeState.Unknown;
+    }
 
     if (hubDidFailToStopUserProgram.matches(action)) {
+        if (state === HubRuntimeState.Disconnected) {
+            return state;
+        }
+        // failed to communicate, so state is unknown
         return HubRuntimeState.Unknown;
     }
 
