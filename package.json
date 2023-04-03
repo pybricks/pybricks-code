@@ -90,7 +90,7 @@
         "react": "^16.14.0",
         "react-app-polyfill": "^3.0.0",
         "react-aria": "^3.23.1",
-        "react-complex-tree": "^2.1.1",
+        "react-complex-tree": "^2.1.2",
         "react-dev-utils": "^12.0.1",
         "react-dom": "^16.14.0",
         "react-dropzone": "^14.2.3",
