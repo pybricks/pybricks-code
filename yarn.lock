@@ -2660,7 +2660,7 @@ __metadata:
     "@types/wicg-file-system-access": ^2020.9.5
     "@types/zen-push": ^0.1.1
     "@typescript-eslint/eslint-plugin": ^5.57.1
-    "@typescript-eslint/parser": ^5.57.0
+    "@typescript-eslint/parser": ^5.57.1
     babel-jest: ^29.5.0
     babel-loader: ^9.1.2
     babel-plugin-macros: ^3.0.1
@@ -5211,7 +5211,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/parser@npm:^5.5.0, @typescript-eslint/parser@npm:^5.55.0, @typescript-eslint/parser@npm:^5.57.0":
+"@typescript-eslint/parser@npm:^5.5.0, @typescript-eslint/parser@npm:^5.55.0":
   version: 5.57.0
   resolution: "@typescript-eslint/parser@npm:5.57.0"
   dependencies:
@@ -5225,6 +5225,23 @@ __metadata:
     typescript:
       optional: true
   checksum: b7e8345631911f721591ba970fea5c888f0f3bf2e2ea2dbc3e5b0dc345c0776b62b92c534edfde1379b4b182958a421f35ac26d84705fe6ae7dd37aa675d9493
+  languageName: node
+  linkType: hard
+
+"@typescript-eslint/parser@npm:^5.57.1":
+  version: 5.57.1
+  resolution: "@typescript-eslint/parser@npm:5.57.1"
+  dependencies:
+    "@typescript-eslint/scope-manager": 5.57.1
+    "@typescript-eslint/types": 5.57.1
+    "@typescript-eslint/typescript-estree": 5.57.1
+    debug: ^4.3.4
+  peerDependencies:
+    eslint: ^6.0.0 || ^7.0.0 || ^8.0.0
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: db61a12a67bc45d814297e7f089768c0849f18162b330279aa15121223ec3b18d80df4c327f4ca0a40a7bddb9150ba1a9379fce00bc0e4a10cc189d04e36f0e3
   languageName: node
   linkType: hard
 
