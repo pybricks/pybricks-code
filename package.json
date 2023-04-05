@@ -74,7 +74,7 @@
         "jszip": "^3.10.1",
         "license-webpack-plugin": "^3.0.0",
         "mini-css-extract-plugin": "^2.7.5",
-        "monaco-editor": "^0.36.1",
+        "monaco-editor": "^0.37.0",
         "monaco-editor-webpack-plugin": "^7.0.1",
         "monaco-themes": "^0.4.4",
         "mq-polyfill": "1.1.8",
