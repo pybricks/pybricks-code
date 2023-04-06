@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2022 The Pybricks Authors
+// Copyright (c) 2020-2023 The Pybricks Authors
 
 // Custom styling for the StatusBar control.
 
@@ -8,7 +8,8 @@
 
 .pb-status-bar {
     background-color: pb.$pybricks-blue;
-    height: pb.$status-bar-height;
+    min-height: pb.$status-bar-height;
+    max-height: pb.$status-bar-height;
     width: 100vw;
     padding-inline: 5px;
     display: flex;
