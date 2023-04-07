@@ -38,7 +38,7 @@
         "@types/w3c-web-usb": "^1.0.6",
         "@types/web-bluetooth": "^0.0.16",
         "@types/web-locks-api": "^0.0.2",
-        "@types/wicg-file-system-access": "^2020.9.5",
+        "@types/wicg-file-system-access": "^2020.9.6",
         "@types/zen-push": "^0.1.1",
         "babel-jest": "^29.5.0",
         "babel-loader": "^9.1.2",
