@@ -20,7 +20,7 @@
         "@pybricks/mpy-cross-v5": "^2.0.0",
         "@pybricks/mpy-cross-v6": "^2.0.0",
         "@pybricks/python-program-analysis": "^2.0.0",
-        "@reduxjs/toolkit": "^1.9.3",
+        "@reduxjs/toolkit": "^1.9.4",
         "@shopify/react-i18n": "^7.7.2",
         "@svgr/webpack": "^7.0.0",
         "@testing-library/dom": "^9.2.0",
