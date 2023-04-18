@@ -300,7 +300,7 @@ module.exports = function (webpackEnv) {
     },
     resolve: {
       // work around emscripten referencing node.js modules
-      fallback: { crypto: false, fs: false, path: false },
+      fallback: { crypto: false, fs: false, path: false, util: false },
       // We placed these paths second because we want `node_modules` to "win"
       // if there are any conflicts. This matches Node resolution mechanism.
       // https://github.com/facebook/create-react-app/issues/253
