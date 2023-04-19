@@ -16,22 +16,48 @@ export const pybricksHubCapabilitiesCharacteristicUUID =
 
 /** Commands are instructions sent to the hub. */
 export enum CommandType {
-    /** Request to stop the user program, if it is running. */
+    /**
+     * Request to stop the user program, if it is running.
+     *
+     * @since Pybricks Profile v1.0.0
+     */
     StopUserProgram = 0,
-    /** Request to start the user program. */
+    /**
+     * Request to start the user program.
+     *
+     * @since Pybricks Profile v1.2.0
+     */
     StartUserProgram = 1,
-    /** Request to start the interactive REPL. */
+    /**
+     *  Request to start the interactive REPL.
+     *
+     * @since Pybricks Profile v1.2.0
+     */
     StartRepl = 2,
-    /** Request to write user program metadata. */
+    /**
+     *  Request to write user program metadata.
+     *
+     * @since Pybricks Profile v1.2.0
+     */
     WriteUserProgramMeta = 3,
-    /** Request to write to user RAM. */
+    /**
+     * Request to write to user RAM.
+     *
+     * @since Pybricks Profile v1.2.0
+     */
     WriteUserRam = 4,
-    /** Request to reboot in firmware update mode. */
+    /**
+     * Request to reboot in firmware update mode.
+     *
+     * @since Pybricks Profile v1.2.0
+     */
     ResetInUpdateMode = 5,
 }
 
 /**
  * Creates a {@link CommandType.StopUserProgram} message.
+ *
+ * @since Pybricks Profile v1.0.0
  */
 export function createStopUserProgramCommand(): Uint8Array {
     const msg = new Uint8Array(1);
@@ -41,6 +67,8 @@ export function createStopUserProgramCommand(): Uint8Array {
 
 /**
  * Creates a {@link CommandType.StartUserProgram} message.
+ *
+ * @since Pybricks Profile v1.2.0
  */
 export function createStartUserProgramCommand(): Uint8Array {
     const msg = new Uint8Array(1);
@@ -50,6 +78,8 @@ export function createStartUserProgramCommand(): Uint8Array {
 
 /**
  * Creates a {@link CommandType.StartRepl} message.
+ *
+ * @since Pybricks Profile v1.2.0
  */
 export function createStartReplCommand(): Uint8Array {
     const msg = new Uint8Array(1);
@@ -60,6 +90,8 @@ export function createStartReplCommand(): Uint8Array {
 /**
  * Creates a {@link CommandType.WriteUserProgramMeta} message.
  * @param size The size of the user program in bytes.
+ *
+ * @since Pybricks Profile v1.2.0
  */
 export function createWriteUserProgramMetaCommand(size: number): Uint8Array {
     const msg = new Uint8Array(5);
@@ -73,6 +105,8 @@ export function createWriteUserProgramMetaCommand(size: number): Uint8Array {
  * Creates a {@link CommandType.WriteUserRam} message.
  * @param offset The offset from the user RAM base address.
  * @param payload The bytes to write.
+ *
+ * @since Pybricks Profile v1.2.0
  */
 export function createWriteUserRamCommand(
     offset: number,
@@ -88,26 +122,66 @@ export function createWriteUserRamCommand(
 
 /** Events are notifications received from the hub. */
 export enum EventType {
-    /** Status report. Received when notifications are enabled and when status changes. */
+    /**
+     * Status report event.
+     *
+     * Received when notifications are enabled and when status changes.
+     *
+     * @since Pybricks Profile v1.0.0
+     */
     StatusReport = 0,
 }
 
 /** Status indications received by Event.StatusReport */
 export enum Status {
-    /** Battery voltage is low. */
+    /**
+     * Battery voltage is low.
+     *
+     * @since Pybricks Profile v1.0.0
+     */
     BatteryLowVoltageWarning = 0,
-    /** Battery voltage is critically low. */
+    /**
+     * Battery voltage is critically low.
+     *
+     * @since Pybricks Profile v1.0.0
+     */
     BatteryLowVoltageShutdown = 1,
-    /** Battery current is too high. */
+    /**
+     * Battery current is too high.
+     *
+     * @since Pybricks Profile v1.0.0
+     */
     BatteryHighCurrent = 2,
-    /** Bluetooth Low Energy is advertising/discoverable. */
+    /**
+     * Bluetooth Low Energy is advertising/discoverable.
+     *
+     * @since Pybricks Profile v1.0.0
+     */
     BLEAdvertising = 3,
-    /** Bluetooth Low Energy has low signal. */
+    /**
+     * Bluetooth Low Energy has low signal.
+     *
+     * @since Pybricks Profile v1.0.0
+     */
     BLELowSignal = 4,
-    /** Power button is currently pressed. */
+    /**
+     * Power button is currently pressed.
+     *
+     * @since Pybricks Profile v1.0.0
+     */
     PowerButtonPressed = 5,
-    /** User program is currently running. */
+    /**
+     * User program is currently running.
+     *
+     * @since Pybricks Profile v1.0.0
+     */
     UserProgramRunning = 6,
+    /**
+     * Hub is shutting down.
+     *
+     * @since Pybricks Profile v1.1.0
+     */
+    Shutdown = 7,
 }
 
 /** Converts a Status enum value to a bit flag. */
@@ -124,6 +198,8 @@ export function getEventType(msg: DataView): EventType {
  * Parses the payload of a status report message.
  * @param msg The raw message data.
  * @returns The status as bit flags.
+ *
+ * @since Pybricks Profile v1.0.0
  */
 export function parseStatusReport(msg: DataView): number {
     assert(msg.getUint8(0) === EventType.StatusReport, 'expecting status report event');
@@ -148,9 +224,17 @@ export class ProtocolError extends Error {
  * Hub capability flags for the hub capabilities characteristic.
  */
 export enum HubCapabilityFlag {
-    /** Hub has an interactive REPL. */
+    /**
+     * Hub has an interactive REPL.
+     *
+     * @since Pybricks Profile v1.2.0
+     */
     HasRepl = 1 << 0,
-    /** Hub supports {@link FileFormat.MultiMpy6} */
+    /**
+     * Hub supports {@link FileFormat.MultiMpy6}
+     *
+     * @since Pybricks Profile v1.2.0
+     */
     UserProgramMultiMpy6 = 1 << 1,
 }
 
