@@ -9,6 +9,19 @@ import {
 } from '../ble/actions';
 import { didReceiveStatusReport } from '../ble-pybricks-service/actions';
 import { Status, statusToFlag } from '../ble-pybricks-service/protocol';
+import { PnpId } from '../ble-device-info-service/protocol';
+import { HubType } from '../ble-lwp3-service/protocol';
+import {
+    blePybricksServiceDidNotReceiveHubCapabilities,
+    blePybricksServiceDidReceiveHubCapabilities,
+    didReceiveStatusReport,
+} from '../ble-pybricks-service/actions';
+import {
+    FileFormat,
+    HubCapabilityFlag,
+    Status,
+    statusToFlag,
+} from '../ble-pybricks-service/protocol';
 import {
     didFailToFinishDownload,
     didFinishDownload,
@@ -280,6 +293,57 @@ describe('runtime', () => {
     });
 });
 
+describe('maxBleWriteSize', () => {
+    test.each([100, 1000])('Pybricks Profile >= v1.2.0: %s', (size) => {
+        expect(
+            reducers(
+                { maxBleWriteSize: 0 } as State,
+                blePybricksServiceDidReceiveHubCapabilities(size, 0, 100),
+            ).maxBleWriteSize,
+        ).toBe(size);
+    });
+});
+
+describe('maxUserProgramSize', () => {
+    test.each([100, 1000])('Pybricks Profile >= v1.2.0: %s', (size) => {
+        expect(
+            reducers(
+                { maxUserProgramSize: 0 } as State,
+                blePybricksServiceDidReceiveHubCapabilities(23, 0, size),
+            ).maxUserProgramSize,
+        ).toBe(size);
+    });
+});
+
+describe('hasRepl', () => {
+    test.each([...Object.values(HubType).filter((x) => typeof x !== 'string')])(
+        'Pybricks Profile < v1.2.0: %s',
+        (hubType) => {
+            expect(
+                reducers(
+                    { hasRepl: false } as State,
+                    blePybricksServiceDidNotReceiveHubCapabilities(
+                        { productId: hubType } as PnpId,
+                        '3.3.0',
+                    ),
+                ).hasRepl,
+            ).toBe(hubType !== HubType.MoveHub);
+        },
+    );
+
+    test.each([HubCapabilityFlag.HasRepl, 0])(
+        'Pybricks Profile >= v1.2.0: %s',
+        (flag) => {
+            expect(
+                reducers(
+                    { hasRepl: true } as State,
+                    blePybricksServiceDidReceiveHubCapabilities(23, flag, 100),
+                ).hasRepl,
+            ).toBe(Boolean(flag & HubCapabilityFlag.HasRepl));
+        },
+    );
+});
+
 describe('preferredFileFormat', () => {
     test('Pybricks Profile < v1.2.0 and older firmware', () => {
         expect(
@@ -302,10 +366,43 @@ describe('preferredFileFormat', () => {
     test('Pybricks Profile >= v1.2.0', () => {
         expect(
             reducers(
+                { preferredFileFormat: null } as State,
+                blePybricksServiceDidReceiveHubCapabilities(
+                    23,
+                    HubCapabilityFlag.UserProgramMultiMpy6,
+                    100,
+                ),
+            ).preferredFileFormat,
+        ).toBe(FileFormat.MultiMpy6);
+    });
+
+    test('Pybricks Profile >= v1.2.0, unsupported firmware', () => {
+        expect(
+            reducers(
                 { preferredFileFormat: FileFormat.MultiMpy6 } as State,
                 blePybricksServiceDidReceiveHubCapabilities(23, 0, 100),
             ).preferredFileFormat,
         ).toBeNull();
+    });
+});
+
+describe('useLegacyDownload', () => {
+    test('Pybricks Profile < v1.2.0', () => {
+        expect(
+            reducers(
+                { useLegacyDownload: false } as State,
+                blePybricksServiceDidNotReceiveHubCapabilities({} as PnpId, '3.3.0'),
+            ).useLegacyDownload,
+        ).toBeTruthy();
+    });
+
+    test('Pybricks Profile >= v1.2.0', () => {
+        expect(
+            reducers(
+                { useLegacyDownload: true } as State,
+                blePybricksServiceDidReceiveHubCapabilities(23, 0, 100),
+            ).useLegacyDownload,
+        ).toBeFalsy();
     });
 });
 
