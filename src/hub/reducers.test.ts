@@ -279,3 +279,33 @@ describe('runtime', () => {
         ).toBe(HubRuntimeState.Disconnected);
     });
 });
+
+describe('preferredFileFormat', () => {
+    test('Pybricks Profile < v1.2.0 and older firmware', () => {
+        expect(
+            reducers(
+                { preferredFileFormat: null } as State,
+                blePybricksServiceDidNotReceiveHubCapabilities({} as PnpId, '3.1.0'),
+            ).preferredFileFormat,
+        ).toBe(FileFormat.Mpy5);
+    });
+
+    test('Pybricks Profile < v1.2.0', () => {
+        expect(
+            reducers(
+                { preferredFileFormat: null } as State,
+                blePybricksServiceDidNotReceiveHubCapabilities({} as PnpId, '3.2.0'),
+            ).preferredFileFormat,
+        ).toBe(FileFormat.Mpy6);
+    });
+
+    test('Pybricks Profile >= v1.2.0', () => {
+        expect(
+            reducers(
+                { preferredFileFormat: FileFormat.MultiMpy6 } as State,
+                blePybricksServiceDidReceiveHubCapabilities(23, 0, 100),
+            ).preferredFileFormat,
+        ).toBeNull();
+    });
+});
+
