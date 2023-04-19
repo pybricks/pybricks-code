@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2022 The Pybricks Authors
+// Copyright (c) 2020-2023 The Pybricks Authors
 //
 // Definitions related to the Pybricks Bluetooth low energy GATT service.
 
@@ -52,6 +52,12 @@ export enum CommandType {
      * @since Pybricks Profile v1.2.0
      */
     ResetInUpdateMode = 5,
+    /**
+     * Request to write data to stdin.
+     *
+     * @since Pybricks Profile v1.3.0
+     */
+    WriteStdin = 6,
 }
 
 /**
@@ -120,6 +126,20 @@ export function createWriteUserRamCommand(
     return msg;
 }
 
+/**
+ * Creates a {@link CommandType.WriteStdin} message.
+ * @param payload The bytes to write.
+ *
+ * @since Pybricks Profile v1.3.0.
+ */
+export function createWriteStdinCommand(payload: ArrayBuffer): Uint8Array {
+    const msg = new Uint8Array(1 + payload.byteLength);
+    const view = new DataView(msg.buffer);
+    view.setUint8(0, CommandType.WriteStdin);
+    msg.set(new Uint8Array(payload), 1);
+    return msg;
+}
+
 /** Events are notifications received from the hub. */
 export enum EventType {
     /**
@@ -130,6 +150,12 @@ export enum EventType {
      * @since Pybricks Profile v1.0.0
      */
     StatusReport = 0,
+    /**
+     * Hub wrote to stdout event.
+     *
+     * @since Pybricks Profile v1.3.0
+     */
+    WriteStdout = 1,
 }
 
 /** Status indications received by Event.StatusReport */
@@ -204,6 +230,18 @@ export function getEventType(msg: DataView): EventType {
 export function parseStatusReport(msg: DataView): number {
     assert(msg.getUint8(0) === EventType.StatusReport, 'expecting status report event');
     return msg.getUint32(1, true);
+}
+
+/**
+ * Parses the payload of a write stdout.
+ * @param msg The raw message data.
+ * @returns The bytes that were written.
+ *
+ * @since Pybricks Profile v1.3.0
+ */
+export function parseWriteStdout(msg: DataView): ArrayBuffer {
+    assert(msg.getUint8(0) === EventType.WriteStdout, 'expecting write stdout event');
+    return msg.buffer.slice(1);
 }
 
 /**

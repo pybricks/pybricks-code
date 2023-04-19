@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021 The Pybricks Authors
+// Copyright (c) 2021-2023 The Pybricks Authors
 
 import { AsyncSaga } from '../../test';
 import {
@@ -7,10 +7,16 @@ import {
     didFailToWriteCommand,
     didNotifyEvent,
     didReceiveStatusReport,
+    didReceiveWriteStdout,
     didSendCommand,
     didWriteCommand,
     eventProtocolError,
+    sendStartReplCommand,
+    sendStartUserProgramCommand,
     sendStopUserProgramCommand,
+    sendWriteStdinCommand,
+    sendWriteUserProgramMetaCommand,
+    sendWriteUserRamCommand,
     writeCommand,
 } from './actions';
 import { CommandType, ProtocolError } from './protocol';
@@ -23,6 +29,57 @@ describe('command encoder', () => {
             sendStopUserProgramCommand(0),
             [
                 0x00, // stop user program command
+            ],
+        ],
+        [
+            'start user program',
+            sendStartUserProgramCommand(0),
+            [
+                0x01, // start user program command
+            ],
+        ],
+        [
+            'start repl',
+            sendStartReplCommand(0),
+            [
+                0x02, // start repl command
+            ],
+        ],
+        [
+            'write user program meta',
+            sendWriteUserProgramMetaCommand(0, 100),
+            [
+                0x03, // write user program meta command
+                0x64, // program size LSB
+                0x00,
+                0x00,
+                0x00, // program size MSB
+            ],
+        ],
+        [
+            'write user ram',
+            sendWriteUserRamCommand(0, 100, new Uint8Array([1, 2, 3, 4]).buffer),
+            [
+                0x04, // write user ram command
+                0x64, // offset size LSB
+                0x00,
+                0x00,
+                0x00, // offset size MSB
+                0x01, // payload start
+                0x02,
+                0x03,
+                0x04, // payload end
+            ],
+        ],
+        [
+            'write stdin',
+            sendWriteStdinCommand(0, new Uint8Array([1, 2, 3, 4]).buffer),
+            [
+                0x06, // write stdin command
+                0x01, // payload start
+                0x02,
+                0x03,
+                0x04, // payload end
             ],
         ],
     ])('encode %s request', async (_n, request, expected) => {
@@ -102,6 +159,24 @@ describe('event decoder', () => {
                 0x00, // flags count MSB
             ],
             didReceiveStatusReport(0x00000001),
+        ],
+        [
+            'write stdout',
+            [
+                0x01, // write stdout event
+                't'.charCodeAt(0), //payload
+                'e'.charCodeAt(0),
+                't'.charCodeAt(0),
+                't'.charCodeAt(0),
+            ],
+            didReceiveWriteStdout(
+                new Uint8Array([
+                    't'.charCodeAt(0),
+                    'e'.charCodeAt(0),
+                    't'.charCodeAt(0),
+                    't'.charCodeAt(0),
+                ]).buffer,
+            ),
         ],
     ])('decode %s event', async (_n, message, expected) => {
         const saga = new AsyncSaga(blePybricksService);

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021-2022 The Pybricks Authors
+// Copyright (c) 2021-2023 The Pybricks Authors
 //
 // Handles Pybricks protocol.
 
@@ -18,12 +18,14 @@ import {
     didFailToWriteCommand,
     didNotifyEvent,
     didReceiveStatusReport,
+    didReceiveWriteStdout,
     didSendCommand,
     didWriteCommand,
     eventProtocolError,
     sendStartReplCommand,
     sendStartUserProgramCommand,
     sendStopUserProgramCommand,
+    sendWriteStdinCommand,
     sendWriteUserProgramMetaCommand,
     sendWriteUserRamCommand,
     writeCommand,
@@ -34,10 +36,12 @@ import {
     createStartReplCommand,
     createStartUserProgramCommand,
     createStopUserProgramCommand,
+    createWriteStdinCommand,
     createWriteUserProgramMetaCommand,
     createWriteUserRamCommand,
     getEventType,
     parseStatusReport,
+    parseWriteStdout,
 } from './protocol';
 
 /**
@@ -45,7 +49,7 @@ import {
  * the bytecodes to to the device.
  */
 function* encodeRequest(): Generator {
-    // Using a while loop to serialize sending data to avoid "busy" errors.
+    // Using a loop to serialize sending data to avoid "busy" errors.
 
     const chan = yield* actionChannel(
         (a: AnyAction) =>
@@ -53,7 +57,7 @@ function* encodeRequest(): Generator {
             a.type.startsWith('blePybricksServiceCommand.action.send'),
     );
 
-    while (true) {
+    for (;;) {
         const action = yield* take(chan);
 
         /* istanbul ignore else: should not be possible to reach */
@@ -73,6 +77,10 @@ function* encodeRequest(): Generator {
                     action.id,
                     createWriteUserRamCommand(action.offset, action.payload),
                 ),
+            );
+        } else if (sendWriteStdinCommand.matches(action)) {
+            yield* put(
+                writeCommand(action.id, createWriteStdinCommand(action.payload)),
             );
         } else {
             console.error(`Unknown Pybricks service command ${action.type}`);
@@ -102,6 +110,9 @@ function* decodeResponse(action: ReturnType<typeof didNotifyEvent>): Generator {
         switch (responseType) {
             case EventType.StatusReport:
                 yield* put(didReceiveStatusReport(parseStatusReport(action.value)));
+                break;
+            case EventType.WriteStdout:
+                yield* put(didReceiveWriteStdout(parseWriteStdout(action.value)));
                 break;
             default:
                 throw new ProtocolError(

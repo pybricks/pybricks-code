@@ -9,6 +9,12 @@ import {
     didWrite,
     write,
 } from '../ble-nordic-uart-service/actions';
+import {
+    didFailToSendCommand,
+    didReceiveWriteStdout,
+    didSendCommand,
+    sendWriteStdinCommand,
+} from '../ble-pybricks-service/actions';
 import { checksum, hubDidStartRepl } from '../hub/actions';
 import { HubRuntimeState } from '../hub/reducers';
 import { createCountFunc } from '../utils/iter';
@@ -17,28 +23,68 @@ import terminal from './sagas';
 
 const encoder = new TextEncoder();
 
-describe('Data receiver filters out hub status', () => {
-    test('normal message - no status', async () => {
+describe('receiving stdout from hub', () => {
+    test('legacy UART message', async () => {
         const saga = new AsyncSaga(terminal, { nextMessageId: createCountFunc() });
+        saga.updateState({ hub: { useLegacyDownload: true, useLegacyStdio: true } });
 
         // sending ASCII space character
         saga.put(didNotify(new DataView(new Uint8Array([0x20]).buffer)));
 
-        const action = await saga.take();
-        expect(action).toEqual(sendData(' '));
+        await expect(saga.take()).resolves.toEqual(sendData(' '));
 
         await saga.end();
     });
 
-    test('checksum message', async () => {
+    test('legacy download checksum message', async () => {
         const saga = new AsyncSaga(terminal, { nextMessageId: createCountFunc() });
 
-        saga.updateState({ hub: { runtime: HubRuntimeState.Loading } });
+        saga.updateState({
+            hub: {
+                runtime: HubRuntimeState.Loading,
+                useLegacyDownload: true,
+                useLegacyStdio: true,
+            },
+        });
 
         saga.put(didNotify(new DataView(new Uint8Array([0xaa]).buffer)));
 
-        const action = await saga.take();
-        expect(action).toEqual(checksum(0xaa));
+        await expect(saga.take()).resolves.toEqual(checksum(0xaa));
+
+        await saga.end();
+    });
+
+    test('Pybricks Profile v1.3.0 ignores UART service', async () => {
+        const saga = new AsyncSaga(terminal, { nextMessageId: createCountFunc() });
+
+        saga.updateState({
+            hub: {
+                useLegacyDownload: false,
+                useLegacyStdio: false,
+            },
+        });
+
+        saga.put(didNotify(new DataView(new Uint8Array([0x20]).buffer)));
+
+        await delay(50);
+
+        // no further actions should be pending
+        await saga.end();
+    });
+
+    test('Pybricks Profile v1.3.0 write stdout command', async () => {
+        const saga = new AsyncSaga(terminal, { nextMessageId: createCountFunc() });
+
+        saga.updateState({
+            hub: {
+                useLegacyDownload: false,
+                useLegacyStdio: false,
+            },
+        });
+
+        saga.put(didReceiveWriteStdout(new Uint8Array([0x20]).buffer));
+
+        await expect(saga.take()).resolves.toEqual(sendData(' '));
 
         await saga.end();
     });
@@ -71,7 +117,161 @@ describe('Terminal data source responds to receive data actions', () => {
 
     test('basic function works', async () => {
         const saga = new AsyncSaga(terminal, { nextMessageId: createCountFunc() });
-        saga.updateState({ hub: { runtime: HubRuntimeState.Running } });
+        saga.updateState({
+            hub: {
+                runtime: HubRuntimeState.Running,
+                useLegacyStdio: false,
+                maxBleWriteSize: 20,
+            },
+        });
+
+        saga.put(receiveData('test1234'));
+
+        await expect(saga.take()).resolves.toEqual(sendWriteStdinCommand(0, expected));
+
+        await saga.end();
+    });
+
+    test('messages are queued until previous has completed', async () => {
+        const saga = new AsyncSaga(terminal, { nextMessageId: createCountFunc() });
+        saga.updateState({
+            hub: {
+                runtime: HubRuntimeState.Running,
+                useLegacyStdio: false,
+                maxBleWriteSize: 20,
+            },
+        });
+
+        saga.put(receiveData('test1234'));
+        await delay(50); // without delay, messages are combined
+        saga.put(receiveData('test1234'));
+
+        // second message is queued until didSend or didFailToSend
+        expect(saga.numPending()).toBe(1);
+
+        await expect(saga.take()).resolves.toEqual(sendWriteStdinCommand(0, expected));
+
+        // second message is queued until didSend or didFailToSend
+        expect(saga.numPending()).toBe(0);
+
+        saga.put(didSendCommand(0));
+
+        await expect(saga.take()).resolves.toEqual(sendWriteStdinCommand(1, expected));
+
+        saga.put(didSendCommand(1));
+
+        await saga.end();
+    });
+
+    test('messages are queued until previous has failed', async () => {
+        const saga = new AsyncSaga(terminal, { nextMessageId: createCountFunc() });
+        saga.updateState({
+            hub: {
+                runtime: HubRuntimeState.Running,
+                useLegacyStdio: false,
+                maxBleWriteSize: 20,
+            },
+        });
+
+        saga.put(receiveData('test1234'));
+        await delay(50); // without delay, messages are combined
+        saga.put(receiveData('test1234'));
+
+        // second message is queued until didSend or didFailToSend
+        expect(saga.numPending()).toBe(1);
+
+        await expect(saga.take()).resolves.toEqual(sendWriteStdinCommand(0, expected));
+
+        // second message is queued until didSend or didFailToSend
+        expect(saga.numPending()).toBe(0);
+
+        saga.put(didFailToSendCommand(0, new Error('test error')));
+
+        await expect(saga.take()).resolves.toEqual(sendWriteStdinCommand(1, expected));
+
+        saga.put(didSendCommand(1));
+
+        await saga.end();
+    });
+
+    test('small messages are combined', async () => {
+        const saga = new AsyncSaga(terminal, { nextMessageId: createCountFunc() });
+        saga.updateState({
+            hub: {
+                runtime: HubRuntimeState.Running,
+                useLegacyStdio: false,
+                maxBleWriteSize: 20,
+            },
+        });
+
+        saga.put(receiveData('test1234'));
+        saga.put(receiveData('test1234'));
+
+        await expect(saga.take()).resolves.toEqual(
+            sendWriteStdinCommand(0, new Uint8Array([...expected, ...expected])),
+        );
+
+        await saga.end();
+    });
+
+    test('long messages are split', async () => {
+        const testData = '012345678901234567890123456789';
+
+        const saga = new AsyncSaga(terminal, { nextMessageId: createCountFunc() });
+        saga.updateState({
+            hub: {
+                runtime: HubRuntimeState.Running,
+                useLegacyStdio: false,
+                maxBleWriteSize: 20,
+            },
+        });
+
+        saga.put(receiveData(testData));
+
+        await expect(saga.take()).resolves.toEqual(
+            sendWriteStdinCommand(0, encoder.encode(testData.slice(0, 20))),
+        );
+
+        saga.put(didSendCommand(0));
+
+        await expect(saga.take()).resolves.toEqual(
+            sendWriteStdinCommand(1, encoder.encode(testData.slice(20, 40))),
+        );
+
+        saga.put(didSendCommand(1));
+
+        await saga.end();
+    });
+
+    test('if user program is not running echo BEL', async () => {
+        const saga = new AsyncSaga(terminal, { nextMessageId: createCountFunc() });
+        saga.updateState({
+            hub: {
+                runtime: HubRuntimeState.Disconnected,
+                useLegacyStdio: false,
+                maxBleWriteSize: 20,
+            },
+        });
+
+        saga.put(receiveData('test1234'));
+
+        await delay(50);
+
+        // sends BEL character on error
+        await expect(saga.take()).resolves.toEqual(sendData('\x07'));
+
+        await saga.end();
+    });
+});
+
+describe('Terminal data source responds to receive data actions (legacy)', () => {
+    const expected = encoder.encode('test1234');
+
+    test('basic function works', async () => {
+        const saga = new AsyncSaga(terminal, { nextMessageId: createCountFunc() });
+        saga.updateState({
+            hub: { runtime: HubRuntimeState.Running, useLegacyStdio: true },
+        });
 
         saga.put(receiveData('test1234'));
 
@@ -83,7 +283,9 @@ describe('Terminal data source responds to receive data actions', () => {
 
     test('messages are queued until previous has completed', async () => {
         const saga = new AsyncSaga(terminal, { nextMessageId: createCountFunc() });
-        saga.updateState({ hub: { runtime: HubRuntimeState.Running } });
+        saga.updateState({
+            hub: { runtime: HubRuntimeState.Running, useLegacyStdio: true },
+        });
 
         saga.put(receiveData('test1234'));
         await delay(50); // without delay, messages are combined
@@ -110,7 +312,9 @@ describe('Terminal data source responds to receive data actions', () => {
 
     test('messages are queued until previous has failed', async () => {
         const saga = new AsyncSaga(terminal, { nextMessageId: createCountFunc() });
-        saga.updateState({ hub: { runtime: HubRuntimeState.Running } });
+        saga.updateState({
+            hub: { runtime: HubRuntimeState.Running, useLegacyStdio: true },
+        });
 
         saga.put(receiveData('test1234'));
         await delay(50); // without delay, messages are combined
@@ -137,7 +341,9 @@ describe('Terminal data source responds to receive data actions', () => {
 
     test('small messages are combined', async () => {
         const saga = new AsyncSaga(terminal, { nextMessageId: createCountFunc() });
-        saga.updateState({ hub: { runtime: HubRuntimeState.Running } });
+        saga.updateState({
+            hub: { runtime: HubRuntimeState.Running, useLegacyStdio: true },
+        });
 
         saga.put(receiveData('test1234'));
         saga.put(receiveData('test1234'));
@@ -152,7 +358,9 @@ describe('Terminal data source responds to receive data actions', () => {
         const testData = '012345678901234567890123456789';
 
         const saga = new AsyncSaga(terminal, { nextMessageId: createCountFunc() });
-        saga.updateState({ hub: { runtime: HubRuntimeState.Running } });
+        saga.updateState({
+            hub: { runtime: HubRuntimeState.Running, useLegacyStdio: true },
+        });
 
         saga.put(receiveData(testData));
 
@@ -169,13 +377,19 @@ describe('Terminal data source responds to receive data actions', () => {
         await saga.end();
     });
 
-    test('if user program is not running, do not dispatch write', async () => {
+    test('if user program is not running, echo BEL', async () => {
         const saga = new AsyncSaga(terminal, { nextMessageId: createCountFunc() });
-        saga.updateState({ hub: { runtime: HubRuntimeState.Disconnected } });
+        saga.updateState({
+            hub: { runtime: HubRuntimeState.Disconnected, useLegacyStdio: true },
+        });
 
         saga.put(receiveData('test1234'));
 
-        // line below will fail with unhandled pending dispatches if not working correctly
+        await delay(50);
+
+        // sends BEL character on error
+        await expect(saga.take()).resolves.toEqual(sendData('\x07'));
+
         await saga.end();
     });
 });
