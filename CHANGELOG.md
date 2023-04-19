@@ -4,6 +4,9 @@
 
 ## [Unreleased]
 
+### Added
+- Added support for Pybricks Profile v1.3.0.
+
 ### Changed
 - Better error message when download and run fails due to disconnected hub.
 

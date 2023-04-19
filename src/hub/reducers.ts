@@ -8,6 +8,7 @@ import {
     bleDidDisconnectPybricks,
     bleDisconnectPybricks,
 } from '../ble/actions';
+import { bleDIServiceDidReceiveSoftwareRevision } from '../ble-device-info-service/actions';
 import { HubType } from '../ble-lwp3-service/protocol';
 import {
     blePybricksServiceDidNotReceiveHubCapabilities,
@@ -250,6 +251,18 @@ const useLegacyDownload: Reducer<boolean> = (state = false, action) => {
     return state;
 };
 
+/**
+ * When true, use NUS for stdio instead of Pybricks control characteristic.
+ */
+const useLegacyStdio: Reducer<boolean> = (state = false, action) => {
+    if (bleDIServiceDidReceiveSoftwareRevision.matches(action)) {
+        // Behavior changed starting with Pybricks Profile v1.3.0.
+        return !semver.satisfies(action.version, '^1.3.0');
+    }
+
+    return state;
+};
+
 export default combineReducers({
     runtime,
     downloadProgress,
@@ -258,4 +271,5 @@ export default combineReducers({
     hasRepl,
     preferredFileFormat,
     useLegacyDownload,
+    useLegacyStdio,
 });

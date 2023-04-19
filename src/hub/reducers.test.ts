@@ -7,8 +7,7 @@ import {
     bleDidDisconnectPybricks,
     bleDisconnectPybricks,
 } from '../ble/actions';
-import { didReceiveStatusReport } from '../ble-pybricks-service/actions';
-import { Status, statusToFlag } from '../ble-pybricks-service/protocol';
+import { bleDIServiceDidReceiveSoftwareRevision } from '../ble-device-info-service/actions';
 import { PnpId } from '../ble-device-info-service/protocol';
 import { HubType } from '../ble-lwp3-service/protocol';
 import {
@@ -48,6 +47,7 @@ test('initial state', () => {
           "preferredFileFormat": null,
           "runtime": "hub.runtime.disconnected",
           "useLegacyDownload": false,
+          "useLegacyStdio": false,
         }
     `);
 });
@@ -406,3 +406,22 @@ describe('useLegacyDownload', () => {
     });
 });
 
+describe('useLegacyStdio', () => {
+    test('old', () => {
+        expect(
+            reducers(
+                { useLegacyStdio: false } as State,
+                bleDIServiceDidReceiveSoftwareRevision('1.2.0'),
+            ).useLegacyStdio,
+        ).toBeTruthy();
+    });
+
+    test('new', () => {
+        expect(
+            reducers(
+                { useLegacyStdio: true } as State,
+                bleDIServiceDidReceiveSoftwareRevision('1.3.0'),
+            ).useLegacyStdio,
+        ).toBeFalsy();
+    });
+});

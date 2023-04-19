@@ -20,10 +20,16 @@ import {
     write,
 } from '../ble-nordic-uart-service/actions';
 import { nordicUartSafeTxCharLength } from '../ble-nordic-uart-service/protocol';
+import {
+    didFailToSendCommand,
+    didReceiveWriteStdout,
+    didSendCommand,
+    sendWriteStdinCommand,
+} from '../ble-pybricks-service/actions';
 import { checksum, hubDidStartRepl } from '../hub/actions';
 import { HubRuntimeState } from '../hub/reducers';
 import { RootState } from '../reducers';
-import { defined } from '../utils';
+import { assert, defined } from '../utils';
 import { TerminalContextValue } from './TerminalContext';
 import { receiveData, sendData } from './actions';
 
@@ -36,7 +42,13 @@ const encoder = new TextEncoder();
 const decoder = new TextDecoder();
 
 function* receiveUartData(action: ReturnType<typeof didNotify>): Generator {
-    const hubState = yield* select((s: RootState) => s.hub.runtime);
+    const { runtime: hubState, useLegacyStdio } = yield* select(
+        (s: RootState) => s.hub,
+    );
+
+    if (!useLegacyStdio) {
+        return;
+    }
 
     if (hubState === HubRuntimeState.Loading && action.value.buffer.byteLength === 1) {
         const view = new DataView(action.value.buffer);
@@ -45,6 +57,13 @@ function* receiveUartData(action: ReturnType<typeof didNotify>): Generator {
     }
 
     const value = decoder.decode(action.value.buffer);
+    yield* put(sendData(value));
+}
+
+function* handleReceiveWriteStdout(
+    action: ReturnType<typeof didReceiveWriteStdout>,
+): Generator {
+    const value = decoder.decode(action.payload);
     yield* put(sendData(value));
 }
 
@@ -87,18 +106,55 @@ function* receiveTerminalData(): Generator {
         // stdin gets piped to BLE connection
         const data = encoder.encode(value);
 
-        for (let i = 0; i < data.length; i += nordicUartSafeTxCharLength) {
-            const { id } = yield* put(
-                write(nextMessageId(), data.slice(i, i + nordicUartSafeTxCharLength)),
-            );
+        const { useLegacyStdio, maxBleWriteSize } = yield* select(
+            (s: RootState) => s.hub,
+        );
 
-            yield* take(
-                (a: AnyAction) =>
-                    (didWrite.matches(a) || didFailToWrite.matches(a)) && a.id === id,
-            );
+        if (useLegacyStdio) {
+            for (let i = 0; i < data.length; i += nordicUartSafeTxCharLength) {
+                const { id } = yield* put(
+                    write(
+                        nextMessageId(),
+                        data.slice(i, i + nordicUartSafeTxCharLength),
+                    ),
+                );
 
-            // wait for echo so tht we don't overrun the hub with messages
-            yield* race([take(didNotify), delay(100)]);
+                yield* take(
+                    (a: AnyAction) =>
+                        (didWrite.matches(a) || didFailToWrite.matches(a)) &&
+                        a.id === id,
+                );
+
+                // wait for echo so tht we don't overrun the hub with messages
+                yield* race([take(didNotify), delay(100)]);
+            }
+        } else {
+            // maxBleWriteSize should always be set to a valid value when useLegacyStdio is false
+            assert(maxBleWriteSize >= 20, 'bad maxBleWriteSize');
+
+            for (let i = 0; i < data.length; i += maxBleWriteSize) {
+                const { id } = yield* put(
+                    sendWriteStdinCommand(
+                        nextMessageId(),
+                        data.slice(i, i + maxBleWriteSize),
+                    ),
+                );
+
+                const { didFail } = yield* race({
+                    didSucceed: take(didSendCommand.when((a) => a.id === id)),
+                    didFail: take(didFailToSendCommand.when((a) => a.id === id)),
+                });
+
+                if (didFail) {
+                    // istanbul ignore if
+                    if (process.env.NODE_ENV !== 'test') {
+                        console.error(didFail.error);
+                    }
+
+                    // REVISIT: should we provide UI feedback?
+                    // could echo BEL character as above
+                }
+            }
         }
     }
 }
@@ -115,6 +171,7 @@ function handleHubDidStartRepl(): void {
 
 export default function* (): Generator {
     yield* takeEvery(didNotify, receiveUartData);
+    yield* takeEvery(didReceiveWriteStdout, handleReceiveWriteStdout);
     yield* fork(receiveTerminalData);
     yield* takeEvery(sendData, sendTerminalData);
     yield* takeEvery(hubDidStartRepl, handleHubDidStartRepl);

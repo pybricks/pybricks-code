@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021-2022 The Pybricks Authors
+// Copyright (c) 2021-2023 The Pybricks Authors
 //
 // Actions for Bluetooth Low Energy Pybricks service
 
@@ -110,6 +110,21 @@ export const sendWriteUserRamCommand = createAction(
 );
 
 /**
+ * Action that requests to write to stdin.
+ * @param id Unique identifier for this transaction.
+ * @param payload The bytes to write.
+ *
+ * @since Pybricks Profile v1.3.0.
+ */
+export const sendWriteStdinCommand = createAction(
+    (id: number, payload: ArrayBuffer) => ({
+        type: 'blePybricksServiceCommand.action.sendWriteStdinCommand',
+        id,
+        payload,
+    }),
+);
+
+/**
  *  Action that indicates that a command was successfully sent.
  * @param id Unique identifier for the transaction from the corresponding "send" command.
  */
@@ -138,6 +153,17 @@ export const didFailToSendCommand = createAction((id: number, error: Error) => (
 export const didReceiveStatusReport = createAction((statusFlags: number) => ({
     type: 'blePybricksServiceEvent.action.didReceiveStatusReport',
     statusFlags,
+}));
+
+/**
+ * Action that represents a status report event received from the hub.
+ * @param statusFlags The status flags.
+ *
+ * @since Pybricks Profile v1.3.0
+ */
+export const didReceiveWriteStdout = createAction((payload: ArrayBuffer) => ({
+    type: 'blePybricksServiceEvent.action.didReceiveWriteStdout',
+    payload,
 }));
 
 /**
