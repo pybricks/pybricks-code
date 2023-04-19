@@ -14,7 +14,6 @@ import {
     takeEvery,
 } from 'typed-redux-saga/macro';
 import { alertsShowAlert } from '../alerts/actions';
-import { bleDidConnectPybricks } from '../ble/actions';
 import { didFailToWrite, didWrite, write } from '../ble-nordic-uart-service/actions';
 import { nordicUartSafeTxCharLength } from '../ble-nordic-uart-service/protocol';
 import {
@@ -429,6 +428,4 @@ export default function* (): Generator {
     yield* takeEvery(downloadAndRun, handleDownloadAndRun);
     yield* takeEvery(hubStartRepl, handleHubStartRepl);
     yield* takeEvery(hubStopUserProgram, handleStopUserProgram);
-    // calling stop right after connecting should get the hub into a known state
-    yield* takeEvery(bleDidConnectPybricks, handleStopUserProgram);
 }
