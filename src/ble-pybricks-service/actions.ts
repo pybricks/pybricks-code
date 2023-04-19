@@ -47,6 +47,8 @@ export const didNotifyEvent = createAction((value: DataView) => ({
 /**
  * Action that requests a stop user program to be sent.
  * @param id Unique identifier for this transaction.
+ *
+ * @since Pybricks Profile v1.0.0
  */
 export const sendStopUserProgramCommand = createAction((id: number) => ({
     type: 'blePybricksServiceCommand.action.sendStopUserProgram',
@@ -56,6 +58,8 @@ export const sendStopUserProgramCommand = createAction((id: number) => ({
 /**
  * Action that requests a start user program to be sent.
  * @param id Unique identifier for this transaction.
+ *
+ * @since Pybricks Profile v1.2.0
  */
 export const sendStartUserProgramCommand = createAction((id: number) => ({
     type: 'blePybricksServiceCommand.action.sendStartUserProgram',
@@ -65,6 +69,8 @@ export const sendStartUserProgramCommand = createAction((id: number) => ({
 /**
  * Action that requests a start interactive REPL to be sent.
  * @param id Unique identifier for this transaction.
+ *
+ * @since Pybricks Profile v1.2.0
  */
 export const sendStartReplCommand = createAction((id: number) => ({
     type: 'blePybricksServiceCommand.action.sendStartRepl',
@@ -75,6 +81,8 @@ export const sendStartReplCommand = createAction((id: number) => ({
  * Action that requests to write user program metadata.
  * @param id Unique identifier for this transaction.
  * @param size The size of the user program in bytes.
+ *
+ * @since Pybricks Profile v1.2.0
  */
 export const sendWriteUserProgramMetaCommand = createAction(
     (id: number, size: number) => ({
@@ -89,6 +97,8 @@ export const sendWriteUserProgramMetaCommand = createAction(
  * @param id Unique identifier for this transaction.
  * @param offset The offset in bytes from the user RAM base address.
  * @param payload The bytes to write.
+ *
+ * @since Pybricks Profile v1.2.0
  */
 export const sendWriteUserRamCommand = createAction(
     (id: number, offset: number, payload: ArrayBuffer) => ({
