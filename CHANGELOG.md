@@ -9,6 +9,39 @@
 
 ### Changed
 - Better error message when download and run fails due to disconnected hub.
+- Updated firmware to v3.2.0b4:
+
+  #### Added
+  - Added `pybricks.tools.cross(a, b)` to get a vector cross product.
+  - Added experimental implementation of `hub.imu.heading()` ([support#912]).
+  - Added support for reading single-axis rotation.
+  - Added `hub.imu.ready()` method.
+  - Added `GyroDriveBase` class.
+  - Added optional `window` parameter to `Motor.speed()` method.
+
+  #### Changed
+  - Moved `Matrix` class from `geometry` module to `tools` module ([pybricks-micropython#160]).
+  - Moved `vector` method from `geometry` module to `tools` module ([pybricks-micropython#160]).
+  - Moved `Axis` class from `geometry` module to `parameters` module ([pybricks-micropython#160]).
+  
+  #### Fixed
+  - Fixed gyro on Technic Hub occasionally giving a bad value ([support#1026]).
+  - Fixed discrepancy in heading value across hubs ([support#1022]).
+  - Fixed iterator for `Matrix` objects giving bad values.
+  - Fixed Bluetooth sometimes locking up on Technic/City hubs ([support#567]).
+  - Fixed `GyroDriveBase` being slow to respond to heading perturbations when
+    driving at high speed ([support#1032]).
+
+  #### Removed
+  - Removed `positive_direction` from `DriveBase` initializer ([support#992]).
+
+  [pybricks-micropython#160]: https://github.com/pybricks/pybricks-micropython/pull/160
+  [support#567]: https://github.com/pybricks/support/issues/567
+  [support#992]: https://github.com/pybricks/support/issues/992
+  [support#1022]: https://github.com/pybricks/support/issues/1022
+  [support#1026]: https://github.com/pybricks/support/issues/1026
+  [support#1032]: https://github.com/pybricks/support/issues/1032
+
 
 ### Fixed
 - Fixed run button active while hub is disconnecting ([support#1021]).
