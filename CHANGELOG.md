@@ -9,7 +9,7 @@
 
 ### Changed
 - Better error message when download and run fails due to disconnected hub.
-- Updated firmware to v3.2.0b4:
+- Updated firmware to v3.3.0b4:
 
   #### Added
   - Added `pybricks.tools.cross(a, b)` to get a vector cross product.
@@ -54,7 +54,7 @@
 ### Changed
 - Focus editor when new file is opened.
 - Updated dependencies.
-- Updated firmware to v3.2.0b3:
+- Updated firmware to v3.3.0b3:
 
   #### Added
   - Added `positive_direction` to `DriveBase` initializer ([support#989]).
@@ -98,7 +98,7 @@
 - Added ability to import ZIP files containing Python files ([support#833]).
 
 ### Changed
-- Updated firmware to v3.2.0b2:
+- Updated firmware to v3.3.0b2:
 
   ### Added
   - Added `precision_profile` parameter to `Motor` initializer.
