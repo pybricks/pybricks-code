@@ -4,6 +4,7 @@
 import { bluetoothNotAvailable } from './BluetoothNotAvailable';
 import { disconnected } from './Disconnected';
 import { missingService } from './MissingService';
+import { newPybricksProfile } from './NewPybricksProfile';
 import { noGatt } from './NoGatt';
 import { noHub } from './NoHub';
 import { noWebBluetooth } from './NoWebBluetooth';
@@ -14,6 +15,7 @@ export default {
     bluetoothNotAvailable,
     disconnected,
     missingService,
+    newPybricksProfile,
     noGatt,
     noHub,
     noWebBluetooth,

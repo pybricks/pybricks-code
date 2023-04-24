@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
 import { MockProxy, mock } from 'jest-mock-extended';
 import { AsyncSaga } from '../../test';
@@ -23,9 +23,13 @@ import {
     nordicUartServiceUUID,
     nordicUartTxCharUUID,
 } from '../ble-nordic-uart-service/protocol';
-import { blePybricksServiceDidNotReceiveHubCapabilities } from '../ble-pybricks-service/actions';
+import {
+    blePybricksServiceDidNotReceiveHubCapabilities,
+    blePybricksServiceDidReceiveHubCapabilities,
+} from '../ble-pybricks-service/actions';
 import {
     pybricksControlEventCharacteristicUUID,
+    pybricksHubCapabilitiesCharacteristicUUID,
     pybricksServiceUUID,
 } from '../ble-pybricks-service/protocol';
 import { firmwareInstallPybricks } from '../firmware/actions';
@@ -38,7 +42,7 @@ import {
     toggleBluetooth,
 } from './actions';
 import { BleConnectionState } from './reducers';
-import ble from './sagas';
+import ble, { supportedPybricksProfileVersion } from './sagas';
 
 const encoder = new TextEncoder();
 
@@ -106,10 +110,22 @@ function createMocks(): Mocks {
     pybricksChar.startNotifications.mockResolvedValue(pybricksChar);
     pybricksChar.stopNotifications.mockResolvedValue(pybricksChar);
 
+    const hubCapabilitiesChar = mock<BluetoothRemoteGATTCharacteristic>();
+    hubCapabilitiesChar.readValue.mockResolvedValue(
+        new DataView(
+            new Uint8Array([
+                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+            ]).buffer,
+        ),
+    );
+
     const pybricksService = mock<BluetoothRemoteGATTService>();
     pybricksService.getCharacteristic
         .calledWith(pybricksControlEventCharacteristicUUID)
         .mockResolvedValue(pybricksChar);
+    pybricksService.getCharacteristic
+        .calledWith(pybricksHubCapabilitiesCharacteristicUUID)
+        .mockResolvedValue(hubCapabilitiesChar);
 
     const uartRxChar = mock<BluetoothRemoteGATTCharacteristic>();
 
@@ -188,6 +204,13 @@ enum ConnectRunPoint {
     DidConnect,
 }
 
+const defaultPnpId: PnpId = {
+    productId: 0x80,
+    productVersion: 0,
+    vendorId: 919,
+    vendorIdSource: 1,
+};
+
 /**
  * Run the "success" path of the connect saga until a given point.
  *
@@ -221,21 +244,16 @@ async function runConnectUntil(saga: AsyncSaga, point: ConnectRunPoint): Promise
         return;
     }
 
-    const pnpId: PnpId = {
-        productId: 0x80,
-        productVersion: 0,
-        vendorId: 919,
-        vendorIdSource: 1,
-    };
-
-    await expect(saga.take()).resolves.toEqual(bleDIServiceDidReceivePnPId(pnpId));
+    await expect(saga.take()).resolves.toEqual(
+        bleDIServiceDidReceivePnPId(defaultPnpId),
+    );
 
     if (point === ConnectRunPoint.DidReceivePnpId) {
         return;
     }
 
     await expect(saga.take()).resolves.toEqual(
-        blePybricksServiceDidNotReceiveHubCapabilities(pnpId, '3.2.0b2'),
+        blePybricksServiceDidNotReceiveHubCapabilities(defaultPnpId, '3.2.0b2'),
     );
 
     if (point === ConnectRunPoint.DidNotReceiveHubCapabilities) {
@@ -409,6 +427,44 @@ describe('connect action is dispatched', () => {
             await expect(saga.take()).resolves.toEqual(bleDidFailToConnectPybricks());
 
             expect(mocks.gatt.disconnect).toHaveBeenCalled();
+        });
+
+        it('should alert if pybricks profile is newer than supported', async () => {
+            // increase supported minor version by 1 to get hub version
+            const hubVersionParts = supportedPybricksProfileVersion.split('.');
+            hubVersionParts[1] = String(Number(hubVersionParts[1]) + 1);
+            const hubVersion = hubVersionParts.join('.');
+
+            mocks.softwareRevisionChar.readValue.mockResolvedValue(
+                new DataView(encoder.encode(hubVersion).buffer),
+            );
+
+            await runConnectUntil(saga, ConnectRunPoint.DidReceiveFirmwareRevision);
+
+            await expect(saga.take()).resolves.toEqual(
+                bleDIServiceDidReceiveSoftwareRevision(hubVersion),
+            );
+
+            await expect(saga.take()).resolves.toEqual(
+                alertsShowAlert('ble', 'newPybricksProfile', {
+                    hubVersion: hubVersion,
+                    supportedVersion: supportedPybricksProfileVersion,
+                }),
+            );
+
+            // then continue as normal
+
+            await expect(saga.take()).resolves.toEqual(
+                bleDIServiceDidReceivePnPId(defaultPnpId),
+            );
+
+            await expect(saga.take()).resolves.toEqual(
+                blePybricksServiceDidReceiveHubCapabilities(0, 0, 0),
+            );
+
+            await expect(saga.take()).resolves.toEqual(
+                bleDidConnectPybricks('test-id', 'test name'),
+            );
         });
 
         it('should fail if reading pnp id characteristic fails', async () => {
