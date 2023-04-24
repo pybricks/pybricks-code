@@ -4,11 +4,16 @@
 
 ## [Unreleased]
 
+## [2.2.0-beta.3] - 2023-04-24
+
 ### Added
 - Added support for Pybricks Profile v1.3.0.
 
 ### Changed
 - Better error message when download and run fails due to disconnected hub.
+- Updated dependencies.
+- Update code completion for API changes and additions.
+- Updated docs.
 - Updated firmware to v3.3.0b4:
 
   #### Added
@@ -37,6 +42,7 @@
 
   [pybricks-micropython#160]: https://github.com/pybricks/pybricks-micropython/pull/160
   [support#567]: https://github.com/pybricks/support/issues/567
+  [support#912]: https://github.com/pybricks/support/issues/912
   [support#992]: https://github.com/pybricks/support/issues/992
   [support#1022]: https://github.com/pybricks/support/issues/1022
   [support#1026]: https://github.com/pybricks/support/issues/1026
@@ -839,7 +845,8 @@ Prerelease changes are documented at [support#48].
 
 <!-- links for version headings -->
 
-[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.2.0-beta.2...HEAD
+[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.2.0-beta.3...HEAD
+[2.2.0-beta.3]: https://github.com/pybricks/pybricks-code/compare/v2.2.0-beta.2..v2.2.0-beta.3
 [2.2.0-beta.2]: https://github.com/pybricks/pybricks-code/compare/v2.2.0-beta.1..v2.2.0-beta.2
 [2.2.0-beta.1]: https://github.com/pybricks/pybricks-code/compare/v2.1.1..v2.2.0-beta.1
 [2.1.1]: https://github.com/pybricks/pybricks-code/compare/v2.1.0...v2.1.1
