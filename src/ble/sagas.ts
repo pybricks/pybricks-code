@@ -72,6 +72,9 @@ import {
 } from './actions';
 import { BleConnectionState } from './reducers';
 
+/** The version of the Pybricks Profile version currently implemented by this file. */
+export const supportedPybricksProfileVersion = '1.3.0';
+
 const decoder = new TextDecoder();
 
 function* handlePybricksControlValueChanged(data: DataView): Generator {
@@ -265,6 +268,21 @@ function* handleBleConnectPybricks(): Generator {
         );
         yield* put(bleDIServiceDidReceiveSoftwareRevision(softwareRevision));
 
+        // notify user if newer Pybricks Profile on hub
+        if (
+            semver.gte(
+                softwareRevision,
+                new semver.SemVer(supportedPybricksProfileVersion).inc('minor'),
+            )
+        ) {
+            yield* put(
+                alertsShowAlert('ble', 'newPybricksProfile', {
+                    hubVersion: softwareRevision,
+                    supportedVersion: supportedPybricksProfileVersion,
+                }),
+            );
+        }
+
         const pnpIdChar = yield* call(() =>
             deviceInfoService.getCharacteristic(pnpIdUUID).catch((err) => {
                 if (err instanceof DOMException && err.name === 'NotFoundError') {
@@ -274,7 +292,6 @@ function* handleBleConnectPybricks(): Generator {
                 throw err;
             }),
         );
-
         if (!pnpIdChar) {
             // possible with firmware < v3.1.0
             throw new Error('missing PnP ID characteristic');

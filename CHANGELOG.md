@@ -4,6 +4,9 @@
 
 ## [Unreleased]
 
+### Added
+- Added warning message when hub has newer Pybricks Profile version than supported version.
+
 ## [2.2.0-beta.3] - 2023-04-24
 
 ### Added

@@ -30,6 +30,11 @@
             "label": "Update Pybricks firmware"
         }
     },
+    "newPybricksProfile": {
+        "message": "The connected hub uses a newer Pybricks communication profile version. Some features may not work correctly.",
+        "versions": "The hub has {hubVersion} while {app} supports {appVersion}.",
+        "suggestion": "Downgrade the hub firmware or upgrade {app} to avoid problems."
+    },
     "disconnected": {
         "message": "The hub is no longer connected. Please reconnect and try again."
     }
