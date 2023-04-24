@@ -8,7 +8,7 @@
 
 import { firmwareVersion } from '@pybricks/firmware';
 import { Task, buffers, eventChannel } from 'redux-saga';
-import { lt, satisfies } from 'semver';
+import * as semver from 'semver';
 import {
     call,
     cancel,
@@ -229,7 +229,7 @@ function* handleBleConnectPybricks(): Generator {
 
         // notify user if old firmware
         if (
-            lt(
+            semver.lt(
                 pythonVersionToSemver(firmwareRevision),
                 pythonVersionToSemver(firmwareVersion),
             )
@@ -346,7 +346,7 @@ function* handleBleConnectPybricks(): Generator {
         );
 
         // hub capabilities characteristic was introduced in Pybricks Profile v1.2.0
-        if (satisfies(softwareRevision, '^1.2.0')) {
+        if (semver.satisfies(softwareRevision, '^1.2.0')) {
             const pybricksHubCapabilitiesChar = yield* call(() =>
                 pybricksService.getCharacteristic(
                     pybricksHubCapabilitiesCharacteristicUUID,
