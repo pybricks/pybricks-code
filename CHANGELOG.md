@@ -42,6 +42,7 @@
 
   [pybricks-micropython#160]: https://github.com/pybricks/pybricks-micropython/pull/160
   [support#567]: https://github.com/pybricks/support/issues/567
+  [support#912]: https://github.com/pybricks/support/issues/912
   [support#992]: https://github.com/pybricks/support/issues/992
   [support#1022]: https://github.com/pybricks/support/issues/1022
   [support#1026]: https://github.com/pybricks/support/issues/1026
