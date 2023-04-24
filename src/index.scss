@@ -101,6 +101,21 @@ body {
 .#{bp.$ns}-toast {
     user-select: text;
     max-width: 700px;
+
+    &.#{bp.$ns}-intent-primary {
+        background-color: color.adjust(pb.$pybricks-blue, $lightness: -10%);
+
+        & .#{bp.$ns}-button {
+            background-color: color.adjust(
+                pb.$pybricks-blue,
+                $lightness: -10%
+            ) !important;
+
+            &:hover {
+                background: pb.$pybricks-blue !important;
+            }
+        }
+    }
 }
 
 .#{bp.$ns}-button {
