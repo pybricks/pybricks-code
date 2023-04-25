@@ -284,7 +284,7 @@ function* handleDownloadAndRun(action: ReturnType<typeof downloadAndRun>): Gener
             }
         }
 
-        didProgressDownload(1);
+        yield* put(didProgressDownload(1));
 
         const writeUserMetaMessageId2 = nextMessageId();
 
