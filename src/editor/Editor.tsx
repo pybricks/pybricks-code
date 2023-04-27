@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2022 The Pybricks Authors
+// Copyright (c) 2020-2023 The Pybricks Authors
 
 import './editor.scss';
 import {
@@ -263,7 +263,8 @@ const EditorTabs: React.VoidFunctionComponent<EditorTabsProps> = ({ onChange }) 
     );
 
     // close tab when middle-clicked
-    const handleMouseDown = useCallback(
+    // NB: this has to be on mouse up event to prevent middle-click paste on Linux
+    const handleMouseUp = useCallback(
         (e: React.MouseEvent, uuid: UUID) => {
             if (e.button === 1) {
                 dispatch(editorCloseFile(uuid));
@@ -310,7 +311,7 @@ const EditorTabs: React.VoidFunctionComponent<EditorTabsProps> = ({ onChange }) 
                     key={uuid}
                     id={uuid}
                     onKeyDown={(e) => handleKeyDown(e, uuid)}
-                    onMouseDown={(e) => handleMouseDown(e, uuid)}
+                    onMouseUp={(e) => handleMouseUp(e, uuid)}
                 >
                     <TabLabel
                         id={`${labelId}.${uuid}`}
@@ -472,6 +473,7 @@ const Editor: React.VFC = () => {
             rulers: [80],
             lineNumbersMinChars: 4,
             wordBasedSuggestions: false,
+            selectionClipboard: false, // don't copy selection on Linux
         });
 
         monacoEditor.focus();

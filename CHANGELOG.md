@@ -7,6 +7,11 @@
 ### Added
 - Added warning message when hub has newer Pybricks Profile version than supported version.
 
+### Fixed
+- Fix pasting selection when middle click to close file on Linux ([support#1046]).
+
+[support#1046]: https://github.com/pybricks/support/issues/1046
+
 ## [2.2.0-beta.3] - 2023-04-24
 
 ### Added
