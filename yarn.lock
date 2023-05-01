@@ -2640,7 +2640,7 @@ __metadata:
     "@pybricks/mpy-cross-v6": ^2.0.0
     "@pybricks/python-program-analysis": ^2.0.0
     "@reduxjs/toolkit": ^1.9.5
-    "@shopify/react-i18n": ^7.7.2
+    "@shopify/react-i18n": ^7.8.0
     "@svgr/webpack": ^7.0.0
     "@testing-library/dom": ^9.2.0
     "@testing-library/jest-dom": ^5.16.5
@@ -4295,18 +4295,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@shopify/react-hooks@npm:^3.0.4":
-  version: 3.0.4
-  resolution: "@shopify/react-hooks@npm:3.0.4"
+"@shopify/react-hooks@npm:^3.0.5":
+  version: 3.0.5
+  resolution: "@shopify/react-hooks@npm:3.0.5"
   peerDependencies:
     react: ">=16.8.0 <19.0.0"
-  checksum: 507a9dbebdc883f549bc1b9d9e7b18b6f0fe34d94bb07360b083203e815ccc9f2ce9fe5335ff3b81c8fd6cfee89cf21bdc56ebc27b68f3ed0f3cbf10be670657
+  checksum: 07991c04921da2116c6d222e87687707993aac3aa0d36f6dde5978a326c799a33b4a6568017a386db43072e3eefe6de1e79d007adba93350bdddec350c0a09ab
   languageName: node
   linkType: hard
 
-"@shopify/react-i18n@npm:^7.7.2":
-  version: 7.7.2
-  resolution: "@shopify/react-i18n@npm:7.7.2"
+"@shopify/react-i18n@npm:^7.8.0":
+  version: 7.8.0
+  resolution: "@shopify/react-i18n@npm:7.8.0"
   dependencies:
     "@babel/template": ^7.0.0
     "@babel/traverse": ^7.0.0
@@ -4314,7 +4314,7 @@ __metadata:
     "@shopify/function-enhancers": ^3.0.1
     "@shopify/i18n": ^2.0.1
     "@shopify/react-effect": ^5.0.3
-    "@shopify/react-hooks": ^3.0.4
+    "@shopify/react-hooks": ^3.0.5
     "@shopify/useful-types": ^5.1.2
     "@types/hoist-non-react-statics": ^3.0.1
     change-case: ^4.1.2
@@ -4334,7 +4334,7 @@ __metadata:
       optional: true
     fs-extra:
       optional: true
-  checksum: a17b67cdcf3d4acd25d88b95dba0fb784c0ff2967a88279562dc68be5b667cfba00ff8e10f1efd008ac840b18c3dc0975f4d3bb4a64ac362319210b2ec762297
+  checksum: fa2030ddfe7a4408b7be30dc5089e4ad7a8d6b5f534c21db832a7c7ee6fdb9d8127a004dee5cc9ce87ffa74d6a2988250ebdf62b83714bf763a80a5d2b0b7e7e
   languageName: node
   linkType: hard
 
