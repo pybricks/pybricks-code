@@ -269,11 +269,19 @@ export enum HubCapabilityFlag {
      */
     HasRepl = 1 << 0,
     /**
-     * Hub supports {@link FileFormat.MultiMpy6}
+     * Hub supports {@link FileFormat.MultiMpy6} (bytecode only, no native modules).
      *
      * @since Pybricks Profile v1.2.0
      */
     UserProgramMultiMpy6 = 1 << 1,
+
+    /**
+     * Hub supports {@link FileFormat.MultiMpy6} that include native modules
+     * with MPY ABI v6.1.
+     *
+     * @since Pybricks Profile v1.3.0
+     */
+    UserProgramMultiMpy6Native6p1 = 1 << 2,
 }
 
 /** Supported user program file formats. */
