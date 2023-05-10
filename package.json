@@ -22,7 +22,7 @@
         "@pybricks/python-program-analysis": "^2.0.0",
         "@reduxjs/toolkit": "^1.9.5",
         "@shopify/react-i18n": "^7.8.0",
-        "@svgr/webpack": "^7.0.0",
+        "@svgr/webpack": "^8.0.1",
         "@testing-library/dom": "^9.2.0",
         "@testing-library/jest-dom": "^5.16.5",
         "@testing-library/react": "^12.1.5",
