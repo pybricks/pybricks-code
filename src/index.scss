@@ -103,16 +103,13 @@ body {
     max-width: 700px;
 
     &.#{bp.$ns}-intent-primary {
-        background-color: color.adjust(pb.$pybricks-blue, $lightness: -10%);
+        background-color: pb.$pybricks-blue;
 
         & .#{bp.$ns}-button {
-            background-color: color.adjust(
-                pb.$pybricks-blue,
-                $lightness: -10%
-            ) !important;
+            background-color: pb.$pybricks-blue !important;
 
             &:hover {
-                background: pb.$pybricks-blue !important;
+                background: color.adjust(pb.$pybricks-blue, $lightness: -5%) !important;
             }
         }
     }
