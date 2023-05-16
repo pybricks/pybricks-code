@@ -9,7 +9,7 @@
     },
     "dependencies": {
         "@babel/core": "^7.21.8",
-        "@blueprintjs/core": "^4.18.0",
+        "@blueprintjs/core": "^4.19.0",
         "@blueprintjs/popover2": "^1.14.2",
         "@blueprintjs/select": "^4.9.15",
         "@pmmmwh/react-refresh-webpack-plugin": "^0.5.10",
