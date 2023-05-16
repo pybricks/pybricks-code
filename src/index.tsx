@@ -2,7 +2,7 @@
 // Copyright (c) 2020-2023 The Pybricks Authors
 
 import './index.scss';
-import { HotkeysProvider, Toaster } from '@blueprintjs/core';
+import { HotkeysProvider, OverlayToaster } from '@blueprintjs/core';
 import { configureStore } from '@reduxjs/toolkit';
 import { I18nContext } from '@shopify/react-i18n';
 import React from 'react';
@@ -22,7 +22,7 @@ import rootSaga, { RootSagaContext } from './sagas';
 import { defaultTerminalContext } from './terminal/TerminalContext';
 import { createCountFunc } from './utils/iter';
 
-const toasterRef = React.createRef<Toaster>();
+const toasterRef = React.createRef<OverlayToaster>();
 
 const sagaMiddleware = createSagaMiddleware<RootSagaContext>({
     context: {
@@ -81,7 +81,7 @@ ReactDOM.render(
                         <App />
                     </HotkeysProvider>
                 </OverlayProvider>
-                <Toaster ref={toasterRef} />
+                <OverlayToaster ref={toasterRef} />
             </I18nContext.Provider>
         </Provider>
     </React.StrictMode>,
