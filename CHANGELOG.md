@@ -4,8 +4,31 @@
 
 ## [Unreleased]
 
+## [2.2.0-beta.4] - 2023-05-16
+
 ### Added
 - Added warning message when hub has newer Pybricks Profile version than supported version.
+
+### Changed
+- Updated dependencies.
+- Update code completion for API changes and additions.
+- Updated docs.
+- Updated firmware to v3.3.0b5:
+
+  #### Added
+  - Enabled the `gc` module (except on BOOST Move hub).
+  - Added `hub.ble` attribute for broadcasting/observing ([pybricks-micropython#158]).
+
+  #### Changed
+  - Updated MicroPython to v1.20.0.
+
+  #### Fixed
+  - Fixed stdin containing `0x06` command byte ([support#1052]).
+  - Fixed motor process causing delays on ev3dev ([support#1035]).
+
+  [pybricks-micropython#158]: https://github.com/pybricks/pybricks-micropython/pull/158
+  [support#1035]: https://github.com/pybricks/support/issues/1035
+  [support#1052]: https://github.com/pybricks/support/issues/1052
 
 ### Fixed
 - Fix pasting selection when middle click to close file on Linux ([support#1046]).
@@ -853,7 +876,8 @@ Prerelease changes are documented at [support#48].
 
 <!-- links for version headings -->
 
-[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.2.0-beta.3...HEAD
+[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.2.0-beta.4...HEAD
+[2.2.0-beta.4]: https://github.com/pybricks/pybricks-code/compare/v2.2.0-beta.3..v2.2.0-beta.4
 [2.2.0-beta.3]: https://github.com/pybricks/pybricks-code/compare/v2.2.0-beta.2..v2.2.0-beta.3
 [2.2.0-beta.2]: https://github.com/pybricks/pybricks-code/compare/v2.2.0-beta.1..v2.2.0-beta.2
 [2.2.0-beta.1]: https://github.com/pybricks/pybricks-code/compare/v2.1.1..v2.2.0-beta.1
