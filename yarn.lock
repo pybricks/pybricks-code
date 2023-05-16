@@ -2579,19 +2579,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pybricks/firmware@npm:7.3.1":
-  version: 7.3.1
-  resolution: "@pybricks/firmware@npm:7.3.1"
+"@pybricks/firmware@npm:7.4.0":
+  version: 7.4.0
+  resolution: "@pybricks/firmware@npm:7.4.0"
   dependencies:
     jszip: ^3.7.1
-  checksum: b241768d08df7c1bc284ac5696bb540e4aa08c959f3534d7cff6156dfd06f5d864617af80925ecb981eced5db4f323adca9bad14ce563bee61285bbb1e47052d
+  checksum: 88ae2f538ed08dc92016bce213b3b6b1311be9d5b685dd8297814a012b63eef4e980dbe63b00d9e1009f9e017e1a891e223327c9cc1a6040610598c12e31a5ba
   languageName: node
   linkType: hard
 
-"@pybricks/ide-docs@npm:2.8.0":
-  version: 2.8.0
-  resolution: "@pybricks/ide-docs@npm:2.8.0"
-  checksum: d9f489ed13954b04cc8d9f79d1ee81426eae994cb52888b626ed9d0aec40f4ae3431b9d50285456433c9c02582472c8c94c6e5a8a609cb74c3d84df00c6d9ba5
+"@pybricks/ide-docs@npm:2.9.0":
+  version: 2.9.0
+  resolution: "@pybricks/ide-docs@npm:2.9.0"
+  checksum: 802ed3ee49cc0220d1f9a82de7a7fb01773da3e644522b339f43bcb91f45aa7a20ce013ce980ff14c4ff83bf43958fdb46d0514e7f4d9ddbfb9bfb5c70cbd373
   languageName: node
   linkType: hard
 
@@ -2602,10 +2602,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pybricks/jedi@npm:1.8.0":
-  version: 1.8.0
-  resolution: "@pybricks/jedi@npm:1.8.0"
-  checksum: 0a95513d5c63f29dee7da978e4eaa9f7507a386fe3391677f749d075077d8b4809114723f1cca3b59bc8a9d79f27c076cc985db6f9a1a6f229e838bc2c11fb40
+"@pybricks/jedi@npm:1.9.0":
+  version: 1.9.0
+  resolution: "@pybricks/jedi@npm:1.9.0"
+  checksum: b290a33503357d80a3df1ec94459d524f5746f11a77f83ffca0e7a0bf437fb11fa7817745faae1d11dad91af3caa6b6abe8b6bc216e52354a808b6c5425f6f30
   languageName: node
   linkType: hard
 
@@ -2632,10 +2632,10 @@ __metadata:
     "@blueprintjs/popover2": ^1.14.2
     "@blueprintjs/select": ^4.9.15
     "@pmmmwh/react-refresh-webpack-plugin": ^0.5.10
-    "@pybricks/firmware": 7.3.1
-    "@pybricks/ide-docs": 2.8.0
+    "@pybricks/firmware": 7.4.0
+    "@pybricks/ide-docs": 2.9.0
     "@pybricks/images": ^1.3.0
-    "@pybricks/jedi": 1.8.0
+    "@pybricks/jedi": 1.9.0
     "@pybricks/mpy-cross-v5": ^2.0.0
     "@pybricks/mpy-cross-v6": ^2.0.0
     "@pybricks/python-program-analysis": ^2.0.0
