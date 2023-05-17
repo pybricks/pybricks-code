@@ -1,12 +1,25 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2022-2023 The Pybricks Authors
 
+import { AbstractPureComponent2 } from '@blueprintjs/core';
 import { act, cleanup, getByLabelText, waitFor } from '@testing-library/react';
 import React from 'react';
 import { testRender } from '../../test';
 import { firmwareInstallPybricks } from '../firmware/actions';
 import { firmwareRestoreOfficialDialogShow } from '../firmware/restoreOfficialDialog/actions';
 import Settings from './Settings';
+
+beforeEach(() => {
+    // this avoids react testing lib errors about not using act() by running
+    // callbacks immediately instead of deferring
+    jest.spyOn(
+        AbstractPureComponent2.prototype,
+        'requestAnimationFrame',
+    ).mockImplementation((callback) => {
+        callback();
+        return () => undefined;
+    });
+});
 
 afterEach(() => {
     cleanup();

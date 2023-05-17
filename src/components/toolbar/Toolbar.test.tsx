@@ -68,7 +68,7 @@ describe('Toolbar', () => {
 
         const { button1, button2, button3 } = getButtons(toolbar);
 
-        button1.focus();
+        act(() => button1.focus());
         await act(() => user.keyboard('{ArrowRight}'));
 
         expect(button2).toHaveFocus();
@@ -82,7 +82,7 @@ describe('Toolbar', () => {
 
         const { button1, button2, button3 } = getButtons(toolbar);
 
-        button3.focus();
+        act(() => button3.focus());
         await act(() => user.keyboard('{ArrowLeft}'));
 
         expect(button2).toHaveFocus();
@@ -96,7 +96,7 @@ describe('Toolbar', () => {
 
         const { button1, button2, button3 } = getButtons(toolbar);
 
-        button3.focus();
+        act(() => button3.focus());
         await act(() => user.keyboard('{ArrowRight}'));
 
         expect(button1).toHaveFocus();
@@ -110,7 +110,7 @@ describe('Toolbar', () => {
 
         const { button1, button2, button3 } = getButtons(toolbar);
 
-        button1.focus();
+        act(() => button1.focus());
         await act(() => user.keyboard('{ArrowLeft}'));
 
         expect(button3).toHaveFocus();
@@ -124,7 +124,7 @@ describe('Toolbar', () => {
 
         const { button1, button2, button3 } = getButtons(toolbar);
 
-        button3.focus();
+        act(() => button3.focus());
         await act(() => user.keyboard('{Home}'));
 
         expect(button1).toHaveFocus();
@@ -138,7 +138,7 @@ describe('Toolbar', () => {
 
         const { button1, button2, button3 } = getButtons(toolbar);
 
-        button1.focus();
+        act(() => button1.focus());
         await act(() => user.keyboard('{End}'));
 
         expect(button3).toHaveFocus();
@@ -152,7 +152,7 @@ describe('Toolbar', () => {
 
         const { button1, button2, button3 } = getButtons(toolbar);
 
-        button2.focus();
+        act(() => button2.focus());
         await act(() => user.keyboard('{ArrowUp}'));
 
         expect(button2).toHaveFocus();
@@ -166,7 +166,7 @@ describe('Toolbar', () => {
 
         const { button1, button2, button3 } = getButtons(toolbar);
 
-        button2.focus();
+        act(() => button2.focus());
         await act(() => user.keyboard('{ArrowDown}'));
 
         expect(button2).toHaveFocus();
@@ -180,7 +180,7 @@ describe('Toolbar', () => {
 
         const { button1, button2, button3 } = getButtons(toolbar);
 
-        button2.focus();
+        act(() => button2.focus());
         await act(() => user.tab());
 
         expect(document.body).toHaveFocus();

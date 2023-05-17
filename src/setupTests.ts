@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2022 The Pybricks Authors
+// Copyright (c) 2020-2023 The Pybricks Authors
 
 // jest-dom adds custom jest matchers for asserting on DOM nodes.
 // allows you to do things like:
@@ -15,6 +15,10 @@ import {
 } from '@blueprintjs/core/lib/cjs/components/hotkeys/hotkeyParser';
 // @ts-expect-error no typings
 import matchMediaPolyfill from 'mq-polyfill';
+import { config } from 'react-transition-group';
+
+// avoid react testing library errors about not using act()
+config.disabled = true;
 
 jest.mock('./fileStorage/hooks');
 
