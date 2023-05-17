@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
 import './dfuWindowsDriverInstallDialog.scss';
 import {
@@ -90,7 +90,7 @@ type ScreenshotProps = {
     url: URL;
 };
 
-const Screenshot: React.VoidFunctionComponent<ScreenshotProps> = ({ url }) => {
+const Screenshot: React.FunctionComponent<ScreenshotProps> = ({ url }) => {
     return (
         <Card elevation={Elevation.FOUR}>
             <img src={url.toString()} alt="Screenshot" width={673} height={523} />
@@ -102,7 +102,7 @@ type HubTypeProps = {
     hub: Hub;
 };
 
-const Step1: React.VoidFunctionComponent = () => {
+const Step1: React.FunctionComponent = () => {
     const i18n = useI18n();
 
     return (
@@ -123,7 +123,7 @@ const Step1: React.VoidFunctionComponent = () => {
     );
 };
 
-const Step2: React.VoidFunctionComponent<HubTypeProps> = ({ hub }) => {
+const Step2: React.FunctionComponent<HubTypeProps> = ({ hub }) => {
     const i18n = useI18n();
 
     return (
@@ -164,7 +164,7 @@ const Step2: React.VoidFunctionComponent<HubTypeProps> = ({ hub }) => {
     );
 };
 
-const Step3: React.VoidFunctionComponent<HubTypeProps> = ({ hub }) => {
+const Step3: React.FunctionComponent<HubTypeProps> = ({ hub }) => {
     const i18n = useI18n();
 
     return (
@@ -201,7 +201,7 @@ const Step3: React.VoidFunctionComponent<HubTypeProps> = ({ hub }) => {
     );
 };
 
-const Step4: React.VoidFunctionComponent<HubTypeProps> = ({ hub }) => {
+const Step4: React.FunctionComponent<HubTypeProps> = ({ hub }) => {
     const i18n = useI18n();
 
     return (
@@ -228,7 +228,7 @@ const Step4: React.VoidFunctionComponent<HubTypeProps> = ({ hub }) => {
     );
 };
 
-const Step5: React.VoidFunctionComponent<HubTypeProps> = ({ hub }) => {
+const Step5: React.FunctionComponent<HubTypeProps> = ({ hub }) => {
     const i18n = useI18n();
 
     return (
@@ -252,7 +252,7 @@ const Step5: React.VoidFunctionComponent<HubTypeProps> = ({ hub }) => {
     );
 };
 
-const Step6: React.VoidFunctionComponent<HubTypeProps> = ({ hub }) => {
+const Step6: React.FunctionComponent<HubTypeProps> = ({ hub }) => {
     const i18n = useI18n();
 
     return (
@@ -277,7 +277,7 @@ const Step6: React.VoidFunctionComponent<HubTypeProps> = ({ hub }) => {
     );
 };
 
-const Step7: React.VoidFunctionComponent<HubTypeProps> = ({ hub }) => {
+const Step7: React.FunctionComponent<HubTypeProps> = ({ hub }) => {
     const i18n = useI18n();
 
     return (
@@ -304,7 +304,7 @@ const Step7: React.VoidFunctionComponent<HubTypeProps> = ({ hub }) => {
     );
 };
 
-const Step8: React.VoidFunctionComponent = () => {
+const Step8: React.FunctionComponent = () => {
     const i18n = useI18n();
 
     return (
@@ -322,7 +322,7 @@ const Step8: React.VoidFunctionComponent = () => {
     );
 };
 
-const Step9: React.VoidFunctionComponent<HubTypeProps> = ({ hub }) => {
+const Step9: React.FunctionComponent<HubTypeProps> = ({ hub }) => {
     const i18n = useI18n();
 
     return (
@@ -346,7 +346,7 @@ const Step9: React.VoidFunctionComponent<HubTypeProps> = ({ hub }) => {
     );
 };
 
-const DfuWindowsDriverInstallDialog: React.VoidFunctionComponent = () => {
+const DfuWindowsDriverInstallDialog: React.FunctionComponent = () => {
     const [hub] = useHubPickerSelectedHub();
     const { isOpen } = useSelector((s) => s.firmware.dfuWindowsDriverInstallDialog);
     const dispatch = useDispatch();

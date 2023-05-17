@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
 import { Intent, ProgressBar } from '@blueprintjs/core';
 import React from 'react';
@@ -11,7 +11,7 @@ type FlashProgressProps = {
     progress: number | undefined;
 };
 
-const FlashProgress: React.VoidFunctionComponent<FlashProgressProps> = ({
+const FlashProgress: React.FunctionComponent<FlashProgressProps> = ({
     action,
     progress,
 }) => {

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
 import { Button, Intent } from '@blueprintjs/core';
 import React from 'react';
@@ -10,7 +10,7 @@ type DfuErrorProps = {
     onTryAgain: () => void;
 };
 
-const DfuError: React.VoidFunctionComponent<DfuErrorProps> = ({ onTryAgain }) => {
+const DfuError: React.FunctionComponent<DfuErrorProps> = ({ onTryAgain }) => {
     const i18n = useI18n();
     return (
         <>

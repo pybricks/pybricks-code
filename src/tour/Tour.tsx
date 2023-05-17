@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
 import { Colors, Icon } from '@blueprintjs/core';
 import React, { useCallback, useMemo, useState } from 'react';
@@ -107,7 +107,7 @@ const DownloadAndRunStep = React.memo(function DownloadAndRunStep() {
     );
 });
 
-const Tour: React.VoidFunctionComponent = () => {
+const Tour: React.FunctionComponent = () => {
     const [selectedActivity, setSelectedActivity] = useActivitiesSelectedActivity();
     const [showOnStartup, setShowOnStartup] = useLocalStorage(
         'tour.showOnStartup',

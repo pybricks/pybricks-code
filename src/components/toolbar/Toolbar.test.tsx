@@ -11,7 +11,7 @@ afterEach(() => {
     cleanup();
 });
 
-const TestToolbar: React.VoidFunctionComponent = () => {
+const TestToolbar: React.FunctionComponent = () => {
     return (
         <Toolbar
             className="test-class"

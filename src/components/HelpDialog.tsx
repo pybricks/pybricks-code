@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
 import './HelpDialog.scss';
 import { Classes } from '@blueprintjs/core';
@@ -9,7 +9,7 @@ import {
     Popover2Arrow,
 } from '@blueprintjs/popover2/lib/cjs/popover2Arrow';
 import classNames from 'classnames';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { PropsWithChildren, useEffect, useMemo, useRef, useState } from 'react';
 import {
     DismissButton,
     FocusScope,
@@ -36,7 +36,7 @@ type HelpDialogProps = {
 };
 
 /** React component for showing help as a dialog. */
-const HelpDialog: React.FunctionComponent<HelpDialogProps> = ({
+const HelpDialog: React.FunctionComponent<PropsWithChildren<HelpDialogProps>> = ({
     title,
     isOpen,
     openButton,

@@ -6,7 +6,7 @@ import React from 'react';
 import type { CreateToast } from '../../toasterTypes';
 import { useI18n } from './i18n';
 
-const Disconnected: React.VoidFunctionComponent = () => {
+const Disconnected: React.FunctionComponent = () => {
     const i18n = useI18n();
     return <p>{i18n.translate('disconnected.message')}</p>;
 };

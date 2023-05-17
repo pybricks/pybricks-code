@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
 import { Classes, Icon, IconName, IconSize, Spinner } from '@blueprintjs/core';
 import { mergeRefs, useId } from '@react-aria/utils';
@@ -29,7 +29,7 @@ type ButtonProps = {
 };
 
 /** Similar to Blueprint.js button with better accessibility. */
-export const Button: React.VoidFunctionComponent<ButtonProps> = ({
+export const Button: React.FunctionComponent<ButtonProps> = ({
     id,
     label,
     hideLabel,

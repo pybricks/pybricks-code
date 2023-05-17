@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
 import './index.scss';
 import { Button, Intent } from '@blueprintjs/core';
@@ -11,7 +11,7 @@ type OldFirmwareProps = {
     onFlashFirmware: () => void;
 };
 
-const OldFirmware: React.VoidFunctionComponent<OldFirmwareProps> = ({
+const OldFirmware: React.FunctionComponent<OldFirmwareProps> = ({
     onFlashFirmware,
 }) => {
     const i18n = useI18n();

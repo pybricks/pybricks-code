@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
 import './bootloaderInstructions.scss';
 import { Callout, Intent } from '@blueprintjs/core';
@@ -105,9 +105,11 @@ function countValidChildren(children: React.ReactNode) {
  * Provides customized instructions on how to enter bootloader mode based
  * on the hub type.
  */
-const BootloaderInstructions: React.VoidFunctionComponent<
-    BootloaderInstructionsProps
-> = ({ hubType, recovery, flashButtonText }) => {
+const BootloaderInstructions: React.FunctionComponent<BootloaderInstructionsProps> = ({
+    hubType,
+    recovery,
+    flashButtonText,
+}) => {
     const dispatch = useDispatch();
     const i18n = useI18n();
 

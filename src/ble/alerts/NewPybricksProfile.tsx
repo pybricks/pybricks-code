@@ -14,7 +14,7 @@ type NewPybricksProfileProps = {
     supportedVersion: string;
 };
 
-const NewPybricksProfile: React.VoidFunctionComponent<NewPybricksProfileProps> = ({
+const NewPybricksProfile: React.FunctionComponent<NewPybricksProfileProps> = ({
     hubVersion,
     supportedVersion,
 }) => {

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021-2022 The Pybricks Authors
+// Copyright (c) 2021-2023 The Pybricks Authors
 
 // Icon for indicating external links
 
@@ -8,7 +8,7 @@ import React from 'react';
 
 import './clipboard.scss';
 
-const ClipboardIcon: React.VFC = (_props) => {
+const ClipboardIcon: React.FunctionComponent = () => {
     return (
         <span className="pb-clipboard">
             &nbsp;

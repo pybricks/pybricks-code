@@ -13,7 +13,7 @@ import icon from './icon.svg';
 
 type StopButtonProps = Pick<ActionButtonProps, 'id'>;
 
-const StopButton: React.VoidFunctionComponent<StopButtonProps> = ({ id }) => {
+const StopButton: React.FunctionComponent<StopButtonProps> = ({ id }) => {
     const runtime = useSelector((s) => s.hub.runtime);
     const keyboardShortcut = 'F6';
 

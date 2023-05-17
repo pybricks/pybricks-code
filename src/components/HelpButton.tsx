@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
 import { Classes } from '@blueprintjs/core';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -16,7 +16,7 @@ type HelpButtonProps = {
     content: React.ReactNode;
 };
 
-const HelpButton: React.VoidFunctionComponent<HelpButtonProps> = ({
+const HelpButton: React.FunctionComponent<HelpButtonProps> = ({
     helpForLabel,
     content,
 }) => {

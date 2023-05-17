@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
 import './hubPicker.scss';
 import { Radio, RadioGroup } from '@blueprintjs/core';
@@ -12,7 +12,7 @@ type HubIconProps = {
     label: string;
 };
 
-const HubIcon: React.VoidFunctionComponent<HubIconProps> = ({ url, label }) => {
+const HubIcon: React.FunctionComponent<HubIconProps> = ({ url, label }) => {
     return <img src={url.toString()} width={64} height={64} title={label} />;
 };
 
@@ -20,9 +20,7 @@ type HubPickerProps = {
     disabled?: boolean;
 };
 
-export const HubPicker: React.VoidFunctionComponent<HubPickerProps> = ({
-    disabled,
-}) => {
+export const HubPicker: React.FunctionComponent<HubPickerProps> = ({ disabled }) => {
     const [selectedHub, setSelectedHub] = useHubPickerSelectedHub();
 
     return (

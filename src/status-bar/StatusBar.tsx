@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2022 The Pybricks Authors
+// Copyright (c) 2020-2023 The Pybricks Authors
 
 import {
     Button,
@@ -25,7 +25,7 @@ const commonPopoverProps: Partial<Popover2Props> = {
     placement: 'top',
 };
 
-const CompletionEngineIndicator: React.VoidFunctionComponent = () => {
+const CompletionEngineIndicator: React.FunctionComponent = () => {
     const { status } = useSelector((s) => s.editor.codeCompletion);
     const i18n = useI18n();
 
@@ -69,7 +69,7 @@ const CompletionEngineIndicator: React.VoidFunctionComponent = () => {
     );
 };
 
-const HubInfoButton: React.VoidFunctionComponent = () => {
+const HubInfoButton: React.FunctionComponent = () => {
     const i18n = useI18n();
     const deviceName = useSelector((s) => s.ble.deviceName);
     const deviceType = useSelector((s) => s.ble.deviceType);
@@ -110,7 +110,7 @@ const HubInfoButton: React.VoidFunctionComponent = () => {
     );
 };
 
-const BatteryIndicator: React.VoidFunctionComponent = () => {
+const BatteryIndicator: React.FunctionComponent = () => {
     const i18n = useI18n();
     const charging = useSelector((s) => s.ble.deviceBatteryCharging);
     const lowBatteryWarning = useSelector((s) => s.ble.deviceLowBatteryWarning);
@@ -142,7 +142,7 @@ const BatteryIndicator: React.VoidFunctionComponent = () => {
     );
 };
 
-const StatusBar: React.VFC = (_props) => {
+const StatusBar: React.FunctionComponent = () => {
     const connection = useSelector((s) => s.ble.connection);
 
     return (

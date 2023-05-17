@@ -87,9 +87,14 @@ type EditorContextMenuItemProps = Readonly<{
     editorAction: string;
 }>;
 
-const EditorContextMenuItem: React.VoidFunctionComponent<
-    EditorContextMenuItemProps
-> = ({ label, icon, keyboardShortcut, disabled, editor, editorAction }) => {
+const EditorContextMenuItem: React.FunctionComponent<EditorContextMenuItemProps> = ({
+    label,
+    icon,
+    keyboardShortcut,
+    disabled,
+    editor,
+    editorAction,
+}) => {
     const labelId = useId();
 
     return (
@@ -114,7 +119,7 @@ type EditorContextMenuProps = {
     editor: monaco.editor.IStandaloneCodeEditor | undefined;
 };
 
-const EditorContextMenu: React.VoidFunctionComponent<EditorContextMenuProps> = ({
+const EditorContextMenu: React.FunctionComponent<EditorContextMenuProps> = ({
     editor,
 }) => {
     const i18n = useI18n();
@@ -181,7 +186,7 @@ type FileNameProps = {
     onNameChanged: () => void;
 };
 
-const TabLabel: React.VoidFunctionComponent<FileNameProps> = ({
+const TabLabel: React.FunctionComponent<FileNameProps> = ({
     id,
     uuid,
     onNameChanged,
@@ -204,7 +209,7 @@ type TabCloseButtonProps = {
     uuid: UUID;
 };
 
-const TabCloseButton: React.VoidFunctionComponent<TabCloseButtonProps> = ({ uuid }) => {
+const TabCloseButton: React.FunctionComponent<TabCloseButtonProps> = ({ uuid }) => {
     const fileName = useFileStoragePath(uuid) ?? '';
     const dispatch = useDispatch();
     const i18n = useI18n();
@@ -235,7 +240,7 @@ type EditorTabsProps = Readonly<{
     onChange?: () => void;
 }>;
 
-const EditorTabs: React.VoidFunctionComponent<EditorTabsProps> = ({ onChange }) => {
+const EditorTabs: React.FunctionComponent<EditorTabsProps> = ({ onChange }) => {
     const openFiles = useSelector((s) => s.editor.openFileUuids);
     const activeFile = useSelector((s) => s.editor.activeFileUuid);
     const dispatch = useDispatch();
@@ -369,7 +374,7 @@ function useEditorAction(
     );
 }
 
-const Editor: React.VFC = () => {
+const Editor: React.FunctionComponent = () => {
     const dispatch = useDispatch();
 
     const [editor, setEditor] = useState<monaco.editor.IStandaloneCodeEditor>();

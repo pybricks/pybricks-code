@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
 import { Icon, Intent } from '@blueprintjs/core';
 import React from 'react';
 import type { CreateToast } from '../../toasterTypes';
 import { useI18n } from './i18n';
 
-const NoFilesToBackup: React.VoidFunctionComponent = () => {
+const NoFilesToBackup: React.FunctionComponent = () => {
     const i18n = useI18n();
     return (
         <>

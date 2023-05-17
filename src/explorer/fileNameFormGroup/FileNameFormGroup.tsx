@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
 import { Classes, Code, FormGroup, InputGroup, Intent, Tag } from '@blueprintjs/core';
 import type { AriaButtonProps } from '@react-types/button';
@@ -39,7 +39,7 @@ function replaceInvalidCharacters(value: string): string {
 
 type FixItButtonProps = Pick<AriaButtonProps<'a'>, 'onPress'>;
 
-const FixItButton: React.VoidFunctionComponent<FixItButtonProps> = (props) => {
+const FixItButton: React.FunctionComponent<FixItButtonProps> = (props) => {
     const i18n = useI18n();
     const ref = useRef<HTMLAnchorElement>(null);
 
@@ -66,7 +66,7 @@ type FileNameHelpTextProps = {
 /**
  * Component that maps FileNameValidationResult to help message to display to user.
  */
-const FileNameHelpText: React.VoidFunctionComponent<FileNameHelpTextProps> = ({
+const FileNameHelpText: React.FunctionComponent<FileNameHelpTextProps> = ({
     fileName,
     validation,
     onFix,
@@ -145,7 +145,7 @@ type FileNameFormGroupProps = {
 /**
  * Component used to get a valid new file name.
  */
-const FileNameFormGroup: React.VoidFunctionComponent<FileNameFormGroupProps> = ({
+const FileNameFormGroup: React.FunctionComponent<FileNameFormGroupProps> = ({
     fileName,
     fileExtension,
     validationResult,

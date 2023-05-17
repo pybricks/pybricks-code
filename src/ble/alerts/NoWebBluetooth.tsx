@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
 import { Button, Code, Intent } from '@blueprintjs/core';
 import React from 'react';
@@ -7,7 +7,7 @@ import type { CreateToast } from '../../toasterTypes';
 import { isIOS, isLinux } from '../../utils/os';
 import { useI18n } from './i18n';
 
-const NoWebBluetooth: React.VoidFunctionComponent = () => {
+const NoWebBluetooth: React.FunctionComponent = () => {
     const i18n = useI18n();
     return (
         <>

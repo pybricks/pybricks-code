@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021-2022 The Pybricks Authors
+// Copyright (c) 2021-2023 The Pybricks Authors
 
 // provides translation for notification text
 
@@ -12,7 +12,7 @@ type NotificationActionProps = {
     replacements?: Replacements;
 };
 
-const NotificationAction: React.VoidFunctionComponent<NotificationActionProps> = ({
+const NotificationAction: React.FunctionComponent<NotificationActionProps> = ({
     messageId,
     replacements,
 }) => {

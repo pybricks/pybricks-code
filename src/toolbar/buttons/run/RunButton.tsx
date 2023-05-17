@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2022 The Pybricks Authors
+// Copyright (c) 2020-2023 The Pybricks Authors
 
 import React from 'react';
 import { useDispatch } from 'react-redux';
@@ -12,7 +12,7 @@ import icon from './icon.svg';
 
 type RunButtonProps = Pick<ActionButtonProps, 'id'>;
 
-const RunButton: React.VoidFunctionComponent<RunButtonProps> = ({ id }) => {
+const RunButton: React.FunctionComponent<RunButtonProps> = ({ id }) => {
     const { downloadProgress, preferredFileFormat, runtime, useLegacyDownload } =
         useSelector((s) => s.hub);
     const activeFile = useSelector((s) => s.editor.activeFileUuid);

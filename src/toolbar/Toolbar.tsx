@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2022 The Pybricks Authors
+// Copyright (c) 2020-2023 The Pybricks Authors
 
 import { ButtonGroup } from '@blueprintjs/core';
 import React from 'react';
@@ -19,7 +19,7 @@ const bluetoothButtonId = 'pb-toolbar-bluetooth-button';
 const runButtonId = 'pb-toolbar-run-button';
 const sponsorButtonId = 'pb-toolbar-sponsor-button';
 
-const Toolbar: React.VFC = () => {
+const Toolbar: React.FunctionComponent = () => {
     const i18n = useI18n();
     const stopButtonId = useId();
     const replButtonId = useId();

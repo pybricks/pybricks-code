@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 import { FocusScope } from 'react-aria';
 import { useToolbar } from './aria';
 import { ToolbarStateContext, useToolbarState } from './state';
@@ -22,7 +22,9 @@ type ToolbarProps = Pick<
  *
  * https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/toolbar_role
  */
-export const Toolbar: React.FunctionComponent<ToolbarProps> = (props) => {
+export const Toolbar: React.FunctionComponent<PropsWithChildren<ToolbarProps>> = (
+    props,
+) => {
     const { className, children } = props;
     const state = useToolbarState(props);
     const { toolbarProps } = useToolbar(props);

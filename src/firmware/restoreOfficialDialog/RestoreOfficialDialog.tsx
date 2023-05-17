@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
 import {
     Button,
@@ -25,7 +25,7 @@ import BootloaderInstructions from '../bootloaderInstructions/BootloaderInstruct
 import { firmwareRestoreOfficialDialogHide } from './actions';
 import { useI18n } from './i18n';
 
-const SelectHubPanel: React.VoidFunctionComponent = () => {
+const SelectHubPanel: React.FunctionComponent = () => {
     const i18n = useI18n();
 
     return (
@@ -42,7 +42,7 @@ const SelectHubPanel: React.VoidFunctionComponent = () => {
     );
 };
 
-const RestoreFirmwarePanel: React.VoidFunctionComponent = () => {
+const RestoreFirmwarePanel: React.FunctionComponent = () => {
     const [hubType] = useHubPickerSelectedHub();
     const dispatch = useDispatch();
     const i18n = useI18n();
@@ -84,7 +84,7 @@ const RestoreFirmwarePanel: React.VoidFunctionComponent = () => {
     );
 };
 
-const RestoreOfficialDialog: React.VoidFunctionComponent = () => {
+const RestoreOfficialDialog: React.FunctionComponent = () => {
     const { isOpen } = useSelector((s) => s.firmware.restoreOfficialDialog);
     const dispatch = useDispatch();
     const i18n = useI18n();

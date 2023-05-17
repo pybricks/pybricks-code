@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
 import { Intent } from '@blueprintjs/core';
 import React from 'react';
@@ -11,7 +11,7 @@ type MissingServiceProps = {
     hubName: string;
 };
 
-const MissingService: React.VoidFunctionComponent<MissingServiceProps> = ({
+const MissingService: React.FunctionComponent<MissingServiceProps> = ({
     serviceName,
     hubName,
 }) => {
