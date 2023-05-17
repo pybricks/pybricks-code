@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
 import { Alert, Classes, Intent } from '@blueprintjs/core';
 import React, { useCallback } from 'react';
@@ -8,7 +8,7 @@ import { useSelector } from '../../reducers';
 import { deleteFileAlertDidAccept, deleteFileAlertDidCancel } from './actions';
 import { useI18n } from './i18n';
 
-const DeleteFileAlert: React.VoidFunctionComponent = () => {
+const DeleteFileAlert: React.FunctionComponent = () => {
     const { isOpen, fileName } = useSelector((s) => s.explorer.deleteFileAlert);
     const dispatch = useDispatch();
     const i18n = useI18n();

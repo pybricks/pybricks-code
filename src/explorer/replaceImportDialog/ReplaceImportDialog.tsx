@@ -13,7 +13,7 @@ import {
 } from './actions';
 import { useI18n } from './i18n';
 
-const RenameImportDialog: React.VFC = () => {
+const RenameImportDialog: React.FunctionComponent = () => {
     const i18n = useI18n();
     const dispatch = useDispatch();
     const isOpen = useSelector((s) => s.explorer.replaceImportDialog.isOpen);

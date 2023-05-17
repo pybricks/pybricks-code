@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2022 The Pybricks Authors
+// Copyright (c) 2020-2023 The Pybricks Authors
 
 import 'react-splitter-layout/lib/index.css';
 import './app.scss';
@@ -46,7 +46,7 @@ const Terminal = React.lazy(async () => {
     return componentModule;
 });
 
-const Docs: React.VFC = () => {
+const Docs: React.FunctionComponent = () => {
     const { setIsSettingShowDocsEnabled } = useSettingIsShowDocsEnabled();
     const { initialDocsPage, setLastDocsPage } = useAppLastDocsPageSetting();
 
@@ -153,7 +153,7 @@ const Docs: React.VFC = () => {
     );
 };
 
-const App: React.VFC = () => {
+const App: React.FunctionComponent = () => {
     const i18n = useI18n();
     const { isDarkMode } = useTernaryDarkMode();
     const { isSettingShowDocsEnabled } = useSettingIsShowDocsEnabled();

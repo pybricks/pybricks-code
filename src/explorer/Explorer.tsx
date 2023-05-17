@@ -71,7 +71,7 @@ type ActionButtonProps = {
     onClick: () => void;
 };
 
-const ActionButton: React.VoidFunctionComponent<ActionButtonProps> = ({
+const ActionButton: React.FunctionComponent<ActionButtonProps> = ({
     id,
     icon,
     tooltip,
@@ -109,7 +109,7 @@ type ActionButtonGroupProps = {
     item: TreeItem;
 };
 
-const FileActionButtonGroup: React.VoidFunctionComponent<ActionButtonGroupProps> = ({
+const FileActionButtonGroup: React.FunctionComponent<ActionButtonGroupProps> = ({
     item,
 }) => {
     const i18n = useI18n();
@@ -174,7 +174,7 @@ const FileActionButtonGroup: React.VoidFunctionComponent<ActionButtonGroupProps>
 const archiveButtonId = 'pb-explorer-archive-button';
 const newButtonId = 'pb-explorer-add-button';
 
-const Header: React.VoidFunctionComponent = () => {
+const Header: React.FunctionComponent = () => {
     const exportButtonId = useId();
     const dispatch = useDispatch();
     const i18n = useI18n();
@@ -263,7 +263,7 @@ function useLiveDescriptors(): LiveDescriptors {
  * REVISIT: maybe there will be a better way to do this some day:
  * https://github.com/lukasbach/react-complex-tree/issues/47
  */
-const TreeContainer: React.VoidFunctionComponent<RenderProps<'renderTreeContainer'>> = (
+const TreeContainer: React.FunctionComponent<RenderProps<'renderTreeContainer'>> = (
     props,
 ) => {
     const dispatch = useDispatch();
@@ -352,7 +352,7 @@ const TreeContainer: React.VoidFunctionComponent<RenderProps<'renderTreeContaine
     return <div onKeyDown={handleKeyDown}>{renderers.renderTreeContainer(props)}</div>;
 };
 
-const FileTree: React.VoidFunctionComponent = () => {
+const FileTree: React.FunctionComponent = () => {
     const [focusedItem, setFocusedItem] = useState<TreeItemIndex>();
     const files = useFileStorageMetadata();
     const liveDescriptors = useLiveDescriptors();
@@ -447,7 +447,7 @@ const FileTree: React.VoidFunctionComponent = () => {
     );
 };
 
-const Explorer: React.VFC = () => {
+const Explorer: React.FunctionComponent = () => {
     return (
         <div className="pb-explorer">
             <Header />

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
 import { Button, Classes, Dialog } from '@blueprintjs/core';
 import React, { useCallback, useRef, useState } from 'react';
@@ -14,7 +14,7 @@ import FileNameFormGroup from '../fileNameFormGroup/FileNameFormGroup';
 import { renameFileDialogDidAccept, renameFileDialogDidCancel } from './actions';
 import { useI18n } from './i18n';
 
-const RenameFileDialog: React.VFC = () => {
+const RenameFileDialog: React.FunctionComponent = () => {
     const i18n = useI18n();
     const dispatch = useDispatch();
     const isOpen = useSelector((s) => s.explorer.renameFileDialog.isOpen);

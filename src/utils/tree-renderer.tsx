@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
 /***/
 // react-complex-tree renderers for bluetprintjs integration
@@ -49,7 +49,7 @@ export type RenderProps<T extends keyof RendererFuncs> = Parameters<
     RendererFuncs[T]
 >[0];
 
-const TreeContainer: React.VoidFunctionComponent<RenderProps<'renderTreeContainer'>> = (
+const TreeContainer: React.FunctionComponent<RenderProps<'renderTreeContainer'>> = (
     props,
 ) => {
     return (
@@ -62,9 +62,9 @@ const TreeContainer: React.VoidFunctionComponent<RenderProps<'renderTreeContaine
     );
 };
 
-const ItemsContainer: React.VoidFunctionComponent<
-    RenderProps<'renderTreeContainer'>
-> = (props) => (
+const ItemsContainer: React.FunctionComponent<RenderProps<'renderTreeContainer'>> = (
+    props,
+) => (
     <ul
         className={cx(Classes.TREE_NODE_LIST, Classes.TREE_ROOT)}
         {...props.containerProps}
@@ -76,7 +76,7 @@ const ItemsContainer: React.VoidFunctionComponent<
     </ul>
 );
 
-const Item: React.VoidFunctionComponent<RenderProps<'renderItem'>> = (props) => {
+const Item: React.FunctionComponent<RenderProps<'renderItem'>> = (props) => {
     const {
         value: isHover,
         setTrue: setIsHoverTrue,
@@ -129,9 +129,7 @@ const Item: React.VoidFunctionComponent<RenderProps<'renderItem'>> = (props) => 
     );
 };
 
-const ItemArrow: React.VoidFunctionComponent<RenderProps<'renderItemArrow'>> = (
-    props,
-) => (
+const ItemArrow: React.FunctionComponent<RenderProps<'renderItemArrow'>> = (props) => (
     <Icon
         icon="chevron-right"
         className={cx(
@@ -147,7 +145,7 @@ const ItemArrow: React.VoidFunctionComponent<RenderProps<'renderItemArrow'>> = (
     />
 );
 
-const ItemTitle: React.VoidFunctionComponent<RenderProps<'renderItemTitle'>> = ({
+const ItemTitle: React.FunctionComponent<RenderProps<'renderItemTitle'>> = ({
     title,
     context,
     info,
@@ -172,7 +170,7 @@ const ItemTitle: React.VoidFunctionComponent<RenderProps<'renderItemTitle'>> = (
     }
 };
 
-const DragBetweenLine: React.VoidFunctionComponent<
+const DragBetweenLine: React.FunctionComponent<
     RenderProps<'renderDragBetweenLine'>
 > = ({ draggingPosition, lineProps }) => (
     <div
@@ -195,7 +193,7 @@ const DragBetweenLine: React.VoidFunctionComponent<
     />
 );
 
-const RenameInput: React.VoidFunctionComponent<RenderProps<'renderRenameInput'>> = (
+const RenameInput: React.FunctionComponent<RenderProps<'renderRenameInput'>> = (
     props,
 ) => (
     <form {...props.formProps} style={{ display: 'contents' }}>
@@ -218,7 +216,7 @@ const RenameInput: React.VoidFunctionComponent<RenderProps<'renderRenameInput'>>
     </form>
 );
 
-const SearchInput: React.VoidFunctionComponent<RenderProps<'renderSearchInput'>> = (
+const SearchInput: React.FunctionComponent<RenderProps<'renderSearchInput'>> = (
     props,
 ) => {
     const { ref, defaultValue, value, ...inputProps } = props.inputProps;

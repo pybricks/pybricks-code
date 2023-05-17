@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021-2022 The Pybricks Authors
+// Copyright (c) 2021-2023 The Pybricks Authors
 
 import {
     AnchorButton,
@@ -32,7 +32,7 @@ import { isMacOS } from '../utils/os';
 import { useI18n } from './i18n';
 import './settings.scss';
 
-const Settings: React.VoidFunctionComponent = () => {
+const Settings: React.FunctionComponent = () => {
     const [isAboutDialogOpen, setIsAboutDialogOpen] = useState(false);
     const { isDarkMode, setTernaryDarkMode } = useTernaryDarkMode();
 

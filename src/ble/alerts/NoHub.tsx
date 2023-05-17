@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
 import './index.scss';
 import { AnchorButton, Button, Intent } from '@blueprintjs/core';
@@ -13,7 +13,7 @@ type NoHubProps = {
     onFlashFirmware: () => void;
 };
 
-const NoHub: React.VoidFunctionComponent<NoHubProps> = ({ onFlashFirmware }) => {
+const NoHub: React.FunctionComponent<NoHubProps> = ({ onFlashFirmware }) => {
     const i18n = useI18n();
 
     return (

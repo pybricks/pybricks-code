@@ -39,7 +39,7 @@ export interface ActionButtonProps {
     readonly onAction: () => void;
 }
 
-const ActionButton: React.VoidFunctionComponent<ActionButtonProps> = ({
+const ActionButton: React.FunctionComponent<ActionButtonProps> = ({
     id,
     label,
     keyboardShortcut,

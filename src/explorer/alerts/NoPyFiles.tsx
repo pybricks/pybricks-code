@@ -7,7 +7,7 @@ import { pythonFileExtension } from '../../pybricksMicropython/lib';
 import type { CreateToast } from '../../toasterTypes';
 import { useI18n } from './i18n';
 
-const NoPyFiles: React.VoidFunctionComponent = () => {
+const NoPyFiles: React.FunctionComponent = () => {
     const i18n = useI18n();
     return (
         <>

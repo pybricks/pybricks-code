@@ -93,7 +93,7 @@ function getHubTypeNameFromMetadata(metadata: FirmwareMetadata | undefined): str
     }
 }
 
-const UnsupportedHubs: React.VoidFunctionComponent = () => {
+const UnsupportedHubs: React.FunctionComponent = () => {
     const i18n = useI18n();
 
     return (
@@ -180,7 +180,7 @@ type SelectHubPanelProps = {
     onCustomFirmwareZip: (firmwareZip: File | undefined) => void;
 };
 
-const SelectHubPanel: React.VoidFunctionComponent<SelectHubPanelProps> = ({
+const SelectHubPanel: React.FunctionComponent<SelectHubPanelProps> = ({
     isCustomFirmwareRequested,
     customFirmwareData,
     onCustomFirmwareZip,
@@ -335,7 +335,7 @@ type AcceptLicensePanelProps = {
     onLicenseAcceptedChanged: (accepted: boolean) => void;
 };
 
-const AcceptLicensePanel: React.VoidFunctionComponent<AcceptLicensePanelProps> = ({
+const AcceptLicensePanel: React.FunctionComponent<AcceptLicensePanelProps> = ({
     licenseAccepted,
     firmwareData,
     firmwareError,
@@ -386,7 +386,7 @@ type SelectOptionsPanelProps = {
     onChangeHubName(hubName: string): void;
 };
 
-const ConfigureOptionsPanel: React.VoidFunctionComponent<SelectOptionsPanelProps> = ({
+const ConfigureOptionsPanel: React.FunctionComponent<SelectOptionsPanelProps> = ({
     hubName,
     metadata,
     onChangeHubName,
@@ -432,7 +432,7 @@ type BootloaderModePanelProps = {
     hubType: Hub;
 };
 
-const BootloaderModePanel: React.VoidFunctionComponent<BootloaderModePanelProps> = ({
+const BootloaderModePanel: React.FunctionComponent<BootloaderModePanelProps> = ({
     hubType,
 }) => {
     const i18n = useI18n();
@@ -447,7 +447,7 @@ const BootloaderModePanel: React.VoidFunctionComponent<BootloaderModePanelProps>
     );
 };
 
-export const InstallPybricksDialog: React.VoidFunctionComponent = () => {
+export const InstallPybricksDialog: React.FunctionComponent = () => {
     const { isOpen } = useSelector((s) => s.firmware.installPybricksDialog);
     const dispatch = useDispatch();
     const [hubName, setHubName] = useState('');

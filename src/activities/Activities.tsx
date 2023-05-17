@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
 import './activities.scss';
 import { Icon, Tab, Tabs } from '@blueprintjs/core';
@@ -12,7 +12,7 @@ import { useI18n } from './i18n';
 /**
  * React component that acts as a tab control to select activities.
  */
-const Activities: React.VoidFunctionComponent = () => {
+const Activities: React.FunctionComponent = () => {
     const [selectedActivity, setSelectedActivity] = useActivitiesSelectedActivity();
     const i18n = useI18n();
 

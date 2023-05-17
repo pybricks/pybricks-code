@@ -13,7 +13,7 @@ import icon from './icon.svg';
 
 type ReplButtonProps = Pick<ActionButtonProps, 'id'>;
 
-const ReplButton: React.VoidFunctionComponent<ReplButtonProps> = ({ id }) => {
+const ReplButton: React.FunctionComponent<ReplButtonProps> = ({ id }) => {
     const { runtime, useLegacyDownload, hasRepl } = useSelector((s) => s.hub);
     const i18n = useI18n();
     const dispatch = useDispatch();

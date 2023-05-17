@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021-2022 The Pybricks Authors
+// Copyright (c) 2021-2023 The Pybricks Authors
 
 // The about dialog
 
@@ -24,7 +24,7 @@ import './about.scss';
 
 type AboutDialogProps = { isOpen: boolean; onClose: () => void };
 
-const AboutDialog: React.VoidFunctionComponent<AboutDialogProps> = ({
+const AboutDialog: React.FunctionComponent<AboutDialogProps> = ({
     isOpen,
     onClose,
 }) => {

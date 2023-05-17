@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
 import { AnchorButton, Button, Intent } from '@blueprintjs/core';
 import React from 'react';
@@ -16,7 +16,7 @@ type NoDfuHubProps = {
     onInstallWindowsDriver: () => void;
 };
 
-const NoDfuHub: React.VoidFunctionComponent<NoDfuHubProps> = ({
+const NoDfuHub: React.FunctionComponent<NoDfuHubProps> = ({
     onInstallWindowsDriver,
 }) => {
     const i18n = useI18n();

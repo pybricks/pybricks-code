@@ -27,7 +27,7 @@ import FileNameFormGroup from '../fileNameFormGroup/FileNameFormGroup';
 import { newFileWizardDidAccept, newFileWizardDidCancel } from './actions';
 import { useI18n } from './i18n';
 
-const NewFileWizard: React.VoidFunctionComponent = () => {
+const NewFileWizard: React.FunctionComponent = () => {
     const i18n = useI18n();
     const dispatch = useDispatch();
 

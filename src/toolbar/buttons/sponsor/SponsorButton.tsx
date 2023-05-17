@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2022 The Pybricks Authors
+// Copyright (c) 2020-2023 The Pybricks Authors
 
 import React from 'react';
 import { useDispatch } from 'react-redux';
@@ -10,7 +10,7 @@ import icon from './icon.svg';
 
 type SponsorButtonProps = Pick<ActionButtonProps, 'id'>;
 
-const SponsorButton: React.VoidFunctionComponent<SponsorButtonProps> = ({ id }) => {
+const SponsorButton: React.FunctionComponent<SponsorButtonProps> = ({ id }) => {
     const i18n = useI18n();
     const dispatch = useDispatch();
 

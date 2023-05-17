@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
 import './UnexpectedErrorAlert.scss';
 import {
@@ -19,7 +19,7 @@ type UnexpectedErrorAlertProps = {
     error: Error;
 };
 
-const UnexpectedErrorAlert: React.VoidFunctionComponent<UnexpectedErrorAlertProps> = ({
+const UnexpectedErrorAlert: React.FunctionComponent<UnexpectedErrorAlertProps> = ({
     error,
 }) => {
     const i18n = useI18n();

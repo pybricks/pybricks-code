@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
 import { Intent } from '@blueprintjs/core';
 import React from 'react';
@@ -10,9 +10,7 @@ type FileInUseAlertProps = {
     fileName: string;
 };
 
-const FileInUseAlert: React.VoidFunctionComponent<FileInUseAlertProps> = ({
-    fileName,
-}) => {
+const FileInUseAlert: React.FunctionComponent<FileInUseAlertProps> = ({ fileName }) => {
     const i18n = useI18n();
     return <>{i18n.translate('fileInUse.message', { fileName })}</>;
 };

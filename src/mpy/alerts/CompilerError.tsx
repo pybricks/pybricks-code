@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
 import { Button, Intent } from '@blueprintjs/core';
 import React, { useMemo } from 'react';
@@ -13,7 +13,7 @@ type CompilerErrorProps = {
     error: string[];
 };
 
-const CompilerError: React.VoidFunctionComponent<CompilerErrorProps> = ({ error }) => {
+const CompilerError: React.FunctionComponent<CompilerErrorProps> = ({ error }) => {
     const dispatch = useDispatch();
     const i18n = useI18n();
 

@@ -18,7 +18,7 @@ import ethIcon from './eth_logo.svg';
 import { useI18n } from './i18n';
 import paypalIcon from './paypal_logo.svg';
 
-const SponsorDialog: React.VoidFunctionComponent = () => {
+const SponsorDialog: React.FunctionComponent = () => {
     const { showDialog } = useSelector((s) => s.sponsor);
     const dispatch = useDispatch();
     const i18n = useI18n();

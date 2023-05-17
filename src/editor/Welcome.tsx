@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
 // welcome screen that is shown when no editor is open.
 
@@ -60,7 +60,7 @@ type WelcomeProps = {
     isVisible: boolean;
 };
 
-const Welcome: React.VoidFunctionComponent<WelcomeProps> = ({ isVisible }) => {
+const Welcome: React.FunctionComponent<WelcomeProps> = ({ isVisible }) => {
     const stateRef = useRef<State>({
         rotation: defaultRotation,
         rotationSpeed: 0,

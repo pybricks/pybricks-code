@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021-2022 The Pybricks Authors
+// Copyright (c) 2021-2023 The Pybricks Authors
 
 // The license dialog
 
@@ -44,7 +44,7 @@ type ListItemProps = {
  *
  * Style uses blueprints tree styles since there is no list style.
  */
-const ListItem: React.VoidFunctionComponent<ListItemProps> = ({ item, state }) => {
+const ListItem: React.FunctionComponent<ListItemProps> = ({ item, state }) => {
     const ref = React.useRef<HTMLLIElement>(null);
     const { optionProps, isSelected } = useOption({ key: item.key }, state, ref);
 
@@ -105,7 +105,7 @@ type ListBoxProps = ListProps<LicenseInfo>;
  *
  * Style uses blueprints tree styles since there is no list style.
  */
-const ListBox: React.VoidFunctionComponent<ListBoxProps> = (props) => {
+const ListBox: React.FunctionComponent<ListBoxProps> = (props) => {
     // Create state based on the incoming props
     const state = useListState(props);
 
@@ -133,7 +133,7 @@ type LicenseListPanelProps = {
     onItemSelected(info?: LicenseInfo): void;
 };
 
-const LicenseListPanel: React.VoidFunctionComponent<LicenseListPanelProps> = ({
+const LicenseListPanel: React.FunctionComponent<LicenseListPanelProps> = ({
     onItemSelected,
 }) => {
     const i18n = useI18n();
@@ -228,7 +228,7 @@ type LicenseDialogProps = {
     onClose(): void;
 };
 
-const LicenseDialog: React.VoidFunctionComponent<LicenseDialogProps> = ({
+const LicenseDialog: React.FunctionComponent<LicenseDialogProps> = ({
     isOpen,
     onClose,
 }) => {

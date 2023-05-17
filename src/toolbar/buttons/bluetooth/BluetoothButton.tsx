@@ -14,7 +14,7 @@ import { useI18n } from './i18n';
 
 type BluetoothButtonProps = Pick<ActionButtonProps, 'id'>;
 
-const BluetoothButton: React.VoidFunctionComponent<BluetoothButtonProps> = ({ id }) => {
+const BluetoothButton: React.FunctionComponent<BluetoothButtonProps> = ({ id }) => {
     const bootloaderConnection = useSelector((s) => s.bootloader.connection);
     const bleConnection = useSelector((s) => s.ble.connection);
 

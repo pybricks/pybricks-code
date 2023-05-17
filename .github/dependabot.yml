@@ -8,7 +8,4 @@ updates:
   ignore:
   - dependency-name: "@types/node"
     versions:
-    - ">= 13.a"
-  - dependency-name: "@types/react"
-    versions:
-    - ">= 17.a"
+    - ">= 19.a"

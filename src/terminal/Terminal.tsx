@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2022 The Pybricks Authors
+// Copyright (c) 2020-2023 The Pybricks Authors
 
 import 'xterm/css/xterm.css';
 import './terminal.scss';
@@ -102,7 +102,7 @@ function createContextMenu(
     return ContextMenu;
 }
 
-const Terminal: React.FC = (_props) => {
+const Terminal: React.FunctionComponent = () => {
     const { xterm, fitAddon } = useMemo(createXTerm, [createXTerm]);
     const terminalRef = useRef<HTMLDivElement>(null);
     const { isDarkMode } = useTernaryDarkMode();
