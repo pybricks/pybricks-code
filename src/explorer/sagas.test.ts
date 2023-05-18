@@ -204,7 +204,7 @@ describe('handleExplorerImportFiles', () => {
     };
 
     const mockPythonFile = (name: string, contents: string) => {
-        return mock<FileWithHandle>({
+        return mock<FileWithHandle>(<FileWithHandle>{
             name,
             type: '',
             text: () => Promise.resolve(contents),
@@ -212,7 +212,7 @@ describe('handleExplorerImportFiles', () => {
     };
 
     const mockZipFile = (name: string, contents: ArrayBuffer) => {
-        return mock<FileWithHandle>({
+        return mock<FileWithHandle>(<FileWithHandle>{
             name,
             type: 'application/zip',
             arrayBuffer: () => Promise.resolve(contents),
