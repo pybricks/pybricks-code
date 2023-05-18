@@ -3,7 +3,7 @@
 
 import type { DatabaseChangeType, IDatabaseChange } from 'dexie-observable/api';
 import * as monaco from 'monaco-editor';
-import { EventChannel, buffers, eventChannel } from 'redux-saga';
+import { EventChannel, Task, buffers, eventChannel } from 'redux-saga';
 import {
     call,
     cancelled,
@@ -62,6 +62,7 @@ import {
     editorGetValueResponse,
     editorGoto,
     editorOpenFile,
+    editorReplaceFile,
 } from './actions';
 import { EditorError } from './error';
 import { ActiveFileHistoryManager, OpenFileManager } from './lib';
@@ -90,6 +91,28 @@ function* handleModelDidChange(
         // throttle the writes so we don't do it too often while user is typing quickly
         yield* delay(ms);
     }
+}
+
+function handleReplaceFile(
+    editor: monaco.editor.ICodeEditor,
+    model: monaco.editor.ITextModel,
+    action: ReturnType<typeof editorReplaceFile>,
+) {
+    // model might not be open in editor, but it doesn't hurt to do this in the
+    // open editor
+    editor.pushUndoStop();
+    // pushEditOperations says it expects a cursorComputer, but doesn't seem to need one.
+    model.pushEditOperations(
+        [],
+        [
+            {
+                range: model.getFullModelRange(),
+                text: action.value,
+            },
+        ],
+        undefined as unknown as monaco.editor.ICursorStateComputer,
+    );
+    editor.pushUndoStop();
 }
 
 function* handleEditorOpenFile(
@@ -160,6 +183,14 @@ function* handleEditorOpenFile(
             // ... and then fork to function that looks like
             // https://github.com/redux-saga/redux-saga/issues/620#issuecomment-259161095
             yield* fork(handleModelDidChange, 1000, didChangeModelChan, model);
+
+            const replaceFileTask: Task = yield* takeEvery(
+                editorReplaceFile.when((a) => a.uuid === action.uuid),
+                handleReplaceFile,
+                editor,
+                model,
+            );
+            defer.push(() => replaceFileTask.cancel());
 
             openFiles.add(action.uuid, model, didLoad.viewState);
             defer.push(() => openFiles.remove(action.uuid));
