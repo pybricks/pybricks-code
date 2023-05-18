@@ -265,8 +265,10 @@ function* handleEditorActivateFile(
             );
         }
 
+        editor.pushUndoStop();
         editor.setModel(file.model);
         editor.restoreViewState(file.viewState);
+        editor.pushUndoStop();
         activeFileHistory.push(action.uuid);
 
         editor.focus();
