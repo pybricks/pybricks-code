@@ -20,6 +20,7 @@ import {
     editorDidActivateFile,
     editorDidCloseFile,
     editorDidFailToActivateFile,
+    editorReplaceFile,
 } from '../editor/actions';
 import { EditorError } from '../editor/error';
 import { getPybricksMicroPythonFileTemplate } from '../editor/pybricksMicroPython';
@@ -243,17 +244,26 @@ function* importPythonFile(
         fileName = accepted.newName;
     }
 
-    yield* put(fileStorageWriteFile(fileName, sourceFileContents));
+    const existingFileInfo = existingFiles.find((x) => x.path === fileName);
+    const openFileUuids = yield* select((s: RootState) => s.editor.openFileUuids);
 
-    const { didFailToWrite } = yield* race({
-        didWrite: take(fileStorageDidWriteFile.when((a) => a.path === fileName)),
-        didFailToWrite: take(
-            fileStorageDidFailToWriteFile.when((a) => a.path === fileName),
-        ),
-    });
+    // If the file is open, modify contents in the editor so preserve undo
+    // history, otherwise write directly to storage.
+    if (existingFileInfo && openFileUuids.includes(existingFileInfo.uuid)) {
+        yield* put(editorReplaceFile(existingFileInfo.uuid, sourceFileContents));
+    } else {
+        yield* put(fileStorageWriteFile(fileName, sourceFileContents));
 
-    if (didFailToWrite) {
-        throw didFailToWrite.error;
+        const { didFailToWrite } = yield* race({
+            didWrite: take(fileStorageDidWriteFile.when((a) => a.path === fileName)),
+            didFailToWrite: take(
+                fileStorageDidFailToWriteFile.when((a) => a.path === fileName),
+            ),
+        });
+
+        if (didFailToWrite) {
+            throw didFailToWrite.error;
+        }
     }
 }
 

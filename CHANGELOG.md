@@ -4,6 +4,12 @@
 
 ## [Unreleased]
 
+### Fixed
+- Fixed importing/replacing file when file is open in editor ([support#975]).
+
+[support#975]: https://github.com/pybricks/support/issues/975
+
+
 ## [2.2.0-beta.4] - 2023-05-16
 
 ### Added

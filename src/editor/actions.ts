@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
 import { createAction } from '../actions';
 import { UUID } from '../fileStorage';
@@ -120,4 +120,15 @@ export const editorGoto = createAction((uuid: UUID, line: number) => ({
     type: 'editor.action.goto',
     uuid,
     line,
+}));
+
+/**
+ * Requests to replace the value a file in the editor.
+ * @param uuid The file UUID.
+ * @param value The new value for the contents of the file.
+ */
+export const editorReplaceFile = createAction((uuid: UUID, value: string) => ({
+    type: 'editor.action.replaceFile',
+    uuid,
+    value,
 }));
