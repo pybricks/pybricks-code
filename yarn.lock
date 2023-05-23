@@ -2683,7 +2683,7 @@ __metadata:
     babel-plugin-transform-import-meta: ^2.2.0
     babel-preset-react-app: ^10.0.1
     bfj: ^7.0.2
-    browser-fs-access: ^0.34.0
+    browser-fs-access: ^0.34.1
     browserslist: ^4.21.5
     camelcase: ^7.0.0
     canvas: ^2.11.2
@@ -6396,10 +6396,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"browser-fs-access@npm:^0.34.0":
-  version: 0.34.0
-  resolution: "browser-fs-access@npm:0.34.0"
-  checksum: 131916714f414f4728d1eee8e79f5202891d41b87ba0ff2c2f6ee1440b9fb4293e02a351390d3d0cfaabbccef573b33b3f9e5b5c465ab21ad384e4200eee880f
+"browser-fs-access@npm:^0.34.1":
+  version: 0.34.1
+  resolution: "browser-fs-access@npm:0.34.1"
+  checksum: 339865241c9ffe80a1991248573709f0787e83920d29810f87c4d7545df630f8408acdf91f349710cdf3678a1ff6c90074e087be3c7d97a20639c95f5eb7438c
   languageName: node
   linkType: hard
 
