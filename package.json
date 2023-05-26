@@ -82,7 +82,7 @@
         "navigator.locks": "^0.8.6",
         "postcss": "^8.4.23",
         "postcss-flexbugs-fixes": "^5.0.2",
-        "postcss-loader": "^7.3.0",
+        "postcss-loader": "^7.3.1",
         "postcss-normalize": "^10.0.1",
         "postcss-preset-env": "^8.4.1",
         "prompts": "^2.4.2",
