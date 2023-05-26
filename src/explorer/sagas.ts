@@ -439,7 +439,7 @@ function* handleExplorerDuplicateFile(
 
         yield* put(fileStorageCopyFile(action.fileName, didAccept.newName));
 
-        const { didFailToCopy } = yield* race({
+        const { didCopy, didFailToCopy } = yield* race({
             didCopy: take(
                 fileStorageDidCopyFile.when((a) => a.path === action.fileName),
             ),
@@ -451,6 +451,10 @@ function* handleExplorerDuplicateFile(
         if (didFailToCopy) {
             throw didFailToCopy.error;
         }
+
+        defined(didCopy);
+
+        yield* put(editorActivateFile(didCopy.newUuid));
 
         yield* put(explorerDidDuplicateFile(action.fileName));
     } catch (err) {

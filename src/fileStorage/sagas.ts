@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
 import Dexie from 'dexie';
 import {
@@ -375,6 +375,8 @@ function* handleCopyFile(
     action: ReturnType<typeof fileStorageCopyFile>,
 ): Generator {
     try {
+        let uuid: UUID | undefined = undefined;
+
         yield* call(() =>
             navigator.locks.request(
                 lockNameForPath(action.newPath),
@@ -403,7 +405,7 @@ function* handleCopyFile(
                             throw new Error(`file '${action.newPath}' already exists`);
                         }
 
-                        await db.metadata.add((<Omit<FileMetadata, 'uuid'>>{
+                        uuid = await db.metadata.add((<Omit<FileMetadata, 'uuid'>>{
                             ...metadata,
                             uuid: undefined,
                             path: action.newPath,
@@ -424,7 +426,9 @@ function* handleCopyFile(
             ),
         );
 
-        yield* put(fileStorageDidCopyFile(action.path));
+        defined(uuid);
+
+        yield* put(fileStorageDidCopyFile(action.path, uuid));
     } catch (err) {
         yield* put(fileStorageDidFailToCopyFile(action.path, ensureError(err)));
     }

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
 import type * as monaco from 'monaco-editor';
 import { createAction } from '../actions';
@@ -236,11 +236,13 @@ export const fileStorageCopyFile = createAction((path: string, newPath: string) 
 
 /**
  * Indicates that {@link fileStorageCopyFile} succeeded.
- * @param path: The file path.
+ * @param path: The original file path.
+ * @param newUuid: The UUID of the new copy.
  */
-export const fileStorageDidCopyFile = createAction((path: string) => ({
+export const fileStorageDidCopyFile = createAction((path: string, newUuid: UUID) => ({
     type: 'fileStorage.action.didCopyFile',
     path,
+    newUuid,
 }));
 
 /**
