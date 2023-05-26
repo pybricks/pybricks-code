@@ -6,8 +6,10 @@
 
 ### Fixed
 - Fixed importing/replacing file when file is open in editor ([support#975]).
+- Fixed file not opened when duplicating ([support#1084]).
 
 [support#975]: https://github.com/pybricks/support/issues/975
+[support#1084]: https://github.com/pybricks/support/issues/1084
 
 
 ## [2.2.0-beta.4] - 2023-05-16

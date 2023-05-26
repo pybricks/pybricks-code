@@ -777,7 +777,9 @@ describe('handleExplorerDuplicateFile', () => {
         });
 
         it('should dispatch action on fileStorageDuplicateFile success', async () => {
-            saga.put(fileStorageDidCopyFile('old.file'));
+            saga.put(fileStorageDidCopyFile('old.file', uuid(1)));
+
+            await expect(saga.take()).resolves.toEqual(editorActivateFile(uuid(1)));
 
             await expect(saga.take()).resolves.toEqual(
                 explorerDidDuplicateFile('old.file'),

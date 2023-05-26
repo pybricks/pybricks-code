@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
 import 'fake-indexeddb/auto';
 import Dexie from 'dexie';
@@ -590,7 +590,9 @@ describe('copyFile', () => {
     it('should copy file', async () => {
         saga.put(fileStorageCopyFile('test.file', 'new.file'));
 
-        await expect(saga.take()).resolves.toEqual(fileStorageDidCopyFile('test.file'));
+        await expect(saga.take()).resolves.toEqual(
+            fileStorageDidCopyFile('test.file', uuid(1)),
+        );
     });
 
     afterEach(async () => {
