@@ -79,7 +79,7 @@ const HubInfoButton: React.FunctionComponent = () => {
         <Popover2
             {...commonPopoverProps}
             content={
-                <table className="no-wrap">
+                <table className="no-wrap" style={{ userSelect: 'text' }}>
                     <tbody>
                         <tr>
                             <td>
