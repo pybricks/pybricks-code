@@ -10,7 +10,7 @@
     "dependencies": {
         "@babel/core": "^7.22.1",
         "@blueprintjs/core": "^4.19.5",
-        "@blueprintjs/popover2": "^1.14.7",
+        "@blueprintjs/popover2": "^1.14.8",
         "@blueprintjs/select": "^4.9.21",
         "@pmmmwh/react-refresh-webpack-plugin": "^0.5.10",
         "@pybricks/firmware": "7.4.0",
