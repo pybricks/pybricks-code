@@ -1603,28 +1603,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@blueprintjs/popover2@npm:^1.14.7":
-  version: 1.14.7
-  resolution: "@blueprintjs/popover2@npm:1.14.7"
-  dependencies:
-    "@blueprintjs/core": ^4.19.5
-    "@juggle/resize-observer": ^3.4.0
-    "@popperjs/core": ^2.11.7
-    classnames: ^2.3.1
-    dom4: ^2.1.5
-    react-popper: ^2.3.0
-    tslib: ~2.5.0
-  peerDependencies:
-    "@types/react": ^16.14.32 || 17 || 18
-    react: ^16.8 || 17 || 18
-    react-dom: ^16.8 || 17 || 18
-  peerDependenciesMeta:
-    "@types/react":
-      optional: true
-  checksum: f98d0ba74a1253c0079c1b1bd6d4659c90b9b931be72fa77912d4a310d708dd6318d322b3d496538b54588fad7c3129f0abff50afd7285ec875f7c850056a4f9
-  languageName: node
-  linkType: hard
-
 "@blueprintjs/popover2@npm:^1.14.8":
   version: 1.14.8
   resolution: "@blueprintjs/popover2@npm:1.14.8"
@@ -2696,7 +2674,7 @@ __metadata:
   dependencies:
     "@babel/core": ^7.22.1
     "@blueprintjs/core": ^4.19.5
-    "@blueprintjs/popover2": ^1.14.7
+    "@blueprintjs/popover2": ^1.14.8
     "@blueprintjs/select": ^4.9.21
     "@pmmmwh/react-refresh-webpack-plugin": ^0.5.10
     "@pybricks/firmware": 7.4.0
