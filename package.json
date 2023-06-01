@@ -120,7 +120,7 @@
         "usehooks-ts": "^2.9.1",
         "user-agent-data-types": "^0.3.1",
         "web-vitals": "^3.3.2",
-        "webpack": "^5.84.1",
+        "webpack": "^5.85.0",
         "webpack-dev-server": "^4.15.0",
         "webpack-manifest-plugin": "^5.0.0",
         "workbox-webpack-plugin": "^6.6.1",
