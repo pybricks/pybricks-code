@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [2.2.0-beta.5] - 2023-06-02
+
 ### Changed
 - Updated dependencies.
 - Updated firmware to v3.3.0b6:
@@ -904,7 +906,8 @@ Prerelease changes are documented at [support#48].
 
 <!-- links for version headings -->
 
-[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.2.0-beta.4...HEAD
+[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.2.0-beta.5...HEAD
+[2.2.0-beta.5]: https://github.com/pybricks/pybricks-code/compare/v2.2.0-beta.4..v2.2.0-beta.5
 [2.2.0-beta.4]: https://github.com/pybricks/pybricks-code/compare/v2.2.0-beta.3..v2.2.0-beta.4
 [2.2.0-beta.3]: https://github.com/pybricks/pybricks-code/compare/v2.2.0-beta.2..v2.2.0-beta.3
 [2.2.0-beta.2]: https://github.com/pybricks/pybricks-code/compare/v2.2.0-beta.1..v2.2.0-beta.2
