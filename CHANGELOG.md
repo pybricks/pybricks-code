@@ -4,6 +4,28 @@
 
 ## [Unreleased]
 
+## [2.2.0-beta.5] - 2023-06-02
+
+### Changed
+- Updated dependencies.
+- Updated firmware to v3.3.0b6:
+
+  #### Added
+  - Enabled builtin `set` type (except on BOOST Move hub) ([support#402]).
+
+  #### Changed
+  - Updated BTStack to v1.5.5.
+
+  #### Fixed
+  - Fixed BLE broadcast not working on City hub.
+  - Fixed crash on BTStack hubs when program stopped during call to `ble.broadcast()`.
+  - Fixed BLE broadcast not working on Technic hub when not connected ([support#1086]).
+  - Fixed delayed sensor sync on boot on City hub ([support#747]).
+
+  [support#402]: https://github.com/pybricks/support/issues/402
+  [support#747]: https://github.com/pybricks/support/issues/747
+  [support#1086]: https://github.com/pybricks/support/issues/1086
+
 ### Fixed
 - Fixed importing/replacing file when file is open in editor ([support#975]).
 - Fixed file not opened when duplicating ([support#1084]).
@@ -884,7 +906,8 @@ Prerelease changes are documented at [support#48].
 
 <!-- links for version headings -->
 
-[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.2.0-beta.4...HEAD
+[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.2.0-beta.5...HEAD
+[2.2.0-beta.5]: https://github.com/pybricks/pybricks-code/compare/v2.2.0-beta.4..v2.2.0-beta.5
 [2.2.0-beta.4]: https://github.com/pybricks/pybricks-code/compare/v2.2.0-beta.3..v2.2.0-beta.4
 [2.2.0-beta.3]: https://github.com/pybricks/pybricks-code/compare/v2.2.0-beta.2..v2.2.0-beta.3
 [2.2.0-beta.2]: https://github.com/pybricks/pybricks-code/compare/v2.2.0-beta.1..v2.2.0-beta.2
