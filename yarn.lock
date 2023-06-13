@@ -2686,7 +2686,7 @@ __metadata:
     babel-preset-react-app: ^10.0.1
     bfj: ^7.0.2
     browser-fs-access: ^0.34.1
-    browserslist: ^4.21.7
+    browserslist: ^4.21.8
     camelcase: ^7.0.0
     canvas: ^2.11.2
     case-sensitive-paths-webpack-plugin: ^2.4.0
@@ -6436,7 +6436,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"browserslist@npm:^4.0.0, browserslist@npm:^4.14.5, browserslist@npm:^4.18.1, browserslist@npm:^4.21.3, browserslist@npm:^4.21.4, browserslist@npm:^4.21.5, browserslist@npm:^4.21.7":
+"browserslist@npm:^4.0.0, browserslist@npm:^4.14.5, browserslist@npm:^4.18.1, browserslist@npm:^4.21.3, browserslist@npm:^4.21.4, browserslist@npm:^4.21.5":
   version: 4.21.7
   resolution: "browserslist@npm:4.21.7"
   dependencies:
@@ -6447,6 +6447,20 @@ __metadata:
   bin:
     browserslist: cli.js
   checksum: 3d0d025e6d381c4db5e71b538258952660ba574c060832095f182a9877ca798836fa550736269e669a2080e486f0cfdf5d3bcf2769b9f7cf123f6c6b8c005f8f
+  languageName: node
+  linkType: hard
+
+"browserslist@npm:^4.21.8":
+  version: 4.21.8
+  resolution: "browserslist@npm:4.21.8"
+  dependencies:
+    caniuse-lite: ^1.0.30001502
+    electron-to-chromium: ^1.4.428
+    node-releases: ^2.0.12
+    update-browserslist-db: ^1.0.11
+  bin:
+    browserslist: cli.js
+  checksum: 20ab0adafb1832bdfb19153d09a140b779b8e883ce504221c580094cc2adec691515ed304c9091300996ad35fc24e957fbfde169ba0c4a7d219b0794ad2e1556
   languageName: node
   linkType: hard
 
@@ -6593,6 +6607,13 @@ __metadata:
   version: 1.0.30001491
   resolution: "caniuse-lite@npm:1.0.30001491"
   checksum: ce8e1343dd2ba058902b58dffa7f3695fd251a7ef51a7f0903ab8e62b32becd9f7f590cbebb3f1966cdfff0c2fc8e7154ac116e0b39730bd2f2e17103f5e6c3b
+  languageName: node
+  linkType: hard
+
+"caniuse-lite@npm:^1.0.30001502":
+  version: 1.0.30001502
+  resolution: "caniuse-lite@npm:1.0.30001502"
+  checksum: 801a9fd4b635082a976a2a0238c59e106f37238f93afddb504b88fa434d521cd9c600d8d9f305a0f4611c0b53c6d6c164e81ee38f0130ff46636c3b280195a0c
   languageName: node
   linkType: hard
 
@@ -7904,6 +7925,13 @@ __metadata:
   version: 1.4.413
   resolution: "electron-to-chromium@npm:1.4.413"
   checksum: 6d702b84e2c5fb8d97cbaec759556c4f801572e62eab2098919061e2f3e7cbca71b9f170a4efb023001d4fd59e8603b4d7004dafc64d89c9f19db4642fdbd012
+  languageName: node
+  linkType: hard
+
+"electron-to-chromium@npm:^1.4.428":
+  version: 1.4.428
+  resolution: "electron-to-chromium@npm:1.4.428"
+  checksum: ec0f7d856eb0ffcbf55487b8ca4c8bb0cda5f7be26ea4db48bcbd3accbc1145c63f2e241df7a8c560b7f32d8f39d6e0420df56b0faf4cb69a949e81257a8e7c4
   languageName: node
   linkType: hard
 
