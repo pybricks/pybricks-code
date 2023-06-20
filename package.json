@@ -30,7 +30,7 @@
         "@types/file-saver": "^2.0.5",
         "@types/jest": "^29.5.2",
         "@types/node": "^18.16.18",
-        "@types/react": "^18.2.12",
+        "@types/react": "^18.2.13",
         "@types/react-dom": "^18.2.5",
         "@types/react-splitter-layout": "^3.0.2",
         "@types/react-transition-group": "^4.4.6",
