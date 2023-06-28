@@ -7,11 +7,11 @@
         {
             "name": "Launch Chrome",
             "request": "launch",
-            "type": "pwa-chrome",
+            "type": "chrome",
             "url": "http://localhost:3000",
             "webRoot": "${workspaceFolder}",
             "linux": {
-                "runtimeExecutable": "/usr/bin/chromium-browser"
+                "runtimeExecutable": "/usr/bin/google-chrome-stable"
             }
         },
         {
@@ -29,7 +29,7 @@
             "processId": "${command:PickProcess}",
             "request": "attach",
             "skipFiles": ["<node_internals>/**"],
-            "type": "pwa-node"
+            "type": "node"
         }
     ]
 }

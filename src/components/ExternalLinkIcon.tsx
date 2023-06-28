@@ -3,17 +3,17 @@
 
 // Icon for indicating external links
 
-import { Icon } from '@blueprintjs/core';
-import React from 'react';
-
 import './external-link.scss';
+import { Icon } from '@blueprintjs/core';
+import { Share } from '@blueprintjs/icons';
+import React from 'react';
 
 const ExternalLinkIcon: React.FunctionComponent = () => {
     return (
         <span className="pb-external-link">
             &nbsp;
             <sup>
-                <Icon icon="share" iconSize={12} />
+                <Icon icon={<Share size={12} />} />
             </sup>
         </span>
     );

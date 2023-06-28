@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2022-2023 The Pybricks Authors
 
-import { Classes, Icon, IconName, IconSize, Spinner } from '@blueprintjs/core';
+import { Classes, Icon, IconSize, Spinner } from '@blueprintjs/core';
 import { mergeRefs, useId } from '@react-aria/utils';
 import classNames from 'classnames';
 import React, { useRef } from 'react';
@@ -21,7 +21,7 @@ type ButtonProps = {
     /** When true, the button will use the {@link Classes.MINIMAL} style. */
     minimal?: boolean;
     /** Icon that will be displayed to the left of the button content. */
-    icon: IconName;
+    icon: JSX.Element;
     /** A reference to the underlying <button> HTML element. */
     elementRef?: React.ForwardedRef<HTMLButtonElement>;
     /** Called when the button is pressed. */
@@ -78,7 +78,7 @@ export const Button: React.FunctionComponent<ButtonProps> = ({
                         />
                     ) : (
                         <>
-                            <Icon icon={icon} aria-hidden />
+                            <Icon icon={icon} />
                             {isLabelVisible && (
                                 <span id={labelId} className={Classes.BUTTON_TEXT}>
                                     {label}

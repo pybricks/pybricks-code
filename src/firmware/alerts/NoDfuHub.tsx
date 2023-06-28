@@ -2,6 +2,7 @@
 // Copyright (c) 2022-2023 The Pybricks Authors
 
 import { AnchorButton, Button, Intent } from '@blueprintjs/core';
+import { Download, Help, InfoSign } from '@blueprintjs/icons';
 import React from 'react';
 import {
     pybricksUsbDfuTroubleshootingUrl,
@@ -29,13 +30,13 @@ const NoDfuHub: React.FunctionComponent<NoDfuHubProps> = ({
             {isLinux() && <p>{i18n.translate('noDfuHub.suggestion1.linux')}</p>}
             <div className="pb-ble-alerts-buttons">
                 {isWindows() && (
-                    <Button icon="download" onClick={onInstallWindowsDriver}>
+                    <Button icon={<Download />} onClick={onInstallWindowsDriver}>
                         {i18n.translate('noDfuHub.installUsbDriverButton')}
                     </Button>
                 )}
                 {isLinux() && (
                     <AnchorButton
-                        icon="help"
+                        icon={<Help />}
                         href={pybricksUsbLinuxUdevRulesUrl}
                         target="_blank"
                         rel="noopener"
@@ -45,7 +46,7 @@ const NoDfuHub: React.FunctionComponent<NoDfuHubProps> = ({
                     </AnchorButton>
                 )}
                 <AnchorButton
-                    icon="help"
+                    icon={<Help />}
                     href={pybricksUsbDfuTroubleshootingUrl}
                     target="_blank"
                     rel="noopener"
@@ -64,7 +65,7 @@ export const noDfuHub: CreateToast<never, 'dismiss' | 'installWindowsDriver'> = 
     message: (
         <NoDfuHub onInstallWindowsDriver={() => onAction('installWindowsDriver')} />
     ),
-    icon: 'info-sign',
+    icon: <InfoSign />,
     intent: Intent.PRIMARY,
     onDismiss: () => onAction('dismiss'),
 });

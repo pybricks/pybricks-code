@@ -3,6 +3,7 @@
 
 import './index.scss';
 import { AnchorButton, Button, Intent } from '@blueprintjs/core';
+import { Download, Help, InfoSign } from '@blueprintjs/icons';
 import React from 'react';
 import { pybricksBluetoothTroubleshootingUrl } from '../../app/constants';
 import ExternalLinkIcon from '../../components/ExternalLinkIcon';
@@ -21,11 +22,11 @@ const NoHub: React.FunctionComponent<NoHubProps> = ({ onFlashFirmware }) => {
             <p>{i18n.translate('noHub.message')}</p>
             <p>{i18n.translate('noHub.suggestion')}</p>
             <div className="pb-ble-alerts-buttons">
-                <Button icon="download" onClick={onFlashFirmware}>
+                <Button icon={<Download />} onClick={onFlashFirmware}>
                     {i18n.translate('noHub.flashFirmwareButton')}
                 </Button>
                 <AnchorButton
-                    icon="help"
+                    icon={<Help />}
                     href={pybricksBluetoothTroubleshootingUrl}
                     target="_blank"
                     rel="noopener"
@@ -40,7 +41,7 @@ const NoHub: React.FunctionComponent<NoHubProps> = ({ onFlashFirmware }) => {
 
 export const noHub: CreateToast<never, 'dismiss' | 'flashFirmware'> = (onAction) => ({
     message: <NoHub onFlashFirmware={() => onAction('flashFirmware')} />,
-    icon: 'info-sign',
+    icon: <InfoSign />,
     intent: Intent.PRIMARY,
     timeout: 15000,
     onDismiss: () => onAction('dismiss'),

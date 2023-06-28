@@ -10,6 +10,7 @@ import {
     Intent,
     Pre,
 } from '@blueprintjs/core';
+import { ChevronDown, ChevronRight, Duplicate, Error, Virus } from '@blueprintjs/icons';
 import React, { useState } from 'react';
 import { useId } from 'react-aria';
 import type { CreateToast } from '../toasterTypes';
@@ -37,7 +38,7 @@ const UnexpectedErrorAlert: React.FunctionComponent<UnexpectedErrorAlertProps> =
                             aria-labelledby={labelId}
                             minimal={true}
                             small={true}
-                            icon={isExpanded ? 'chevron-down' : 'chevron-right'}
+                            icon={isExpanded ? <ChevronDown /> : <ChevronRight />}
                             onClick={() => setIsExpanded((v) => !v)}
                         />
                         <span id={labelId}>{i18n.translate('technicalInfo')}</span>
@@ -51,7 +52,7 @@ const UnexpectedErrorAlert: React.FunctionComponent<UnexpectedErrorAlertProps> =
                 <ButtonGroup minimal={true} fill={true}>
                     <Button
                         intent={Intent.DANGER}
-                        icon="duplicate"
+                        icon={<Duplicate />}
                         onClick={() =>
                             navigator.clipboard.writeText(
                                 `\`\`\`\n${error.stack || error.message}\n\`\`\``,
@@ -62,7 +63,7 @@ const UnexpectedErrorAlert: React.FunctionComponent<UnexpectedErrorAlertProps> =
                     </Button>
                     <AnchorButton
                         intent={Intent.DANGER}
-                        icon="virus"
+                        icon={<Virus />}
                         href={`https://github.com/pybricks/support/issues?q=${encodeURIComponent(
                             'is:issue',
                         )}+${encodeURIComponent(error.message)}`}
@@ -82,7 +83,7 @@ export const unexpectedError: CreateToast<{ error: Error }> = (
     { error },
 ) => ({
     message: <UnexpectedErrorAlert error={error} />,
-    icon: 'error',
+    icon: <Error />,
     intent: Intent.DANGER,
     onDismiss: () => onAction('dismiss'),
 });

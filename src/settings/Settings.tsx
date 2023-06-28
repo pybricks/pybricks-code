@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2021-2023 The Pybricks Authors
 
+import './settings.scss';
 import {
     AnchorButton,
     ButtonGroup,
@@ -8,6 +9,16 @@ import {
     FormGroup,
     Switch,
 } from '@blueprintjs/core';
+import {
+    Add,
+    Chat,
+    Download,
+    Help,
+    InfoSign,
+    Lightbulb,
+    Refresh,
+    Virus,
+} from '@blueprintjs/icons';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useTernaryDarkMode } from 'usehooks-ts';
@@ -30,7 +41,6 @@ import { useSelector } from '../reducers';
 import { tourStart } from '../tour/actions';
 import { isMacOS } from '../utils/os';
 import { useI18n } from './i18n';
-import './settings.scss';
 
 const Settings: React.FunctionComponent = () => {
     const [isAboutDialogOpen, setIsAboutDialogOpen] = useState(false);
@@ -82,14 +92,14 @@ const Settings: React.FunctionComponent = () => {
                 <Button
                     id="pb-settings-flash-pybricks-button"
                     minimal={true}
-                    icon="download"
+                    icon={<Download />}
                     label={i18n.translate('firmware.flashPybricksButton.label')}
                     onPress={() => dispatch(firmwareInstallPybricks())}
                 />
                 <Button
                     id="pb-settings-flash-official-button"
                     minimal={true}
-                    icon="download"
+                    icon={<Download />}
                     label={i18n.translate('firmware.flashLegoButton.label', {
                         lego: legoRegisteredTrademark,
                     })}
@@ -101,30 +111,38 @@ const Settings: React.FunctionComponent = () => {
                     <Button
                         id="pb-settings-tour-button"
                         label={i18n.translate('app.tour.label')}
-                        icon="info-sign"
+                        icon={<InfoSign />}
                         onPress={() => {
                             dispatch(tourStart());
                             return true;
                         }}
                     />
                     <AnchorButton
-                        icon="lightbulb"
+                        icon={<Lightbulb />}
                         href={pybricksProjectsUrl}
                         target="blank_"
                     >
                         {i18n.translate('help.projects.label')}
                         <ExternalLinkIcon />
                     </AnchorButton>
-                    <AnchorButton icon="help" href={pybricksSupportUrl} target="blank_">
+                    <AnchorButton
+                        icon={<Help />}
+                        href={pybricksSupportUrl}
+                        target="blank_"
+                    >
                         {i18n.translate('help.support.label')}
                         <ExternalLinkIcon />
                     </AnchorButton>
-                    <AnchorButton icon="chat" href={pybricksGitterUrl} target="blank_">
+                    <AnchorButton
+                        icon={<Chat />}
+                        href={pybricksGitterUrl}
+                        target="blank_"
+                    >
                         {i18n.translate('help.chat.label')}
                         <ExternalLinkIcon />
                     </AnchorButton>
                     <AnchorButton
-                        icon="virus"
+                        icon={<Virus />}
                         href={pybricksBugReportsUrl}
                         target="blank_"
                     >
@@ -145,7 +163,7 @@ const Settings: React.FunctionComponent = () => {
                     {hasUnresolvedInstallPrompt && (
                         <Button
                             label={i18n.translate('app.install.label')}
-                            icon="add"
+                            icon={<Add />}
                             onPress={() => dispatch(appShowInstallPrompt())}
                             loading={promptingInstall}
                         />
@@ -154,7 +172,7 @@ const Settings: React.FunctionComponent = () => {
                         (isServiceWorkerRegistered && !updateAvailable)) && (
                         <Button
                             label={i18n.translate('app.checkForUpdate.label')}
-                            icon="refresh"
+                            icon={<Refresh />}
                             onPress={() => dispatch(appCheckForUpdate())}
                             loading={checkingForUpdate}
                         />
@@ -163,13 +181,13 @@ const Settings: React.FunctionComponent = () => {
                         (isServiceWorkerRegistered && updateAvailable)) && (
                         <Button
                             label={i18n.translate('app.restart.label')}
-                            icon="refresh"
+                            icon={<Refresh />}
                             onPress={() => dispatch(appReload())}
                         />
                     )}
                     <Button
                         label={i18n.translate('app.about.label')}
-                        icon="info-sign"
+                        icon={<InfoSign />}
                         onPress={() => {
                             setIsAboutDialogOpen(true);
                             return true;

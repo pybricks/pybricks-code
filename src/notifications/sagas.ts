@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2022 The Pybricks Authors
+// Copyright (c) 2020-2023 The Pybricks Authors
 
 // Saga for managing notifications (toasts)
 
-import { ActionProps, IconName, Intent, LinkProps } from '@blueprintjs/core';
+import { ActionProps, Intent, LinkProps } from '@blueprintjs/core';
+import { Error, Help, InfoSign, Refresh, WarningSign } from '@blueprintjs/icons';
 import { Replacements } from '@shopify/react-i18n';
 import React from 'react';
 import { channel } from 'redux-saga';
@@ -58,26 +59,26 @@ function mapIntent(level: Level): Intent {
     }
 }
 
-function mapIcon(level: Level): IconName | undefined {
+function mapIcon(level: Level): JSX.Element | undefined {
     switch (level) {
         case Level.Error:
-            return 'error';
+            return React.createElement(Error);
         case Level.Warning:
-            return 'warning-sign';
+            return React.createElement(WarningSign);
         case Level.Info:
-            return 'info-sign';
+            return React.createElement(InfoSign);
         default:
             return undefined;
     }
 }
 
 /**
- * Converts a URL to an action that can be passed to `ToasterInstance.show()`.
+ * Converts a URL to an action that can be passed to `Toaster.show()`.
  * @param helpUrl A URL.
  */
 function helpAction(helpUrl: string): ActionProps & LinkProps & { rel: string } {
     return {
-        icon: 'help',
+        icon: React.createElement(Help),
         href: helpUrl,
         target: '_blank',
         rel: 'noopener',
@@ -87,7 +88,7 @@ function helpAction(helpUrl: string): ActionProps & LinkProps & { rel: string } 
 function dispatchAction(
     messageId: I18nId,
     onClick: (event: React.MouseEvent<HTMLElement>) => void,
-    icon?: IconName,
+    icon?: JSX.Element,
 ): ActionProps {
     return {
         icon: icon,
@@ -271,7 +272,7 @@ function* showServiceWorkerUpdate(): Generator {
     const userAction = dispatchAction(
         I18nId.ServiceWorkerUpdateAction,
         ch.put,
-        'refresh',
+        React.createElement(Refresh),
     );
     yield* showSingleton(
         Level.Info,

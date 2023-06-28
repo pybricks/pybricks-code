@@ -7,9 +7,9 @@ import {
     Intent,
     Spinner,
     SpinnerSize,
+    Tooltip,
     useHotkeys,
 } from '@blueprintjs/core';
-import { Tooltip2 } from '@blueprintjs/popover2';
 import { mergeProps } from '@react-aria/utils';
 import classNames from 'classnames';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
@@ -96,7 +96,7 @@ const ActionButton: React.FunctionComponent<ActionButtonProps> = ({
     }, [enabled, onAction]);
 
     return (
-        <Tooltip2
+        <Tooltip
             content={tooltip}
             placement="bottom"
             hoverOpenDelay={tooltipDelay}
@@ -109,7 +109,7 @@ const ActionButton: React.FunctionComponent<ActionButtonProps> = ({
                     id={id}
                     aria-disabled={enabled === false}
                     aria-label={label}
-                    elementRef={tooltipTargetRef as React.Ref<HTMLButtonElement>}
+                    ref={tooltipTargetRef}
                     {...mergeProps(tooltipTargetProps, {
                         className: classNames(
                             'pb-toolbar-action-button',

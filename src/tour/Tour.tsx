@@ -2,6 +2,7 @@
 // Copyright (c) 2022-2023 The Pybricks Authors
 
 import { Colors, Icon } from '@blueprintjs/core';
+import { Archive, Play, Plus } from '@blueprintjs/icons';
 import React, { useCallback, useMemo, useState } from 'react';
 import Joyride, {
     ACTIONS,
@@ -41,7 +42,7 @@ const AddFileStep = React.memo(function AddFileStep() {
     return (
         <p>
             {i18n.translate('steps.newFile.message', {
-                icon: <Icon icon="plus" style={{ verticalAlign: 'text-top' }} />,
+                icon: <Icon icon={<Plus />} style={{ verticalAlign: 'text-top' }} />,
             })}
         </p>
     );
@@ -55,7 +56,12 @@ const BackupFilesStep = React.memo(function BackupFilesStep() {
             <p>{i18n.translate('steps.backupFiles.message')}</p>
             <p>
                 {i18n.translate('steps.backupFiles.action', {
-                    icon: <Icon icon="archive" style={{ verticalAlign: 'text-top' }} />,
+                    icon: (
+                        <Icon
+                            icon={<Archive />}
+                            style={{ verticalAlign: 'text-top' }}
+                        />
+                    ),
                 })}
             </p>
         </>
@@ -99,7 +105,9 @@ const DownloadAndRunStep = React.memo(function DownloadAndRunStep() {
         <>
             <p>
                 {i18n.translate('steps.downloadAndRun.message', {
-                    icon: <Icon icon="play" style={{ verticalAlign: 'text-top' }} />,
+                    icon: (
+                        <Icon icon={<Play />} style={{ verticalAlign: 'text-top' }} />
+                    ),
                 })}
             </p>
             <p>{i18n.translate('steps.downloadAndRun.runAgain')}</p>

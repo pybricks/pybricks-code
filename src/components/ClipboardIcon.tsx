@@ -3,17 +3,17 @@
 
 // Icon for indicating external links
 
-import { Icon } from '@blueprintjs/core';
-import React from 'react';
-
 import './clipboard.scss';
+import { Icon } from '@blueprintjs/core';
+import { Duplicate } from '@blueprintjs/icons';
+import React from 'react';
 
 const ClipboardIcon: React.FunctionComponent = () => {
     return (
         <span className="pb-clipboard">
             &nbsp;
             <sup>
-                <Icon icon="duplicate" iconSize={12} />
+                <Icon icon={<Duplicate size={12} />} />
             </sup>
         </span>
     );

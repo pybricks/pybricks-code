@@ -2,6 +2,7 @@
 // Copyright (c) 2022-2023 The Pybricks Authors
 
 import { Button, Intent } from '@blueprintjs/core';
+import { Code, Error } from '@blueprintjs/icons';
 import React, { useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 import { editorGoto } from '../../editor/actions';
@@ -36,7 +37,10 @@ const CompilerError: React.FunctionComponent<CompilerErrorProps> = ({ error }) =
             <p>{i18n.translate('compilerError.message')}</p>
             <pre className="pb-mpy-alerts-compile-error">{error.join('\n')}</pre>
             {file && uuid && (
-                <Button icon="code" onClick={() => dispatch(editorGoto(uuid, line))}>
+                <Button
+                    icon={<Code />}
+                    onClick={() => dispatch(editorGoto(uuid, line))}
+                >
                     {i18n.translate('compilerError.gotoErrorButton')}
                 </Button>
             )}
@@ -49,7 +53,7 @@ export const compilerError: CreateToast<CompilerErrorProps, 'dismiss' | 'gotoErr
     props,
 ) => ({
     message: <CompilerError {...props} />,
-    icon: 'error',
+    icon: <Error />,
     intent: Intent.DANGER,
     timeout: 0,
     onDismiss: () => onAction('dismiss'),

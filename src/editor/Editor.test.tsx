@@ -2,7 +2,7 @@
 // Copyright (c) 2021-2023 The Pybricks Authors
 
 import { Classes } from '@blueprintjs/core';
-import { act, cleanup, fireEvent, waitFor } from '@testing-library/react';
+import { act, cleanup, waitFor } from '@testing-library/react';
 import * as monaco from 'monaco-editor';
 import React from 'react';
 import { testRender, uuid } from '../../test';
@@ -130,15 +130,10 @@ describe('Editor', () => {
                 editor.queryByRole('menu', { name: 'Editor context menu' }),
             ).toBeNull();
 
-            // HACK: monaco editor uses deprecated event fields (keyCode),
-            // so regular userEvent.type() doesn't work. testing library
-            // doesn't have ContextMenu in its keymap either.
-            fireEvent(
-                editor.getByRole('textbox', { name: /^Editor content/ }),
-                new KeyboardEvent('keydown', {
-                    key: 'ContextMenu',
-                    code: 'ContextMenu',
-                    keyCode: 93,
+            await act(() =>
+                user.pointer({
+                    keys: '[MouseRight]',
+                    target: editor.getByRole('textbox', { name: /^Editor content/ }),
                 }),
             );
 

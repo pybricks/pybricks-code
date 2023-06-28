@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021-2022 The Pybricks Authors
+// Copyright (c) 2021-2023 The Pybricks Authors
 
-import type { ToastProps, ToasterInstance } from '@blueprintjs/core';
+import type { ToastProps, Toaster } from '@blueprintjs/core';
 
 /**
  * Template type alert callbacks.
@@ -25,6 +25,6 @@ export type CreateToast<
 > = (onAction: ToastActionHandler<A>, props: P) => ToastProps;
 
 /**
- * Type compatible with React.RefObject<ToasterInstance>.
+ * Type compatible with React.RefObject<Toaster>.
  */
-export type ToasterRef = { current: ToasterInstance | null };
+export type ToasterRef = { current: Toaster | null };

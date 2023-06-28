@@ -15,10 +15,11 @@ import {
     Intent,
     MultistepDialog,
     NonIdealState,
+    Popover,
     Pre,
     Spinner,
 } from '@blueprintjs/core';
-import { Classes as Classes2, Popover2 } from '@blueprintjs/popover2';
+import { ChevronDown, ChevronRight, Error, Heart } from '@blueprintjs/icons';
 import { FirmwareMetadata, HubType } from '@pybricks/firmware';
 import { fileOpen } from 'browser-fs-access';
 import classNames from 'classnames';
@@ -124,7 +125,7 @@ const UnsupportedHubs: React.FunctionComponent = () => {
                                         'selectHubPanel.notOnListButton.info.mindstorms.help.sponsor',
                                     )}
                                 </VisuallyHidden>
-                                <Icon icon="heart" />
+                                <Icon icon={<Heart />} />
                             </>
                         ),
                     },
@@ -282,13 +283,13 @@ const SelectHubPanel: React.FunctionComponent<SelectHubPanelProps> = ({
                 <>
                     <p>{i18n.translate('selectHubPanel.message')}</p>
                     <HubPicker />
-                    <Popover2
-                        popoverClassName={Classes2.POPOVER2_CONTENT_SIZING}
+                    <Popover
+                        popoverClassName={Classes.POPOVER_CONTENT_SIZING}
                         placement="right-end"
                         content={<UnsupportedHubs />}
                         renderTarget={({ isOpen: _isOpen, ref, ...targetProps }) => (
                             <Button
-                                elementRef={ref as React.Ref<HTMLButtonElement>}
+                                ref={ref as React.Ref<HTMLButtonElement>}
                                 {...targetProps}
                             >
                                 {i18n.translate('selectHubPanel.notOnListButton.label')}
@@ -301,7 +302,7 @@ const SelectHubPanel: React.FunctionComponent<SelectHubPanelProps> = ({
                 <Button
                     minimal={true}
                     small={true}
-                    icon={isAdvancedOpen ? 'chevron-down' : 'chevron-right'}
+                    icon={isAdvancedOpen ? <ChevronDown /> : <ChevronRight />}
                     onClick={() => setIsAdvancedOpen((v) => !v)}
                 >
                     {i18n.translate('selectHubPanel.advanced.label')}
@@ -360,7 +361,7 @@ const AcceptLicensePanel: React.FunctionComponent<AcceptLicensePanelProps> = ({
                     <Pre>{selectedFirmwareData.licenseText}</Pre>
                 ) : (
                     <NonIdealState
-                        icon={selectedFirmwareError ? 'error' : <Spinner />}
+                        icon={selectedFirmwareError ? <Error /> : <Spinner />}
                         description={
                             selectedFirmwareError
                                 ? i18n.translate('licensePanel.licenseText.error')
@@ -411,7 +412,7 @@ const ConfigureOptionsPanel: React.FunctionComponent<SelectOptionsPanelProps> = 
                         rightElement={
                             isHubNameValid ? undefined : (
                                 <Icon
-                                    icon="error"
+                                    icon={<Error />}
                                     intent={Intent.DANGER}
                                     tagName="div"
                                 />

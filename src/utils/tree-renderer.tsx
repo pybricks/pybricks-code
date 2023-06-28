@@ -11,10 +11,10 @@ import {
     Classes,
     Colors,
     Icon,
-    IconName,
     InputGroup,
     MaybeElement,
 } from '@blueprintjs/core';
+import { ChevronRight, Tick } from '@blueprintjs/icons';
 import React, { createContext } from 'react';
 import { TreeItem, TreeRenderProps } from 'react-complex-tree';
 import { useBoolean } from 'usehooks-ts';
@@ -26,7 +26,8 @@ const cx = (...classNames: Array<string | undefined | false>): string =>
 
 /** Node item data similar to blueprintsjs TreeNodeInfo */
 export type TreeItemData = {
-    readonly icon?: IconName | MaybeElement;
+    /** Optional icon. Element must include `className={Classes.TREE_NODE_ICON}`! */
+    readonly icon?: MaybeElement;
     readonly secondaryLabel?: string | MaybeElement;
 };
 
@@ -111,11 +112,7 @@ const Item: React.FunctionComponent<RenderProps<'renderItem'>> = (props) => {
                     ) : (
                         <span className={Classes.TREE_NODE_CARET_NONE} />
                     )}
-                    <Icon
-                        className={Classes.TREE_NODE_ICON}
-                        icon={props.item.data.icon}
-                        aria-hidden={true}
-                    />
+                    <Icon icon={props.item.data.icon} />
                     {props.title}
                     {props.item.data.secondaryLabel && isHover && (
                         <span className={Classes.TREE_NODE_SECONDARY_LABEL}>
@@ -131,7 +128,7 @@ const Item: React.FunctionComponent<RenderProps<'renderItem'>> = (props) => {
 
 const ItemArrow: React.FunctionComponent<RenderProps<'renderItemArrow'>> = (props) => (
     <Icon
-        icon="chevron-right"
+        icon={<ChevronRight />}
         className={cx(
             Classes.TREE_NODE_CARET,
             props.context.isExpanded
@@ -206,8 +203,9 @@ const RenameInput: React.FunctionComponent<RenderProps<'renderRenameInput'>> = (
         </span>
         <span className={Classes.TREE_NODE_SECONDARY_LABEL}>
             <Button
-                icon="tick"
+                icon={<Tick />}
                 {...props.submitButtonProps}
+                ref={props.submitButtonRef}
                 type="submit"
                 minimal={true}
                 small={true}

@@ -2,6 +2,7 @@
 // Copyright (c) 2022-2023 The Pybricks Authors
 
 import { Button, Code, Intent } from '@blueprintjs/core';
+import { Duplicate, Error } from '@blueprintjs/icons';
 import React from 'react';
 import type { CreateToast } from '../../toasterTypes';
 import { isIOS, isLinux } from '../../utils/os';
@@ -23,7 +24,7 @@ const NoWebBluetooth: React.FunctionComponent = () => {
                             chrome://flags/#enable-experimental-web-platform-features
                         </Code>
                         <Button
-                            icon="duplicate"
+                            icon={<Duplicate />}
                             small={true}
                             minimal={true}
                             onClick={() =>
@@ -41,7 +42,7 @@ const NoWebBluetooth: React.FunctionComponent = () => {
 
 export const noWebBluetooth: CreateToast = (onAction) => ({
     message: <NoWebBluetooth />,
-    icon: 'error',
+    icon: <Error />,
     intent: Intent.DANGER,
     onDismiss: () => onAction('dismiss'),
 });
