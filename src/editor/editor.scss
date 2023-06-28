@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2022 The Pybricks Authors
+// Copyright (c) 2020-2023 The Pybricks Authors
 
 // Custom styling for the Editor control.
 
@@ -30,7 +30,7 @@
         overflow-x: auto;
         @include pb.background-contrast(6%);
 
-        .bp4-tab-list > * {
+        .#{bp.$ns}-tab-list > * {
             padding-left: bp.$pt-grid-size * 1.5;
 
             &:not(:last-child) {

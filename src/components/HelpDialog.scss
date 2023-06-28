@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
 @use '@blueprintjs/core/lib/scss/variables' as bp;
 
-.#{bp.$ns}-popover2-open.#{bp.$ns}-popover2-placement-right {
+.#{bp.$ns}-popover-open.#{bp.$ns}-popover-placement-right {
     animation: open-right 0.25s;
 }
 
-.#{bp.$ns}-popover2-close.#{bp.$ns}-popover2-placement-right {
+.#{bp.$ns}-popover-close.#{bp.$ns}-popover-placement-right {
     animation: close-right 0.25s;
 }
 

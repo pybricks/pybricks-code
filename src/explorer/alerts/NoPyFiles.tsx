@@ -2,6 +2,7 @@
 // Copyright (c) 2023 The Pybricks Authors
 
 import { Intent } from '@blueprintjs/core';
+import { InfoSign } from '@blueprintjs/icons';
 import React from 'react';
 import { pythonFileExtension } from '../../pybricksMicropython/lib';
 import type { CreateToast } from '../../toasterTypes';
@@ -21,7 +22,7 @@ const NoPyFiles: React.FunctionComponent = () => {
 
 export const noPyFiles: CreateToast = (onAction) => ({
     message: <NoPyFiles />,
-    icon: 'info-sign',
+    icon: <InfoSign />,
     intent: Intent.PRIMARY,
     onDismiss: () => onAction('dismiss'),
 });

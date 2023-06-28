@@ -10,6 +10,7 @@ import {
     Switch,
     Text,
 } from '@blueprintjs/core';
+import { Plus } from '@blueprintjs/icons';
 import React, { useCallback, useRef, useState } from 'react';
 import { useId } from 'react-aria';
 import { useDispatch } from 'react-redux';
@@ -69,7 +70,7 @@ const NewFileWizard: React.FunctionComponent = () => {
 
     return (
         <Dialog
-            icon="plus"
+            icon={<Plus />}
             title={i18n.translate('title')}
             isOpen={isOpen}
             onOpening={() => setFileName('')}

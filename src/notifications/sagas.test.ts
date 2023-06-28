@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021-2022 The Pybricks Authors
+// Copyright (c) 2021-2023 The Pybricks Authors
 
-import type { IToastOptions, ToasterInstance } from '@blueprintjs/core';
+import type { ToastOptions, Toaster } from '@blueprintjs/core';
 import { FirmwareReaderError, FirmwareReaderErrorCode } from '@pybricks/firmware';
 import { mock } from 'jest-mock-extended';
 import { AnyAction } from 'redux';
@@ -36,10 +36,10 @@ import { add } from './actions';
 import { I18nId } from './i18n';
 import notification from './sagas';
 
-function createTestToasterSaga(): { toaster: ToasterInstance; saga: AsyncSaga } {
-    const toasts = new Map<string, IToastOptions>();
+function createTestToasterSaga(): { toaster: Toaster; saga: AsyncSaga } {
+    const toasts = new Map<string, ToastOptions>();
 
-    const toaster = mock<ToasterInstance>({
+    const toaster = mock<Toaster>({
         show: (props, key) => {
             return key ?? '';
         },

@@ -14,6 +14,7 @@ import {
     Spinner,
     Text,
 } from '@blueprintjs/core';
+import { InfoSign } from '@blueprintjs/icons';
 import { Item } from '@react-stately/collections';
 import { ListProps, ListState, useListState } from '@react-stately/list';
 import type { Node, Selection } from '@react-types/shared';
@@ -244,7 +245,7 @@ const LicenseDialog: React.FunctionComponent<LicenseDialogProps> = ({
             onClose={onClose}
         >
             <div className={Classes.DIALOG_BODY}>
-                <Callout className={Classes.INTENT_PRIMARY} icon="info-sign">
+                <Callout className={Classes.INTENT_PRIMARY} icon={<InfoSign />}>
                     {i18n.translate('description', {
                         name: appName,
                     })}

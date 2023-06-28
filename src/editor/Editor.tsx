@@ -5,17 +5,26 @@ import './editor.scss';
 import {
     Button,
     Classes,
-    IOverlayLifecycleProps,
-    IconName,
+    ContextMenu,
     Menu,
     MenuDivider,
     MenuItem,
+    OverlayLifecycleProps,
+    ResizeSensor,
     Tab,
     TabId,
     Tabs,
     Text,
 } from '@blueprintjs/core';
-import { ContextMenu2, ResizeSensor2 } from '@blueprintjs/popover2';
+import {
+    Blank,
+    Clipboard,
+    Cross,
+    Duplicate,
+    Manual,
+    Redo,
+    Undo,
+} from '@blueprintjs/icons';
 import classNames from 'classnames';
 import * as monaco from 'monaco-editor';
 import tomorrowNightEightiesTheme from 'monaco-themes/themes/Tomorrow-Night-Eighties.json';
@@ -76,7 +85,7 @@ type EditorContextMenuItemProps = Readonly<{
     /** The menu item label. */
     label: string;
     /** The menu item icon. */
-    icon: IconName;
+    icon: JSX.Element;
     /** The keyboard shortcut that triggers the same action. */
     keyboardShortcut: string;
     /** Controls the menu item disabled state. */
@@ -134,7 +143,7 @@ const EditorContextMenu: React.FunctionComponent<EditorContextMenuProps> = ({
         <Menu aria-label={i18n.translate('contextMenu.label')} role="menu">
             <EditorContextMenuItem
                 label={i18n.translate('copy')}
-                icon="duplicate"
+                icon={<Duplicate />}
                 keyboardShortcut={isMacOS() ? 'Cmd-C' : 'Ctrl-C'}
                 disabled={!hasSelection}
                 editor={editor}
@@ -142,7 +151,7 @@ const EditorContextMenu: React.FunctionComponent<EditorContextMenuProps> = ({
             />
             <EditorContextMenuItem
                 label={i18n.translate('paste')}
-                icon="clipboard"
+                icon={<Clipboard />}
                 keyboardShortcut={isMacOS() ? 'Cmd-V' : 'Ctrl-V'}
                 disabled={!model}
                 editor={editor}
@@ -150,7 +159,7 @@ const EditorContextMenu: React.FunctionComponent<EditorContextMenuProps> = ({
             />
             <EditorContextMenuItem
                 label={i18n.translate('selectAll')}
-                icon="blank"
+                icon={<Blank />}
                 keyboardShortcut={isMacOS() ? 'Cmd-A' : 'Ctrl-A'}
                 disabled={!model}
                 editor={editor}
@@ -159,7 +168,7 @@ const EditorContextMenu: React.FunctionComponent<EditorContextMenuProps> = ({
             <MenuDivider />
             <EditorContextMenuItem
                 label={i18n.translate('undo')}
-                icon="undo"
+                icon={<Undo />}
                 keyboardShortcut={isMacOS() ? 'Cmd-Z' : 'Ctrl-Z'}
                 disabled={!canUndo}
                 editor={editor}
@@ -167,7 +176,7 @@ const EditorContextMenu: React.FunctionComponent<EditorContextMenuProps> = ({
             />
             <EditorContextMenuItem
                 label={i18n.translate('redo')}
-                icon="redo"
+                icon={<Redo />}
                 keyboardShortcut={isMacOS() ? 'Cmd-Shift-Z' : 'Ctrl-Shift-Z'}
                 disabled={!canRedo}
                 editor={editor}
@@ -221,7 +230,7 @@ const TabCloseButton: React.FunctionComponent<TabCloseButtonProps> = ({ uuid }) 
             })}
             minimal={true}
             small={true}
-            icon="cross"
+            icon={<Cross />}
             // tabs are closed with delete button by keyboard, so
             // don't focus the close button
             tabIndex={-1}
@@ -440,7 +449,7 @@ const Editor: React.FunctionComponent = () => {
         [],
     );
 
-    const popoverProps = useMemo<IOverlayLifecycleProps>(
+    const popoverProps = useMemo<OverlayLifecycleProps>(
         () => ({
             onOpened: (e) => {
                 // a11y: focus the first item in the menu when the menu opens
@@ -497,8 +506,8 @@ const Editor: React.FunctionComponent = () => {
     return (
         <div className="pb-editor">
             <EditorTabs onChange={() => editor?.focus()} />
-            <ResizeSensor2 onResize={() => editor?.layout()}>
-                <ContextMenu2
+            <ResizeSensor onResize={() => editor?.layout()}>
+                <ContextMenu
                     className={classNames('pb-editor-tabpanel', isEmpty && 'pb-empty')}
                     role="tabpanel"
                     aria-label={isEmpty ? i18n.translate('welcome') : fileName}
@@ -510,13 +519,13 @@ const Editor: React.FunctionComponent = () => {
                 >
                     <Welcome isVisible={isEmpty} />
                     <div className="pb-editor-monaco" ref={editorRef} />
-                </ContextMenu2>
-            </ResizeSensor2>
+                </ContextMenu>
+            </ResizeSensor>
             <Button
                 className="pb-editor-doc-button"
                 minimal
                 large
-                icon="manual"
+                icon={<Manual />}
                 title={
                     isSettingShowDocsEnabled
                         ? i18n.translate('docs.hide')

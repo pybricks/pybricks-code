@@ -3,9 +3,15 @@
 
 import 'xterm/css/xterm.css';
 import './terminal.scss';
-import { Menu, MenuDivider, MenuItem, ResizeSensor } from '@blueprintjs/core';
-import { ContextMenu2, ContextMenu2ContentProps } from '@blueprintjs/popover2';
-import React, { useContext, useEffect, useMemo, useRef } from 'react';
+import {
+    ContextMenu,
+    Menu,
+    MenuDivider,
+    MenuItem,
+    ResizeSensor,
+} from '@blueprintjs/core';
+import { Blank, Clipboard, Duplicate, Trash } from '@blueprintjs/icons';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useTernaryDarkMode } from 'usehooks-ts';
 import { Terminal as XTerm } from 'xterm';
@@ -56,52 +62,58 @@ function createXTerm(): { xterm: XTerm; fitAddon: FitAddon } {
     return { xterm, fitAddon };
 }
 
-function createContextMenu(
-    xterm: XTerm,
-): (props: ContextMenu2ContentProps) => JSX.Element {
-    const ContextMenu = (_props: ContextMenu2ContentProps): JSX.Element => {
-        const i18n = useI18n();
+type ContextMenuContentProps = { xterm: XTerm };
 
-        return (
-            <Menu>
-                <MenuItem
-                    onClick={(): void => {
-                        const selected = xterm.getSelection();
-                        if (selected) {
-                            navigator.clipboard.writeText(selected);
-                        }
-                    }}
-                    text={i18n.translate('copy')}
-                    icon="duplicate"
-                    label={isMacOS() ? 'Cmd-C' : 'Ctrl-Shift-C'}
-                    disabled={!xterm.hasSelection()}
-                />
-                <MenuItem
-                    onClick={async (): Promise<void> => {
-                        xterm.paste(await navigator.clipboard.readText());
-                    }}
-                    text={i18n.translate('paste')}
-                    icon="clipboard"
-                    label={isMacOS() ? 'Cmd-V' : 'Ctrl-V'}
-                />
-                <MenuItem
-                    onClick={() => xterm.selectAll()}
-                    text={i18n.translate('selectAll')}
-                    icon="blank"
-                />
-                <MenuDivider />
-                <MenuItem
-                    onClick={(): void => xterm.clear()}
-                    text={i18n.translate('clear')}
-                    icon="trash"
-                />
-            </Menu>
-        );
-    };
+const ContextMenuContent: React.FunctionComponent<ContextMenuContentProps> = ({
+    xterm,
+}) => {
+    const i18n = useI18n();
+    const [hasSelection, setHasSelection] = useState(xterm.hasSelection());
 
-    return ContextMenu;
-}
+    useEffect(() => {
+        const subscription = xterm.onSelectionChange(() => {
+            setHasSelection(xterm.hasSelection());
+        });
 
+        return () => subscription.dispose();
+    }, [xterm, setHasSelection]);
+
+    return (
+        <Menu>
+            <MenuItem
+                onClick={(): void => {
+                    const selected = xterm.getSelection();
+                    if (selected) {
+                        navigator.clipboard.writeText(selected);
+                    }
+                }}
+                text={i18n.translate('copy')}
+                icon={<Duplicate />}
+                label={isMacOS() ? 'Cmd-C' : 'Ctrl-Shift-C'}
+                disabled={!hasSelection}
+            />
+            <MenuItem
+                onClick={async (): Promise<void> => {
+                    xterm.paste(await navigator.clipboard.readText());
+                }}
+                text={i18n.translate('paste')}
+                icon={<Clipboard />}
+                label={isMacOS() ? 'Cmd-V' : 'Ctrl-V'}
+            />
+            <MenuItem
+                onClick={() => xterm.selectAll()}
+                text={i18n.translate('selectAll')}
+                icon={<Blank />}
+            />
+            <MenuDivider />
+            <MenuItem
+                onClick={(): void => xterm.clear()}
+                text={i18n.translate('clear')}
+                icon={<Trash />}
+            />
+        </Menu>
+    );
+};
 const Terminal: React.FunctionComponent = () => {
     const { xterm, fitAddon } = useMemo(createXTerm, [createXTerm]);
     const terminalRef = useRef<HTMLDivElement>(null);
@@ -181,8 +193,6 @@ const Terminal: React.FunctionComponent = () => {
         return () => onDataHandle.dispose();
     }, [dispatch, xterm]);
 
-    const contextMenu = useMemo(() => createContextMenu(xterm), [xterm]);
-
     useEffect(() => {
         const listener = () => {
             xterm.focus();
@@ -224,9 +234,9 @@ const Terminal: React.FunctionComponent = () => {
     }, [xterm, bellRef, bellOverlayRef, bellTimeoutRef]);
 
     return (
-        <ContextMenu2
+        <ContextMenu
             className="h-100"
-            content={contextMenu}
+            content={<ContextMenuContent xterm={xterm} />}
             popoverProps={{ onClosed: () => xterm.focus() }}
         >
             <audio hidden preload="auto" ref={bellRef}>
@@ -236,7 +246,7 @@ const Terminal: React.FunctionComponent = () => {
             <ResizeSensor onResize={(): void => fitAddon.fit()}>
                 <div ref={terminalRef} className="h-100" />
             </ResizeSensor>
-        </ContextMenu2>
+        </ContextMenu>
     );
 };
 

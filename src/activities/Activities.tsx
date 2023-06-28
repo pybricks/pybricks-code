@@ -3,6 +3,7 @@
 
 import './activities.scss';
 import { Icon, Tab, Tabs } from '@blueprintjs/core';
+import { Cog, Document } from '@blueprintjs/icons';
 import React, { useCallback, useEffect, useRef } from 'react';
 import Explorer from '../explorer/Explorer';
 import Settings from '../settings/Settings';
@@ -114,8 +115,7 @@ const Activities: React.FunctionComponent = () => {
                 title={
                     <Icon
                         htmlTitle={i18n.translate('explorer')}
-                        size={35}
-                        icon="document"
+                        icon={<Document size={35} />}
                     />
                 }
                 panel={<Explorer />}
@@ -128,7 +128,10 @@ const Activities: React.FunctionComponent = () => {
                 className="pb-activities-tablist-tab"
                 id={Activity.Settings}
                 title={
-                    <Icon htmlTitle={i18n.translate('settings')} size={35} icon="cog" />
+                    <Icon
+                        htmlTitle={i18n.translate('settings')}
+                        icon={<Cog size={35} />}
+                    />
                 }
                 panel={<Settings />}
                 panelClassName="pb-activities-tabview"

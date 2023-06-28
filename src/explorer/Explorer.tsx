@@ -7,11 +7,21 @@ import './explorer.scss';
 import {
     Button,
     ButtonGroup,
+    Classes,
     Divider,
     HotkeyConfig,
-    IconName,
     useHotkeys,
 } from '@blueprintjs/core';
+import {
+    Archive,
+    Document,
+    Duplicate,
+    Edit,
+    Export,
+    Import,
+    Plus,
+    Trash,
+} from '@blueprintjs/icons';
 import React, {
     MouseEventHandler,
     useCallback,
@@ -64,7 +74,7 @@ type ActionButtonProps = {
     /** The DOM id for this instance. */
     id: string;
     /** The icon to use for the button. */
-    icon: IconName;
+    icon: JSX.Element;
     /** The tooltip/title text. */
     tooltip: string;
     /** Callback for button click event. */
@@ -134,13 +144,13 @@ const FileActionButtonGroup: React.FunctionComponent<ActionButtonGroupProps> = (
             >
                 <ActionButton
                     id={renameButtonId}
-                    icon="edit"
+                    icon={<Edit />}
                     tooltip={i18n.translate('treeItem.renameTooltip', { fileName })}
                     onClick={() => dispatch(explorerRenameFile(fileName))}
                 />
                 <ActionButton
                     id={duplicateButtonId}
-                    icon="duplicate"
+                    icon={<Duplicate />}
                     tooltip={i18n.translate('treeItem.duplicateTooltip', {
                         fileName,
                     })}
@@ -153,13 +163,13 @@ const FileActionButtonGroup: React.FunctionComponent<ActionButtonGroupProps> = (
                     // and it also matches the direction of the arrow on the
                     // archive icon which is also used to indicate an export/
                     // download operation
-                    icon="import"
+                    icon={<Import />}
                     tooltip={i18n.translate('treeItem.exportTooltip', { fileName })}
                     onClick={() => dispatch(explorerExportFile(fileName))}
                 />
                 <ActionButton
                     id={deleteButtonId}
-                    icon="trash"
+                    icon={<Trash />}
                     tooltip={i18n.translate('treeItem.deleteTooltip', { fileName })}
                     onClick={() =>
                         dispatch(explorerDeleteFile(fileName, item.index as UUID))
@@ -188,7 +198,7 @@ const Header: React.FunctionComponent = () => {
             <ButtonGroup minimal={true}>
                 <ActionButton
                     id={archiveButtonId}
-                    icon="archive"
+                    icon={<Archive />}
                     tooltip={i18n.translate('header.toolbar.exportAll')}
                     onClick={() => dispatch(explorerArchiveAllFiles())}
                 />
@@ -197,13 +207,13 @@ const Header: React.FunctionComponent = () => {
                     // NB: the "export" icon has an arrow pointing up, which is
                     // what we want here since import is analogous to upload
                     // even though this is the "import" action
-                    icon="export"
+                    icon={<Export />}
                     tooltip={i18n.translate('header.toolbar.import')}
                     onClick={() => dispatch(explorerImportFiles())}
                 />
                 <ActionButton
                     id={newButtonId}
-                    icon="plus"
+                    icon={<Plus />}
                     tooltip={i18n.translate('header.toolbar.addNew')}
                     onClick={() => dispatch(explorerCreateNewFile())}
                 />
@@ -322,7 +332,7 @@ const TreeContainer: React.FunctionComponent<RenderProps<'renderTreeContainer'>>
                 onKeyDown: handleDuplicateKeyDown,
             },
             {
-                combo: 'del',
+                combo: 'delete',
                 label: 'Delete',
                 disabled: !hotKeyActive,
                 preventDefault: true,
@@ -372,7 +382,7 @@ const FileTree: React.FunctionComponent = () => {
                     index,
                     data: {
                         fileName: file.path,
-                        icon: 'document',
+                        icon: <Document className={Classes.TREE_NODE_ICON} />,
                         secondaryLabel: (
                             <TreeItemContext.Consumer>
                                 {(item) => <FileActionButtonGroup item={item} />}

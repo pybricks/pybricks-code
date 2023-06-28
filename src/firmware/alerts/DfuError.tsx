@@ -2,6 +2,7 @@
 // Copyright (c) 2022-2023 The Pybricks Authors
 
 import { Button, Intent } from '@blueprintjs/core';
+import { Error } from '@blueprintjs/icons';
 import React from 'react';
 import type { CreateToast } from '../../toasterTypes';
 import { useI18n } from './i18n';
@@ -25,7 +26,7 @@ const DfuError: React.FunctionComponent<DfuErrorProps> = ({ onTryAgain }) => {
 
 export const dfuError: CreateToast<never, 'dismiss' | 'tryAgain'> = (onAction) => ({
     message: <DfuError onTryAgain={() => onAction('tryAgain')} />,
-    icon: 'error',
+    icon: <Error />,
     intent: Intent.DANGER,
     onDismiss: () => onAction('dismiss'),
 });

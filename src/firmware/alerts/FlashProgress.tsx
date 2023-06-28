@@ -2,6 +2,7 @@
 // Copyright (c) 2022-2023 The Pybricks Authors
 
 import { Intent, ProgressBar } from '@blueprintjs/core';
+import { Download } from '@blueprintjs/icons';
 import React from 'react';
 import type { CreateToast } from '../../toasterTypes';
 import { useI18n } from './i18n';
@@ -42,7 +43,7 @@ const FlashProgress: React.FunctionComponent<FlashProgressProps> = ({
 
 export const flashProgress: CreateToast<FlashProgressProps> = (onAction, props) => ({
     message: <FlashProgress {...props} />,
-    icon: 'download',
+    icon: <Download />,
     intent: Intent.PRIMARY,
     // close one second after progress is complete
     timeout: (props.progress ?? 0) < 1 ? 0 : 1000,

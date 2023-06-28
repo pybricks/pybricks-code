@@ -3,6 +3,7 @@
 
 import './bootloaderInstructions.scss';
 import { Callout, Intent } from '@blueprintjs/core';
+import { WarningSign } from '@blueprintjs/icons';
 import classNames from 'classnames';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
@@ -370,7 +371,7 @@ const BootloaderInstructions: React.FunctionComponent<BootloaderInstructionsProp
             )}
 
             {hubHasUSB(hubType) && isLinux() && (
-                <Callout intent={Intent.WARNING} icon="warning-sign">
+                <Callout intent={Intent.WARNING} icon={<WarningSign />}>
                     {i18n.translate('warning.linux.message', {
                         learnMore: (
                             <>
@@ -389,7 +390,7 @@ const BootloaderInstructions: React.FunctionComponent<BootloaderInstructionsProp
             )}
 
             {hubHasUSB(hubType) && isWindows() && (
-                <Callout intent={Intent.WARNING} icon="warning-sign">
+                <Callout intent={Intent.WARNING} icon={<WarningSign />}>
                     {i18n.translate('warning.windows.message', {
                         instructions: (
                             <a

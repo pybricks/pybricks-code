@@ -226,6 +226,8 @@ describe('tree item', () => {
             const treeItem = explorer.getByRole('treeitem', { name: 'test.file' });
 
             await act(() => user.click(treeItem));
+
+            dispatch.mockClear();
             await act(() => user.keyboard('{Delete}'));
 
             expect(dispatch).toHaveBeenCalledWith(

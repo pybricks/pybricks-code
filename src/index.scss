@@ -4,7 +4,6 @@
 // css files
 @use 'normalize.css/normalize';
 @use '@blueprintjs/core/lib/css/blueprint';
-@use '@blueprintjs/popover2/lib/css/blueprint-popover2';
 
 // sass files
 @use 'sass:color';
@@ -167,7 +166,7 @@ a.#{bp.$ns}-button {
     }
 
     // make disabled:checked radio buttons appear as not checked
-    &.#{bp.$ns}-radio input:disabled:checked ~ .bp4-control-indicator {
+    &.#{bp.$ns}-radio input:disabled:checked ~ .#{bp.$ns}-control-indicator {
         // color definition is same as $minimal-button-background-color-hover,
         // which is used to define $control-background-color-disabled and
         // $dark-control-background-color-disabled variables

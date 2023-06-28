@@ -2,6 +2,7 @@
 // Copyright (c) 2022-2023 The Pybricks Authors
 
 import { Alert, Classes, Intent } from '@blueprintjs/core';
+import { Trash } from '@blueprintjs/icons';
 import React, { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from '../../reducers';
@@ -35,7 +36,7 @@ const DeleteFileAlert: React.FunctionComponent = () => {
             canEscapeKeyCancel={true}
             canOutsideClickCancel={true}
             isOpen={isOpen}
-            icon="trash"
+            icon={<Trash />}
             intent={Intent.DANGER}
             confirmButtonText={i18n.translate('action.accept')}
             cancelButtonText={i18n.translate('action.cancel')}

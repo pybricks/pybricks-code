@@ -3,6 +3,7 @@
 
 import './sponsorsDialog.scss';
 import { AnchorButton, Classes, Dialog, Intent } from '@blueprintjs/core';
+import { Heart } from '@blueprintjs/icons';
 import classNames from 'classnames';
 import React from 'react';
 import { useDispatch } from 'react-redux';
@@ -29,7 +30,7 @@ const SponsorDialog: React.FunctionComponent = () => {
             title={i18n.translate('title', { pybricks: 'Pybricks' })}
             isOpen={showDialog}
             onClose={() => dispatch(sponsorHideDialog())}
-            icon="heart"
+            icon={<Heart />}
         >
             <div className={classNames(Classes.DIALOG_BODY, Classes.RUNNING_TEXT)}>
                 <h4>{i18n.translate('whoAreWe.heading')}</h4>

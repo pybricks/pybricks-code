@@ -2,6 +2,7 @@
 // Copyright (c) 2022-2023 The Pybricks Authors
 
 import { Classes } from '@blueprintjs/core';
+import { Help } from '@blueprintjs/icons';
 import React, { useCallback, useEffect, useState } from 'react';
 import { OverlayContainer } from 'react-aria';
 import { useBoolean } from 'usehooks-ts';
@@ -55,7 +56,7 @@ const HelpButton: React.FunctionComponent<HelpButtonProps> = ({
                     helpForLabel,
                 })}
                 minimal
-                icon="help"
+                icon={<Help />}
                 elementRef={setOpenButton}
                 onPress={setIsDialogOpenTrue}
             />

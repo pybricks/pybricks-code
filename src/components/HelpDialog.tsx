@@ -3,11 +3,10 @@
 
 import './HelpDialog.scss';
 import { Classes } from '@blueprintjs/core';
-import { Classes as Classes2 } from '@blueprintjs/popover2';
 import {
     POPOVER_ARROW_SVG_SIZE,
-    Popover2Arrow,
-} from '@blueprintjs/popover2/lib/cjs/popover2Arrow';
+    PopoverArrow,
+} from '@blueprintjs/core/lib/cjs/components/popover/popoverArrow';
 import classNames from 'classnames';
 import React, { PropsWithChildren, useEffect, useMemo, useRef, useState } from 'react';
 import {
@@ -88,11 +87,6 @@ const HelpDialog: React.FunctionComponent<PropsWithChildren<HelpDialogProps>> = 
         ),
     );
 
-    // HACK: workaround https://github.com/palantir/blueprint/pull/5302
-    useEffect(() => {
-        arrow?.setAttribute('aria-hidden', 'true');
-    }, [arrow]);
-
     // HACK: since there are not keyboard focusable elements for autoFocus
     // we have to manually focus the only focusable element in the dialog,
     // otherwise the FocusScope doesn't work.
@@ -110,7 +104,7 @@ const HelpDialog: React.FunctionComponent<PropsWithChildren<HelpDialogProps>> = 
             <div className={Classes.OVERLAY_BACKDROP} {...underlayProps}>
                 <div
                     className={classNames(
-                        Classes2.POPOVER2_TRANSITION_CONTAINER,
+                        Classes.POPOVER_TRANSITION_CONTAINER,
                         Classes.OVERLAY_CONTENT,
                     )}
                     ref={setPopperElement}
@@ -119,14 +113,14 @@ const HelpDialog: React.FunctionComponent<PropsWithChildren<HelpDialogProps>> = 
                 >
                     <div
                         className={classNames(
-                            Classes2.POPOVER2,
-                            `${Classes2.POPOVER2}-${isOpen ? 'open' : 'close'}`,
-                            `${Classes2.POPOVER2_CONTENT_PLACEMENT}-right`,
-                            Classes2.POPOVER2_CONTENT_SIZING,
+                            Classes.POPOVER,
+                            `${Classes.POPOVER}-${isOpen ? 'open' : 'close'}`,
+                            `${Classes.POPOVER_CONTENT_PLACEMENT}-right`,
+                            Classes.POPOVER_CONTENT_SIZING,
                         )}
                         onAnimationEnd={onAnimationEnd}
                     >
-                        <Popover2Arrow
+                        <PopoverArrow
                             arrowProps={{ ref: setArrow, style: styles.arrow }}
                             placement={state?.placement ?? 'auto'}
                         />
@@ -141,7 +135,7 @@ const HelpDialog: React.FunctionComponent<PropsWithChildren<HelpDialogProps>> = 
                                 // clicking anywhere in the dialog closes it
                                 onClick={onClose}
                             >
-                                <div id={descId} className={Classes2.POPOVER2_CONTENT}>
+                                <div id={descId} className={Classes.POPOVER_CONTENT}>
                                     {children}
                                 </div>
                                 <DismissButton

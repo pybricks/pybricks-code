@@ -1,16 +1,19 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2023 The Pybricks Authors
 
+import './status-bar.scss';
 import {
     Button,
     Classes,
     Icon,
     IconSize,
     Intent,
+    Popover,
+    PopoverProps,
     ProgressBar,
     Spinner,
 } from '@blueprintjs/core';
-import { Classes as Classes2, Popover2, Popover2Props } from '@blueprintjs/popover2';
+import { Disable, Error, TickCircle } from '@blueprintjs/icons';
 import classNames from 'classnames';
 import React, { useMemo } from 'react';
 import { BleConnectionState } from '../ble/reducers';
@@ -18,10 +21,8 @@ import { CompletionEngineStatus } from '../editor/redux/codeCompletion';
 import { useSelector } from '../reducers';
 import { useI18n } from './i18n';
 
-import './status-bar.scss';
-
-const commonPopoverProps: Partial<Popover2Props> = {
-    popoverClassName: Classes2.POPOVER2_CONTENT_SIZING,
+const commonPopoverProps: Partial<PopoverProps> = {
+    popoverClassName: Classes.POPOVER_CONTENT_SIZING,
     placement: 'top',
 };
 
@@ -34,11 +35,11 @@ const CompletionEngineIndicator: React.FunctionComponent = () => {
             case CompletionEngineStatus.Loading:
                 return <Spinner size={IconSize.STANDARD} />;
             case CompletionEngineStatus.Ready:
-                return <Icon icon="tick-circle" />;
+                return <Icon icon={<TickCircle />} />;
             case CompletionEngineStatus.Failed:
-                return <Icon icon="error" />;
+                return <Icon icon={<Error />} />;
             default:
-                return <Icon icon="disable" />;
+                return <Icon icon={<Disable />} />;
         }
     }, [status]);
 
@@ -56,7 +57,7 @@ const CompletionEngineIndicator: React.FunctionComponent = () => {
     }, [status, i18n]);
 
     return (
-        <Popover2 {...commonPopoverProps} content={message}>
+        <Popover {...commonPopoverProps} content={message}>
             <div
                 aria-label={i18n.translate('completionEngineStatus.label')}
                 role="button"
@@ -65,7 +66,7 @@ const CompletionEngineIndicator: React.FunctionComponent = () => {
             >
                 {icon}
             </div>
-        </Popover2>
+        </Popover>
     );
 };
 
@@ -76,7 +77,7 @@ const HubInfoButton: React.FunctionComponent = () => {
     const deviceFirmwareVersion = useSelector((s) => s.ble.deviceFirmwareVersion);
 
     return (
-        <Popover2
+        <Popover
             {...commonPopoverProps}
             content={
                 <table className="no-wrap" style={{ userSelect: 'text' }}>
@@ -106,7 +107,7 @@ const HubInfoButton: React.FunctionComponent = () => {
             <Button title={i18n.translate('hubInfo.title')} minimal={true}>
                 {deviceName}
             </Button>
-        </Popover2>
+        </Popover>
     );
 };
 
@@ -116,7 +117,7 @@ const BatteryIndicator: React.FunctionComponent = () => {
     const lowBatteryWarning = useSelector((s) => s.ble.deviceLowBatteryWarning);
 
     return (
-        <Popover2
+        <Popover
             {...commonPopoverProps}
             content={
                 <span className="no-wrap">
@@ -138,7 +139,7 @@ const BatteryIndicator: React.FunctionComponent = () => {
                 </div>
                 <div className="pb-battery-indicator-tip" />
             </div>
-        </Popover2>
+        </Popover>
     );
 };
 
