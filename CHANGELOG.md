@@ -4,6 +4,28 @@
 
 ## [Unreleased]
 
+### Changed
+- Updated dependencies.
+- Updated firmware to v3.3.0b7:
+
+  #### Added
+  - Added `'modes'` entry to the dictionary returned by `PUPDevice.info()`.
+  - Added `pybricks.tools.read_input_byte()` function ([support#1102]).
+  - Added `pybricks.tools.hub_menu()` function ([support#1064]).
+
+  #### Changed
+  - Changed internal drivers for LEGO devices (motors and sensors) on all platforms.
+
+  #### Fixed
+  - Fixed hub will not power off when Bluetooth chip crashes on City and Technic hubs ([support#1095]).
+  - Fixed `off()` method in `ColorLightMatrix`, `UltrasonicSensor`, `ColorSensor` ([support#1098]).
+
+  [support#1064]: https://github.com/pybricks/support/issues/1064
+  [support#1095]: https://github.com/pybricks/support/issues/1095
+  [support#1098]: https://github.com/pybricks/support/issues/1098
+  [support#1102]: https://github.com/pybricks/support/issues/1102
+
+
 ## [2.2.0-beta.5] - 2023-06-02
 
 ### Changed
