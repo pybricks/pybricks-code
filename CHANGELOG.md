@@ -4,6 +4,11 @@
 
 ## [Unreleased]
 
+### Fixed
+- Fixed terminal not working (regression in 2.2.0-beta.6, [support#1130]).
+
+[support#1130]: https://github.com/pybricks/support/issues/1130
+
 ## [2.2.0-beta.6] - 2023-06-30
 
 ### Changed
