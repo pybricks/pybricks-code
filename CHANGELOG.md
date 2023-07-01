@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [2.2.0-beta.7] - 2023-07-01
+
 ### Fixed
 - Fixed terminal not working (regression in 2.2.0-beta.6, [support#1130]).
 
