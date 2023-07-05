@@ -155,20 +155,16 @@ describe('handleExplorerArchiveAllFiles', () => {
         });
 
         describe('should continue when fileStorage succeeds', () => {
-            beforeEach(async () => {
+            it('should catch error', async () => {
+                const testError = new Error('test error');
+
+                jest.spyOn(browserFsAccess, 'fileSave').mockRejectedValue(testError);
+
                 saga.put(
                     fileStorageDidDumpAllFiles([
                         { path: 'test.file', contents: 'test file contents' },
                     ]),
                 );
-            });
-
-            it('should catch error', async () => {
-                const testError = new Error('test error');
-
-                jest.spyOn(browserFsAccess, 'fileSave').mockImplementation(() => {
-                    throw testError;
-                });
 
                 await expect(saga.take()).resolves.toEqual(
                     alertsShowAlert('alerts', 'unexpectedError', { error: testError }),
@@ -181,6 +177,12 @@ describe('handleExplorerArchiveAllFiles', () => {
 
             it('should archive file', async () => {
                 jest.spyOn(browserFsAccess, 'fileSave');
+
+                saga.put(
+                    fileStorageDidDumpAllFiles([
+                        { path: 'test.file', contents: 'test file contents' },
+                    ]),
+                );
 
                 await expect(saga.take()).resolves.toEqual(
                     explorerDidArchiveAllFiles(),
