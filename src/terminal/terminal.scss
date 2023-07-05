@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
 @use '@blueprintjs/core/lib/scss/variables' as bp;
 
@@ -15,5 +15,27 @@
     &.pb-bell {
         background-color: adjust-color(bp.$pt-intent-danger, $alpha: -0.5);
         transition: linear 100ms;
+    }
+}
+
+// HACK: work around https://github.com/xtermjs/xterm.js/issues/4580
+.xterm-dom-renderer-owner-1 .xterm-rows .xterm-cursor.xterm-cursor-underline {
+    animation: pb-terminal-cursor 1s step-end infinite !important;
+    box-shadow: none !important;
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 1px;
+    border-style: solid;
+    border-color: black;
+
+    .#{bp.$ns}-dark & {
+        border-color: white;
+    }
+}
+
+@keyframes pb-terminal-cursor {
+    50% {
+        border-style: hidden;
     }
 }

@@ -244,7 +244,7 @@ const Terminal: React.FunctionComponent = () => {
             </audio>
             <div className="pb-terminal-bell-overlay" ref={bellOverlayRef} />
             <ResizeSensor targetRef={terminalRef} onResize={(): void => fitAddon.fit()}>
-                <div ref={terminalRef} className="h-100 pb-focus-managed" />
+                <div ref={terminalRef} className="h-100" />
             </ResizeSensor>
         </ContextMenu>
     );
