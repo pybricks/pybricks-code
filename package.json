@@ -8,7 +8,7 @@
         "url": "https://github.com/pybricks/pybricks-code"
     },
     "dependencies": {
-        "@babel/core": "^7.22.5",
+        "@babel/core": "^7.22.6",
         "@blueprintjs/core": "^5.0.1",
         "@pmmmwh/react-refresh-webpack-plugin": "^0.5.10",
         "@pybricks/firmware": "7.6.0",
