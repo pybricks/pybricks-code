@@ -4,6 +4,30 @@
 
 ## [Unreleased]
 
+## [2.2.0-beta.8] - 2023-07-07
+
+### Changed
+- Updated dependencies.
+- Updated firmware to v3.3.0b8:
+
+  #### Added
+  - Added `use_gyro` method to `GyroDriveBase` class ([support#1054]).
+  - Added `pybricks.tools.read_input_byte()` function ([support#1102]).
+
+  #### Changed
+  - Relaxed thresholds that define when the IMU is stationary ([support#1105]).
+
+  #### Fixed
+  - Fixed Technic (Extra) Large motors not working ([support#1131]) on all hubs.
+  - Fixed Powered Up Light not working ([support#1131]) on all hubs.
+  - Fixed UART sensors not working on Technic Hub ([support#1137]).
+  - Fixed incorrect number of ports on City Hub ([support#1131]).
+
+  [support#1054]: https://github.com/pybricks/support/issues/1054
+  [support#1105]: https://github.com/pybricks/support/issues/1105
+  [support#1131]: https://github.com/pybricks/support/issues/1131
+  [support#1137]: https://github.com/pybricks/support/issues/1137
+
 ## [2.2.0-beta.7] - 2023-07-01
 
 ### Fixed
@@ -937,7 +961,9 @@ Prerelease changes are documented at [support#48].
 
 <!-- links for version headings -->
 
-[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.2.0-beta.6...HEAD
+[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.2.0-beta.8...HEAD
+[2.2.0-beta.8]: https://github.com/pybricks/pybricks-code/compare/v2.2.0-beta.7..v2.2.0-beta.8
+[2.2.0-beta.7]: https://github.com/pybricks/pybricks-code/compare/v2.2.0-beta.6..v2.2.0-beta.7
 [2.2.0-beta.6]: https://github.com/pybricks/pybricks-code/compare/v2.2.0-beta.5..v2.2.0-beta.6
 [2.2.0-beta.5]: https://github.com/pybricks/pybricks-code/compare/v2.2.0-beta.4..v2.2.0-beta.5
 [2.2.0-beta.4]: https://github.com/pybricks/pybricks-code/compare/v2.2.0-beta.3..v2.2.0-beta.4
