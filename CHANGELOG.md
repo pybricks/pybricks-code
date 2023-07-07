@@ -4,6 +4,28 @@
 
 ## [Unreleased]
 
+### Changed
+- Updated dependencies.
+- Updated firmware to v3.3.0b8:
+
+  #### Added
+  - Added `use_gyro` method to `GyroDriveBase` class ([support#1054]).
+  - Added `pybricks.tools.read_input_byte()` function ([support#1102]).
+
+  #### Changed
+  - Relaxed thresholds that define when the IMU is stationary ([support#1105]).
+
+  #### Fixed
+  - Fixed Technic (Extra) Large motors not working ([support#1131]) on all hubs.
+  - Fixed Powered Up Light not working ([support#1131]) on all hubs.
+  - Fixed UART sensors not working on Technic Hub ([support#1137]).
+  - Fixed incorrect number of ports on City Hub ([support#1131]).
+
+  [support#1054]: https://github.com/pybricks/support/issues/1054
+  [support#1105]: https://github.com/pybricks/support/issues/1105
+  [support#1131]: https://github.com/pybricks/support/issues/1131
+  [support#1137]: https://github.com/pybricks/support/issues/1137
+
 ## [2.2.0-beta.7] - 2023-07-01
 
 ### Fixed
