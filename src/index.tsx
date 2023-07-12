@@ -7,7 +7,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import { I18nContext } from '@shopify/react-i18n';
 import React from 'react';
 import { OverlayProvider } from 'react-aria';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { createLogger } from 'redux-logger';
 import createSagaMiddleware from 'redux-saga';
@@ -20,6 +20,7 @@ import { serializableCheck } from './redux';
 import reportWebVitals from './reportWebVitals';
 import rootSaga, { RootSagaContext } from './sagas';
 import { defaultTerminalContext } from './terminal/TerminalContext';
+import { defined } from './utils';
 import { createCountFunc } from './utils/iter';
 
 const toasterRef = React.createRef<OverlayToaster>();
@@ -72,20 +73,21 @@ window.addEventListener('drop', dragEventHandler);
 
 sagaMiddleware.run(rootSaga);
 
-ReactDOM.render(
-    <React.StrictMode>
-        <Provider store={store}>
-            <I18nContext.Provider value={i18nManager}>
-                <OverlayProvider>
-                    <HotkeysProvider>
-                        <App />
-                    </HotkeysProvider>
-                </OverlayProvider>
-                <OverlayToaster ref={toasterRef} />
-            </I18nContext.Provider>
-        </Provider>
-    </React.StrictMode>,
-    document.getElementById('root'),
+const container = document.getElementById('root');
+defined(container);
+const root = createRoot(container);
+
+root.render(
+    <Provider store={store}>
+        <I18nContext.Provider value={i18nManager}>
+            <OverlayProvider>
+                <HotkeysProvider>
+                    <App />
+                </HotkeysProvider>
+            </OverlayProvider>
+            <OverlayToaster ref={toasterRef} />
+        </I18nContext.Provider>
+    </Provider>,
 );
 
 // If you want to start measuring performance in your app, pass a function
