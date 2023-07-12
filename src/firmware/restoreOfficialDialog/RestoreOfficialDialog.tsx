@@ -9,7 +9,7 @@ import {
     MultistepDialog,
 } from '@blueprintjs/core';
 import classNames from 'classnames';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import {
     legoEducationSpikeRegisteredTrademark,
@@ -46,6 +46,15 @@ const RestoreFirmwarePanel: React.FunctionComponent = () => {
     const [hubType] = useHubPickerSelectedHub();
     const dispatch = useDispatch();
     const i18n = useI18n();
+    const inProgress = useSelector(
+        (s) =>
+            s.firmware.isFirmwareFlashUsbDfuInProgress ||
+            s.firmware.isFirmwareRestoreOfficialDfuInProgress,
+    );
+
+    const handleRestoreButtonClick = useCallback(() => {
+        dispatch(firmwareRestoreOfficialDfu(hubType));
+    }, [dispatch, hubType]);
 
     return (
         <div className={classNames(Classes.DIALOG_BODY, Classes.RUNNING_TEXT)}>
@@ -72,7 +81,8 @@ const RestoreFirmwarePanel: React.FunctionComponent = () => {
                     <div className="pb-spacer" />
                     <Button
                         intent={Intent.PRIMARY}
-                        onClick={() => dispatch(firmwareRestoreOfficialDfu(hubType))}
+                        disabled={inProgress}
+                        onClick={handleRestoreButtonClick}
                     >
                         {i18n.translate('restoreFirmwarePanel.flashButton')}
                     </Button>
