@@ -450,6 +450,11 @@ const BootloaderModePanel: React.FunctionComponent<BootloaderModePanelProps> = (
 
 export const InstallPybricksDialog: React.FunctionComponent = () => {
     const { isOpen } = useSelector((s) => s.firmware.installPybricksDialog);
+    const inProgress = useSelector(
+        (s) =>
+            s.firmware.isFirmwareFlashUsbDfuInProgress ||
+            s.firmware.isFirmwareRestoreOfficialDfuInProgress,
+    );
     const dispatch = useDispatch();
     const [hubName, setHubName] = useState('');
     const [licenseAccepted, setLicenseAccepted] = useState(false);
@@ -476,6 +481,7 @@ export const InstallPybricksDialog: React.FunctionComponent = () => {
             nextButtonProps={{ text: i18n.translate('nextButton.label') }}
             finalButtonProps={{
                 text: i18n.translate('flashFirmwareButton.label'),
+                disabled: inProgress,
                 onClick: () =>
                     dispatch(
                         firmwareInstallPybricksDialogAccept(

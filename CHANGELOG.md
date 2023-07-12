@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+### Fixed
+- Fixed starting DFU flash while another was still in progress ([support#1146]).
+
+[support#1146]: https://github.com/pybricks/support/issues/1146
 ## [2.2.0-beta.8] - 2023-07-07
 
 ### Changed
