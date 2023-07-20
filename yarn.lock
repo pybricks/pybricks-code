@@ -2700,7 +2700,7 @@ __metadata:
     react-dev-utils: ^12.0.1
     react-dom: ^18.2.0
     react-dropzone: ^14.2.3
-    react-joyride: ^2.5.4
+    react-joyride: ^2.5.5
     react-popper: ^2.3.0
     react-redux: ^8.1.1
     react-refresh: ^0.14.0
@@ -13591,9 +13591,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-joyride@npm:^2.5.4":
-  version: 2.5.4
-  resolution: "react-joyride@npm:2.5.4"
+"react-joyride@npm:^2.5.5":
+  version: 2.5.5
+  resolution: "react-joyride@npm:2.5.5"
   dependencies:
     deepmerge: ^4.3.1
     exenv: ^1.2.2
@@ -13602,12 +13602,12 @@ __metadata:
     react-floater: ^0.7.6
     react-is: ^16.13.1
     scroll: ^3.0.1
-    scrollparent: ^2.0.1
+    scrollparent: ^2.1.0
     tree-changes: ^0.9.2
   peerDependencies:
     react: 15 - 18
     react-dom: 15 - 18
-  checksum: aefefbb36a2f7cae9962e6f12e0fec6a24761726378639b76e16e3061ead2e1f3f4464e449132d686c8428b036ad897994fb797f3b510c9b9cc7de243dd144d1
+  checksum: ca4a18631e12638e10f7ebb063880f66a984a4edc0fe81f87649ac1ec32c3790a03c6cbe10f189c029d64af52eef4173042c676024987accb0aeaa4e1216bb04
   languageName: node
   linkType: hard
 
@@ -14255,10 +14255,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"scrollparent@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "scrollparent@npm:2.0.1"
-  checksum: 9ff2b29c1233431ebd0910e5f8db4a058836ee0292d1bb18042fbb4d2175c3ed73fa28a71a96074ac6848173185238ad1139bdefc3863be4808df981175cb807
+"scrollparent@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "scrollparent@npm:2.1.0"
+  checksum: 646cfdaf981f94b52f1020cc26b18ff1a751c2fa4e40777f6dfac314500d365b4db3fec39fd06be7b683f0a1dbd29df8ce1629db50381e9072433465b2f446fa
   languageName: node
   linkType: hard
 
