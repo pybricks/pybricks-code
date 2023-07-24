@@ -1540,12 +1540,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@blueprintjs/core@npm:^5.1.4":
-  version: 5.1.4
-  resolution: "@blueprintjs/core@npm:5.1.4"
+"@blueprintjs/core@npm:^5.1.5":
+  version: 5.1.5
+  resolution: "@blueprintjs/core@npm:5.1.5"
   dependencies:
     "@blueprintjs/colors": ^5.0.1
-    "@blueprintjs/icons": ^5.1.3
+    "@blueprintjs/icons": ^5.1.4
     "@popperjs/core": ^2.11.7
     classnames: ^2.3.1
     normalize.css: ^8.0.1
@@ -1562,13 +1562,13 @@ __metadata:
   bin:
     upgrade-blueprint-2.0.0-rename: scripts/upgrade-blueprint-2.0.0-rename.sh
     upgrade-blueprint-3.0.0-rename: scripts/upgrade-blueprint-3.0.0-rename.sh
-  checksum: 308366e81bfd51766b125261807e00c18667b86b5dd641424323bab5a7a889498517f364fcd168e9aa5ffb32c3945d1820fed75dadc53d06ff8c7fd7da82dffe
+  checksum: 8e79f77f5c1bd917a51b624e63fc3bf6a07171b2fef7c3b02398eabcfe6140a97dda048750b42b6452ef6b631e72ec803c04669b11e62ff464ad5fcd3135da02
   languageName: node
   linkType: hard
 
-"@blueprintjs/icons@npm:^5.1.3":
-  version: 5.1.3
-  resolution: "@blueprintjs/icons@npm:5.1.3"
+"@blueprintjs/icons@npm:^5.1.4":
+  version: 5.1.4
+  resolution: "@blueprintjs/icons@npm:5.1.4"
   dependencies:
     change-case: ^4.1.2
     classnames: ^2.3.1
@@ -1580,7 +1580,7 @@ __metadata:
   peerDependenciesMeta:
     "@types/react":
       optional: true
-  checksum: a7732a3916b6666f3b204af5dd43753c8e114f2d297142b150cedd595e27bdc4096e788892b091b72587f1c17a12d96e4ee9a5ca37a9b60e79c97f21d542e2fd
+  checksum: 1a1acef3718e06d82de473671132f3f721e0a4aff7aaa0b7d5e2014b1b8d0630292a9a81a921d2f4b2143141eb5a7b292bb47c72ac971b37b982a7e4245b07aa
   languageName: node
   linkType: hard
 
@@ -2603,7 +2603,7 @@ __metadata:
   resolution: "@pybricks/pybricks-code@workspace:."
   dependencies:
     "@babel/core": ^7.22.9
-    "@blueprintjs/core": ^5.1.4
+    "@blueprintjs/core": ^5.1.5
     "@pmmmwh/react-refresh-webpack-plugin": ^0.5.10
     "@pybricks/firmware": 7.7.0
     "@pybricks/ide-docs": 2.9.0
