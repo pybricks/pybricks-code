@@ -82,7 +82,7 @@
         "postcss-flexbugs-fixes": "^5.0.2",
         "postcss-loader": "^7.3.3",
         "postcss-normalize": "^10.0.1",
-        "postcss-preset-env": "^9.0.0",
+        "postcss-preset-env": "^9.1.0",
         "prompts": "^2.4.2",
         "prop-types": "^15.8.1",
         "pyodide": "0.23.4",
