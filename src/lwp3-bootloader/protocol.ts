@@ -99,7 +99,10 @@ export class ProtocolError extends Error {
      * @param message The error message
      * @param data The bytecodes that caused the error
      */
-    constructor(message: string, public data: DataView) {
+    constructor(
+        message: string,
+        public data: DataView,
+    ) {
         super(message);
     }
 }

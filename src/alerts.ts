@@ -60,8 +60,10 @@ export type AlertCallback<
  * @template D The domain.
  * @template S The specific instance name in the domain.
  */
-export type AlertActions<D extends AlertDomain, S extends AlertSpecific<D>> =
-    | Parameters<Parameters<AlertInstance<D, S>>[0]>[0];
+export type AlertActions<
+    D extends AlertDomain,
+    S extends AlertSpecific<D>,
+> = Parameters<Parameters<AlertInstance<D, S>>[0]>[0];
 
 /**
  * Gets the type of the properties for a specific instance in the lookup table.
