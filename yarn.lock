@@ -2659,7 +2659,7 @@ __metadata:
     bfj: ^7.0.2
     browser-fs-access: ^0.34.1
     browserslist: ^4.21.10
-    camelcase: ^7.0.0
+    camelcase: ^8.0.0
     canvas: ^2.11.2
     case-sensitive-paths-webpack-plugin: ^2.4.0
     copy-webpack-plugin: ^11.0.0
@@ -6690,10 +6690,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"camelcase@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "camelcase@npm:7.0.0"
-  checksum: 162d59607b3b46e910af151348d5e40af579048a5d07f3c06370b096ca0d42ba4a88bd92cf4e3482645ba1ffdd6f744d8273c1b9594e493fc10883d54adf7cbe
+"camelcase@npm:^8.0.0":
+  version: 8.0.0
+  resolution: "camelcase@npm:8.0.0"
+  checksum: 6da7abe997af29e80052f17aa21628c7cce14af364cef9f07a2a44d59614dd6f361d405f121938e673424d673697a8c53ad17be8c4b03b0a727307c4db8b5b5e
   languageName: node
   linkType: hard
 
