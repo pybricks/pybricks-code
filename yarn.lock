@@ -2735,7 +2735,7 @@ __metadata:
     jest: ^29.6.2
     jest-environment-jsdom: ^29.6.2
     jest-mock-extended: ^3.0.5
-    jest-resolve: ^29.6.2
+    jest-resolve: ^29.6.3
     jest-watch-typeahead: ^2.2.2
     jszip: ^3.10.1
     license-webpack-plugin: ^3.0.0
@@ -10888,6 +10888,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jest-get-type@npm:^29.6.3":
+  version: 29.6.3
+  resolution: "jest-get-type@npm:29.6.3"
+  checksum: 88ac9102d4679d768accae29f1e75f592b760b44277df288ad76ce5bf038c3f5ce3719dea8aa0f035dac30e9eb034b848ce716b9183ad7cc222d029f03e92205
+  languageName: node
+  linkType: hard
+
 "jest-haste-map@npm:^29.6.2":
   version: 29.6.2
   resolution: "jest-haste-map@npm:29.6.2"
@@ -11049,6 +11056,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jest-resolve@npm:^29.6.3":
+  version: 29.6.3
+  resolution: "jest-resolve@npm:29.6.3"
+  dependencies:
+    chalk: ^4.0.0
+    graceful-fs: ^4.2.9
+    jest-haste-map: ^29.6.3
+    jest-pnp-resolver: ^1.2.2
+    jest-util: ^29.6.3
+    jest-validate: ^29.6.3
+    resolve: ^1.20.0
+    resolve.exports: ^2.0.0
+    slash: ^3.0.0
+  checksum: 94594aab55b957e4f13fec248a18c99a6d8eb4842aa33ea5ef77179604df206d3fff1c59393a8984f179d0a7c6b98322d260b356076cdc2e74f2ebf1d9fba74a
+  languageName: node
+  linkType: hard
+
 "jest-runner@npm:^29.6.2":
   version: 29.6.2
   resolution: "jest-runner@npm:29.6.2"
@@ -11175,6 +11199,20 @@ __metadata:
     leven: ^3.1.0
     pretty-format: ^29.6.2
   checksum: 32648d002189c0ad8a958eace7c6b7d05ea1dc440a1b91e0f22dc1aef489899446ec80b2d527fd13713862d89dfb4606e24a3bf8a10c4ddac3c911e93b7f0374
+  languageName: node
+  linkType: hard
+
+"jest-validate@npm:^29.6.3":
+  version: 29.6.3
+  resolution: "jest-validate@npm:29.6.3"
+  dependencies:
+    "@jest/types": ^29.6.3
+    camelcase: ^6.2.0
+    chalk: ^4.0.0
+    jest-get-type: ^29.6.3
+    leven: ^3.1.0
+    pretty-format: ^29.6.3
+  checksum: caa489ed11080441c636b8035ab71bafbdc0c052b1e452855e4d2dd24ac15e497710a270ea6fc5ef8926b22c1ce4d6e07ec2dc193f0810cff5851d7a2222c045
   languageName: node
   linkType: hard
 
@@ -13814,6 +13852,17 @@ __metadata:
     ansi-styles: ^5.0.0
     react-is: ^18.0.0
   checksum: a0f972a44f959023c0df9cdfe9eed7540264d7f7ddf74667db8a5294444d5aa153fd47d20327df10ae86964e2ceec10e46ea06b1a5c9c12e02348b78c952c9fc
+  languageName: node
+  linkType: hard
+
+"pretty-format@npm:^29.6.3":
+  version: 29.6.3
+  resolution: "pretty-format@npm:29.6.3"
+  dependencies:
+    "@jest/schemas": ^29.6.3
+    ansi-styles: ^5.0.0
+    react-is: ^18.0.0
+  checksum: 4e1c0db48e65571c22e80ff92123925ff8b3a2a89b71c3a1683cfde711004d492de32fe60c6bc10eea8bf6c678e5cbe544ac6c56cb8096e1eb7caf856928b1c4
   languageName: node
   linkType: hard
 
