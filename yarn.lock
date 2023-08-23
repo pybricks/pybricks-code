@@ -1539,9 +1539,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@blueprintjs/core@npm:^5.2.0":
-  version: 5.2.0
-  resolution: "@blueprintjs/core@npm:5.2.0"
+"@blueprintjs/core@npm:^5.2.1":
+  version: 5.2.1
+  resolution: "@blueprintjs/core@npm:5.2.1"
   dependencies:
     "@blueprintjs/colors": ^5.0.1
     "@blueprintjs/icons": ^5.1.5
@@ -1561,7 +1561,7 @@ __metadata:
   bin:
     upgrade-blueprint-2.0.0-rename: scripts/upgrade-blueprint-2.0.0-rename.sh
     upgrade-blueprint-3.0.0-rename: scripts/upgrade-blueprint-3.0.0-rename.sh
-  checksum: 65e2a1d237889d090c86d6265383d535762670697049771af1eea6183f56befe64c1b243fe605ffb3e06e51ba8e8306a5a6cfe5436eca9cc92cd4d1aea924c6d
+  checksum: dfc6986b4e375eccc149207c117bf8d5ef10b40adfa39577599e049eaf018e9f63225da3afe29abcb957571de5d8500fca2bbb55dd74d4c15c4f68e567adef13
   languageName: node
   linkType: hard
 
@@ -2676,7 +2676,7 @@ __metadata:
   resolution: "@pybricks/pybricks-code@workspace:."
   dependencies:
     "@babel/core": ^7.22.10
-    "@blueprintjs/core": ^5.2.0
+    "@blueprintjs/core": ^5.2.1
     "@pmmmwh/react-refresh-webpack-plugin": ^0.5.11
     "@pybricks/firmware": 7.7.0
     "@pybricks/ide-docs": 2.9.0
