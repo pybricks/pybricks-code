@@ -6,7 +6,8 @@
 // NB: We need to be very careful about imports here since many libraries for
 // web aren't compatible with web workers!
 
-import { PyodideInterface, loadPyodide, version as pyodideVersion } from 'pyodide';
+import { loadPyodide, version as pyodideVersion } from 'pyodide';
+import type { PythonError } from 'pyodide/ffi';
 import { ensureError } from '../utils';
 import {
     pythonMessageComplete,
@@ -23,8 +24,6 @@ import {
     pythonMessageSetInterruptBuffer,
     pythonMessageWriteUserFile,
 } from './python-message';
-
-type PythonError = InstanceType<PyodideInterface['PythonError']>;
 
 function isPythonError(err: Error): err is PythonError {
     return err.constructor.name === 'PythonError';
@@ -74,7 +73,7 @@ async function init(): Promise<void> {
     const pyodide = await loadPyodide({
         indexURL: `pyodide/${pyodideVersion}`,
         // REVISIT: would make more sense provide our own
-        lockFileURL: new URL('pyodide/repodata.json', import.meta.url).toString(),
+        lockFileURL: new URL('pyodide/pyodide-lock.json', import.meta.url).toString(),
     });
 
     // REVISIT: it would be nice if we could make a custom driver to mount
