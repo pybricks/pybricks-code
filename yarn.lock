@@ -2758,7 +2758,7 @@ __metadata:
     redux: ^4.2.1
     redux-logger: ^3.0.6
     redux-saga: ^1.2.3
-    resolve: ^1.22.4
+    resolve: ^1.22.5
     resolve-url-loader: ^5.0.0
     sass: ^1.67.0
     sass-loader: ^13.3.2
@@ -14528,7 +14528,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resolve@npm:^1.1.7, resolve@npm:^1.14.2, resolve@npm:^1.19.0, resolve@npm:^1.20.0, resolve@npm:^1.22.1, resolve@npm:^1.22.2, resolve@npm:^1.22.4":
+"resolve@npm:^1.1.7, resolve@npm:^1.14.2, resolve@npm:^1.19.0, resolve@npm:^1.20.0, resolve@npm:^1.22.1, resolve@npm:^1.22.2":
   version: 1.22.4
   resolution: "resolve@npm:1.22.4"
   dependencies:
@@ -14538,6 +14538,19 @@ __metadata:
   bin:
     resolve: bin/resolve
   checksum: 23f25174c2736ce24c6d918910e0d1f89b6b38fefa07a995dff864acd7863d59a7f049e691f93b4b2ee29696303390d921552b6d1b841ed4a8101f517e1d0124
+  languageName: node
+  linkType: hard
+
+"resolve@npm:^1.22.5":
+  version: 1.22.5
+  resolution: "resolve@npm:1.22.5"
+  dependencies:
+    is-core-module: ^2.13.0
+    path-parse: ^1.0.7
+    supports-preserve-symlinks-flag: ^1.0.0
+  bin:
+    resolve: bin/resolve
+  checksum: 6d8c8e414c0727341bc5b78d3806aa6730975d6c633ff266e90f3502ae1c10353d3535c9810aa94187a32ea192b9b3722afecac67487e27f44e60d89cca45cda
   languageName: node
   linkType: hard
 
@@ -14554,7 +14567,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resolve@patch:resolve@^1.1.7#~builtin<compat/resolve>, resolve@patch:resolve@^1.14.2#~builtin<compat/resolve>, resolve@patch:resolve@^1.19.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.20.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.22.1#~builtin<compat/resolve>, resolve@patch:resolve@^1.22.2#~builtin<compat/resolve>, resolve@patch:resolve@^1.22.4#~builtin<compat/resolve>":
+"resolve@patch:resolve@^1.1.7#~builtin<compat/resolve>, resolve@patch:resolve@^1.14.2#~builtin<compat/resolve>, resolve@patch:resolve@^1.19.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.20.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.22.1#~builtin<compat/resolve>, resolve@patch:resolve@^1.22.2#~builtin<compat/resolve>":
   version: 1.22.4
   resolution: "resolve@patch:resolve@npm%3A1.22.4#~builtin<compat/resolve>::version=1.22.4&hash=c3c19d"
   dependencies:
@@ -14564,6 +14577,19 @@ __metadata:
   bin:
     resolve: bin/resolve
   checksum: c45f2545fdc4d21883861b032789e20aa67a2f2692f68da320cc84d5724cd02f2923766c5354b3210897e88f1a7b3d6d2c7c22faeead8eed7078e4c783a444bc
+  languageName: node
+  linkType: hard
+
+"resolve@patch:resolve@^1.22.5#~builtin<compat/resolve>":
+  version: 1.22.5
+  resolution: "resolve@patch:resolve@npm%3A1.22.5#~builtin<compat/resolve>::version=1.22.5&hash=c3c19d"
+  dependencies:
+    is-core-module: ^2.13.0
+    path-parse: ^1.0.7
+    supports-preserve-symlinks-flag: ^1.0.0
+  bin:
+    resolve: bin/resolve
+  checksum: 8478df3911a3420450038b87aab4a6c66b91461035d901cd794076b46adfbf157fcfc8e83e3d0ef41a5956ce72ae166c33bd78432d6b41d43ee473b05c51cb32
   languageName: node
   linkType: hard
 
