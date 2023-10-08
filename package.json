@@ -78,7 +78,7 @@
         "monaco-themes": "^0.4.4",
         "mq-polyfill": "1.1.8",
         "navigator.locks": "^0.8.6",
-        "postcss": "^8.4.30",
+        "postcss": "^8.4.31",
         "postcss-flexbugs-fixes": "^5.0.2",
         "postcss-loader": "^7.3.3",
         "postcss-normalize": "^10.0.1",
