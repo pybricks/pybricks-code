@@ -2730,7 +2730,7 @@ __metadata:
     "@types/file-saver": ^2.0.5
     "@types/jest": ^29.5.5
     "@types/node": ^18.17.17
-    "@types/react": ^18.2.21
+    "@types/react": ^18.2.26
     "@types/react-dom": ^18.2.7
     "@types/react-splitter-layout": ^3.0.2
     "@types/react-transition-group": ^4.4.7
@@ -5079,7 +5079,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:*, @types/react@npm:^18.2.21":
+"@types/react@npm:*":
   version: 18.2.21
   resolution: "@types/react@npm:18.2.21"
   dependencies:
@@ -5087,6 +5087,17 @@ __metadata:
     "@types/scheduler": "*"
     csstype: ^3.0.2
   checksum: ffed203bfe7aad772b8286f7953305c9181ac3a8f27d3f5400fbbc2a8e27ca8e5bbff818ee014f39ca0d19d2b3bb154e5bdbec7e232c6f80b59069375aa78349
+  languageName: node
+  linkType: hard
+
+"@types/react@npm:^18.2.26":
+  version: 18.2.26
+  resolution: "@types/react@npm:18.2.26"
+  dependencies:
+    "@types/prop-types": "*"
+    "@types/scheduler": "*"
+    csstype: ^3.0.2
+  checksum: 5789256cd6238d34c1fa2c23cff90174f050531aff2bf3f7791adb80ec603d56c68492f86c824e96e69c6a9589bffd3569035f16866bf722e1bbc80080f0a2ce
   languageName: node
   linkType: hard
 
