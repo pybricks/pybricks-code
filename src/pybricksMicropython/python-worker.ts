@@ -114,7 +114,7 @@ async function init(): Promise<void> {
         new URL('@pybricks/jedi/docstring-parser.whl', import.meta.url).toString(),
         new URL('@pybricks/jedi/jedi.whl', import.meta.url).toString(),
         new URL('@pybricks/jedi/parso.whl', import.meta.url).toString(),
-        new URL('@pybricks/jedi/pybricks-jedi.whl', import.meta.url).toString(),
+        new URL('@pybricks/jedi/pybricks_jedi.whl', import.meta.url).toString(),
         new URL('@pybricks/jedi/pybricks.whl', import.meta.url).toString(),
         new URL('@pybricks/jedi/typing_extensions.whl', import.meta.url).toString(),
     ]);
