@@ -28,7 +28,7 @@
         "@types/file-saver": "^2.0.5",
         "@types/jest": "^29.5.5",
         "@types/node": "^18.17.17",
-        "@types/react": "^18.2.21",
+        "@types/react": "^18.2.33",
         "@types/react-dom": "^18.2.7",
         "@types/react-splitter-layout": "^3.0.2",
         "@types/react-transition-group": "^4.4.7",
