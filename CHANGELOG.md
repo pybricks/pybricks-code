@@ -4,10 +4,51 @@
 
 ## [Unreleased]
 
+## [2.2.0-beta.9] - 2023-10-26
+
+### Changed
+- Updated dependencies.
+- Updated firmware and docs to v3.3.0b9:
+
+  ### Added
+  - Added `hub.buttons` as an alias for `hub.button` on buttons with one
+    hub ([support#1254]).
+  - Implemented `brake` for `DriveBase` ([support#881]).
+
+  ### Changed
+  - The `use_gyro` method is added to the normal `DriveBase` class instead of
+    having a separate `GyroDriveBase` class. Since the latter was only released
+    in beta versions, this is not a breaking change ([support#1054]).
+  - New color distance function used by the color sensors that is more
+    consistent when distinguishing user-provided colors ([pybricks-micropython#104]).
+  - Updated the unreleased BLE API to ensure sent and received objects are the
+    same. Allows one of the supported types or a list/tuple thereof.
+
+  ### Fixed
+  - Improved external device detection speed ([support#1140]).
+  - Fixed Powered Up Tilt Sensor not working  ([support#1189]).
+  - Fixed `surface=False` not working in `ColorSensor` ([support#1232]).
+  - Fixed `PUPDevice.write` not selecting correct mode ([support#1213]).
+  - Fixed City Hub turning back on after shutdown ([support#1195]).
+  - Fixed SPIKE hubs not broadcasting at all when attempting to broadcast in a
+    tight loop ([support#1151]).
+
+  [pybricks-micropython#104]: https://github.com/pybricks/pybricks-micropython/pull/104
+  [support#881]: https://github.com/pybricks/support/issues/881
+  [support#1054]: https://github.com/pybricks/support/issues/1054
+  [support#1140]: https://github.com/pybricks/support/issues/1140
+  [support#1151]: https://github.com/pybricks/support/issues/1151
+  [support#1189]: https://github.com/pybricks/support/issues/1189
+  [support#1195]: https://github.com/pybricks/support/issues/1195
+  [support#1213]:  https://github.com/pybricks/support/issues/1213
+  [support#1232]: https://github.com/pybricks/support/issues/1232
+  [support#1254]: https://github.com/pybricks/support/issues/1254
+
 ### Fixed
 - Fixed starting DFU flash while another was still in progress ([support#1146]).
 
 [support#1146]: https://github.com/pybricks/support/issues/1146
+
 ## [2.2.0-beta.8] - 2023-07-07
 
 ### Changed
@@ -965,7 +1006,8 @@ Prerelease changes are documented at [support#48].
 
 <!-- links for version headings -->
 
-[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.2.0-beta.8...HEAD
+[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.2.0-beta.9...HEAD
+[2.2.0-beta.9]: https://github.com/pybricks/pybricks-code/compare/v2.2.0-beta.8..v2.2.0-beta.9
 [2.2.0-beta.8]: https://github.com/pybricks/pybricks-code/compare/v2.2.0-beta.7..v2.2.0-beta.8
 [2.2.0-beta.7]: https://github.com/pybricks/pybricks-code/compare/v2.2.0-beta.6..v2.2.0-beta.7
 [2.2.0-beta.6]: https://github.com/pybricks/pybricks-code/compare/v2.2.0-beta.5..v2.2.0-beta.6
