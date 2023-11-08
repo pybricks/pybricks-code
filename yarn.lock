@@ -2759,7 +2759,7 @@ __metadata:
     "@types/w3c-web-usb": ^1.0.6
     "@types/web-bluetooth": ^0.0.17
     "@types/web-locks-api": ^0.0.2
-    "@types/wicg-file-system-access": ^2020.9.8
+    "@types/wicg-file-system-access": ^2023.10.3
     "@types/zen-push": ^0.1.2
     "@typescript-eslint/eslint-plugin": ^6.8.0
     "@typescript-eslint/parser": ^6.7.4
@@ -5242,10 +5242,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/wicg-file-system-access@npm:^2020.9.8":
-  version: 2020.9.8
-  resolution: "@types/wicg-file-system-access@npm:2020.9.8"
-  checksum: 08ef73d68e9a5596d0d17f0f9651745cb9edf98afdee3f9fe852c44123e7b5254ede38c151ebea5127e4a4a59fcd850ce762e56b1278079afff3aadf53dc0776
+"@types/wicg-file-system-access@npm:^2023.10.3":
+  version: 2023.10.3
+  resolution: "@types/wicg-file-system-access@npm:2023.10.3"
+  checksum: a85defc64f389dbdbd71fa1918b7e420c3caee69d406c5ad1107e2c585f2d625784d58528fbc4ab8d2dfd3eb80418630807d59d5417f8aa70a66d4e1a2fed0cc
   languageName: node
   linkType: hard
 
