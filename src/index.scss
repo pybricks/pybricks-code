@@ -178,6 +178,12 @@ a.#{bp.$ns}-button {
     }
 }
 
+@media only screen and (max-height: 800px) {
+    .#{bp.$ns}-dialog {
+        min-width: unset !important;
+    }
+}
+
 .#{bp.$ns}-control-group {
     gap: bp.$pt-grid-size * 0.5;
 }
@@ -200,6 +206,11 @@ a.#{bp.$ns}-button {
         display: flex;
         align-items: center;
     }
+}
+
+.#{bp.$ns}-overlay {
+    width: 100vw;
+    height: 100vh;
 }
 
 // don't take up so much space when there is no caret
