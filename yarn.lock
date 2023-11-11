@@ -2649,6 +2649,7 @@ __metadata:
     "@pybricks/mpy-cross-v5": ^2.0.0
     "@pybricks/mpy-cross-v6": ^2.0.0
     "@pybricks/python-program-analysis": ^2.0.0
+    "@pyodide/webpack-plugin": ^1.2.0
     "@reduxjs/toolkit": ^1.9.7
     "@shopify/react-i18n": ^7.8.0
     "@svgr/webpack": ^8.1.0
@@ -2729,7 +2730,7 @@ __metadata:
     prettier: ^3.0.3
     prompts: ^2.4.2
     prop-types: ^15.8.1
-    pyodide: 0.23.4
+    pyodide: 0.24.1
     react: ^18.2.0
     react-app-polyfill: ^3.0.0
     react-aria: ^3.29.0
@@ -2778,6 +2779,17 @@ __metadata:
   dependencies:
     lodash: ^4.17.15
   checksum: 2c3b96889b9710e58c46704957d1f935ac56d4a0af081cdf65761fed5bb087292b564cb99ca676df324d61c6306acacceacca0d5605f7e35f0a0f151b6b5b4d0
+  languageName: node
+  linkType: hard
+
+"@pyodide/webpack-plugin@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "@pyodide/webpack-plugin@npm:1.2.0"
+  dependencies:
+    copy-webpack-plugin: ^11.0.0
+  peerDependencies:
+    pyodide: ">=0.21.3"
+  checksum: 9d7e98f6702a05c54b61e1a10e89145b0096283ef3fa9bb17d79aa2bc377fe04a204eeb65ada0519d6f1464cf2da0d7285c3ca7c92b2fae31601dd1ddf5c89c0
   languageName: node
   linkType: hard
 
@@ -12126,7 +12138,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-fetch@npm:^2.6.1, node-fetch@npm:^2.6.5":
+"node-fetch@npm:^2.6.5":
   version: 2.6.7
   resolution: "node-fetch@npm:2.6.7"
   dependencies:
@@ -13762,14 +13774,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pyodide@npm:0.23.4":
-  version: 0.23.4
-  resolution: "pyodide@npm:0.23.4"
+"pyodide@npm:0.24.1":
+  version: 0.24.1
+  resolution: "pyodide@npm:0.24.1"
   dependencies:
     base-64: ^1.0.0
-    node-fetch: ^2.6.1
     ws: ^8.5.0
-  checksum: 1de0d60b466db208ebbc09be19740b611e14d86c0ba67ef6c277c086e334784fc99afee19f3c17ab885a79f82d9ec7080e5fe9cb8b21d9fa6098de27732df823
+  checksum: ab18e5eed3195b919c0e70b39a81bab0449ab56e42f28e8635664e688dba732da060492505719c3cb477302979791dbcc1df09ff39dc9e0816064b69818f283d
   languageName: node
   linkType: hard
 

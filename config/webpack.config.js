@@ -28,6 +28,7 @@ const ForkTsCheckerWebpackPlugin =
     ? require('react-dev-utils/ForkTsCheckerWarningWebpackPlugin')
     : require('react-dev-utils/ForkTsCheckerWebpackPlugin');
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
+const { PyodidePlugin } = require('@pyodide/webpack-plugin');
 
 const createEnvironmentHash = require('./webpack/persistentCache/createEnvironmentHash');
 
@@ -587,13 +588,14 @@ module.exports = function (webpackEnv) {
           },
         ],
       }),
-      new CopyPlugin({
-        patterns: [
-          { from: require.resolve("pyodide/python_stdlib.zip"), to:pyodideStaticPath },
-          { from: require.resolve("pyodide/pyodide.asm.js"), to:pyodideStaticPath },
-          { from: require.resolve("pyodide/pyodide.asm.wasm"), to: pyodideStaticPath },
-        ],
+      new PyodidePlugin({
+        outDirectory: pyodideStaticPath,
+        packageIndexUrl: '',
       }),
+      // somehow, this magically fixes "Critical dependency: the request of a
+      // dependency is an expression" caused by unused dynamic imports in pyodide
+      // https://stackoverflow.com/a/59235546/1976323
+      new webpack.ContextReplacementPlugin(/pyodide/),
       new LicensePlugin(require('./licenses')),
       new MonacoWebpackPlugin({
         languages: ['python'],
