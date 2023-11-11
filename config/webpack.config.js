@@ -28,6 +28,7 @@ const ForkTsCheckerWebpackPlugin =
     ? require('react-dev-utils/ForkTsCheckerWarningWebpackPlugin')
     : require('react-dev-utils/ForkTsCheckerWebpackPlugin');
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
+const { PyodidePlugin } = require('@pyodide/webpack-plugin');
 
 const createEnvironmentHash = require('./webpack/persistentCache/createEnvironmentHash');
 
@@ -587,12 +588,9 @@ module.exports = function (webpackEnv) {
           },
         ],
       }),
-      new CopyPlugin({
-        patterns: [
-          { from: require.resolve("pyodide/python_stdlib.zip"), to:pyodideStaticPath },
-          { from: require.resolve("pyodide/pyodide.asm.js"), to:pyodideStaticPath },
-          { from: require.resolve("pyodide/pyodide.asm.wasm"), to: pyodideStaticPath },
-        ],
+      new PyodidePlugin({
+        outDirectory: pyodideStaticPath,
+        packageIndexUrl: '',
       }),
       new LicensePlugin(require('./licenses')),
       new MonacoWebpackPlugin({

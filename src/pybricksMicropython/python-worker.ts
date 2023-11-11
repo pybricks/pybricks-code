@@ -70,11 +70,7 @@ print('preloading done.')
 async function init(): Promise<void> {
     console.log('starting Pyodide...');
 
-    const pyodide = await loadPyodide({
-        indexURL: `pyodide/${pyodideVersion}`,
-        // REVISIT: would make more sense provide our own
-        lockFileURL: new URL('pyodide/pyodide-lock.json', import.meta.url).toString(),
-    });
+    const pyodide = await loadPyodide({ indexURL: `pyodide/${pyodideVersion}` });
 
     // REVISIT: it would be nice if we could make a custom driver to mount
     // the custom Pybricks Code Dexie-based file system directly instead of
