@@ -2661,7 +2661,7 @@ __metadata:
     "@types/node": ^18.17.17
     "@types/react": ^18.2.37
     "@types/react-dom": ^18.2.7
-    "@types/react-splitter-layout": ^3.0.2
+    "@types/react-splitter-layout": ^3.0.5
     "@types/react-transition-group": ^4.4.7
     "@types/redux-logger": ^3.0.10
     "@types/semver": ^7.5.3
@@ -4973,12 +4973,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-splitter-layout@npm:^3.0.2":
-  version: 3.0.2
-  resolution: "@types/react-splitter-layout@npm:3.0.2"
+"@types/react-splitter-layout@npm:^3.0.5":
+  version: 3.0.5
+  resolution: "@types/react-splitter-layout@npm:3.0.5"
   dependencies:
     "@types/react": "*"
-  checksum: 7fa9c0840f848c12678d79c0966d6dd20a89c04509b4b0daf8e366668524d3c629ee259e5c15669d061b786569d85246081d0ee7bf83242e2667c1a3ecbcbd1e
+  checksum: 9c8e9cc7ac568a3f5c7a1237725ce084d4c0747f91f7da359b9d5bf2439b33c99f3b90223443854d9602af84a1fad1ffe159ac0a2b77d4a42588e17044c136ec
   languageName: node
   linkType: hard
 
