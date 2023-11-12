@@ -4,11 +4,6 @@
 
 ## [Unreleased]
 
-### Fixed
-- Fixed dialogs not displaying correctly on Android ([support#1271]).
-
-[support#1271]: https://github.com/pybricks/support/issues/1271
-
 ## [2.2.0-beta.9] - 2023-10-26
 
 ### Changed
