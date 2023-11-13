@@ -2666,7 +2666,7 @@ __metadata:
     "@types/react-transition-group": ^4.4.7
     "@types/redux-logger": ^3.0.10
     "@types/semver": ^7.5.3
-    "@types/w3c-web-usb": ^1.0.6
+    "@types/w3c-web-usb": ^1.0.10
     "@types/web-bluetooth": ^0.0.17
     "@types/web-locks-api": ^0.0.2
     "@types/wicg-file-system-access": ^2023.10.3
@@ -5133,10 +5133,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/w3c-web-usb@npm:^1.0.6":
-  version: 1.0.6
-  resolution: "@types/w3c-web-usb@npm:1.0.6"
-  checksum: 9f30948cb84174fa290066b08274bdfb034d38c6db0976e9a826508732fba04d81e3300bca41ea23b737f1424c51adec5ae810cdf85d5b5a158d5840914f0417
+"@types/w3c-web-usb@npm:^1.0.10":
+  version: 1.0.10
+  resolution: "@types/w3c-web-usb@npm:1.0.10"
+  checksum: 6ac6786a0788f0846a48b103ab06ca5fde5eb95674217b522420a2f6157bee3e181a961c1b7011940f497c55f4f5cc46129657d881fdd8112b48764089679ad6
   languageName: node
   linkType: hard
 
