@@ -2683,7 +2683,7 @@ __metadata:
     "@types/react-splitter-layout": ^3.0.5
     "@types/react-transition-group": ^4.4.7
     "@types/redux-logger": ^3.0.10
-    "@types/semver": ^7.5.3
+    "@types/semver": ^7.5.5
     "@types/w3c-web-usb": ^1.0.10
     "@types/web-bluetooth": ^0.0.17
     "@types/web-locks-api": ^0.0.2
@@ -5088,10 +5088,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/semver@npm:^7.3.12, @types/semver@npm:^7.5.0, @types/semver@npm:^7.5.3":
+"@types/semver@npm:^7.3.12, @types/semver@npm:^7.5.0":
   version: 7.5.3
   resolution: "@types/semver@npm:7.5.3"
   checksum: 349fdd1ab6c213bac5c991bac766bd07b8b12e63762462bb058740dcd2eb09c8193d068bb226f134661275f2022976214c0e727a4e5eb83ec1b131127c980d3e
+  languageName: node
+  linkType: hard
+
+"@types/semver@npm:^7.5.5":
+  version: 7.5.5
+  resolution: "@types/semver@npm:7.5.5"
+  checksum: 533e6c93d1262d65f449423d94a445f7f3db0672e7429f21b6a1636d6051dbab3a2989ddcda9b79c69bb37830931d09fc958a65305a891357f5cea3257c297f5
   languageName: node
   linkType: hard
 
