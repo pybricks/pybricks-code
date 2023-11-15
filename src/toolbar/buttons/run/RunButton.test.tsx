@@ -3,6 +3,7 @@
 
 import { act, cleanup } from '@testing-library/react';
 import React from 'react';
+import { FocusScope } from 'react-aria';
 import { testRender, uuid } from '../../../../test';
 import { FileFormat } from '../../../ble-pybricks-service/protocol';
 import { downloadAndRun } from '../../../hub/actions';
@@ -14,13 +15,18 @@ afterEach(() => {
 });
 
 it('should dispatch action when clicked', async () => {
-    const [user, button, dispatch] = testRender(<RunButton id="test-run-button" />, {
-        editor: { activeFileUuid: uuid(0) },
-        hub: {
-            runtime: HubRuntimeState.Idle,
-            preferredFileFormat: FileFormat.MultiMpy6,
+    const [user, button, dispatch] = testRender(
+        <FocusScope>
+            <RunButton id="test-run-button" />
+        </FocusScope>,
+        {
+            editor: { activeFileUuid: uuid(0) },
+            hub: {
+                runtime: HubRuntimeState.Idle,
+                preferredFileFormat: FileFormat.MultiMpy6,
+            },
         },
-    });
+    );
 
     await act(() => user.click(button.getByRole('button', { name: 'Run' })));
 
