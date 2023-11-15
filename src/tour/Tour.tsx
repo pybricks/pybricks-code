@@ -183,7 +183,7 @@ const Tour: React.FunctionComponent = () => {
         [selectedActivity],
     );
 
-    const styles = useMemo<Styles>(
+    const styles = useMemo<Partial<Styles>>(
         () => ({
             options: {
                 primaryColor: pybricksBlue,
