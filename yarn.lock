@@ -2681,7 +2681,7 @@ __metadata:
     "@types/react": ^18.2.37
     "@types/react-dom": ^18.2.7
     "@types/react-splitter-layout": ^3.0.5
-    "@types/react-transition-group": ^4.4.7
+    "@types/react-transition-group": ^4.4.9
     "@types/redux-logger": ^3.0.10
     "@types/semver": ^7.5.5
     "@types/w3c-web-usb": ^1.0.10
@@ -5041,12 +5041,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-transition-group@npm:^4.4.7":
-  version: 4.4.7
-  resolution: "@types/react-transition-group@npm:4.4.7"
+"@types/react-transition-group@npm:^4.4.9":
+  version: 4.4.9
+  resolution: "@types/react-transition-group@npm:4.4.9"
   dependencies:
     "@types/react": "*"
-  checksum: 3b91486e7aa777a3787e773efce79a0fa9be4ec9e02d51ccda8c7532c5c5d84fbcefe248dacb4007293d85bf0794ac51603bb9cec360db81cf3657d2b7123fb9
+  checksum: be9e256e53919a7cf3b4a075f6d01c0a2dd3a67911dd28276aa6158be4beade4ca5327cbf1f096c28b413e04989f069122319b02e5a09c280d903a0accea9ead
   languageName: node
   linkType: hard
 
