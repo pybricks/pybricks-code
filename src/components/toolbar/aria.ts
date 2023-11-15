@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2023 The Pybricks Authors
 
 import { filterDOMProps } from '@react-aria/utils';
 import {
@@ -10,6 +10,7 @@ import {
     useContext,
 } from 'react';
 import { FocusScope, mergeProps, useFocusManager } from 'react-aria';
+import { assert } from '../../utils';
 import { ToolbarStateContext } from './state';
 import type { AriaToolbarProps } from './types';
 
@@ -41,6 +42,11 @@ export function useToolbarItemFocus(props: { id: string }): ToolbarItemFocusAria
     const { id } = props;
     const { lastFocusedItem, setLastFocusedItem } = useContext(ToolbarStateContext);
     const focusManager = useFocusManager();
+
+    assert(
+        focusManager !== undefined,
+        'useToolbarItemFocus must be inside of a FocusScope',
+    );
 
     const onKeyDown = useCallback<KeyboardEventHandler<HTMLElement>>(
         (e) => {
