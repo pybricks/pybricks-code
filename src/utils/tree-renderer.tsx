@@ -180,9 +180,9 @@ const DragBetweenLine: React.FunctionComponent<
                 draggingPosition.linePosition === 'top'
                     ? '0px'
                     : draggingPosition.targetType === 'between-items' &&
-                      draggingPosition.linePosition === 'bottom'
-                    ? '-4px'
-                    : '-2px',
+                        draggingPosition.linePosition === 'bottom'
+                      ? '-4px'
+                      : '-2px',
             left: `${draggingPosition.depth * 23}px`,
             height: '4px',
             backgroundColor: Colors.BLUE3,
