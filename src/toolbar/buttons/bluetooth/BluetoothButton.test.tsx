@@ -3,6 +3,7 @@
 
 import { act, cleanup } from '@testing-library/react';
 import React from 'react';
+import { FocusScope } from 'react-aria';
 import { testRender } from '../../../../test';
 import { toggleBluetooth } from '../../../ble/actions';
 import BluetoothButton from './BluetoothButton';
@@ -13,7 +14,9 @@ afterEach(() => {
 
 it('should dispatch action when clicked', async () => {
     const [user, button, dispatch] = testRender(
-        <BluetoothButton id="test-bluetooth-button" />,
+        <FocusScope>
+            <BluetoothButton id="test-bluetooth-button" />
+        </FocusScope>,
     );
 
     await act(() => user.click(button.getByRole('button', { name: 'Bluetooth' })));
