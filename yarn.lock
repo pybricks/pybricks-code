@@ -2711,7 +2711,7 @@ __metadata:
     "@types/redux-logger": ^3.0.10
     "@types/semver": ^7.5.5
     "@types/w3c-web-usb": ^1.0.10
-    "@types/web-bluetooth": ^0.0.17
+    "@types/web-bluetooth": ^0.0.20
     "@types/web-locks-api": ^0.0.2
     "@types/wicg-file-system-access": ^2023.10.3
     "@types/zen-push": ^0.1.2
@@ -5196,10 +5196,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/web-bluetooth@npm:^0.0.17":
-  version: 0.0.17
-  resolution: "@types/web-bluetooth@npm:0.0.17"
-  checksum: 8c72ba8cd1d7abd3fcab608e1d8eb828420df23f67d783f1282d4a747f995e91a0c861f92fa195e9423edb22bb34854452028f8a68148a593b35915635a4f4db
+"@types/web-bluetooth@npm:^0.0.20":
+  version: 0.0.20
+  resolution: "@types/web-bluetooth@npm:0.0.20"
+  checksum: d6d61da683e876e8995ac57e2e5229d829d0f536deb3568d4430898fc626ebcb7e065fe7f655ac6a5205702f7f7049e6335abe689cd5291241eef6e39e8a4371
   languageName: node
   linkType: hard
 
