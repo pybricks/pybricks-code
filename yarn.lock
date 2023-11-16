@@ -2712,7 +2712,7 @@ __metadata:
     "@types/semver": ^7.5.5
     "@types/w3c-web-usb": ^1.0.10
     "@types/web-bluetooth": ^0.0.20
-    "@types/web-locks-api": ^0.0.2
+    "@types/web-locks-api": ^0.0.5
     "@types/wicg-file-system-access": ^2023.10.3
     "@types/zen-push": ^0.1.2
     "@typescript-eslint/eslint-plugin": ^6.11.0
@@ -5203,10 +5203,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/web-locks-api@npm:^0.0.2":
-  version: 0.0.2
-  resolution: "@types/web-locks-api@npm:0.0.2"
-  checksum: 36d8e6378f4b48143fb8ac829ebd0f071782b0a2f7db98babddfbe05a82d8332a123c88599100aceebbbb2cdf512e67ed3f2c188f8b70f38000f9563f366f298
+"@types/web-locks-api@npm:^0.0.5":
+  version: 0.0.5
+  resolution: "@types/web-locks-api@npm:0.0.5"
+  checksum: b5c5915118c2a7eca8da52780911c1260ba6188b57b325a8876733c42c9ec3cf73f96afee6b2b24b7f7021a6ad63ae340a3d46af74b672720a69d38026952f05
   languageName: node
   linkType: hard
 
