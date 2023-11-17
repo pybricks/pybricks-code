@@ -61,7 +61,7 @@
         "dfu": "^0.1.5",
         "dotenv": "^16.3.1",
         "dotenv-expand": "^10.0.0",
-        "fake-indexeddb": "^4.0.2",
+        "fake-indexeddb": "^5.0.1",
         "file-loader": "^6.2.0",
         "fs-extra": "^11.1.1",
         "html-webpack-plugin": "^5.5.3",
