@@ -2714,7 +2714,7 @@ __metadata:
     "@types/web-bluetooth": ^0.0.20
     "@types/web-locks-api": ^0.0.5
     "@types/wicg-file-system-access": ^2023.10.3
-    "@types/zen-push": ^0.1.2
+    "@types/zen-push": ^0.1.4
     "@typescript-eslint/eslint-plugin": ^6.11.0
     "@typescript-eslint/parser": ^6.11.0
     babel-jest: ^29.7.0
@@ -5249,12 +5249,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/zen-push@npm:^0.1.2":
-  version: 0.1.2
-  resolution: "@types/zen-push@npm:0.1.2"
+"@types/zen-push@npm:^0.1.4":
+  version: 0.1.4
+  resolution: "@types/zen-push@npm:0.1.4"
   dependencies:
     "@types/zen-observable": "*"
-  checksum: dc62761017ae2bacf337cb4deb4ca1b7a37afefe0af26d0284b44f8cf82809f2080f317532b3c3bed4ea8309f46df4a9a9dceb289a1091531fb8b5d244a53c6d
+  checksum: eba3f76aaa29bee239d9f4572eb1d8dd83ae166a40aa94a72bf03f25db6acc88db9be98120990fdc132bab9ac6b95d72052ead4c30c1d7e5d29e8c54e67ced10
   languageName: node
   linkType: hard
 
