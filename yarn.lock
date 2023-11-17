@@ -2708,7 +2708,7 @@ __metadata:
     "@types/react-dom": ^18.2.15
     "@types/react-splitter-layout": ^3.0.5
     "@types/react-transition-group": ^4.4.9
-    "@types/redux-logger": ^3.0.10
+    "@types/redux-logger": ^3.0.12
     "@types/semver": ^7.5.5
     "@types/w3c-web-usb": ^1.0.10
     "@types/web-bluetooth": ^0.0.20
@@ -5087,12 +5087,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/redux-logger@npm:^3.0.10":
-  version: 3.0.10
-  resolution: "@types/redux-logger@npm:3.0.10"
+"@types/redux-logger@npm:^3.0.12":
+  version: 3.0.12
+  resolution: "@types/redux-logger@npm:3.0.12"
   dependencies:
     redux: ^4.0.0
-  checksum: e84b7881bc4279413b2cb6808dfbba8b1a39d51fade4def6469da36ae134b2366f7d4bd30bc5d4c0b7156ae4aeb2fd5913ec84f5c3f8d0fe1003852ff798c24b
+  checksum: fbe1ab82e81686c46758cd133c0af42cf848072d4c2335011dadee106054f96c1688a68f1431600eb392d936366fa338d3f532403e8b694940474ce5269b68df
   languageName: node
   linkType: hard
 
