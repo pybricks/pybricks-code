@@ -4,6 +4,9 @@
 
 ## [Unreleased]
 
+### Fixed
+- Fixed centering of Pybricks Logo.
+
 ## [2.2.0-beta.9] - 2023-10-26
 
 ### Changed
