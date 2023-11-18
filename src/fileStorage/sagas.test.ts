@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2022-2023 The Pybricks Authors
 
+import 'core-js/stable/structured-clone';
 import 'fake-indexeddb/auto';
 import Dexie from 'dexie';
 import 'dexie-observable';
