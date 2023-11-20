@@ -4,11 +4,35 @@
 
 ## [Unreleased]
 
+## [2.2.0-rc.1] - 2023-11-20
+
 ### Fixed
 - Fixed centering of Pybricks Logo.
 - Fixed dialogs not displaying correctly on Android ([support#1271]).
 
+### Changed
+- Updated firmware and docs to v3.3.0c1:
+
+  ### Added
+  - Added `MoveHub.imu.tilt()` ([support#539]).
+  - Enabled hub init orientation support for Move Hub ([support#539]).
+
+  ### Changed
+  - Allow Move Hub to ignore `broadcast` instead of raising an exception while
+    connected.
+
+  ### Fixed
+  - Fixed Move Hub accelerometer not working since v3.3.0b5 ([support#1269]).
+  - Fixed Bluetooth chip locking up on Technic and City hubs when broadcasting ([support#1095]).
+  - Fixed potential crash when GC occurs while observing BLE data ([support#1278])
+  - Fixed Technic Hub and City Hub eventually stopping observing BLE data after
+    a few minutes ([support#1096]) by implementing an auto-reset workaround.
+
+[support#1095]: https://github.com/pybricks/support/issues/1095
+[support#1096]: https://github.com/pybricks/support/issues/1096
+[support#1269]: https://github.com/pybricks/support/issues/1269
 [support#1271]: https://github.com/pybricks/support/issues/1271
+[support#1278]: https://github.com/pybricks/support/issues/1278
 
 ## [2.2.0-beta.9] - 2023-10-26
 
@@ -1012,7 +1036,8 @@ Prerelease changes are documented at [support#48].
 
 <!-- links for version headings -->
 
-[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.2.0-beta.9...HEAD
+[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.2.0-rc.1...HEAD
+[2.2.0-rc.1]: https://github.com/pybricks/pybricks-code/compare/v2.2.0-beta.9..v2.2.0-rc.1
 [2.2.0-beta.9]: https://github.com/pybricks/pybricks-code/compare/v2.2.0-beta.8..v2.2.0-beta.9
 [2.2.0-beta.8]: https://github.com/pybricks/pybricks-code/compare/v2.2.0-beta.7..v2.2.0-beta.8
 [2.2.0-beta.7]: https://github.com/pybricks/pybricks-code/compare/v2.2.0-beta.6..v2.2.0-beta.7
