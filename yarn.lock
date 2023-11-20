@@ -2857,7 +2857,7 @@ __metadata:
     "@testing-library/user-event": ^14.5.1
     "@types/file-saver": ^2.0.7
     "@types/jest": ^29.5.8
-    "@types/node": ^18.17.17
+    "@types/node": ^18.18.10
     "@types/react": ^18.2.37
     "@types/react-dom": ^18.2.15
     "@types/react-splitter-layout": ^3.0.5
@@ -5150,10 +5150,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:^18.17.17":
+"@types/node@npm:*":
   version: 18.17.17
   resolution: "@types/node@npm:18.17.17"
   checksum: ff28f347c77723780836f9bb2ffa6db0cd72490bfd7604397c03db31db34f1f2899e82f0aaf3e825efeb09c15bd94d076ea9aca19a1407e1b56cb4603318936c
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:^18.18.10":
+  version: 18.18.10
+  resolution: "@types/node@npm:18.18.10"
+  dependencies:
+    undici-types: ~5.26.4
+  checksum: 1245a14a38bfbe115b8af9792dbe87a1c015f2532af5f0a25a073343fefa7b2edfd95ff3830003d1a1278ce7f9ee0e78d4e5454d7a60af65832c8d77f4032ac8
   languageName: node
   linkType: hard
 
@@ -16423,6 +16432,13 @@ __metadata:
   version: 1.12.1
   resolution: "underscore@npm:1.12.1"
   checksum: ec327603aa112b99fe9d74cd9bf3b3b7451465a9d2610ceab269a532e3f191650ab017903be34dc86fe406a11d04d8905a3b04dd4c129493e51bee09a3f3074c
+  languageName: node
+  linkType: hard
+
+"undici-types@npm:~5.26.4":
+  version: 5.26.5
+  resolution: "undici-types@npm:5.26.5"
+  checksum: 3192ef6f3fd5df652f2dc1cd782b49d6ff14dc98e5dced492aa8a8c65425227da5da6aafe22523c67f035a272c599bb89cfe803c1db6311e44bed3042fc25487
   languageName: node
   linkType: hard
 
