@@ -1,5 +1,9 @@
 {
     "title": "Create a new file",
+    "fileKind": {
+        "label": "Program type",
+        "description": "Code with blocks or Python."
+    },
     "template": {
         "label": "Template"
     },

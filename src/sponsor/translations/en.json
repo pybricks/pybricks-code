@@ -1,27 +1,32 @@
 {
-    "title": "Sponsor {pybricks}",
-    "whoAreWe": {
-        "heading": "Who are we?",
-        "team": {
-            "about": "Pybricks is run by a small {team}, supported by a community of open source coding enthusiasts from all around the world.",
-            "team": "team"
-        },
-        "mission": "Our mission is to make robotics fun and accessible and teach a million people how to code. And you can help!"
+    "title": "Unlock blocks!",
+    "signinCall": {
+        "heading": "Already a supporter?",
+        "button": "Sign in to access blocks",
+        "thanks": "Thank you for supporting Pybricks!",
+        "signedIn": "You are signed in. Thank you!",
+        "signedOut": "You are currently signed out."
     },
-    "whyDonate": {
-        "heading": "Why donate?",
-        "body": "Donations help us to:"
+    "signupCall": {
+        "heading": "New supporter?",
+        "button": "Become a supporter on Patreon",
+        "body": "Support Pybricks and get exclusive access to coding with blocks:",
+        "tryFirst": "Before you sign up, try out the installation steps to make sure your hub is compatible with your computer or smart device."
     },
-    "donateReason": {
-        "keepPybricksFree": "Keep Pybricks free for everyone.",
-        "supportNewHubs": "Support Pybricks on new hubs, motors and sensors.",
-        "writeDocs": "Create documentation and tutorials.",
-        "exploreFeatures": "Explore big new features like multi-tasking or block-based coding.",
-        "supportOthers": "Support projects that Pybricks builds on, like MicroPython."
+    "signupReason": {
+        "useAllHubs": "Use all supported LEGO smart hubs in a single, intuitive app.",
+        "useAllSensors": "Use all Powered Up motors and sensors, including the remote.",
+        "saveOnHub": "Save your project on the hub. Convenient and fast.",
+        "accurateDriving": "Get high precision control for driving with the gyro.",
+        "colorSensor": "Calibrate the color sensor for accurate robot or train control.",
+        "wireless": "Make all your hubs communicate wirelessly.",
+        "livePreview": "Get live Python code preview.",
+        "share": "Easily share projects and snippets with friends.",
+        "muchMore": "And much more!"
     },
     "donateOptions": {
-        "heading": "How to donate",
-        "options": "You can use the links below for a one-time or monthly donation.",
-        "thanks": "Thank you, we really appreciate it!"
+        "heading": "Don't need blocks?",
+        "options": "The Pybricks firmware and Python app are free and open source.",
+        "thanks": "You can also support the project without using blocks. Thank you!"
     }
 }

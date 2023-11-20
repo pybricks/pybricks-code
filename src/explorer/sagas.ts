@@ -14,6 +14,7 @@ import {
 } from 'typed-redux-saga/macro';
 import { alertsShowAlert } from '../alerts/actions';
 import { zipFileExtension, zipFileMimeType } from '../app/constants';
+import { ProgramType } from '../components/programTypePicker';
 import {
     editorActivateFile,
     editorCloseFile,
@@ -22,6 +23,7 @@ import {
     editorDidFailToActivateFile,
     editorReplaceFile,
 } from '../editor/actions';
+import { getBlocksFileTemplate } from '../editor/blockUtils';
 import { EditorError } from '../editor/error';
 import { getPybricksMicroPythonFileTemplate } from '../editor/pybricksMicroPython';
 import { FileStorageDb } from '../fileStorage';
@@ -355,7 +357,9 @@ function* handleExplorerCreateNewFile(): Generator {
         yield* put(
             fileStorageWriteFile(
                 fileName,
-                getPybricksMicroPythonFileTemplate(didAccept.hubType) || '',
+                didAccept.programType === ProgramType.Python
+                    ? getPybricksMicroPythonFileTemplate(didAccept.hubType) || ''
+                    : getBlocksFileTemplate(),
             ),
         );
 

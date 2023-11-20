@@ -6,6 +6,7 @@ import { act, cleanup } from '@testing-library/react';
 import React from 'react';
 import { testRender } from '../../../test';
 import { Hub } from '../../components/hubPicker';
+import { ProgramType } from '../../components/programTypePicker';
 import NewFileWizard from './NewFileWizard';
 import { newFileWizardDidAccept, newFileWizardDidCancel } from './actions';
 
@@ -29,7 +30,7 @@ describe('accept', () => {
 
         await act(() => user.click(button));
         expect(dispatch).toHaveBeenCalledWith(
-            newFileWizardDidAccept('test', '.py', Hub.Move),
+            newFileWizardDidAccept(ProgramType.Python, 'test', '.py', Hub.Move),
         );
     });
 
@@ -46,7 +47,7 @@ describe('accept', () => {
         );
 
         expect(dispatch).toHaveBeenCalledWith(
-            newFileWizardDidAccept('test', '.py', Hub.Move),
+            newFileWizardDidAccept(ProgramType.Python, 'test', '.py', Hub.Move),
         );
     });
 });

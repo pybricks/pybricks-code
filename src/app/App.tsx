@@ -4,7 +4,7 @@
 import 'react-splitter-layout/lib/index.css';
 import './app.scss';
 import { Classes, Spinner } from '@blueprintjs/core';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import SplitterLayout from 'react-splitter-layout';
 import { useLocalStorage, useTernaryDarkMode } from 'usehooks-ts';
 import Activities from '../activities/Activities';
@@ -49,6 +49,13 @@ const Terminal = React.lazy(async () => {
 const Docs: React.FunctionComponent = () => {
     const { setIsSettingShowDocsEnabled } = useSettingIsShowDocsEnabled();
     const { initialDocsPage, setLastDocsPage } = useAppLastDocsPageSetting();
+    const iframeRef = useRef<HTMLIFrameElement>(null);
+
+    useEffect(() => {
+        if (iframeRef.current && iframeRef.current.src !== initialDocsPage) {
+            iframeRef.current.src = initialDocsPage;
+        }
+    }, [initialDocsPage]);
 
     return (
         <iframe
@@ -142,10 +149,9 @@ const Docs: React.FunctionComponent = () => {
                 if (document.body.classList.contains(Classes.DARK)) {
                     contentWindow.document.documentElement.classList.add(Classes.DARK);
                 }
-
                 setLastDocsPage(contentWindow.location.href);
             }}
-            src={initialDocsPage}
+            ref={iframeRef}
             allowFullScreen={true}
             width="100%"
             height="100%"
@@ -160,7 +166,7 @@ const App: React.FunctionComponent = () => {
     const [isDragging, setIsDragging] = useState(false);
 
     const [docsSplit, setDocsSplit] = useLocalStorage('app-docs-split', 30);
-    const [terminalSplit, setTerminalSplit] = useLocalStorage('app-terminal-split', 30);
+    const [terminalSplit, setTerminalSplit] = useLocalStorage('app-terminal-split', 20);
 
     // Classes.DARK has to be applied to body element, otherwise it won't
     // affect portals

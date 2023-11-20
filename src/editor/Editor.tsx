@@ -11,6 +11,7 @@ import {
     MenuItem,
     OverlayLifecycleProps,
     ResizeSensor,
+    Spinner,
     Tab,
     TabId,
     Tabs,
@@ -32,7 +33,8 @@ import xcodeTheme from 'monaco-themes/themes/Xcode_default.json';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useId } from 'react-aria';
 import { useDispatch } from 'react-redux';
-import { useEffectOnce, useTernaryDarkMode } from 'usehooks-ts';
+import SplitterLayout from 'react-splitter-layout';
+import { useEffectOnce, useLocalStorage, useTernaryDarkMode } from 'usehooks-ts';
 import { UUID } from '../fileStorage';
 import { useFileStoragePath } from '../fileStorage/hooks';
 import { compile } from '../mpy/actions';
@@ -41,10 +43,13 @@ import { useSettingIsShowDocsEnabled } from '../settings/hooks';
 import { isMacOS } from '../utils/os';
 import Welcome from './Welcome';
 import { editorActivateFile, editorCloseFile } from './actions';
+import { BlocksNewProject, getBlockProjectInfo } from './blockUtils';
 import { useI18n } from './i18n';
 import * as pybricksMicroPython from './pybricksMicroPython';
 import { pybricksMicroPythonId } from './pybricksMicroPython';
 import { UntitledHintContribution } from './untitledHint';
+
+const BlocksEditor = React.lazy(() => import('./Blocks'));
 
 monaco.languages.register({ id: pybricksMicroPythonId });
 
@@ -503,9 +508,56 @@ const Editor: React.FunctionComponent = () => {
     const { activeFileUuid } = useSelector((s) => s.editor);
     const fileName = useFileStoragePath(activeFileUuid ?? ('' as UUID));
 
+    const [openBlockProject, setOpenBlockProject] = useState<BlocksNewProject | null>(
+        null,
+    );
+
+    const [editorSplit, setEditorSplit] = useLocalStorage('app-editor-split', 50);
+
+    const [previewShow, setPreviewShow] = useLocalStorage('app-editor-preview', false);
+
+    const togglePreviewShow = useCallback(() => {
+        setPreviewShow((previewShow) => !previewShow);
+    }, [setPreviewShow]);
+
+    useEffect(() => {
+        if (editor && !isEmpty) {
+            const result = getBlockProjectInfo(editor.getValue(), activeFileUuid);
+            setOpenBlockProject(result);
+            editor.layout();
+            if (!result) {
+                editor.updateOptions({ readOnly: false });
+            }
+        } else {
+            setOpenBlockProject(null);
+        }
+    }, [editor, activeFileUuid, isEmpty]);
+
+    useEditor(
+        editor,
+        (editor) => {
+            editor.layout();
+        },
+        [],
+    );
+
+    let splitterClass = '';
+    if (!isEmpty) {
+        if (openBlockProject) {
+            splitterClass = previewShow ? '' : 'pb-only-primary';
+        } else {
+            splitterClass = 'pb-only-secondary';
+        }
+    }
+
     return (
         <div className="pb-editor">
-            <EditorTabs onChange={() => editor?.focus()} />
+            <EditorTabs
+                onChange={() => {
+                    editor?.layout();
+                    editor?.focus();
+                }}
+            />
             <ResizeSensor onResize={() => editor?.layout()}>
                 <ContextMenu
                     className={classNames('pb-editor-tabpanel', isEmpty && 'pb-empty')}
@@ -518,21 +570,56 @@ const Editor: React.FunctionComponent = () => {
                     popoverProps={popoverProps}
                 >
                     <Welcome isVisible={isEmpty} />
-                    <div className="pb-editor-monaco" ref={editorRef} />
+
+                    <SplitterLayout
+                        customClassName={`pb-editor-codearea ${splitterClass}`}
+                        percentage={true}
+                        secondaryInitialSize={editorSplit}
+                        onSecondaryPaneSizeChange={(split: number) => {
+                            setEditorSplit(split);
+                            editor?.layout();
+                        }}
+                    >
+                        <main style={{ height: '100%', position: 'relative' }}>
+                            <React.Suspense
+                                fallback={<Spinner className="pb-editor" />}
+                            >
+                                <BlocksEditor
+                                    key={openBlockProject?.UUID}
+                                    editor={editor}
+                                    initialProject={openBlockProject}
+                                    togglePreview={togglePreviewShow}
+                                />
+                            </React.Suspense>
+                        </main>
+                        <aside
+                            ref={editorRef}
+                            className="pb-editor-codearea"
+                            style={{
+                                position: 'relative',
+                                height: `100%`,
+                                width: '100%',
+                            }}
+                        />
+                    </SplitterLayout>
                 </ContextMenu>
             </ResizeSensor>
-            <Button
-                className="pb-editor-doc-button"
-                minimal
-                large
-                icon={<Manual />}
-                title={
-                    isSettingShowDocsEnabled
-                        ? i18n.translate('docs.hide')
-                        : i18n.translate('docs.show')
-                }
-                onClick={toggleIsSettingShowDocsEnabled}
-            />
+            {!openBlockProject || isEmpty ? (
+                <Button
+                    className="pb-editor-doc-button"
+                    minimal
+                    large
+                    icon={<Manual />}
+                    title={
+                        isSettingShowDocsEnabled
+                            ? i18n.translate('docs.hide')
+                            : i18n.translate('docs.show')
+                    }
+                    onClick={toggleIsSettingShowDocsEnabled}
+                />
+            ) : (
+                <></>
+            )}
         </div>
     );
 };

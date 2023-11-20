@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2023 The Pybricks Authors
 
-import { useEffect, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocalStorage, useSessionStorage } from 'usehooks-ts';
-import { docsDefaultPage, docsPathPrefix, httpServerHeadersVersion } from './constants';
+import { docsDefaultPage, httpServerHeadersVersion } from './constants';
 
 const defaultPage = `${docsDefaultPage}?v$${httpServerHeadersVersion}`;
 
@@ -24,32 +24,19 @@ export function useAppLastDocsPageSetting() {
         lastPageGlobalSetting,
     );
 
+    // Add a state variable for the current page
+    const [currentPage, setCurrentPage] = useState(lastPageSessionSetting);
+
     // mirror session storage value to local storage
     useEffect(() => {
         setLastPageGlobalSetting(lastPageSessionSetting);
+        setCurrentPage(lastPageSessionSetting); // Update the current page
     }, [lastPageSessionSetting, setLastPageGlobalSetting]);
 
-    // the way the docs control works, we only provide the initial page, then
-    // it manages navigation after that, so we only want the initial of this
-    // value when the app first starts
-    const initialDocsPage = useMemo(
-        () => {
-            try {
-                const url = new URL(lastPageSessionSetting);
-
-                // in case someone is hacking the storage value directly
-                if (!url.pathname.startsWith(`/${docsPathPrefix}`)) {
-                    throw new Error('invalid or outdated path');
-                }
-
-                return lastPageSessionSetting;
-            } catch {
-                return defaultPage;
-            }
-        },
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [], // no deps so that we only get the initial value
-    );
-
-    return { initialDocsPage, setLastDocsPage: setLastPageSessionSetting };
+    // Modify setLastDocsPage to update the current page
+    const setLastDocsPage = (url: string) => {
+        setLastPageSessionSetting(url);
+        setCurrentPage(url);
+    };
+    return { initialDocsPage: currentPage, setLastDocsPage };
 }

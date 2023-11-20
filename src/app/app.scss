@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2022 The Pybricks Authors
+// Copyright (c) 2020-2023 The Pybricks Authors
 
 // Custom styling for the App control.
 
@@ -142,6 +142,11 @@ $dark-splitter-color-hover: color.adjust(
         color: $dark-splitter-color;
         background-color: $dark-splitter-background-color;
     }
+}
+
+// TODO: Get correct placement without changing the size.
+.pb-editor-codearea .layout-splitter:before {
+    top: 50%;
 }
 
 // make layout splitter match app color scheme

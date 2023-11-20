@@ -1,0 +1,21 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2022-2023 The Pybricks Authors
+
+@use '@blueprintjs/core/lib/scss/variables' as bp;
+
+.pb-program-type-picker {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: bp.$pt-grid-size * 4;
+    row-gap: bp.$pt-grid-size * 0.5;
+
+    .#{bp.$ns}-radio {
+        display: flex;
+        align-items: center;
+        margin: unset;
+
+        &.#{bp.$ns}-disabled img {
+            opacity: 50%;
+        }
+    }
+}

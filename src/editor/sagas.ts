@@ -83,10 +83,16 @@ function* handleModelDidChange(
 ): Generator {
     for (;;) {
         yield* take(chan);
-        const value = model.getValue();
-        // when the model changes, save it to storage.
-        yield* put(fileStorageStoreTextFileValue(model.uri.path as UUID, value));
-        // failures are ignored
+
+        // HACK: Model may be disposed, so catch it. Find out why.
+        if (!model.isDisposed()) {
+            const value = model.getValue();
+            // when the model changes, save it to storage.
+            yield* put(fileStorageStoreTextFileValue(model.uri.path as UUID, value));
+            // failures are ignored
+        } else {
+            console.warn('model is disposed', model.uri.fsPath);
+        }
 
         // throttle the writes so we don't do it too often while user is typing quickly
         yield* delay(ms);
@@ -353,6 +359,7 @@ function* monitorViewState(editor: monaco.editor.ICodeEditor): Generator {
     const ch = eventChannel<
         | monaco.editor.ICursorPositionChangedEvent
         | monaco.editor.ICursorSelectionChangedEvent
+        | monaco.editor.IModelContentChangedEvent
         | monaco.IScrollEvent
     >((emit) => {
         const subscriptions = new Array<monaco.IDisposable>();

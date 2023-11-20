@@ -586,6 +586,10 @@ module.exports = function (webpackEnv) {
             from: `${path.dirname(require.resolve('@pybricks/ide-docs/package.json'))}/html`,
             to: `static/docs/v${require('@pybricks/ide-docs/package.json').version}/`,
           },
+          {
+            from: `${path.dirname(require.resolve('blockly/package.json'))}/media`,
+            to: `static/blockly-media/`,
+          },
         ],
       }),
       new PyodidePlugin({

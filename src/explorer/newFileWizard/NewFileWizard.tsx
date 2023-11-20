@@ -17,6 +17,9 @@ import { useDispatch } from 'react-redux';
 import { useLocalStorage } from 'usehooks-ts';
 import { HubPicker } from '../../components/hubPicker/HubPicker';
 import { useHubPickerSelectedHub } from '../../components/hubPicker/hooks';
+import { ProgramType } from '../../components/programTypePicker';
+import { useProgramTypePickerSelectedProgramType } from '../../components/programTypePicker/hooks';
+import { ProgramTypePicker } from '../../components/programTypePicker/programTypePicker';
 import { useFileStorageMetadata } from '../../fileStorage/hooks';
 import {
     FileNameValidationResult,
@@ -45,6 +48,7 @@ const NewFileWizard: React.FunctionComponent = () => {
         files.map((f) => f.path),
     );
 
+    const [programType] = useProgramTypePickerSelectedProgramType();
     const [hubType] = useHubPickerSelectedHub();
     const fileNameInputRef = useRef<HTMLInputElement>(null);
 
@@ -53,13 +57,14 @@ const NewFileWizard: React.FunctionComponent = () => {
             e.preventDefault();
             dispatch(
                 newFileWizardDidAccept(
+                    programType,
                     fileName,
                     pythonFileExtension,
                     useTemplate ? hubType : undefined,
                 ),
             );
         },
-        [dispatch, fileName, hubType, useTemplate],
+        [dispatch, programType, fileName, hubType, useTemplate],
     );
 
     const handleClose = useCallback(() => {
@@ -79,6 +84,15 @@ const NewFileWizard: React.FunctionComponent = () => {
         >
             <form onSubmit={handleSubmit}>
                 <div className={Classes.DIALOG_BODY}>
+                    <FormGroup label={i18n.translate('fileKind.label')}>
+                        <ControlGroup vertical>
+                            <Text className={Classes.TEXT_MUTED}>
+                                {i18n.translate('fileKind.description')}
+                            </Text>
+                        </ControlGroup>
+                        <div className="pb-spacer" />
+                        <ProgramTypePicker />
+                    </FormGroup>
                     <FileNameFormGroup
                         fileName={fileName}
                         fileExtension={pythonFileExtension}
@@ -86,29 +100,33 @@ const NewFileWizard: React.FunctionComponent = () => {
                         inputRef={fileNameInputRef}
                         onChange={setFileName}
                     />
-                    <FormGroup label={i18n.translate('template.label')}>
-                        <ControlGroup vertical>
-                            <Switch
-                                checked={useTemplate}
-                                onChange={(e) =>
-                                    setUseTemplate(
-                                        (e.target as HTMLInputElement).checked,
-                                    )
-                                }
-                            >
-                                {i18n.translate('useTemplate.label')}
-                            </Switch>
-                            <Text className={Classes.TEXT_MUTED}>
-                                {useTemplate
-                                    ? i18n.translate('useTemplate.description.checked')
-                                    : i18n.translate(
-                                          'useTemplate.description.unchecked',
-                                      )}
-                            </Text>
-                        </ControlGroup>
-                        <div className="pb-spacer" />
-                        <HubPicker disabled={!useTemplate} />
-                    </FormGroup>
+                    {programType === ProgramType.Python && (
+                        <FormGroup label={i18n.translate('template.label')}>
+                            <ControlGroup vertical>
+                                <Switch
+                                    checked={useTemplate}
+                                    onChange={(e) =>
+                                        setUseTemplate(
+                                            (e.target as HTMLInputElement).checked,
+                                        )
+                                    }
+                                >
+                                    {i18n.translate('useTemplate.label')}
+                                </Switch>
+                                <Text className={Classes.TEXT_MUTED}>
+                                    {useTemplate
+                                        ? i18n.translate(
+                                              'useTemplate.description.checked',
+                                          )
+                                        : i18n.translate(
+                                              'useTemplate.description.unchecked',
+                                          )}
+                                </Text>
+                            </ControlGroup>
+                            <div className="pb-spacer" />
+                            <HubPicker disabled={!useTemplate} />
+                        </FormGroup>
+                    )}
                 </div>
                 <div className={Classes.DIALOG_FOOTER}>
                     <div className={Classes.DIALOG_FOOTER_ACTIONS}>

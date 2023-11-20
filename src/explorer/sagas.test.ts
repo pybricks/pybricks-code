@@ -9,6 +9,7 @@ import JSZip from 'jszip';
 import { AsyncSaga, uuid } from '../../test';
 import { alertsShowAlert } from '../alerts/actions';
 import { Hub } from '../components/hubPicker';
+import { ProgramType } from '../components/programTypePicker';
 import {
     editorActivateFile,
     editorCloseFile,
@@ -613,7 +614,14 @@ describe('handleExplorerCreateNewFile', () => {
     });
 
     it('should dispatch fileStorage action', async () => {
-        saga.put(newFileWizardDidAccept('test', pythonFileExtension, Hub.Technic));
+        saga.put(
+            newFileWizardDidAccept(
+                ProgramType.Python,
+                'test',
+                pythonFileExtension,
+                Hub.Technic,
+            ),
+        );
 
         await expect(saga.take()).resolves.toMatchInlineSnapshot(`
             {
