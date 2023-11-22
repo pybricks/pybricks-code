@@ -2857,7 +2857,7 @@ __metadata:
     "@testing-library/user-event": ^14.5.1
     "@types/file-saver": ^2.0.7
     "@types/jest": ^29.5.10
-    "@types/node": ^18.18.10
+    "@types/node": ^18.18.12
     "@types/react": ^18.2.38
     "@types/react-dom": ^18.2.16
     "@types/react-splitter-layout": ^3.0.5
@@ -5157,12 +5157,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^18.18.10":
-  version: 18.18.10
-  resolution: "@types/node@npm:18.18.10"
+"@types/node@npm:^18.18.12":
+  version: 18.18.12
+  resolution: "@types/node@npm:18.18.12"
   dependencies:
     undici-types: ~5.26.4
-  checksum: 1245a14a38bfbe115b8af9792dbe87a1c015f2532af5f0a25a073343fefa7b2edfd95ff3830003d1a1278ce7f9ee0e78d4e5454d7a60af65832c8d77f4032ac8
+  checksum: 59bb2e94b096761647fe70c79a3134f4d5f6017a493884beeeb525a9047c055db41dc5b0deb91e92160891cb84290f4da8a8ab4cc037f5341ec6ad48eb24ce10
   languageName: node
   linkType: hard
 
