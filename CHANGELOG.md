@@ -4,6 +4,11 @@
 
 ## [Unreleased]
 
+## [2.3.0-beta.1] - 2023-11-24
+
+### Changed
+- Bump beta channel to keep app installs separate from stable channel.
+
 ## [2.2.0] - 2023-11-24
 
 ### Changed
@@ -1041,7 +1046,8 @@ Prerelease changes are documented at [support#48].
 
 <!-- links for version headings -->
 
-[Unreleased]: https://github.com/pybricks/pybricks-code/compare/v2.2.0...HEAD
+[Unreleased]: https://github.com/pybricks/pybricks-code/compare/2.3.0-beta.1...HEAD
+[2.3.0-beta.1]: https://github.com/pybricks/pybricks-code/compare/v2.2.0...v2.3.0-beta.1
 [2.2.0]: https://github.com/pybricks/pybricks-code/compare/v2.2.0-rc.1..v2.2.0
 [2.2.0-rc.1]: https://github.com/pybricks/pybricks-code/compare/v2.2.0-beta.9..v2.2.0-rc.1
 [2.2.0-beta.9]: https://github.com/pybricks/pybricks-code/compare/v2.2.0-beta.8..v2.2.0-beta.9
