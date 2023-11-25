@@ -592,10 +592,6 @@ module.exports = function (webpackEnv) {
         outDirectory: pyodideStaticPath,
         packageIndexUrl: '',
       }),
-      // somehow, this magically fixes "Critical dependency: the request of a
-      // dependency is an expression" caused by unused dynamic imports in pyodide
-      // https://stackoverflow.com/a/59235546/1976323
-      new webpack.ContextReplacementPlugin(/pyodide/),
       new LicensePlugin(require('./licenses')),
       new MonacoWebpackPlugin({
         languages: ['python'],
