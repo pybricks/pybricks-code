@@ -2932,7 +2932,7 @@ __metadata:
     react: ^18.2.0
     react-app-polyfill: ^3.0.0
     react-aria: ^3.30.0
-    react-complex-tree: ^2.2.3
+    react-complex-tree: ^2.2.4
     react-dev-utils: ^12.0.1
     react-dom: ^18.2.0
     react-dropzone: ^14.2.3
@@ -14435,12 +14435,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-complex-tree@npm:^2.2.3":
-  version: 2.2.3
-  resolution: "react-complex-tree@npm:2.2.3"
+"react-complex-tree@npm:^2.2.4":
+  version: 2.2.4
+  resolution: "react-complex-tree@npm:2.2.4"
   peerDependencies:
     react: ">=16.0.0"
-  checksum: 397d96448aec9e98334da8f571ffc088b88a1dd1bc1aa03fa06caf0d12daaa6151255fb2df96975f8b8879cd5440b1128825ec9993b3d0deaf9f0cfd1f5e8f0a
+  checksum: 643cf78d5b0a3a17d8f4d0df7b7937d6631a957c8ab2f4d283e00f2fce166d53db9914c635b52aa0795b2bd189f937e89a61fa4463e3a7d16e2c29e47a77ef7c
   languageName: node
   linkType: hard
 
