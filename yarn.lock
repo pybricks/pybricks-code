@@ -1530,21 +1530,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@blueprintjs/colors@npm:^5.0.7":
-  version: 5.0.7
-  resolution: "@blueprintjs/colors@npm:5.0.7"
+"@blueprintjs/colors@npm:^5.0.8":
+  version: 5.0.8
+  resolution: "@blueprintjs/colors@npm:5.0.8"
   dependencies:
     tslib: ~2.6.2
-  checksum: 724a226a96b4db843f60b331c8d2fee17c5c30948a82391b38ef2c5c2ea521bddb3280240653210a026fe85cd77b11fd28e4e13ea020d876f946399dc5789ea0
+  checksum: fc672f7f69eed38cb4ffda612732586ae6761d872cff6004659236a961fb91a7f640b365ca4bf661ded599fb343470b69e23828e3326347fbc57ef1f39aa297c
   languageName: node
   linkType: hard
 
-"@blueprintjs/core@npm:^5.7.1":
-  version: 5.7.1
-  resolution: "@blueprintjs/core@npm:5.7.1"
+"@blueprintjs/core@npm:^5.7.2":
+  version: 5.7.2
+  resolution: "@blueprintjs/core@npm:5.7.2"
   dependencies:
-    "@blueprintjs/colors": ^5.0.7
-    "@blueprintjs/icons": ^5.4.1
+    "@blueprintjs/colors": ^5.0.8
+    "@blueprintjs/icons": ^5.5.0
     "@popperjs/core": ^2.11.7
     classnames: ^2.3.1
     normalize.css: ^8.0.1
@@ -1561,13 +1561,13 @@ __metadata:
   bin:
     upgrade-blueprint-2.0.0-rename: scripts/upgrade-blueprint-2.0.0-rename.sh
     upgrade-blueprint-3.0.0-rename: scripts/upgrade-blueprint-3.0.0-rename.sh
-  checksum: 5a092819f7966305650c4a4fd4b5fb5b59f847e69fc2eed0260894e760950ab98d3ca7664f9a5a64af64aa5018212207fa20a9351ef35f35711d80ae984fa075
+  checksum: 248ef96d74437bbf40e8604c35d496e0b7d06adcaea0f08749d6f1611677d1eaa1bb64bc96586a9ba7b6744fb877cafbf194f6d65a0b705a3dd5daffc2a22ea7
   languageName: node
   linkType: hard
 
-"@blueprintjs/icons@npm:^5.4.1":
-  version: 5.4.1
-  resolution: "@blueprintjs/icons@npm:5.4.1"
+"@blueprintjs/icons@npm:^5.5.0":
+  version: 5.5.0
+  resolution: "@blueprintjs/icons@npm:5.5.0"
   dependencies:
     change-case: ^4.1.2
     classnames: ^2.3.1
@@ -1579,7 +1579,7 @@ __metadata:
   peerDependenciesMeta:
     "@types/react":
       optional: true
-  checksum: 24bf5c525f72325e2197d3c0e1d07b06e26d4b561ffda99df45d1e85e7fc673371515fe6693d271454c347af6709df7ec4be6c6716b547d98b1ce61390fa6f8b
+  checksum: eebd542657382c04b213966bacc9d158bccce8e9d9ec38312dd02938f23d7a23bf218b862b5436bc4ad5d1bbd600cfc291f898399253746205eb6b1bfc8c792e
   languageName: node
   linkType: hard
 
@@ -2838,7 +2838,7 @@ __metadata:
   resolution: "@pybricks/pybricks-code@workspace:."
   dependencies:
     "@babel/core": ^7.23.3
-    "@blueprintjs/core": ^5.7.1
+    "@blueprintjs/core": ^5.7.2
     "@pmmmwh/react-refresh-webpack-plugin": ^0.5.11
     "@pybricks/firmware": 7.10.0
     "@pybricks/ide-docs": 2.13.0
