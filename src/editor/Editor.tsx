@@ -486,7 +486,7 @@ const Editor: React.FunctionComponent = () => {
             contextmenu: false,
             rulers: [80],
             lineNumbersMinChars: 4,
-            wordBasedSuggestions: false,
+            wordBasedSuggestions: 'off',
             selectionClipboard: false, // don't copy selection on Linux
         });
 
