@@ -54,15 +54,13 @@ const SponsorDialog: React.FunctionComponent = () => {
 
                 <h4>{i18n.translate('whyDonate.heading')}</h4>
                 <p>{i18n.translate('whyDonate.body')}</p>
-                <p>
-                    <ul>
-                        <li>{i18n.translate('donateReason.keepPybricksFree')}</li>
-                        <li>{i18n.translate('donateReason.supportNewHubs')}</li>
-                        <li>{i18n.translate('donateReason.writeDocs')}</li>
-                        <li>{i18n.translate('donateReason.exploreFeatures')}</li>
-                        <li>{i18n.translate('donateReason.supportOthers')}</li>
-                    </ul>
-                </p>
+                <ul>
+                    <li>{i18n.translate('donateReason.keepPybricksFree')}</li>
+                    <li>{i18n.translate('donateReason.supportNewHubs')}</li>
+                    <li>{i18n.translate('donateReason.writeDocs')}</li>
+                    <li>{i18n.translate('donateReason.exploreFeatures')}</li>
+                    <li>{i18n.translate('donateReason.supportOthers')}</li>
+                </ul>
 
                 <h4>{i18n.translate('donateOptions.heading')}</h4>
                 <p>{i18n.translate('donateOptions.options')}</p>
