@@ -2977,7 +2977,7 @@ __metadata:
     react-splitter-layout: ^4.0.0
     redux: ^4.2.1
     redux-logger: ^3.0.6
-    redux-saga: ^1.2.3
+    redux-saga: ^1.3.0
     resolve: ^1.22.8
     resolve-url-loader: ^5.0.0
     sass: ^1.69.7
@@ -4398,9 +4398,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@redux-saga/core@npm:^1.2.3":
-  version: 1.2.3
-  resolution: "@redux-saga/core@npm:1.2.3"
+"@redux-saga/core@npm:^1.3.0":
+  version: 1.3.0
+  resolution: "@redux-saga/core@npm:1.3.0"
   dependencies:
     "@babel/runtime": ^7.6.3
     "@redux-saga/deferred": ^1.2.1
@@ -4408,9 +4408,8 @@ __metadata:
     "@redux-saga/is": ^1.1.3
     "@redux-saga/symbols": ^1.1.3
     "@redux-saga/types": ^1.2.1
-    redux: ^4.0.4
     typescript-tuple: ^2.2.1
-  checksum: a18249aa4e771699f103c2e18952d5fc0f65124f88c1fe33f4551b658b5ef7fb2d827091fea3e339c91f324e5d9098f758282d92536e1701bd003812353dd004
+  checksum: b2ef695f506220ba4da581669ff6e5f2d30483afecf804497cc752097af93e8767915de4f1a56e23072935272b13a43b53fe44cae6a993ff586fff40d760ea2b
   languageName: node
   linkType: hard
 
@@ -14650,12 +14649,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"redux-saga@npm:^1.2.3":
-  version: 1.2.3
-  resolution: "redux-saga@npm:1.2.3"
+"redux-saga@npm:^1.3.0":
+  version: 1.3.0
+  resolution: "redux-saga@npm:1.3.0"
   dependencies:
-    "@redux-saga/core": ^1.2.3
-  checksum: 5c70799272cfbc94e046992d04bbe967e9f86ca3a35aa0c1562e6727e85b96b1a5aae68e180fdbbbc58de453dc22b39d99c81d7c604fbda7c45a8b60a729ef9d
+    "@redux-saga/core": ^1.3.0
+  checksum: 77c2fa106f6fdee7bb88970d6bdd60d6ba961a271b06c287636788d8597c437b615f7af1f65f3ed1d9e9972894e77443ccc6cfe6a24b1fd840cd9c9504c2cef2
   languageName: node
   linkType: hard
 
@@ -14668,7 +14667,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"redux@npm:^4.0.0, redux@npm:^4.0.4, redux@npm:^4.2.1":
+"redux@npm:^4.0.0, redux@npm:^4.2.1":
   version: 4.2.1
   resolution: "redux@npm:4.2.1"
   dependencies:
