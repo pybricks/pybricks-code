@@ -2924,7 +2924,7 @@ __metadata:
     dexie-observable: ^4.0.0-beta.13
     dexie-react-hooks: ^1.1.7
     dfu: ^0.1.5
-    dotenv: ^16.3.1
+    dotenv: ^16.4.0
     dotenv-expand: ^10.0.0
     eslint: ^8.56.0
     eslint-config-prettier: ^9.1.0
@@ -8441,10 +8441,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dotenv@npm:^16.3.1":
-  version: 16.3.1
-  resolution: "dotenv@npm:16.3.1"
-  checksum: 15d75e7279018f4bafd0ee9706593dd14455ddb71b3bcba9c52574460b7ccaf67d5cf8b2c08a5af1a9da6db36c956a04a1192b101ee102a3e0cf8817bbcf3dfd
+"dotenv@npm:^16.4.0":
+  version: 16.4.0
+  resolution: "dotenv@npm:16.4.0"
+  checksum: f39dccc0eb25345675045d91762b8c92fc853402a8b25ba02723a7e27da58cefe0593771bbea97781df09300514eedb393b6c8f7bfa547fd9f7b69f0c965cbdb
   languageName: node
   linkType: hard
 
