@@ -2958,7 +2958,7 @@ __metadata:
     two.js: ^0.8.12
     typed-redux-saga: ^1.5.0
     typescript: ~4.9.5
-    usehooks-ts: ^2.9.1
+    usehooks-ts: ^2.10.0
     user-agent-data-types: ^0.4.2
     web-vitals: ^3.5.2
     webpack: ^5.90.0
@@ -16677,13 +16677,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"usehooks-ts@npm:^2.9.1":
-  version: 2.9.1
-  resolution: "usehooks-ts@npm:2.9.1"
+"usehooks-ts@npm:^2.10.0":
+  version: 2.10.0
+  resolution: "usehooks-ts@npm:2.10.0"
   peerDependencies:
     react: ^16.8.0  || ^17.0.0 || ^18.0.0
     react-dom: ^16.8.0  || ^17.0.0 || ^18.0.0
-  checksum: 36f1e4142ce23bc019b81d2e93aefd7f2c350abcf255598c21627114a69a2f2f116b35dc3a353375f09c6e4c9b704a04f104e3d10e98280545c097feca66c30a
+  checksum: cf1315769a5e81c4f43e001079731d1e4f012d9982a92981e32a23c92441177e3aa1fd9bd42b4b91900aa6aa1b89e92998e968556946a84beb3a327cff576e24
   languageName: node
   linkType: hard
 
