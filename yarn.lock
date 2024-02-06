@@ -2957,7 +2957,7 @@ __metadata:
     resolve: ^1.22.8
     resolve-url-loader: ^5.0.0
     sass: ^1.69.7
-    sass-loader: ^13.3.3
+    sass-loader: ^14.1.0
     semver: ^7.5.4
     source-map-explorer: ^2.5.3
     source-map-loader: ^5.0.0
@@ -15042,19 +15042,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sass-loader@npm:^13.3.3":
-  version: 13.3.3
-  resolution: "sass-loader@npm:13.3.3"
+"sass-loader@npm:^14.1.0":
+  version: 14.1.0
+  resolution: "sass-loader@npm:14.1.0"
   dependencies:
     neo-async: ^2.6.2
   peerDependencies:
-    fibers: ">= 3.1.0"
+    "@rspack/core": 0.x || 1.x
     node-sass: ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0 || ^9.0.0
     sass: ^1.3.0
     sass-embedded: "*"
     webpack: ^5.0.0
   peerDependenciesMeta:
-    fibers:
+    "@rspack/core":
       optional: true
     node-sass:
       optional: true
@@ -15062,7 +15062,9 @@ __metadata:
       optional: true
     sass-embedded:
       optional: true
-  checksum: 32bdb99afc07de06291091c847ec5a21eca1a4136a58a5a57f965a70e53d40d4f88625b828915ffb205baa866eef16a7c2c3a4db416b74ec6fe0bb00a04b7609
+    webpack:
+      optional: true
+  checksum: 1b8d8ee52705bf5cf6c6a9200997d94ccb74659ab08eedb08d6451686cd97e75263e90b00ba595c60000c6aa1d3b95947bb7de08efb1c3e68d11d2fb518e2e91
   languageName: node
   linkType: hard
 
