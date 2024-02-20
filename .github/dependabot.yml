@@ -15,7 +15,7 @@ updates:
   - dependency-name: "@types/node"
     versions:
     - ">= 19.a"
- - package-ecosystem: "devcontainers"
-   directory: "/"
-   schedule:
-     interval: weekly
+- package-ecosystem: "devcontainers"
+  directory: "/"
+  schedule:
+    interval: weekly
