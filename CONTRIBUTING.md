@@ -16,6 +16,8 @@ will do nice things like automatically format the code for you.
 
 These are the required software tools you need to install on your computer.
 
+Alternatly, you can use a devcontainer locally via Docker or using GitHub Codespaces.
+
 ### Node.js
 
 We are using [Node.js][node] v18.x. We recommend using a tool such as [asdf][asdf]
