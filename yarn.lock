@@ -2968,7 +2968,7 @@ __metadata:
     two.js: ^0.8.12
     typed-redux-saga: ^1.5.0
     typescript: ~4.9.5
-    usehooks-ts: ^2.9.1
+    usehooks-ts: ^2.14.0
     user-agent-data-types: ^0.4.2
     web-vitals: ^3.5.2
     webpack: ^5.90.0
@@ -16732,13 +16732,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"usehooks-ts@npm:^2.9.1":
-  version: 2.9.1
-  resolution: "usehooks-ts@npm:2.9.1"
+"usehooks-ts@npm:^2.14.0":
+  version: 2.14.0
+  resolution: "usehooks-ts@npm:2.14.0"
+  dependencies:
+    lodash.debounce: ^4.0.8
   peerDependencies:
-    react: ^16.8.0  || ^17.0.0 || ^18.0.0
-    react-dom: ^16.8.0  || ^17.0.0 || ^18.0.0
-  checksum: 36f1e4142ce23bc019b81d2e93aefd7f2c350abcf255598c21627114a69a2f2f116b35dc3a353375f09c6e4c9b704a04f104e3d10e98280545c097feca66c30a
+    react: ^16.8.0  || ^17 || ^18
+  checksum: 12cfb95de2624aa9005f35ac4b924b3f64c95e1f09fa0b20cb16cf1c47f811d454a30fe492e1f40b6b93a32c3772c6c16d26a381f6a28f26c06b6724ca0d0960
   languageName: node
   linkType: hard
 
