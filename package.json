@@ -116,7 +116,7 @@
         "two.js": "^0.8.12",
         "typed-redux-saga": "^1.5.0",
         "typescript": "~4.9.5",
-        "usehooks-ts": "^2.9.1",
+        "usehooks-ts": "^3.0.2",
         "user-agent-data-types": "^0.4.2",
         "web-vitals": "^3.5.2",
         "webpack": "^5.90.0",
