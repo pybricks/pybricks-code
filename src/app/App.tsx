@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2023 The Pybricks Authors
+// Copyright (c) 2020-2024 The Pybricks Authors
 
 import 'react-splitter-layout/lib/index.css';
 import './app.scss';
@@ -13,6 +13,7 @@ import { InstallPybricksDialog } from '../firmware/installPybricksDialog/Install
 import RestoreOfficialDialog from '../firmware/restoreOfficialDialog/RestoreOfficialDialog';
 import { useSettingIsShowDocsEnabled } from '../settings/hooks';
 import SponsorDialog from '../sponsor/SponsorDialog';
+import HubcenterDialog from '../hubcenter/HubcenterDialog';
 import StatusBar from '../status-bar/StatusBar';
 import Toolbar from '../toolbar/Toolbar';
 import Tour from '../tour/Tour';
@@ -253,6 +254,7 @@ const App: React.FunctionComponent = () => {
             <InstallPybricksDialog />
             <RestoreOfficialDialog />
             <SponsorDialog />
+            <HubcenterDialog />
         </div>
     );
 };

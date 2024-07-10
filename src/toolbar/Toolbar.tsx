@@ -1,11 +1,12 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2023 The Pybricks Authors
+// Copyright (c) 2020-2024 The Pybricks Authors
 
 import { ButtonGroup } from '@blueprintjs/core';
 import React from 'react';
 import { useId } from 'react-aria';
 import { Toolbar as UtilsToolbar } from '../components/toolbar/Toolbar';
 import BluetoothButton from './buttons/bluetooth/BluetoothButton';
+import HubcenterButton from './buttons/hubcenter/HubcenterButton';
 import ReplButton from './buttons/repl/ReplButton';
 import RunButton from './buttons/run/RunButton';
 import SponsorButton from './buttons/sponsor/SponsorButton';
@@ -23,6 +24,7 @@ const Toolbar: React.FunctionComponent = () => {
     const i18n = useI18n();
     const stopButtonId = useId();
     const replButtonId = useId();
+    const hubcenterButtonId = useId();
 
     return (
         <UtilsToolbar
@@ -37,6 +39,9 @@ const Toolbar: React.FunctionComponent = () => {
                 <RunButton id={runButtonId} />
                 <StopButton id={stopButtonId} />
                 <ReplButton id={replButtonId} />
+            </ButtonGroup>
+            <ButtonGroup className="pb-toolbar-group pb-align-left">
+                <HubcenterButton id={hubcenterButtonId} />
             </ButtonGroup>
             <ButtonGroup className="pb-toolbar-group pb-align-right">
                 <SponsorButton id={sponsorButtonId} />

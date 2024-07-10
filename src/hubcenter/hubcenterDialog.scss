@@ -1,0 +1,53 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2023-2024 The Pybricks Authors
+
+@use '@blueprintjs/core/lib/scss/variables' as bp;
+
+.#{bp.$ns}-dialog.pb-hubcenter-dialog {
+    .pb-hubcenter {
+        display: grid;
+        grid-template-columns: 1fr min-content auto min-content 1fr;
+        grid-template-rows: 1fr 1fr 1fr;
+
+        justify-content: space-between;
+        place-items: center;
+        padding-top: 1em;
+    }
+    .pb-device {
+        display: grid;
+        grid-template-columns: auto min-content;
+        grid-template-rows: auto auto;
+        grid-template-areas:
+            'image port'
+            'value value';
+        align-items: center;
+        .port {
+            grid-area: port;
+            color: rgba(127, 127, 127, 1);
+            font-weight: bold;
+        }
+        .value {
+            grid-area: value;
+            margin: auto;
+        }
+        img {
+            grid-area: image;
+            width: 48px;
+            height: 48px;
+        }
+    }
+
+    .pb-hub-icon {
+        height: 300px;
+        grid-column: 3 / 3;
+        grid-row: 1 / span 3;
+    }
+
+    .#{bp.$ns}-dialog-footer-actions {
+        flex-direction: column;
+
+        .#{bp.$ns}-button {
+            margin: 0;
+        }
+    }
+}
