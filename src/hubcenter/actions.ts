@@ -10,3 +10,8 @@ export const hubcenterShowDialog = createAction(() => ({
 export const hubcenterHideDialog = createAction(() => ({
     type: 'hubcenter.action.hideDialog',
 }));
+
+export const sendData = createAction((data: string) => ({
+    type: 'hubcenter.action.sendData',
+    value: data,
+}));

@@ -11,9 +11,9 @@ import Activities from '../activities/Activities';
 import DfuWindowsDriverInstallDialog from '../firmware/dfuWindowsDriverInstallDialog/DfuWindowsDriverInstallDialog';
 import { InstallPybricksDialog } from '../firmware/installPybricksDialog/InstallPybricksDialog';
 import RestoreOfficialDialog from '../firmware/restoreOfficialDialog/RestoreOfficialDialog';
+import HubcenterDialog from '../hubcenter/HubcenterDialog';
 import { useSettingIsShowDocsEnabled } from '../settings/hooks';
 import SponsorDialog from '../sponsor/SponsorDialog';
-import HubcenterDialog from '../hubcenter/HubcenterDialog';
 import StatusBar from '../status-bar/StatusBar';
 import Toolbar from '../toolbar/Toolbar';
 import Tour from '../tour/Tour';
@@ -38,6 +38,19 @@ const Terminal = React.lazy(async () => {
     const [sagaModule, componentModule] = await Promise.all([
         import('../terminal/sagas'),
         import('../terminal/Terminal'),
+    ]);
+
+    window.dispatchEvent(
+        new CustomEvent('pb-lazy-saga', { detail: { saga: sagaModule.default } }),
+    );
+
+    return componentModule;
+});
+
+const Hubcenter = React.lazy(async () => {
+    const [sagaModule, componentModule] = await Promise.all([
+        import('../hubcenter/sagas'),
+        import('../hubcenter/HubcenterDialog'),
     ]);
 
     window.dispatchEvent(
@@ -255,6 +268,9 @@ const App: React.FunctionComponent = () => {
             <RestoreOfficialDialog />
             <SponsorDialog />
             <HubcenterDialog />
+            <React.Suspense fallback={<Spinner className="h-100" />}>
+                <Hubcenter />
+            </React.Suspense>
         </div>
     );
 };

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2023 The Pybricks Authors
+// Copyright (c) 2020-2024 The Pybricks Authors
 
 import { AnyAction } from 'redux';
 import {
@@ -64,6 +64,7 @@ function* handleReceiveWriteStdout(
     action: ReturnType<typeof didReceiveWriteStdout>,
 ): Generator {
     const value = decoder.decode(action.payload);
+    // console.log('>>> term.sagas', value);
     yield* put(sendData(value));
 }
 

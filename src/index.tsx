@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2023 The Pybricks Authors
+// Copyright (c) 2020-2024 The Pybricks Authors
 
 import './index.scss';
 import { HotkeysProvider, OverlayToaster } from '@blueprintjs/core';
@@ -14,6 +14,7 @@ import createSagaMiddleware from 'redux-saga';
 import App from './app/App';
 import { appVersion } from './app/constants';
 import { db } from './fileStorage/context';
+import { defaultHubcenterContext } from './hubcenter/HubcenterContext';
 import { i18nManager } from './i18n';
 import { rootReducer } from './reducers';
 import { serializableCheck } from './redux';
@@ -29,6 +30,7 @@ const sagaMiddleware = createSagaMiddleware<RootSagaContext>({
     context: {
         nextMessageId: createCountFunc(),
         terminal: defaultTerminalContext,
+        hubcenter: defaultHubcenterContext,
         fileStorage: db,
         toasterRef,
     },

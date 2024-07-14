@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021-2023 The Pybricks Authors
+// Copyright (c) 2021-2024 The Pybricks Authors
 //
 // Handles Pybricks protocol.
 
@@ -112,6 +112,7 @@ function* decodeResponse(action: ReturnType<typeof didNotifyEvent>): Generator {
                 yield* put(didReceiveStatusReport(parseStatusReport(action.value)));
                 break;
             case EventType.WriteStdout:
+                // console.log('>>> decodeResponse');
                 yield* put(didReceiveWriteStdout(parseWriteStdout(action.value)));
                 break;
             default:
