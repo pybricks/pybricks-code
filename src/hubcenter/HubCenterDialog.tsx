@@ -30,9 +30,9 @@ const HubcenterDialog: React.FunctionComponent = () => {
     const dispatch = useDispatch();
     const i18n = useI18n();
     // const deviceName = useSelector((s) => s.ble.deviceName);
-    // const deviceType = useSelector((s) => s.ble.deviceType);
-    // const deviceFirmwareVersion = useSelector((s) => s.ble.deviceFirmwareVersion);
-    //const charging = useSelector((s) => s.ble.deviceBatteryCharging);
+    const deviceType = useSelector((s) => s.ble.deviceType);
+    const deviceFirmwareVersion = useSelector((s) => s.ble.deviceFirmwareVersion);
+    // const charging = useSelector((s) => s.ble.deviceBatteryCharging);
     // const lowBatteryWarning = useSelector((s) => s.ble.deviceLowBatteryWarning);
 
     // wire shared context to terminal output
@@ -57,7 +57,14 @@ const HubcenterDialog: React.FunctionComponent = () => {
                         case 'H':
                             {
                                 setHubName(line[1]);
-                                setHubDetails(line[3]);
+                                const details = [
+                                    deviceType,
+                                    deviceFirmwareVersion,
+                                    line[3],
+                                ]
+                                    .filter((e) => !!e)
+                                    .join(', ');
+                                setHubDetails(details);
                             }
                             break;
                         case 'BAT':
@@ -99,7 +106,7 @@ const HubcenterDialog: React.FunctionComponent = () => {
         });
 
         return () => subscription.unsubscribe();
-    }, [hubcenterStream]);
+    }, [deviceFirmwareVersion, deviceType, hubcenterStream]);
 
     return (
         <Dialog

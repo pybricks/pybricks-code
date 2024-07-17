@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2023 The Pybricks Authors
+// Copyright (c) 2020-2024 The Pybricks Authors
 
 import './status-bar.scss';
 import {
@@ -16,8 +16,10 @@ import {
 import { Disable, Error, TickCircle } from '@blueprintjs/icons';
 import classNames from 'classnames';
 import React, { useMemo } from 'react';
+import { useDispatch } from 'react-redux';
 import { BleConnectionState } from '../ble/reducers';
 import { CompletionEngineStatus } from '../editor/redux/codeCompletion';
+import { hubcenterShowDialog } from '../hubcenter/actions';
 import { useSelector } from '../reducers';
 import { useI18n } from './i18n';
 
@@ -71,43 +73,20 @@ const CompletionEngineIndicator: React.FunctionComponent = () => {
 };
 
 const HubInfoButton: React.FunctionComponent = () => {
+    const dispatch = useDispatch();
     const i18n = useI18n();
     const deviceName = useSelector((s) => s.ble.deviceName);
-    const deviceType = useSelector((s) => s.ble.deviceType);
-    const deviceFirmwareVersion = useSelector((s) => s.ble.deviceFirmwareVersion);
 
     return (
-        <Popover
-            {...commonPopoverProps}
-            content={
-                <table className="no-wrap" style={{ userSelect: 'text' }}>
-                    <tbody>
-                        <tr>
-                            <td>
-                                <strong>{i18n.translate('hubInfo.connectedTo')}</strong>
-                            </td>
-                            <td>{deviceName}</td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <strong>{i18n.translate('hubInfo.hubType')}</strong>
-                            </td>
-                            <td>{deviceType}</td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <strong>{i18n.translate('hubInfo.firmware')}</strong>
-                            </td>
-                            <td>v{deviceFirmwareVersion}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            }
-        >
-            <Button title={i18n.translate('hubInfo.title')} minimal={true}>
+        <>
+            <Button
+                title={i18n.translate('hubInfo.title')}
+                onClick={() => dispatch(hubcenterShowDialog())}
+                minimal={true}
+            >
                 {deviceName}
             </Button>
-        </Popover>
+        </>
     );
 };
 
