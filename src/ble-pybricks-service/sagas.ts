@@ -112,7 +112,6 @@ function* decodeResponse(action: ReturnType<typeof didNotifyEvent>): Generator {
                 yield* put(didReceiveStatusReport(parseStatusReport(action.value)));
                 break;
             case EventType.WriteStdout:
-                // console.log('>>> decodeResponse');
                 yield* put(didReceiveWriteStdout(parseWriteStdout(action.value)));
                 break;
             default:

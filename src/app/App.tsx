@@ -11,7 +11,7 @@ import Activities from '../activities/Activities';
 import DfuWindowsDriverInstallDialog from '../firmware/dfuWindowsDriverInstallDialog/DfuWindowsDriverInstallDialog';
 import { InstallPybricksDialog } from '../firmware/installPybricksDialog/InstallPybricksDialog';
 import RestoreOfficialDialog from '../firmware/restoreOfficialDialog/RestoreOfficialDialog';
-import HubcenterDialog from '../hubcenter/HubcenterDialog';
+// import HubCenterDialog from '../hubcenter/HubCenterDialog';
 import { useSettingIsShowDocsEnabled } from '../settings/hooks';
 import SponsorDialog from '../sponsor/SponsorDialog';
 import StatusBar from '../status-bar/StatusBar';
@@ -47,10 +47,10 @@ const Terminal = React.lazy(async () => {
     return componentModule;
 });
 
-const Hubcenter = React.lazy(async () => {
+const HubCenter = React.lazy(async () => {
     const [sagaModule, componentModule] = await Promise.all([
         import('../hubcenter/sagas'),
-        import('../hubcenter/HubcenterDialog'),
+        import('../hubcenter/HubCenterDialog'),
     ]);
 
     window.dispatchEvent(
@@ -267,9 +267,9 @@ const App: React.FunctionComponent = () => {
             <InstallPybricksDialog />
             <RestoreOfficialDialog />
             <SponsorDialog />
-            <HubcenterDialog />
+            {/* <HubcenterDialog /> */}
             <React.Suspense fallback={<Spinner className="h-100" />}>
-                <Hubcenter />
+                <HubCenter />
             </React.Suspense>
         </div>
     );

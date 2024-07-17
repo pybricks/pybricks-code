@@ -31,13 +31,13 @@ import {
 // import { HubRuntimeState } from '../hub/reducers';
 // import { RootState } from '../reducers';
 // import { assert, defined } from '../utils';
-import { HubcenterContextValue } from './HubcenterContext';
+import { HubCenterContextValue } from './HubCenterContext';
 import { sendData } from './actions';
 
 /**
  * Partial saga context type for context used in the terminal sagas.
  */
-export type HubcenterSagaContext = { hubcenter: HubcenterContextValue };
+export type HubcenterSagaContext = { hubcenter: HubCenterContextValue };
 
 // const encoder = new TextEncoder();
 const decoder = new TextDecoder();
@@ -51,7 +51,7 @@ function* handleReceiveWriteStdout(
 }
 
 function* sendHubcenterData(action: ReturnType<typeof sendData>): Generator {
-    const { dataSource } = yield* getContext<HubcenterContextValue>('hubcenter');
+    const { dataSource } = yield* getContext<HubCenterContextValue>('hubcenter');
     // This is used to provide a data source for the Terminal component
     dataSource.next(action.value);
 }

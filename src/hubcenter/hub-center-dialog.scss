@@ -21,6 +21,8 @@
             'image port'
             'value value';
         align-items: center;
+        line-height: 1;
+        text-align: center;
         .port {
             grid-area: port;
             color: rgba(127, 127, 127, 1);
@@ -28,12 +30,36 @@
         }
         .value {
             grid-area: value;
-            margin: auto;
+            text-align: center;
         }
-        img {
+        img,
+        svg {
             grid-area: image;
             width: 48px;
             height: 48px;
+        }
+
+        @keyframes motor-spin-cw {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        @keyframes motor-spin-ccw {
+            100% {
+                transform: rotate(-360deg);
+            }
+        }
+        .color-sensor-unidentified {
+            background-image: linear-gradient(45deg, #ccc 25%, transparent 25%),
+                linear-gradient(135deg, #ccc 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #ccc 75%),
+                linear-gradient(135deg, transparent 75%, #ccc 75%);
+            background-size: 6px 6px;
+            background-position:
+                0 0,
+                3px 0,
+                3px -3px,
+                0px 3px;
         }
     }
 
