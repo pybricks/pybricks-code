@@ -450,7 +450,7 @@ const BootloaderModePanel: React.FunctionComponent<BootloaderModePanelProps> = (
 
 export const InstallPybricksDialog: React.FunctionComponent = () => {
     const { isOpen } = useSelector((s) => s.firmware.installPybricksDialog);
-    const deviceName = useSelector((s) => s.ble.deviceName);
+    const deviceNameLastConnected = useSelector((s) => s.ble.deviceNameLastConnected);
     const inProgress = useSelector(
         (s) =>
             s.firmware.isFirmwareFlashUsbDfuInProgress ||
@@ -528,7 +528,7 @@ export const InstallPybricksDialog: React.FunctionComponent = () => {
                 title={i18n.translate('optionsPanel.title')}
                 panel={
                     <ConfigureOptionsPanel
-                        hubName={hubName || deviceName}
+                        hubName={hubName || deviceNameLastConnected}
                         metadata={
                             isCustomFirmwareRequested
                                 ? customFirmwareData?.metadata

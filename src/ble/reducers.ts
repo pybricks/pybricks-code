@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2022 The Pybricks Authors
+// Copyright (c) 2020-2024 The Pybricks Authors
 //
 // Manages state for the Bluetooth Low Energy connection.
 // This assumes that there is only one global connection to a single device.
@@ -84,6 +84,14 @@ const deviceName: Reducer<string> = (state = '', action) => {
     return state;
 };
 
+const deviceNameLastConnected: Reducer<string> = (state = '', action) => {
+    if (bleDidConnectPybricks.matches(action)) {
+        return action.name;
+    }
+
+    return state;
+};
+
 const deviceType: Reducer<string> = (state = '', action) => {
     if (bleDidDisconnectPybricks.matches(action)) {
         return '';
@@ -136,6 +144,7 @@ export default combineReducers({
     connection,
     deviceName,
     deviceType,
+    deviceNameLastConnected,
     deviceFirmwareVersion,
     deviceLowBatteryWarning,
     deviceBatteryCharging,
