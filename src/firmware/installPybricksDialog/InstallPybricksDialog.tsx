@@ -23,7 +23,7 @@ import { ChevronDown, ChevronRight, Error, Heart } from '@blueprintjs/icons';
 import { FirmwareMetadata, HubType } from '@pybricks/firmware';
 import { fileOpen } from 'browser-fs-access';
 import classNames from 'classnames';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { VisuallyHidden } from 'react-aria';
 import { useDropzone } from 'react-dropzone';
 import { useDispatch } from 'react-redux';
@@ -383,12 +383,14 @@ const AcceptLicensePanel: React.FunctionComponent<AcceptLicensePanelProps> = ({
 
 type SelectOptionsPanelProps = {
     hubName: string;
+    hubDefaultName: string;
     metadata: FirmwareMetadata | undefined;
     onChangeHubName(hubName: string): void;
 };
 
 const ConfigureOptionsPanel: React.FunctionComponent<SelectOptionsPanelProps> = ({
     hubName,
+    hubDefaultName,
     metadata,
     onChangeHubName,
 }) => {
@@ -408,7 +410,7 @@ const ConfigureOptionsPanel: React.FunctionComponent<SelectOptionsPanelProps> = 
                         onMouseOver={(e) => e.preventDefault()}
                         onMouseDown={(e) => e.stopPropagation()}
                         intent={isHubNameValid ? Intent.NONE : Intent.DANGER}
-                        placeholder="Pybricks Hub"
+                        placeholder={hubDefaultName || 'Pybricks Hub'}
                         rightElement={
                             isHubNameValid ? undefined : (
                                 <Icon
@@ -450,13 +452,17 @@ const BootloaderModePanel: React.FunctionComponent<BootloaderModePanelProps> = (
 
 export const InstallPybricksDialog: React.FunctionComponent = () => {
     const { isOpen } = useSelector((s) => s.firmware.installPybricksDialog);
-    const deviceNameLastConnected = useSelector((s) => s.ble.deviceNameLastConnected);
+    const deviceName = useSelector((s) => s.ble.deviceName);
     const inProgress = useSelector(
         (s) =>
             s.firmware.isFirmwareFlashUsbDfuInProgress ||
             s.firmware.isFirmwareRestoreOfficialDfuInProgress,
     );
     const dispatch = useDispatch();
+    const [deviceNameLastConnected, setDeviceNameLastConnected] = useLocalStorage(
+        'setting.lastConnectedDeviceName',
+        '',
+    );
     const [hubName, setHubName] = useState('');
     const [licenseAccepted, setLicenseAccepted] = useState(false);
     const [hubType] = useHubPickerSelectedHub();
@@ -473,6 +479,12 @@ export const InstallPybricksDialog: React.FunctionComponent = () => {
         ? getHubTypeFromMetadata(customFirmwareData?.metadata, hubType)
         : hubType;
 
+    useEffect(() => {
+        if (deviceName) {
+            setDeviceNameLastConnected(deviceName);
+        }
+    }, [deviceName, setDeviceNameLastConnected]);
+
     return (
         <MultistepDialog
             title={i18n.translate('title')}
@@ -488,7 +500,7 @@ export const InstallPybricksDialog: React.FunctionComponent = () => {
                         firmwareInstallPybricksDialogAccept(
                             hubBootloaderType(selectedHubType),
                             selectedFirmwareData?.firmwareZip ?? new ArrayBuffer(0),
-                            hubName,
+                            hubName || deviceNameLastConnected,
                         ),
                     ),
             }}
@@ -528,7 +540,8 @@ export const InstallPybricksDialog: React.FunctionComponent = () => {
                 title={i18n.translate('optionsPanel.title')}
                 panel={
                     <ConfigureOptionsPanel
-                        hubName={hubName || deviceNameLastConnected}
+                        hubName={hubName}
+                        hubDefaultName={deviceNameLastConnected}
                         metadata={
                             isCustomFirmwareRequested
                                 ? customFirmwareData?.metadata
