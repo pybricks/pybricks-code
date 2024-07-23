@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021-2023 The Pybricks Authors
+// Copyright (c) 2021-2024 The Pybricks Authors
 //
 // Actions for Bluetooth Low Energy Pybricks service
 
@@ -163,6 +163,11 @@ export const didReceiveStatusReport = createAction((statusFlags: number) => ({
  */
 export const didReceiveWriteStdout = createAction((payload: ArrayBuffer) => ({
     type: 'blePybricksServiceEvent.action.didReceiveWriteStdout',
+    payload,
+}));
+
+export const didReceiveWriteAppData = createAction((payload: ArrayBuffer) => ({
+    type: 'blePybricksServiceEvent.action.didReceiveWriteAppData',
     payload,
 }));
 

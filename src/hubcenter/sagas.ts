@@ -23,7 +23,7 @@ import {
 // import { nordicUartSafeTxCharLength } from '../ble-nordic-uart-service/protocol';
 import {
     // didFailToSendCommand,
-    didReceiveWriteStdout,
+    didReceiveWriteAppData,
     // didSendCommand,
     // sendWriteStdinCommand,
 } from '../ble-pybricks-service/actions';
@@ -42,11 +42,10 @@ export type HubcenterSagaContext = { hubcenter: HubCenterContextValue };
 // const encoder = new TextEncoder();
 const decoder = new TextDecoder();
 
-function* handleReceiveWriteStdout(
-    action: ReturnType<typeof didReceiveWriteStdout>,
+function* handleReceiveWriteAppData(
+    action: ReturnType<typeof didReceiveWriteAppData>,
 ): Generator {
     const value = decoder.decode(action.payload);
-    // console.log('>>> hc.sagas', value);
     yield* put(sendData(value));
 }
 
@@ -57,6 +56,6 @@ function* sendHubcenterData(action: ReturnType<typeof sendData>): Generator {
 }
 
 export default function* (): Generator {
-    yield* takeEvery(didReceiveWriteStdout, handleReceiveWriteStdout);
+    yield* takeEvery(didReceiveWriteAppData, handleReceiveWriteAppData);
     yield* takeEvery(sendData, sendHubcenterData);
 }

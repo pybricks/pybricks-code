@@ -26,7 +26,6 @@ const HubcenterDialog: React.FunctionComponent = () => {
     const portValuesBase = useRef(new Map<string, string[]>());
     const [portTypes, setPortTypes] = useState(new Map<string, number>());
     const [portValues, setPortValues] = useState(new Map<string, string[]>());
-    const collect_whole_line = useRef('');
     const dispatch = useDispatch();
     const i18n = useI18n();
     // const deviceName = useSelector((s) => s.ble.deviceName);
@@ -39,15 +38,6 @@ const HubcenterDialog: React.FunctionComponent = () => {
     useEffect(() => {
         const subscription = hubcenterStream.dataSource.observable.subscribe({
             next: (d) => {
-                // collect the complete line - might be replaced by HostBuffer
-                if (d.charCodeAt(d.length - 1) !== 10) {
-                    collect_whole_line.current += d;
-                    return;
-                } else {
-                    d = collect_whole_line.current + d.trim();
-                    collect_whole_line.current = '';
-                }
-
                 // react on the line
                 const line = d.trim().split(',');
                 const atype = line[0];
