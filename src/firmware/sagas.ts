@@ -543,7 +543,7 @@ function* handleFlashFirmware(action: ReturnType<typeof flashFirmware>): Generat
 
                 if (response.checksum !== runningChecksum) {
                     // istanbul ignore next
-                    if (process.env.NODE_ENV === 'test') {
+                    if (process.env.NODE_ENV !== 'test') {
                         console.error(
                             `checksum: got ${hex(response.checksum, 2)} expected ${hex(
                                 runningChecksum,
