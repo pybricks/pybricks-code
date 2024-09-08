@@ -54,7 +54,7 @@ const dexieLicense = fs.readFileSync(
 
 const shopifyLicense = `MIT License
 
-Copyright (c) 2021 Shopify
+Copyright (c) 2018-present Shopify
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -498,9 +498,10 @@ const licenseTextOverrides = {
     '@shopify/decorators': shopifyLicense,
     '@shopify/function-enhancers': shopifyLicense,
     '@shopify/i18n': shopifyLicense,
-    '@shopify/react': shopifyLicense,
+    '@shopify/name': shopifyLicense,
     '@shopify/react-hooks': shopifyLicense,
     '@shopify/react-i18n': shopifyLicense,
+    '@shopify/react': shopifyLicense,
     '@swc/helpers': spdxMIT,
     'dexie-observable': dexieLicense,
     'dexie-react-hooks': dexieLicense,
