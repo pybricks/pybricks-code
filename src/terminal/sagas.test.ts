@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2023 The Pybricks Authors
+// Copyright (c) 2020-2024 The Pybricks Authors
 
 import PushStream from 'zen-push';
 import { AsyncSaga, delay } from '../../test';
@@ -85,6 +85,14 @@ describe('receiving stdout from hub', () => {
         saga.put(didReceiveWriteStdout(new Uint8Array([0x20]).buffer));
 
         await expect(saga.take()).resolves.toEqual(sendData(' '));
+
+        // ensure that unicode characters are handled correctly when split
+        // across buffers
+
+        saga.put(didReceiveWriteStdout(new Uint8Array([0xe4]).buffer));
+        await expect(saga.take()).resolves.toEqual(sendData(''));
+        saga.put(didReceiveWriteStdout(new Uint8Array([0xb8, 0xad]).buffer));
+        await expect(saga.take()).resolves.toEqual(sendData('中'));
 
         await saga.end();
     });
