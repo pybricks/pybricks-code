@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2023 The Pybricks Authors
+// Copyright (c) 2020-2024 The Pybricks Authors
 //
 // Definitions related to the Pybricks Bluetooth low energy GATT service.
 
@@ -156,6 +156,7 @@ export enum EventType {
      * @since Pybricks Profile v1.3.0
      */
     WriteStdout = 1,
+    WriteAppData = 2,
 }
 
 /** Status indications received by Event.StatusReport */
@@ -241,6 +242,11 @@ export function parseStatusReport(msg: DataView): number {
  */
 export function parseWriteStdout(msg: DataView): ArrayBuffer {
     assert(msg.getUint8(0) === EventType.WriteStdout, 'expecting write stdout event');
+    return msg.buffer.slice(1);
+}
+
+export function parseWriteAppData(msg: DataView): ArrayBuffer {
+    assert(msg.getUint8(0) === EventType.WriteAppData, 'expecting write appdata event');
     return msg.buffer.slice(1);
 }
 

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021-2023 The Pybricks Authors
+// Copyright (c) 2021-2024 The Pybricks Authors
 //
 // Handles Pybricks protocol.
 
@@ -18,6 +18,7 @@ import {
     didFailToWriteCommand,
     didNotifyEvent,
     didReceiveStatusReport,
+    didReceiveWriteAppData,
     didReceiveWriteStdout,
     didSendCommand,
     didWriteCommand,
@@ -41,6 +42,7 @@ import {
     createWriteUserRamCommand,
     getEventType,
     parseStatusReport,
+    parseWriteAppData,
     parseWriteStdout,
 } from './protocol';
 
@@ -113,6 +115,9 @@ function* decodeResponse(action: ReturnType<typeof didNotifyEvent>): Generator {
                 break;
             case EventType.WriteStdout:
                 yield* put(didReceiveWriteStdout(parseWriteStdout(action.value)));
+                break;
+            case EventType.WriteAppData:
+                yield* put(didReceiveWriteAppData(parseWriteAppData(action.value)));
                 break;
             default:
                 throw new ProtocolError(

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2023 The Pybricks Authors
+// Copyright (c) 2020-2024 The Pybricks Authors
 
 import 'react-splitter-layout/lib/index.css';
 import './app.scss';
@@ -11,6 +11,7 @@ import Activities from '../activities/Activities';
 import DfuWindowsDriverInstallDialog from '../firmware/dfuWindowsDriverInstallDialog/DfuWindowsDriverInstallDialog';
 import { InstallPybricksDialog } from '../firmware/installPybricksDialog/InstallPybricksDialog';
 import RestoreOfficialDialog from '../firmware/restoreOfficialDialog/RestoreOfficialDialog';
+// import HubCenterDialog from '../hubcenter/HubCenterDialog';
 import { useSettingIsShowDocsEnabled } from '../settings/hooks';
 import SponsorDialog from '../sponsor/SponsorDialog';
 import StatusBar from '../status-bar/StatusBar';
@@ -37,6 +38,19 @@ const Terminal = React.lazy(async () => {
     const [sagaModule, componentModule] = await Promise.all([
         import('../terminal/sagas'),
         import('../terminal/Terminal'),
+    ]);
+
+    window.dispatchEvent(
+        new CustomEvent('pb-lazy-saga', { detail: { saga: sagaModule.default } }),
+    );
+
+    return componentModule;
+});
+
+const HubCenter = React.lazy(async () => {
+    const [sagaModule, componentModule] = await Promise.all([
+        import('../hubcenter/sagas'),
+        import('../hubcenter/HubCenterDialog'),
     ]);
 
     window.dispatchEvent(
@@ -253,6 +267,10 @@ const App: React.FunctionComponent = () => {
             <InstallPybricksDialog />
             <RestoreOfficialDialog />
             <SponsorDialog />
+            {/* <HubcenterDialog /> */}
+            <React.Suspense fallback={<Spinner className="h-100" />}>
+                <HubCenter />
+            </React.Suspense>
         </div>
     );
 };
