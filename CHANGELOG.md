@@ -4,6 +4,14 @@
 
 ## [Unreleased]
 
+### Fixed
+- Fixed Bluetooth firmware updates sometimes failing on macOS. ([support#1787])
+- Fixed multibyte unicode characters not printing correctly in terminal when
+  split across Bluetooth packets. ([support#1743])
+
+[support#1743]: https://github.com/pybricks/support/issues/1743
+[support#1787]: https://github.com/pybricks/support/issues/1787
+
 ## [2.3.0-beta.1] - 2023-11-24
 
 ### Changed

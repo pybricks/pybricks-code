@@ -39,7 +39,8 @@ import { receiveData, sendData } from './actions';
 export type TerminalSagaContext = { terminal: TerminalContextValue };
 
 const encoder = new TextEncoder();
-const decoder = new TextDecoder();
+const uartDecoder = new TextDecoder();
+const stdoutDecoder = new TextDecoder();
 
 function* receiveUartData(action: ReturnType<typeof didNotify>): Generator {
     const { runtime: hubState, useLegacyStdio } = yield* select(
@@ -56,15 +57,14 @@ function* receiveUartData(action: ReturnType<typeof didNotify>): Generator {
         return;
     }
 
-    const value = decoder.decode(action.value.buffer);
+    const value = uartDecoder.decode(action.value.buffer, { stream: true });
     yield* put(sendData(value));
 }
 
 function* handleReceiveWriteStdout(
     action: ReturnType<typeof didReceiveWriteStdout>,
 ): Generator {
-    const value = decoder.decode(action.payload);
-    // console.log('>>> term.sagas', value);
+    const value = stdoutDecoder.decode(action.payload, { stream: true });
     yield* put(sendData(value));
 }
 

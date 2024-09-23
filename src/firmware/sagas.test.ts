@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021-2022 The Pybricks Authors
+// Copyright (c) 2021-2024 The Pybricks Authors
 
 import {
     FirmwareMetadata,
@@ -200,12 +200,12 @@ describe('flashFirmware', () => {
                     break;
                 }
 
-                if (count % 10 === 0) {
+                if (count % 8 === 0) {
                     action = await saga.take();
                     expect(action).toEqual(checksumRequest(++id));
 
                     saga.put(didRequest(id));
-                    saga.put(checksumResponse(0));
+                    saga.put(checksumResponse(0xee));
                 }
             }
 
@@ -366,7 +366,7 @@ describe('flashFirmware', () => {
                     break;
                 }
 
-                if (count % 10 === 0) {
+                if (count % 8 === 0) {
                     action = await saga.take();
                     expect(action).toEqual(checksumRequest(++id));
 
@@ -1331,12 +1331,12 @@ describe('flashFirmware', () => {
                     break;
                 }
 
-                if (count % 10 === 0) {
+                if (count % 8 === 0) {
                     action = await saga.take();
                     expect(action).toEqual(checksumRequest(++id));
 
                     saga.put(didRequest(id));
-                    saga.put(checksumResponse(0));
+                    saga.put(checksumResponse(0xeb));
                 }
             }
 
@@ -1507,12 +1507,12 @@ describe('flashFirmware', () => {
                     break;
                 }
 
-                if (count % 10 === 0) {
+                if (count % 8 === 0) {
                     action = await saga.take();
                     expect(action).toEqual(checksumRequest(++id));
 
                     saga.put(didRequest(id));
-                    saga.put(checksumResponse(0));
+                    saga.put(checksumResponse(0xeb));
                 }
             }
 
@@ -1689,7 +1689,7 @@ describe('flashFirmware', () => {
                     break;
                 }
 
-                if (count % 10 === 0) {
+                if (count % 8 === 0) {
                     action = await saga.take();
                     expect(action).toEqual(checksumRequest(++id));
 
@@ -2254,12 +2254,12 @@ describe('flashFirmware', () => {
                 break;
             }
 
-            if (count % 10 === 0) {
+            if (count % 8 === 0) {
                 action = await saga.take();
                 expect(action).toEqual(checksumRequest(++id));
 
                 saga.put(didRequest(id));
-                saga.put(checksumResponse(0));
+                saga.put(checksumResponse(0xeb));
             }
         }
 
