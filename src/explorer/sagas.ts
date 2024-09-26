@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022-2023 The Pybricks Authors
+// Copyright (c) 2022-2024 The Pybricks Authors
 
 import { fileOpen, fileSave } from 'browser-fs-access';
 import JSZip from 'jszip';
@@ -74,8 +74,10 @@ import {
     explorerDidRenameFile,
     explorerDuplicateFile,
     explorerExportFile,
+    explorerImportFileFromGoogleDrive,
     explorerImportFiles,
     explorerRenameFile,
+    explorerUploadFileToGoogleDrive,
     explorerUserActivateFile,
     explorerUserDidActivateFile,
 } from './actions';
@@ -90,6 +92,7 @@ import {
     duplicateFileDialogShow,
 } from './duplicateFileDialog/actions';
 import { ExplorerError } from './error';
+import { googleDriveUploadDialogShow } from './googleDriveUploadDialog/actions';
 import {
     newFileWizardDidAccept,
     newFileWizardDidCancel,
@@ -169,6 +172,21 @@ function* handleExplorerArchiveAllFiles(): Generator {
         }
         yield* put(explorerDidFailToArchiveAllFiles(error));
     }
+}
+
+function* handleUploadFileToGoogleDrive(
+    action: ReturnType<typeof explorerRenameFile>,
+): Generator {
+    console.info('hello');
+
+    yield* put(googleDriveUploadDialogShow(action.fileName));
+}
+
+function* handleImportFileFromGoogleDrive(): Generator {
+    console.info('hello');
+
+    //TBD
+    yield* put(explorerDidArchiveAllFiles());
 }
 
 type ImportContext = {
@@ -592,4 +610,9 @@ export default function* (): Generator {
     yield* takeEvery(explorerDuplicateFile, handleExplorerDuplicateFile);
     yield* takeEvery(explorerExportFile, handleExplorerExportFile);
     yield* takeEvery(explorerDeleteFile, handleExplorerDeleteFile);
+    yield* takeEvery(explorerUploadFileToGoogleDrive, handleUploadFileToGoogleDrive);
+    yield* takeEvery(
+        explorerImportFileFromGoogleDrive,
+        handleImportFileFromGoogleDrive,
+    );
 }
