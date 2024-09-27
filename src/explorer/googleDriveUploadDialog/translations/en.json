@@ -2,6 +2,9 @@
     "title": "Upload '{fileName}' to Google Drive",
 
     "action": {
-        "upload": "Upload"
+        "change_destination": "Change Destination",
+        "choose_destination": "Choose Destination",
+        "upload": "Upload",
+        "cancel": "Cancel"
     }
 }

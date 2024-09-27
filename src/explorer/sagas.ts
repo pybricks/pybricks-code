@@ -4,6 +4,7 @@
 import { fileOpen, fileSave } from 'browser-fs-access';
 import JSZip from 'jszip';
 import {
+    all,
     call,
     getContext,
     put,
@@ -93,6 +94,7 @@ import {
 } from './duplicateFileDialog/actions';
 import { ExplorerError } from './error';
 import { googleDriveUploadDialogShow } from './googleDriveUploadDialog/actions';
+import googleDriveUploadDialog from './googleDriveUploadDialog/sagas';
 import {
     newFileWizardDidAccept,
     newFileWizardDidCancel,
@@ -177,15 +179,12 @@ function* handleExplorerArchiveAllFiles(): Generator {
 function* handleUploadFileToGoogleDrive(
     action: ReturnType<typeof explorerRenameFile>,
 ): Generator {
-    console.info('hello');
-
     yield* put(googleDriveUploadDialogShow(action.fileName));
 }
 
 function* handleImportFileFromGoogleDrive(): Generator {
-    console.info('hello');
-
     //TBD
+    console.info('TBD: show download button');
     yield* put(explorerDidArchiveAllFiles());
 }
 
@@ -615,4 +614,5 @@ export default function* (): Generator {
         explorerImportFileFromGoogleDrive,
         handleImportFileFromGoogleDrive,
     );
+    yield* all([googleDriveUploadDialog()]);
 }

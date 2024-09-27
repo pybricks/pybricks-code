@@ -1,41 +1,17 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2024 The Pybricks Authors
 
-import { Button, Classes, Dialog } from '@blueprintjs/core';
+import { Button, Classes, Dialog, Spinner } from '@blueprintjs/core';
 import GoogleDrivePicker from 'google-drive-picker';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from '../../reducers';
 import {
-    googleDriveUploadDialogDidAccept,
     googleDriveUploadDialogDidCancel,
+    googleDriveUploadDialogUpload,
 } from './actions';
 import { useI18n } from './i18n';
-
-export interface DriveDocument {
-    description: string;
-    downloadUrl?: string;
-    driveSuccess: boolean;
-    embedUrl: string;
-    iconUrl: string;
-    id: string;
-    isShared: boolean;
-    lastEditedUtc: number;
-    mimeType: string;
-    name: string;
-    rotation: number;
-    rotationDegree: number;
-    serviceId: string;
-    sizeBytes: number;
-    type: string;
-    uploadState?: string;
-    url: string;
-}
-
-export interface PickerResponse {
-    action: string;
-    docs: DriveDocument[];
-}
+import { DriveDocument, PickerResponse } from './protocol';
 
 const GoogleDriveUploadDialog: React.FunctionComponent = () => {
     const i18n = useI18n();
@@ -48,6 +24,7 @@ const GoogleDriveUploadDialog: React.FunctionComponent = () => {
     const [authToken, setAuthToken] = useState('');
     const [openPicker, authRes] = GoogleDrivePicker();
     const [dest, setDest] = useState<DriveDocument>();
+    const [uploading, setUploading] = useState(false);
 
     const handlePickerOpen = () => {
         console.log('token:', authToken);
@@ -79,21 +56,15 @@ const GoogleDriveUploadDialog: React.FunctionComponent = () => {
         }
     }, [authRes]);
 
-    const handleSubmit = useCallback<React.FormEventHandler>(
-        (e) => {
-            e.preventDefault();
-            console.log('upload: %s, %s', fileName, authToken);
+    const handleUpload = () => {
+        setUploading(true);
+        dispatch(googleDriveUploadDialogUpload(fileName, authToken, dest?.id || ''));
 
-            // const drive = new TsGoogleDrive({
-            //     oAuthCredentials: { access_token: authToken },
-            // });
-            // console.log(drive);
-            // drive.upload(fileName);
-
-            dispatch(googleDriveUploadDialogDidAccept());
-        },
-        [dispatch, authToken, fileName],
-    );
+        setTimeout(() => {
+            setUploading(false);
+            dispatch(googleDriveUploadDialogDidCancel());
+        }, 500);
+    };
 
     const handleClose = useCallback(() => {
         dispatch(googleDriveUploadDialogDidCancel());
@@ -109,7 +80,7 @@ const GoogleDriveUploadDialog: React.FunctionComponent = () => {
             }}
             onClose={handleClose}
         >
-            <form onSubmit={handleSubmit}>
+            <form>
                 <div className={Classes.DIALOG_BODY}>
                     <div>
                         Upload to:
@@ -122,14 +93,23 @@ const GoogleDriveUploadDialog: React.FunctionComponent = () => {
                             </div>
                         )}
                         <Button onClick={handlePickerOpen}>
-                            {(dest && 'Change') || 'Choose'} destination
+                            {(dest && i18n.translate('action.change_destination')) ||
+                                i18n.translate('action.choose_destination')}
                         </Button>
                     </div>
                 </div>
                 <div className={Classes.DIALOG_FOOTER}>
                     <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-                        <Button intent="primary" type="submit">
+                        {uploading && <Spinner size={24} />}
+                        <Button
+                            intent="primary"
+                            onClick={handleUpload}
+                            disabled={(dest === undefined && true) || false}
+                        >
                             {i18n.translate('action.upload')}
+                        </Button>
+                        <Button intent="primary" onClick={handleClose}>
+                            Done
                         </Button>
                     </div>
                 </div>

@@ -3,7 +3,7 @@
 
 import { Reducer, combineReducers } from 'redux';
 import {
-    googleDriveUploadDialogDidAccept,
+    googleDriveUploadDialogDidCancel,
     googleDriveUploadDialogShow,
 } from './actions';
 
@@ -15,10 +15,7 @@ const isOpen: Reducer<boolean> = (state = false, action) => {
         return true;
     }
 
-    if (
-        googleDriveUploadDialogDidAccept.matches(action) ||
-        googleDriveUploadDialogDidAccept.matches(action)
-    ) {
+    if (googleDriveUploadDialogDidCancel.matches(action)) {
         return false;
     }
 
