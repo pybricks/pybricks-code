@@ -2,8 +2,8 @@
 // Copyright (c) 2024 The Pybricks Authors
 
 import { Button, Classes, Dialog } from '@blueprintjs/core';
-//import GoogleDrivePicker from 'google-drive-picker';
-import React, { useCallback, useRef } from 'react';
+import GoogleDrivePicker from 'google-drive-picker';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from '../../reducers';
 import {
@@ -11,6 +11,31 @@ import {
     googleDriveUploadDialogDidCancel,
 } from './actions';
 import { useI18n } from './i18n';
+
+export interface DriveDocument {
+    description: string;
+    downloadUrl?: string;
+    driveSuccess: boolean;
+    embedUrl: string;
+    iconUrl: string;
+    id: string;
+    isShared: boolean;
+    lastEditedUtc: number;
+    mimeType: string;
+    name: string;
+    rotation: number;
+    rotationDegree: number;
+    serviceId: string;
+    sizeBytes: number;
+    type: string;
+    uploadState?: string;
+    url: string;
+}
+
+export interface PickerResponse {
+    action: string;
+    docs: DriveDocument[];
+}
 
 const GoogleDriveUploadDialog: React.FunctionComponent = () => {
     const i18n = useI18n();
@@ -20,40 +45,54 @@ const GoogleDriveUploadDialog: React.FunctionComponent = () => {
 
     const inputRef = useRef<HTMLInputElement>(null);
 
-    //const [authToken, setAuthToken] = useState('');
-    //const [openPicker, authResponse] = GoogleDrivePicker();
+    const [authToken, setAuthToken] = useState('');
+    const [openPicker, authRes] = GoogleDrivePicker();
+    const [dest, setDest] = useState<DriveDocument>();
 
     const handlePickerOpen = () => {
-        // openPicker({
-        //     clientId:
-        //         '1034337501504-of3um354h2dsdm200bhjnfpk6cg0m0n6.apps.googleusercontent.com',
-        //     developerKey: 'AIzaSyBMKnuqNI3N0r95XNns1tT7TYJHGkM5juU',
-        //     viewId: 'FOLDERS',
-        //     //token: authToken,
-        //     setSelectFolderEnabled: true,
-        //     supportDrives: true,
-        //     callbackFunction: (data) => {
-        //         if (data.action === 'cancel') {
-        //             console.log('User clicked cancel/close button');
-        //         } else if (data.docs && data.docs.length > 0) {
-        //             console.log(data);
-        //         }
-        //     },
-        // });
+        console.log('token:', authToken);
+        openPicker({
+            clientId:
+                '1034337501504-of3um354h2dsdm200bhjnfpk6cg0m0n6.apps.googleusercontent.com',
+            developerKey: 'AIzaSyBMKnuqNI3N0r95XNns1tT7TYJHGkM5juU',
+            viewId: 'FOLDERS',
+            token: authToken,
+            customScopes: ['https://www.googleapis.com/auth/drive'],
+            setSelectFolderEnabled: true,
+            supportDrives: true,
+            callbackFunction: (data: PickerResponse) => {
+                if (data.action === 'cancel') {
+                    console.log('User clicked cancel/close button');
+                }
+                console.log(data);
+                if (data && data.docs) {
+                    setDest(data.docs[0]);
+                }
+            },
+        });
+        console.log('token:', authToken);
     };
 
-    // useEffect(() => {
-    //     if (authResponse) {
-    //         //setAuthToken(authResponse.access_token);
-    //     }
-    // }, [authResponse]);
+    useEffect(() => {
+        if (authRes) {
+            setAuthToken(authRes.access_token);
+        }
+    }, [authRes]);
 
     const handleSubmit = useCallback<React.FormEventHandler>(
         (e) => {
             e.preventDefault();
+            console.log('upload: %s, %s', fileName, authToken);
+
+            // const drive = new TsGoogleDrive({
+            //     oAuthCredentials: { access_token: authToken },
+            // });
+            // console.log(drive);
+            // drive.upload(fileName);
+
             dispatch(googleDriveUploadDialogDidAccept());
         },
-        [dispatch],
+        [dispatch, authToken, fileName],
     );
 
     const handleClose = useCallback(() => {
@@ -72,9 +111,20 @@ const GoogleDriveUploadDialog: React.FunctionComponent = () => {
         >
             <form onSubmit={handleSubmit}>
                 <div className={Classes.DIALOG_BODY}>
-                    Upload to: {}
-                    <Button onClick={handlePickerOpen}>Choose destination</Button>
-                    <div>body</div>
+                    <div>
+                        Upload to:
+                        {dest && (
+                            <div>
+                                <a target="_blank" href={dest.url} rel="noopener">
+                                    <img src={dest.iconUrl}></img>
+                                    {dest.name}
+                                </a>
+                            </div>
+                        )}
+                        <Button onClick={handlePickerOpen}>
+                            {(dest && 'Change') || 'Choose'} destination
+                        </Button>
+                    </div>
                 </div>
                 <div className={Classes.DIALOG_FOOTER}>
                     <div className={Classes.DIALOG_FOOTER_ACTIONS}>
