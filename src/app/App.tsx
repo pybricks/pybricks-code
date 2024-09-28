@@ -11,7 +11,6 @@ import Activities from '../activities/Activities';
 import DfuWindowsDriverInstallDialog from '../firmware/dfuWindowsDriverInstallDialog/DfuWindowsDriverInstallDialog';
 import { InstallPybricksDialog } from '../firmware/installPybricksDialog/InstallPybricksDialog';
 import RestoreOfficialDialog from '../firmware/restoreOfficialDialog/RestoreOfficialDialog';
-// import HubCenterDialog from '../hubcenter/HubCenterDialog';
 import { useSettingIsShowDocsEnabled } from '../settings/hooks';
 import SponsorDialog from '../sponsor/SponsorDialog';
 import StatusBar from '../status-bar/StatusBar';
@@ -267,7 +266,6 @@ const App: React.FunctionComponent = () => {
             <InstallPybricksDialog />
             <RestoreOfficialDialog />
             <SponsorDialog />
-            {/* <HubcenterDialog /> */}
             <React.Suspense fallback={<Spinner className="h-100" />}>
                 <HubCenter />
             </React.Suspense>

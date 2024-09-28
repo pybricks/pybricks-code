@@ -67,7 +67,7 @@ function* encodeRequest(): Generator {
             yield* put(writeCommand(action.id, createStopUserProgramCommand()));
         } else if (sendStartUserProgramCommand.matches(action)) {
             yield* put(
-                writeCommand(action.id, createStartUserProgramCommand(action.id)),
+                writeCommand(action.id, createStartUserProgramCommand(action.slot)),
             );
         } else if (sendStartReplCommand.matches(action)) {
             yield* put(writeCommand(action.id, createStartReplCommand()));

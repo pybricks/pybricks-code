@@ -84,11 +84,11 @@ export function createStopUserProgramCommand(): Uint8Array {
  *
  * @since Pybricks Profile v1.2.0
  */
-export function createStartUserProgramCommand(id?: number): Uint8Array {
-    const msg = new Uint8Array(id === undefined ? 1 : 2);
+export function createStartUserProgramCommand(slot: number | undefined): Uint8Array {
+    const msg = new Uint8Array(slot === undefined ? 1 : 2);
     msg[0] = CommandType.StartUserProgram;
-    if (id !== undefined) {
-        msg[1] = id & 0xff;
+    if (slot !== undefined) {
+        msg[1] = slot & 0xff;
     }
     return msg;
 }
@@ -265,6 +265,13 @@ export function parseWriteStdout(msg: DataView): ArrayBuffer {
     return msg.buffer.slice(1);
 }
 
+/**
+ * Parses the payload of a app data message.
+ * @param msg The raw message data.
+ * @returns The bytes that were written.
+ *
+ * @since Pybricks Profile v1.4.0
+ */
 export function parseWriteAppData(msg: DataView): ArrayBuffer {
     assert(msg.getUint8(0) === EventType.WriteAppData, 'expecting write appdata event');
     return msg.buffer.slice(1);

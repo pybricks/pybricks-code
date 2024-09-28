@@ -37,7 +37,7 @@ function* sendHubcenterData(action: ReturnType<typeof sendData>): Generator {
 function* processShowDialog(
     _action: ReturnType<typeof hubcenterShowDialog>,
 ): Generator {
-    yield* put(sendStartUserProgramCommand(PORTVIEW_PROGRAM_ID));
+    yield* put(sendStartUserProgramCommand(0, PORTVIEW_PROGRAM_ID));
 }
 
 function* processHideDialog(

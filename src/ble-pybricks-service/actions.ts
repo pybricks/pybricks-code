@@ -61,10 +61,13 @@ export const sendStopUserProgramCommand = createAction((id: number) => ({
  *
  * @since Pybricks Profile v1.2.0. Program identifier added in Pybricks Profile v1.4.0.
  */
-export const sendStartUserProgramCommand = createAction((id: number) => ({
-    type: 'blePybricksServiceCommand.action.sendStartUserProgram',
-    id,
-}));
+export const sendStartUserProgramCommand = createAction(
+    (id: number, slot?: number) => ({
+        type: 'blePybricksServiceCommand.action.sendStartUserProgram',
+        id,
+        slot,
+    }),
+);
 
 /**
  * Action that requests a start interactive REPL to be sent.
