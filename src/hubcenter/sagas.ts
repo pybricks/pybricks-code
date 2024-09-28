@@ -2,37 +2,14 @@
 // Copyright (c) 2020-2024 The Pybricks Authors
 
 // import { AnyAction } from 'redux';
+import { getContext, put, takeEvery } from 'typed-redux-saga/macro';
 import {
-    getContext,
-    // actionChannel,
-    // delay,
-    // fork,
-    // getContext,
-    put,
-    // race,
-    // select,
-    // take,
-    takeEvery,
-} from 'typed-redux-saga/macro';
-// import {
-//     didFailToWrite,
-//     didNotify,
-//     didWrite,
-//     write,
-// } from '../ble-nordic-uart-service/actions';
-// import { nordicUartSafeTxCharLength } from '../ble-nordic-uart-service/protocol';
-import {
-    // didFailToSendCommand,
     didReceiveWriteAppData,
-    // didSendCommand,
-    // sendWriteStdinCommand,
+    sendStartUserProgramCommand,
+    sendStopUserProgramCommand,
 } from '../ble-pybricks-service/actions';
-// import { checksum, hubDidStartRepl } from '../hub/actions';
-// import { HubRuntimeState } from '../hub/reducers';
-// import { RootState } from '../reducers';
-// import { assert, defined } from '../utils';
 import { HubCenterContextValue } from './HubCenterContext';
-import { sendData } from './actions';
+import { hubcenterHideDialog, hubcenterShowDialog, sendData } from './actions';
 
 /**
  * Partial saga context type for context used in the terminal sagas.
@@ -41,6 +18,8 @@ export type HubcenterSagaContext = { hubcenter: HubCenterContextValue };
 
 // const encoder = new TextEncoder();
 const decoder = new TextDecoder();
+
+const PORTVIEW_PROGRAM_ID = 129;
 
 function* handleReceiveWriteAppData(
     action: ReturnType<typeof didReceiveWriteAppData>,
@@ -55,7 +34,21 @@ function* sendHubcenterData(action: ReturnType<typeof sendData>): Generator {
     dataSource.next(action.value);
 }
 
+function* processShowDialog(
+    _action: ReturnType<typeof hubcenterShowDialog>,
+): Generator {
+    yield* put(sendStartUserProgramCommand(PORTVIEW_PROGRAM_ID));
+}
+
+function* processHideDialog(
+    _action: ReturnType<typeof hubcenterShowDialog>,
+): Generator {
+    yield* put(sendStopUserProgramCommand(0));
+}
+
 export default function* (): Generator {
     yield* takeEvery(didReceiveWriteAppData, handleReceiveWriteAppData);
     yield* takeEvery(sendData, sendHubcenterData);
+    yield* takeEvery(hubcenterShowDialog, processShowDialog);
+    yield* takeEvery(hubcenterHideDialog, processHideDialog);
 }

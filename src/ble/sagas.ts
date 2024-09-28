@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2023 The Pybricks Authors
+// Copyright (c) 2020-2024 The Pybricks Authors
 //
 // Manages connection to a Bluetooth Low Energy device running Pybricks firmware.
 
@@ -73,7 +73,7 @@ import {
 import { BleConnectionState } from './reducers';
 
 /** The version of the Pybricks Profile version currently implemented by this file. */
-export const supportedPybricksProfileVersion = '1.3.0';
+export const supportedPybricksProfileVersion = '1.4.0';
 
 const decoder = new TextDecoder();
 

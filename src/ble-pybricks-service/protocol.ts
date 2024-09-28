@@ -25,7 +25,15 @@ export enum CommandType {
     /**
      * Request to start the user program.
      *
-     * @since Pybricks Profile v1.2.0
+     * The optional payload parameter was added in Pybricks Profile v1.4.0.
+     *
+     * Parameters:
+     * - payload: Optional program identifier (one byte). Slots 0--127 are
+     *            reserved for downloaded user programs. Slots 128--255 are
+     *            for builtin user programs. If no program identifier is
+     *            given, the currently active program slot will be started.
+     *
+     * @since Pybricks Profile v1.2.0. Program identifier added in Pybricks Profile v1.4.0.
      */
     StartUserProgram = 1,
     /**
@@ -76,9 +84,12 @@ export function createStopUserProgramCommand(): Uint8Array {
  *
  * @since Pybricks Profile v1.2.0
  */
-export function createStartUserProgramCommand(): Uint8Array {
-    const msg = new Uint8Array(1);
+export function createStartUserProgramCommand(id?: number): Uint8Array {
+    const msg = new Uint8Array(id === undefined ? 1 : 2);
     msg[0] = CommandType.StartUserProgram;
+    if (id !== undefined) {
+        msg[1] = id & 0xff;
+    }
     return msg;
 }
 
@@ -147,7 +158,11 @@ export enum EventType {
      *
      * Received when notifications are enabled and when status changes.
      *
-     * @since Pybricks Profile v1.0.0
+     * The payload is one 32-bit little-endian unsigned integer containing
+     * ::pbio_pybricks_status_t flags and a one byte program identifier
+     * representing the currently active program if it is running.
+     *
+     * @since Pybricks Profile v1.0.0. Program identifier added in Pybricks Profile v1.4.0.
      */
     StatusReport = 0,
     /**
@@ -156,6 +171,11 @@ export enum EventType {
      * @since Pybricks Profile v1.3.0
      */
     WriteStdout = 1,
+    /**
+     * Hub wrote to appdata event.
+     *
+     * @since Pybricks Profile v1.4.0
+     */
     WriteAppData = 2,
 }
 

@@ -18,25 +18,25 @@ const HubIconComponent: React.FunctionComponent<HubIconProps> = ({ buttons }) =>
                     id="button_bluetooth"
                     stroke="#fff"
                     d="M33.398 9.049c0 .83-.667 1.5-1.49 1.5-.824 0-1.49-.67-1.49-1.5 0-.829.666-1.5 1.49-1.5.823 0 1.49.674 1.49 1.5"
-                    fill={buttons.includes('B') ? '#fff' : 'none'}
+                    fill={buttons?.includes('BLUETOOTH') ? '#fff' : 'none'}
                 />
                 <path
                     id="button_center"
                     stroke="#fff"
                     d="M27 37c0 1.659-1.342 3-3 3s-3-1.341-3-3 1.342-3 3-3 3 1.349 3 3"
-                    fill={buttons.includes('C') ? '#fff' : 'none'}
+                    fill={buttons?.includes('CENTER') ? '#fff' : 'none'}
                 />
                 <path
                     id="button_l"
                     d="M 19.471 38.464 L 15.409 38.464 C 14.943 38.464 14.565 37.937 14.565 37.288 L 14.565 36.699 C 14.565 36.049 14.943 35.522 15.409 35.522 L 19.471 35.522 C 19.28 35.966 19.179 36.475 19.18 36.993 C 19.18 37.53 19.286 38.034 19.471 38.464 Z"
-                    stroke={buttons.includes('L') ? '#fff' : 'none'}
-                    fill={buttons.includes('L') ? '#fff' : 'none'}
+                    stroke={buttons?.includes('LEFT') ? '#fff' : 'none'}
+                    fill={buttons?.includes('LEFT') ? '#fff' : 'none'}
                 />
                 <path
                     id="button_r"
                     d="M 28.528 35.522 L 32.59 35.522 C 33.056 35.522 33.434 36.049 33.434 36.699 L 33.434 37.288 C 33.434 37.937 33.056 38.464 32.59 38.464 L 28.528 38.464 C 28.719 38.019 28.82 37.511 28.819 36.993 C 28.82 36.475 28.719 35.966 28.528 35.522 Z"
-                    stroke={buttons.includes('R') ? '#fff' : 'none'}
-                    fill={buttons.includes('R') ? '#fff' : 'none'}
+                    stroke={buttons?.includes('RIGHT') ? '#fff' : 'none'}
+                    fill={buttons?.includes('RIGHT') ? '#fff' : 'none'}
                 />
 
                 <path

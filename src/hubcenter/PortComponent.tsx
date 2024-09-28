@@ -2,83 +2,104 @@
 // Copyright (c) 2024 The Pybricks Authors
 
 import React from 'react';
-import ColorSensorIconComponent from './ColorSensorIcon';
-import MotorIcon from './MotorIcon';
-import forcesensorIcon from './forcesensor.svg';
-// import motorIcon from './motor.svg';
-import ussensorIcon from './ussensor.svg';
+import ColorSensorIconComponent from './icons/ColorSensorIcon';
+import ForceSensorIcon from './icons/ForceSensorIcon';
+import MotorIcon from './icons/MotorIcon';
+import UltrasonicSensorIcon from './icons/UltrasonicSensorIcon';
+
+export interface PortData {
+    type: number | undefined;
+    values: string[] | undefined;
+    lastUpdated?: Date;
+}
+
+const DEVICE_NAMES: { [key: number]: string } = {
+    1: 'Wedo 2.0\nMedium Motor',
+    2: 'Powered Up\nTrain Motor',
+    8: 'Powered Up\nLight',
+    34: 'Wedo 2.0\nTilt Sensor',
+    35: 'Wedo 2.0\nInfrared Motion Sensor',
+    37: 'BOOST\nColor Distance Sensor',
+    38: 'BOOST\nInteractive Motor',
+    46: 'Technic\nLarge Motor',
+    47: 'Technic\nExtra Large Motor',
+    48: 'SPIKE\nMedium Angular Motor',
+    49: 'SPIKE\nLarge Angular Motor',
+    61: 'SPIKE\nColor Sensor',
+    62: 'SPIKE\nUltrasonic Sensor',
+    63: 'SPIKE\nForce Sensor',
+    64: 'SPIKE\n3x3 Color Light Matrix',
+    65: 'SPIKE\nSmall Angular Motor',
+    75: 'Technic\nMedium Angular Motor',
+    76: 'Technic\nLarge Angular Motor',
+};
 
 interface PortComponentProps {
     port: string;
-    porttype: number | undefined;
-    portvalues: string[] | undefined;
+    data: Map<string, PortData> | undefined;
 }
 
-const DEVICE_NAMES: { [key: number]: string[] } = {
-    // 1: 'Wedo 2.0 Medium Motor',
-    // 2: 'Powered Up Train Motor',
-    // 8: 'Powered Up Light',
-    // 38: 'BOOST Interactive Motor',
-    // 46: 'Technic Large Motor',
-    // 47: 'Technic Extra Large Motor',
-    48: ['SPIKE Medium Angular Motor', 'M-MOTOR'],
-    49: ['SPIKE Large Angular Motor', 'L-MOTOR'],
-    65: ['SPIKE Small Angular Motor', 'S-MOTOR'],
-    75: ['Technic Medium Angular Motor', 'M-MOTOR'],
-    76: ['Technic Large Angular Motor', 'L-MOTOR'],
-    // 34: 'Wedo 2.0 Tilt Sensor',
-    // 35: 'Wedo 2.0 Infrared Motion Sensor',
-    // 37: 'BOOST Color Distance Sensor',
-    61: ['SPIKE Color Sensor', 'COL-COLOR'],
-    62: ['SPIKE Ultrasonic Sensor', 'US-DIST'],
-    63: ['SPIKE Force Sensor', 'FORCE-N'],
-    // 64: ['SPIKE 3x3 Color Light Matrix',
-};
+const PortComponent: React.FunctionComponent<PortComponentProps> = ({ port, data }) => {
+    const data1 = data?.get(port);
 
-const PortComponent: React.FunctionComponent<PortComponentProps> = ({
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    port,
-    porttype,
-    portvalues,
-}) => {
-    // debugger;
-    if (!porttype) {
+    try {
+        // get name based on puptype
+        const name = DEVICE_NAMES[data1?.type || 0] || '';
+
+        // get Icon component based on puptype
+        let iconComponent;
+        switch (data1?.type) {
+            // 34, 35, 37,
+            case 38:
+            case 46:
+            case 47:
+            case 48:
+            case 49:
+            case 65:
+            case 75:
+            case 76:
+                {
+                    // Any motor with rotation sensors.
+                    const speed = parseInt(
+                        data1?.values?.[1]?.match(/([-0-9.]+)/)?.[1] || '',
+                    );
+                    iconComponent = <MotorIcon speed={speed}></MotorIcon>;
+                }
+                break;
+            case 61:
+                // SPIKE Prime / MINDSTORMS Robot Inventor Color Sensor
+                {
+                    const color = data1.values?.[0]?.replace('c=', '') || '';
+                    iconComponent = (
+                        <ColorSensorIconComponent
+                            colorCode={color}
+                        ></ColorSensorIconComponent>
+                    );
+                }
+                break;
+            case 62:
+                // SPIKE Prime / MINDSTORMS Robot Inventor Ultrasonic Sensor
+                iconComponent = <UltrasonicSensorIcon></UltrasonicSensorIcon>;
+                break;
+            case 63:
+                // SPIKE Prime Force Sensor
+                iconComponent = <ForceSensorIcon></ForceSensorIcon>;
+                break;
+            default:
+                iconComponent = <></>;
+                break;
+        }
+
+        return (
+            <>
+                <div className="port-name">{name}</div>
+                <div className="port-icon">{iconComponent}</div>
+                <div className="port-value">{data1?.values?.join(', ')}</div>
+            </>
+        );
+    } catch (e) {
         return <></>;
     }
-
-    const getIcon = () => {
-        switch (porttype) {
-            case 48: // SPIKE Medium Angular Motor
-            case 49: // SPIKE Large Angular Motor
-            case 65: // SPIKE Small Angular Motor
-            case 75: // Technic Medium Angular Motor
-            case 76: // Technic Large Angular Motor
-                return <MotorIcon speed={parseInt(portvalues?.[1] || '')}></MotorIcon>;
-            case 63: // SPIKE Force Sensor
-                return <img src={forcesensorIcon} />;
-            case 61: {
-                // SPIKE Color Sensor
-                const color = parseInt(portvalues?.[0] || '');
-                return (
-                    <ColorSensorIconComponent
-                        colorCode={color}
-                    ></ColorSensorIconComponent>
-                );
-            }
-            case 62: // SPIKE Ultrasonic Sensor
-                return <img src={ussensorIcon} />;
-            default:
-                return <></>;
-        }
-    };
-    const names = DEVICE_NAMES[porttype];
-    return (
-        <div title={names[0]}>
-            <div>{names[1]}</div>
-            <div>{getIcon()}</div>
-            <div className="value">{portvalues?.[0]}</div>
-        </div>
-    );
 };
 
 export default PortComponent;

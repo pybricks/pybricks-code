@@ -4,7 +4,7 @@
 import * as React from 'react';
 
 interface ColorSensorIconProps {
-    colorCode: number;
+    colorCode: string | undefined;
 }
 const ColorSensorIconComponent: React.FunctionComponent<ColorSensorIconProps> = ({
     colorCode,
@@ -13,33 +13,33 @@ const ColorSensorIconComponent: React.FunctionComponent<ColorSensorIconProps> = 
     let stroke = '0px';
     switch (colorCode) {
         default:
-        case -1: // No Color
+        case 'NONE':
             bgcolor = 'url(#checked-pattern)';
             stroke = '1px';
             break;
-        case 0: // Black
+        case 'BLACK':
             bgcolor = 'rgb(0, 0, 0)';
             stroke = '1px';
             break;
-        case 4: // Medium azur
+        case 'BLUE': // Medium azur
             bgcolor = 'rgb(104, 195, 226)';
             break;
-        case 9: // Red
+        case 'RED':
             bgcolor = 'rgb(180, 0, 0)';
             break;
-        case 10: // White
+        case 'WHITE':
             bgcolor = 'rgb(244, 244, 244)';
             break;
-        case 3: // Blue
+        case 'CYAN':
             bgcolor = 'rgb(30, 90, 168)';
             break;
-        case 5: // Green
+        case 'GREEN':
             bgcolor = 'rgb(0, 133, 43)';
             break;
-        case 7: // Yellow
+        case 'YELLOW':
             bgcolor = 'rgb(250, 200, 10)';
             break;
-        case 1: // Bright reddish violet
+        case 'VIOLET':
             bgcolor = 'rgb(144, 31, 118)';
             break;
     }

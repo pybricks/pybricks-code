@@ -4,6 +4,7 @@
 @use '@blueprintjs/core/lib/scss/variables' as bp;
 
 .#{bp.$ns}-dialog.pb-hubcenter-dialog {
+    width: 60em;
     .pb-hubcenter {
         display: grid;
         grid-template-columns: 1fr min-content auto min-content 1fr;
@@ -13,24 +14,29 @@
         place-items: center;
         padding-top: 1em;
     }
+    .port-label {
+        color: rgba(127, 127, 127, 1);
+        font-weight: bold;
+        margin-inline: 0.5em;
+    }
     .pb-device {
-        display: grid;
-        grid-template-columns: auto min-content;
-        grid-template-rows: auto auto;
-        grid-template-areas:
-            'image port'
-            'value value';
-        align-items: center;
-        line-height: 1;
+        display: flex; /* Enable flexbox layout */
+        flex-direction: column; /* Arrange children in a column */
+        align-items: center; /* Center children horizontally */
+        justify-content: center; /* Center children vertically */
+        line-height: 1.1rem;
         text-align: center;
-        .port {
-            grid-area: port;
-            color: rgba(127, 127, 127, 1);
-            font-weight: bold;
-        }
-        .value {
+        margin-inline: 2em;
+        min-height: 10rem;
+        .port-value {
             grid-area: value;
             text-align: center;
+            padding-bottom: 0.5em;
+        }
+        .port-name {
+            min-height: 2em;
+            white-space: break-spaces;
+            margin-bottom: 0.5em;
         }
         img,
         svg {
@@ -64,7 +70,7 @@
     }
 
     .pb-hub-icon {
-        height: 300px;
+        height: 100%;
         grid-column: 3 / 3;
         grid-row: 1 / span 3;
     }

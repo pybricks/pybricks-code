@@ -59,7 +59,7 @@ export const sendStopUserProgramCommand = createAction((id: number) => ({
  * Action that requests a start user program to be sent.
  * @param id Unique identifier for this transaction.
  *
- * @since Pybricks Profile v1.2.0
+ * @since Pybricks Profile v1.2.0. Program identifier added in Pybricks Profile v1.4.0.
  */
 export const sendStartUserProgramCommand = createAction((id: number) => ({
     type: 'blePybricksServiceCommand.action.sendStartUserProgram',
@@ -156,8 +156,8 @@ export const didReceiveStatusReport = createAction((statusFlags: number) => ({
 }));
 
 /**
- * Action that represents a status report event received from the hub.
- * @param statusFlags The status flags.
+ * Action that represents write to stdin received from the hub.
+ * @param payload The piece of message received.
  *
  * @since Pybricks Profile v1.3.0
  */
@@ -166,6 +166,12 @@ export const didReceiveWriteStdout = createAction((payload: ArrayBuffer) => ({
     payload,
 }));
 
+/**
+ * Action that represents a write to a buffer that is pre-allocated by a user program received from the hub.
+ * @param payload The piece of message received.
+ *
+ * @since Pybricks Profile v1.4.0
+ */
 export const didReceiveWriteAppData = createAction((payload: ArrayBuffer) => ({
     type: 'blePybricksServiceEvent.action.didReceiveWriteAppData',
     payload,
