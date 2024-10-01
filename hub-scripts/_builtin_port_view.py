@@ -60,7 +60,8 @@ def update_color_and_distance_sensor(port, type_id, mode):
         if mode == 0:
             hsv = sensor.hsv()
             intensity = sensor.reflection()
-            data = f"h={hsv.h}°, s={hsv.s}%, v={hsv.v}%, i={intensity}%"
+            color = str(sensor.color()).replace("Color.","")
+            data = f"c={color}\th={hsv.h}°\ts={hsv.s}%\tv={hsv.v}%\ti={intensity}%"
         elif mode == 1:
             data = f"a={sensor.ambient()}%"
         else:
@@ -128,8 +129,7 @@ def update_motor(port, type_id):
         if angle_mod > 180:
             angle_mod -= 360
         rotations = round((angle - angle_mod) / 360)
-        velocity = motor.speed()
-        msg = f"{port}\t{type_id}\ta={motor.angle()}°\tv={velocity}mms"
+        msg = f"{port}\t{type_id}\ta={motor.angle()}°"
         if angle != angle_mod:
             msg += f"\tr={rotations}R\tra={angle_mod}°"
         yield msg

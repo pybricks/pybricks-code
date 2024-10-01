@@ -24,7 +24,7 @@ const PORTVIEW_PROGRAM_ID = 129;
 function* handleReceiveWriteAppData(
     action: ReturnType<typeof didReceiveWriteAppData>,
 ): Generator {
-    const value = decoder.decode(action.payload);
+    const value = decoder.decode(action.payload, { stream: true });
     yield* put(sendData(value));
 }
 

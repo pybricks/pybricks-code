@@ -19,6 +19,12 @@
         font-weight: bold;
         margin-inline: 0.5em;
     }
+    .pb-hub-icon {
+        height: 100%;
+        grid-column: 3 / 3;
+        grid-row: 1 / span 3;
+        max-height: 30em;
+    }
     .pb-device {
         display: flex; /* Enable flexbox layout */
         flex-direction: column; /* Arrange children in a column */
@@ -27,52 +33,40 @@
         line-height: 1.1rem;
         text-align: center;
         margin-inline: 2em;
-        min-height: 10rem;
+        max-height: 15rem;
         .port-value {
             grid-area: value;
             text-align: center;
             padding-bottom: 0.5em;
+        }
+        img,
+        svg {
+            grid-area: image;
+            max-height: 8em;
+            height: 8em;
         }
         .port-name {
             min-height: 2em;
             white-space: break-spaces;
             margin-bottom: 0.5em;
         }
-        img,
-        svg {
-            grid-area: image;
-            width: 48px;
-            height: 48px;
-        }
-
-        @keyframes motor-spin-cw {
-            100% {
-                transform: rotate(360deg);
+        .pb-device-icon {
+            position: relative;
+            .color-eye {
+                position: absolute;
+                left: -22px;
+                transform: scale(0.54);
+            }
+            .motor-shaft {
+                position: absolute;
+                left: -1.5em;
+                transform: rotate(593deg);
             }
         }
-        @keyframes motor-spin-ccw {
-            100% {
-                transform: rotate(-360deg);
-            }
-        }
-        .color-sensor-unidentified {
-            background-image: linear-gradient(45deg, #ccc 25%, transparent 25%),
-                linear-gradient(135deg, #ccc 25%, transparent 25%),
-                linear-gradient(45deg, transparent 75%, #ccc 75%),
-                linear-gradient(135deg, transparent 75%, #ccc 75%);
-            background-size: 6px 6px;
-            background-position:
-                0 0,
-                3px 0,
-                3px -3px,
-                0px 3px;
-        }
-    }
 
-    .pb-hub-icon {
-        height: 100%;
-        grid-column: 3 / 3;
-        grid-row: 1 / span 3;
+        .pb-device-motor-right {
+            transform: rotate(180deg);
+        }
     }
 
     .#{bp.$ns}-dialog-footer-actions {

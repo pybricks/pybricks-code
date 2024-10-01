@@ -86,10 +86,12 @@ const HubcenterDialog: React.FunctionComponent = () => {
                             const port = line[0]; // Port.A
                             const puptype = parseInt(line[1]) ?? 0;
 
-                            const data = portDataRef.current.get(port) ?? {
-                                type: puptype,
-                                values: [] as string[],
-                            };
+                            const data =
+                                portDataRef.current.get(port) ??
+                                ({
+                                    type: puptype,
+                                    values: [] as string[],
+                                } as PortData);
 
                             data.type = puptype;
                             if (!line[2]) {
@@ -159,33 +161,12 @@ const HubcenterDialog: React.FunctionComponent = () => {
 
                 <div className="pb-hubcenter">
                     <HubIconComponent buttons={hubButtons}></HubIconComponent>
-
-                    <div className="pb-device">
-                        <PortComponent port="Port.A" data={portData}></PortComponent>
-                    </div>
-                    <div className="port-label">A</div>
-                    <div className="port-label">B</div>
-                    <div className="pb-device">
-                        <PortComponent port="Port.B" data={portData}></PortComponent>
-                    </div>
-
-                    <div className="pb-device">
-                        <PortComponent port="Port.C" data={portData}></PortComponent>
-                    </div>
-                    <div className="port-label">C</div>
-                    <div className="port-label">D</div>
-                    <div className="pb-device">
-                        <PortComponent port="Port.D" data={portData}></PortComponent>
-                    </div>
-
-                    <div className="pb-device">
-                        <PortComponent port="Port.E" data={portData}></PortComponent>
-                    </div>
-                    <div className="port-label">E</div>
-                    <div className="port-label">F</div>
-                    <div className="pb-device">
-                        <PortComponent port="Port.F" data={portData}></PortComponent>
-                    </div>
+                    <PortComponent port="A" data={portData} side="left" />
+                    <PortComponent port="B" data={portData} side="right" />
+                    <PortComponent port="C" data={portData} side="left" />
+                    <PortComponent port="D" data={portData} side="right" />
+                    <PortComponent port="E" data={portData} side="left" />
+                    <PortComponent port="F" data={portData} side="right" />
                 </div>
             </div>
         </Dialog>
