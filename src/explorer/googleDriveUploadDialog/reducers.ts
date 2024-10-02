@@ -33,6 +33,9 @@ const fileName: Reducer<string> = (state = initialDialogFileName, action) => {
 };
 
 const driveDocId: Reducer<string> = (state = '', action) => {
+    if (googleDriveUploadDialogShow.matches(action)) {
+        return '';
+    }
     if (googleDriveUploadDialogDidUploadFile.matches(action)) {
         return action.googleDriveDocId;
     }
@@ -40,6 +43,9 @@ const driveDocId: Reducer<string> = (state = '', action) => {
 };
 
 const isUploadFailed: Reducer<boolean> = (state = false, action) => {
+    if (googleDriveUploadDialogShow.matches(action)) {
+        return false;
+    }
     if (googleDriveUploadDialogFailedToUploadFile.matches(action)) {
         return false;
     }

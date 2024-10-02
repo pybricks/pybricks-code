@@ -73,6 +73,7 @@ const GoogleDriveUploadDialog: React.FunctionComponent = () => {
     };
 
     const handleClose = useCallback(() => {
+        setUploadStarted(false);
         dispatch(googleDriveUploadDialogDidCancel());
     }, [dispatch]);
 
