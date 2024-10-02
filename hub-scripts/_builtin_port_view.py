@@ -11,7 +11,6 @@ from pybricks.pupdevices import (
 from pybricks.parameters import Port
 from pybricks.tools import wait, AppData
 from pybricks.iodevices import PUPDevice
-from usys import version, implementation
 
 
 # Figure out the available ports for the given hub.
@@ -85,7 +84,8 @@ def update_color_sensor(port, type_id, mode):
         hsv = sensor.hsv(False if mode else True)
         color = str(sensor.color(False if mode else True)).replace("Color.","")
         intensity = sensor.ambient() if mode else sensor.reflection()
-        yield mode_info + f"{port}\t{type_id}\tc={color}\th={hsv.h}°\ts={hsv.s}%\tv={hsv.v}%\ti={intensity}%"
+        data = f"c={color}\th={hsv.h}°\ts={hsv.s}%\tv={hsv.v}%\ti={intensity}%"
+        yield mode_info + f"{port}\t{type_id}\t{data}"
         mode_info = ""
 
 
@@ -94,7 +94,8 @@ def update_tilt_sensor(port, type_id):
     sensor = TiltSensor(port)
     while True:
         pitch, roll = sensor.tilt()
-        yield f"{port}\t{type_id}\tp={pitch}°\tr={roll}°"
+        data = f"p={pitch}°\tr={roll}°"
+        yield f"{port}\t{type_id}\t{data}"
 
 
 # WeDo 2.0 Infrared Sensor
@@ -103,21 +104,24 @@ def update_infrared_sensor(port, type_id):
     while True:
         dist = sensor.distance()
         ref = sensor.reflection()
-        yield f"{port}\t{type_id}\td={dist}%\ti={ref}%"
+        data = f"d={dist}%\ti={ref}%"
+        yield f"{port}\t{type_id}\t{data}"
 
 
 # SPIKE Prime / MINDSTORMS Robot Inventor Ultrasonic Sensor
 def update_ultrasonic_sensor(port, type_id):
     sensor = UltrasonicSensor(port)
     while True:
-        yield f"{port}\t{type_id}\t{sensor.distance()}mm"
+        data = f"{sensor.distance()}mm"
+        yield f"{port}\t{type_id}\t{data}"
 
 
 # SPIKE Prime Force Sensor
 def update_force_sensor(port, type_id):
     sensor = ForceSensor(port)
     while True:
-        yield f"{port}\t{type_id}\t{sensor.force()}N\t{sensor.distance()}mm"
+        data = f"{sensor.force()}N\t{sensor.distance()}mm"
+        yield f"{port}\t{type_id}\t{data}"
 
 
 # Any motor with rotation sensors.
@@ -129,9 +133,10 @@ def update_motor(port, type_id):
         if angle_mod > 180:
             angle_mod -= 360
         rotations = round((angle - angle_mod) / 360)
-        msg = f"{port}\t{type_id}\ta={motor.angle()}°"
+        data = f"a={motor.angle()}°"
         if angle != angle_mod:
-            msg += f"\tr={rotations}R\tra={angle_mod}°"
+            data += f"\tr={rotations}R\tra={angle_mod}°"
+        msg = f"{port}\t{type_id}\t{data}"
         yield msg
 
 
@@ -186,18 +191,14 @@ def device_task(port):
 
 
 # Monitoring task for the hub core.
-def hub_task():
-    name = hub.system.name()
-    
-    # Name does not change, therefore send it only once.
-    yield f'hub\tn={name}\tv={version}'
-
+def battery_task():
     # Send values repeatedly.
     while True:
         percentage = round(min(100,(hub.battery.voltage()-6000)/(8300-6000)*100))
         voltage = hub.battery.voltage()
         status = hub.charger.status()
-        yield f'battery\tpct={percentage}%\tv={voltage}mV\ts={status}'
+        data = f"pct={percentage}%\tv={voltage}mV\ts={status}"
+        yield f"battery\t{data}"
 
         # skip cc 10 seconds before sending an update 
         yield from (None for _ in range(100))
@@ -206,8 +207,8 @@ def hub_task():
 # Monitoring task for the hub buttons.
 def buttons_task():
     while True:
-        buttons = ",".join(sorted(str(b).replace("Button.","") for b in hub.buttons.pressed()))
-        yield f'buttons\t{buttons}'
+        data = ",".join(sorted(str(b).replace("Button.","") for b in hub.buttons.pressed()))
+        yield f'buttons\t{data}'
 
 
 # # Monitoring task for the hub imu.
@@ -220,7 +221,7 @@ def buttons_task():
 
 # Assemble all monitoring tasks.
 tasks = [device_task(port) for port in ports] + \
-            [hub_task(), buttons_task()]
+            [battery_task(), buttons_task()]
             # imu_task()
 
 
