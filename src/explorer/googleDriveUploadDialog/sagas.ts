@@ -1,12 +1,13 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2024 The Pybricks Authors
 
-import { put, race, take, takeEvery } from 'typed-redux-saga/macro';
+import { call, put, race, take, takeEvery } from 'typed-redux-saga/macro';
 import {
     fileStorageDidFailToReadFile,
     fileStorageDidReadFile,
     fileStorageReadFile,
 } from '../../fileStorage/actions';
+import { pythonFileMimeType } from '../../pybricksMicropython/lib';
 import { defined, ensureError } from '../../utils';
 
 import {
@@ -44,32 +45,37 @@ function* handleGoogleDriveUploadDialogUploadFile(
                 [
                     JSON.stringify({
                         name: action.fileName,
-                        mimeType: 'text/plain',
+                        mimeType: pythonFileMimeType,
                         parents: [action.targetFolderId],
                     }),
                 ],
                 { type: 'application/json' },
             ),
         );
-        form.append('file', new Blob([didRead.contents], { type: 'text/plain' }));
+        form.append('file', new Blob([didRead.contents], { type: pythonFileMimeType }));
 
-        const xhr = new XMLHttpRequest();
-        xhr.open(
-            'post',
-            'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',
-        );
-        xhr.setRequestHeader('Authorization', 'Bearer ' + action.authToken);
-        xhr.responseType = 'json';
-        xhr.onload = () => {
-            console.log('Google drive file id:', xhr.response.id);
-        };
-        xhr.onerror = (event) => {
-            console.log('Failed to upload file to Google Drive:', event);
-        };
-        xhr.send(form);
+        const uploadFile = new Promise<string>((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open(
+                'post',
+                'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',
+            );
+            xhr.setRequestHeader('Authorization', 'Bearer ' + action.authToken);
+            xhr.responseType = 'json';
+            xhr.onload = () => {
+                console.log('Google drive file id:', xhr.response.id);
+                resolve(xhr.response.id);
+            };
+            xhr.onerror = (event) => {
+                console.log('Failed to upload file to Google Drive:', event);
+                reject(event);
+            };
+            xhr.send(form);
+        });
 
-        // TBD
-        yield* put(googleDriveUploadDialogDidUploadFile(xhr.response.id));
+        const fileId = yield* call(() => uploadFile);
+
+        yield* put(googleDriveUploadDialogDidUploadFile(fileId));
     } catch (err) {
         console.log('Failed to upload file to Google Drive:', err);
         yield* put(googleDriveUploadDialogFailedToUploadFile(ensureError(err)));

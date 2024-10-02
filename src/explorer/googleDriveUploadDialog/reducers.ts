@@ -4,6 +4,8 @@
 import { Reducer, combineReducers } from 'redux';
 import {
     googleDriveUploadDialogDidCancel,
+    googleDriveUploadDialogDidUploadFile,
+    googleDriveUploadDialogFailedToUploadFile,
     googleDriveUploadDialogShow,
 } from './actions';
 
@@ -30,4 +32,22 @@ const fileName: Reducer<string> = (state = initialDialogFileName, action) => {
     return state;
 };
 
-export default combineReducers({ isOpen, fileName });
+const driveDocId: Reducer<string> = (state = '', action) => {
+    if (googleDriveUploadDialogDidUploadFile.matches(action)) {
+        return action.googleDriveDocId;
+    }
+    return state;
+};
+
+const isUploadFailed: Reducer<boolean> = (state = false, action) => {
+    if (googleDriveUploadDialogFailedToUploadFile.matches(action)) {
+        return false;
+    }
+    return state;
+};
+export default combineReducers({
+    isOpen,
+    fileName,
+    driveDocId,
+    isUploadFailed,
+});
