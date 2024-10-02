@@ -2,17 +2,23 @@
 // Copyright (c) 2024 The Pybricks Authors
 
 import * as React from 'react';
-import { PortData } from '../PortComponent';
+import { DeviceRegistryEntry, PortData } from '../PortComponent';
 
 export interface DeviceIconProps {
-    name: string;
-    data: PortData | undefined;
+    devEntry: DeviceRegistryEntry | undefined;
+    portData: PortData | undefined;
 }
-const DeviceIcon: React.FunctionComponent<DeviceIconProps> = ({ name }) => {
+const DeviceIcon: React.FunctionComponent<DeviceIconProps> = ({ devEntry }) => {
     return (
         <div className="pb-device-icon">
-            <div>{name}</div>
-            <br />
+            {devEntry?.icon ? (
+                <img src={devEntry?.icon} alt={devEntry?.name} className="icon" />
+            ) : (
+                <>
+                    <div>{devEntry?.name}</div>
+                    <br />
+                </>
+            )}
         </div>
     );
 };

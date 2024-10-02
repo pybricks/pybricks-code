@@ -4,7 +4,7 @@
 @use '@blueprintjs/core/lib/scss/variables' as bp;
 
 .#{bp.$ns}-dialog.pb-hubcenter-dialog {
-    width: 60em;
+    width: 70em;
     .pb-hubcenter {
         display: grid;
         grid-template-columns: 1fr min-content auto min-content 1fr;
@@ -12,7 +12,10 @@
 
         justify-content: space-between;
         place-items: center;
-        padding-top: 1em;
+    }
+    .title {
+        justify-content: space-between;
+        display: flex;
     }
     .port-label {
         color: rgba(127, 127, 127, 1);
@@ -24,6 +27,15 @@
         grid-column: 3 / 3;
         grid-row: 1 / span 3;
         max-height: 30em;
+        position: relative;
+        .hubIcon {
+            height: 100%;
+        }
+        .hubOverlay {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
     }
     .pb-device {
         display: flex; /* Enable flexbox layout */
@@ -38,34 +50,42 @@
             grid-area: value;
             text-align: center;
             padding-bottom: 0.5em;
-        }
-        img,
-        svg {
-            grid-area: image;
-            max-height: 8em;
-            height: 8em;
-        }
-        .port-name {
-            min-height: 2em;
-            white-space: break-spaces;
-            margin-bottom: 0.5em;
+            height: 2em;
         }
         .pb-device-icon {
             position: relative;
+            img.icon {
+                grid-area: image;
+                width: 16em;
+                position: relative;
+                z-index: 1;
+            }
             .color-eye {
                 position: absolute;
-                left: -22px;
-                transform: scale(0.54);
+                // height: 100%;
+                height: 96%;
+                left: 30%;
+                transform: translateX(-50%);
             }
-            .motor-shaft {
+            .motor-shaft-start {
                 position: absolute;
-                left: -1.5em;
-                transform: rotate(593deg);
+                // height: 100%;
+                left: 0;
+                height: 96%;
+                transform: translateX(0%) rotate(var(--rotate, 0deg));
+                z-index: 2;
             }
-        }
-
-        .pb-device-motor-right {
-            transform: rotate(180deg);
+            .motor-shaft-centered {
+                position: absolute;
+                height: 96%;
+                // height: 100%;
+                left: 50%;
+                transform: translateX(-50%) rotate(var(--rotate, 0deg));
+                z-index: 2;
+            }
+            .pb-device-icon-rotated {
+                transform: rotate(180deg);
+            }
         }
     }
 

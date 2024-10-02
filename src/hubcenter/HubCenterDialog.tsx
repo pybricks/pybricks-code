@@ -12,13 +12,11 @@ import PortComponent, { PortData } from './PortComponent';
 import { hubcenterHideDialog } from './actions';
 import './hub-center-dialog.scss';
 import { useI18n } from './i18n';
-import HubIconComponent from './icons/HubCenterIcon';
+import HubIconComponent, { getHubPortCount } from './icons/HubCenterIcon';
 
 const HubcenterDialog: React.FunctionComponent = () => {
     const { showDialog } = useSelector((s) => s.hubcenter);
     const hubcenterStream = useContext(HubCenterContext);
-    const [hubName, setHubName] = useState('');
-    const [hubDetails, setHubDetails] = useState('');
     const [hubBattery, setHubBattery] = useState('');
     const [hubBatteryCharger, setHubBatteryCharger] = useState(false);
     const [hubButtons, setHubButtons] = useState([] as string[]);
@@ -26,8 +24,6 @@ const HubcenterDialog: React.FunctionComponent = () => {
     const [portData, setPortData] = useState(new Map<string, PortData>());
     const dispatch = useDispatch();
     const i18n = useI18n();
-    const deviceType = useSelector((s) => s.ble.deviceType);
-    const deviceFirmwareVersion = useSelector((s) => s.ble.deviceFirmwareVersion);
     const subscriptionRef = useRef<ZenObservable.Subscription | null>(null);
 
     // NOTE: port data reference contains the current value, subscription should be initied only on mount,
@@ -44,75 +40,62 @@ const HubcenterDialog: React.FunctionComponent = () => {
         }, new Map<string, string>());
     }
 
-    const processMessage = useCallback(
-        (message: string) => {
-            const line = message.split('\t');
-            const key = line?.[0];
-            const dataraw = line?.slice(1);
-            const data = parseArrayToMap(dataraw ?? []);
+    const processMessage = useCallback((message: string) => {
+        const line = message.split('\t');
+        const key = line[0];
+        const dataraw = line.slice(1);
+        const dataMap = parseArrayToMap(dataraw ?? []);
 
-            switch (key) {
-                case 'hub':
-                    {
-                        setHubName(data.get('n') ?? '');
-                        const details = [
-                            deviceType,
-                            deviceFirmwareVersion,
-                            data.get('v') ?? '',
-                        ]
-                            .filter((e) => !!e)
-                            .join(', ');
-                        setHubDetails(details);
-                    }
-                    break;
-                case 'battery':
-                    {
-                        const percentage = data.get('pct') ?? '';
-                        // const voltage = data[1];
-                        const hasCharger = parseInt(data.get('s') ?? '') > 0;
-                        setHubBattery(percentage);
-                        setHubBatteryCharger(hasCharger);
-                    }
-                    break;
-                case 'buttons':
-                    {
-                        const btns = dataraw[0]?.split(',');
-                        setHubButtons(btns);
-                    }
-                    break;
-                default:
-                    {
-                        if (key.startsWith('Port.')) {
-                            const port = line[0]; // Port.A
-                            const puptype = parseInt(line[1]) ?? 0;
+        switch (key) {
+            case 'battery':
+                {
+                    const percentage = dataMap.get('pct') ?? '';
+                    // const voltage = data[1];
+                    const hasCharger = parseInt(dataMap.get('s') ?? '') > 0;
+                    setHubBattery(percentage);
+                    setHubBatteryCharger(hasCharger);
+                }
+                break;
+            case 'buttons':
+                {
+                    const btns = dataraw[0]?.split(',');
+                    setHubButtons(btns);
+                }
+                break;
+            default:
+                {
+                    if (key.startsWith('Port.')) {
+                        const port = line[0]; // Port.A
+                        const puptype = parseInt(line[1]) ?? 0;
+                        const dataStr = line?.slice(2)?.join(', ');
 
-                            const data =
-                                portDataRef.current.get(port) ??
-                                ({
-                                    type: puptype,
-                                    values: [] as string[],
-                                } as PortData);
+                        const portdata =
+                            portDataRef.current.get(port) ??
+                            ({
+                                type: puptype,
+                                dataMap: new Map<string, string>(),
+                            } as PortData);
 
-                            data.type = puptype;
-                            if (!line[2]) {
-                                // NOOP
-                                data.values = [];
-                            } else if (line[2] === 'modes') {
-                                // NOOP
-                                //break;
-                            } else {
-                                data.values = line.slice(2);
-                            }
-
-                            portDataRef.current.set(port, data);
-                            setPortData(new Map(portDataRef.current));
+                        portdata.type = puptype;
+                        if (!dataStr || puptype === 0) {
+                            // NOOP
+                            portdata.dataMap = new Map<string, string>();
+                            portdata.dataStr = '';
+                        } else if (line[2] === 'modes') {
+                            // NOOP
+                            //break;
+                        } else {
+                            portdata.dataMap = dataMap;
+                            portdata.dataStr = dataStr;
                         }
+
+                        portDataRef.current.set(port, portdata);
+                        setPortData(new Map(portDataRef.current));
                     }
-                    break;
-            }
-        },
-        [deviceType, deviceFirmwareVersion],
-    );
+                }
+                break;
+        }
+    }, []);
 
     const partialMessageRef = useRef('');
     useEffect(() => {
@@ -138,6 +121,12 @@ const HubcenterDialog: React.FunctionComponent = () => {
         return () => subscriptionRef?.current?.unsubscribe();
     }, [hubcenterStream.dataSource.observable, processMessage]);
 
+    const deviceName = useSelector((s) => s.ble.deviceName);
+    const deviceType = useSelector((s) => s.ble.deviceType);
+    const deviceFirmwareVersion = useSelector((s) => s.ble.deviceFirmwareVersion);
+    const devicePortsCount = getHubPortCount(deviceType);
+    console.log('devicePortsCount', devicePortsCount);
+
     return (
         <Dialog
             className="pb-hubcenter-dialog"
@@ -146,27 +135,41 @@ const HubcenterDialog: React.FunctionComponent = () => {
             onClose={() => dispatch(hubcenterHideDialog())}
         >
             <div className={classNames(Classes.DIALOG_BODY, Classes.RUNNING_TEXT)}>
-                <h4 style={{ justifyContent: 'space-between', display: 'flex' }}>
-                    {hubName}
+                <h4 className="title">
+                    <span>{deviceName}</span>
                     <span>
-                        {hubBattery}
+                        {deviceType}, {deviceFirmwareVersion}, {hubBattery}
                         {hubBatteryCharger ? (
-                            <Icon icon={<Lightning size={16} />}></Icon>
+                            <Icon icon={<Lightning size={24} />}></Icon>
                         ) : (
                             <></>
                         )}
                     </span>
                 </h4>
-                <div>{hubDetails}</div>
 
                 <div className="pb-hubcenter">
-                    <HubIconComponent buttons={hubButtons}></HubIconComponent>
+                    <HubIconComponent
+                        deviceType={deviceType}
+                        buttons={hubButtons}
+                    ></HubIconComponent>
                     <PortComponent port="A" data={portData} side="left" />
                     <PortComponent port="B" data={portData} side="right" />
-                    <PortComponent port="C" data={portData} side="left" />
-                    <PortComponent port="D" data={portData} side="right" />
-                    <PortComponent port="E" data={portData} side="left" />
-                    <PortComponent port="F" data={portData} side="right" />
+                    {devicePortsCount > 2 ? (
+                        <>
+                            <PortComponent port="C" data={portData} side="left" />
+                            <PortComponent port="D" data={portData} side="right" />
+                        </>
+                    ) : (
+                        ''
+                    )}
+                    {devicePortsCount > 4 ? (
+                        <>
+                            <PortComponent port="E" data={portData} side="left" />
+                            <PortComponent port="F" data={portData} side="right" />
+                        </>
+                    ) : (
+                        ''
+                    )}
                 </div>
             </div>
         </Dialog>
