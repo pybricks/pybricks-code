@@ -19,7 +19,7 @@ const HubcenterDialog: React.FunctionComponent = () => {
     const hubcenterStream = useContext(HubCenterContext);
     const [hubBattery, setHubBattery] = useState('');
     const [hubBatteryCharger, setHubBatteryCharger] = useState(false);
-    const [hubButtons, setHubButtons] = useState([] as string[]);
+    const [hubImuData, setHubImuData] = useState('');
     const portDataRef = useRef(new Map<string, PortData>());
     const [portData, setPortData] = useState(new Map<string, PortData>());
     const dispatch = useDispatch();
@@ -56,10 +56,10 @@ const HubcenterDialog: React.FunctionComponent = () => {
                     setHubBatteryCharger(hasCharger);
                 }
                 break;
-            case 'buttons':
+            case 'imu':
                 {
-                    const btns = dataraw[0]?.split(',');
-                    setHubButtons(btns);
+                    const dataStr = dataraw?.join(', ');
+                    setHubImuData(dataStr);
                 }
                 break;
             default:
@@ -125,7 +125,6 @@ const HubcenterDialog: React.FunctionComponent = () => {
     const deviceType = useSelector((s) => s.ble.deviceType);
     const deviceFirmwareVersion = useSelector((s) => s.ble.deviceFirmwareVersion);
     const devicePortsCount = getHubPortCount(deviceType);
-    console.log('devicePortsCount', devicePortsCount);
 
     return (
         <Dialog
@@ -150,7 +149,7 @@ const HubcenterDialog: React.FunctionComponent = () => {
                 <div className="pb-hubcenter">
                     <HubIconComponent
                         deviceType={deviceType}
-                        buttons={hubButtons}
+                        hubImuData={hubImuData}
                     ></HubIconComponent>
                     <PortComponent port="A" data={portData} side="left" />
                     <PortComponent port="B" data={portData} side="right" />

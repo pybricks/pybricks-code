@@ -26,15 +26,15 @@
         height: 100%;
         grid-column: 3 / 3;
         grid-row: 1 / span 3;
-        max-height: 30em;
+        max-width: 20em;
         position: relative;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
         .hubIcon {
-            height: 100%;
-        }
-        .hubOverlay {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
+            width: 100%;
         }
     }
     .pb-device {
@@ -83,9 +83,9 @@
                 transform: translateX(-50%) rotate(var(--rotate, 0deg));
                 z-index: 2;
             }
-            .pb-device-icon-rotated {
-                transform: rotate(180deg);
-            }
+        }
+        .pb-device-icon-rotated {
+            transform: rotate(180deg);
         }
     }
 

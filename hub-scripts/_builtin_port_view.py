@@ -204,25 +204,27 @@ def battery_task():
         yield from (None for _ in range(100))
 
 
-# Monitoring task for the hub buttons.
-def buttons_task():
-    while True:
-        data = ",".join(sorted(str(b).replace("Button.","") for b in hub.buttons.pressed()))
-        yield f'buttons\t{data}'
-
-
-# # Monitoring task for the hub imu.
-# def imu_task():
+# # Monitoring task for the hub buttons.
+# def buttons_task():
 #     while True:
-#         heading = hub.imu.heading()
-#         stationary = 1 if hub.imu.stationary() else 0
-#         yield f'imu\th={heading}\tsta={stationary}'
+#         data = ",".join(sorted(str(b).replace("Button.","") for b in hub.buttons.pressed()))
+#         yield f'buttons\t{data}'
+
+
+# Monitoring task for the hub imu.
+def imu_task():
+    while True:
+        heading = round(hub.imu.heading())
+        # [pitch, roll] = hub.imu.tilt()
+        pitch = round(hub.imu.tilt()[0])
+        roll = round(hub.imu.tilt()[1])
+        stationary = 1 if hub.imu.stationary() else 0
+        yield f'imu\ty={heading}\tp={heading}\tr={roll}\ts={stationary}'
 
 
 # Assemble all monitoring tasks.
 tasks = [device_task(port) for port in ports] + \
-            [battery_task(), buttons_task()]
-            # imu_task()
+            [battery_task(), imu_task()]
 
 
 # Main monitoring loop.
