@@ -318,6 +318,20 @@ export enum HubCapabilityFlag {
      * @since Pybricks Profile v1.3.0
      */
     UserProgramMultiMpy6Native6p1 = 1 << 2,
+
+    /**
+     * Hub supports builtin sensor port view monitoring program.
+     *
+     * @since Pybricks Profile v1.4.0.
+     */
+    HasPortView = 1 << 3,
+
+    /**
+     * Hub supports builtin IMU calibration program.
+     *
+     * @since Pybricks Profile v1.4.0.
+     */
+    HasIMUCalibration = 1 << 4,
 }
 
 /** Supported user program file formats. */
