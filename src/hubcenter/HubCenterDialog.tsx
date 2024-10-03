@@ -21,6 +21,7 @@ const HubcenterDialog: React.FunctionComponent = () => {
     const [hubBatteryCharger, setHubBatteryCharger] = useState(false);
     const [hubImuData, setHubImuData] = useState('');
     const portDataRef = useRef(new Map<string, PortData>());
+    const portModesRef = useRef(new Map<string, string[]>());
     const [portData, setPortData] = useState(new Map<string, PortData>());
     const dispatch = useDispatch();
     const i18n = useI18n();
@@ -78,18 +79,16 @@ const HubcenterDialog: React.FunctionComponent = () => {
 
                         portdata.type = puptype;
                         if (!dataStr || puptype === 0) {
-                            // NOOP
-                            portdata.dataMap = new Map<string, string>();
-                            portdata.dataStr = '';
+                            portDataRef.current.delete(port);
+                            portModesRef.current.delete(port);
                         } else if (line[2] === 'modes') {
-                            // NOOP
-                            //break;
+                            portModesRef.current.set(port, line.slice(3));
                         } else {
                             portdata.dataMap = dataMap;
                             portdata.dataStr = dataStr;
+                            portDataRef.current.set(port, portdata);
                         }
 
-                        portDataRef.current.set(port, portdata);
                         setPortData(new Map(portDataRef.current));
                     }
                 }
@@ -124,7 +123,23 @@ const HubcenterDialog: React.FunctionComponent = () => {
     const deviceName = useSelector((s) => s.ble.deviceName);
     const deviceType = useSelector((s) => s.ble.deviceType);
     const deviceFirmwareVersion = useSelector((s) => s.ble.deviceFirmwareVersion);
-    const devicePortsCount = getHubPortCount(deviceType);
+
+    const portComponents = [...Array(getHubPortCount(deviceType)).keys()].map(
+        (idx: number) => {
+            const portLabel = String.fromCharCode(65 + idx); // A, B, C, D, E, F
+            const side = idx % 2 === 0 ? 'left' : 'right';
+            return (
+                <PortComponent
+                    key={portLabel}
+                    portCode={portLabel}
+                    portIndex={idx}
+                    data={portData}
+                    modes={portModesRef.current}
+                    side={side}
+                />
+            );
+        },
+    );
 
     return (
         <Dialog
@@ -151,24 +166,8 @@ const HubcenterDialog: React.FunctionComponent = () => {
                         deviceType={deviceType}
                         hubImuData={hubImuData}
                     ></HubIconComponent>
-                    <PortComponent port="A" data={portData} side="left" />
-                    <PortComponent port="B" data={portData} side="right" />
-                    {devicePortsCount > 2 ? (
-                        <>
-                            <PortComponent port="C" data={portData} side="left" />
-                            <PortComponent port="D" data={portData} side="right" />
-                        </>
-                    ) : (
-                        ''
-                    )}
-                    {devicePortsCount > 4 ? (
-                        <>
-                            <PortComponent port="E" data={portData} side="left" />
-                            <PortComponent port="F" data={portData} side="right" />
-                        </>
-                    ) : (
-                        ''
-                    )}
+
+                    {portComponents}
                 </div>
             </div>
         </Dialog>

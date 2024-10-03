@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2024 The Pybricks Authors
 
-import React from 'react';
+import React, { useRef } from 'react';
+import { useDispatch } from 'react-redux';
+import { sendWriteAppDataCommand } from '../ble-pybricks-service/actions';
 import ColorSensorIconComponent from './icons/ColorSensorIcon';
 import DeviceIcon from './icons/DeviceIcon';
 import MotorIcon from './icons/MotorIcon';
@@ -30,9 +32,11 @@ import wedoTiltSensor from './icons/wedo_2_0_tilt_sensor_34.png';
 // import technicExtraLargeMotor from './icons/technic_extra_large_motor_47.png';
 
 interface PortComponentProps {
-    port: string;
+    portCode: string;
+    portIndex: number;
     side: 'left' | 'right';
-    data: Map<string, PortData> | undefined;
+    data: Map<string, PortData>;
+    modes: Map<string, string[]>;
 }
 
 export interface PortData {
@@ -50,91 +54,93 @@ export interface DeviceRegistryEntry {
     canRotate?: boolean;
 }
 
+const DeviceRegistry = new Map<number, DeviceRegistryEntry>([
+    [1, { name: 'Wedo 2.0 Medium Motor' }], //, wedoMediumMotor],
+    [2, { name: 'Powered Up Train Motor' }], //, poweredUpTrainMotor],
+    [8, { name: 'Powered Up Light' }], //, poweredUpLight],
+    [34, { name: 'Wedo 2.0 Tilt Sensor', icon: wedoTiltSensor }],
+    [35, { name: 'Wedo 2.0 Infrared Motion Sensor', icon: wedoInfraredMotionSensor }],
+    [37, { name: 'BOOST Color Distance Sensor', icon: boostColorDistanceSensor }],
+    [
+        38,
+        {
+            name: 'BOOST Interactive Motor',
+            icon: boostInteractiveMotor,
+            iconShaft: boostInteractiveMotorShaft,
+            classShaft: 'motor-shaft-centered',
+            canRotate: false,
+        },
+    ],
+    [46, { name: 'Technic Large Motor' }], //, technicLargeMotor],
+    [47, { name: 'Technic Extra Large Motor' }], //, technicExtraLargeMotor],
+    [
+        48,
+        {
+            name: 'SPIKE Medium Angular Motor',
+            icon: spikeMediumAngularMotor,
+            iconShaft: spikeMediumAngularMotorShaft,
+            classShaft: 'motor-shaft-start',
+            canRotate: true,
+        },
+    ],
+    [
+        49,
+        {
+            name: 'SPIKE Large Angular Motor',
+            icon: spikeLargeAngularMotor,
+            iconShaft: spikeLargeAngularMotorShaft,
+            classShaft: 'motor-shaft-start',
+            canRotate: true,
+        },
+    ],
+    [61, { name: 'SPIKE Color Sensor', icon: spikeColorSensor }],
+    [62, { name: 'SPIKE Ultrasonic Sensor', icon: spikeUltrasonicSensor }],
+    [63, { name: 'SPIKE Force Sensor', icon: spikeForceSensor }],
+    [64, { name: 'SPIKE 3x3 Color Light Matrix' }], //, spikeColorLightMatrix],
+    [
+        65,
+        {
+            name: 'SPIKE Small Angular Motor',
+            icon: spikeSmallAngularMotor,
+            classShaft: 'motor-shaft-start',
+            canRotate: true,
+        },
+    ],
+    [
+        75,
+        {
+            name: 'Technic Medium Angular Motor',
+            icon: technicMediumAngularMotor,
+            iconShaft: technicMediumAngularMotorShaft,
+            classShaft: 'motor-shaft-start',
+            canRotate: true,
+        },
+    ],
+    [
+        76,
+        {
+            name: 'Technic Large Angular Motor',
+            icon: technicLargeAngularMotor,
+            iconShaft: technicLargeAngularMotorShaft,
+            classShaft: 'motor-shaft-start',
+            canRotate: true,
+        },
+    ],
+]);
+
 const PortComponent: React.FunctionComponent<PortComponentProps> = ({
-    port,
+    portCode,
+    portIndex,
     side,
     data,
+    modes,
 }) => {
-    const DeviceRegistry = new Map<number, DeviceRegistryEntry>([
-        [1, { name: 'Wedo 2.0 Medium Motor' }], //, wedoMediumMotor],
-        [2, { name: 'Powered Up Train Motor' }], //, poweredUpTrainMotor],
-        [8, { name: 'Powered Up Light' }], //, poweredUpLight],
-        [34, { name: 'Wedo 2.0 Tilt Sensor', icon: wedoTiltSensor }],
-        [
-            35,
-            { name: 'Wedo 2.0 Infrared Motion Sensor', icon: wedoInfraredMotionSensor },
-        ],
-        [37, { name: 'BOOST Color Distance Sensor', icon: boostColorDistanceSensor }],
-        [
-            38,
-            {
-                name: 'BOOST Interactive Motor',
-                icon: boostInteractiveMotor,
-                iconShaft: boostInteractiveMotorShaft,
-                classShaft: 'motor-shaft-centered',
-                canRotate: false,
-            },
-        ],
-        [46, { name: 'Technic Large Motor' }], //, technicLargeMotor],
-        [47, { name: 'Technic Extra Large Motor' }], //, technicExtraLargeMotor],
-        [
-            48,
-            {
-                name: 'SPIKE Medium Angular Motor',
-                icon: spikeMediumAngularMotor,
-                iconShaft: spikeMediumAngularMotorShaft,
-                classShaft: 'motor-shaft-start',
-                canRotate: true,
-            },
-        ],
-        [
-            49,
-            {
-                name: 'SPIKE Large Angular Motor',
-                icon: spikeLargeAngularMotor,
-                iconShaft: spikeLargeAngularMotorShaft,
-                classShaft: 'motor-shaft-start',
-                canRotate: true,
-            },
-        ],
-        [61, { name: 'SPIKE Color Sensor', icon: spikeColorSensor }],
-        [62, { name: 'SPIKE Ultrasonic Sensor', icon: spikeUltrasonicSensor }],
-        [63, { name: 'SPIKE Force Sensor', icon: spikeForceSensor }],
-        [64, { name: 'SPIKE 3x3 Color Light Matrix' }], //, spikeColorLightMatrix],
-        [
-            65,
-            {
-                name: 'SPIKE Small Angular Motor',
-                icon: spikeSmallAngularMotor,
-                classShaft: 'motor-shaft-start',
-                canRotate: true,
-            },
-        ],
-        [
-            75,
-            {
-                name: 'Technic Medium Angular Motor',
-                icon: technicMediumAngularMotor,
-                iconShaft: technicMediumAngularMotorShaft,
-                classShaft: 'motor-shaft-start',
-                canRotate: true,
-            },
-        ],
-        [
-            76,
-            {
-                name: 'Technic Large Angular Motor',
-                icon: technicLargeAngularMotor,
-                iconShaft: technicLargeAngularMotorShaft,
-                classShaft: 'motor-shaft-start',
-                canRotate: true,
-            },
-        ],
-    ]);
+    const portModeRef = useRef(0);
+    const dispatch = useDispatch();
 
-    const portId = 'Port.' + port;
+    const portId = 'Port.' + portCode;
     const portData = data?.get(portId);
-
+    const portModes = modes?.get(portId);
     // get name based on puptype
     const devEntry = DeviceRegistry.get(portData?.type ?? 0);
 
@@ -156,7 +162,19 @@ const PortComponent: React.FunctionComponent<PortComponentProps> = ({
         );
     }
 
-    const portLabelComponent = <div className="port-label">{port}</div>;
+    function handleModeChange() {
+        const modeCount = (portModes || [])?.length;
+        const currentMode = portModeRef.current || 0;
+        const newMode = (currentMode + 1) % modeCount;
+        portModeRef.current = newMode;
+
+        const msg = new Uint8Array(1);
+        const offset = portIndex;
+        msg[0] = newMode;
+        dispatch(sendWriteAppDataCommand(0, offset, msg));
+    }
+
+    const portLabelComponent = <div className="port-label">{portCode}</div>;
     const portDataStr = portData?.dataStr || '';
     return (
         <>
@@ -167,6 +185,13 @@ const PortComponent: React.FunctionComponent<PortComponentProps> = ({
                     {iconComponent}
                 </div>
                 <div className="port-value">{portDataStr}</div>
+                {portModes && portModes?.length > 1 ? (
+                    <div onClick={handleModeChange}>
+                        {portModes?.[portModeRef.current]}
+                    </div>
+                ) : (
+                    <></>
+                )}
             </div>
 
             {side === 'left' ? portLabelComponent : <></>}
