@@ -48,7 +48,7 @@ def make_mode_message(port, type_id, modes):
 
 
 # BOOST Color and Distance Sensor
-def update_color_and_distance_sensor(port, type_id, mode):
+def update_color_and_distance_sensor(port, type_id):
     sensor = ColorDistanceSensor(port)
     mode_info = make_mode_message(
         port,
@@ -56,13 +56,14 @@ def update_color_and_distance_sensor(port, type_id, mode):
         ["Reflected light intensity and color", "Ambient light intensity", "Distance"],
     )
     while True:
+        mode = app_data.get_values()[ports.index(port)]
         if mode == 0:
             hsv = sensor.hsv()
             intensity = sensor.reflection()
             color = str(sensor.color()).replace("Color.","")
             data = f"c={color}\th={hsv.h}°\ts={hsv.s}%\tv={hsv.v}%\ti={intensity}%"
         elif mode == 1:
-            data = f"a={sensor.ambient()}%"
+            data = f"i={sensor.ambient()}%"
         else:
             data = f"d={sensor.distance()}%"
         yield mode_info + f"{port}\t{type_id}\t{data}"
@@ -70,7 +71,7 @@ def update_color_and_distance_sensor(port, type_id, mode):
 
 
 # SPIKE Prime / MINDSTORMS Robot Inventor Color Sensor
-def update_color_sensor(port, type_id, mode):
+def update_color_sensor(port, type_id):
     sensor = ColorSensor(port)
     mode_info = make_mode_message(
         port,
@@ -81,6 +82,7 @@ def update_color_sensor(port, type_id, mode):
         ],
     )
     while True:
+        mode = app_data.get_values()[ports.index(port)]
         hsv = sensor.hsv(False if mode else True)
         color = str(sensor.color(False if mode else True)).replace("Color.","")
         intensity = sensor.ambient() if mode else sensor.reflection()
@@ -112,7 +114,7 @@ def update_infrared_sensor(port, type_id):
 def update_ultrasonic_sensor(port, type_id):
     sensor = UltrasonicSensor(port)
     while True:
-        data = f"{sensor.distance()}mm"
+        data = f"d={sensor.distance()}mm"
         yield f"{port}\t{type_id}\t{data}"
 
 
@@ -120,7 +122,7 @@ def update_ultrasonic_sensor(port, type_id):
 def update_force_sensor(port, type_id):
     sensor = ForceSensor(port)
     while True:
-        data = f"{sensor.force()}N\t{sensor.distance()}mm"
+        data = f"f={sensor.force():.2f}N\td={sensor.distance():.2f}mm"
         yield f"{port}\t{type_id}\t{data}"
 
 
@@ -164,7 +166,7 @@ def device_task(port):
             type_id = dev.info()["id"]
 
             # Incoming app data can be used to set the device mode.
-            mode = app_data.get_values()[ports.index(port)]
+            # mode = app_data.get_values()[ports.index(port)]
 
             # Run device specific monitoring task until it is disconnected.
             if type_id == 34:
@@ -172,9 +174,9 @@ def device_task(port):
             if type_id == 35:
                 yield from update_infrared_sensor(port, type_id)
             if type_id == 37:
-                yield from update_color_and_distance_sensor(port, type_id, mode)
+                yield from update_color_and_distance_sensor(port, type_id)
             elif type_id == 61:
-                yield from update_color_sensor(port, type_id, mode)
+                yield from update_color_sensor(port, type_id)
             elif type_id == 62:
                 yield from update_ultrasonic_sensor(port, type_id)
             elif type_id == 63:
@@ -219,7 +221,7 @@ def imu_task():
         pitch = round(hub.imu.tilt()[0])
         roll = round(hub.imu.tilt()[1])
         stationary = 1 if hub.imu.stationary() else 0
-        yield f'imu\ty={heading}\tp={heading}\tr={roll}\ts={stationary}'
+        yield f'imu\ty={heading}°\tp={pitch}°\tr={roll}°\ts={stationary}'
 
 
 # Assemble all monitoring tasks.
