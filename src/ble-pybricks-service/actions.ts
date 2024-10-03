@@ -128,6 +128,23 @@ export const sendWriteStdinCommand = createAction(
 );
 
 /**
+ * Action that requests to write to appdata.
+ * @param id Unique identifier for this transaction.
+ * @param offset offset: The offset from the buffer base address
+ * @param payload The bytes to write.
+ *
+ * @since Pybricks Profile v1.4.0.
+ */
+export const sendWriteAppDataCommand = createAction(
+    (id: number, offset: number, payload: ArrayBuffer) => ({
+        type: 'blePybricksServiceCommand.action.sendWriteAppDataCommand',
+        id,
+        offset,
+        payload,
+    }),
+);
+
+/**
  *  Action that indicates that a command was successfully sent.
  * @param id Unique identifier for the transaction from the corresponding "send" command.
  */

@@ -66,6 +66,17 @@ export enum CommandType {
      * @since Pybricks Profile v1.3.0
      */
     WriteStdin = 6,
+    /**
+     * Requests to write to a buffer that is pre-allocated by a user program.
+     *
+     * Parameters:
+     * - offset: The offset from the buffer base address (16-bit little-endian
+     *   unsigned integer).
+     * - payload: The data to write.
+     *
+     * @since Pybricks Profile v1.4.0
+     */
+    WriteAppData = 7,
 }
 
 /**
@@ -148,6 +159,25 @@ export function createWriteStdinCommand(payload: ArrayBuffer): Uint8Array {
     const view = new DataView(msg.buffer);
     view.setUint8(0, CommandType.WriteStdin);
     msg.set(new Uint8Array(payload), 1);
+    return msg;
+}
+
+/**
+ * Creates a {@link CommandType.WriteAppData} message.
+ * @param offset The offset from the buffer base address
+ * @param payload The bytes to write.
+ *
+ * @since Pybricks Profile v1.4.0.
+ */
+export function createWriteAppDataCommand(
+    offset: number,
+    payload: ArrayBuffer,
+): Uint8Array {
+    const msg = new Uint8Array(1 + 2 + payload.byteLength);
+    const view = new DataView(msg.buffer);
+    view.setUint8(0, CommandType.WriteAppData);
+    view.setUint8(1, offset & 0xffff);
+    msg.set(new Uint8Array(payload), 3);
     return msg;
 }
 

@@ -26,6 +26,7 @@ import {
     sendStartReplCommand,
     sendStartUserProgramCommand,
     sendStopUserProgramCommand,
+    sendWriteAppDataCommand,
     sendWriteStdinCommand,
     sendWriteUserProgramMetaCommand,
     sendWriteUserRamCommand,
@@ -37,6 +38,7 @@ import {
     createStartReplCommand,
     createStartUserProgramCommand,
     createStopUserProgramCommand,
+    createWriteAppDataCommand,
     createWriteStdinCommand,
     createWriteUserProgramMetaCommand,
     createWriteUserRamCommand,
@@ -85,6 +87,13 @@ function* encodeRequest(): Generator {
         } else if (sendWriteStdinCommand.matches(action)) {
             yield* put(
                 writeCommand(action.id, createWriteStdinCommand(action.payload)),
+            );
+        } else if (sendWriteAppDataCommand.matches(action)) {
+            yield* put(
+                writeCommand(
+                    action.id,
+                    createWriteAppDataCommand(action.offset, action.payload),
+                ),
             );
         } else {
             console.error(`Unknown Pybricks service command ${action.type}`);
