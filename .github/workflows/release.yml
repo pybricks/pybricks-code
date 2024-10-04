@@ -1,38 +1,57 @@
 name: Build and publish release
 
 on:
-  push:
-    tags:
-      - 'v2.*'
+    push:
+        tags:
+            - 'v2.*'
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+    build:
+        runs-on: ubuntu-latest
 
-    steps:
-    - name: Set env to beta
-      if: contains(github.ref, '-beta.') || contains(github.ref, '-rc.')
-      run: |
-        echo "REACT_APP_NAME=Pybricks Beta" >> $GITHUB_ENV
-        echo "REACT_APP_SUFFIX=-beta" >> $GITHUB_ENV
-    - uses: actions/setup-node@v3
-      with:
-        node-version: '18.x'
-    - uses: actions/checkout@v3
-    - run: yarn install
-    - run: yarn coverage
-    - uses: codecov/codecov-action@v3
-      with:
-        directory: coverage
-    - name: Build
-      run: yarn build
-    - name: Install lftp
-      run: sudo apt-get update && sudo apt-get install --yes lftp
-    - name: Publish
-      shell: bash
-      env:
-        LFTP_USER: ${{ secrets.lftpUser }}
-        LFTP_PASSWORD: ${{ secrets.lftpPassword }}
-        LFTP_SITE: ${{ secrets.lftpSite }}
-      run: |
-        lftp -e "open --user $LFTP_USER --env-password $LFTP_SITE && mirror --verbose --reverse --delete --exclude=.htaccess --exclude=.well-known build beta; exit"
+        steps:
+            - name: Set env to beta
+              if: contains(github.ref, '-beta.') || contains(github.ref, '-rc.')
+              run: |
+                  echo "REACT_APP_NAME=Pybricks Beta" >> $GITHUB_ENV
+                  echo "REACT_APP_SUFFIX=-beta" >> $GITHUB_ENV
+            - uses: actions/setup-node@v3
+              with:
+                  node-version: '18.x'
+            - uses: actions/checkout@v3
+            - run: yarn install
+            # - run: yarn coverage
+            - uses: codecov/codecov-action@v3
+              with:
+                  directory: coverage
+            - name: Build
+              run: yarn build
+            # - name: Install lftp
+            #   run: sudo apt-get update && sudo apt-get install --yes lftp
+            # - name: Publish
+            #   shell: bash
+            #   env:
+            #     LFTP_USER: ${{ secrets.lftpUser }}
+            #     LFTP_PASSWORD: ${{ secrets.lftpPassword }}
+            #     LFTP_SITE: ${{ secrets.lftpSite }}
+            #   run: |
+            #     lftp -e "open --user $LFTP_USER --env-password $LFTP_SITE && mirror --verbose --reverse --delete --exclude=.htaccess --exclude=.well-known build beta; exit"
+            - name: Upload artifact
+              uses: actions/upload-artifact@v4
+              with:
+                  path: 'build/'
+
+    deploy:
+        needs: build
+        runs-on: ubuntu-latest
+        permissions:
+            pages: write
+            id-token: write
+        environment:
+            name: github-pages
+            url: 'https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/'
+        steps:
+            - name: Setup Pages
+              uses: actions/configure-pages@v5
+            - name: Deploy
+              uses: actions/deploy-pages@v4
