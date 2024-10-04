@@ -4,7 +4,14 @@
 import { Classes, Dialog, Icon } from '@blueprintjs/core';
 import { Lightning } from '@blueprintjs/icons';
 import classNames from 'classnames';
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import React, {
+    useCallback,
+    useContext,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+} from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from '../reducers';
 import { HubCenterContext } from './HubCenterContext';
@@ -15,7 +22,15 @@ import { useI18n } from './i18n';
 import HubIconComponent, { getHubPortCount } from './icons/HubCenterIcon';
 
 const HubcenterDialog: React.FunctionComponent = () => {
-    const { showDialog } = useSelector((s) => s.hubcenter);
+    const { showDialog, deviceName, deviceType, deviceFirmwareVersion } = useSelector(
+        (s) => ({
+            showDialog: s.hubcenter.showDialog,
+            deviceName: s.ble.deviceName,
+            deviceType: s.ble.deviceType,
+            deviceFirmwareVersion: s.ble.deviceFirmwareVersion,
+        }),
+    );
+
     const hubcenterStream = useContext(HubCenterContext);
     const [hubBattery, setHubBattery] = useState('');
     const [hubBatteryCharger, setHubBatteryCharger] = useState(false);
@@ -26,12 +41,13 @@ const HubcenterDialog: React.FunctionComponent = () => {
     const dispatch = useDispatch();
     const i18n = useI18n();
     const subscriptionRef = useRef<ZenObservable.Subscription | null>(null);
+    const partialMessageRef = useRef('');
 
     // NOTE: port data reference contains the current value, subscription should be initied only on mount,
     //         and not be updated when it changes, while portData/setPortData will be updated on every message
     //         and triggers the component UI update.
 
-    function parseArrayToMap(input: string[]): Map<string, string> {
+    const parseArrayToMap = (input: string[]): Map<string, string> => {
         return input.reduce((map, pair) => {
             const [key, value] = pair.split('=');
             if (key && value) {
@@ -39,64 +55,51 @@ const HubcenterDialog: React.FunctionComponent = () => {
             }
             return map;
         }, new Map<string, string>());
-    }
+    };
 
     const processMessage = useCallback((message: string) => {
-        const line = message.split('\t');
-        const key = line[0];
-        const dataraw = line.slice(1);
-        const dataMap = parseArrayToMap(dataraw ?? []);
+        const [key, ...dataraw] = message.split('\t');
+        const dataMap = parseArrayToMap(dataraw);
 
         switch (key) {
             case 'battery':
-                {
-                    const percentage = dataMap.get('pct') ?? '';
-                    // const voltage = data[1];
-                    const hasCharger = parseInt(dataMap.get('s') ?? '') > 0;
-                    setHubBattery(percentage);
-                    setHubBatteryCharger(hasCharger);
-                }
+                setHubBattery(dataMap.get('pct') ?? '');
+                setHubBatteryCharger(parseInt(dataMap.get('s') ?? '') > 0);
                 break;
             case 'imu':
-                {
-                    const dataStr = dataraw?.join(', ');
-                    setHubImuData(dataStr);
-                }
+                setHubImuData(dataraw.join(', '));
                 break;
             default:
-                {
-                    if (key.startsWith('Port.')) {
-                        const port = line[0]; // Port.A
-                        const puptype = parseInt(line[1]) ?? 0;
-                        const dataStr = line?.slice(2)?.join(', ');
+                if (key.startsWith('Port.')) {
+                    const port = key;
+                    const puptype = parseInt(dataraw[0]) ?? 0;
+                    const dataStr = dataraw.slice(1).join(', ');
 
-                        const portdata =
-                            portDataRef.current.get(port) ??
-                            ({
-                                type: puptype,
-                                dataMap: new Map<string, string>(),
-                            } as PortData);
+                    const portdata =
+                        portDataRef.current.get(port) ??
+                        ({
+                            type: puptype,
+                            dataMap: new Map<string, string>(),
+                        } as PortData);
+                    portdata.type = puptype;
 
-                        portdata.type = puptype;
-                        if (!dataStr || puptype === 0) {
-                            portDataRef.current.delete(port);
-                            portModesRef.current.delete(port);
-                        } else if (line[2] === 'modes') {
-                            portModesRef.current.set(port, line.slice(3));
-                        } else {
-                            portdata.dataMap = dataMap;
-                            portdata.dataStr = dataStr;
-                            portDataRef.current.set(port, portdata);
-                        }
-
-                        setPortData(new Map(portDataRef.current));
+                    if (!dataStr || puptype === 0) {
+                        portDataRef.current.delete(port);
+                        portModesRef.current.delete(port);
+                    } else if (dataraw[1] === 'modes') {
+                        portModesRef.current.set(port, dataraw.slice(2));
+                    } else {
+                        portdata.dataMap = dataMap;
+                        portdata.dataStr = dataStr;
+                        portDataRef.current.set(port, portdata);
                     }
+
+                    setPortData(new Map(portDataRef.current));
                 }
                 break;
         }
     }, []);
 
-    const partialMessageRef = useRef('');
     useEffect(() => {
         subscriptionRef.current = hubcenterStream.dataSource.observable.subscribe({
             next: (d) => {
@@ -117,15 +120,11 @@ const HubcenterDialog: React.FunctionComponent = () => {
         });
 
         // Cleanup subscription on unmount
-        return () => subscriptionRef?.current?.unsubscribe();
+        return () => subscriptionRef.current?.unsubscribe();
     }, [hubcenterStream.dataSource.observable, processMessage]);
 
-    const deviceName = useSelector((s) => s.ble.deviceName);
-    const deviceType = useSelector((s) => s.ble.deviceType);
-    const deviceFirmwareVersion = useSelector((s) => s.ble.deviceFirmwareVersion);
-
-    const portComponents = [...Array(getHubPortCount(deviceType)).keys()].map(
-        (idx: number) => {
+    const portComponents = useMemo(() => {
+        return [...Array(getHubPortCount(deviceType)).keys()].map((idx: number) => {
             const portLabel = String.fromCharCode(65 + idx); // A, B, C, D, E, F
             const side = idx % 2 === 0 ? 'left' : 'right';
             return (
@@ -138,8 +137,8 @@ const HubcenterDialog: React.FunctionComponent = () => {
                     side={side}
                 />
             );
-        },
-    );
+        });
+    }, [deviceType, portData]);
 
     return (
         <Dialog
@@ -153,20 +152,16 @@ const HubcenterDialog: React.FunctionComponent = () => {
                     <span>{deviceName}</span>
                     <span>
                         {deviceType}, {deviceFirmwareVersion}, {hubBattery}
-                        {hubBatteryCharger ? (
-                            <Icon icon={<Lightning size={24} />}></Icon>
-                        ) : (
-                            <></>
-                        )}
+                        {hubBatteryCharger && <Icon icon={<Lightning size={24} />} />}
                     </span>
                 </h4>
 
-                <div className="pb-hubcenter">
-                    <HubIconComponent
-                        deviceType={deviceType}
-                        hubImuData={hubImuData}
-                    ></HubIconComponent>
-
+                <div
+                    className={
+                        'pb-hubcenter ' + `hub_${getHubPortCount(deviceType)}_port`
+                    }
+                >
+                    <HubIconComponent deviceType={deviceType} hubImuData={hubImuData} />
                     {portComponents}
                 </div>
             </div>

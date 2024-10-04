@@ -14,6 +14,9 @@
         "hubType": "Hub type:",
         "firmware": "Firmware:"
     },
+    "hubCenter": {
+        "title": "Hub Center (F7)"
+    },
     "battery": {
         "title": "Battery",
         "low": "Battery is low. Hub will turn off soon.",

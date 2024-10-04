@@ -8,10 +8,18 @@
     .pb-hubcenter {
         display: grid;
         grid-template-columns: 1fr min-content auto min-content 1fr;
-        grid-template-rows: 1fr 1fr 1fr;
 
         justify-content: space-between;
         place-items: center;
+    }
+    .hub_2_port {
+        grid-template-rows: 1fr;
+    }
+    .hub_4_port {
+        grid-template-rows: 1fr 1fr;
+    }
+    .hub_6_port {
+        grid-template-rows: 1fr 1fr 1fr;
     }
     .title {
         justify-content: space-between;

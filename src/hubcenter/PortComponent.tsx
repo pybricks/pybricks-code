@@ -139,62 +139,61 @@ const PortComponent: React.FunctionComponent<PortComponentProps> = ({
     const dispatch = useDispatch();
 
     const portId = 'Port.' + portCode;
-    const portData = data?.get(portId);
-    const portModes = modes?.get(portId);
-    // get name based on puptype
+    const portData = data.get(portId);
+    const portModes = modes.get(portId);
     const devEntry = DeviceRegistry.get(portData?.type ?? 0);
 
-    // get Icon component based on puptype
-    let iconComponent = (
-        <DeviceIcon portData={portData} devEntry={devEntry}></DeviceIcon>
-    );
+    // const iconComponent = useMemo(() => {
+    //     if (devEntry?.iconShaft) {
+    //         return <MotorIcon portData={portData} devEntry={devEntry} side={side} />;
+    //     } else if (portData?.type === 61 || portData?.type === 37) {
+    //         return <ColorSensorIconComponent portData={portData} devEntry={devEntry} />;
+    //     } else {
+    //         return <DeviceIcon portData={portData} devEntry={devEntry} />;
+    //     }
+    // }, [portData, devEntry, side]);
 
-    if (devEntry?.iconShaft !== undefined) {
-        iconComponent = (
-            <MotorIcon portData={portData} devEntry={devEntry} side={side}></MotorIcon>
-        );
-    } else if (portData?.type === 61 || portData?.type === 37) {
-        iconComponent = (
-            <ColorSensorIconComponent
-                portData={portData}
-                devEntry={devEntry}
-            ></ColorSensorIconComponent>
-        );
-    }
+    const iconComponent = (() => {
+        if (devEntry?.iconShaft) {
+            return <MotorIcon portData={portData} devEntry={devEntry} side={side} />;
+        } else if (portData?.type === 61 || portData?.type === 37) {
+            return <ColorSensorIconComponent portData={portData} devEntry={devEntry} />;
+        } else {
+            return <DeviceIcon portData={portData} devEntry={devEntry} />;
+        }
+    })();
 
-    function handleModeChange() {
-        const modeCount = (portModes || [])?.length;
-        const currentMode = portModeRef.current || 0;
-        const newMode = (currentMode + 1) % modeCount;
+    // TODO: usememo can be used if portData is an effect and not a reference
+
+    const handleModeChange = () => {
+        const modeCount = portModes?.length || 0;
+        const newMode = (portModeRef.current + 1) % modeCount;
         portModeRef.current = newMode;
 
-        const msg = new Uint8Array(1);
-        const offset = portIndex;
-        msg[0] = newMode;
-        dispatch(sendWriteAppDataCommand(0, offset, msg));
-    }
+        const msg = new Uint8Array([newMode]);
+        dispatch(sendWriteAppDataCommand(0, portIndex, msg));
+    };
 
     const portLabelComponent = <div className="port-label">{portCode}</div>;
     const portDataStr = portData?.dataStr || '';
+
     return (
         <>
-            {side === 'right' ? portLabelComponent : <></>}
+            {side === 'right' && portLabelComponent}
 
             <div className="pb-device">
                 <div className="port-icon" title={devEntry?.name}>
                     {iconComponent}
                 </div>
                 <div className="port-value">{portDataStr}</div>
-                {portModes && portModes?.length > 1 ? (
+                {portModes && portModes.length > 1 && (
                     <div onClick={handleModeChange}>
-                        {portModes?.[portModeRef.current]}
+                        {portModes[portModeRef.current]}
                     </div>
-                ) : (
-                    <></>
                 )}
             </div>
 
-            {side === 'left' ? portLabelComponent : <></>}
+            {side === 'left' && portLabelComponent}
         </>
     );
 };
