@@ -11,10 +11,11 @@ import {
     PopoverProps,
     ProgressBar,
     Spinner,
+    useHotkeys,
 } from '@blueprintjs/core';
 import { Disable, Error, TickCircle } from '@blueprintjs/icons';
 import classNames from 'classnames';
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 import { BleConnectionState } from '../ble/reducers';
 import { CompletionEngineStatus } from '../editor/redux/codeCompletion';
@@ -81,11 +82,38 @@ const HubInfoButton: React.FunctionComponent = () => {
     const deviceFirmwareVersion = useSelector((s) => s.ble.deviceFirmwareVersion);
     const { runtime, hasPortView } = useSelector((s) => s.hub);
 
+    const keyboardShortcut = 'F7';
+    const label = 'HubCentral';
+    const onAction = useCallback(() => {
+        if (hasPortView && runtime === HubRuntimeState.Idle) {
+            dispatch(hubcenterShowDialog());
+        }
+    }, [dispatch, hasPortView, runtime]);
+
+    const hotkeys = useMemo(() => {
+        if (!keyboardShortcut) {
+            return [];
+        }
+
+        return [
+            {
+                global: true,
+                allowInInput: true,
+                preventDefault: true,
+                combo: keyboardShortcut.replaceAll('-', '+'),
+                label,
+                onKeyDown: () => onAction(),
+            },
+        ];
+    }, [keyboardShortcut, label, onAction]);
+
+    useHotkeys(hotkeys);
+
     if (hasPortView && runtime === HubRuntimeState.Idle) {
         return (
             <Button
-                title={i18n.translate('hubInfo.title')}
-                onClick={() => dispatch(hubcenterShowDialog())}
+                title={i18n.translate('hubCenter.title')}
+                onClick={onAction}
                 minimal={true}
             >
                 {deviceName}
