@@ -1,13 +1,24 @@
 name: Build and publish release - private fork
 
 on:
-    workflow_dispatch: # Allows you to run this workflow manually
     push:
         branches:
             - 'experiment-private-fork'
 
+    # Allows you to run this workflow manually
+    workflow_dispatch:
+
+permissions:
+    contents: read
+    pages: write
+    id-token: write
+
 jobs:
     build:
+        environment:
+            name: github-pages
+            url: ${{ steps.deployment.outputs.page_url }}
+
         runs-on: ubuntu-latest
 
         steps:
@@ -43,16 +54,17 @@ jobs:
                   path: 'build/'
                   name: 'github-pages'
 
-    deploy:
-        needs: build
-        runs-on: ubuntu-latest
-        permissions:
-            pages: write
-            id-token: write
-        environment:
-            name: github-pages
-            # url: 'https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/'
-        steps:
+            # deploy:
+            #     needs: build
+            #     runs-on: ubuntu-latest
+            #     permissions:
+            #         pages: write
+            #         id-token: write
+            #     environment:
+            #         name: github-pages
+            #         url: ${{ steps.deployment.outputs.page_url }}
+            #         # url: 'https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/'
+            #     steps:
             - name: Setup Pages
               uses: actions/configure-pages@v5
             - name: Deploy
