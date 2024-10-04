@@ -1,6 +1,7 @@
 name: Build and publish release - private fork
 
 on:
+    workflow_dispatch: # Allows you to run this workflow manually
     push:
         branches:
             - 'experiment-private-fork'
