@@ -21,6 +21,8 @@ try:
 except AttributeError:
     pass
 
+from pybricks.hubs import ThisHub
+hub = ThisHub
 try:
     from pybricks.hubs import PrimeHub
     from pybricks.parameters import Icon, Button
@@ -194,7 +196,7 @@ def device_task(port):
 
 # Monitoring task for the hub core.
 def battery_task():
-    # Send values repeatedly.
+    if not hub.battery: return
     while True:
         percentage = round(min(100,(hub.battery.voltage()-6000)/(8300-6000)*100))
         voltage = hub.battery.voltage()
@@ -210,18 +212,20 @@ def battery_task():
 # def buttons_task():
 #     while True:
 #         data = ",".join(sorted(str(b).replace("Button.","") for b in hub.buttons.pressed()))
-#         yield f'buttons\t{data}'
+#         yield f"buttons\t{data}"
 
 
 # Monitoring task for the hub imu.
 def imu_task():
+    if not hub.imu: return
     while True:
         heading = round(hub.imu.heading())
         # [pitch, roll] = hub.imu.tilt()
         pitch = round(hub.imu.tilt()[0])
         roll = round(hub.imu.tilt()[1])
         stationary = 1 if hub.imu.stationary() else 0
-        yield f'imu\ty={heading}°\tp={pitch}°\tr={roll}°\ts={stationary}'
+        up = str(hub.imu.up()).replace("Side.","")
+        yield f"imu\tup={up}\ty={heading}°\tp={pitch}°\tr={roll}°\ts={stationary}"
 
 
 # Assemble all monitoring tasks.
@@ -235,8 +239,11 @@ while True:
     # Get the messages for each sensor.
     msg = ""
     for task in tasks:
-        line = next(task)
-        if line: msg += line + "\r\n"
+        try:
+            line = next(task)
+            if line: msg += line + "\r\n"
+        except:
+            pass
 
     # REVISIT: It would be better to send whole messages (or multiples), but we
     # are currently limited to 19 bytes per message, so write in chunks.
