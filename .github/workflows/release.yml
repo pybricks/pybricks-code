@@ -2,8 +2,8 @@ name: Build and publish release
 
 on:
     push:
-        tags:
-            - 'v2.*'
+        branches:
+            - 'experiment-private-fork'
 
 jobs:
     build:
