@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2022 The Pybricks Authors
+// Copyright (c) 2020-2024 The Pybricks Authors
 
 import {
     FirmwareReader,
@@ -529,11 +529,11 @@ function* handleFlashFirmware(action: ReturnType<typeof flashFirmware>): Generat
                 break;
             }
 
-            // Request checksum every 10 packets to prevent buffer overrun on
+            // Request checksum every 8 packets to prevent buffer overrun on
             // the hub because of sending too much data at once. The actual
             // number of packets that can be queued in the Bluetooth chip on
             // the hub is not known and could vary by device.
-            if (count % 10 === 0) {
+            if (count % 8 === 0) {
                 const checksumAction = yield* put(checksumRequest(nextMessageId()));
 
                 const { response } = yield* all({
