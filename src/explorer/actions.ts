@@ -26,13 +26,12 @@ export const explorerDidFailToArchiveAllFiles = createAction((error: Error) => (
     error,
 }));
 
+/**
+ * Action that requests to upload files to Google Drive.
+ */
 export const explorerUploadFileToGoogleDrive = createAction((fileName: string) => ({
     type: 'explorer.action.uploadFileToGoogleDrive',
     fileName,
-}));
-
-export const explorerImportFileFromGoogleDrive = createAction(() => ({
-    type: 'explorer.action.importFileFromGoogleDrive',
 }));
 
 /**

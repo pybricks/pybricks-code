@@ -11,6 +11,7 @@ import errorLog from './error-log/sagas';
 import explorer from './explorer/sagas';
 import fileStorage, { FileStorageSageContext } from './fileStorage/sagas';
 import flashFirmware from './firmware/sagas';
+import googleDrive from './googleDrive/sagas';
 import hub from './hub/sagas';
 import lwp3BootloaderProtocol from './lwp3-bootloader/sagas';
 import lwp3BootloaderBle from './lwp3-bootloader/sagas-ble';
@@ -50,6 +51,7 @@ export default function* (): Generator {
         errorLog(),
         explorer(),
         flashFirmware(),
+        googleDrive(),
         hub(),
         mpy(),
         notifications(),

@@ -47,6 +47,7 @@ import { Toolbar } from '../components/toolbar/Toolbar';
 import { useToolbarItemFocus } from '../components/toolbar/aria';
 import { UUID } from '../fileStorage';
 import { useFileStorageMetadata } from '../fileStorage/hooks';
+import DownloadPicker from '../googleDrive/GoogleDrive';
 import { isMacOS } from '../utils/os';
 import {
     RenderProps,
@@ -60,7 +61,6 @@ import {
     explorerDeleteFile,
     explorerDuplicateFile,
     explorerExportFile,
-    explorerImportFileFromGoogleDrive,
     explorerImportFiles,
     explorerRenameFile,
     explorerUploadFileToGoogleDrive,
@@ -195,12 +195,13 @@ const FileActionButtonGroup: React.FunctionComponent<ActionButtonGroupProps> = (
 // matches ID in tour component
 const archiveButtonId = 'pb-explorer-archive-button';
 const newButtonId = 'pb-explorer-add-button';
-const downloadFromGoogleDriveButtonId = 'pb-download-from-google-drive-button';
+const importFromGoogleDriveButtonId = 'pb-download-from-google-drive-button';
 
 const Header: React.FunctionComponent = () => {
     const exportButtonId = useId();
     const dispatch = useDispatch();
     const i18n = useI18n();
+    const openDownloadPicker = DownloadPicker();
 
     return (
         <Toolbar
@@ -210,10 +211,10 @@ const Header: React.FunctionComponent = () => {
         >
             <ButtonGroup minimal={true}>
                 <ActionButton
-                    id={downloadFromGoogleDriveButtonId}
+                    id={importFromGoogleDriveButtonId}
                     icon={<CloudDownload />}
-                    tooltip="Import file from Google Cloud"
-                    onClick={() => dispatch(explorerImportFileFromGoogleDrive())}
+                    tooltip={i18n.translate('header.toolbar.importFromGoogleDrive')}
+                    onClick={() => openDownloadPicker()}
                 />
                 <ActionButton
                     id={archiveButtonId}

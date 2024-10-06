@@ -3,13 +3,21 @@
 
 import { Reducer, combineReducers } from 'redux';
 import {
+    googleDriveDidSelectFolder,
+    googleDriveDidUploadFile,
+    googleDriveFailedToUploadFile,
+} from '../../googleDrive/actions';
+import { DriveDocument } from '../../googleDrive/protocol';
+import {
     googleDriveUploadDialogDidCancel,
-    googleDriveUploadDialogDidUploadFile,
-    googleDriveUploadDialogFailedToUploadFile,
     googleDriveUploadDialogShow,
 } from './actions';
 
 const initialDialogFileName = '';
+
+interface PickedFolder {
+    folder?: DriveDocument;
+}
 
 /** Controls the Google Drive upload file dialog isOpen state. */
 const isOpen: Reducer<boolean> = (state = false, action) => {
@@ -32,12 +40,19 @@ const fileName: Reducer<string> = (state = initialDialogFileName, action) => {
     return state;
 };
 
-const driveDocId: Reducer<string> = (state = '', action) => {
+const descFolder: Reducer<PickedFolder> = (state = {}, action) => {
+    if (googleDriveDidSelectFolder.matches(action)) {
+        return { folder: action.folder };
+    }
+    return state;
+};
+
+const uploadedDocId: Reducer<string> = (state = '', action) => {
     if (googleDriveUploadDialogShow.matches(action)) {
         return '';
     }
-    if (googleDriveUploadDialogDidUploadFile.matches(action)) {
-        return action.googleDriveDocId;
+    if (googleDriveDidUploadFile.matches(action)) {
+        return action.uploadedFileId;
     }
     return state;
 };
@@ -46,7 +61,7 @@ const isUploadFailed: Reducer<boolean> = (state = false, action) => {
     if (googleDriveUploadDialogShow.matches(action)) {
         return false;
     }
-    if (googleDriveUploadDialogFailedToUploadFile.matches(action)) {
+    if (googleDriveFailedToUploadFile.matches(action)) {
         return false;
     }
     return state;
@@ -54,6 +69,7 @@ const isUploadFailed: Reducer<boolean> = (state = false, action) => {
 export default combineReducers({
     isOpen,
     fileName,
-    driveDocId,
+    descFolder,
+    uploadedDocId,
     isUploadFailed,
 });
