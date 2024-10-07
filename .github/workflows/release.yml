@@ -4,6 +4,7 @@ on:
     push:
         branches:
             - 'experiment-private-fork'
+            # - 'master'
 
     # Allows you to run this workflow manually
     workflow_dispatch:
@@ -12,6 +13,7 @@ permissions:
     contents: read
     pages: write
     id-token: write
+    actions: read
 
 jobs:
     build:
@@ -27,17 +29,26 @@ jobs:
               run: |
                   echo "REACT_APP_NAME=Pybricks Beta" >> $GITHUB_ENV
                   echo "REACT_APP_SUFFIX=-beta" >> $GITHUB_ENV
-            - uses: actions/setup-node@v3
+            - name: Install Node.js
+              uses: actions/setup-node@v4
               with:
                   node-version: '18.x'
-            - uses: actions/checkout@v3
+            - name: Checkout repository
+              uses: actions/checkout@v4
             - run: yarn install
-            # - run: yarn coverage
-            - uses: codecov/codecov-action@v3
-              with:
-                  directory: coverage
+            #- run: yarn coverage
+            #- uses: codecov/codecov-action@v3
+            #  with:
+            #      directory: coverage
+            - name: Configure Pages
+              uses: actions/configure-pages@v5
             - name: Build
               run: yarn build
+            #- name: mock build
+            #  shell: bash
+            #  run: |
+            #    mkdir build && cp README.md build/
+              
             # - name: Install lftp
             #   run: sudo apt-get update && sudo apt-get install --yes lftp
             # - name: Publish
@@ -48,11 +59,16 @@ jobs:
             #     LFTP_SITE: ${{ secrets.lftpSite }}
             #   run: |
             #     lftp -e "open --user $LFTP_USER --env-password $LFTP_SITE && mirror --verbose --reverse --delete --exclude=.htaccess --exclude=.well-known build beta; exit"
-            - name: Upload artifact
-              uses: actions/upload-artifact@v4
+            #- name: Upload artifact
+            #  uses: actions/upload-artifact@v4
+            #  with:
+            #      path: 'build/'
+            #      name: 'github-pages'
+            - name: Upload Artifacts
+              uses: actions/upload-pages-artifact@v2
               with:
-                  path: 'build/'
-                  name: 'github-pages'
+                path: 'build/'
+                #name: github-pages
 
             # deploy:
             #     needs: build
@@ -65,8 +81,22 @@ jobs:
             #         url: ${{ steps.deployment.outputs.page_url }}
             #         # url: 'https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/'
             #     steps:
-            - name: Setup Pages
-              uses: actions/configure-pages@v5
+
+    deploy:
+        environment:
+          name: github-pages
+          url: ${{ steps.deployment.outputs.page_url }}
+
+        runs-on: ubuntu-latest
+
+        needs: build
+
+        steps:
+            - name: Download artifact
+              uses: actions/download-artifact@v4
+              #with:
+              #    name: 'github-pages'
+
             - name: Deploy
-              uses: actions/deploy-pages@v4
+              uses: actions/deploy-pages@v3
               id: deployment
