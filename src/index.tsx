@@ -51,6 +51,9 @@ const store = configureStore({
 if (appVersion.match(/beta/)) {
     document.body.classList.add('pb-beta');
 }
+if (appVersion.match(/private/)) {
+    document.body.classList.add('pb-private');
+}
 
 // prevent default drag/drop which just "downloads" any file dropped anywhere
 // in the browser window

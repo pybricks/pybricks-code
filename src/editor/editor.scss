@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2023 The Pybricks Authors
+// Copyright (c) 2020-2024 The Pybricks Authors
 
 // Custom styling for the Editor control.
 
@@ -11,6 +11,17 @@
 .pb-beta .editor-scrollable::after {
     content: '';
     background: url('./beta.svg');
+    opacity: 1;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    position: absolute;
+    pointer-events: none;
+}
+.pb-private .editor-scrollable::after {
+    content: '';
+    background: url('./private.svg');
     opacity: 1;
     top: 0;
     left: 0;
