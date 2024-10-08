@@ -7,6 +7,7 @@ import {
     didFailToWriteCommand,
     didNotifyEvent,
     didReceiveStatusReport,
+    didReceiveWriteAppData,
     didReceiveWriteStdout,
     didSendCommand,
     didWriteCommand,
@@ -14,6 +15,7 @@ import {
     sendStartReplCommand,
     sendStartUserProgramCommand,
     sendStopUserProgramCommand,
+    sendWriteAppDataCommand,
     sendWriteStdinCommand,
     sendWriteUserProgramMetaCommand,
     sendWriteUserRamCommand,
@@ -36,6 +38,14 @@ describe('command encoder', () => {
             sendStartUserProgramCommand(0),
             [
                 0x01, // start user program command
+            ],
+        ],
+        [
+            'start user program with slot',
+            sendStartUserProgramCommand(0, 0x2A),
+            [
+                0x01, // start user program command
+                0x2A, // program slot
             ],
         ],
         [
@@ -76,6 +86,19 @@ describe('command encoder', () => {
             sendWriteStdinCommand(0, new Uint8Array([1, 2, 3, 4]).buffer),
             [
                 0x06, // write stdin command
+                0x01, // payload start
+                0x02,
+                0x03,
+                0x04, // payload end
+            ],
+        ],
+        [
+            'write appdata',
+            sendWriteAppDataCommand(0, 0x2A, new Uint8Array([1, 2, 3, 4]).buffer),
+            [
+                0x07, // write appdata command
+                0x00, // offset msb 16bit
+                0x2A, // offset lsb 16bit
                 0x01, // payload start
                 0x02,
                 0x03,
@@ -178,14 +201,61 @@ describe('event decoder', () => {
                 ]).buffer,
             ),
         ],
-    ])('decode %s event', async (_n, message, expected) => {
+        [
+            'write appdata',
+            [
+                0x02, // write appdata event
+                't'.charCodeAt(0), //payload
+                'e'.charCodeAt(0),
+                't'.charCodeAt(0),
+                't'.charCodeAt(0),
+            ],
+            didReceiveWriteAppData(
+                new Uint8Array([
+                    't'.charCodeAt(0),
+                    'e'.charCodeAt(0),
+                    't'.charCodeAt(0),
+                    't'.charCodeAt(0),
+                ]).buffer,
+            ),
+        ],
+        [
+            'write appdata mismatch',
+            [
+                0x02, // write appdata event
+                't'.charCodeAt(0), //payload
+                'e'.charCodeAt(0),
+                't'.charCodeAt(0),
+                't'.charCodeAt(0),
+            ],
+            didReceiveWriteAppData(
+                new Uint8Array([
+                    't'.charCodeAt(0),
+                    'e'.charCodeAt(0),
+                    'x'.charCodeAt(0),
+                    't'.charCodeAt(0),
+                ]).buffer,
+            ),
+            true,
+            false
+        ],
+    ])('decode %s event', async (_n, message, expected, isEqual = true, isStrictlyEqual = true) => {
         const saga = new AsyncSaga(blePybricksService);
         const notification = new Uint8Array(message);
 
         saga.put(didNotifyEvent(new DataView(notification.buffer)));
 
         const action = await saga.take();
-        expect(action).toEqual(expected);
+        if (isEqual) {
+            expect(action).toEqual(expected);
+        } else {
+            expect(action).not.toEqual(expected);
+        }
+        if (isStrictlyEqual) {
+            expect(action).toStrictEqual(expected);
+        } else {
+            expect(action).not.toStrictEqual(expected);
+        }
 
         await saga.end();
     });
