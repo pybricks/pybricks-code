@@ -18,6 +18,7 @@ import {
     didFailToWriteCommand,
     didNotifyEvent,
     didReceiveStatusReport,
+    didReceiveWriteAppData,
     didReceiveWriteStdout,
     didSendCommand,
     didWriteCommand,
@@ -25,6 +26,7 @@ import {
     sendStartReplCommand,
     sendStartUserProgramCommand,
     sendStopUserProgramCommand,
+    sendWriteAppDataCommand,
     sendWriteStdinCommand,
     sendWriteUserProgramMetaCommand,
     sendWriteUserRamCommand,
@@ -36,11 +38,13 @@ import {
     createStartReplCommand,
     createStartUserProgramCommand,
     createStopUserProgramCommand,
+    createWriteAppDataCommand,
     createWriteStdinCommand,
     createWriteUserProgramMetaCommand,
     createWriteUserRamCommand,
     getEventType,
     parseStatusReport,
+    parseWriteAppData,
     parseWriteStdout,
 } from './protocol';
 
@@ -57,14 +61,17 @@ function* encodeRequest(): Generator {
             a.type.startsWith('blePybricksServiceCommand.action.send'),
     );
 
-    for (;;) {
+
+    for (; ;) {
         const action = yield* take(chan);
 
         /* istanbul ignore else: should not be possible to reach */
         if (sendStopUserProgramCommand.matches(action)) {
             yield* put(writeCommand(action.id, createStopUserProgramCommand()));
         } else if (sendStartUserProgramCommand.matches(action)) {
-            yield* put(writeCommand(action.id, createStartUserProgramCommand()));
+            yield* put(
+                writeCommand(action.id, createStartUserProgramCommand(action.slot)),
+            );
         } else if (sendStartReplCommand.matches(action)) {
             yield* put(writeCommand(action.id, createStartReplCommand()));
         } else if (sendWriteUserProgramMetaCommand.matches(action)) {
@@ -81,6 +88,13 @@ function* encodeRequest(): Generator {
         } else if (sendWriteStdinCommand.matches(action)) {
             yield* put(
                 writeCommand(action.id, createWriteStdinCommand(action.payload)),
+            );
+        } else if (sendWriteAppDataCommand.matches(action)) {
+            yield* put(
+                writeCommand(
+                    action.id,
+                    createWriteAppDataCommand(action.offset, action.payload),
+                ),
             );
         } else {
             console.error(`Unknown Pybricks service command ${action.type}`);
@@ -113,6 +127,9 @@ function* decodeResponse(action: ReturnType<typeof didNotifyEvent>): Generator {
                 break;
             case EventType.WriteStdout:
                 yield* put(didReceiveWriteStdout(parseWriteStdout(action.value)));
+                break;
+            case EventType.WriteAppData:
+                yield* put(didReceiveWriteAppData(parseWriteAppData(action.value)));
                 break;
             default:
                 throw new ProtocolError(

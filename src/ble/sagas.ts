@@ -73,7 +73,7 @@ import {
 import { BleConnectionState } from './reducers';
 
 /** The version of the Pybricks Profile version currently implemented by this file. */
-export const supportedPybricksProfileVersion = '1.3.0';
+export const supportedPybricksProfileVersion = '1.4.0';
 
 const decoder = new TextDecoder();
 
