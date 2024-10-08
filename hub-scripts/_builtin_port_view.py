@@ -10,8 +10,10 @@ from pybricks.pupdevices import (
 )
 from pybricks.parameters import Port
 from pybricks.tools import wait, AppData
-from pybricks.iodevices import PUPDevice
-
+try:
+    from pybricks.iodevices import PUPDevice
+except:
+    pass
 
 # Figure out the available ports for the given hub.
 ports = [Port.A, Port.B]
@@ -41,7 +43,8 @@ except ImportError:
 
 # Allocates small buffer so the IDE can send us mode index
 # values for each sensor.
-app_data = AppData("b" * len(ports))
+# Last data is for remote shutdown.
+app_data = AppData("b" * len(ports) + "b")
 
 # This is sent when a device is plugged in if it has multiple modes.
 # This populates a dropdown menu in the IDE to select the mode.
@@ -154,8 +157,11 @@ def update_dc_motor(port, type_id):
 # Any unknown Powered Up device.
 def unknown_pup_device(port, type_id):
     while True:
-        PUPDevice(port)
-        yield f"{port}\t{type_id}\tunknown"
+        try:
+            PUPDevice(port)
+            yield f"{port}\t{type_id}\tunknown"
+        except:
+            yield None
 
 
 # Monitoring task for one port.
@@ -166,9 +172,6 @@ def device_task(port):
             # Use generic class to find device type.
             dev = PUPDevice(port)
             type_id = dev.info()["id"]
-
-            # Incoming app data can be used to set the device mode.
-            # mode = app_data.get_values()[ports.index(port)]
 
             # Run device specific monitoring task until it is disconnected.
             if type_id == 34:
@@ -195,24 +198,35 @@ def device_task(port):
 
 
 # Monitoring task for the hub core.
+def hub_task():
+    while True:
+        # last value is shutdown control
+        if app_data.get_values()[ports.len() + 0]:
+            hub.system.shutdown()
+        
+        yield None
+        
 def battery_task():
     if not hub.battery: return
-    while True:
-        percentage = round(min(100,(hub.battery.voltage()-6000)/(8300-6000)*100))
-        voltage = hub.battery.voltage()
-        status = hub.charger.status()
-        data = f"pct={percentage}%\tv={voltage}mV\ts={status}"
-        yield f"battery\t{data}"
 
-        # skip cc 10 seconds before sending an update 
-        yield from (None for _ in range(100))
+    while True:
+        count += 1
+        if count % 100:
+            yield None
+        else:
+            # skip cc 10 seconds before sending an update 
+            percentage = round(min(100,(hub.battery.voltage()-6000)/(8300-6000)*100))
+            voltage = hub.battery.voltage()
+            status = hub.charger.status()
+            data = f"pct={percentage}%\tv={voltage}mV\ts={status}"
+            yield f"battery\t{data}"
 
 
 # # Monitoring task for the hub buttons.
 # def buttons_task():
 #     while True:
-#         data = ",".join(sorted(str(b).replace("Button.","") for b in hub.buttons.pressed()))
-#         yield f"buttons\t{data}"
+#         buttons = ",".join(sorted(str(b).replace("Button.","") for b in hub.buttons.pressed()))
+#         yield f'buttons\t{buttons}'
 
 
 # Monitoring task for the hub imu.
@@ -230,7 +244,7 @@ def imu_task():
 
 # Assemble all monitoring tasks.
 tasks = [device_task(port) for port in ports] + \
-            [battery_task(), imu_task()]
+            [hub_task(), battery_task(), imu_task()]
 
 
 # Main monitoring loop.
@@ -247,8 +261,11 @@ while True:
 
     # REVISIT: It would be better to send whole messages (or multiples), but we
     # are currently limited to 19 bytes per message, so write in chunks.
-    for i in range(0, len(msg), 19):
-        app_data.write_bytes(msg[i : i + 19])
+    if PUPDevice:
+        for i in range(0, len(msg), 19):
+            app_data.write_bytes(msg[i : i + 19])
+    else:
+        print(msg)
 
     # Loop time.
     wait(100)
