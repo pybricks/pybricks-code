@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022-2023 The Pybricks Authors
+// Copyright (c) 2022-2024 The Pybricks Authors
 
 import { fileOpen, fileSave } from 'browser-fs-access';
 import JSZip from 'jszip';
@@ -46,6 +46,12 @@ import {
     fileStorageWriteFile,
 } from '../fileStorage/actions';
 import {
+    googleDriveDidDownloadFile,
+    googleDriveDidSelectDownloadFiles,
+    googleDriveDownloadFile,
+    googleDriveFailToDownloadFile,
+} from '../googleDrive/actions';
+import {
     FileNameValidationResult,
     pythonFileExtension,
     pythonFileExtensionRegex,
@@ -76,6 +82,7 @@ import {
     explorerExportFile,
     explorerImportFiles,
     explorerRenameFile,
+    explorerUploadFileToGoogleDrive,
     explorerUserActivateFile,
     explorerUserDidActivateFile,
 } from './actions';
@@ -90,6 +97,7 @@ import {
     duplicateFileDialogShow,
 } from './duplicateFileDialog/actions';
 import { ExplorerError } from './error';
+import { googleDriveUploadDialogShow } from './googleDriveUploadDialog/actions';
 import {
     newFileWizardDidAccept,
     newFileWizardDidCancel,
@@ -169,6 +177,12 @@ function* handleExplorerArchiveAllFiles(): Generator {
         }
         yield* put(explorerDidFailToArchiveAllFiles(error));
     }
+}
+
+function* handleUploadFileToGoogleDrive(
+    action: ReturnType<typeof explorerRenameFile>,
+): Generator {
+    yield* put(googleDriveUploadDialogShow(action.fileName));
 }
 
 type ImportContext = {
@@ -263,6 +277,39 @@ function* importPythonFile(
 
         if (didFailToWrite) {
             throw didFailToWrite.error;
+        }
+    }
+}
+
+function* handleGoogleDriveDidSelectDownloadFiles(
+    action: ReturnType<typeof googleDriveDidSelectDownloadFiles>,
+): Generator {
+    const context: ImportContext = {};
+    for (const file of action.files) {
+        console.log(file);
+        switch (file.mimeType) {
+            case '': // empty string means "could not be determined"
+            case pythonFileMimeType:
+                {
+                    yield* put(googleDriveDownloadFile(file));
+
+                    const { didDownload, didFailToDownload } = yield* race({
+                        didDownload: take(googleDriveDidDownloadFile),
+                        didFailToDownload: take(googleDriveFailToDownloadFile),
+                    });
+
+                    if (didFailToDownload) {
+                        console.log(didFailToDownload);
+                    }
+                    defined(didDownload);
+
+                    yield* importPythonFile(file.name, didDownload.content, context);
+                }
+                break;
+            default:
+                throw new Error(
+                    `'${file.name}' has unsupported file type: ${file.type}`,
+                );
         }
     }
 }
@@ -592,4 +639,9 @@ export default function* (): Generator {
     yield* takeEvery(explorerDuplicateFile, handleExplorerDuplicateFile);
     yield* takeEvery(explorerExportFile, handleExplorerExportFile);
     yield* takeEvery(explorerDeleteFile, handleExplorerDeleteFile);
+    yield* takeEvery(explorerUploadFileToGoogleDrive, handleUploadFileToGoogleDrive);
+    yield* takeEvery(
+        googleDriveDidSelectDownloadFiles,
+        handleGoogleDriveDidSelectDownloadFiles,
+    );
 }

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2024 The Pybricks Authors
 
 import { createAction } from '../actions';
 import { UUID } from '../fileStorage';
@@ -24,6 +24,14 @@ export const explorerDidArchiveAllFiles = createAction(() => ({
 export const explorerDidFailToArchiveAllFiles = createAction((error: Error) => ({
     type: 'explorer.action.didFailToArchiveAllFiles',
     error,
+}));
+
+/**
+ * Action that requests to upload files to Google Drive.
+ */
+export const explorerUploadFileToGoogleDrive = createAction((fileName: string) => ({
+    type: 'explorer.action.uploadFileToGoogleDrive',
+    fileName,
 }));
 
 /**

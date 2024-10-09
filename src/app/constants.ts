@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021-2023 The Pybricks Authors
+// Copyright (c) 2021-2024 The Pybricks Authors
 import docsPackage from '@pybricks/ide-docs/package.json';
 
 // Definitions for compile-time UI settings.
@@ -87,3 +87,10 @@ export const zipFileExtension = '.zip';
 
 /** The ZIP file MIME type ('application/zip') */
 export const zipFileMimeType = 'application/zip';
+
+/** Google Cloud API key */
+export const googleApiKey = 'AIzaSyBMKnuqNI3N0r95XNns1tT7TYJHGkM5juU';
+
+/** Google OAuth 2.0 Client ID */
+export const googleClientId =
+    '1034337501504-of3um354h2dsdm200bhjnfpk6cg0m0n6.apps.googleusercontent.com';

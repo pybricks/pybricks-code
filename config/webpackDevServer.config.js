@@ -40,8 +40,8 @@ module.exports = function (proxy, allowedHost) {
       'Access-Control-Allow-Methods': '*',
       'Access-Control-Allow-Headers': '*',
       // items below required by Pybricks Code app
-      'Cross-Origin-Opener-Policy': 'same-origin',
-      'Cross-Origin-Embedder-Policy': 'require-corp',
+      // 'Cross-Origin-Opener-Policy': 'same-origin',
+      // 'Cross-Origin-Embedder-Policy': 'require-corp',
     },
     // Enable gzip compression of generated files.
     compress: true,

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022-2023 The Pybricks Authors
+// Copyright (c) 2022-2024 The Pybricks Authors
 
 // A file explorer control.
 
@@ -14,6 +14,8 @@ import {
 } from '@blueprintjs/core';
 import {
     Archive,
+    CloudDownload,
+    CloudUpload,
     Document,
     Duplicate,
     Edit,
@@ -45,6 +47,7 @@ import { Toolbar } from '../components/toolbar/Toolbar';
 import { useToolbarItemFocus } from '../components/toolbar/aria';
 import { UUID } from '../fileStorage';
 import { useFileStorageMetadata } from '../fileStorage/hooks';
+import DownloadPicker from '../googleDrive/GoogleDrive';
 import { isMacOS } from '../utils/os';
 import {
     RenderProps,
@@ -60,10 +63,12 @@ import {
     explorerExportFile,
     explorerImportFiles,
     explorerRenameFile,
+    explorerUploadFileToGoogleDrive,
     explorerUserActivateFile,
 } from './actions';
 import DeleteFileAlert from './deleteFileAlert/DeleteFileAlert';
 import DuplicateFileDialog from './duplicateFileDialog/DuplicateFileDialog';
+import GoogleDriveUploadDialog from './googleDriveUploadDialog/GoogleDriveUploadDialog';
 import { useI18n } from './i18n';
 import NewFileWizard from './newFileWizard/NewFileWizard';
 import RenameFileDialog from './renameFileDialog/RenameFileDialog';
@@ -132,6 +137,7 @@ const FileActionButtonGroup: React.FunctionComponent<ActionButtonGroupProps> = (
     const duplicateButtonId = useId();
     const exportButtonId = useId();
     const deleteButtonId = useId();
+    const uploadToGoogleDriveButtonId = useId();
 
     return (
         <ButtonGroup
@@ -168,6 +174,12 @@ const FileActionButtonGroup: React.FunctionComponent<ActionButtonGroupProps> = (
                     onClick={() => dispatch(explorerExportFile(fileName))}
                 />
                 <ActionButton
+                    id={uploadToGoogleDriveButtonId}
+                    icon={<CloudUpload />}
+                    tooltip="Upload file to Google Cloud"
+                    onClick={() => dispatch(explorerUploadFileToGoogleDrive(fileName))}
+                />
+                <ActionButton
                     id={deleteButtonId}
                     icon={<Trash />}
                     tooltip={i18n.translate('treeItem.deleteTooltip', { fileName })}
@@ -183,11 +195,13 @@ const FileActionButtonGroup: React.FunctionComponent<ActionButtonGroupProps> = (
 // matches ID in tour component
 const archiveButtonId = 'pb-explorer-archive-button';
 const newButtonId = 'pb-explorer-add-button';
+const importFromGoogleDriveButtonId = 'pb-download-from-google-drive-button';
 
 const Header: React.FunctionComponent = () => {
     const exportButtonId = useId();
     const dispatch = useDispatch();
     const i18n = useI18n();
+    const openDownloadPicker = DownloadPicker();
 
     return (
         <Toolbar
@@ -196,6 +210,12 @@ const Header: React.FunctionComponent = () => {
             firstFocusableItemId={archiveButtonId}
         >
             <ButtonGroup minimal={true}>
+                <ActionButton
+                    id={importFromGoogleDriveButtonId}
+                    icon={<CloudDownload />}
+                    tooltip={i18n.translate('header.toolbar.importFromGoogleDrive')}
+                    onClick={() => openDownloadPicker()}
+                />
                 <ActionButton
                     id={archiveButtonId}
                     icon={<Archive />}
@@ -469,6 +489,7 @@ const Explorer: React.FunctionComponent = () => {
             <ReplaceImportDialog />
             <DuplicateFileDialog />
             <DeleteFileAlert />
+            <GoogleDriveUploadDialog />
         </div>
     );
 };

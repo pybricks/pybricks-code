@@ -57,5 +57,6 @@
         "enforceHeader": true,
         "include": ["scss", "typescript", "typescriptreact"],
         "replace": ["Copyright"]
-    }
+    },
+    "cSpell.words": ["blueprintjs", "Pybricks"]
 }
