@@ -89,8 +89,8 @@ export const zipFileExtension = '.zip';
 export const zipFileMimeType = 'application/zip';
 
 /** Google Cloud API key */
-export const googleApiKey = 'AIzaSyBMKnuqNI3N0r95XNns1tT7TYJHGkM5juU';
+export const googleApiKey = 'AIzaSyDkJMU1OqsnEULcV6kCwja2OJef6Ge_NxQ'; // process.env.GOOGLE_API_KEY
 
 /** Google OAuth 2.0 Client ID */
 export const googleClientId =
-    '1034337501504-of3um354h2dsdm200bhjnfpk6cg0m0n6.apps.googleusercontent.com';
+    '688983308610-sst0jc72ti5p196srnkst442a9iadkqs.apps.googleusercontent.com'; // process.env.GOOGLE_CLIENT_ID
