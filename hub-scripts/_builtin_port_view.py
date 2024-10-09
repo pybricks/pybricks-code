@@ -8,7 +8,7 @@ from pybricks.pupdevices import (
     TiltSensor,
     InfraredSensor,
 )
-from pybricks.parameters import Port
+from pybricks.parameters import Port, Stop
 from pybricks.tools import wait, AppData
 try:
     from pybricks.iodevices import PUPDevice
@@ -22,6 +22,8 @@ try:
     ports += [Port.E, Port.F]
 except AttributeError:
     pass
+port_modes = [0] * len(ports)
+devices = {}
 
 from pybricks.hubs import ThisHub
 hub = ThisHub
@@ -41,10 +43,23 @@ try:
 except ImportError:
     pass
 
-# Allocates small buffer so the IDE can send us mode index
-# values for each sensor.
-# Last data is for remote shutdown.
-app_data = AppData("b" * len(ports) + "b")
+
+# Allocates small buffer so the IDE can send us commands,
+# mode index values for each sensor.
+# message format            version:1, packet_counter:1, message_type:1, payload:3-max
+# execute_action            "a"             # 'a' + action_name:1
+#   shutdown                "as"
+# port_operations           "p"             # port_index:1, operation:1, values:1
+#   set_port_mode           "p\0x00m\0x00"
+#   rotate motor            "p\0x00r\0x01"
+app_data = AppData("1b1b1b3b")
+def get_app_data_input():
+    version, packet_counter, message_type, *payload = app_data.get_values()
+    if version != 1:
+        return 0, 0, 0
+    else:
+        return message_type, packet_counter, payload
+
 
 # This is sent when a device is plugged in if it has multiple modes.
 # This populates a dropdown menu in the IDE to select the mode.
@@ -54,14 +69,15 @@ def make_mode_message(port, type_id, modes):
 
 # BOOST Color and Distance Sensor
 def update_color_and_distance_sensor(port, type_id):
-    sensor = ColorDistanceSensor(port)
+    devices[port] = sensor = ColorDistanceSensor(port)
     mode_info = make_mode_message(
         port,
         type_id,
         ["Reflected light intensity and color", "Ambient light intensity", "Distance"],
     )
     while True:
-        mode = app_data.get_values()[ports.index(port)]
+        # mode = app_data.get_values()[ports.index(port)]
+        mode = port_modes[ports.index(port)]
         if mode == 0:
             hsv = sensor.hsv()
             intensity = sensor.reflection()
@@ -77,7 +93,7 @@ def update_color_and_distance_sensor(port, type_id):
 
 # SPIKE Prime / MINDSTORMS Robot Inventor Color Sensor
 def update_color_sensor(port, type_id):
-    sensor = ColorSensor(port)
+    devices[port] = sensor = ColorSensor(port)
     mode_info = make_mode_message(
         port,
         type_id,
@@ -87,7 +103,8 @@ def update_color_sensor(port, type_id):
         ],
     )
     while True:
-        mode = app_data.get_values()[ports.index(port)]
+        mode = port_modes[ports.index(port)]
+        # mode = app_data.get_values()[ports.index(port)]
         hsv = sensor.hsv(False if mode else True)
         color = str(sensor.color(False if mode else True)).replace("Color.","")
         intensity = sensor.ambient() if mode else sensor.reflection()
@@ -98,7 +115,7 @@ def update_color_sensor(port, type_id):
 
 # WeDo 2.0 Tilt Sensor
 def update_tilt_sensor(port, type_id):
-    sensor = TiltSensor(port)
+    devices[port] = sensor = TiltSensor(port)
     while True:
         pitch, roll = sensor.tilt()
         data = f"p={pitch}°\tr={roll}°"
@@ -107,7 +124,7 @@ def update_tilt_sensor(port, type_id):
 
 # WeDo 2.0 Infrared Sensor
 def update_infrared_sensor(port, type_id):
-    sensor = InfraredSensor(port)
+    devices[port] = sensor = InfraredSensor(port)
     while True:
         dist = sensor.distance()
         ref = sensor.reflection()
@@ -117,7 +134,7 @@ def update_infrared_sensor(port, type_id):
 
 # SPIKE Prime / MINDSTORMS Robot Inventor Ultrasonic Sensor
 def update_ultrasonic_sensor(port, type_id):
-    sensor = UltrasonicSensor(port)
+    devices[port] = sensor = UltrasonicSensor(port)
     while True:
         data = f"d={sensor.distance()}mm"
         yield f"{port}\t{type_id}\t{data}"
@@ -125,7 +142,7 @@ def update_ultrasonic_sensor(port, type_id):
 
 # SPIKE Prime Force Sensor
 def update_force_sensor(port, type_id):
-    sensor = ForceSensor(port)
+    devices[port] = sensor = ForceSensor(port)
     while True:
         data = f"f={sensor.force():.2f}N\td={sensor.distance():.2f}mm"
         yield f"{port}\t{type_id}\t{data}"
@@ -133,7 +150,7 @@ def update_force_sensor(port, type_id):
 
 # Any motor with rotation sensors.
 def update_motor(port, type_id):
-    motor = Motor(port)
+    devices[port] = motor = Motor(port)
     while True:
         angle = motor.angle()
         angle_mod = motor.angle() % 360
@@ -149,19 +166,16 @@ def update_motor(port, type_id):
 
 # Any motor without rotation sensors.
 def update_dc_motor(port, type_id):
+    devices[port] = motor = DCMotor(port)
     while True:
-        motor = DCMotor(port)
         yield f"{port}\t{type_id}"
 
 
 # Any unknown Powered Up device.
 def unknown_pup_device(port, type_id):
+    devices[port] = PUPDevice(port)
     while True:
-        try:
-            PUPDevice(port)
-            yield f"{port}\t{type_id}\tunknown"
-        except:
-            yield None
+        yield f"{port}\t{type_id}\tunknown"
 
 
 # Monitoring task for one port.
@@ -199,16 +213,45 @@ def device_task(port):
 
 # Monitoring task for the hub core.
 def hub_task():
+    global last_packet_counter
+    last_packet_counter = -1
     while True:
-        # last value is shutdown control
-        if app_data.get_values()[ports.len() + 0]:
-            hub.system.shutdown()
-        
+        message_type, packet_counter, payload = get_app_data_input()
+
+        if packet_counter != last_packet_counter:
+
+            # execute_action
+            last_packet_counter = packet_counter
+            if message_type == ord("a"):
+                if payload[0] == ord("s"):
+                    # execute_action: shutdown
+                    try: hub.speaker.beep()
+                    except: pass
+                    yield hub.system.shutdown()
+                if payload[0] == ord("h"):
+                    # execute_action: shutdown
+                    yield hub.display.text("Hello")
+            # port_operations
+            elif message_type == ord("p"):
+                port_index = payload[0]
+                port_operation = payload[1]
+
+                # set_port_mode
+                if port_operation == ord("m"):
+                    port_modes[port_index] = payload[2]
+                # rotate motor
+                elif port_operation == ord("r"):
+                    direction = payload[2]
+                    # assume it is a motor instance, if not, exception will be handled centrally
+                    devices[ports[port_index]].run_time(100 * direction, 300, Stop.COAST_SMART)
+
         yield None
-        
+
+
 def battery_task():
     if not hub.battery: return
 
+    count = 0
     while True:
         count += 1
         if count % 100:
@@ -256,7 +299,7 @@ while True:
         try:
             line = next(task)
             if line: msg += line + "\r\n"
-        except:
+        except Exception as e:
             pass
 
     # REVISIT: It would be better to send whole messages (or multiples), but we

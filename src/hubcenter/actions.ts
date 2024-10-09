@@ -15,3 +15,8 @@ export const sendData = createAction((data: string) => ({
     type: 'hubcenter.action.sendData',
     value: data,
 }));
+
+export const executeAppDataCommand = createAction((data: ArrayBuffer) => ({
+    type: 'hubcenter.action.executeAppDataCommand',
+    value: data,
+}));

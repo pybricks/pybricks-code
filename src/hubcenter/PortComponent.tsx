@@ -1,9 +1,12 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2024 The Pybricks Authors
 
+import { Refresh, Repeat, Reset } from '@blueprintjs/icons';
 import React, { useRef } from 'react';
 import { useDispatch } from 'react-redux';
-import { sendWriteAppDataCommand } from '../ble-pybricks-service/actions';
+import { useEventCallback } from 'usehooks-ts';
+import { Button } from '../components/Button';
+import { executeAppDataCommand } from './actions';
 import ColorSensorIconComponent from './icons/ColorSensorIcon';
 import DeviceIcon from './icons/DeviceIcon';
 import MotorIcon from './icons/MotorIcon';
@@ -153,26 +156,74 @@ const PortComponent: React.FunctionComponent<PortComponentProps> = ({
     //     }
     // }, [portData, devEntry, side]);
 
-    const iconComponent = (() => {
+    const getIconComponent = () => {
         if (devEntry?.iconShaft) {
-            return <MotorIcon portData={portData} devEntry={devEntry} side={side} />;
+            return (
+                <>
+                    <MotorIcon portData={portData} devEntry={devEntry} side={side} />
+                    <Button
+                        label=""
+                        icon={<Reset size={16} />}
+                        onPress={() => {
+                            const msg = new Uint8Array([
+                                'p'.charCodeAt(0),
+                                portIndex,
+                                'r'.charCodeAt(0),
+                                -1,
+                            ]);
+                            dispatch(executeAppDataCommand(msg));
+                        }}
+                    />
+                    <Button
+                        label=""
+                        icon={<Repeat size={16} />}
+                        onPress={() => {
+                            const msg = new Uint8Array([
+                                'p'.charCodeAt(0),
+                                portIndex,
+                                'r'.charCodeAt(0),
+                                +1,
+                            ]);
+                            dispatch(executeAppDataCommand(msg));
+                        }}
+                    />
+                </>
+            );
         } else if (portData?.type === 61 || portData?.type === 37) {
             return <ColorSensorIconComponent portData={portData} devEntry={devEntry} />;
         } else {
             return <DeviceIcon portData={portData} devEntry={devEntry} />;
         }
-    })();
+    };
 
-    // TODO: usememo can be used if portData is an effect and not a reference
-
-    const handleModeChange = () => {
+    const getModeComponent = () => {
+        return (
+            portModes &&
+            portModes.length > 1 && (
+                <div>
+                    {portModes[portModeRef.current]}
+                    <Button
+                        label=""
+                        icon={<Refresh size={16} />}
+                        onPress={handleModeChange}
+                    />
+                </div>
+            )
+        );
+    };
+    const handleModeChange = useEventCallback(() => {
         const modeCount = portModes?.length || 0;
         const newMode = (portModeRef.current + 1) % modeCount;
         portModeRef.current = newMode;
 
-        const msg = new Uint8Array([newMode]);
-        dispatch(sendWriteAppDataCommand(0, portIndex, msg));
-    };
+        const msg = new Uint8Array([
+            'p'.charCodeAt(0),
+            portIndex,
+            'm'.charCodeAt(0),
+            newMode,
+        ]);
+        dispatch(executeAppDataCommand(msg));
+    });
 
     const portLabelComponent = <div className="port-label">{portCode}</div>;
     const portDataStr = portData?.dataStr || '';
@@ -183,14 +234,10 @@ const PortComponent: React.FunctionComponent<PortComponentProps> = ({
 
             <div className="pb-device">
                 <div className="port-icon" title={devEntry?.name}>
-                    {iconComponent}
+                    {getIconComponent()}
                 </div>
                 <div className="port-value">{portDataStr}</div>
-                {portModes && portModes.length > 1 && (
-                    <div onClick={handleModeChange}>
-                        {portModes[portModeRef.current]}
-                    </div>
-                )}
+                {getModeComponent()}
             </div>
 
             {side === 'left' && portLabelComponent}

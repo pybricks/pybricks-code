@@ -2,7 +2,7 @@
 // Copyright (c) 2022-2024 The Pybricks Authors
 
 import { Classes, Dialog, Icon } from '@blueprintjs/core';
-import { Lightning } from '@blueprintjs/icons';
+import { Lightning, Power } from '@blueprintjs/icons';
 import classNames from 'classnames';
 import React, {
     useCallback,
@@ -13,10 +13,12 @@ import React, {
     useState,
 } from 'react';
 import { useDispatch } from 'react-redux';
+import { useEventCallback } from 'usehooks-ts';
+import { Button } from '../components/Button';
 import { useSelector } from '../reducers';
 import { HubCenterContext } from './HubCenterContext';
 import PortComponent, { PortData } from './PortComponent';
-import { hubcenterHideDialog } from './actions';
+import { executeAppDataCommand, hubcenterHideDialog } from './actions';
 import './hub-center-dialog.scss';
 import { useI18n } from './i18n';
 import HubIconComponent, { getHubPortCount } from './icons/HubCenterIcon';
@@ -140,6 +142,19 @@ const HubcenterDialog: React.FunctionComponent = () => {
         });
     }, [deviceType, portData]);
 
+    const handleShutdown = useEventCallback(() => {
+        const msg = new Uint8Array(['a'.charCodeAt(0), 's'.charCodeAt(0)]);
+        dispatch(executeAppDataCommand(msg));
+    });
+
+    // useCallback( ??
+    const handleHelloWorld = useEventCallback(() => {
+        const msg = new Uint8Array(['a'.charCodeAt(0), 'h'.charCodeAt(0)]);
+        console.log('handleHelloWorld', 1);
+        dispatch(executeAppDataCommand(msg));
+        console.log('handleHelloWorld', 2);
+    });
+
     return (
         <Dialog
             className="pb-hubcenter-dialog"
@@ -150,19 +165,28 @@ const HubcenterDialog: React.FunctionComponent = () => {
             <div className={classNames(Classes.DIALOG_BODY, Classes.RUNNING_TEXT)}>
                 <h4 className="title">
                     <span>{deviceName}</span>
+
                     <span>
                         {deviceType}, {deviceFirmwareVersion}, {hubBattery}
                         {hubBatteryCharger && <Icon icon={<Lightning size={24} />} />}
                     </span>
                 </h4>
 
-                <div
-                    className={
-                        'pb-hubcenter ' + `hub_${getHubPortCount(deviceType)}_port`
-                    }
-                >
+                <div className={'pb-hubcenter ' + `hub_${getHubPortCount(deviceType)}`}>
                     <HubIconComponent deviceType={deviceType} hubImuData={hubImuData} />
                     {portComponents}
+                </div>
+                <div>
+                    <Button
+                        label="Shutdown"
+                        icon={<Power size={24} />}
+                        onPress={handleShutdown}
+                    />
+                    <Button
+                        label="Hello World"
+                        icon={<Power size={24} />}
+                        onPress={handleHelloWorld}
+                    />
                 </div>
             </div>
         </Dialog>

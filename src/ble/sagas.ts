@@ -63,7 +63,7 @@ import { ensureError } from '../utils';
 import { isLinux } from '../utils/os';
 import { pythonVersionToSemver } from '../utils/version';
 import {
-    bleConnectPybricks as bleConnectPybricks,
+    bleConnectPybricks,
     bleDidConnectPybricks,
     bleDidDisconnectPybricks,
     bleDidFailToConnectPybricks,
