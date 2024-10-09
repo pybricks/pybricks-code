@@ -161,32 +161,34 @@ const PortComponent: React.FunctionComponent<PortComponentProps> = ({
             return (
                 <>
                     <MotorIcon portData={portData} devEntry={devEntry} side={side} />
-                    <Button
-                        label=""
-                        icon={<Reset size={16} />}
-                        onPress={() => {
-                            const msg = new Uint8Array([
-                                'p'.charCodeAt(0),
-                                portIndex,
-                                'r'.charCodeAt(0),
-                                -1,
-                            ]);
-                            dispatch(executeAppDataCommand(msg));
-                        }}
-                    />
-                    <Button
-                        label=""
-                        icon={<Repeat size={16} />}
-                        onPress={() => {
-                            const msg = new Uint8Array([
-                                'p'.charCodeAt(0),
-                                portIndex,
-                                'r'.charCodeAt(0),
-                                +1,
-                            ]);
-                            dispatch(executeAppDataCommand(msg));
-                        }}
-                    />
+                    <div>
+                        <Button
+                            label=""
+                            icon={<Reset size={16} />}
+                            onPress={() => {
+                                const msg = new Uint8Array([
+                                    'p'.charCodeAt(0),
+                                    portIndex,
+                                    'r'.charCodeAt(0),
+                                    -1,
+                                ]);
+                                dispatch(executeAppDataCommand(msg));
+                            }}
+                        />
+                        <Button
+                            label=""
+                            icon={<Repeat size={16} />}
+                            onPress={() => {
+                                const msg = new Uint8Array([
+                                    'p'.charCodeAt(0),
+                                    portIndex,
+                                    'r'.charCodeAt(0),
+                                    +1,
+                                ]);
+                                dispatch(executeAppDataCommand(msg));
+                            }}
+                        />
+                    </div>
                 </>
             );
         } else if (portData?.type === 61 || portData?.type === 37) {

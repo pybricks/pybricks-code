@@ -56,7 +56,6 @@ let packet_counter = 0;
 function* processExecuteAppDataCommand(
     _action: ReturnType<typeof executeAppDataCommand>,
 ): Generator {
-    console.log('processExecuteAppDataCommand');
     packet_counter = (packet_counter + 1) & 0xff;
     const VERSION = 0x01;
 
@@ -71,7 +70,6 @@ function* processExecuteAppDataCommand(
 
     msg.set(prefixBuffer, 0);
     msg.set(payloadBufferView, prefixBuffer.byteLength);
-    console.log('>>>', msg, _action.value);
 
     yield* put(sendWriteAppDataCommand(0, 0, msg));
 }

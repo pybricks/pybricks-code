@@ -147,14 +147,6 @@ const HubcenterDialog: React.FunctionComponent = () => {
         dispatch(executeAppDataCommand(msg));
     });
 
-    // useCallback( ??
-    const handleHelloWorld = useEventCallback(() => {
-        const msg = new Uint8Array(['a'.charCodeAt(0), 'h'.charCodeAt(0)]);
-        console.log('handleHelloWorld', 1);
-        dispatch(executeAppDataCommand(msg));
-        console.log('handleHelloWorld', 2);
-    });
-
     return (
         <Dialog
             className="pb-hubcenter-dialog"
@@ -181,11 +173,6 @@ const HubcenterDialog: React.FunctionComponent = () => {
                         label="Shutdown"
                         icon={<Power size={24} />}
                         onPress={handleShutdown}
-                    />
-                    <Button
-                        label="Hello World"
-                        icon={<Power size={24} />}
-                        onPress={handleHelloWorld}
                     />
                 </div>
             </div>

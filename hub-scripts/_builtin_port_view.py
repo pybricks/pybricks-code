@@ -22,8 +22,8 @@ try:
     ports += [Port.E, Port.F]
 except AttributeError:
     pass
-port_modes = [0] * len(ports)
-devices = {}
+port_modes = [0 for _ in range(len(ports))]
+port_commands = [[] for _ in range(len(ports))]
 
 from pybricks.hubs import ThisHub
 hub = ThisHub
@@ -69,7 +69,8 @@ def make_mode_message(port, type_id, modes):
 
 # BOOST Color and Distance Sensor
 def update_color_and_distance_sensor(port, type_id):
-    devices[port] = sensor = ColorDistanceSensor(port)
+    sensor = ColorDistanceSensor(port)
+    port_index = ports.index(port)
     mode_info = make_mode_message(
         port,
         type_id,
@@ -77,7 +78,7 @@ def update_color_and_distance_sensor(port, type_id):
     )
     while True:
         # mode = app_data.get_values()[ports.index(port)]
-        mode = port_modes[ports.index(port)]
+        mode = port_modes[port_index]
         if mode == 0:
             hsv = sensor.hsv()
             intensity = sensor.reflection()
@@ -93,7 +94,8 @@ def update_color_and_distance_sensor(port, type_id):
 
 # SPIKE Prime / MINDSTORMS Robot Inventor Color Sensor
 def update_color_sensor(port, type_id):
-    devices[port] = sensor = ColorSensor(port)
+    sensor = ColorSensor(port)
+    port_index = ports.index(port)
     mode_info = make_mode_message(
         port,
         type_id,
@@ -103,7 +105,7 @@ def update_color_sensor(port, type_id):
         ],
     )
     while True:
-        mode = port_modes[ports.index(port)]
+        mode = port_modes[port_index]
         # mode = app_data.get_values()[ports.index(port)]
         hsv = sensor.hsv(False if mode else True)
         color = str(sensor.color(False if mode else True)).replace("Color.","")
@@ -115,7 +117,7 @@ def update_color_sensor(port, type_id):
 
 # WeDo 2.0 Tilt Sensor
 def update_tilt_sensor(port, type_id):
-    devices[port] = sensor = TiltSensor(port)
+    sensor = TiltSensor(port)
     while True:
         pitch, roll = sensor.tilt()
         data = f"p={pitch}°\tr={roll}°"
@@ -124,7 +126,7 @@ def update_tilt_sensor(port, type_id):
 
 # WeDo 2.0 Infrared Sensor
 def update_infrared_sensor(port, type_id):
-    devices[port] = sensor = InfraredSensor(port)
+    sensor = InfraredSensor(port)
     while True:
         dist = sensor.distance()
         ref = sensor.reflection()
@@ -134,7 +136,7 @@ def update_infrared_sensor(port, type_id):
 
 # SPIKE Prime / MINDSTORMS Robot Inventor Ultrasonic Sensor
 def update_ultrasonic_sensor(port, type_id):
-    devices[port] = sensor = UltrasonicSensor(port)
+    sensor = UltrasonicSensor(port)
     while True:
         data = f"d={sensor.distance()}mm"
         yield f"{port}\t{type_id}\t{data}"
@@ -142,7 +144,7 @@ def update_ultrasonic_sensor(port, type_id):
 
 # SPIKE Prime Force Sensor
 def update_force_sensor(port, type_id):
-    devices[port] = sensor = ForceSensor(port)
+    sensor = ForceSensor(port)
     while True:
         data = f"f={sensor.force():.2f}N\td={sensor.distance():.2f}mm"
         yield f"{port}\t{type_id}\t{data}"
@@ -150,7 +152,8 @@ def update_force_sensor(port, type_id):
 
 # Any motor with rotation sensors.
 def update_motor(port, type_id):
-    devices[port] = motor = Motor(port)
+    motor = Motor(port)
+    port_index = ports.index(port)
     while True:
         angle = motor.angle()
         angle_mod = motor.angle() % 360
@@ -161,19 +164,27 @@ def update_motor(port, type_id):
         if angle != angle_mod:
             data += f"\tr={rotations}R\tra={angle_mod}°"
         msg = f"{port}\t{type_id}\t{data}"
+
+        # check commands
+        if len(port_commands[port_index]):
+            command = port_commands[port_index].pop(0)
+            if command[0] == ord("r"):
+                direction = command[1]
+                motor.run_time(100 * direction, 300, Stop.COAST_SMART)
+
         yield msg
 
 
 # Any motor without rotation sensors.
 def update_dc_motor(port, type_id):
-    devices[port] = motor = DCMotor(port)
+    motor = DCMotor(port)
     while True:
         yield f"{port}\t{type_id}"
 
 
 # Any unknown Powered Up device.
 def unknown_pup_device(port, type_id):
-    devices[port] = PUPDevice(port)
+    PUPDevice(port)
     while True:
         yield f"{port}\t{type_id}\tunknown"
 
@@ -206,7 +217,7 @@ def device_task(port):
                 yield from update_motor(port, type_id)
             else:
                 yield from unknown_pup_device(port, type_id)
-        except OSError:
+        except OSError as e:
             # No device or previous device was disconnected.
             yield f"{port}\t--"
 
@@ -228,9 +239,6 @@ def hub_task():
                     try: hub.speaker.beep()
                     except: pass
                     yield hub.system.shutdown()
-                if payload[0] == ord("h"):
-                    # execute_action: shutdown
-                    yield hub.display.text("Hello")
             # port_operations
             elif message_type == ord("p"):
                 port_index = payload[0]
@@ -239,11 +247,9 @@ def hub_task():
                 # set_port_mode
                 if port_operation == ord("m"):
                     port_modes[port_index] = payload[2]
-                # rotate motor
-                elif port_operation == ord("r"):
-                    direction = payload[2]
-                    # assume it is a motor instance, if not, exception will be handled centrally
-                    devices[ports[port_index]].run_time(100 * direction, 300, Stop.COAST_SMART)
+                # any other port commands
+                else:
+                    port_commands[port_index].append(payload[1:])
 
         yield None
 
@@ -300,6 +306,7 @@ while True:
             line = next(task)
             if line: msg += line + "\r\n"
         except Exception as e:
+            print("exception", e)
             pass
 
     # REVISIT: It would be better to send whole messages (or multiples), but we
