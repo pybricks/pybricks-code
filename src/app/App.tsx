@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2023 The Pybricks Authors
+// Copyright (c) 2020-2024 The Pybricks Authors
 
 import 'react-splitter-layout/lib/index.css';
 import './app.scss';
@@ -37,6 +37,19 @@ const Terminal = React.lazy(async () => {
     const [sagaModule, componentModule] = await Promise.all([
         import('../terminal/sagas'),
         import('../terminal/Terminal'),
+    ]);
+
+    window.dispatchEvent(
+        new CustomEvent('pb-lazy-saga', { detail: { saga: sagaModule.default } }),
+    );
+
+    return componentModule;
+});
+
+const HubCenter = React.lazy(async () => {
+    const [sagaModule, componentModule] = await Promise.all([
+        import('../hubcenter/sagas'),
+        import('../hubcenter/HubCenterDialog'),
     ]);
 
     window.dispatchEvent(
@@ -253,6 +266,9 @@ const App: React.FunctionComponent = () => {
             <InstallPybricksDialog />
             <RestoreOfficialDialog />
             <SponsorDialog />
+            <React.Suspense fallback={<Spinner className="h-100" />}>
+                <HubCenter />
+            </React.Suspense>
         </div>
     );
 };
