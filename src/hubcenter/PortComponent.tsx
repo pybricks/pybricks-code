@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2024 The Pybricks Authors
 
-import { Refresh, Repeat, Reset } from '@blueprintjs/icons';
+import { AnchorButton, Button, ButtonGroup } from '@blueprintjs/core';
+import { CaretDown, Repeat, Reset } from '@blueprintjs/icons';
 import React, { useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { useEventCallback } from 'usehooks-ts';
-import { Button } from '../components/Button';
 import { executeAppDataCommand } from './actions';
 import ColorSensorIconComponent from './icons/ColorSensorIcon';
 import DeviceIcon from './icons/DeviceIcon';
@@ -161,34 +161,16 @@ const PortComponent: React.FunctionComponent<PortComponentProps> = ({
             return (
                 <>
                     <MotorIcon portData={portData} devEntry={devEntry} side={side} />
-                    <div>
+                    <ButtonGroup vertical={true}>
                         <Button
-                            label=""
                             icon={<Reset size={16} />}
-                            onPress={() => {
-                                const msg = new Uint8Array([
-                                    'p'.charCodeAt(0),
-                                    portIndex,
-                                    'r'.charCodeAt(0),
-                                    -1,
-                                ]);
-                                dispatch(executeAppDataCommand(msg));
-                            }}
+                            onClick={() => handleMotorRotate(false)()}
                         />
                         <Button
-                            label=""
                             icon={<Repeat size={16} />}
-                            onPress={() => {
-                                const msg = new Uint8Array([
-                                    'p'.charCodeAt(0),
-                                    portIndex,
-                                    'r'.charCodeAt(0),
-                                    +1,
-                                ]);
-                                dispatch(executeAppDataCommand(msg));
-                            }}
+                            onClick={() => handleMotorRotate(true)()}
                         />
-                    </div>
+                    </ButtonGroup>
                 </>
             );
         } else if (portData?.type === 61 || portData?.type === 37) {
@@ -197,22 +179,30 @@ const PortComponent: React.FunctionComponent<PortComponentProps> = ({
             return <DeviceIcon portData={portData} devEntry={devEntry} />;
         }
     };
+    const handleMotorRotate = useEventCallback((direction: boolean) => {
+        return () => {
+            const msg = new Uint8Array([
+                'p'.charCodeAt(0),
+                portIndex,
+                'r'.charCodeAt(0),
+                direction ? +1 : -1,
+            ]);
+            dispatch(executeAppDataCommand(msg));
+        };
+    });
 
-    const getModeComponent = () => {
-        return (
-            portModes &&
-            portModes.length > 1 && (
-                <div>
+    const getModeComponent = () =>
+        portModes &&
+        portModes.length > 1 && (
+            <div>
+                <AnchorButton
+                    rightIcon={<CaretDown size={16} />}
+                    onClick={handleModeChange}
+                >
                     {portModes[portModeRef.current]}
-                    <Button
-                        label=""
-                        icon={<Refresh size={16} />}
-                        onPress={handleModeChange}
-                    />
-                </div>
-            )
+                </AnchorButton>
+            </div>
         );
-    };
     const handleModeChange = useEventCallback(() => {
         const modeCount = portModes?.length || 0;
         const newMode = (portModeRef.current + 1) % modeCount;

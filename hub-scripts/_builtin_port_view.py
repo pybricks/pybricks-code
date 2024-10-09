@@ -68,9 +68,8 @@ def make_mode_message(port, type_id, modes):
 
 
 # BOOST Color and Distance Sensor
-def update_color_and_distance_sensor(port, type_id):
+def update_color_and_distance_sensor(port, port_index, type_id):
     sensor = ColorDistanceSensor(port)
-    port_index = ports.index(port)
     mode_info = make_mode_message(
         port,
         type_id,
@@ -93,9 +92,8 @@ def update_color_and_distance_sensor(port, type_id):
 
 
 # SPIKE Prime / MINDSTORMS Robot Inventor Color Sensor
-def update_color_sensor(port, type_id):
+def update_color_sensor(port, port_index, type_id):
     sensor = ColorSensor(port)
-    port_index = ports.index(port)
     mode_info = make_mode_message(
         port,
         type_id,
@@ -116,7 +114,7 @@ def update_color_sensor(port, type_id):
 
 
 # WeDo 2.0 Tilt Sensor
-def update_tilt_sensor(port, type_id):
+def update_tilt_sensor(port, port_index, type_id):
     sensor = TiltSensor(port)
     while True:
         pitch, roll = sensor.tilt()
@@ -125,7 +123,7 @@ def update_tilt_sensor(port, type_id):
 
 
 # WeDo 2.0 Infrared Sensor
-def update_infrared_sensor(port, type_id):
+def update_infrared_sensor(port, port_index, type_id):
     sensor = InfraredSensor(port)
     while True:
         dist = sensor.distance()
@@ -135,7 +133,7 @@ def update_infrared_sensor(port, type_id):
 
 
 # SPIKE Prime / MINDSTORMS Robot Inventor Ultrasonic Sensor
-def update_ultrasonic_sensor(port, type_id):
+def update_ultrasonic_sensor(port, port_index, type_id):
     sensor = UltrasonicSensor(port)
     while True:
         data = f"d={sensor.distance()}mm"
@@ -143,7 +141,7 @@ def update_ultrasonic_sensor(port, type_id):
 
 
 # SPIKE Prime Force Sensor
-def update_force_sensor(port, type_id):
+def update_force_sensor(port, port_index, type_id):
     sensor = ForceSensor(port)
     while True:
         data = f"f={sensor.force():.2f}N\td={sensor.distance():.2f}mm"
@@ -151,9 +149,8 @@ def update_force_sensor(port, type_id):
 
 
 # Any motor with rotation sensors.
-def update_motor(port, type_id):
+def update_motor(port, port_index, type_id):
     motor = Motor(port)
-    port_index = ports.index(port)
     while True:
         angle = motor.angle()
         angle_mod = motor.angle() % 360
@@ -170,27 +167,27 @@ def update_motor(port, type_id):
             command = port_commands[port_index].pop(0)
             if command[0] == ord("r"):
                 direction = command[1]
-                motor.run_time(100 * direction, 300, Stop.COAST_SMART)
+                yield motor.run_time(100 * direction, 300, Stop.COAST, wait=False)
 
         yield msg
 
 
 # Any motor without rotation sensors.
-def update_dc_motor(port, type_id):
+def update_dc_motor(port, port_index, type_id):
     motor = DCMotor(port)
     while True:
         yield f"{port}\t{type_id}"
 
 
 # Any unknown Powered Up device.
-def unknown_pup_device(port, type_id):
+def unknown_pup_device(port, port_index, type_id):
     PUPDevice(port)
     while True:
         yield f"{port}\t{type_id}\tunknown"
 
 
 # Monitoring task for one port.
-def device_task(port):
+def device_task(port, port_index):
 
     while True:
         try:
@@ -200,23 +197,23 @@ def device_task(port):
 
             # Run device specific monitoring task until it is disconnected.
             if type_id == 34:
-                yield from update_tilt_sensor(port, type_id)
+                yield from update_tilt_sensor(port, port_index, type_id)
             if type_id == 35:
-                yield from update_infrared_sensor(port, type_id)
+                yield from update_infrared_sensor(port, port_index, type_id)
             if type_id == 37:
-                yield from update_color_and_distance_sensor(port, type_id)
+                yield from update_color_and_distance_sensor(port, port_index, type_id)
             elif type_id == 61:
-                yield from update_color_sensor(port, type_id)
+                yield from update_color_sensor(port, port_index, type_id)
             elif type_id == 62:
-                yield from update_ultrasonic_sensor(port, type_id)
+                yield from update_ultrasonic_sensor(port, port_index, type_id)
             elif type_id == 63:
-                yield from update_force_sensor(port, type_id)
+                yield from update_force_sensor(port, port_index, type_id)
             elif type_id in (1, 2):
-                yield from update_dc_motor(port, type_id)
+                yield from update_dc_motor(port, port_index, type_id)
             elif type_id in (38, 46, 47, 48, 49, 65, 75, 76):
-                yield from update_motor(port, type_id)
+                yield from update_motor(port, port_index, type_id)
             else:
-                yield from unknown_pup_device(port, type_id)
+                yield from unknown_pup_device(port, port_index, type_id)
         except OSError as e:
             # No device or previous device was disconnected.
             yield f"{port}\t--"
@@ -292,7 +289,7 @@ def imu_task():
 
 
 # Assemble all monitoring tasks.
-tasks = [device_task(port) for port in ports] + \
+tasks = [device_task(port, port_index) for port_index, port in enumerate(ports)] + \
             [hub_task(), battery_task(), imu_task()]
 
 
