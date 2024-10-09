@@ -151,33 +151,40 @@ def update_force_sensor(port, port_index, type_id):
 # Any motor with rotation sensors.
 def update_motor(port, port_index, type_id):
     motor = Motor(port)
-    while True:
-        angle = motor.angle()
-        angle_mod = motor.angle() % 360
-        if angle_mod > 180:
-            angle_mod -= 360
-        rotations = round((angle - angle_mod) / 360)
-        data = f"a={motor.angle()}°"
-        if angle != angle_mod:
-            data += f"\tr={rotations}R\tra={angle_mod}°"
-        msg = f"{port}\t{type_id}\t{data}"
+    try:
+        while True:
+            angle = motor.angle()
+            angle_mod = motor.angle() % 360
+            if angle_mod > 180:
+                angle_mod -= 360
+            rotations = round((angle - angle_mod) / 360)
+            data = f"a={motor.angle()}°"
+            if angle != angle_mod:
+                data += f"\tr={rotations}R\tra={angle_mod}°"
+            msg = f"{port}\t{type_id}\t{data}"
 
-        # check commands
-        if len(port_commands[port_index]):
-            command = port_commands[port_index].pop(0)
-            if command[0] == ord("r"):
-                direction = command[1]
-                yield motor.run_time(100 * direction, 300, Stop.COAST, wait=False)
+            # check commands
+            if len(port_commands[port_index]):
+                command = port_commands[port_index].pop(0)
+                if command[0] == ord("r"):
+                    direction = command[1]
+                    yield motor.run_time(100 * direction, 300, Stop.COAST, wait=False)
 
-        yield msg
+            yield msg
+    except:
+        if motor: motor.close()
+        raise
 
 
 # Any motor without rotation sensors.
 def update_dc_motor(port, port_index, type_id):
     motor = DCMotor(port)
-    while True:
-        yield f"{port}\t{type_id}"
-
+    try:
+        while True:
+            yield f"{port}\t{type_id}"
+    except:
+        if motor: motor.close()
+        raise
 
 # Any unknown Powered Up device.
 def unknown_pup_device(port, port_index, type_id):
