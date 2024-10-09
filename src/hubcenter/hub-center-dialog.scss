@@ -48,6 +48,7 @@
     .pb-device {
         display: flex; /* Enable flexbox layout */
         flex-direction: column; /* Arrange children in a column */
+        grid-template-rows: 1fr min-content;
         align-items: center; /* Center children horizontally */
         justify-content: center; /* Center children vertically */
         line-height: 1.1rem;
@@ -59,6 +60,10 @@
             text-align: center;
             padding-bottom: 0.5em;
             height: 2em;
+        }
+        .port-icon {
+            display: flex;
+            flex-direction: row;
         }
         .pb-device-icon {
             position: relative;

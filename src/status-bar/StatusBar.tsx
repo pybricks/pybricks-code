@@ -85,10 +85,11 @@ const HubInfoButton: React.FunctionComponent = () => {
     const keyboardShortcut = 'F7';
     const label = 'HubCentral';
     const onAction = useCallback(() => {
-        if (hasPortView && runtime === HubRuntimeState.Idle) {
-            dispatch(hubcenterShowDialog());
-        }
-    }, [dispatch, hasPortView, runtime]);
+        //!! if (hasPortView && runtime === HubRuntimeState.Idle) {
+        dispatch(hubcenterShowDialog());
+        //}
+        //}, [dispatch, hasPortView, runtime]);
+    }, [dispatch]);
 
     const hotkeys = useMemo(() => {
         if (!keyboardShortcut) {

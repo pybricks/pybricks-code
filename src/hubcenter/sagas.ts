@@ -7,9 +7,15 @@ import {
     didReceiveWriteAppData,
     sendStartUserProgramCommand,
     sendStopUserProgramCommand,
+    sendWriteAppDataCommand,
 } from '../ble-pybricks-service/actions';
 import { HubCenterContextValue } from './HubCenterContext';
-import { hubcenterHideDialog, hubcenterShowDialog, sendData } from './actions';
+import {
+    executeAppDataCommand,
+    hubcenterHideDialog,
+    hubcenterShowDialog,
+    sendData,
+} from './actions';
 
 /**
  * Partial saga context type for context used in the terminal sagas.
@@ -46,9 +52,32 @@ function* processHideDialog(
     yield* put(sendStopUserProgramCommand(0));
 }
 
+let packet_counter = 0;
+function* processExecuteAppDataCommand(
+    _action: ReturnType<typeof executeAppDataCommand>,
+): Generator {
+    packet_counter = (packet_counter + 1) & 0xff;
+    const VERSION = 0x01;
+
+    const payloadBuffer = _action.value;
+    const payloadBufferView = new Uint8Array(payloadBuffer);
+    const prefixBuffer = new Uint8Array([VERSION, packet_counter]);
+
+    const newBuffer = new ArrayBuffer(
+        prefixBuffer.byteLength + payloadBuffer.byteLength,
+    );
+    const msg = new Uint8Array(newBuffer);
+
+    msg.set(prefixBuffer, 0);
+    msg.set(payloadBufferView, prefixBuffer.byteLength);
+
+    yield* put(sendWriteAppDataCommand(0, 0, msg));
+}
+
 export default function* (): Generator {
     yield* takeEvery(didReceiveWriteAppData, handleReceiveWriteAppData);
     yield* takeEvery(sendData, sendHubcenterData);
+    yield* takeEvery(executeAppDataCommand, processExecuteAppDataCommand);
     yield* takeEvery(hubcenterShowDialog, processShowDialog);
     yield* takeEvery(hubcenterHideDialog, processHideDialog);
 }
