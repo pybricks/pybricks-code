@@ -65,6 +65,7 @@
         "file-loader": "^6.2.0",
         "fs-extra": "^11.2.0",
         "google-drive-picker": "^1.1.29",
+        "googleapi": "^1.0.2",
         "html-webpack-plugin": "^5.6.0",
         "identity-obj-proxy": "^3.0.0",
         "jest": "^29.7.0",
