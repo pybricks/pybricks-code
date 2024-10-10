@@ -145,6 +145,8 @@ const HubcenterDialog: React.FunctionComponent = () => {
     const handleShutdown = useEventCallback(() => {
         const msg = new Uint8Array(['a'.charCodeAt(0), 's'.charCodeAt(0)]);
         dispatch(executeAppDataCommand(msg));
+        // TODO: workaround: should be a didExecutedAppCommand
+        setTimeout(() => dispatch(hubcenterHideDialog()), 300);
     });
 
     return (
