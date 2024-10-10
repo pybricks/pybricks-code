@@ -21,6 +21,10 @@ import { useI18n } from './i18n';
 const GoogleDriveUploadDialog: React.FunctionComponent = () => {
     const i18n = useI18n();
     const dispatch = useDispatch();
+
+    // TODO: somehow prefill descFolder
+    // const [lastGoogleDriveFolder] = useLocalStorage('googledrive.selectedFolder', '');
+
     const isOpen = useSelector((s) => s.explorer.googleDriveUploadDialog.isOpen);
     const fileName = useSelector((s) => s.explorer.googleDriveUploadDialog.fileName);
     const destFolder = useSelector(
@@ -110,13 +114,16 @@ const GoogleDriveUploadDialog: React.FunctionComponent = () => {
                     </div>
                     {uploadedDocId && destFolder.folder && (
                         <div>
-                            Uploaded to: {destFolder.folder.name}/
+                            Uploaded to:{' '}
                             <a
-                                href={
-                                    'https://drive.usercontent.google.com/download?id=' +
-                                    uploadedDocId +
-                                    '&export=download'
-                                }
+                                href={`https://drive.google.com/drive/folders/${destFolder.folder.id}/view`}
+                                target="_blank"
+                                rel="noopener"
+                            >
+                                {destFolder.folder.name}/
+                            </a>
+                            <a
+                                href={`https://drive.google.com/file/d/${uploadedDocId}/view`}
                                 target="_blank"
                                 rel="noopener"
                             >

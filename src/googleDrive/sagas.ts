@@ -75,6 +75,37 @@ function* handleUploadFile(
 
         defined(didRead);
 
+        //----
+
+        const authToken = getOauthToken();
+
+        defined(authToken);
+
+        const downloadFile = new Promise<string>((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            const url =
+                'https://www.googleapis.com/drive/v3/files?fields=files(id)&q=' +
+                encodeURIComponent(
+                    `name='${action.fileName}' and '${action.targetFolderId}' in parents`,
+                );
+            xhr.open('GET', url);
+            xhr.setRequestHeader('Authorization', 'Bearer ' + authToken);
+            xhr.responseType = 'json';
+            xhr.onload = () => {
+                console.log(xhr.response);
+                resolve(xhr.response.files[0]?.id);
+            };
+            xhr.onerror = (err) => {
+                console.info('error:', xhr.response);
+                reject(err);
+            };
+            xhr.send();
+        });
+        const existing_file_id = yield* call(() => downloadFile);
+        console.log(`existing file: ${existing_file_id}`);
+
+        //----
+
         const form = new FormData();
         form.append(
             'metadata',
@@ -82,8 +113,12 @@ function* handleUploadFile(
                 [
                     JSON.stringify({
                         name: action.fileName,
+                        description: 'Pybricks Python file',
                         mimeType: pythonFileMimeType,
-                        parents: [action.targetFolderId],
+                        ...(!existing_file_id
+                            ? { parents: [action.targetFolderId] }
+                            : {}),
+                        //starred: true,
                     }),
                 ],
                 { type: 'application/json' },
@@ -91,15 +126,21 @@ function* handleUploadFile(
         );
         form.append('file', new Blob([didRead.contents], { type: pythonFileMimeType }));
 
+        // overwrite: PUT https://www.googleapis.com/upload/drive/v3/files/[FILE_ID]
+
         const uploadFile = new Promise<string>((resolve, reject) => {
             const xhr = new XMLHttpRequest();
-            xhr.open(
-                'post',
-                'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',
-            );
-            xhr.setRequestHeader('Authorization', 'Bearer ' + getOauthToken());
+            const method = existing_file_id ? 'PATCH' : 'POST';
+            const url =
+                'https://www.googleapis.com/upload/drive/v3/files' +
+                (existing_file_id ? `/${existing_file_id}` : '') +
+                '?uploadType=multipart&fields=id';
+            console.info(url);
+            xhr.open(method, url);
+            xhr.setRequestHeader('Authorization', 'Bearer ' + authToken);
             xhr.responseType = 'json';
             xhr.onload = () => {
+                console.log(xhr.response);
                 console.log('Google drive file id:', xhr.response.id);
                 resolve(xhr.response.id);
             };

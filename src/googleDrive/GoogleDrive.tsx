@@ -4,6 +4,7 @@
 import GoogleDrivePicker from 'google-drive-picker';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { useLocalStorage } from 'usehooks-ts';
 import { googleApiKey, googleClientId } from '../app/constants';
 import { pythonFileMimeType } from '../pybricksMicropython/lib';
 import {
@@ -17,6 +18,7 @@ export default function DownloadPicker() {
     const [pickedDocs, setPickedDocs] = useState<DriveDocument[]>([]);
     const [openPicker, authResponse] = GoogleDrivePicker();
     const dispatch = useDispatch();
+    const [lastGoogleDriveFolder] = useLocalStorage('googledrive.selectedFolder', '');
 
     const openDownloadPicker = () => {
         // TODO: remove after debugging.
@@ -27,6 +29,13 @@ export default function DownloadPicker() {
             sessionStorage.getItem('google_oauth_token'),
         );
         const authToken = getOauthToken();
+        const folderId = (() => {
+            try {
+                return JSON.parse(lastGoogleDriveFolder)?.id;
+            } catch {
+                return undefined;
+            }
+        })();
         openPicker({
             clientId: googleClientId,
             developerKey: googleApiKey,
@@ -38,9 +47,12 @@ export default function DownloadPicker() {
             setSelectFolderEnabled: false,
             multiselect: true,
             supportDrives: true,
+            setParentFolder: folderId,
             callbackFunction: (data: PickerResponse) => {
                 console.log(data);
                 if (data.action === 'picked' && data.docs) {
+                    // TODO get parent folder: GET https://www.googleapis.com/drive/v2/files/{fileId}/parents/{parentId}
+                    // setLastGoogleDriveFolder(JSON.stringify(parentFolder));
                     if (authToken) {
                         dispatch(googleDriveDidSelectDownloadFiles(data.docs));
                     } else {
@@ -68,8 +80,19 @@ export default function DownloadPicker() {
 export function FolderPicker() {
     const [openPicker, authResponse] = GoogleDrivePicker();
     const dispatch = useDispatch();
+    const [lastGoogleDriveFolder, setLastGoogleDriveFolder] = useLocalStorage(
+        'googledrive.selectedFolder',
+        '',
+    );
 
     const openFolderPicker = () => {
+        const folderId = (() => {
+            try {
+                return JSON.parse(lastGoogleDriveFolder)?.id;
+            } catch {
+                return undefined;
+            }
+        })();
         openPicker({
             clientId: googleClientId,
             developerKey: googleApiKey,
@@ -78,8 +101,10 @@ export function FolderPicker() {
             customScopes: ['https://www.googleapis.com/auth/drive'],
             setSelectFolderEnabled: true,
             supportDrives: true,
+            setParentFolder: folderId,
             callbackFunction: (data: PickerResponse) => {
                 if (data.action === 'picked' && data.docs) {
+                    setLastGoogleDriveFolder(JSON.stringify(data.docs[0]));
                     dispatch(googleDriveDidSelectFolder(data.docs[0]));
                 }
             },
