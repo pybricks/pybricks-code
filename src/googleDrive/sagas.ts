@@ -24,7 +24,7 @@ function* handleDownloadFile(
     action: ReturnType<typeof googleDriveDownloadFile>,
 ): Generator {
     try {
-        const authToken = getOauthToken;
+        const authToken = getOauthToken();
 
         defined(authToken);
 
