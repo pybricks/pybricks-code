@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2022-2024 The Pybricks Authors
 
+import { convertFlipperProjectToPython } from 'blocklypy';
 import { fileOpen, fileSave } from 'browser-fs-access';
 import JSZip from 'jszip';
 import {
@@ -333,19 +334,42 @@ function* handleExplorerImportFiles(): Generator {
                     // TODO: translate description
                     description: 'ZIP Files',
                 },
+                {
+                    // mimeTypes: [zipFileMimeType],
+                    extensions: ['.llsp3'],
+                    // TODO: translate description
+                    description: 'LLSP3 Files',
+                },
             ]),
         );
 
         const context: ImportContext = {};
 
         for (const file of selectedFiles) {
+            // console.log(`file type "${file.type}"`);
             switch (file.type) {
                 case '': // empty string means "could not be determined"
                 case pythonFileMimeType:
                     {
-                        // getting the text now to catch possible error *before* user interaction
-                        const text = yield* call(() => file.text());
-                        yield* importPythonFile(file.name, text, context);
+                        const extension = file.name.includes('.')
+                            ? '.' + file.name.split('.').pop()
+                            : '';
+                        // console.log('>>>>', extension);
+                        let text;
+                        let filename = file.name;
+                        if (extension === '.llsp3') {
+                            const arraybuffer = yield* call(() => file.arrayBuffer());
+                            const result = yield* call(() =>
+                                convertFlipperProjectToPython(arraybuffer, {}),
+                            );
+                            // console.log(result);
+                            text = result.pycode ?? '';
+                            filename = filename.replace('.', '_') + '.py';
+                        } else {
+                            // getting the text now to catch possible error *before* user interaction
+                            text = yield* call(() => file.text());
+                        }
+                        yield* importPythonFile(filename, text, context);
                     }
                     break;
                 case zipFileMimeType:

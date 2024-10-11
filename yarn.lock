@@ -3012,6 +3012,7 @@ __metadata:
     babel-plugin-transform-import-meta: ^2.2.1
     babel-preset-react-app: ^10.0.1
     bfj: ^8.0.0
+    blocklypy: ^0.0.1
     browser-fs-access: ^0.35.0
     browserslist: ^4.22.2
     camelcase: ^8.0.0
@@ -6907,6 +6908,15 @@ __metadata:
   version: 2.2.0
   resolution: "binary-extensions@npm:2.2.0"
   checksum: ccd267956c58d2315f5d3ea6757cf09863c5fc703e50fbeb13a7dc849b812ef76e3cf9ca8f35a0c48498776a7478d7b4a0418e1e2b8cb9cb9731f2922aaad7f8
+  languageName: node
+  linkType: hard
+
+"blocklypy@npm:^0.0.1":
+  version: 0.0.1
+  resolution: "blocklypy@npm:0.0.1"
+  dependencies:
+    jszip: ^3.10.1
+  checksum: a168589741729c55c1c4785d3c07fb374708a601355aea97f1bc4e1670dcf6e051b23f385c6c57f8211b476d4051bb32630b41f0f5710ce23b4f625a22c89e29
   languageName: node
   linkType: hard
 
