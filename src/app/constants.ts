@@ -88,6 +88,8 @@ export const zipFileExtension = '.zip';
 /** The ZIP file MIME type ('application/zip') */
 export const zipFileMimeType = 'application/zip';
 
+export const legoBlocklyFileExtensions = ['.llsp3', '.llsp', '.lms'];
+
 /** Google Cloud API key */
 export const googleApiKey = 'AIzaSyDkJMU1OqsnEULcV6kCwja2OJef6Ge_NxQ'; // process.env.GOOGLE_API_KEY
 

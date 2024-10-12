@@ -14,7 +14,11 @@ import {
     takeEvery,
 } from 'typed-redux-saga/macro';
 import { alertsShowAlert } from '../alerts/actions';
-import { zipFileExtension, zipFileMimeType } from '../app/constants';
+import {
+    legoBlocklyFileExtensions,
+    zipFileExtension,
+    zipFileMimeType,
+} from '../app/constants';
 import {
     editorActivateFile,
     editorCloseFile,
@@ -269,7 +273,7 @@ function* importPythonFile(
     } else {
         yield* put(fileStorageWriteFile(fileName, sourceFileContents));
 
-        const { didFailToWrite } = yield* race({
+        const { didWrite, didFailToWrite } = yield* race({
             didWrite: take(fileStorageDidWriteFile.when((a) => a.path === fileName)),
             didFailToWrite: take(
                 fileStorageDidFailToWriteFile.when((a) => a.path === fileName),
@@ -279,6 +283,10 @@ function* importPythonFile(
         if (didFailToWrite) {
             throw didFailToWrite.error;
         }
+
+        defined(didWrite);
+
+        yield* put(editorActivateFile(didWrite.uuid));
     }
 }
 
@@ -318,29 +326,18 @@ function* handleGoogleDriveDidSelectDownloadFiles(
 function* handleExplorerImportFiles(): Generator {
     try {
         const selectedFiles = yield* call(() =>
-            fileOpen([
-                {
-                    id: 'pybricks-code-explorer-import',
-                    mimeTypes: [pythonFileMimeType],
-                    extensions: [pythonFileExtension],
-                    // TODO: translate description
-                    description: 'Python Files',
-                    multiple: true,
-                    excludeAcceptAllOption: true,
-                },
-                {
-                    mimeTypes: [zipFileMimeType],
-                    extensions: [zipFileExtension],
-                    // TODO: translate description
-                    description: 'ZIP Files',
-                },
-                {
-                    // mimeTypes: [zipFileMimeType],
-                    extensions: ['.llsp3'],
-                    // TODO: translate description
-                    description: 'LLSP3 Files',
-                },
-            ]),
+            fileOpen({
+                id: 'pybricks-code-explorer-import',
+                mimeTypes: [pythonFileMimeType, zipFileMimeType],
+                extensions: [
+                    pythonFileExtension,
+                    zipFileExtension,
+                    ...legoBlocklyFileExtensions,
+                ],
+                description: 'Supported Files (Python, ZIP, LEGO Blockly)',
+                multiple: true,
+                excludeAcceptAllOption: true,
+            }),
         );
 
         const context: ImportContext = {};
@@ -354,17 +351,16 @@ function* handleExplorerImportFiles(): Generator {
                         const extension = file.name.includes('.')
                             ? '.' + file.name.split('.').pop()
                             : '';
-                        // console.log('>>>>', extension);
                         let text;
                         let filename = file.name;
-                        if (extension === '.llsp3') {
+                        if (legoBlocklyFileExtensions.includes(extension)) {
                             const arraybuffer = yield* call(() => file.arrayBuffer());
                             const result = yield* call(() =>
                                 convertFlipperProjectToPython(arraybuffer, {}),
                             );
                             // console.log(result);
                             text = result.pycode ?? '';
-                            filename = filename.replace('.', '_') + '.py';
+                            filename = filename.replace(/[^a-zA-Z0-9_]/gi, '_') + '.py';
                         } else {
                             // getting the text now to catch possible error *before* user interaction
                             text = yield* call(() => file.text());
