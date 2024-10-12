@@ -26,7 +26,7 @@ port_modes = [0 for _ in range(len(ports))]
 port_commands = [[] for _ in range(len(ports))]
 
 from pybricks.hubs import ThisHub
-hub = ThisHub
+hub = ThisHub()
 try:
     from pybricks.hubs import PrimeHub
     from pybricks.parameters import Icon, Button
@@ -217,7 +217,9 @@ def device_task(port, port_index):
                 yield from update_force_sensor(port, port_index, type_id)
             elif type_id in (1, 2):
                 yield from update_dc_motor(port, port_index, type_id)
-            elif type_id in (38, 46, 47, 48, 49, 65, 75, 76):
+            elif type_id in (38, 46, 47, 48, 49, 65, 75, 76, 86, 87):
+                # 86 (0x56)	Technic Move hub built-in drive motor
+                # 87 (0x56)	Technic Move hub built-in drive motor
                 yield from update_motor(port, port_index, type_id)
             else:
                 yield from unknown_pup_device(port, port_index, type_id)
@@ -270,7 +272,7 @@ def battery_task():
             # skip cc 10 seconds before sending an update 
             percentage = round(min(100,(hub.battery.voltage()-6000)/(8300-6000)*100))
             voltage = hub.battery.voltage()
-            status = hub.charger.status()
+            status = hub.charger.status() if hub.charger else ''
             data = f"pct={percentage}%\tv={voltage}mV\ts={status}"
             yield f"battery\t{data}"
 
