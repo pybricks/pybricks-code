@@ -80,7 +80,7 @@ export default function DownloadPicker() {
 export function FolderPicker() {
     const [openPicker, authResponse] = GoogleDrivePicker();
     const dispatch = useDispatch();
-    const [lastGoogleDriveFolder, setLastGoogleDriveFolder] = useLocalStorage(
+    const [, setLastGoogleDriveFolder] = useLocalStorage(
         'googledrive.selectedFolder',
         '',
     );
