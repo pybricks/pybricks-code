@@ -312,9 +312,11 @@ function* handleGoogleDriveDidSelectDownloadFiles(
                         }
                         defined(didDownload);
 
-                        const content = '123';
-
-                        yield* importPythonFile(file.name, content, context);
+                        yield* importPythonFile(
+                            file.name,
+                            didDownload.content,
+                            context,
+                        );
                     }
                     break;
                 default:
