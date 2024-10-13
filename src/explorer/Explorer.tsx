@@ -214,7 +214,7 @@ const Header: React.FunctionComponent = () => {
                     id={importFromGoogleDriveButtonId}
                     icon={<CloudDownload />}
                     tooltip={i18n.translate('header.toolbar.importFromGoogleDrive')}
-                    onClick={() => openDownloadPicker()}
+                    onClick={openDownloadPicker}
                 />
                 <ActionButton
                     id={archiveButtonId}

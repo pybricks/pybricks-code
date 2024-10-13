@@ -42,11 +42,6 @@ export const googleDriveSelectDownloadFilesCancelled = createAction(() => ({
     type: 'googleDrive.action.selectDownloadFilesCancelled',
 }));
 
-export const googleDriveDownloadFiles = createAction((files: DriveDocument[]) => ({
-    type: 'googleDrive.action.downloadFiles',
-    files,
-}));
-
 export const googleDriveDownloadFile = createAction((file: DriveDocument) => ({
     type: 'googleDrive.action.downloadFile',
     file,
@@ -54,13 +49,13 @@ export const googleDriveDownloadFile = createAction((file: DriveDocument) => ({
 
 export const googleDriveDidDownloadFile = createAction(
     (file: DriveDocument, content: string) => ({
-        type: 'googleDrive.action.downloadFile',
+        type: 'googleDrive.action.didDownloadFile',
         file,
         content,
     }),
 );
 
 export const googleDriveFailToDownloadFile = createAction((file: DriveDocument) => ({
-    type: 'googleDrive.action.downloadFile',
+    type: 'googleDrive.action.failToDownloadFile',
     file,
 }));

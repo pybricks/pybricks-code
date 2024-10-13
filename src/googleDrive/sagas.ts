@@ -18,36 +18,29 @@ import {
     googleDriveFailedToUploadFile,
     googleDriveUploadFile,
 } from './actions';
-import { getOauthToken } from './utils';
+import { getStoredOauthToken } from './utils';
 
 function* handleDownloadFile(
     action: ReturnType<typeof googleDriveDownloadFile>,
 ): Generator {
     try {
-        const authToken = getOauthToken;
-
-        defined(authToken);
-
-        const downloadFile = new Promise<string>((resolve, reject) => {
-            const xhr = new XMLHttpRequest();
-            const url =
-                'https://www.googleapis.com/drive/v3/files/' +
-                action.file.id +
-                '?alt=media';
-            xhr.open('GET', url);
-            xhr.setRequestHeader('Authorization', 'Bearer ' + authToken);
-            xhr.onload = () => {
-                console.info('onload');
-                resolve(xhr.responseText);
-            };
-            xhr.onerror = (err) => {
-                console.info('error:', xhr.response);
-                reject(err);
-            };
-            xhr.send();
+        console.log('handleDownloadFile');
+        const url =
+            'https://www.googleapis.com/drive/v3/files/' +
+            action.file.id +
+            '?alt=media';
+        const fetchFileContent = fetch(url, {
+            headers: {
+                Authorization: 'Bearer ' + getStoredOauthToken(),
+            },
+        }).then((response) => {
+            if (response.ok) {
+                return response.text();
+            }
+            throw new Error(`Fetch error: ${response.status}`);
         });
-        const content = yield* call(() => downloadFile);
-        yield* put(googleDriveDidDownloadFile(action.file, content));
+        const fileContent = yield* call(() => fetchFileContent);
+        yield* put(googleDriveDidDownloadFile(action.file, fileContent));
     } catch (err) {
         yield* put(googleDriveFailToDownloadFile(action.file));
     }
@@ -97,7 +90,7 @@ function* handleUploadFile(
                 'post',
                 'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',
             );
-            xhr.setRequestHeader('Authorization', 'Bearer ' + getOauthToken());
+            xhr.setRequestHeader('Authorization', 'Bearer ' + getStoredOauthToken());
             xhr.responseType = 'json';
             xhr.onload = () => {
                 console.log('Google drive file id:', xhr.response.id);
