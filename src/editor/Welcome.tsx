@@ -1,12 +1,17 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022-2023 The Pybricks Authors
+// Copyright (c) 2022-2024 The Pybricks Authors
 
 // welcome screen that is shown when no editor is open.
 
-import { Colors } from '@blueprintjs/core';
-import React, { useEffect, useRef } from 'react';
+import { Button, Colors } from '@blueprintjs/core';
+import { Document, Plus } from '@blueprintjs/icons';
+import React, { useCallback, useEffect, useRef } from 'react';
+import { useDispatch } from 'react-redux';
 import Two from 'two.js';
 import { useTernaryDarkMode } from 'usehooks-ts';
+import { Activity, useActivitiesSelectedActivity } from '../activities/hooks';
+import { explorerCreateNewFile } from '../explorer/actions';
+import { useI18n } from './i18n';
 import logoSvg from './logo.svg';
 
 const defaultRotation = -Math.PI / 9; // radians
@@ -61,6 +66,8 @@ type WelcomeProps = {
 };
 
 const Welcome: React.FunctionComponent<WelcomeProps> = ({ isVisible }) => {
+    const i18n = useI18n();
+    const dispatch = useDispatch();
     const stateRef = useRef<State>({
         rotation: defaultRotation,
         rotationSpeed: 0,
@@ -104,7 +111,7 @@ const Welcome: React.FunctionComponent<WelcomeProps> = ({ isVisible }) => {
             });
 
             logo.fill = fillColorRef.current;
-            logo.scale = Math.min(two.width, two.height) / 80;
+            logo.scale = Math.min(two.width, two.height) / 90;
             logo.rotation = stateRef.current.rotation;
 
             two.scene.position.x = two.width / 2;
@@ -156,15 +163,40 @@ const Welcome: React.FunctionComponent<WelcomeProps> = ({ isVisible }) => {
         };
     }, [isVisible]);
 
+    const [, setSelectedActivity] = useActivitiesSelectedActivity();
+    const handleOpenNewProject = useCallback(() => {
+        setSelectedActivity(Activity.Explorer);
+        dispatch(explorerCreateNewFile());
+    }, [dispatch, setSelectedActivity]);
+
+    const handleOpenExplorer = useCallback(() => {
+        setSelectedActivity(Activity.Explorer);
+    }, [setSelectedActivity]);
+
     return (
         <div
             className="pb-editor-welcome"
-            ref={elementRef}
             onContextMenuCapture={(e) => {
                 e.stopPropagation();
                 e.preventDefault();
             }}
-        />
+        >
+            <div className="logo" ref={elementRef}></div>
+            <div className="shortcuts">
+                <dl>
+                    <dt>{i18n.translate('welcome.openProject')}</dt>
+                    <dd>
+                        <Button icon={<Document />} onClick={handleOpenExplorer} />
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>{i18n.translate('welcome.newProject')}</dt>
+                    <dd>
+                        <Button icon={<Plus />} onClick={handleOpenNewProject} />
+                    </dd>
+                </dl>
+            </div>
+        </div>
     );
 };
 

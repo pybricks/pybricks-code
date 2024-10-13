@@ -2,7 +2,6 @@
     "tablist": {
         "label": "Editor"
     },
-    "welcome": "Welcome",
     "placeholder": "Write your program here...",
     "check": "Check syntax",
     "toggleDocs": "Toggle documentation",
@@ -16,5 +15,10 @@
     "docs": {
         "show": "Show documentation",
         "hide": "Hide documentation"
+    },
+    "welcome": {
+        "label": "Welcome",
+        "openProject": "Open existing project",
+        "newProject": "Open a new project"
     }
 }

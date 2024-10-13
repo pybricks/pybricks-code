@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2023 The Pybricks Authors
+// Copyright (c) 2020-2024 The Pybricks Authors
 
 import './editor.scss';
 import {
@@ -510,7 +510,7 @@ const Editor: React.FunctionComponent = () => {
                 <ContextMenu
                     className={classNames('pb-editor-tabpanel', isEmpty && 'pb-empty')}
                     role="tabpanel"
-                    aria-label={isEmpty ? i18n.translate('welcome') : fileName}
+                    aria-label={isEmpty ? i18n.translate('welcome.label') : fileName}
                     // NB: we have to create a new context menu each time it is
                     // shown in order to get some state, like canUndo and canRedo
                     // that don't have events to monitor changes.
