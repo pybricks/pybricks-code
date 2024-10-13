@@ -11,6 +11,7 @@ import Two from 'two.js';
 import { useTernaryDarkMode } from 'usehooks-ts';
 import { Activity, useActivitiesSelectedActivity } from '../activities/hooks';
 import { explorerCreateNewFile } from '../explorer/actions';
+import { useI18n } from './i18n';
 import logoSvg from './logo.svg';
 
 const defaultRotation = -Math.PI / 9; // radians
@@ -65,6 +66,7 @@ type WelcomeProps = {
 };
 
 const Welcome: React.FunctionComponent<WelcomeProps> = ({ isVisible }) => {
+    const i18n = useI18n();
     const dispatch = useDispatch();
     const stateRef = useRef<State>({
         rotation: defaultRotation,
@@ -182,13 +184,13 @@ const Welcome: React.FunctionComponent<WelcomeProps> = ({ isVisible }) => {
             <div className="logo" ref={elementRef}></div>
             <div className="shortcuts">
                 <dl>
-                    <dt>Open existing project</dt>
+                    <dt>{i18n.translate('welcome.openProject')}</dt>
                     <dd>
                         <Button icon={<Document />} onClick={handleOpenExplorer} />
                     </dd>
                 </dl>
                 <dl>
-                    <dt>Open a new project</dt>
+                    <dt>{i18n.translate('welcome.newProject')}</dt>
                     <dd>
                         <Button icon={<Plus />} onClick={handleOpenNewProject} />
                     </dd>
