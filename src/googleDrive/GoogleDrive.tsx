@@ -86,13 +86,13 @@ export function FolderPicker() {
     );
 
     const openFolderPicker = () => {
-        const folderId = (() => {
-            try {
-                return JSON.parse(lastGoogleDriveFolder)?.id;
-            } catch {
-                return undefined;
-            }
-        })();
+        // const folderId = (() => {
+        //     try {
+        //         return JSON.parse(lastGoogleDriveFolder)?.id;
+        //     } catch {
+        //         return undefined;
+        //     }
+        // })();
         openPicker({
             clientId: googleClientId,
             developerKey: googleApiKey,
@@ -101,7 +101,7 @@ export function FolderPicker() {
             customScopes: ['https://www.googleapis.com/auth/drive'],
             setSelectFolderEnabled: true,
             supportDrives: true,
-            setParentFolder: folderId,
+            // setParentFolder: folderId,
             callbackFunction: (data: PickerResponse) => {
                 if (data.action === 'picked' && data.docs) {
                     setLastGoogleDriveFolder(JSON.stringify(data.docs[0]));
