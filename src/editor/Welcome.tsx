@@ -190,7 +190,7 @@ const Welcome: React.FunctionComponent<WelcomeProps> = ({ isVisible }) => {
     const getRecentFileShortCuts = () => (
         <>
             {recentFiles.slice(0, recentFileCount).map((fitem: RecentFileMetadata) => (
-                <dl key={fitem.uuid}>
+                <dl key={fitem.uuid} onClick={() => handleOpenExplorer(fitem.uuid)}>
                     <dt>
                         {i18n.translate('welcome.openProject', {
                             fileName: fitem.path,
