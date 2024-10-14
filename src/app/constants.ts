@@ -96,3 +96,5 @@ export const googleApiKey = 'AIzaSyDkJMU1OqsnEULcV6kCwja2OJef6Ge_NxQ'; // proces
 /** Google OAuth 2.0 Client ID */
 export const googleClientId =
     '688983308610-sst0jc72ti5p196srnkst442a9iadkqs.apps.googleusercontent.com'; // process.env.GOOGLE_CLIENT_ID
+/** maximum number of recent file displayed */
+export const recentFileCount = 3;

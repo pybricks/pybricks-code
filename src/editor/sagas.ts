@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022-2023 The Pybricks Authors
+// Copyright (c) 2022-2024 The Pybricks Authors
 
 import type { DatabaseChangeType, IDatabaseChange } from 'dexie-observable/api';
 import * as monaco from 'monaco-editor';
@@ -17,6 +17,7 @@ import {
     takeEvery,
 } from 'typed-redux-saga/macro';
 import { alertsShowAlert } from '../alerts/actions';
+import { recentFileCount } from '../app/constants';
 import { FileStorageDb, UUID } from '../fileStorage';
 import {
     fileStorageDidFailToLoadTextFile,
@@ -62,11 +63,13 @@ import {
     editorGetValueResponse,
     editorGoto,
     editorOpenFile,
+    editorRecentFiles,
     editorReplaceFile,
 } from './actions';
 import { EditorError } from './error';
 import { ActiveFileHistoryManager, OpenFileManager } from './lib';
 import { pybricksMicroPythonId } from './pybricksMicroPython';
+import { RecentFileMetadata } from '.';
 
 function* handleEditorGetValueRequest(
     editor: monaco.editor.ICodeEditor,
@@ -273,6 +276,33 @@ function* handleEditorActivateFile(
 
         editor.focus();
 
+        // store the activated uuid in the recent files queue
+        let recentFiles = (() => {
+            try {
+                return JSON.parse(
+                    localStorage.getItem('editor.recentFiles') ?? '',
+                ) as RecentFileMetadata[];
+            } catch {
+                return [];
+            }
+        })();
+
+        // Check if the file already exists
+        const fileIndex = recentFiles.findIndex((fitem: RecentFileMetadata) => {
+            return fitem.uuid === action.uuid;
+        });
+        if (fileIndex !== -1) {
+            recentFiles.splice(fileIndex, 1);
+        }
+
+        const db = yield* getContext<FileStorageDb>('fileStorage');
+        const metadata = yield* call(() => db.metadata.get(action.uuid));
+        recentFiles.unshift({ uuid: action.uuid, path: metadata?.path ?? '' }); // Add new (or existing) file to the beginning
+        recentFiles = [...recentFiles.slice(0, recentFileCount)]; // Keep only the first 10 items
+        localStorage.setItem('editor.recentFiles', JSON.stringify(recentFiles));
+        yield* put(editorRecentFiles(recentFiles));
+
+        // signal activation done
         yield* put(editorDidActivateFile(action.uuid));
     } catch (err) {
         yield* put(editorDidFailToActivateFile(action.uuid, ensureError(err)));

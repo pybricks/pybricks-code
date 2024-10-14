@@ -4,15 +4,20 @@
 // welcome screen that is shown when no editor is open.
 
 import { Button, Colors } from '@blueprintjs/core';
-import { Document, Plus } from '@blueprintjs/icons';
+import { DocumentOpen, Plus } from '@blueprintjs/icons';
 import React, { useCallback, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import Two from 'two.js';
 import { useTernaryDarkMode } from 'usehooks-ts';
 import { Activity, useActivitiesSelectedActivity } from '../activities/hooks';
+import { recentFileCount } from '../app/constants';
 import { explorerCreateNewFile } from '../explorer/actions';
+import { UUID } from '../fileStorage';
+import { useSelector } from '../reducers';
+import { editorActivateFile } from './actions';
 import { useI18n } from './i18n';
 import logoSvg from './logo.svg';
+import { RecentFileMetadata } from '.';
 
 const defaultRotation = -Math.PI / 9; // radians
 const rotationSpeedIncrement = 0.1; // radians per second
@@ -100,6 +105,7 @@ const Welcome: React.FunctionComponent<WelcomeProps> = ({ isVisible }) => {
 
         const logo = two.load(logoSvg, (g) => {
             g.center();
+
             two.add(logo);
             two.play();
         });
@@ -111,7 +117,7 @@ const Welcome: React.FunctionComponent<WelcomeProps> = ({ isVisible }) => {
             });
 
             logo.fill = fillColorRef.current;
-            logo.scale = Math.min(two.width, two.height) / 90;
+            logo.scale = Math.min(two.width, two.height) / 80;
             logo.rotation = stateRef.current.rotation;
 
             two.scene.position.x = two.width / 2;
@@ -169,9 +175,37 @@ const Welcome: React.FunctionComponent<WelcomeProps> = ({ isVisible }) => {
         dispatch(explorerCreateNewFile());
     }, [dispatch, setSelectedActivity]);
 
-    const handleOpenExplorer = useCallback(() => {
-        setSelectedActivity(Activity.Explorer);
-    }, [setSelectedActivity]);
+    const handleOpenExplorer = useCallback(
+        (uuid: UUID) => {
+            setSelectedActivity(Activity.Explorer);
+            dispatch(editorActivateFile(uuid));
+        },
+        [dispatch, setSelectedActivity],
+    );
+
+    const recentFiles: readonly RecentFileMetadata[] = useSelector(
+        (s) => s.editor.recentFiles,
+    );
+
+    const getRecentFileShortCuts = () => (
+        <>
+            {recentFiles.slice(0, recentFileCount).map((fitem: RecentFileMetadata) => (
+                <dl key={fitem.uuid}>
+                    <dt>
+                        {i18n.translate('welcome.openProject', {
+                            fileName: fitem.path,
+                        })}
+                    </dt>
+                    <dd>
+                        <Button
+                            icon={<DocumentOpen />}
+                            onClick={() => handleOpenExplorer(fitem.uuid)}
+                        />
+                    </dd>
+                </dl>
+            ))}
+        </>
+    );
 
     return (
         <div
@@ -183,12 +217,7 @@ const Welcome: React.FunctionComponent<WelcomeProps> = ({ isVisible }) => {
         >
             <div className="logo" ref={elementRef}></div>
             <div className="shortcuts">
-                <dl>
-                    <dt>{i18n.translate('welcome.openProject')}</dt>
-                    <dd>
-                        <Button icon={<Document />} onClick={handleOpenExplorer} />
-                    </dd>
-                </dl>
+                {getRecentFileShortCuts()}
                 <dl>
                     <dt>{i18n.translate('welcome.newProject')}</dt>
                     <dd>
