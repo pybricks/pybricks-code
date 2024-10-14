@@ -58,17 +58,6 @@ export const sendStopUserProgramCommand = createAction((id: number) => ({
 /**
  * Action that requests a start user program to be sent.
  * @param id Unique identifier for this transaction.
- *
- * @since Pybricks Profile v1.2.0.
- */
-export const sendLegacyStartUserProgramCommand = createAction((id: number) => ({
-    type: 'blePybricksServiceCommand.action.sendLegacyStartUserProgramCommand',
-    id,
-}));
-
-/**
- * Action that requests a start user program to be sent.
- * @param id Unique identifier for this transaction.
  * @param slot Program identifier to start.
  *
  * @since Pybricks Profile v1.4.0.

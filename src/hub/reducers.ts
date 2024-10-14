@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2023 The Pybricks Authors
+// Copyright (c) 2020-2024 The Pybricks Authors
 
 import { Reducer, combineReducers } from 'redux';
 import * as semver from 'semver';
@@ -263,6 +263,18 @@ const useLegacyStdio: Reducer<boolean> = (state = false, action) => {
     return state;
 };
 
+/**
+ * When true, use Legacy StartUserProgram.
+ */
+const useLegacyStartUserProgram: Reducer<boolean> = (state = false, action) => {
+    if (bleDIServiceDidReceiveSoftwareRevision.matches(action)) {
+        // Behavior changed starting with Pybricks Profile v1.4.0.
+        return !semver.satisfies(action.version, '^1.4.0');
+    }
+
+    return state;
+};
+
 export default combineReducers({
     runtime,
     downloadProgress,
@@ -272,4 +284,5 @@ export default combineReducers({
     preferredFileFormat,
     useLegacyDownload,
     useLegacyStdio,
+    useLegacyStartUserProgram,
 });

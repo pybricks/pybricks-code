@@ -9,9 +9,11 @@ import {
     fork,
     put,
     race,
+    select,
     take,
     takeEvery,
 } from 'typed-redux-saga/macro';
+import { RootState } from '../reducers';
 import { ensureError, hex } from '../utils';
 import {
     didFailToSendCommand,
@@ -35,6 +37,7 @@ import {
 import {
     EventType,
     ProtocolError,
+    createLegacyStartUserProgramCommand,
     createStartReplCommand,
     createStartUserProgramCommand,
     createStopUserProgramCommand,
@@ -53,6 +56,7 @@ import {
  * the bytecodes to to the device.
  */
 function* encodeRequest(): Generator {
+    const { useLegacyStartUserProgram } = yield* select((s: RootState) => s.hub);
     // Using a loop to serialize sending data to avoid "busy" errors.
 
     const chan = yield* actionChannel(
@@ -68,9 +72,15 @@ function* encodeRequest(): Generator {
         if (sendStopUserProgramCommand.matches(action)) {
             yield* put(writeCommand(action.id, createStopUserProgramCommand()));
         } else if (sendStartUserProgramCommand.matches(action)) {
-            yield* put(
-                writeCommand(action.id, createStartUserProgramCommand(action.slot)),
-            );
+            if (useLegacyStartUserProgram) {
+                yield* put(
+                    writeCommand(action.id, createLegacyStartUserProgramCommand()),
+                );
+            } else {
+                yield* put(
+                    writeCommand(action.id, createStartUserProgramCommand(action.slot)),
+                );
+            }
         } else if (sendStartReplCommand.matches(action)) {
             yield* put(writeCommand(action.id, createStartReplCommand()));
         } else if (sendWriteUserProgramMetaCommand.matches(action)) {
