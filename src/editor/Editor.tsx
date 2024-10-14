@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2023 The Pybricks Authors
+// Copyright (c) 2020-2024 The Pybricks Authors
 
 import './editor.scss';
 import {
@@ -19,6 +19,7 @@ import {
 import {
     Blank,
     Clipboard,
+    Console,
     Cross,
     Duplicate,
     Manual,
@@ -37,7 +38,10 @@ import { UUID } from '../fileStorage';
 import { useFileStoragePath } from '../fileStorage/hooks';
 import { compile } from '../mpy/actions';
 import { useSelector } from '../reducers';
-import { useSettingIsShowDocsEnabled } from '../settings/hooks';
+import {
+    useSettingIsShowDocsEnabled,
+    useSettingIsShowTerminalEnabled,
+} from '../settings/hooks';
 import { isMacOS } from '../utils/os';
 import Welcome from './Welcome';
 import { editorActivateFile, editorCloseFile } from './actions';
@@ -389,6 +393,8 @@ const Editor: React.FunctionComponent = () => {
     const [editor, setEditor] = useState<monaco.editor.IStandaloneCodeEditor>();
     const { isSettingShowDocsEnabled, toggleIsSettingShowDocsEnabled } =
         useSettingIsShowDocsEnabled();
+    const { isSettingShowTerminalEnabled, toggleIsSettingShowTerminalEnabled } =
+        useSettingIsShowTerminalEnabled();
     const { isDarkMode } = useTernaryDarkMode();
 
     const i18n = useI18n();
@@ -521,18 +527,30 @@ const Editor: React.FunctionComponent = () => {
                     <div className="pb-editor-monaco" ref={editorRef} />
                 </ContextMenu>
             </ResizeSensor>
-            <Button
-                className="pb-editor-doc-button"
-                minimal
-                large
-                icon={<Manual />}
-                title={
-                    isSettingShowDocsEnabled
-                        ? i18n.translate('docs.hide')
-                        : i18n.translate('docs.show')
-                }
-                onClick={toggleIsSettingShowDocsEnabled}
-            />
+            <div className="pb-editor-action-buttons">
+                <Button
+                    minimal
+                    large
+                    icon={<Manual />}
+                    title={
+                        isSettingShowDocsEnabled
+                            ? i18n.translate('docs.hide')
+                            : i18n.translate('docs.show')
+                    }
+                    onClick={toggleIsSettingShowDocsEnabled}
+                />
+                <Button
+                    minimal
+                    large
+                    icon={<Console />}
+                    title={
+                        isSettingShowTerminalEnabled
+                            ? i18n.translate('terminal.hide')
+                            : i18n.translate('terminal.show')
+                    }
+                    onClick={toggleIsSettingShowTerminalEnabled}
+                />
+            </div>
         </div>
     );
 };

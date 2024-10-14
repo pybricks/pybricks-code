@@ -3,15 +3,18 @@
 
 import 'react-splitter-layout/lib/index.css';
 import './app.scss';
-import { Classes, Spinner } from '@blueprintjs/core';
-import React, { useEffect, useState } from 'react';
+import { Classes, HotkeyConfig, Spinner, useHotkeys } from '@blueprintjs/core';
+import React, { useEffect, useMemo, useState } from 'react';
 import SplitterLayout from 'react-splitter-layout';
 import { useLocalStorage, useTernaryDarkMode } from 'usehooks-ts';
 import Activities from '../activities/Activities';
 import DfuWindowsDriverInstallDialog from '../firmware/dfuWindowsDriverInstallDialog/DfuWindowsDriverInstallDialog';
 import { InstallPybricksDialog } from '../firmware/installPybricksDialog/InstallPybricksDialog';
 import RestoreOfficialDialog from '../firmware/restoreOfficialDialog/RestoreOfficialDialog';
-import { useSettingIsShowDocsEnabled } from '../settings/hooks';
+import {
+    useSettingIsShowDocsEnabled,
+    useSettingIsShowTerminalEnabled,
+} from '../settings/hooks';
 import SponsorDialog from '../sponsor/SponsorDialog';
 import StatusBar from '../status-bar/StatusBar';
 import Toolbar from '../toolbar/Toolbar';
@@ -156,7 +159,10 @@ const Docs: React.FunctionComponent = () => {
 const App: React.FunctionComponent = () => {
     const i18n = useI18n();
     const { isDarkMode } = useTernaryDarkMode();
-    const { isSettingShowDocsEnabled } = useSettingIsShowDocsEnabled();
+    const { isSettingShowDocsEnabled, toggleIsSettingShowDocsEnabled } =
+        useSettingIsShowDocsEnabled();
+    const { isSettingShowTerminalEnabled, toggleIsSettingShowTerminalEnabled } =
+        useSettingIsShowTerminalEnabled();
     const [isDragging, setIsDragging] = useState(false);
 
     const [docsSplit, setDocsSplit] = useLocalStorage('app-docs-split', 30);
@@ -188,6 +194,31 @@ const App: React.FunctionComponent = () => {
         return () => removeEventListener('keydown', listener);
     }, []);
 
+    const hotkeys = useMemo<readonly HotkeyConfig[]>(
+        () => [
+            {
+                global: true,
+                allowInInput: true,
+                combo: 'alt+F1',
+                label: 'Show or Hide the Documentation',
+                preventDefault: true,
+                stopPropagation: true,
+                onKeyDown: () => toggleIsSettingShowDocsEnabled(),
+            },
+            {
+                global: true,
+                allowInInput: true,
+                combo: 'alt+T',
+                label: 'Show or Hide the Terminal',
+                preventDefault: true,
+                stopPropagation: true,
+                onKeyDown: () => toggleIsSettingShowTerminalEnabled(),
+            },
+        ],
+        [toggleIsSettingShowDocsEnabled, toggleIsSettingShowTerminalEnabled],
+    );
+    useHotkeys(hotkeys);
+
     return (
         <div className="pb-app" onContextMenu={(e) => e.preventDefault()}>
             <div className="pb-app-body">
@@ -210,6 +241,11 @@ const App: React.FunctionComponent = () => {
                         onSecondaryPaneSizeChange={setDocsSplit}
                     >
                         <SplitterLayout
+                            customClassName={
+                                isSettingShowTerminalEnabled
+                                    ? 'pb-show-terminal'
+                                    : 'pb-hide-terminal'
+                            }
                             vertical={true}
                             percentage={true}
                             secondaryInitialSize={terminalSplit}
