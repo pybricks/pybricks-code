@@ -293,33 +293,50 @@ function* importPythonFile(
 function* handleGoogleDriveDidSelectDownloadFiles(
     action: ReturnType<typeof googleDriveDidSelectDownloadFiles>,
 ): Generator {
-    const context: ImportContext = {};
-    for (const file of action.files) {
-        console.log(file);
-        switch (file.mimeType) {
-            case '': // empty string means "could not be determined"
-            case pythonFileMimeType:
-                {
-                    yield* put(googleDriveDownloadFile(file));
+    try {
+        const context: ImportContext = {};
+        for (const file of action.files) {
+            console.log(file);
+            switch (file.mimeType) {
+                case '': // empty string means "could not be determined"
+                case pythonFileMimeType:
+                    {
+                        yield* put(googleDriveDownloadFile(file));
 
-                    const { didDownload, didFailToDownload } = yield* race({
-                        didDownload: take(googleDriveDidDownloadFile),
-                        didFailToDownload: take(googleDriveFailToDownloadFile),
-                    });
+                        const { didDownload, didFailToDownload } = yield* race({
+                            didDownload: take(
+                                googleDriveDidDownloadFile.when(
+                                    (a) => a.file.id === file.id,
+                                ),
+                            ),
+                            didFailToDownload: take(
+                                googleDriveFailToDownloadFile.when(
+                                    (a) => a.file.id === file.id,
+                                ),
+                            ),
+                        });
 
-                    if (didFailToDownload) {
-                        console.log(didFailToDownload);
+                        if (didFailToDownload) {
+                            console.log(didFailToDownload);
+                        }
+                        defined(didDownload);
+
+                        yield* importPythonFile(
+                            file.name,
+                            didDownload.content,
+                            context,
+                        );
                     }
-                    defined(didDownload);
-
-                    yield* importPythonFile(file.name, didDownload.content, context);
-                }
-                break;
-            default:
-                throw new Error(
-                    `'${file.name}' has unsupported file type: ${file.type}`,
-                );
+                    break;
+                default:
+                    throw new Error(
+                        `'${file.name}' has unsupported file type: ${file.type}`,
+                    );
+            }
         }
+        yield* put(explorerDidImportFiles());
+    } catch (err) {
+        yield* put(explorerDidFailToImportFiles(ensureError(err)));
     }
 }
 

@@ -12,7 +12,7 @@ import {
     googleDriveDidSelectFolder,
 } from './actions';
 import { DriveDocument, PickerResponse } from './protocol';
-import { getOauthToken, setOauthToken } from './utils';
+import { getStoredOauthToken, saveOauthToken } from './utils';
 
 export default function DownloadPicker() {
     const [pickedDocs, setPickedDocs] = useState<DriveDocument[]>([]);
@@ -28,7 +28,7 @@ export default function DownloadPicker() {
             ', ',
             sessionStorage.getItem('google_oauth_token'),
         );
-        const authToken = getOauthToken();
+        const authToken = getStoredOauthToken();
         const folderId = (() => {
             try {
                 return JSON.parse(lastGoogleDriveFolder)?.id;
@@ -59,7 +59,7 @@ export default function DownloadPicker() {
                         setPickedDocs(data.docs);
                     }
                 } else {
-                    console.log('cancelled, nothing happens.');
+                    console.log('dialog cancelled, nothing happens.');
                 }
             },
         });
@@ -68,7 +68,7 @@ export default function DownloadPicker() {
     // When auth token is not available, need to wait for the auth token to be available until dispatching DidSelectDownloadFiles
     useEffect(() => {
         if (authResponse) {
-            setOauthToken(authResponse.access_token, authResponse.expires_in);
+            saveOauthToken(authResponse.access_token, authResponse.expires_in);
             if (pickedDocs) {
                 dispatch(googleDriveDidSelectDownloadFiles(pickedDocs));
             }
@@ -97,7 +97,7 @@ export function FolderPicker() {
             clientId: googleClientId,
             developerKey: googleApiKey,
             viewId: 'FOLDERS',
-            token: getOauthToken(),
+            token: getStoredOauthToken(),
             customScopes: ['https://www.googleapis.com/auth/drive'],
             setSelectFolderEnabled: true,
             supportDrives: true,
@@ -113,7 +113,7 @@ export function FolderPicker() {
 
     useEffect(() => {
         if (authResponse) {
-            setOauthToken(authResponse.access_token, authResponse.expires_in);
+            saveOauthToken(authResponse.access_token, authResponse.expires_in);
         }
     }, [authResponse]);
 

@@ -4,7 +4,7 @@
 const googleOauthTokenExpirationStorageKey = 'google_oauth_token_expiration';
 const googleOauthTokenStorageKey = 'google_oauth_token';
 
-export function getOauthToken(): string {
+export function getStoredOauthToken(): string {
     const tokenExpiration = sessionStorage.getItem(
         googleOauthTokenExpirationStorageKey,
     );
@@ -14,7 +14,7 @@ export function getOauthToken(): string {
 
     return sessionStorage.getItem(googleOauthTokenStorageKey) || '';
 }
-export function setOauthToken(authToken: string, expireIn: number) {
+export function saveOauthToken(authToken: string, expireIn: number) {
     console.log('auth token updated');
     sessionStorage.setItem(googleOauthTokenStorageKey, authToken);
     sessionStorage.setItem(
