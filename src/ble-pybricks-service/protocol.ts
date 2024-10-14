@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2023 The Pybricks Authors
+// Copyright (c) 2020-2024 The Pybricks Authors
 //
 // Definitions related to the Pybricks Bluetooth low energy GATT service.
 
@@ -85,15 +85,24 @@ export function createStopUserProgramCommand(): Uint8Array {
 /**
  * Creates a {@link CommandType.StartUserProgram} message.
  *
- * The optional payload parameter was added in Pybricks Profile v1.4.0.
+ * @since Pybricks Profile v1.2.0.
+ */
+export function createLegacyStartUserProgramCommand(): Uint8Array {
+    const msg = new Uint8Array(1);
+    msg[0] = CommandType.StartUserProgram;
+    return msg;
+}
+
+/**
+ * Creates a {@link CommandType.StartUserProgram} message.
  *
  * Parameters:
- * - payload: Optional program identifier (one byte). Slots 0--127 are
+ * - slot: Optional program identifier (one byte). Slots 0--127 are
  *            reserved for downloaded user programs. Slots 128--255 are
  *            for builtin user programs. If no program identifier is
  *            given, the currently active program slot will be started.
  *
- * @since Pybricks Profile v1.2.0. Program identifier added in Pybricks Profile v1.4.0.
+ * @since Pybricks Profile v1.4.0.
  */
 export function createStartUserProgramCommand(slot: number | undefined): Uint8Array {
     const msg = new Uint8Array(slot === undefined ? 1 : 2);

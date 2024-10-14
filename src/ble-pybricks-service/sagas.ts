@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021-2023 The Pybricks Authors
+// Copyright (c) 2021-2024 The Pybricks Authors
 //
 // Handles Pybricks protocol.
 
@@ -61,8 +61,7 @@ function* encodeRequest(): Generator {
             a.type.startsWith('blePybricksServiceCommand.action.send'),
     );
 
-
-    for (; ;) {
+    for (;;) {
         const action = yield* take(chan);
 
         /* istanbul ignore else: should not be possible to reach */
