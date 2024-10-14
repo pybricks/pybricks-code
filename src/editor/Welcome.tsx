@@ -4,15 +4,16 @@
 // welcome screen that is shown when no editor is open.
 
 import { Button, Colors } from '@blueprintjs/core';
-import { Document, Plus } from '@blueprintjs/icons';
+import { DocumentOpen, Plus } from '@blueprintjs/icons';
 import React, { useCallback, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import Two from 'two.js';
-import { useLocalStorage, useTernaryDarkMode } from 'usehooks-ts';
+import { useTernaryDarkMode } from 'usehooks-ts';
 import { Activity, useActivitiesSelectedActivity } from '../activities/hooks';
 import { recentFileCount } from '../app/constants';
 import { explorerCreateNewFile } from '../explorer/actions';
 import { UUID } from '../fileStorage';
+import { useSelector } from '../reducers';
 import { editorActivateFile } from './actions';
 import { useI18n } from './i18n';
 import logoSvg from './logo.svg';
@@ -174,32 +175,35 @@ const Welcome: React.FunctionComponent<WelcomeProps> = ({ isVisible }) => {
         dispatch(explorerCreateNewFile());
     }, [dispatch, setSelectedActivity]);
 
-    //useCallback
-    const handleOpenExplorer = (uuid: UUID) => {
-        setSelectedActivity(Activity.Explorer);
-        dispatch(editorActivateFile(uuid));
-    };
+    const handleOpenExplorer = useCallback(
+        (uuid: UUID) => {
+            setSelectedActivity(Activity.Explorer);
+            dispatch(editorActivateFile(uuid));
+        },
+        [dispatch, setSelectedActivity],
+    );
 
-    const [editorRecentFiles] = useLocalStorage('editor.recentFiles', []);
+    const recentFiles: readonly RecentFileMetadata[] = useSelector(
+        (s) => s.editor.recentFiles,
+    );
+
     const getRecentFileShortCuts = () => (
         <>
-            {editorRecentFiles
-                .slice(0, recentFileCount)
-                .map((fitem: RecentFileMetadata) => (
-                    <dl key={fitem.uuid}>
-                        <dt>
-                            {i18n.translate('welcome.openProject', {
-                                fileName: fitem.path,
-                            })}
-                        </dt>
-                        <dd>
-                            <Button
-                                icon={<Document />}
-                                onClick={() => handleOpenExplorer(fitem.uuid)}
-                            />
-                        </dd>
-                    </dl>
-                ))}
+            {recentFiles.slice(0, recentFileCount).map((fitem: RecentFileMetadata) => (
+                <dl key={fitem.uuid}>
+                    <dt>
+                        {i18n.translate('welcome.openProject', {
+                            fileName: fitem.path,
+                        })}
+                    </dt>
+                    <dd>
+                        <Button
+                            icon={<DocumentOpen />}
+                            onClick={() => handleOpenExplorer(fitem.uuid)}
+                        />
+                    </dd>
+                </dl>
+            ))}
         </>
     );
 

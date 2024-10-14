@@ -63,6 +63,7 @@ import {
     editorGetValueResponse,
     editorGoto,
     editorOpenFile,
+    editorRecentFiles,
     editorReplaceFile,
 } from './actions';
 import { EditorError } from './error';
@@ -297,8 +298,9 @@ function* handleEditorActivateFile(
         const db = yield* getContext<FileStorageDb>('fileStorage');
         const metadata = yield* call(() => db.metadata.get(action.uuid));
         recentFiles.unshift({ uuid: action.uuid, path: metadata?.path ?? '' }); // Add new (or existing) file to the beginning
-        recentFiles = [...recentFiles.slice(recentFileCount)]; // Keep only the first 10 items
+        recentFiles = [...recentFiles.slice(0, recentFileCount)]; // Keep only the first 10 items
         localStorage.setItem('editor.recentFiles', JSON.stringify(recentFiles));
+        yield* put(editorRecentFiles(recentFiles));
 
         // signal activation done
         yield* put(editorDidActivateFile(action.uuid));
