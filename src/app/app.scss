@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2022 The Pybricks Authors
+// Copyright (c) 2020-2024 The Pybricks Authors
 
 // Custom styling for the App control.
 
@@ -185,6 +185,7 @@ $dark-splitter-color-hover: color.adjust(
 
 // hide the docs and resize separator
 
+div.pb-hide-terminal > :not(.layout-pane-primary),
 div.pb-hide-docs > :not(.layout-pane-primary) {
     display: none;
 }

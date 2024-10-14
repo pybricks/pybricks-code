@@ -13,12 +13,16 @@
     "closeFile": { "tooltip": "Close {fileName}" },
     "contextMenu": { "label": "Editor context menu" },
     "docs": {
-        "show": "Show documentation",
-        "hide": "Hide documentation"
+        "show": "Show documentation (Alt-F1)",
+        "hide": "Hide documentation (Alt-F1)"
     },
     "welcome": {
         "label": "Welcome",
         "openProject": "Open {fileName}",
         "newProject": "Open a new project"
+    },
+    "terminal": {
+        "show": "Show terminal (Alt-T)",
+        "hide": "Hide terminal (Alt-T)"
     }
 }
