@@ -47,7 +47,7 @@
         "babel-plugin-transform-import-meta": "^2.2.1",
         "babel-preset-react-app": "^10.0.1",
         "bfj": "^8.0.0",
-        "blocklypy": "^0.0.3",
+        "blocklypy": "^0.0.4",
         "browser-fs-access": "^0.35.0",
         "browserslist": "^4.22.2",
         "camelcase": "^8.0.0",
