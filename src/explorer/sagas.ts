@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2022-2024 The Pybricks Authors
 
-import { convertFlipperProjectToPython } from 'blocklypy';
+import { PyConverterOptions, convertFlipperProjectToPython } from 'blocklypy';
 import { fileOpen, fileSave } from 'browser-fs-access';
 import JSZip from 'jszip';
 import {
@@ -373,7 +373,9 @@ function* handleExplorerImportFiles(): Generator {
                         if (legoBlocklyFileExtensions.includes(extension)) {
                             const arraybuffer = yield* call(() => file.arrayBuffer());
                             const result = yield* call(() =>
-                                convertFlipperProjectToPython(arraybuffer, {}),
+                                convertFlipperProjectToPython(arraybuffer, {
+                                    debug: { showExplainingComments: true },
+                                } as PyConverterOptions),
                             );
                             // console.log(result);
                             text = result.pycode ?? '';
