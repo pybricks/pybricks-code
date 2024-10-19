@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022-2023 The Pybricks Authors
+// Copyright (c) 2022-2024 The Pybricks Authors
 
 import { Button, Intent } from '@blueprintjs/core';
 import { Code, Error } from '@blueprintjs/icons';
@@ -31,6 +31,11 @@ const CompilerError: React.FunctionComponent<CompilerErrorProps> = ({ error }) =
     }, [error]);
 
     const uuid = useFileStorageUuid(file ?? '');
+
+    /* jump to the error automatically */
+    if (file && uuid) {
+        dispatch(editorGoto(uuid, line));
+    }
 
     return (
         <>
