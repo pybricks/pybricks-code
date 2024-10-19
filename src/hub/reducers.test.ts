@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021-2023 The Pybricks Authors
+// Copyright (c) 2021-2024 The Pybricks Authors
 
 import { AnyAction } from 'redux';
 import {
@@ -47,6 +47,7 @@ test('initial state', () => {
           "preferredFileFormat": null,
           "runtime": "hub.runtime.disconnected",
           "useLegacyDownload": false,
+          "useLegacyStartUserProgram": false,
           "useLegacyStdio": false,
         }
     `);
