@@ -186,6 +186,7 @@ const Welcome: React.FunctionComponent<WelcomeProps> = ({ isVisible }) => {
     const recentFiles: readonly RecentFileMetadata[] = useSelector(
         (s) => s.editor.recentFiles,
     );
+    // NOTE: could use UUID instead of storing - const uuid = useFileStorageUuid(file ?? '');
 
     const getRecentFileShortCuts = () => (
         <>
