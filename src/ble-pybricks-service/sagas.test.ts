@@ -42,10 +42,10 @@ describe('command encoder', () => {
         ],
         [
             'start user program with slot',
-            sendStartUserProgramCommand(0, 0x2A),
+            sendStartUserProgramCommand(0, 0x2a),
             [
                 0x01, // start user program command
-                0x2A, // program slot
+                0x2a, // program slot
             ],
         ],
         [
@@ -94,11 +94,11 @@ describe('command encoder', () => {
         ],
         [
             'write appdata',
-            sendWriteAppDataCommand(0, 0x2A, new Uint8Array([1, 2, 3, 4]).buffer),
+            sendWriteAppDataCommand(0, 0x2a, new Uint8Array([1, 2, 3, 4]).buffer),
             [
                 0x07, // write appdata command
                 0x00, // offset msb 16bit
-                0x2A, // offset lsb 16bit
+                0x2a, // offset lsb 16bit
                 0x01, // payload start
                 0x02,
                 0x03,
@@ -237,28 +237,31 @@ describe('event decoder', () => {
                 ]).buffer,
             ),
             true,
-            false
+            false,
         ],
-    ])('decode %s event', async (_n, message, expected, isEqual = true, isStrictlyEqual = true) => {
-        const saga = new AsyncSaga(blePybricksService);
-        const notification = new Uint8Array(message);
+    ])(
+        'decode %s event',
+        async (_n, message, expected, isEqual = true, isStrictlyEqual = true) => {
+            const saga = new AsyncSaga(blePybricksService);
+            const notification = new Uint8Array(message);
 
-        saga.put(didNotifyEvent(new DataView(notification.buffer)));
+            saga.put(didNotifyEvent(new DataView(notification.buffer)));
 
-        const action = await saga.take();
-        if (isEqual) {
-            expect(action).toEqual(expected);
-        } else {
-            expect(action).not.toEqual(expected);
-        }
-        if (isStrictlyEqual) {
-            expect(action).toStrictEqual(expected);
-        } else {
-            expect(action).not.toStrictEqual(expected);
-        }
+            const action = await saga.take();
+            if (isEqual) {
+                expect(action).toEqual(expected);
+            } else {
+                expect(action).not.toEqual(expected);
+            }
+            if (isStrictlyEqual) {
+                expect(action).toStrictEqual(expected);
+            } else {
+                expect(action).not.toStrictEqual(expected);
+            }
 
-        await saga.end();
-    });
+            await saga.end();
+        },
+    );
 
     test.each([
         [
