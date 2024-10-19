@@ -4,7 +4,7 @@
 import 'react-splitter-layout/lib/index.css';
 import './app.scss';
 import { Classes, HotkeyConfig, Spinner, useHotkeys } from '@blueprintjs/core';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import SplitterLayout from 'react-splitter-layout';
 import { useLocalStorage, useTernaryDarkMode } from 'usehooks-ts';
 import Activities from '../activities/Activities';
@@ -22,6 +22,11 @@ import Tour from '../tour/Tour';
 import { isMacOS } from '../utils/os';
 import { useAppLastDocsPageSetting } from './hooks';
 import { useI18n } from './i18n';
+
+interface SplitterLayoutState {
+    secondaryPaneSize?: number;
+    resizing?: boolean;
+}
 
 const Editor = React.lazy(async () => {
     const [sagaModule, componentModule] = await Promise.all([
@@ -232,6 +237,20 @@ const App: React.FunctionComponent = () => {
     );
     useHotkeys(hotkeys);
 
+    /* make sure when terminal is shown it has at leats 10% visibility not to confuse the user */
+    const terminalSplitterRef = useRef<SplitterLayout>(null);
+    useEffect(() => {
+        if (isSettingShowTerminalEnabled) {
+            if (terminalSplitterRef.current) {
+                const state = terminalSplitterRef.current
+                    .state as unknown as SplitterLayoutState;
+                if (!state.secondaryPaneSize || state.secondaryPaneSize < 10) {
+                    terminalSplitterRef.current.setState({ secondaryPaneSize: 10 });
+                }
+            }
+        }
+    }, [isSettingShowTerminalEnabled, terminalSplitterRef]);
+
     return (
         <div className="pb-app" onContextMenu={(e) => e.preventDefault()}>
             <div className="pb-app-body">
@@ -262,6 +281,7 @@ const App: React.FunctionComponent = () => {
                             vertical={true}
                             percentage={true}
                             secondaryInitialSize={terminalSplit}
+                            ref={terminalSplitterRef}
                             onSecondaryPaneSizeChange={setTerminalSplit}
                         >
                             <main
