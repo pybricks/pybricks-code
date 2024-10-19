@@ -30,14 +30,14 @@ jobs:
                   echo "REACT_APP_NAME=Pybricks Beta" >> $GITHUB_ENV
                   echo "REACT_APP_SUFFIX=-beta" >> $GITHUB_ENV
             - name: Set env to private
-              if: contains(github.ref, '-private.') || contains(github.ref, '-private.')
+              if: contains(github.ref, '-private.') || contains(github.ref, '-private-fork.')
               run: |
                   echo "REACT_APP_NAME=Pybricks Private" >> $GITHUB_ENV
                   echo "REACT_APP_SUFFIX=-private" >> $GITHUB_ENV
             - name: Install Node.js
               uses: actions/setup-node@v4
               with:
-                  node-version: '18.x'
+                  node-version: '22.x'
             - name: Checkout repository
               uses: actions/checkout@v4
             - run: yarn install
