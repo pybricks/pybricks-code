@@ -5,7 +5,7 @@ import { Reducer, combineReducers } from 'redux';
 import {
     googleDriveDidSelectFolder,
     googleDriveDidUploadFile,
-    googleDriveFailedToUploadFile,
+    googleDriveFailToUploadFile,
 } from '../../googleDrive/actions';
 import { DriveDocument } from '../../googleDrive/protocol';
 import {
@@ -61,7 +61,7 @@ const isUploadFailed: Reducer<boolean> = (state = false, action) => {
     if (googleDriveUploadDialogShow.matches(action)) {
         return false;
     }
-    if (googleDriveFailedToUploadFile.matches(action)) {
+    if (googleDriveFailToUploadFile.matches(action)) {
         return false;
     }
     return state;

@@ -22,8 +22,8 @@ export const googleDriveDidUploadFile = createAction((uploadedFileId: string) =>
     uploadedFileId,
 }));
 
-export const googleDriveFailedToUploadFile = createAction((err: Error) => ({
-    type: 'googleDrive.action.failedToUploadFile',
+export const googleDriveFailToUploadFile = createAction((err: Error) => ({
+    type: 'googleDrive.action.failToUploadFile',
     err,
 }));
 

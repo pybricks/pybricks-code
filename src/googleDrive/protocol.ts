@@ -22,6 +22,11 @@ export interface DriveDocument {
     url: string;
 }
 
+/** Response from list file operation. */
+export interface ListFileResponse {
+    files: DriveDocument[];
+}
+
 /** Response from Google Picker API. */
 export interface PickerResponse {
     action: string;
