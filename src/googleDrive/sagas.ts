@@ -15,9 +15,10 @@ import {
     googleDriveDidUploadFile,
     googleDriveDownloadFile,
     googleDriveFailToDownloadFile,
-    googleDriveFailedToUploadFile,
+    googleDriveFailToUploadFile,
     googleDriveUploadFile,
 } from './actions';
+import { ListFileResponse } from './protocol';
 import { getStoredOauthToken } from './utils';
 
 function* handleDownloadFile(
@@ -46,6 +47,30 @@ function* handleDownloadFile(
     }
 }
 
+function makeCreateFilePayload(fileName: string, folderId: string, content: string) {
+    const form = new FormData();
+    form.append(
+        'metadata',
+        new Blob(
+            [
+                JSON.stringify({
+                    name: fileName,
+                    mimeType: pythonFileMimeType,
+                    parents: [folderId],
+                }),
+            ],
+            { type: 'application/json' },
+        ),
+    );
+    form.append(
+        'file',
+        new Blob([content], {
+            type: pythonFileMimeType,
+        }),
+    );
+    return form;
+}
+
 function* handleUploadFile(
     action: ReturnType<typeof googleDriveUploadFile>,
 ): Generator {
@@ -68,47 +93,68 @@ function* handleUploadFile(
 
         defined(didRead);
 
-        const form = new FormData();
-        form.append(
-            'metadata',
-            new Blob(
-                [
-                    JSON.stringify({
-                        name: action.fileName,
-                        mimeType: pythonFileMimeType,
-                        parents: [action.targetFolderId],
-                    }),
-                ],
-                { type: 'application/json' },
-            ),
-        );
-        form.append('file', new Blob([didRead.contents], { type: pythonFileMimeType }));
+        // Check if file with same file name exists in the folder.
+        const url =
+            'https://www.googleapis.com/drive/v3/files?q=' +
+            `trashed=false and '${action.targetFolderId}' in parents and name='${action.fileName}'`;
+        const fetchFolderFiles = fetch(url, {
+            headers: {
+                Authorization: 'Bearer ' + getStoredOauthToken(),
+            },
+        })
+            .then((response) => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error(`Fetch error: ${response.status}`);
+            })
+            .then((listFileResponse: ListFileResponse) => {
+                return listFileResponse.files;
+            });
+        const files = yield* call(() => fetchFolderFiles);
+        const existingFile = files.find((item) => item.name === action.fileName);
+        console.log('existing file: ', existingFile);
 
-        const uploadFile = new Promise<string>((resolve, reject) => {
-            const xhr = new XMLHttpRequest();
-            xhr.open(
-                'post',
-                'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',
-            );
-            xhr.setRequestHeader('Authorization', 'Bearer ' + getStoredOauthToken());
-            xhr.responseType = 'json';
-            xhr.onload = () => {
-                console.log('Google drive file id:', xhr.response.id);
-                resolve(xhr.response.id);
-            };
-            xhr.onerror = (event) => {
-                console.log('Failed to upload file to Google Drive:', event);
-                reject(event);
-            };
-            xhr.send(form);
-        });
+        const uploadFile = (
+            existingFile
+                ? fetch(
+                      `https://www.googleapis.com/upload/drive/v3/files/${existingFile.id}?uploadType=media`,
+                      {
+                          method: 'PATCH',
+                          headers: new Headers({
+                              Authorization: 'Bearer ' + getStoredOauthToken(),
+                              'Content-type': pythonFileMimeType,
+                          }),
+                          body: didRead.contents,
+                      },
+                  )
+                : fetch(
+                      'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',
+                      {
+                          method: 'POST',
+                          headers: new Headers({
+                              Authorization: 'Bearer ' + getStoredOauthToken(),
+                          }),
+                          body: makeCreateFilePayload(
+                              action.fileName,
+                              action.targetFolderId,
+                              didRead.contents,
+                          ),
+                      },
+                  )
+        )
+            .then((response) => response.json())
+            .then((jsonResponse) => {
+                console.log('Google drive file id:', jsonResponse.id);
+                return jsonResponse.id;
+            });
 
         const fileId = yield* call(() => uploadFile);
 
         yield* put(googleDriveDidUploadFile(fileId));
     } catch (err) {
         console.log('Failed to upload file to Google Drive:', err);
-        yield* put(googleDriveFailedToUploadFile(ensureError(err)));
+        yield* put(googleDriveFailToUploadFile(ensureError(err)));
     }
 }
 
