@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2023 The Pybricks Authors
+// Copyright (c) 2020-2024 The Pybricks Authors
 
 import { Reducer, combineReducers } from 'redux';
 import * as semver from 'semver';
@@ -210,6 +210,17 @@ const hasRepl: Reducer<boolean> = (state = false, action) => {
 };
 
 /**
+ * Indicates if the connected hub supports a Port View.
+ */
+const hasPortView: Reducer<boolean> = (state = false, action) => {
+    if (blePybricksServiceDidReceiveHubCapabilities.matches(action)) {
+        return Boolean(action.flags & HubCapabilityFlag.HasPortView);
+    }
+
+    return state;
+};
+
+/**
  * The preferred file format of the connected hub or null if the hub does not
  * support any file formats that Pybricks Code supports.
  */
@@ -269,6 +280,7 @@ export default combineReducers({
     maxBleWriteSize,
     maxUserProgramSize,
     hasRepl,
+    hasPortView,
     preferredFileFormat,
     useLegacyDownload,
     useLegacyStdio,
