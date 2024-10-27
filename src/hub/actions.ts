@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2023 The Pybricks Authors
+// Copyright (c) 2020-2024 The Pybricks Authors
 
 import { createAction } from '../actions';
 import { FileFormat } from '../ble-pybricks-service/protocol';
@@ -14,11 +14,25 @@ export const checksum = createAction((checksum: number) => ({
 
 // High-level hub actions.
 
+/**
+ * Request to download and run a program on the hub.
+ * @param fileFormat The format of the file to download.
+ * @param useLegacyDownload Whether to use the legacy NUS download method.
+ * @param useLegacyStartUserProgram Whether to use the legacy start user program method (changed in protocol v1.4.0).
+ * @param slot The slot number to download the program to - only valid on hubs/firmware that support multiple slots.
+ */
 export const downloadAndRun = createAction(
-    (fileFormat: FileFormat | null, useLegacyDownload: boolean) => ({
+    (
+        fileFormat: FileFormat | null,
+        useLegacyDownload: boolean,
+        useLegacyStartUserProgram: boolean,
+        slot: number,
+    ) => ({
         type: 'hub.action.downloadAndRun',
         fileFormat,
         useLegacyDownload,
+        useLegacyStartUserProgram,
+        slot,
     }),
 );
 
@@ -54,11 +68,18 @@ export const hubDidFailToStopUserProgram = createAction(() => ({
     type: 'hub.action.didFailToStopUserProgram',
 }));
 
-/** Request to send the start repl command to the hub. */
-export const hubStartRepl = createAction((useLegacyDownload: boolean) => ({
-    type: 'hub.action.startRepl',
-    useLegacyDownload,
-}));
+/**
+ * Request to send the start repl command to the hub.
+ * @param useLegacyDownload Whether to use the legacy NUS download method.
+ * @param useLegacyStartUserProgram Whether to use the legacy start user program method (changed in protocol v1.4.0).
+ */
+export const hubStartRepl = createAction(
+    (useLegacyDownload: boolean, useLegacyStartUserProgram: boolean) => ({
+        type: 'hub.action.startRepl',
+        useLegacyDownload,
+        useLegacyStartUserProgram,
+    }),
+);
 
 /** Indicates the the start repl command was sent to the hub. */
 export const hubDidStartRepl = createAction(() => ({

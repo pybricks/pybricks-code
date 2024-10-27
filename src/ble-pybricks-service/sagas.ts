@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021-2023 The Pybricks Authors
+// Copyright (c) 2021-2024 The Pybricks Authors
 //
 // Handles Pybricks protocol.
 
@@ -18,13 +18,16 @@ import {
     didFailToWriteCommand,
     didNotifyEvent,
     didReceiveStatusReport,
+    didReceiveWriteAppData,
     didReceiveWriteStdout,
     didSendCommand,
     didWriteCommand,
     eventProtocolError,
-    sendStartReplCommand,
+    sendLegacyStartReplCommand,
+    sendLegacyStartUserProgramCommand,
     sendStartUserProgramCommand,
     sendStopUserProgramCommand,
+    sendWriteAppDataCommand,
     sendWriteStdinCommand,
     sendWriteUserProgramMetaCommand,
     sendWriteUserRamCommand,
@@ -33,14 +36,17 @@ import {
 import {
     EventType,
     ProtocolError,
-    createStartReplCommand,
+    createLegacyStartReplCommand,
+    createLegacyStartUserProgramCommand,
     createStartUserProgramCommand,
     createStopUserProgramCommand,
+    createWriteAppDataCommand,
     createWriteStdinCommand,
     createWriteUserProgramMetaCommand,
     createWriteUserRamCommand,
     getEventType,
     parseStatusReport,
+    parseWriteAppData,
     parseWriteStdout,
 } from './protocol';
 
@@ -63,10 +69,14 @@ function* encodeRequest(): Generator {
         /* istanbul ignore else: should not be possible to reach */
         if (sendStopUserProgramCommand.matches(action)) {
             yield* put(writeCommand(action.id, createStopUserProgramCommand()));
+        } else if (sendLegacyStartUserProgramCommand.matches(action)) {
+            yield* put(writeCommand(action.id, createLegacyStartUserProgramCommand()));
+        } else if (sendLegacyStartReplCommand.matches(action)) {
+            yield* put(writeCommand(action.id, createLegacyStartReplCommand()));
         } else if (sendStartUserProgramCommand.matches(action)) {
-            yield* put(writeCommand(action.id, createStartUserProgramCommand()));
-        } else if (sendStartReplCommand.matches(action)) {
-            yield* put(writeCommand(action.id, createStartReplCommand()));
+            yield* put(
+                writeCommand(action.id, createStartUserProgramCommand(action.slot)),
+            );
         } else if (sendWriteUserProgramMetaCommand.matches(action)) {
             yield* put(
                 writeCommand(action.id, createWriteUserProgramMetaCommand(action.size)),
@@ -81,6 +91,13 @@ function* encodeRequest(): Generator {
         } else if (sendWriteStdinCommand.matches(action)) {
             yield* put(
                 writeCommand(action.id, createWriteStdinCommand(action.payload)),
+            );
+        } else if (sendWriteAppDataCommand.matches(action)) {
+            yield* put(
+                writeCommand(
+                    action.id,
+                    createWriteAppDataCommand(action.offset, action.payload),
+                ),
             );
         } else {
             console.error(`Unknown Pybricks service command ${action.type}`);
@@ -108,11 +125,16 @@ function* decodeResponse(action: ReturnType<typeof didNotifyEvent>): Generator {
     try {
         const responseType = getEventType(action.value);
         switch (responseType) {
-            case EventType.StatusReport:
-                yield* put(didReceiveStatusReport(parseStatusReport(action.value)));
+            case EventType.StatusReport: {
+                const status = parseStatusReport(action.value);
+                yield* put(didReceiveStatusReport(status.flags, status.slot));
                 break;
+            }
             case EventType.WriteStdout:
                 yield* put(didReceiveWriteStdout(parseWriteStdout(action.value)));
+                break;
+            case EventType.WriteAppData:
+                yield* put(didReceiveWriteAppData(parseWriteAppData(action.value)));
                 break;
             default:
                 throw new ProtocolError(
