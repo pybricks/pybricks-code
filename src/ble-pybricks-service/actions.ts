@@ -58,27 +58,37 @@ export const sendStopUserProgramCommand = createAction((id: number) => ({
 /**
  * Action that requests a start user program to be sent.
  * @param id Unique identifier for this transaction.
- * @param slot Program identifier to start.
  *
- * @since Pybricks Profile v1.4.0.
+ * @since Pybricks Profile v1.2.0 - removed in v1.4.0
  */
-export const sendStartUserProgramCommand = createAction(
-    (id: number, slot?: number) => ({
-        type: 'blePybricksServiceCommand.action.sendStartUserProgram',
-        id,
-        slot,
-    }),
-);
+export const sendLegacyStartUserProgramCommand = createAction((id: number) => ({
+    type: 'blePybricksServiceCommand.action.sendLegacyStartUserProgram',
+    id,
+}));
 
 /**
  * Action that requests a start interactive REPL to be sent.
  * @param id Unique identifier for this transaction.
  *
- * @since Pybricks Profile v1.2.0
+ * @since Pybricks Profile v1.2.0 - removed in v1.4.0
+ *
  */
-export const sendStartReplCommand = createAction((id: number) => ({
-    type: 'blePybricksServiceCommand.action.sendStartRepl',
+export const sendLegacyStartReplCommand = createAction((id: number) => ({
+    type: 'blePybricksServiceCommand.action.sendLegacyStartRepl',
     id,
+}));
+
+/**
+ * Action that requests a start user program to be sent.
+ * @param id Unique identifier for this transaction.
+ * @param slot The slot number of the user program to start.
+ *
+ * @since Pybricks Profile v1.4.0
+ */
+export const sendStartUserProgramCommand = createAction((id: number, slot: number) => ({
+    type: 'blePybricksServiceCommand.action.sendStartUserProgram',
+    id,
+    slot,
 }));
 
 /**
@@ -129,7 +139,7 @@ export const sendWriteStdinCommand = createAction(
 );
 
 /**
- * Action that requests to write to appdata.
+ * Action that requests to write to AppData.
  * @param id Unique identifier for this transaction.
  * @param offset offset: The offset from the buffer base address
  * @param payload The bytes to write.
@@ -170,11 +180,15 @@ export const didFailToSendCommand = createAction((id: number, error: Error) => (
 /**
  * Action that represents a status report event received from the hub.
  * @param statusFlags The status flags.
+ * @param slot The slot number of the user program that is running.
  */
-export const didReceiveStatusReport = createAction((statusFlags: number) => ({
-    type: 'blePybricksServiceEvent.action.didReceiveStatusReport',
-    statusFlags,
-}));
+export const didReceiveStatusReport = createAction(
+    (statusFlags: number, slot: number) => ({
+        type: 'blePybricksServiceEvent.action.didReceiveStatusReport',
+        statusFlags,
+        slot,
+    }),
+);
 
 /**
  * Action that represents a status report event received from the hub.
