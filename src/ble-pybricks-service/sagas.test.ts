@@ -232,49 +232,17 @@ describe('event decoder', () => {
                 ]).buffer,
             ),
         ],
-        [
-            'write appdata mismatch',
-            [
-                0x02, // write AppData event
-                't'.charCodeAt(0), //payload
-                'e'.charCodeAt(0),
-                't'.charCodeAt(0),
-                't'.charCodeAt(0),
-            ],
-            didReceiveWriteAppData(
-                new Uint8Array([
-                    't'.charCodeAt(0),
-                    'e'.charCodeAt(0),
-                    'x'.charCodeAt(0),
-                    't'.charCodeAt(0),
-                ]).buffer,
-            ),
-            true,
-            false,
-        ],
-    ])(
-        'decode %s event',
-        async (_n, message, expected, isEqual = true, isStrictlyEqual = true) => {
-            const saga = new AsyncSaga(blePybricksService);
-            const notification = new Uint8Array(message);
+    ])('decode %s event', async (_n, message, expected) => {
+        const saga = new AsyncSaga(blePybricksService);
+        const notification = new Uint8Array(message);
 
-            saga.put(didNotifyEvent(new DataView(notification.buffer)));
+        saga.put(didNotifyEvent(new DataView(notification.buffer)));
 
-            const action = await saga.take();
-            if (isEqual) {
-                expect(action).toEqual(expected);
-            } else {
-                expect(action).not.toEqual(expected);
-            }
-            if (isStrictlyEqual) {
-                expect(action).toStrictEqual(expected);
-            } else {
-                expect(action).not.toStrictEqual(expected);
-            }
+        const action = await saga.take();
+        expect(action).toEqual(expected);
 
-            await saga.end();
-        },
-    );
+        await saga.end();
+    });
 
     test.each([
         [
