@@ -17,10 +17,13 @@ export const googleDriveUploadFile = createAction(
     }),
 );
 
-export const googleDriveDidUploadFile = createAction((uploadedFileId: string) => ({
-    type: 'googleDrive.action.didUploadFile',
-    uploadedFileId,
-}));
+export const googleDriveDidUploadFile = createAction(
+    (uploadedFileId: string, overwroteExistingFile: boolean) => ({
+        type: 'googleDrive.action.didUploadFile',
+        uploadedFileId,
+        overwroteExistingFile,
+    }),
+);
 
 export const googleDriveFailToUploadFile = createAction((err: Error) => ({
     type: 'googleDrive.action.failToUploadFile',

@@ -32,6 +32,9 @@ const GoogleDriveUploadDialog: React.FunctionComponent = () => {
     const isUploadFailed = useSelector(
         (s) => s.explorer.googleDriveUploadDialog.isUploadFailed,
     );
+    const overwroteExistingFile = useSelector(
+        (s) => s.explorer.googleDriveUploadDialog.overwroteExistingFile,
+    );
 
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -122,6 +125,7 @@ const GoogleDriveUploadDialog: React.FunctionComponent = () => {
                             >
                                 {fileName}
                             </a>
+                            {(overwroteExistingFile && ' (Overwrote)') || ' (New file)'}
                         </div>
                     )}
                     {isUploadFailed && <div>Upload failed.</div>}

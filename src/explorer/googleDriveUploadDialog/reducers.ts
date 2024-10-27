@@ -57,6 +57,16 @@ const uploadedDocId: Reducer<string> = (state = '', action) => {
     return state;
 };
 
+const overwroteExistingFile: Reducer<boolean> = (state = false, action) => {
+    if (googleDriveUploadDialogShow.matches(action)) {
+        return false;
+    }
+    if (googleDriveDidUploadFile.matches(action)) {
+        return action.overwroteExistingFile;
+    }
+    return state;
+};
+
 const isUploadFailed: Reducer<boolean> = (state = false, action) => {
     if (googleDriveUploadDialogShow.matches(action)) {
         return false;
@@ -66,10 +76,12 @@ const isUploadFailed: Reducer<boolean> = (state = false, action) => {
     }
     return state;
 };
+
 export default combineReducers({
     isOpen,
     fileName,
     descFolder,
     uploadedDocId,
     isUploadFailed,
+    overwroteExistingFile,
 });

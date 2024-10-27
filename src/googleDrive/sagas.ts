@@ -151,7 +151,7 @@ function* handleUploadFile(
 
         const fileId = yield* call(() => uploadFile);
 
-        yield* put(googleDriveDidUploadFile(fileId));
+        yield* put(googleDriveDidUploadFile(fileId, existingFile !== undefined));
     } catch (err) {
         console.log('Failed to upload file to Google Drive:', err);
         yield* put(googleDriveFailToUploadFile(ensureError(err)));
