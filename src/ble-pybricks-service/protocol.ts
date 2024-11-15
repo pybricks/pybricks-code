@@ -134,9 +134,6 @@ export function createStartUserProgramCommand(
 export function createLegacyStartUserProgramCommand(): Uint8Array {
     const msg = new Uint8Array(1);
     msg[0] = CommandType.StartUserProgram;
-    if (slot !== undefined) {
-        msg[1] = slot & 0xff;
-    }
     return msg;
 }
 
