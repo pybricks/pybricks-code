@@ -23,7 +23,8 @@ import {
     didSendCommand,
     didWriteCommand,
     eventProtocolError,
-    sendStartReplCommand,
+    sendLegacyStartReplCommand,
+    sendLegacyStartUserProgramCommand,
     sendStartUserProgramCommand,
     sendStopUserProgramCommand,
     sendWriteAppDataCommand,
@@ -35,7 +36,8 @@ import {
 import {
     EventType,
     ProtocolError,
-    createStartReplCommand,
+    createLegacyStartReplCommand,
+    createLegacyStartUserProgramCommand,
     createStartUserProgramCommand,
     createStopUserProgramCommand,
     createWriteAppDataCommand,
@@ -67,12 +69,14 @@ function* encodeRequest(): Generator {
         /* istanbul ignore else: should not be possible to reach */
         if (sendStopUserProgramCommand.matches(action)) {
             yield* put(writeCommand(action.id, createStopUserProgramCommand()));
+        } else if (sendLegacyStartUserProgramCommand.matches(action)) {
+            yield* put(writeCommand(action.id, createLegacyStartUserProgramCommand()));
+        } else if (sendLegacyStartReplCommand.matches(action)) {
+            yield* put(writeCommand(action.id, createLegacyStartReplCommand()));
         } else if (sendStartUserProgramCommand.matches(action)) {
             yield* put(
                 writeCommand(action.id, createStartUserProgramCommand(action.slot)),
             );
-        } else if (sendStartReplCommand.matches(action)) {
-            yield* put(writeCommand(action.id, createStartReplCommand()));
         } else if (sendWriteUserProgramMetaCommand.matches(action)) {
             yield* put(
                 writeCommand(action.id, createWriteUserProgramMetaCommand(action.size)),
@@ -121,9 +125,11 @@ function* decodeResponse(action: ReturnType<typeof didNotifyEvent>): Generator {
     try {
         const responseType = getEventType(action.value);
         switch (responseType) {
-            case EventType.StatusReport:
-                yield* put(didReceiveStatusReport(parseStatusReport(action.value)));
+            case EventType.StatusReport: {
+                const status = parseStatusReport(action.value);
+                yield* put(didReceiveStatusReport(status.flags, status.slot));
                 break;
+            }
             case EventType.WriteStdout:
                 yield* put(didReceiveWriteStdout(parseWriteStdout(action.value)));
                 break;

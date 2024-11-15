@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2023 The Pybricks Authors
+// Copyright (c) 2020-2024 The Pybricks Authors
 
 import React from 'react';
 import { useDispatch } from 'react-redux';
@@ -13,8 +13,13 @@ import icon from './icon.svg';
 type RunButtonProps = Pick<ActionButtonProps, 'id'>;
 
 const RunButton: React.FunctionComponent<RunButtonProps> = ({ id }) => {
-    const { downloadProgress, preferredFileFormat, runtime, useLegacyDownload } =
-        useSelector((s) => s.hub);
+    const {
+        downloadProgress,
+        preferredFileFormat,
+        runtime,
+        useLegacyDownload,
+        useLegacyStartUserProgram,
+    } = useSelector((s) => s.hub);
     const activeFile = useSelector((s) => s.editor.activeFileUuid);
     const keyboardShortcut = 'F5';
 
@@ -38,7 +43,14 @@ const RunButton: React.FunctionComponent<RunButtonProps> = ({ id }) => {
             showProgress={runtime === HubRuntimeState.Loading}
             progress={downloadProgress === null ? undefined : downloadProgress}
             onAction={() =>
-                dispatch(downloadAndRun(preferredFileFormat, useLegacyDownload))
+                dispatch(
+                    downloadAndRun(
+                        preferredFileFormat,
+                        useLegacyDownload,
+                        useLegacyStartUserProgram,
+                        0, // No slot UI yet
+                    ),
+                )
             }
         />
     );

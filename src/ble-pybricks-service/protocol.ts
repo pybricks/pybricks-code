@@ -25,21 +25,13 @@ export enum CommandType {
     /**
      * Request to start the user program.
      *
-     * The optional payload parameter was added in Pybricks Profile v1.4.0.
-     *
-     * Parameters:
-     * - payload: Optional program identifier (one byte). Slots 0--127 are
-     *            reserved for downloaded user programs. Slots 128--255 are
-     *            for builtin user programs. If no program identifier is
-     *            given, the currently active program slot will be started.
-     *
-     * @since Pybricks Profile v1.2.0. Program identifier added in Pybricks Profile v1.4.0.
+     * @since Pybricks Profile v1.2.0 - changed in v1.4.0
      */
     StartUserProgram = 1,
     /**
      *  Request to start the interactive REPL.
      *
-     * @since Pybricks Profile v1.2.0
+     * @since Pybricks Profile v1.2.0 - removed in v1.4.0
      */
     StartRepl = 2,
     /**
@@ -80,6 +72,32 @@ export enum CommandType {
 }
 
 /**
+ * Built-in program ID's for use with {@link CommandType.StartUserProgram}.
+ *
+ * @since Pybricks Profile v1.4.0
+ */
+export enum BuiltinProgramId {
+    /**
+     * Requests to start the built-in REPL on stdio.
+     *
+     * @since Pybricks Profile v1.4.0
+     */
+    REPL = 0x80,
+    /**
+     * Requests to start the built-in sensor port view monitoring program.
+     *
+     * @since Pybricks Profile v1.4.0
+     */
+    PortView = 0x81,
+    /**
+     * Requests to start the built-in IMU calibration program.
+     *
+     * @since Pybricks Profile v1.4.0
+     */
+    IMUCalibration = 0x82,
+}
+
+/**
  * Creates a {@link CommandType.StopUserProgram} message.
  *
  * @since Pybricks Profile v1.0.0
@@ -93,10 +111,28 @@ export function createStopUserProgramCommand(): Uint8Array {
 /**
  * Creates a {@link CommandType.StartUserProgram} message.
  *
- * @since Pybricks Profile v1.2.0
+ * Parameters:
+ * - slot: Program identifier (one byte). Slots 0--127 are reserved for
+ *   downloaded user programs. Slots 128--255 are for builtin user programs.
+ *
+ * @since Pybricks Profile v1.4.0
  */
-export function createStartUserProgramCommand(slot: number | undefined): Uint8Array {
-    const msg = new Uint8Array(slot === undefined ? 1 : 2);
+export function createStartUserProgramCommand(
+    slot: number | BuiltinProgramId,
+): Uint8Array {
+    const msg = new Uint8Array(2);
+    msg[0] = CommandType.StartUserProgram;
+    msg[1] = slot;
+    return msg;
+}
+
+/**
+ * Creates a legacy {@link CommandType.StartUserProgram} message.
+ *
+ * @since Pybricks Profile v1.2.0 - removed in v1.4.0
+ */
+export function createLegacyStartUserProgramCommand(): Uint8Array {
+    const msg = new Uint8Array(1);
     msg[0] = CommandType.StartUserProgram;
     if (slot !== undefined) {
         msg[1] = slot & 0xff;
@@ -105,11 +141,11 @@ export function createStartUserProgramCommand(slot: number | undefined): Uint8Ar
 }
 
 /**
- * Creates a {@link CommandType.StartRepl} message.
+ * Creates a legacy {@link CommandType.StartRepl} message.
  *
- * @since Pybricks Profile v1.2.0
+ * @since Pybricks Profile v1.2.0 - removed in v1.4.0
  */
-export function createStartReplCommand(): Uint8Array {
+export function createLegacyStartReplCommand(): Uint8Array {
     const msg = new Uint8Array(1);
     msg[0] = CommandType.StartRepl;
     return msg;
@@ -176,7 +212,7 @@ export function createWriteAppDataCommand(
     const msg = new Uint8Array(1 + 2 + payload.byteLength);
     const view = new DataView(msg.buffer);
     view.setUint8(0, CommandType.WriteAppData);
-    view.setUint8(1, offset & 0xffff);
+    view.setUint16(1, offset & 0xffff, true);
     msg.set(new Uint8Array(payload), 3);
     return msg;
 }
@@ -202,7 +238,7 @@ export enum EventType {
      */
     WriteStdout = 1,
     /**
-     * Hub wrote to appdata event.
+     * Hub wrote to AppData event.
      *
      * @since Pybricks Profile v1.4.0
      */
@@ -274,13 +310,16 @@ export function getEventType(msg: DataView): EventType {
 /**
  * Parses the payload of a status report message.
  * @param msg The raw message data.
- * @returns The status as bit flags.
+ * @returns The status as bit flags and the slot number of the running program.
  *
- * @since Pybricks Profile v1.0.0
+ * @since Pybricks Profile v1.0.0 - changed in v1.4.0
  */
-export function parseStatusReport(msg: DataView): number {
+export function parseStatusReport(msg: DataView): { flags: number; slot: number } {
     assert(msg.getUint8(0) === EventType.StatusReport, 'expecting status report event');
-    return msg.getUint32(1, true);
+    return {
+        flags: msg.getUint32(1, true),
+        slot: msg.byteLength > 5 ? msg.getUint8(5) : 0,
+    };
 }
 
 /**
@@ -329,7 +368,9 @@ export class ProtocolError extends Error {
  */
 export enum HubCapabilityFlag {
     /**
-     * Hub has an interactive REPL.
+     * Hub supports {@link CommandType.StartUserProgram} command with
+     * {@link BuiltinProgramId.REPL} for protocol v1.4.0 and later or hub
+     * supports {@link CommandType.StartRepl}
      *
      * @since Pybricks Profile v1.2.0
      */
@@ -350,14 +391,16 @@ export enum HubCapabilityFlag {
     UserProgramMultiMpy6Native6p1 = 1 << 2,
 
     /**
-     * Hub supports builtin sensor port view monitoring program.
+     * Hub supports {@link CommandType.StartUserProgram} command with
+     * {@link BuiltinProgramId.PortView}.
      *
      * @since Pybricks Profile v1.4.0.
      */
     HasPortView = 1 << 3,
 
     /**
-     * Hub supports builtin IMU calibration program.
+     * Hub supports {@link CommandType.StartUserProgram} command with
+     * {@link BuiltinProgramId.IMUCalibration}.
      *
      * @since Pybricks Profile v1.4.0.
      */

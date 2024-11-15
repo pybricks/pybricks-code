@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021-2023 The Pybricks Authors
+// Copyright (c) 2021-2024 The Pybricks Authors
 
 import { AnyAction } from 'redux';
 import {
@@ -47,6 +47,7 @@ test('initial state', () => {
           "preferredFileFormat": null,
           "runtime": "hub.runtime.disconnected",
           "useLegacyDownload": false,
+          "useLegacyStartUserProgram": false,
           "useLegacyStdio": false,
         }
     `);
@@ -157,7 +158,7 @@ describe('runtime', () => {
         expect(
             reducers(
                 { runtime: HubRuntimeState.Disconnected } as State,
-                didReceiveStatusReport(statusToFlag(Status.UserProgramRunning)),
+                didReceiveStatusReport(statusToFlag(Status.UserProgramRunning), 0),
             ).runtime,
         ).toBe(HubRuntimeState.Disconnected);
 
@@ -165,7 +166,7 @@ describe('runtime', () => {
         expect(
             reducers(
                 { runtime: HubRuntimeState.Loading } as State,
-                didReceiveStatusReport(statusToFlag(Status.UserProgramRunning)),
+                didReceiveStatusReport(statusToFlag(Status.UserProgramRunning), 0),
             ).runtime,
         ).toBe(HubRuntimeState.Loading);
 
@@ -173,7 +174,7 @@ describe('runtime', () => {
         expect(
             reducers(
                 { runtime: HubRuntimeState.Unknown } as State,
-                didReceiveStatusReport(statusToFlag(Status.UserProgramRunning)),
+                didReceiveStatusReport(statusToFlag(Status.UserProgramRunning), 0),
             ).runtime,
         ).toBe(HubRuntimeState.Running);
 
@@ -181,7 +182,7 @@ describe('runtime', () => {
         expect(
             reducers(
                 { runtime: HubRuntimeState.Unknown } as State,
-                didReceiveStatusReport(0),
+                didReceiveStatusReport(0, 0),
             ).runtime,
         ).toBe(HubRuntimeState.Idle);
 
@@ -189,7 +190,7 @@ describe('runtime', () => {
         expect(
             reducers(
                 { runtime: HubRuntimeState.Running } as State,
-                didReceiveStatusReport(0),
+                didReceiveStatusReport(0, 0),
             ).runtime,
         ).toBe(HubRuntimeState.Idle);
 
@@ -197,7 +198,7 @@ describe('runtime', () => {
         expect(
             reducers(
                 { runtime: HubRuntimeState.StartingRepl } as State,
-                didReceiveStatusReport(0),
+                didReceiveStatusReport(0, 0),
             ).runtime,
         ).toBe(HubRuntimeState.StartingRepl);
 
@@ -205,15 +206,17 @@ describe('runtime', () => {
         expect(
             reducers(
                 { runtime: HubRuntimeState.StoppingUserProgram } as State,
-                didReceiveStatusReport(0),
+                didReceiveStatusReport(0, 0),
             ).runtime,
         ).toBe(HubRuntimeState.StoppingUserProgram);
     });
 
     test('hubStartRepl', () => {
         expect(
-            reducers({ runtime: HubRuntimeState.Running } as State, hubStartRepl(false))
-                .runtime,
+            reducers(
+                { runtime: HubRuntimeState.Running } as State,
+                hubStartRepl(false, false),
+            ).runtime,
         ).toBe(HubRuntimeState.StartingRepl);
     });
 
@@ -422,6 +425,26 @@ describe('useLegacyStdio', () => {
                 { useLegacyStdio: true } as State,
                 bleDIServiceDidReceiveSoftwareRevision('1.3.0'),
             ).useLegacyStdio,
+        ).toBeFalsy();
+    });
+});
+
+describe('useLegacyStartUserProgram', () => {
+    test('Pybricks Profile < v1.4.0', () => {
+        expect(
+            reducers(
+                { useLegacyStartUserProgram: false } as State,
+                bleDIServiceDidReceiveSoftwareRevision('1.3.0'),
+            ).useLegacyStartUserProgram,
+        ).toBeTruthy();
+    });
+
+    test('Pybricks Profile >= v1.4.0', () => {
+        expect(
+            reducers(
+                { useLegacyStartUserProgram: true } as State,
+                bleDIServiceDidReceiveSoftwareRevision('1.4.0'),
+            ).useLegacyStartUserProgram,
         ).toBeFalsy();
     });
 });
