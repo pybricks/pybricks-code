@@ -221,7 +221,11 @@ export enum EventType {
      *
      * Received when notifications are enabled and when status changes.
      *
-     * @since Pybricks Profile v1.0.0
+     * The payload is one 32-bit little-endian unsigned integer containing
+     * ::pbio_pybricks_status_t flags and a one byte program identifier
+     * representing the currently active program if it is running.
+     *
+     * @since Pybricks Profile v1.0.0. Program identifier added in Pybricks Profile v1.4.0.
      */
     StatusReport = 0,
     /**

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022-2023 The Pybricks Authors
+// Copyright (c) 2022-2024 The Pybricks Authors
 
+import { PyConverterOptions, convertFlipperProjectToPython } from 'blocklypy';
 import { fileOpen, fileSave } from 'browser-fs-access';
 import JSZip from 'jszip';
 import {
@@ -13,7 +14,11 @@ import {
     takeEvery,
 } from 'typed-redux-saga/macro';
 import { alertsShowAlert } from '../alerts/actions';
-import { zipFileExtension, zipFileMimeType } from '../app/constants';
+import {
+    legoBlocklyFileExtensions,
+    zipFileExtension,
+    zipFileMimeType,
+} from '../app/constants';
 import {
     editorActivateFile,
     editorCloseFile,
@@ -46,6 +51,12 @@ import {
     fileStorageWriteFile,
 } from '../fileStorage/actions';
 import {
+    googleDriveDidDownloadFile,
+    googleDriveDidSelectDownloadFiles,
+    googleDriveDownloadFile,
+    googleDriveFailToDownloadFile,
+} from '../googleDrive/actions';
+import {
     FileNameValidationResult,
     pythonFileExtension,
     pythonFileExtensionRegex,
@@ -76,6 +87,7 @@ import {
     explorerExportFile,
     explorerImportFiles,
     explorerRenameFile,
+    explorerUploadFileToGoogleDrive,
     explorerUserActivateFile,
     explorerUserDidActivateFile,
 } from './actions';
@@ -90,6 +102,7 @@ import {
     duplicateFileDialogShow,
 } from './duplicateFileDialog/actions';
 import { ExplorerError } from './error';
+import { googleDriveUploadDialogShow } from './googleDriveUploadDialog/actions';
 import {
     newFileWizardDidAccept,
     newFileWizardDidCancel,
@@ -169,6 +182,12 @@ function* handleExplorerArchiveAllFiles(): Generator {
         }
         yield* put(explorerDidFailToArchiveAllFiles(error));
     }
+}
+
+function* handleUploadFileToGoogleDrive(
+    action: ReturnType<typeof explorerRenameFile>,
+): Generator {
+    yield* put(googleDriveUploadDialogShow(action.fileName));
 }
 
 type ImportContext = {
@@ -254,7 +273,7 @@ function* importPythonFile(
     } else {
         yield* put(fileStorageWriteFile(fileName, sourceFileContents));
 
-        const { didFailToWrite } = yield* race({
+        const { didWrite, didFailToWrite } = yield* race({
             didWrite: take(fileStorageDidWriteFile.when((a) => a.path === fileName)),
             didFailToWrite: take(
                 fileStorageDidFailToWriteFile.when((a) => a.path === fileName),
@@ -264,41 +283,108 @@ function* importPythonFile(
         if (didFailToWrite) {
             throw didFailToWrite.error;
         }
+
+        defined(didWrite);
+
+        yield* put(editorActivateFile(didWrite.uuid));
+    }
+}
+
+function* handleGoogleDriveDidSelectDownloadFiles(
+    action: ReturnType<typeof googleDriveDidSelectDownloadFiles>,
+): Generator {
+    try {
+        const context: ImportContext = {};
+        for (const file of action.files) {
+            console.log(file);
+            switch (file.mimeType) {
+                case '': // empty string means "could not be determined"
+                case pythonFileMimeType:
+                    {
+                        yield* put(googleDriveDownloadFile(file));
+
+                        const { didDownload, didFailToDownload } = yield* race({
+                            didDownload: take(
+                                googleDriveDidDownloadFile.when(
+                                    (a) => a.file.id === file.id,
+                                ),
+                            ),
+                            didFailToDownload: take(
+                                googleDriveFailToDownloadFile.when(
+                                    (a) => a.file.id === file.id,
+                                ),
+                            ),
+                        });
+
+                        if (didFailToDownload) {
+                            console.log(didFailToDownload);
+                        }
+                        defined(didDownload);
+
+                        yield* importPythonFile(
+                            file.name,
+                            didDownload.content,
+                            context,
+                        );
+                    }
+                    break;
+                default:
+                    throw new Error(
+                        `'${file.name}' has unsupported file type: ${file.type}`,
+                    );
+            }
+        }
+        yield* put(explorerDidImportFiles());
+    } catch (err) {
+        yield* put(explorerDidFailToImportFiles(ensureError(err)));
     }
 }
 
 function* handleExplorerImportFiles(): Generator {
     try {
         const selectedFiles = yield* call(() =>
-            fileOpen([
-                {
-                    id: 'pybricks-code-explorer-import',
-                    mimeTypes: [pythonFileMimeType],
-                    extensions: [pythonFileExtension],
-                    // TODO: translate description
-                    description: 'Python Files',
-                    multiple: true,
-                    excludeAcceptAllOption: true,
-                },
-                {
-                    mimeTypes: [zipFileMimeType],
-                    extensions: [zipFileExtension],
-                    // TODO: translate description
-                    description: 'ZIP Files',
-                },
-            ]),
+            fileOpen({
+                id: 'pybricks-code-explorer-import',
+                mimeTypes: [pythonFileMimeType, zipFileMimeType],
+                extensions: [
+                    pythonFileExtension,
+                    zipFileExtension,
+                    ...legoBlocklyFileExtensions,
+                ],
+                description: 'Supported Files (Python, ZIP, LEGO Blockly)',
+                multiple: true,
+                excludeAcceptAllOption: true,
+            }),
         );
 
         const context: ImportContext = {};
 
         for (const file of selectedFiles) {
+            // console.log(`file type "${file.type}"`);
             switch (file.type) {
                 case '': // empty string means "could not be determined"
                 case pythonFileMimeType:
                     {
-                        // getting the text now to catch possible error *before* user interaction
-                        const text = yield* call(() => file.text());
-                        yield* importPythonFile(file.name, text, context);
+                        const extension = file.name.includes('.')
+                            ? '.' + file.name.split('.').pop()
+                            : '';
+                        let text;
+                        let filename = file.name;
+                        if (legoBlocklyFileExtensions.includes(extension)) {
+                            const arraybuffer = yield* call(() => file.arrayBuffer());
+                            const result = yield* call(() =>
+                                convertFlipperProjectToPython(arraybuffer, {
+                                    debug: { showExplainingComments: true },
+                                } as PyConverterOptions),
+                            );
+                            // console.log(result);
+                            text = result.pycode ?? '';
+                            filename = filename.replace(/[^a-zA-Z0-9_]/gi, '_') + '.py';
+                        } else {
+                            // getting the text now to catch possible error *before* user interaction
+                            text = yield* call(() => file.text());
+                        }
+                        yield* importPythonFile(filename, text, context);
                     }
                     break;
                 case zipFileMimeType:
@@ -592,4 +678,9 @@ export default function* (): Generator {
     yield* takeEvery(explorerDuplicateFile, handleExplorerDuplicateFile);
     yield* takeEvery(explorerExportFile, handleExplorerExportFile);
     yield* takeEvery(explorerDeleteFile, handleExplorerDeleteFile);
+    yield* takeEvery(explorerUploadFileToGoogleDrive, handleUploadFileToGoogleDrive);
+    yield* takeEvery(
+        googleDriveDidSelectDownloadFiles,
+        handleGoogleDriveDidSelectDownloadFiles,
+    );
 }

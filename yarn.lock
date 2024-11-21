@@ -3012,6 +3012,7 @@ __metadata:
     babel-plugin-transform-import-meta: ^2.2.1
     babel-preset-react-app: ^10.0.1
     bfj: ^8.0.0
+    blocklypy: ~0.0.6
     browser-fs-access: ^0.35.0
     browserslist: ^4.22.2
     camelcase: ^8.0.0
@@ -3039,6 +3040,8 @@ __metadata:
     fake-indexeddb: ^5.0.2
     file-loader: ^6.2.0
     fs-extra: ^11.2.0
+    google-drive-picker: ^1.1.29
+    googleapi: ^1.0.2
     html-webpack-plugin: ^5.6.0
     identity-obj-proxy: ^3.0.0
     jest: ^29.7.0
@@ -5317,6 +5320,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/prop-types@npm:^15.7.12":
+  version: 15.7.13
+  resolution: "@types/prop-types@npm:15.7.13"
+  checksum: 8935cad87c683c665d09a055919d617fe951cb3b2d5c00544e3a913f861a2bd8d2145b51c9aa6d2457d19f3107ab40784c40205e757232f6a80cc8b1c815513c
+  languageName: node
+  linkType: hard
+
 "@types/qs@npm:*":
   version: 6.9.7
   resolution: "@types/qs@npm:6.9.7"
@@ -5337,6 +5347,15 @@ __metadata:
   dependencies:
     "@types/react": "*"
   checksum: 8e3da404c980e2b2a76da3852f812ea6d8b9d0e7f5923fbaf3bfbbbfa1d59116ff91c129de8f68e9b7668a67ae34484fe9df74d5a7518cf8591ec07a0c4dad57
+  languageName: node
+  linkType: hard
+
+"@types/react-dom@npm:^18.3.0":
+  version: 18.3.0
+  resolution: "@types/react-dom@npm:18.3.0"
+  dependencies:
+    "@types/react": "*"
+  checksum: a0cd9b1b815a6abd2a367a9eabdd8df8dd8f13f95897b2f9e1359ea3ac6619f957c1432ece004af7d95e2a7caddbba19faa045f831f32d6263483fc5404a7596
   languageName: node
   linkType: hard
 
@@ -5366,6 +5385,16 @@ __metadata:
     "@types/scheduler": "*"
     csstype: ^3.0.2
   checksum: 49608f07f73374e535b21f99fee28e6cfd5801d887c6ed88c41b4dc701dbcee9f0c4d289d9af7b2b23114f76dbf203ffe2c9191bfb4958cf18dae5a25daedbd0
+  languageName: node
+  linkType: hard
+
+"@types/react@npm:^18.3.4":
+  version: 18.3.11
+  resolution: "@types/react@npm:18.3.11"
+  dependencies:
+    "@types/prop-types": "*"
+    csstype: ^3.0.2
+  checksum: 6cbf36673b64e758dd61b16c24139d015f58530e0d476777de26ba83f24b55e142fbf64e3b8f6b3c7b05ed9ba548551b2a62d9ffb0f95743d0a368646a619163
   languageName: node
   linkType: hard
 
@@ -6879,6 +6908,15 @@ __metadata:
   version: 2.2.0
   resolution: "binary-extensions@npm:2.2.0"
   checksum: ccd267956c58d2315f5d3ea6757cf09863c5fc703e50fbeb13a7dc849b812ef76e3cf9ca8f35a0c48498776a7478d7b4a0418e1e2b8cb9cb9731f2922aaad7f8
+  languageName: node
+  linkType: hard
+
+"blocklypy@npm:~0.0.6":
+  version: 0.0.7
+  resolution: "blocklypy@npm:0.0.7"
+  dependencies:
+    jszip: ^3.10.1
+  checksum: b18153753d31c0964c645cb1ccf24e01382853b03c00ea2556f48b21b9004fc312e23cc630ec7b9a692cc8ef6243bfd9dbf0fbd6d81eddc8407bb14d5d7e339e
   languageName: node
   linkType: hard
 
@@ -10166,6 +10204,27 @@ __metadata:
     slash: ^5.1.0
     unicorn-magic: ^0.1.0
   checksum: f331b42993e420c8f2b61a6ca062276977ea6d95f181640ff018f00200f4fe5b50f1fae7540903483e6570ca626fe16234ab88e848d43381a2529220548a9d39
+  languageName: node
+  linkType: hard
+
+"google-drive-picker@npm:^1.1.29":
+  version: 1.1.29
+  resolution: "google-drive-picker@npm:1.1.29"
+  dependencies:
+    "@types/prop-types": ^15.7.12
+    "@types/react": ^18.3.4
+    "@types/react-dom": ^18.3.0
+    prop-types: ^15.8.1
+    react: ^18.3.1
+    react-dom: ^18.3.1
+  checksum: 37cd7c1ebda4ea1e5495bdeeae6b157c0a9183fd386eefe2282e1a8325fcd1cdb53bbc1513859437a299dfec1a3b29803d88bf51bc0c647466f24eafa12efe61
+  languageName: node
+  linkType: hard
+
+"googleapi@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "googleapi@npm:1.0.2"
+  checksum: f3d7eb9e80e236a68c92bb58578d941ba260cea9cb54351c03fb41a249f04212f040d63a72b7c529466788d02e8a9dc70b355ca1b4dea3c035c035521d28a53c
   languageName: node
   linkType: hard
 
@@ -14608,15 +14667,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-dom@npm:^18.2.0":
-  version: 18.2.0
-  resolution: "react-dom@npm:18.2.0"
+"react-dom@npm:^18.2.0, react-dom@npm:^18.3.1":
+  version: 18.3.1
+  resolution: "react-dom@npm:18.3.1"
   dependencies:
     loose-envify: ^1.1.0
-    scheduler: ^0.23.0
+    scheduler: ^0.23.2
   peerDependencies:
-    react: ^18.2.0
-  checksum: 7d323310bea3a91be2965f9468d552f201b1c27891e45ddc2d6b8f717680c95a75ae0bc1e3f5cf41472446a2589a75aed4483aee8169287909fcd59ad149e8cc
+    react: ^18.3.1
+  checksum: 298954ecd8f78288dcaece05e88b570014d8f6dce5db6f66e6ee91448debeb59dcd31561dddb354eee47e6c1bb234669459060deb238ed0213497146e555a0b9
   languageName: node
   linkType: hard
 
@@ -14795,12 +14854,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react@npm:^18.2.0":
-  version: 18.2.0
-  resolution: "react@npm:18.2.0"
+"react@npm:^18.2.0, react@npm:^18.3.1":
+  version: 18.3.1
+  resolution: "react@npm:18.3.1"
   dependencies:
     loose-envify: ^1.1.0
-  checksum: 88e38092da8839b830cda6feef2e8505dec8ace60579e46aa5490fc3dc9bba0bd50336507dc166f43e3afc1c42939c09fe33b25fae889d6f402721dcd78fca1b
+  checksum: a27bcfa8ff7c15a1e50244ad0d0c1cb2ad4375eeffefd266a64889beea6f6b64c4966c9b37d14ee32d6c9fcd5aa6ba183b6988167ab4d127d13e7cb5b386a376
   languageName: node
   linkType: hard
 
@@ -15330,12 +15389,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"scheduler@npm:^0.23.0":
-  version: 0.23.0
-  resolution: "scheduler@npm:0.23.0"
+"scheduler@npm:^0.23.2":
+  version: 0.23.2
+  resolution: "scheduler@npm:0.23.2"
   dependencies:
     loose-envify: ^1.1.0
-  checksum: d79192eeaa12abef860c195ea45d37cbf2bbf5f66e3c4dcd16f54a7da53b17788a70d109ee3d3dde1a0fd50e6a8fc171f4300356c5aee4fc0171de526bf35f8a
+  checksum: 3e82d1f419e240ef6219d794ff29c7ee415fbdc19e038f680a10c067108e06284f1847450a210b29bbaf97b9d8a97ced5f624c31c681248ac84c80d56ad5a2c4
   languageName: node
   linkType: hard
 
