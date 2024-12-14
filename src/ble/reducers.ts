@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2022 The Pybricks Authors
+// Copyright (c) 2020-2024 The Pybricks Authors
 //
 // Manages state for the Bluetooth Low Energy connection.
 // This assumes that there is only one global connection to a single device.
