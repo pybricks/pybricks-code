@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2023 The Pybricks Authors
+// Copyright (c) 2020-2024 The Pybricks Authors
 
-import './status-bar.scss';
 import {
     Button,
     Classes,
@@ -12,14 +11,19 @@ import {
     PopoverProps,
     ProgressBar,
     Spinner,
+    useHotkeys,
 } from '@blueprintjs/core';
 import { Disable, Error, TickCircle } from '@blueprintjs/icons';
 import classNames from 'classnames';
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
+import { useDispatch } from 'react-redux';
 import { BleConnectionState } from '../ble/reducers';
 import { CompletionEngineStatus } from '../editor/redux/codeCompletion';
+import { HubRuntimeState } from '../hub/reducers';
+import { hubcenterShowDialog } from '../hubcenter/actions';
 import { useSelector } from '../reducers';
 import { useI18n } from './i18n';
+import './status-bar.scss';
 
 const commonPopoverProps: Partial<PopoverProps> = {
     popoverClassName: Classes.POPOVER_CONTENT_SIZING,
@@ -71,44 +75,90 @@ const CompletionEngineIndicator: React.FunctionComponent = () => {
 };
 
 const HubInfoButton: React.FunctionComponent = () => {
+    const dispatch = useDispatch();
     const i18n = useI18n();
     const deviceName = useSelector((s) => s.ble.deviceName);
     const deviceType = useSelector((s) => s.ble.deviceType);
     const deviceFirmwareVersion = useSelector((s) => s.ble.deviceFirmwareVersion);
+    const { runtime, hasPortView } = useSelector((s) => s.hub);
 
-    return (
-        <Popover
-            {...commonPopoverProps}
-            content={
-                <table className="no-wrap" style={{ userSelect: 'text' }}>
-                    <tbody>
-                        <tr>
-                            <td>
-                                <strong>{i18n.translate('hubInfo.connectedTo')}</strong>
-                            </td>
-                            <td>{deviceName}</td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <strong>{i18n.translate('hubInfo.hubType')}</strong>
-                            </td>
-                            <td>{deviceType}</td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <strong>{i18n.translate('hubInfo.firmware')}</strong>
-                            </td>
-                            <td>v{deviceFirmwareVersion}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            }
-        >
-            <Button title={i18n.translate('hubInfo.title')} minimal={true}>
+    const keyboardShortcut = 'F7';
+    const label = 'HubCentral';
+    const onAction = useCallback(() => {
+        //!! if (hasPortView && runtime === HubRuntimeState.Idle) {
+        dispatch(hubcenterShowDialog());
+        //}
+        //}, [dispatch, hasPortView, runtime]);
+    }, [dispatch]);
+
+    const hotkeys = useMemo(() => {
+        if (!keyboardShortcut) {
+            return [];
+        }
+
+        return [
+            {
+                global: true,
+                allowInInput: true,
+                preventDefault: true,
+                combo: keyboardShortcut.replaceAll('-', '+'),
+                label,
+                onKeyDown: () => onAction(),
+            },
+        ];
+    }, [keyboardShortcut, label, onAction]);
+
+    useHotkeys(hotkeys);
+
+    if (hasPortView && runtime === HubRuntimeState.Idle) {
+        return (
+            <Button
+                title={i18n.translate('hubCenter.title')}
+                onClick={onAction}
+                minimal={true}
+            >
                 {deviceName}
             </Button>
-        </Popover>
-    );
+        );
+    } else {
+        return (
+            <Popover
+                {...commonPopoverProps}
+                content={
+                    <table className="no-wrap" style={{ userSelect: 'text' }}>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <strong>
+                                        {i18n.translate('hubInfo.connectedTo')}
+                                    </strong>
+                                </td>
+                                <td>{deviceName}</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>{i18n.translate('hubInfo.hubType')}</strong>
+                                </td>
+                                <td>{deviceType}</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>
+                                        {i18n.translate('hubInfo.firmware')}
+                                    </strong>
+                                </td>
+                                <td>v{deviceFirmwareVersion}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                }
+            >
+                <Button title={i18n.translate('hubInfo.title')} minimal={true}>
+                    {deviceName}
+                </Button>
+            </Popover>
+        );
+    }
 };
 
 const BatteryIndicator: React.FunctionComponent = () => {

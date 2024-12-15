@@ -1,0 +1,112 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2023-2024 The Pybricks Authors
+
+@use '@blueprintjs/core/lib/scss/variables' as bp;
+
+.#{bp.$ns}-dialog.pb-hubcenter-dialog {
+    width: 70em;
+    .pb-hubcenter {
+        display: grid;
+        grid-template-columns: 1fr min-content auto min-content 1fr;
+
+        justify-content: space-between;
+        place-items: center;
+    }
+    .hub_2_port {
+        grid-template-rows: 1fr;
+    }
+    .hub_4_port {
+        grid-template-rows: 1fr 1fr;
+    }
+    .hub_6_port {
+        grid-template-rows: 1fr 1fr 1fr;
+    }
+    .title {
+        justify-content: space-between;
+        display: flex;
+    }
+    .port-label {
+        color: rgba(127, 127, 127, 1);
+        font-weight: bold;
+        margin-inline: 0.5em;
+    }
+    .pb-hub-icon {
+        height: 100%;
+        grid-column: 3 / 3;
+        grid-row: 1 / span 3;
+        max-width: 20em;
+        position: relative;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        .hubIcon {
+            width: 100%;
+        }
+    }
+    .pb-device {
+        display: flex; /* Enable flexbox layout */
+        flex-direction: column; /* Arrange children in a column */
+        grid-template-rows: 1fr min-content;
+        align-items: center; /* Center children horizontally */
+        justify-content: center; /* Center children vertically */
+        line-height: 1.1rem;
+        text-align: center;
+        margin-inline: 2em;
+        max-height: 15rem;
+        .port-value {
+            grid-area: value;
+            text-align: center;
+            padding-bottom: 0.5em;
+            height: 2em;
+        }
+        .port-icon {
+            display: flex;
+            flex-direction: row;
+        }
+        .pb-device-icon {
+            position: relative;
+            img.icon {
+                grid-area: image;
+                width: 16em;
+                position: relative;
+                z-index: 1;
+            }
+            .color-eye {
+                position: absolute;
+                // height: 100%;
+                height: 96%;
+                left: 30%;
+                transform: translateX(-50%);
+            }
+            .motor-shaft-start {
+                position: absolute;
+                // height: 100%;
+                left: 0;
+                height: 96%;
+                transform: translateX(0%) rotate(var(--rotate, 0deg));
+                z-index: 2;
+            }
+            .motor-shaft-centered {
+                position: absolute;
+                height: 96%;
+                // height: 100%;
+                left: 50%;
+                transform: translateX(-50%) rotate(var(--rotate, 0deg));
+                z-index: 2;
+            }
+        }
+        .pb-device-icon-rotated {
+            transform: rotate(180deg);
+        }
+    }
+
+    .#{bp.$ns}-dialog-footer-actions {
+        flex-direction: column;
+
+        .#{bp.$ns}-button {
+            margin: 0;
+        }
+    }
+}

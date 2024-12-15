@@ -4,7 +4,8 @@
             "title": "File Actions",
             "exportAll": "Backup all files",
             "import": "Import a file",
-            "addNew": "Create a new file"
+            "addNew": "Create a new file",
+            "importFromGoogleDrive": "Import file(s) from Google Drive"
         }
     },
     "tree": {

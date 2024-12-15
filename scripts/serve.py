@@ -24,8 +24,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
     def end_headers(self) -> None:
         # custom headers needed for some web API features
-        self.send_header("Cross-Origin-Opener-Policy", "same-origin")
-        self.send_header("Cross-Origin-Embedder-Policy", "require-corp")
+        # self.send_header("Cross-Origin-Opener-Policy", "same-origin")
+        # self.send_header("Cross-Origin-Embedder-Policy", "require-corp")
         return super().end_headers()
 
 
