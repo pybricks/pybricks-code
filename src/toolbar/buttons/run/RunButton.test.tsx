@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022-2023 The Pybricks Authors
+// Copyright (c) 2022-2024 The Pybricks Authors
 
 import { act, cleanup } from '@testing-library/react';
 import React from 'react';
@@ -14,21 +14,37 @@ afterEach(() => {
     cleanup();
 });
 
-it('should dispatch action when clicked', async () => {
-    const [user, button, dispatch] = testRender(
-        <FocusScope>
-            <RunButton id="test-run-button" />
-        </FocusScope>,
-        {
-            editor: { activeFileUuid: uuid(0) },
-            hub: {
-                runtime: HubRuntimeState.Idle,
-                preferredFileFormat: FileFormat.MultiMpy6,
+test.each([
+    [false, false],
+    [false, true],
+    [true, true],
+])(
+    'should dispatch action when clicked',
+    async (legacyDownload: boolean, legacyStartUserProgram: boolean) => {
+        const [user, button, dispatch] = testRender(
+            <FocusScope>
+                <RunButton id="test-run-button" />
+            </FocusScope>,
+            {
+                editor: { activeFileUuid: uuid(0) },
+                hub: {
+                    runtime: HubRuntimeState.Idle,
+                    preferredFileFormat: FileFormat.MultiMpy6,
+                    useLegacyDownload: legacyDownload,
+                    useLegacyStartUserProgram: legacyStartUserProgram,
+                },
             },
-        },
-    );
+        );
 
-    await act(() => user.click(button.getByRole('button', { name: 'Run' })));
+        await act(() => user.click(button.getByRole('button', { name: 'Run' })));
 
-    expect(dispatch).toHaveBeenCalledWith(downloadAndRun(FileFormat.MultiMpy6, false));
-});
+        expect(dispatch).toHaveBeenCalledWith(
+            downloadAndRun(
+                FileFormat.MultiMpy6,
+                legacyDownload,
+                legacyStartUserProgram,
+                0,
+            ),
+        );
+    },
+);
