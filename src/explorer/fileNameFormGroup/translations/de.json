@@ -1,0 +1,13 @@
+{
+    "label": "Dateiname",
+    "helpText": {
+        "isOk": "OK!",
+        "isEmpty": "Dateiname darf nicht leer sein.",
+        "hasSpaces": "Dateiname darf keine Leerzeichen enthalten.",
+        "hasFileExtension": "Die Dateierweiterung wird automatisch hinzugefügt.",
+        "hasInvalidFirstCharacter": "Dateiname muss mit einem Buchstaben ({letters}) oder Unterstrich ({underscore}) beginnen.",
+        "hasInvalidCharacters": "Dateiname darf nur Buchstaben ({letters}), Zahlen ({numbers}) und Unterstriche ({underscore}) enthalten.",
+        "alreadyExists": "Eine Datei mit diesem Namen existiert bereits. Versuchen Sie einen anderen Namen.",
+        "fixIt": "Automatisch korrigieren."
+    }
+}

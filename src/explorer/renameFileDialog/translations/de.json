@@ -1,0 +1,6 @@
+{
+    "title": "'{fileName}' umbenennen",
+    "action": {
+        "rename": "Umbenennen"
+    }
+}

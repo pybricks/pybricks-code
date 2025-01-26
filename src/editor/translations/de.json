@@ -1,0 +1,20 @@
+{
+    "tablist": {
+        "label": "Editor"
+    },
+    "welcome": "Willkommen",
+    "placeholder": "Schreiben Sie hier Ihr Programm...",
+    "check": "Syntax prüfen",
+    "toggleDocs": "Dokumentation ein-/ausblenden",
+    "copy": "Kopieren",
+    "paste": "Einfügen",
+    "selectAll": "Alles auswählen",
+    "undo": "Rückgängig",
+    "redo": "Wiederholen",
+    "closeFile": { "tooltip": "{fileName} schließen" },
+    "contextMenu": { "label": "Editor-Kontextmenü" },
+    "docs": {
+        "show": "Dokumentation anzeigen",
+        "hide": "Dokumentation ausblenden"
+    }
+}

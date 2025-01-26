@@ -1,0 +1,33 @@
+{
+    "header": {
+        "toolbar": {
+            "title": "Datei-Aktionen",
+            "exportAll": "Alle Dateien sichern",
+            "import": "Datei importieren",
+            "addNew": "Neue Datei erstellen"
+        }
+    },
+    "tree": {
+        "label": "Dateien",
+        "liveDescriptor": {
+            "intro": {
+                "accessibilityGuide": "Bedienungshilfen für Dateibaum {treeLabel}.",
+                "navigation": "Navigieren Sie mit den Pfeiltasten durch den Baum. Beginnen Sie mit der Eingabe eines Dateinamens, um nach einer Datei zu suchen. Weitere Tastenkombinationen sind verfügbar:",
+                "keybindings": {
+                    "primaryAction": "{key} um die Datei im Code-Editor zu öffnen",
+                    "rename": "{key} um die ausgewählte Datei umzubenennen",
+                    "duplicate": "{key} um die ausgewählte Datei zu duplizieren",
+                    "export": "{key} um die ausgewählte Datei zu exportieren",
+                    "delete": "{key} um die ausgewählte Datei zu löschen"
+                }
+            },
+            "searching": "Suche läuft."
+        }
+    },
+    "treeItem": {
+        "renameTooltip": "{fileName} umbenennen",
+        "duplicateTooltip": "{fileName} duplizieren",
+        "exportTooltip": "{fileName} exportieren",
+        "deleteTooltip": "{fileName} löschen"
+    }
+}

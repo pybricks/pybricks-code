@@ -1,0 +1,23 @@
+{
+    "warning": {
+        "linux": {
+            "message": "Wenn Sie Pybricks noch nie mit USB unter Linux verwendet haben, müssen Sie udev-Regeln konfigurieren, bevor Sie die Firmware installieren können. {learnMore}",
+            "learnMore": "Mehr erfahren."
+        },
+        "windows": {
+            "message": "Verwenden Sie Pybricks zum ersten Mal auf diesem Computer? Möglicherweise müssen Sie den USB-Treiber für diesen Hub-Typ manuell installieren. {instructions}",
+            "instructions": "Klicken Sie für Anweisungen."
+        }
+    },
+    "button": {
+        "bluetooth": "Bluetooth-Taste",
+        "power": "Taste"
+    },
+    "light": {
+        "bluetooth": "Bluetooth-Licht",
+        "status": "Hub-Licht"
+    },
+    "lightPattern": {
+        "bluetooth": "pink-grün-blau-aus"
+    }
+}

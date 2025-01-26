@@ -1,0 +1,7 @@
+{
+    "message": "Die Datei '{fileName}' wird endgültig gelöscht. Dies kann nicht rückgängig gemacht werden.",
+    "action": {
+        "accept": "Löschen",
+        "cancel": "Behalten"
+    }
+}

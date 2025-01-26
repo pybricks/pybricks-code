@@ -1,0 +1,16 @@
+{
+    "title": "Neue Datei erstellen",
+    "template": {
+        "label": "Vorlage"
+    },
+    "useTemplate": {
+        "label": "Eine Vorlage verwenden",
+        "description": {
+            "checked": "Neue Datei für den ausgewählten Hub erstellen.",
+            "unchecked": "Neue leere Datei erstellen."
+        }
+    },
+    "action": {
+        "create": "Erstellen"
+    }
+}
