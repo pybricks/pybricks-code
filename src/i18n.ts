@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2023 The Pybricks Authors
+// Copyright (c) 2020-2025 The Pybricks Authors
 
 import { I18n, I18nManager, TranslateOptions } from '@shopify/react-i18n';
 import type {
@@ -13,7 +13,12 @@ import type {
 /** The global i18n manager. */
 export const i18nManager = new I18nManager({
     locale: 'en',
+    fallbackLocale: 'en',
     onError: (err): void => console.error(err),
+    translations: {
+        en: {},
+        de: {},
+    },
 });
 
 // istanbul ignore next
