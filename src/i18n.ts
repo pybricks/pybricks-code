@@ -8,17 +8,25 @@ import type {
     TranslationDictionary,
 } from '@shopify/react-i18n/build/ts/types';
 
-// TODO: add locale setting and use browser preferred language as default
+// TODO: add locale setting
+
+/** Get the user's preferred language, falling back to 'en' if not supported */
+function getPreferredLanguage(): string {
+    // List of languages we support
+    const supportedLanguages = ['en', 'de'];
+
+    // Get browser language (e.g. 'de' from 'de-DE')
+    const browserLang = navigator.language.split('-')[0];
+
+    // Return browser language if supported, otherwise fallback to English
+    return supportedLanguages.includes(browserLang) ? browserLang : 'en';
+}
 
 /** The global i18n manager. */
 export const i18nManager = new I18nManager({
-    locale: 'en',
+    locale: getPreferredLanguage(),
     fallbackLocale: 'en',
     onError: (err): void => console.error(err),
-    translations: {
-        en: {},
-        de: {},
-    },
 });
 
 // istanbul ignore next
