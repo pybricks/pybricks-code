@@ -14,7 +14,11 @@ import {
     takeEvery,
 } from 'typed-redux-saga/macro';
 import { alertsShowAlert } from '../alerts/actions';
-import { zipFileExtension, zipFileMimeType } from '../app/constants';
+import {
+    legoBlocklyFileExtensions,
+    zipFileExtension,
+    zipFileMimeType,
+} from '../app/constants';
 import {
     editorActivateFile,
     editorCloseFile,
@@ -269,7 +273,7 @@ function* importPythonFile(
     } else {
         yield* put(fileStorageWriteFile(fileName, sourceFileContents));
 
-        const { didFailToWrite } = yield* race({
+        const { didWrite, didFailToWrite } = yield* race({
             didWrite: take(fileStorageDidWriteFile.when((a) => a.path === fileName)),
             didFailToWrite: take(
                 fileStorageDidFailToWriteFile.when((a) => a.path === fileName),
@@ -279,39 +283,60 @@ function* importPythonFile(
         if (didFailToWrite) {
             throw didFailToWrite.error;
         }
+
+        defined(didWrite);
+
+        yield* put(editorActivateFile(didWrite.uuid));
     }
 }
 
 function* handleGoogleDriveDidSelectDownloadFiles(
     action: ReturnType<typeof googleDriveDidSelectDownloadFiles>,
 ): Generator {
-    const context: ImportContext = {};
-    for (const file of action.files) {
-        console.log(file);
-        switch (file.mimeType) {
-            case '': // empty string means "could not be determined"
-            case pythonFileMimeType:
-                {
-                    yield* put(googleDriveDownloadFile(file));
+    try {
+        const context: ImportContext = {};
+        for (const file of action.files) {
+            console.log(file);
+            switch (file.mimeType) {
+                case '': // empty string means "could not be determined"
+                case pythonFileMimeType:
+                    {
+                        yield* put(googleDriveDownloadFile(file));
 
-                    const { didDownload, didFailToDownload } = yield* race({
-                        didDownload: take(googleDriveDidDownloadFile),
-                        didFailToDownload: take(googleDriveFailToDownloadFile),
-                    });
+                        const { didDownload, didFailToDownload } = yield* race({
+                            didDownload: take(
+                                googleDriveDidDownloadFile.when(
+                                    (a) => a.file.id === file.id,
+                                ),
+                            ),
+                            didFailToDownload: take(
+                                googleDriveFailToDownloadFile.when(
+                                    (a) => a.file.id === file.id,
+                                ),
+                            ),
+                        });
 
-                    if (didFailToDownload) {
-                        console.log(didFailToDownload);
+                        if (didFailToDownload) {
+                            console.log(didFailToDownload);
+                        }
+                        defined(didDownload);
+
+                        yield* importPythonFile(
+                            file.name,
+                            didDownload.content,
+                            context,
+                        );
                     }
-                    defined(didDownload);
-
-                    yield* importPythonFile(file.name, didDownload.content, context);
-                }
-                break;
-            default:
-                throw new Error(
-                    `'${file.name}' has unsupported file type: ${file.type}`,
-                );
+                    break;
+                default:
+                    throw new Error(
+                        `'${file.name}' has unsupported file type: ${file.type}`,
+                    );
+            }
         }
+        yield* put(explorerDidImportFiles());
+    } catch (err) {
+        yield* put(explorerDidFailToImportFiles(ensureError(err)));
     }
 }
 

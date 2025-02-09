@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021-2023 The Pybricks Authors
+// Copyright (c) 2021-2024 The Pybricks Authors
 
 import { AsyncSaga } from '../../test';
 import {
@@ -7,19 +7,22 @@ import {
     didFailToWriteCommand,
     didNotifyEvent,
     didReceiveStatusReport,
+    didReceiveWriteAppData,
     didReceiveWriteStdout,
     didSendCommand,
     didWriteCommand,
     eventProtocolError,
-    sendStartReplCommand,
+    sendLegacyStartReplCommand,
+    sendLegacyStartUserProgramCommand,
     sendStartUserProgramCommand,
     sendStopUserProgramCommand,
+    sendWriteAppDataCommand,
     sendWriteStdinCommand,
     sendWriteUserProgramMetaCommand,
     sendWriteUserRamCommand,
     writeCommand,
 } from './actions';
-import { CommandType, ProtocolError } from './protocol';
+import { BuiltinProgramId, CommandType, ProtocolError } from './protocol';
 import blePybricksService from './sagas';
 
 describe('command encoder', () => {
@@ -32,15 +35,23 @@ describe('command encoder', () => {
             ],
         ],
         [
+            'start user program with slot',
+            sendStartUserProgramCommand(0, 0x2a),
+            [
+                0x01, // start user program command
+                0x2a, // program slot
+            ],
+        ],
+        [
             'start user program',
-            sendStartUserProgramCommand(0),
+            sendLegacyStartUserProgramCommand(0),
             [
                 0x01, // start user program command
             ],
         ],
         [
             'start repl',
-            sendStartReplCommand(0),
+            sendLegacyStartReplCommand(0),
             [
                 0x02, // start repl command
             ],
@@ -76,6 +87,19 @@ describe('command encoder', () => {
             sendWriteStdinCommand(0, new Uint8Array([1, 2, 3, 4]).buffer),
             [
                 0x06, // write stdin command
+                0x01, // payload start
+                0x02,
+                0x03,
+                0x04, // payload end
+            ],
+        ],
+        [
+            'write AppData',
+            sendWriteAppDataCommand(0, 0x2a, new Uint8Array([1, 2, 3, 4]).buffer),
+            [
+                0x07, // write AppData command
+                0x2a, // offset LSB 16bit
+                0x00, // offset MSB 16bit
                 0x01, // payload start
                 0x02,
                 0x03,
@@ -150,7 +174,7 @@ describe('command encoder', () => {
 describe('event decoder', () => {
     test.each([
         [
-            'status report',
+            'legacy status report',
             [
                 0x00, // status report event
                 0x01, // flags count LSB
@@ -158,7 +182,19 @@ describe('event decoder', () => {
                 0x00, // .
                 0x00, // flags count MSB
             ],
-            didReceiveStatusReport(0x00000001),
+            didReceiveStatusReport(0x00000001, 0),
+        ],
+        [
+            'status report',
+            [
+                0x00, // status report event
+                0x01, // flags count LSB
+                0x00, // .
+                0x00, // .
+                0x00, // flags count MSB
+                0x80, // slot
+            ],
+            didReceiveStatusReport(0x00000001, BuiltinProgramId.REPL),
         ],
         [
             'write stdout',
@@ -170,6 +206,24 @@ describe('event decoder', () => {
                 't'.charCodeAt(0),
             ],
             didReceiveWriteStdout(
+                new Uint8Array([
+                    't'.charCodeAt(0),
+                    'e'.charCodeAt(0),
+                    't'.charCodeAt(0),
+                    't'.charCodeAt(0),
+                ]).buffer,
+            ),
+        ],
+        [
+            'write AppData',
+            [
+                0x02, // write AppData event
+                't'.charCodeAt(0), //payload
+                'e'.charCodeAt(0),
+                't'.charCodeAt(0),
+                't'.charCodeAt(0),
+            ],
+            didReceiveWriteAppData(
                 new Uint8Array([
                     't'.charCodeAt(0),
                     'e'.charCodeAt(0),

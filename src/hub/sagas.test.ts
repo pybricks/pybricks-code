@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2023 The Pybricks Authors
+// Copyright (c) 2020-2024 The Pybricks Authors
 
 import { AsyncSaga } from '../../test';
 import { alertsShowAlert } from '../alerts/actions';
@@ -7,10 +7,11 @@ import { didWrite, write } from '../ble-nordic-uart-service/actions';
 import {
     didFailToSendCommand,
     didSendCommand,
-    sendStartReplCommand,
+    sendLegacyStartReplCommand,
+    sendStartUserProgramCommand,
     sendStopUserProgramCommand,
 } from '../ble-pybricks-service/actions';
-import { FileFormat } from '../ble-pybricks-service/protocol';
+import { BuiltinProgramId, FileFormat } from '../ble-pybricks-service/protocol';
 import { editorGetValueRequest, editorGetValueResponse } from '../editor/actions';
 import { compile, didCompile } from '../mpy/actions';
 import { createCountFunc } from '../utils/iter';
@@ -37,7 +38,7 @@ describe('downloadAndRun', () => {
 
         saga.updateState({ editor: { isReady: true } });
 
-        saga.put(downloadAndRun(FileFormat.Mpy5, true));
+        saga.put(downloadAndRun(FileFormat.Mpy5, true, true, 0));
 
         // first, it gets the value from the current editor
         const editorValueAction = await saga.take();
@@ -94,7 +95,7 @@ describe('hubStartRepl', () => {
     test('legacy UART download', async () => {
         const saga = new AsyncSaga(hub, { nextMessageId: createCountFunc() });
 
-        saga.put(hubStartRepl(true));
+        saga.put(hubStartRepl(true, true));
 
         await expect(saga.take()).resolves.toEqual(
             write(0, new Uint8Array([32, 32, 32, 32])),
@@ -105,12 +106,28 @@ describe('hubStartRepl', () => {
         await saga.end();
     });
 
+    test('legacy start REPL command', async () => {
+        const saga = new AsyncSaga(hub, { nextMessageId: createCountFunc() });
+
+        saga.put(hubStartRepl(false, true));
+
+        await expect(saga.take()).resolves.toEqual(sendLegacyStartReplCommand(0));
+
+        saga.put(didSendCommand(0));
+
+        await expect(saga.take()).resolves.toEqual(hubDidStartRepl());
+
+        await saga.end();
+    });
+
     test('success', async () => {
         const saga = new AsyncSaga(hub, { nextMessageId: createCountFunc() });
 
-        saga.put(hubStartRepl(false));
+        saga.put(hubStartRepl(false, false));
 
-        await expect(saga.take()).resolves.toEqual(sendStartReplCommand(0));
+        await expect(saga.take()).resolves.toEqual(
+            sendStartUserProgramCommand(0, BuiltinProgramId.REPL),
+        );
 
         saga.put(didSendCommand(0));
 
@@ -122,9 +139,11 @@ describe('hubStartRepl', () => {
     test('failure due to disconnect', async () => {
         const saga = new AsyncSaga(hub, { nextMessageId: createCountFunc() });
 
-        saga.put(hubStartRepl(false));
+        saga.put(hubStartRepl(false, false));
 
-        await expect(saga.take()).resolves.toEqual(sendStartReplCommand(0));
+        await expect(saga.take()).resolves.toEqual(
+            sendStartUserProgramCommand(0, BuiltinProgramId.REPL),
+        );
 
         saga.put(didFailToSendCommand(0, new DOMException('test', 'NetworkError')));
 

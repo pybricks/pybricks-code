@@ -30,7 +30,7 @@ jobs:
                   echo "REACT_APP_NAME=Pybricks Beta" >> $GITHUB_ENV
                   echo "REACT_APP_SUFFIX=-beta" >> $GITHUB_ENV
             - name: Set env to private
-              if: contains(github.ref, '-private.') || contains(github.ref, '-private.')
+              if: contains(github.ref, '-private.') || contains(github.ref, '-private-fork.')
               run: |
                   echo "REACT_APP_NAME=Pybricks Private" >> $GITHUB_ENV
                   echo "REACT_APP_SUFFIX=-private" >> $GITHUB_ENV

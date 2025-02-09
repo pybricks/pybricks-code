@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2023 The Pybricks Authors
+// Copyright (c) 2020-2024 The Pybricks Authors
 
 import {
     SagaGenerator,
@@ -19,13 +19,14 @@ import { nordicUartSafeTxCharLength } from '../ble-nordic-uart-service/protocol'
 import {
     didFailToSendCommand,
     didSendCommand,
-    sendStartReplCommand,
+    sendLegacyStartReplCommand,
+    sendLegacyStartUserProgramCommand,
     sendStartUserProgramCommand,
     sendStopUserProgramCommand,
     sendWriteUserProgramMetaCommand,
     sendWriteUserRamCommand,
 } from '../ble-pybricks-service/actions';
-import { FileFormat } from '../ble-pybricks-service/protocol';
+import { BuiltinProgramId, FileFormat } from '../ble-pybricks-service/protocol';
 import { editorGetValue } from '../editor/sagaLib';
 import {
     compile,
@@ -311,7 +312,11 @@ function* handleDownloadAndRun(action: ReturnType<typeof downloadAndRun>): Gener
         yield* put(didFinishDownload());
 
         const startUserProgramId = nextMessageId();
-        yield* put(sendStartUserProgramCommand(startUserProgramId));
+        if (action.useLegacyStartUserProgram) {
+            yield* put(sendLegacyStartUserProgramCommand(startUserProgramId));
+        } else {
+            yield* put(sendStartUserProgramCommand(startUserProgramId, action.slot));
+        }
 
         const { didFailToStart } = yield* race({
             didStart: take(didSendCommand.when((a) => a.id === startUserProgramId)),
@@ -344,22 +349,26 @@ function* handleDownloadAndRun(action: ReturnType<typeof downloadAndRun>): Gener
 }
 
 // SPACE, SPACE, SPACE, SPACE
-const legacyStartReplCommand = new Uint8Array([0x20, 0x20, 0x20, 0x20]);
+const legacyNusStartReplCommand = new Uint8Array([0x20, 0x20, 0x20, 0x20]);
 
 function* handleHubStartRepl(action: ReturnType<typeof hubStartRepl>): Generator {
     const nextMessageId = yield* getContext<() => number>('nextMessageId');
 
     if (action.useLegacyDownload) {
-        yield* put(write(nextMessageId(), legacyStartReplCommand));
+        yield* put(write(nextMessageId(), legacyNusStartReplCommand));
         yield* put(hubDidStartRepl());
         return;
     }
 
     const id = nextMessageId();
-    yield* put(sendStartReplCommand(id));
+    if (action.useLegacyStartUserProgram) {
+        yield* put(sendLegacyStartReplCommand(id));
+    } else {
+        yield* put(sendStartUserProgramCommand(id, BuiltinProgramId.REPL));
+    }
 
     const { didFailToSend } = yield* race({
-        didStart: take(didSendCommand.when((a) => a.id === id)),
+        didSend: take(didSendCommand.when((a) => a.id === id)),
         didFailToSend: take(didFailToSendCommand.when((a) => a.id === id)),
     });
 

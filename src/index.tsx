@@ -12,7 +12,7 @@ import { Provider } from 'react-redux';
 import { createLogger } from 'redux-logger';
 import createSagaMiddleware from 'redux-saga';
 import App from './app/App';
-import { appVersion } from './app/constants';
+import { appName, appVersion } from './app/constants';
 import { db } from './fileStorage/context';
 import { defaultHubCenterContext } from './hubcenter/HubCenterContext';
 import { i18nManager } from './i18n';
@@ -48,11 +48,10 @@ const store = configureStore({
 });
 
 // special styling for beta versions
-if (appVersion.match(/beta/)) {
-    document.body.classList.add('pb-beta');
-}
-if (appVersion.match(/private/)) {
+if (appName.match(/Private/)) {
     document.body.classList.add('pb-private');
+} else if (appVersion.match(/beta/)) {
+    document.body.classList.add('pb-beta');
 }
 
 // prevent default drag/drop which just "downloads" any file dropped anywhere

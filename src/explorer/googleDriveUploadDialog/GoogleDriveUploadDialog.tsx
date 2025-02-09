@@ -116,7 +116,7 @@ const GoogleDriveUploadDialog: React.FunctionComponent = () => {
                         <div>
                             Uploaded to:{' '}
                             <a
-                                href={`https://drive.google.com/drive/folders/${destFolder.folder.id}/view`}
+                                href={`https://drive.google.com/drive/folders/${destFolder.folder.id}`}
                                 target="_blank"
                                 rel="noopener"
                             >

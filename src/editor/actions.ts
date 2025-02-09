@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022-2023 The Pybricks Authors
+// Copyright (c) 2022-2024 The Pybricks Authors
 
 import { createAction } from '../actions';
 import { UUID } from '../fileStorage';
+import { RecentFileMetadata } from '.';
 export {
     didFailToInit as editorCompletionDidFailToInit,
     didInit as editorCompletionDidInit,
@@ -131,4 +132,13 @@ export const editorReplaceFile = createAction((uuid: UUID, value: string) => ({
     type: 'editor.action.replaceFile',
     uuid,
     value,
+}));
+
+/**
+ * Requests to replace the value a file in the editor.
+ * @param files The recent files.
+ */
+export const editorRecentFiles = createAction((files: RecentFileMetadata[]) => ({
+    type: 'editor.action.recentFiles',
+    files,
 }));
