@@ -3019,7 +3019,7 @@ __metadata:
     babel-plugin-transform-import-meta: ^2.2.1
     babel-preset-react-app: ^10.0.1
     bfj: ^8.0.0
-    blocklypy: ^0.0.85
+    blocklypy: ^0.0.86
     browser-fs-access: ^0.35.0
     browserslist: ^4.22.2
     camelcase: ^8.0.0
@@ -6936,9 +6936,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"blocklypy@npm:^0.0.85":
-  version: 0.0.85
-  resolution: "blocklypy@npm:0.0.85"
+"blocklypy@npm:^0.0.86":
+  version: 0.0.86
+  resolution: "blocklypy@npm:0.0.86"
   dependencies:
     "@hpcc-js/wasm-graphviz": ^1.7.0
     buffer: ^6.0.3
@@ -6946,9 +6946,12 @@ __metadata:
     commander: ^13.1.0
     fast-xml-parser: ^4.5.0
     jszip: ^3.10.1
+  dependenciesMeta:
+    "@hpcc-js/wasm-graphviz":
+      optional: true
   bin:
     blocklypy: bin/index.min.js
-  checksum: ded2a0c485a9dc9d0d06a78c56c7f4457b6befd7b070dc0a2909d59a579ae0b7fbf3e01b2403ec2e45ac548ec4045170b430192534f17dc09eacdfb476894cf7
+  checksum: e63d8376b471788b76b40a86c5b2648a94742839f40e8638143eb4a9997f3c7d507122007900fa7049a4417296a24c10e8121bb33184cc74a868505f465cd7d9
   languageName: node
   linkType: hard
 
