@@ -14,11 +14,7 @@ import {
     takeEvery,
 } from 'typed-redux-saga/macro';
 import { alertsShowAlert } from '../alerts/actions';
-import {
-    legoBlocklyFileExtensions,
-    zipFileExtension,
-    zipFileMimeType,
-} from '../app/constants';
+import { zipFileExtension, zipFileMimeType } from '../app/constants';
 import {
     editorActivateFile,
     editorCloseFile,
@@ -343,27 +339,18 @@ function* handleGoogleDriveDidSelectDownloadFiles(
 function* handleExplorerImportFiles(): Generator {
     try {
         const selectedFiles = yield* call(() =>
-            fileOpen([
-                {
-                    id: 'pybricks-code-explorer-import',
-                    mimeTypes: [pythonFileMimeType],
-                    extensions: [pythonFileExtension],
-                    // TODO: translate description
-                    description: 'Python Files',
-                    multiple: true,
-                    excludeAcceptAllOption: true,
-                },
-                {
-                    mimeTypes: [zipFileMimeType],
-                    extensions: [zipFileExtension],
-                    // TODO: translate description
-                    description: 'ZIP Files',
-                },
-                {
-                    extensions: supportedExtensions(),
-                    description: 'BlocklyPy supported Files',
-                },
-            ]),
+            fileOpen({
+                id: 'pybricks-code-explorer-import',
+                mimeTypes: [pythonFileMimeType, zipFileMimeType],
+                extensions: [
+                    pythonFileExtension,
+                    zipFileExtension,
+                    ...supportedExtensions(),
+                ],
+                description: 'Supported Files (Python, ZIP, LEGO Blockly)',
+                multiple: true,
+                excludeAcceptAllOption: true,
+            }),
         );
 
         const context: ImportContext = {};
@@ -391,7 +378,6 @@ function* handleExplorerImportFiles(): Generator {
                             const result = yield* call(() =>
                                 convertProjectToPython(inputfiles, {}),
                             );
-                            // console.log(result);
                             if (Array.isArray(result.pycode)) {
                                 text = result.pycode?.join('\n');
                             } else {
