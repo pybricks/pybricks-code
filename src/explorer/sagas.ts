@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022-2024 The Pybricks Authors
+// Copyright (c) 2022-2025 The Pybricks Authors
 
-import { convertFlipperProjectToPython } from 'blocklypy';
+import { convertProjectToPython, supportedExtensions } from 'blocklypy';
 import { fileOpen, fileSave } from 'browser-fs-access';
 import JSZip from 'jszip';
 import {
@@ -335,10 +335,8 @@ function* handleExplorerImportFiles(): Generator {
                     description: 'ZIP Files',
                 },
                 {
-                    // mimeTypes: [zipFileMimeType],
-                    extensions: ['.llsp3'],
-                    // TODO: translate description
-                    description: 'LLSP3 Files',
+                    extensions: supportedExtensions(),
+                    description: 'BlocklyPy supported Files',
                 },
             ]),
         );
@@ -354,20 +352,27 @@ function* handleExplorerImportFiles(): Generator {
                         const extension = file.name.includes('.')
                             ? '.' + file.name.split('.').pop()
                             : '';
-                        // console.log('>>>>', extension);
                         let text;
                         let filename = file.name;
-                        if (extension === '.llsp3') {
-                            const arraybuffer = yield* call(() => file.arrayBuffer());
-                            const result = yield* call(() =>
-                                convertFlipperProjectToPython(arraybuffer, {}),
-                            );
-                            // console.log(result);
-                            text = result.pycode ?? '';
-                            filename = filename.replace('.', '_') + '.py';
-                        } else {
+                        if (extension === pythonFileExtension) {
                             // getting the text now to catch possible error *before* user interaction
                             text = yield* call(() => file.text());
+                        } else {
+                            // if (supportedExtensions().includes(extension)) {
+                            const arraybuffer = yield* call(() => file.arrayBuffer());
+                            const inputfiles = [
+                                { name: filename, buffer: arraybuffer },
+                            ];
+                            const result = yield* call(() =>
+                                convertProjectToPython(inputfiles, {}),
+                            );
+                            // console.log(result);
+                            if (Array.isArray(result.pycode)) {
+                                text = result.pycode?.join('\n');
+                            } else {
+                                text = result.pycode ?? '';
+                            }
+                            filename = filename.replace('.', '_') + '.py';
                         }
                         yield* importPythonFile(filename, text, context);
                     }
