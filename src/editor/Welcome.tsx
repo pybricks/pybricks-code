@@ -1,13 +1,23 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022-2023 The Pybricks Authors
+// Copyright (c) 2022-2024 The Pybricks Authors
 
 // welcome screen that is shown when no editor is open.
 
-import { Colors } from '@blueprintjs/core';
-import React, { useEffect, useRef } from 'react';
+import { Button, Colors } from '@blueprintjs/core';
+import { DocumentOpen, Plus } from '@blueprintjs/icons';
+import React, { useCallback, useEffect, useRef } from 'react';
+import { useDispatch } from 'react-redux';
 import Two from 'two.js';
 import { useTernaryDarkMode } from 'usehooks-ts';
+import { Activity, useActivitiesSelectedActivity } from '../activities/hooks';
+import { recentFileCount } from '../app/constants';
+import { explorerCreateNewFile } from '../explorer/actions';
+import { UUID } from '../fileStorage';
+import { useSelector } from '../reducers';
+import { editorActivateFile } from './actions';
+import { useI18n } from './i18n';
 import logoSvg from './logo.svg';
+import { RecentFileMetadata } from '.';
 
 const defaultRotation = -Math.PI / 9; // radians
 const rotationSpeedIncrement = 0.1; // radians per second
@@ -61,6 +71,8 @@ type WelcomeProps = {
 };
 
 const Welcome: React.FunctionComponent<WelcomeProps> = ({ isVisible }) => {
+    const i18n = useI18n();
+    const dispatch = useDispatch();
     const stateRef = useRef<State>({
         rotation: defaultRotation,
         rotationSpeed: 0,
@@ -93,6 +105,7 @@ const Welcome: React.FunctionComponent<WelcomeProps> = ({ isVisible }) => {
 
         const logo = two.load(logoSvg, (g) => {
             g.center();
+
             two.add(logo);
             two.play();
         });
@@ -156,15 +169,64 @@ const Welcome: React.FunctionComponent<WelcomeProps> = ({ isVisible }) => {
         };
     }, [isVisible]);
 
+    const [, setSelectedActivity] = useActivitiesSelectedActivity();
+    const handleOpenNewProject = useCallback(() => {
+        setSelectedActivity(Activity.Explorer);
+        dispatch(explorerCreateNewFile());
+    }, [dispatch, setSelectedActivity]);
+
+    const handleOpenExplorer = useCallback(
+        (uuid: UUID) => {
+            setSelectedActivity(Activity.Explorer);
+            dispatch(editorActivateFile(uuid));
+        },
+        [dispatch, setSelectedActivity],
+    );
+
+    const recentFiles: readonly RecentFileMetadata[] = useSelector(
+        (s) => s.editor.recentFiles,
+    );
+    // NOTE: could use UUID instead of storing - const uuid = useFileStorageUuid(file ?? '');
+
+    const getRecentFileShortCuts = () => (
+        <>
+            {recentFiles.slice(0, recentFileCount).map((fitem: RecentFileMetadata) => (
+                <dl key={fitem.uuid} onClick={() => handleOpenExplorer(fitem.uuid)}>
+                    <dt>
+                        {i18n.translate('welcome.openProject', {
+                            fileName: fitem.path,
+                        })}
+                    </dt>
+                    <dd>
+                        <Button
+                            icon={<DocumentOpen />}
+                            onClick={() => handleOpenExplorer(fitem.uuid)}
+                        />
+                    </dd>
+                </dl>
+            ))}
+        </>
+    );
+
     return (
         <div
             className="pb-editor-welcome"
-            ref={elementRef}
             onContextMenuCapture={(e) => {
                 e.stopPropagation();
                 e.preventDefault();
             }}
-        />
+        >
+            <div className="logo" ref={elementRef}></div>
+            <div className="shortcuts">
+                {getRecentFileShortCuts()}
+                <dl>
+                    <dt>{i18n.translate('welcome.newProject')}</dt>
+                    <dd>
+                        <Button icon={<Plus />} onClick={handleOpenNewProject} />
+                    </dd>
+                </dl>
+            </div>
+        </div>
     );
 };
 

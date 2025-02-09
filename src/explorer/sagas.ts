@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022-2023 The Pybricks Authors
+// Copyright (c) 2022-2025 The Pybricks Authors
 
+import { convertProjectToPython, supportedExtensions } from 'blocklypy';
 import { fileOpen, fileSave } from 'browser-fs-access';
 import JSZip from 'jszip';
 import {
@@ -46,6 +47,12 @@ import {
     fileStorageWriteFile,
 } from '../fileStorage/actions';
 import {
+    googleDriveDidDownloadFile,
+    googleDriveDidSelectDownloadFiles,
+    googleDriveDownloadFile,
+    googleDriveFailToDownloadFile,
+} from '../googleDrive/actions';
+import {
     FileNameValidationResult,
     pythonFileExtension,
     pythonFileExtensionRegex,
@@ -76,6 +83,7 @@ import {
     explorerExportFile,
     explorerImportFiles,
     explorerRenameFile,
+    explorerUploadFileToGoogleDrive,
     explorerUserActivateFile,
     explorerUserDidActivateFile,
 } from './actions';
@@ -90,6 +98,7 @@ import {
     duplicateFileDialogShow,
 } from './duplicateFileDialog/actions';
 import { ExplorerError } from './error';
+import { googleDriveUploadDialogShow } from './googleDriveUploadDialog/actions';
 import {
     newFileWizardDidAccept,
     newFileWizardDidCancel,
@@ -169,6 +178,12 @@ function* handleExplorerArchiveAllFiles(): Generator {
         }
         yield* put(explorerDidFailToArchiveAllFiles(error));
     }
+}
+
+function* handleUploadFileToGoogleDrive(
+    action: ReturnType<typeof explorerRenameFile>,
+): Generator {
+    yield* put(googleDriveUploadDialogShow(action.fileName));
 }
 
 type ImportContext = {
@@ -254,7 +269,7 @@ function* importPythonFile(
     } else {
         yield* put(fileStorageWriteFile(fileName, sourceFileContents));
 
-        const { didFailToWrite } = yield* race({
+        const { didWrite, didFailToWrite } = yield* race({
             didWrite: take(fileStorageDidWriteFile.when((a) => a.path === fileName)),
             didFailToWrite: take(
                 fileStorageDidFailToWriteFile.when((a) => a.path === fileName),
@@ -264,41 +279,113 @@ function* importPythonFile(
         if (didFailToWrite) {
             throw didFailToWrite.error;
         }
+
+        defined(didWrite);
+
+        yield* put(editorActivateFile(didWrite.uuid));
+    }
+}
+
+function* handleGoogleDriveDidSelectDownloadFiles(
+    action: ReturnType<typeof googleDriveDidSelectDownloadFiles>,
+): Generator {
+    try {
+        const context: ImportContext = {};
+        for (const file of action.files) {
+            console.log(file);
+            switch (file.mimeType) {
+                case '': // empty string means "could not be determined"
+                case pythonFileMimeType:
+                    {
+                        yield* put(googleDriveDownloadFile(file));
+
+                        const { didDownload, didFailToDownload } = yield* race({
+                            didDownload: take(
+                                googleDriveDidDownloadFile.when(
+                                    (a) => a.file.id === file.id,
+                                ),
+                            ),
+                            didFailToDownload: take(
+                                googleDriveFailToDownloadFile.when(
+                                    (a) => a.file.id === file.id,
+                                ),
+                            ),
+                        });
+
+                        if (didFailToDownload) {
+                            console.log(didFailToDownload);
+                        }
+                        defined(didDownload);
+
+                        yield* importPythonFile(
+                            file.name,
+                            didDownload.content,
+                            context,
+                        );
+                    }
+                    break;
+                default:
+                    throw new Error(
+                        `'${file.name}' has unsupported file type: ${file.type}`,
+                    );
+            }
+        }
+        yield* put(explorerDidImportFiles());
+    } catch (err) {
+        yield* put(explorerDidFailToImportFiles(ensureError(err)));
     }
 }
 
 function* handleExplorerImportFiles(): Generator {
     try {
         const selectedFiles = yield* call(() =>
-            fileOpen([
-                {
-                    id: 'pybricks-code-explorer-import',
-                    mimeTypes: [pythonFileMimeType],
-                    extensions: [pythonFileExtension],
-                    // TODO: translate description
-                    description: 'Python Files',
-                    multiple: true,
-                    excludeAcceptAllOption: true,
-                },
-                {
-                    mimeTypes: [zipFileMimeType],
-                    extensions: [zipFileExtension],
-                    // TODO: translate description
-                    description: 'ZIP Files',
-                },
-            ]),
+            fileOpen({
+                id: 'pybricks-code-explorer-import',
+                mimeTypes: [pythonFileMimeType, zipFileMimeType],
+                extensions: [
+                    pythonFileExtension,
+                    zipFileExtension,
+                    ...supportedExtensions(),
+                ],
+                description: 'Supported Files (Python, ZIP, LEGO Blockly)',
+                multiple: true,
+                excludeAcceptAllOption: true,
+            }),
         );
 
         const context: ImportContext = {};
 
         for (const file of selectedFiles) {
+            // console.log(`file type "${file.type}"`);
             switch (file.type) {
                 case '': // empty string means "could not be determined"
                 case pythonFileMimeType:
                     {
-                        // getting the text now to catch possible error *before* user interaction
-                        const text = yield* call(() => file.text());
-                        yield* importPythonFile(file.name, text, context);
+                        const extension = file.name.includes('.')
+                            ? '.' + file.name.split('.').pop()
+                            : '';
+                        let text;
+                        let filename = file.name;
+                        if (extension === pythonFileExtension) {
+                            // getting the text now to catch possible error *before* user interaction
+                            text = yield* call(() => file.text());
+                        } else {
+                            // if (supportedExtensions().includes(extension)) {
+                            const arraybuffer = yield* call(() => file.arrayBuffer());
+                            const inputfiles = [
+                                { name: filename, buffer: arraybuffer },
+                            ];
+                            const result = yield* call(() =>
+                                convertProjectToPython(inputfiles, {}),
+                            );
+                            if (Array.isArray(result.pycode)) {
+                                text = result.pycode?.join('\n');
+                            } else {
+                                text = result.pycode ?? '';
+                            }
+                            filename = filename.replace('.', '_') + '.py';
+                        }
+                        yield* importPythonFile(filename, text, context);
                     }
                     break;
                 case zipFileMimeType:
@@ -592,4 +679,9 @@ export default function* (): Generator {
     yield* takeEvery(explorerDuplicateFile, handleExplorerDuplicateFile);
     yield* takeEvery(explorerExportFile, handleExplorerExportFile);
     yield* takeEvery(explorerDeleteFile, handleExplorerDeleteFile);
+    yield* takeEvery(explorerUploadFileToGoogleDrive, handleUploadFileToGoogleDrive);
+    yield* takeEvery(
+        googleDriveDidSelectDownloadFiles,
+        handleGoogleDriveDidSelectDownloadFiles,
+    );
 }
