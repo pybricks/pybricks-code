@@ -1,0 +1,46 @@
+{
+    "app": {
+        "noUpdateFound": "{appName} ist bereits auf dem neuesten Stand."
+    },
+    "ble": {
+        "gattServiceNotFound": "Mit Hub verbunden, aber {serviceName}-Dienst konnte nicht gefunden werden.\nStellen Sie sicher, dass Sie die neueste Firmware verwenden.\nWenn das Problem weiterhin besteht, versuchen Sie das Gerät \"{hubName}\" in Ihren OS-Bluetooth-Einstellungen zu entfernen und dann erneut zu verbinden.",
+        "unexpectedError": "Unerwarteter Fehler beim Verbindungsversuch: {errorMessage}"
+    },
+    "editor": {
+        "failedToOpenFile": "Datei konnte nicht geöffnet werden.",
+        "failedToSaveFile": "Programm konnte nicht gespeichert werden."
+    },
+    "explorer": {
+        "failedToImportFiles": "Datei(en) konnten nicht importiert werden.",
+        "failedToCreate": "Datei konnte nicht erstellt werden.",
+        "failedToDuplicate": "Datei konnte nicht dupliziert werden.",
+        "failedToExport": "Datei konnte nicht exportiert werden.",
+        "failedToDelete": "Datei konnte nicht gelöscht werden.",
+        "failedToArchive": "Dateien konnten nicht archiviert werden."
+    },
+    "fileStorage": {
+        "failedToInitialize": "Dateispeicher konnte nicht initialisiert werden. Änderungen werden nicht automatisch gespeichert."
+    },
+    "flashFirmware": {
+        "timedOut": "Der Hub hat zu lange nicht reagiert. Starten Sie den Hub neu und versuchen Sie es erneut.",
+        "bleError": "Es gab ein Problem mit Bluetooth.",
+        "disconnected": "Der Hub wurde vor Abschluss der Installation getrennt. Starten Sie den Hub neu und versuchen Sie es erneut.",
+        "hubError": "Der Hub meldet einen Fehler.",
+        "unsupportedDevice": "Der angeschlossene Hub wird nicht unterstützt.",
+        "failToFetch": "Firmware konnte nicht vom Server geladen werden: {status}",
+        "badZipFile": "Der firmware.zip-Datei fehlen erforderliche Dateien oder sie ist ungültig.",
+        "badMetadata": "Die firmware.metadata.json-Datei enthält fehlende oder ungültige Einträge. Beheben Sie dies und versuchen Sie es erneut.",
+        "compileError": "Die enthaltene main.py-Datei konnte nicht kompiliert werden. Beheben Sie dies und versuchen Sie es erneut.",
+        "sizeTooBig": "Die kombinierte Firmware und main.py sind zu groß für den Flash-Speicher.",
+        "unexpectedError": "Unerwarteter Fehler bei der Firmware-Installation: {errorMessage}"
+    },
+    "mpy": {
+        "error": "{errorMessage}"
+    },
+    "serviceWorker": {
+        "update": {
+            "message": "Eine neue Version von {appName} ist verfügbar. Klicken Sie auf {action}, um die neue Version zu verwenden.",
+            "action": "Neustart"
+        }
+    }
+}

@@ -1,0 +1,11 @@
+{
+    "fileInUse": {
+        "message": "Die Datei '{fileName}' konnte nicht geöffnet werden. Sie ist bereits in einem anderen Fenster geöffnet."
+    },
+    "noFilesToBackup": {
+        "message": "Es gibt keine Dateien zum Sichern. Erstellen Sie zuerst eine neue Datei, indem Sie auf das {icon} Symbol klicken."
+    },
+    "noPyFiles": {
+        "message": "In der {zip} Datei waren keine {py} Dateien enthalten."
+    }
+}

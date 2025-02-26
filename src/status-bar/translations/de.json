@@ -1,0 +1,22 @@
+{
+    "completionEngineStatus": {
+        "label": "Statusanzeige der Code-Vervollständigungs-Engine",
+        "message": {
+            "loading": "Die Code-Vervollständigungs-Engine startet und wird in Kürze bereit sein.",
+            "ready": "Die Code-Vervollständigungs-Engine ist einsatzbereit.",
+            "failed": "Die Code-Vervollständigungs-Engine funktioniert nicht mehr.",
+            "unknown": "Die Code-Vervollständigungs-Engine wurde noch nicht gestartet."
+        }
+    },
+    "hubInfo": {
+        "title": "Verbundener Hub",
+        "connectedTo": "Verbunden mit:",
+        "hubType": "Hub-Typ:",
+        "firmware": "Firmware:"
+    },
+    "battery": {
+        "title": "Batterie",
+        "low": "Batteriestand ist niedrig. Hub wird sich bald ausschalten.",
+        "ok": "Batteriestand ist OK."
+    }
+}
