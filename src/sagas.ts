@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2022 The Pybricks Authors
+// Copyright (c) 2020-2024 The Pybricks Authors
 
 import { eventChannel } from 'redux-saga';
 import { all, spawn, take } from 'typed-redux-saga/macro';
@@ -11,7 +11,9 @@ import errorLog from './error-log/sagas';
 import explorer from './explorer/sagas';
 import fileStorage, { FileStorageSageContext } from './fileStorage/sagas';
 import flashFirmware from './firmware/sagas';
+import googleDrive from './googleDrive/sagas';
 import hub from './hub/sagas';
+import type { HubcenterSagaContext } from './hubcenter/sagas';
 import lwp3BootloaderProtocol from './lwp3-bootloader/sagas';
 import lwp3BootloaderBle from './lwp3-bootloader/sagas-ble';
 import mpy from './mpy/sagas';
@@ -50,6 +52,7 @@ export default function* (): Generator {
         errorLog(),
         explorer(),
         flashFirmware(),
+        googleDrive(),
         hub(),
         mpy(),
         notifications(),
@@ -64,4 +67,5 @@ export type RootSagaContext = {
     nextMessageId: () => number;
 } & AlertsSagaContext &
     FileStorageSageContext &
-    TerminalSagaContext;
+    TerminalSagaContext &
+    HubcenterSagaContext;

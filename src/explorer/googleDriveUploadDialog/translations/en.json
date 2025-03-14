@@ -1,0 +1,12 @@
+{
+    "title": "Upload '{fileName}' to Google Drive",
+    "upload_to": "Upload To",
+    "upload_to_sub_label": "Choose a destination folder on your Google Drive",
+
+    "action": {
+        "change_destination": "Change Destination",
+        "choose_destination": "Choose Destination",
+        "upload": "Upload",
+        "cancel": "Cancel"
+    }
+}

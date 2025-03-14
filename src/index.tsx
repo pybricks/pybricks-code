@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2023 The Pybricks Authors
+// Copyright (c) 2020-2024 The Pybricks Authors
 
 import './index.scss';
 import { HotkeysProvider, OverlayToaster } from '@blueprintjs/core';
@@ -12,8 +12,9 @@ import { Provider } from 'react-redux';
 import { createLogger } from 'redux-logger';
 import createSagaMiddleware from 'redux-saga';
 import App from './app/App';
-import { appVersion } from './app/constants';
+import { appName, appVersion } from './app/constants';
 import { db } from './fileStorage/context';
+import { defaultHubCenterContext } from './hubcenter/HubCenterContext';
 import { i18nManager } from './i18n';
 import { rootReducer } from './reducers';
 import { serializableCheck } from './redux';
@@ -29,6 +30,7 @@ const sagaMiddleware = createSagaMiddleware<RootSagaContext>({
     context: {
         nextMessageId: createCountFunc(),
         terminal: defaultTerminalContext,
+        hubcenter: defaultHubCenterContext,
         fileStorage: db,
         toasterRef,
     },
@@ -46,7 +48,9 @@ const store = configureStore({
 });
 
 // special styling for beta versions
-if (appVersion.match(/beta/)) {
+if (appName.match(/Private/)) {
+    document.body.classList.add('pb-private');
+} else if (appVersion.match(/beta/)) {
     document.body.classList.add('pb-beta');
 }
 
