@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2024 The Pybricks Authors
+// Copyright (c) 2020-2025 The Pybricks Authors
 
 import { AsyncSaga } from '../../test';
 import { alertsShowAlert } from '../alerts/actions';
@@ -38,7 +38,7 @@ describe('downloadAndRun', () => {
 
         saga.updateState({ editor: { isReady: true } });
 
-        saga.put(downloadAndRun(FileFormat.Mpy5, true, true, 0));
+        saga.put(downloadAndRun(FileFormat.Mpy5, true, true, null));
 
         // first, it gets the value from the current editor
         const editorValueAction = await saga.take();

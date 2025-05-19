@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021-2024 The Pybricks Authors
+// Copyright (c) 2021-2025 The Pybricks Authors
 //
 // Actions for Bluetooth Low Energy Pybricks service
 
@@ -85,11 +85,13 @@ export const sendLegacyStartReplCommand = createAction((id: number) => ({
  *
  * @since Pybricks Profile v1.4.0
  */
-export const sendStartUserProgramCommand = createAction((id: number, slot: number) => ({
-    type: 'blePybricksServiceCommand.action.sendStartUserProgram',
-    id,
-    slot,
-}));
+export const sendStartUserProgramCommand = createAction(
+    (id: number, slot: number | null) => ({
+        type: 'blePybricksServiceCommand.action.sendStartUserProgram',
+        id,
+        slot,
+    }),
+);
 
 /**
  * Action that requests to write user program metadata.

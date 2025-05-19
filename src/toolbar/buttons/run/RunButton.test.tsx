@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022-2024 The Pybricks Authors
+// Copyright (c) 2022-2025 The Pybricks Authors
 
 import { act, cleanup } from '@testing-library/react';
 import React from 'react';
@@ -43,7 +43,7 @@ test.each([
                 FileFormat.MultiMpy6,
                 legacyDownload,
                 legacyStartUserProgram,
-                0,
+                null,
             ),
         );
     },

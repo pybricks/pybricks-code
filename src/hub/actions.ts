@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2024 The Pybricks Authors
+// Copyright (c) 2020-2025 The Pybricks Authors
 
 import { createAction } from '../actions';
 import { FileFormat } from '../ble-pybricks-service/protocol';
@@ -26,7 +26,7 @@ export const downloadAndRun = createAction(
         fileFormat: FileFormat | null,
         useLegacyDownload: boolean,
         useLegacyStartUserProgram: boolean,
-        slot: number,
+        slot: number | null,
     ) => ({
         type: 'hub.action.downloadAndRun',
         fileFormat,

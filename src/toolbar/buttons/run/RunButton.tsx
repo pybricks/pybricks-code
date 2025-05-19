@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2024 The Pybricks Authors
+// Copyright (c) 2020-2025 The Pybricks Authors
 
 import React from 'react';
 import { useDispatch } from 'react-redux';
@@ -48,7 +48,7 @@ const RunButton: React.FunctionComponent<RunButtonProps> = ({ id }) => {
                         preferredFileFormat,
                         useLegacyDownload,
                         useLegacyStartUserProgram,
-                        0, // No slot UI yet
+                        null, // No slot UI yet, downloading to active hub slot
                     ),
                 )
             }
