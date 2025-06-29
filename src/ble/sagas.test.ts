@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022-2023 The Pybricks Authors
+// Copyright (c) 2022-2025 The Pybricks Authors
 
 import { MockProxy, mock } from 'jest-mock-extended';
 import { AsyncSaga } from '../../test';
@@ -114,7 +114,7 @@ function createMocks(): Mocks {
     hubCapabilitiesChar.readValue.mockResolvedValue(
         new DataView(
             new Uint8Array([
-                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
             ]).buffer,
         ),
     );
@@ -459,7 +459,7 @@ describe('connect action is dispatched', () => {
             );
 
             await expect(saga.take()).resolves.toEqual(
-                blePybricksServiceDidReceiveHubCapabilities(0, 0, 0),
+                blePybricksServiceDidReceiveHubCapabilities(0, 0, 0, 0),
             );
 
             await expect(saga.take()).resolves.toEqual(

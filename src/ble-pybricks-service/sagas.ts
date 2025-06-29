@@ -127,7 +127,13 @@ function* decodeResponse(action: ReturnType<typeof didNotifyEvent>): Generator {
         switch (responseType) {
             case EventType.StatusReport: {
                 const status = parseStatusReport(action.value);
-                yield* put(didReceiveStatusReport(status.flags, status.runningProgId));
+                yield* put(
+                    didReceiveStatusReport(
+                        status.flags,
+                        status.runningProgId,
+                        status.selectedSlot,
+                    ),
+                );
                 break;
             }
             case EventType.WriteStdout:

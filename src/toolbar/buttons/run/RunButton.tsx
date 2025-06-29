@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2024 The Pybricks Authors
+// Copyright (c) 2020-2025 The Pybricks Authors
 
 import React from 'react';
 import { useDispatch } from 'react-redux';
@@ -19,6 +19,7 @@ const RunButton: React.FunctionComponent<RunButtonProps> = ({ id }) => {
         runtime,
         useLegacyDownload,
         useLegacyStartUserProgram,
+        selectedSlot,
     } = useSelector((s) => s.hub);
     const activeFile = useSelector((s) => s.editor.activeFileUuid);
     const keyboardShortcut = 'F5';
@@ -48,7 +49,7 @@ const RunButton: React.FunctionComponent<RunButtonProps> = ({ id }) => {
                         preferredFileFormat,
                         useLegacyDownload,
                         useLegacyStartUserProgram,
-                        0, // No slot UI yet
+                        selectedSlot,
                     ),
                 )
             }

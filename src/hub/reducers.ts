@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2024 The Pybricks Authors
+// Copyright (c) 2020-2025 The Pybricks Authors
 
 import { Reducer, combineReducers } from 'redux';
 import * as semver from 'semver';
@@ -275,6 +275,28 @@ const useLegacyStartUserProgram: Reducer<boolean> = (state = false, action) => {
     return state;
 };
 
+/*
+ * Returns number of available slots or 0 for slots not supported.
+ */
+const numOfSlots: Reducer<number> = (state = 0, action) => {
+    if (blePybricksServiceDidReceiveHubCapabilities.matches(action)) {
+        return action.numOfSlots;
+    }
+
+    return state;
+};
+
+/*
+ * Returns the currently selected slot on a connected hub.
+ */
+const selectedSlot: Reducer<number> = (state = 0, action) => {
+    if (didReceiveStatusReport.matches(action)) {
+        return action.selectedSlot;
+    }
+
+    return state;
+};
+
 export default combineReducers({
     runtime,
     downloadProgress,
@@ -285,4 +307,6 @@ export default combineReducers({
     useLegacyDownload,
     useLegacyStdio,
     useLegacyStartUserProgram,
+    numOfSlots,
+    selectedSlot,
 });

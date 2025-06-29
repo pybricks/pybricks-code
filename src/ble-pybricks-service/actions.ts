@@ -183,12 +183,14 @@ export const didFailToSendCommand = createAction((id: number, error: Error) => (
  * Action that represents a status report event received from the hub.
  * @param statusFlags The status flags.
  * @param progId The ID number of the user program that is running.
+ * @param selectedSlot The currently selected slot on the hub.
  */
 export const didReceiveStatusReport = createAction(
-    (statusFlags: number, runningProgId: number) => ({
+    (statusFlags: number, runningProgId: number, selectedSlot: number) => ({
         type: 'blePybricksServiceEvent.action.didReceiveStatusReport',
         statusFlags,
         runningProgId,
+        selectedSlot,
     }),
 );
 
@@ -226,13 +228,17 @@ export const eventProtocolError = createAction((error: Error) => ({
 /**
  * Action that is called when the Pybricks Hub Capbailities characteristic
  * is read.
+ *
+ * @since Pybricks Profile v1.2.0
+ * @changed numOfSlots added in v.1.5.0
  */
 export const blePybricksServiceDidReceiveHubCapabilities = createAction(
-    (maxWriteSize: number, flags: number, maxUserProgramSize: number) => ({
+    (maxWriteSize: number, flags: number, maxUserProgramSize: number, numOfSlots) => ({
         type: 'blePybricksServiceEvent.action.didReceiveHubCapabilities',
         maxWriteSize,
         flags,
         maxUserProgramSize,
+        numOfSlots,
     }),
 );
 
