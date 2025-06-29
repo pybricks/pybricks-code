@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021-2024 The Pybricks Authors
+// Copyright (c) 2021-2025 The Pybricks Authors
 
 import { AsyncSaga } from '../../test';
 import {
@@ -35,11 +35,11 @@ describe('command encoder', () => {
             ],
         ],
         [
-            'start user program with slot',
+            'start user program with program id',
             sendStartUserProgramCommand(0, 0x2a),
             [
                 0x01, // start user program command
-                0x2a, // program slot
+                0x2a, // program ID
             ],
         ],
         [
@@ -192,7 +192,7 @@ describe('event decoder', () => {
                 0x00, // .
                 0x00, // .
                 0x00, // flags count MSB
-                0x80, // slot
+                0x80, // program ID
             ],
             didReceiveStatusReport(0x00000001, BuiltinProgramId.REPL),
         ],

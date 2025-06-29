@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2024 The Pybricks Authors
+// Copyright (c) 2020-2025 The Pybricks Authors
 //
 // Definitions related to the Pybricks Bluetooth low energy GATT service.
 
@@ -112,17 +112,17 @@ export function createStopUserProgramCommand(): Uint8Array {
  * Creates a {@link CommandType.StartUserProgram} message.
  *
  * Parameters:
- * - slot: Program identifier (one byte). Slots 0--127 are reserved for
+ * - progId: Program identifier (one byte). Slots 0--127 are reserved for
  *   downloaded user programs. Slots 128--255 are for builtin user programs.
  *
  * @since Pybricks Profile v1.4.0
  */
 export function createStartUserProgramCommand(
-    slot: number | BuiltinProgramId,
+    progId: number | BuiltinProgramId,
 ): Uint8Array {
     const msg = new Uint8Array(2);
     msg[0] = CommandType.StartUserProgram;
-    msg[1] = slot;
+    msg[1] = progId;
     return msg;
 }
 
@@ -303,15 +303,18 @@ export function getEventType(msg: DataView): EventType {
 /**
  * Parses the payload of a status report message.
  * @param msg The raw message data.
- * @returns The status as bit flags and the slot number of the running program.
+ * @returns The status as bit flags and the program ID number of the running program.
  *
  * @since Pybricks Profile v1.0.0 - changed in v1.4.0
  */
-export function parseStatusReport(msg: DataView): { flags: number; slot: number } {
+export function parseStatusReport(msg: DataView): {
+    flags: number;
+    runningProgId: number;
+} {
     assert(msg.getUint8(0) === EventType.StatusReport, 'expecting status report event');
     return {
         flags: msg.getUint32(1, true),
-        slot: msg.byteLength > 5 ? msg.getUint8(5) : 0,
+        runningProgId: msg.byteLength > 5 ? msg.getUint8(5) : 0,
     };
 }
 
