@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021-2024 The Pybricks Authors
+// Copyright (c) 2021-2025 The Pybricks Authors
 
 import { AnyAction } from 'redux';
 import {
@@ -130,14 +130,18 @@ test('deviceLowBatteryWarning', () => {
     expect(
         reducers(
             { deviceLowBatteryWarning: false } as State,
-            didReceiveStatusReport(statusToFlag(Status.BatteryLowVoltageWarning), 0),
+            didReceiveStatusReport(statusToFlag(Status.BatteryLowVoltageWarning), 0, 0),
         ).deviceLowBatteryWarning,
     ).toBeTruthy();
 
     expect(
         reducers(
             { deviceLowBatteryWarning: true } as State,
-            didReceiveStatusReport(~statusToFlag(Status.BatteryLowVoltageWarning), 0),
+            didReceiveStatusReport(
+                ~statusToFlag(Status.BatteryLowVoltageWarning),
+                0,
+                0,
+            ),
         ).deviceLowBatteryWarning,
     ).toBeFalsy();
 

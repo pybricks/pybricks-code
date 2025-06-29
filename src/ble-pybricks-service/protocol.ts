@@ -303,18 +303,23 @@ export function getEventType(msg: DataView): EventType {
 /**
  * Parses the payload of a status report message.
  * @param msg The raw message data.
- * @returns The status as bit flags and the program ID number of the running program.
+ * @returns The status as bit flags, the program ID number of the running program,
+ * and the currently selected slot.
  *
- * @since Pybricks Profile v1.0.0 - changed in v1.4.0
+ * @since Pybricks Profile v1.0.0
+ * @changed runningProgId added in v1.4.0
+ * @changed selectedSlot added in v1.5.0
  */
 export function parseStatusReport(msg: DataView): {
     flags: number;
     runningProgId: number;
+    selectedSlot: number;
 } {
     assert(msg.getUint8(0) === EventType.StatusReport, 'expecting status report event');
     return {
         flags: msg.getUint32(1, true),
         runningProgId: msg.byteLength > 5 ? msg.getUint8(5) : 0,
+        selectedSlot: msg.byteLength > 6 ? msg.getUint8(6) : 0,
     };
 }
 
