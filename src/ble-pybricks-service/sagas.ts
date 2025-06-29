@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021-2024 The Pybricks Authors
+// Copyright (c) 2021-2025 The Pybricks Authors
 //
 // Handles Pybricks protocol.
 
@@ -75,7 +75,7 @@ function* encodeRequest(): Generator {
             yield* put(writeCommand(action.id, createLegacyStartReplCommand()));
         } else if (sendStartUserProgramCommand.matches(action)) {
             yield* put(
-                writeCommand(action.id, createStartUserProgramCommand(action.slot)),
+                writeCommand(action.id, createStartUserProgramCommand(action.progId)),
             );
         } else if (sendWriteUserProgramMetaCommand.matches(action)) {
             yield* put(
@@ -127,7 +127,7 @@ function* decodeResponse(action: ReturnType<typeof didNotifyEvent>): Generator {
         switch (responseType) {
             case EventType.StatusReport: {
                 const status = parseStatusReport(action.value);
-                yield* put(didReceiveStatusReport(status.flags, status.slot));
+                yield* put(didReceiveStatusReport(status.flags, status.runningProgId));
                 break;
             }
             case EventType.WriteStdout:
