@@ -1,0 +1,6 @@
+{
+    "title": "'{fileName}' duplizieren",
+    "action": {
+        "accept": "Duplizieren"
+    }
+}

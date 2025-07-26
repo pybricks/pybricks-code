@@ -1,0 +1,61 @@
+{
+    "title": "Windows DFU USB-Treiber Installationsanleitung",
+    "backButton": {
+        "label": "Zurück"
+    },
+    "nextButton": {
+        "label": "Weiter"
+    },
+    "doneButton": {
+        "label": "Fertig"
+    },
+    "step": {
+        "1": {
+            "message": "Klicken Sie mit der rechten Maustaste auf das Windows {startMenu} und dann auf {deviceManager}.",
+            "startMenu": "Startmenü",
+            "deviceManager": "Geräte-Manager"
+        },
+        "2": {
+            "message": "Suchen Sie nach {dfuUsbHubName} unter {otherDevices}.",
+            "otherDevices": "Andere Geräte",
+            "properties": "Eigenschaften",
+            "listedWithWarning": "Wenn es mit einem Warnsymbol aufgeführt ist, klicken Sie mit der rechten Maustaste darauf und wählen Sie {properties}.",
+            "listedWithoutWarning": "Wenn es an anderer Stelle ohne Warnsymbol aufgeführt ist, ist der Treiber bereits installiert. Sie können dieses Fenster schließen.",
+            "notListed": "Wenn Sie es gar nicht sehen, stellen Sie sicher, dass sich der Hub im DFU-Update-Modus befindet und versuchen Sie es erneut. Schließen Sie dieses Fenster, um die Video-Anleitung anzusehen."
+        },
+        "3": {
+            "message": "Klicken Sie im Dialog {properties} auf die Schaltfläche {updateDriver}.",
+            "properties": "{dfuUsbHubName} Eigenschaften",
+            "updateDriver": "Treiber aktualisieren..."
+        },
+        "4": {
+            "message": "Klicken Sie im Dialog {updateDrivers} auf die Schaltfläche {browse}.",
+            "updateDrivers": "Treiber aktualisieren",
+            "browse": "Auf diesem Computer nach Treibern suchen"
+        },
+        "5": {
+            "message": "Klicken Sie dann auf die Schaltfläche {letMePick}.",
+            "letMePick": "Aus einer Liste von verfügbaren Treibern auf dem Computer auswählen"
+        },
+        "6": {
+            "message": "Wählen Sie in der Liste der Gerätetypen {usbDevices} aus und klicken Sie dann auf die Schaltfläche {next}.",
+            "usbDevices": "USB-Geräte",
+            "next": "Weiter"
+        },
+        "7": {
+            "message": "Wählen Sie in der Liste {manufacturer} den Eintrag {winUsbDevice} aus. Wählen Sie dann in der Liste {model} ebenfalls {winUsbDevice} aus. Klicken Sie dann auf die Schaltfläche {next}.",
+            "manufacturer": "Hersteller",
+            "winUsbDevice": "WinUsb Device",
+            "model": "Modell",
+            "next": "Weiter"
+        },
+        "8": {
+            "message": "Ein Warndialog zeigt an, dass der Treiber nicht empfohlen wird. Klicken Sie trotzdem auf {yes}, um fortzufahren. Der Treiber ist kompatibel.",
+            "yes": "Ja"
+        },
+        "9": {
+            "message": "Die Treiberinstallation ist abgeschlossen. Klicken Sie auf die Schaltfläche {close}.",
+            "close": "Schließen"
+        }
+    }
+}

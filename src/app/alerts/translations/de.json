@@ -1,0 +1,5 @@
+{
+    "updateServerFailure": {
+        "message": "Verbindung zum Update-Server fehlgeschlagen. Die Internetverbindung oder der Server könnte nicht verfügbar sein. Versuchen Sie es später erneut."
+    }
+}

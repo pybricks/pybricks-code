@@ -1,0 +1,12 @@
+{
+    "helpButton": {
+        "label": "Hilfe",
+        "description": "Klicken Sie hier, um die Hilfe für das Kontrollkästchen {helpForLabel} anzuzeigen."
+    },
+    "helpDialog": {
+        "title": "Hilfe",
+        "closeButton": {
+            "label": "Schließen"
+        }
+    }
+}
