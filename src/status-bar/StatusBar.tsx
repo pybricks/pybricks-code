@@ -72,9 +72,9 @@ const CompletionEngineIndicator: React.FunctionComponent = () => {
 
 const HubInfoButton: React.FunctionComponent = () => {
     const i18n = useI18n();
-    const deviceName = useSelector((s) => s.ble.deviceName);
-    const deviceType = useSelector((s) => s.ble.deviceType);
-    const deviceFirmwareVersion = useSelector((s) => s.ble.deviceFirmwareVersion);
+    const deviceName = useSelector((s) => s.hub.deviceName);
+    const deviceType = useSelector((s) => s.hub.deviceType);
+    const deviceFirmwareVersion = useSelector((s) => s.hub.deviceFirmwareVersion);
 
     return (
         <Popover
@@ -113,8 +113,8 @@ const HubInfoButton: React.FunctionComponent = () => {
 
 const BatteryIndicator: React.FunctionComponent = () => {
     const i18n = useI18n();
-    const charging = useSelector((s) => s.ble.deviceBatteryCharging);
-    const lowBatteryWarning = useSelector((s) => s.ble.deviceLowBatteryWarning);
+    const charging = useSelector((s) => s.hub.deviceBatteryCharging);
+    const lowBatteryWarning = useSelector((s) => s.hub.deviceLowBatteryWarning);
 
     return (
         <Popover

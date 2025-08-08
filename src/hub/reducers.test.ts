@@ -7,9 +7,13 @@ import {
     bleDidDisconnectPybricks,
     bleDisconnectPybricks,
 } from '../ble/actions';
-import { bleDIServiceDidReceiveSoftwareRevision } from '../ble-device-info-service/actions';
-import { PnpId } from '../ble-device-info-service/protocol';
-import { HubType } from '../ble-lwp3-service/protocol';
+import {
+    bleDIServiceDidReceiveFirmwareRevision,
+    bleDIServiceDidReceivePnPId,
+    bleDIServiceDidReceiveSoftwareRevision,
+} from '../ble-device-info-service/actions';
+import { PnpId, PnpIdVendorIdSource } from '../ble-device-info-service/protocol';
+import { HubType, LegoCompanyId } from '../ble-lwp3-service/protocol';
 import {
     blePybricksServiceDidNotReceiveHubCapabilities,
     blePybricksServiceDidReceiveHubCapabilities,
@@ -40,6 +44,11 @@ type State = ReturnType<typeof reducers>;
 test('initial state', () => {
     expect(reducers(undefined, {} as AnyAction)).toMatchInlineSnapshot(`
         {
+          "deviceBatteryCharging": false,
+          "deviceFirmwareVersion": "",
+          "deviceLowBatteryWarning": false,
+          "deviceName": "",
+          "deviceType": "",
           "downloadProgress": null,
           "hasRepl": false,
           "maxBleWriteSize": 0,
@@ -296,6 +305,90 @@ describe('runtime', () => {
             ).runtime,
         ).toBe(HubRuntimeState.Disconnected);
     });
+});
+
+test('deviceName', () => {
+    const testId = 'test-id';
+    const testName = 'Test Name';
+
+    expect(
+        reducers({ deviceName: '' } as State, bleDidConnectPybricks(testId, testName))
+            .deviceName,
+    ).toBe(testName);
+
+    expect(
+        reducers({ deviceName: testName } as State, bleDidDisconnectPybricks())
+            .deviceName,
+    ).toBe('');
+});
+
+test('deviceType', () => {
+    expect(
+        reducers(
+            { deviceType: '' } as State,
+            bleDIServiceDidReceivePnPId({
+                vendorIdSource: PnpIdVendorIdSource.BluetoothSig,
+                vendorId: LegoCompanyId,
+                productId: HubType.MoveHub,
+                productVersion: 0,
+            }),
+        ).deviceType,
+    ).toBe('Move hub');
+
+    expect(
+        reducers({ deviceType: 'Move hub' } as State, bleDidDisconnectPybricks())
+            .deviceType,
+    ).toBe('');
+});
+
+test('deviceFirmwareVersion', () => {
+    const testVersion = '3.0.0';
+
+    expect(
+        reducers(
+            { deviceFirmwareVersion: '' } as State,
+            bleDIServiceDidReceiveFirmwareRevision(testVersion),
+        ).deviceFirmwareVersion,
+    ).toBe(testVersion);
+
+    expect(
+        reducers(
+            { deviceFirmwareVersion: testVersion } as State,
+            bleDidDisconnectPybricks(),
+        ).deviceFirmwareVersion,
+    ).toBe('');
+});
+
+test('deviceLowBatteryWarning', () => {
+    expect(
+        reducers(
+            { deviceLowBatteryWarning: false } as State,
+            didReceiveStatusReport(statusToFlag(Status.BatteryLowVoltageWarning), 0, 0),
+        ).deviceLowBatteryWarning,
+    ).toBeTruthy();
+
+    expect(
+        reducers(
+            { deviceLowBatteryWarning: true } as State,
+            didReceiveStatusReport(
+                ~statusToFlag(Status.BatteryLowVoltageWarning),
+                0,
+                0,
+            ),
+        ).deviceLowBatteryWarning,
+    ).toBeFalsy();
+
+    expect(
+        reducers({ deviceLowBatteryWarning: true } as State, bleDidDisconnectPybricks())
+            .deviceLowBatteryWarning,
+    ).toBeFalsy();
+});
+
+test('deviceBatteryCharging', () => {
+    expect(
+        reducers({ deviceBatteryCharging: true } as State, bleDidDisconnectPybricks())
+            .deviceBatteryCharging,
+    ).toBeFalsy();
 });
 
 describe('maxBleWriteSize', () => {

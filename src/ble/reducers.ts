@@ -1,17 +1,10 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2022 The Pybricks Authors
+// Copyright (c) 2020-2025 The Pybricks Authors
 //
 // Manages state for the Bluetooth Low Energy connection.
 // This assumes that there is only one global connection to a single device.
 
 import { Reducer, combineReducers } from 'redux';
-import {
-    bleDIServiceDidReceiveFirmwareRevision,
-    bleDIServiceDidReceivePnPId,
-} from '../ble-device-info-service/actions';
-import { getHubTypeName } from '../ble-device-info-service/protocol';
-import { didReceiveStatusReport } from '../ble-pybricks-service/actions';
-import { Status, statusToFlag } from '../ble-pybricks-service/protocol';
 import {
     bleConnectPybricks,
     bleDidConnectPybricks,
@@ -72,71 +65,6 @@ const connection: Reducer<BleConnectionState> = (
     return state;
 };
 
-const deviceName: Reducer<string> = (state = '', action) => {
-    if (bleDidDisconnectPybricks.matches(action)) {
-        return '';
-    }
-
-    if (bleDidConnectPybricks.matches(action)) {
-        return action.name;
-    }
-
-    return state;
-};
-
-const deviceType: Reducer<string> = (state = '', action) => {
-    if (bleDidDisconnectPybricks.matches(action)) {
-        return '';
-    }
-
-    if (bleDIServiceDidReceivePnPId.matches(action)) {
-        return getHubTypeName(action.pnpId);
-    }
-
-    return state;
-};
-
-const deviceFirmwareVersion: Reducer<string> = (state = '', action) => {
-    if (bleDidDisconnectPybricks.matches(action)) {
-        return '';
-    }
-
-    if (bleDIServiceDidReceiveFirmwareRevision.matches(action)) {
-        return action.version;
-    }
-
-    return state;
-};
-
-const deviceLowBatteryWarning: Reducer<boolean> = (state = false, action) => {
-    if (bleDidDisconnectPybricks.matches(action)) {
-        return false;
-    }
-
-    if (didReceiveStatusReport.matches(action)) {
-        return Boolean(
-            action.statusFlags & statusToFlag(Status.BatteryLowVoltageWarning),
-        );
-    }
-
-    return state;
-};
-
-const deviceBatteryCharging: Reducer<boolean> = (state = false, action) => {
-    if (bleDidDisconnectPybricks.matches(action)) {
-        return false;
-    }
-
-    // TODO: hub does not currently have a status flag for this
-
-    return state;
-};
-
 export default combineReducers({
     connection,
-    deviceName,
-    deviceType,
-    deviceFirmwareVersion,
-    deviceLowBatteryWarning,
-    deviceBatteryCharging,
 });

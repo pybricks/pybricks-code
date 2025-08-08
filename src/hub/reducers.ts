@@ -8,7 +8,12 @@ import {
     bleDidDisconnectPybricks,
     bleDisconnectPybricks,
 } from '../ble/actions';
-import { bleDIServiceDidReceiveSoftwareRevision } from '../ble-device-info-service/actions';
+import {
+    bleDIServiceDidReceiveFirmwareRevision,
+    bleDIServiceDidReceivePnPId,
+    bleDIServiceDidReceiveSoftwareRevision,
+} from '../ble-device-info-service/actions';
+import { getHubTypeName } from '../ble-device-info-service/protocol';
 import { HubType } from '../ble-lwp3-service/protocol';
 import {
     blePybricksServiceDidNotReceiveHubCapabilities,
@@ -139,6 +144,66 @@ const runtime: Reducer<HubRuntimeState> = (
         // failed to communicate, so state is unknown
         return HubRuntimeState.Unknown;
     }
+
+    return state;
+};
+
+const deviceName: Reducer<string> = (state = '', action) => {
+    if (bleDidDisconnectPybricks.matches(action)) {
+        return '';
+    }
+
+    if (bleDidConnectPybricks.matches(action)) {
+        return action.name;
+    }
+
+    return state;
+};
+
+const deviceType: Reducer<string> = (state = '', action) => {
+    if (bleDidDisconnectPybricks.matches(action)) {
+        return '';
+    }
+
+    if (bleDIServiceDidReceivePnPId.matches(action)) {
+        return getHubTypeName(action.pnpId);
+    }
+
+    return state;
+};
+
+const deviceFirmwareVersion: Reducer<string> = (state = '', action) => {
+    if (bleDidDisconnectPybricks.matches(action)) {
+        return '';
+    }
+
+    if (bleDIServiceDidReceiveFirmwareRevision.matches(action)) {
+        return action.version;
+    }
+
+    return state;
+};
+
+const deviceLowBatteryWarning: Reducer<boolean> = (state = false, action) => {
+    if (bleDidDisconnectPybricks.matches(action)) {
+        return false;
+    }
+
+    if (didReceiveStatusReport.matches(action)) {
+        return Boolean(
+            action.statusFlags & statusToFlag(Status.BatteryLowVoltageWarning),
+        );
+    }
+
+    return state;
+};
+
+const deviceBatteryCharging: Reducer<boolean> = (state = false, action) => {
+    if (bleDidDisconnectPybricks.matches(action)) {
+        return false;
+    }
+
+    // TODO: hub does not currently have a status flag for this
 
     return state;
 };
@@ -299,6 +364,11 @@ const selectedSlot: Reducer<number> = (state = 0, action) => {
 
 export default combineReducers({
     runtime,
+    deviceName,
+    deviceType,
+    deviceFirmwareVersion,
+    deviceLowBatteryWarning,
+    deviceBatteryCharging,
     downloadProgress,
     maxBleWriteSize,
     maxUserProgramSize,
