@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2023 The Pybricks Authors
+// Copyright (c) 2020-2025 The Pybricks Authors
 
 import './status-bar.scss';
 import {
@@ -16,8 +16,8 @@ import {
 import { Disable, Error, TickCircle } from '@blueprintjs/icons';
 import classNames from 'classnames';
 import React, { useMemo } from 'react';
-import { BleConnectionState } from '../ble/reducers';
 import { CompletionEngineStatus } from '../editor/redux/codeCompletion';
+import { HubRuntimeState } from '../hub/reducers';
 import { useSelector } from '../reducers';
 import { useI18n } from './i18n';
 
@@ -144,7 +144,7 @@ const BatteryIndicator: React.FunctionComponent = () => {
 };
 
 const StatusBar: React.FunctionComponent = () => {
-    const connection = useSelector((s) => s.ble.connection);
+    const runtime = useSelector((s) => s.hub.runtime);
 
     return (
         <div
@@ -156,7 +156,7 @@ const StatusBar: React.FunctionComponent = () => {
                 <CompletionEngineIndicator />
             </div>
             <div className="pb-status-bar-group">
-                {connection === BleConnectionState.Connected && (
+                {runtime !== HubRuntimeState.Disconnected && (
                     <>
                         <HubInfoButton />
                         <BatteryIndicator />
