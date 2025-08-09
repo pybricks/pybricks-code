@@ -689,7 +689,7 @@ function* handleFlashUsbDfu(action: ReturnType<typeof firmwareFlashUsbDfu>): Gen
     const defer = new Array<() => void>();
 
     try {
-        // not all web browsers support Web USB
+        // not all web browsers support WebUSB
         if (!navigator.usb) {
             yield* put(alertsShowAlert('firmware', 'noWebUsb'));
             yield* put(firmwareDidFailToFlashUsbDfu());
