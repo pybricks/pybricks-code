@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2025 The Pybricks Authors
 
 import { createAction } from '../../actions';
 
@@ -8,7 +8,7 @@ export const firmwareInstallPybricksDialogShow = createAction(() => ({
     type: 'firmware.installPybricksDialog.action.show',
 }));
 
-type FlashMethod = 'ble-lwp3-bootloader' | 'usb-lego-dfu';
+type FlashMethod = 'ble-lwp3-bootloader' | 'usb-lego-dfu' | 'usb-ev3';
 
 /**
  * Action that indicates the user accepted the install Pybricks firmware dialog.

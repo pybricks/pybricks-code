@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2024 The Pybricks Authors
+// Copyright (c) 2020-2025 The Pybricks Authors
 
 import {
     FirmwareReader,
@@ -73,11 +73,13 @@ import {
     didStart,
     firmwareDidFailToFlashUsbDfu,
     firmwareDidFailToRestoreOfficialDfu,
+    firmwareDidFailToRestoreOfficialEV3,
     firmwareDidFlashUsbDfu,
     firmwareDidRestoreOfficialDfu,
     firmwareFlashUsbDfu,
     firmwareInstallPybricks,
     firmwareRestoreOfficialDfu,
+    firmwareRestoreOfficialEV3,
     flashFirmware,
 } from './actions';
 import { firmwareDfuWindowsDriverInstallDialogDialogShow } from './dfuWindowsDriverInstallDialog/actions';
@@ -912,6 +914,10 @@ function* handleInstallPybricks(): Generator {
                 );
             }
             break;
+        case 'usb-ev3':
+            // TODO: implement flashing via EV3 USB
+            console.error('Flashing via EV3 USB is not implemented yet');
+            break;
     }
 }
 
@@ -988,9 +994,18 @@ function* handleRestoreOfficialDfu(
     }
 }
 
+function* handleRestoreOfficialEV3(
+    action: ReturnType<typeof firmwareRestoreOfficialEV3>,
+): Generator {
+    action;
+    alert('Flashing via EV3 USB is not implemented yet');
+    yield* put(firmwareDidFailToRestoreOfficialEV3());
+}
+
 export default function* (): Generator {
     yield* takeEvery(flashFirmware, handleFlashFirmware);
     yield* takeEvery(firmwareFlashUsbDfu, handleFlashUsbDfu);
     yield* takeEvery(firmwareInstallPybricks, handleInstallPybricks);
     yield* takeEvery(firmwareRestoreOfficialDfu, handleRestoreOfficialDfu);
+    yield* takeEvery(firmwareRestoreOfficialEV3, handleRestoreOfficialEV3);
 }

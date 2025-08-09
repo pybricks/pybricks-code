@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2022 The Pybricks Authors
+// Copyright (c) 2020-2025 The Pybricks Authors
 
 import { FirmwareReaderError, HubType } from '@pybricks/firmware';
 import { createAction } from '../actions';
@@ -428,4 +428,40 @@ export const firmwareDidRestoreOfficialDfu = createAction(() => ({
  */
 export const firmwareDidFailToRestoreOfficialDfu = createAction(() => ({
     type: 'firmware.action.didFailToRestoreOfficialDfu',
+}));
+
+/**
+ * Versions of official LEGO EV3 firmware available for restore.
+ */
+export enum EV3OfficialFirmwareVersion {
+    /** Official LEGO EV3 firmware version 1.09H (Home edition). */
+    home = '1.09H',
+    /** Official LEGO EV3 firmware version 1.09E (Education edition). */
+    education = '1.09E',
+    /** Official LEGO EV3 firmware version 1.10E (only useful for Microsoft MakeCode). */
+    makecode = '1.10E',
+}
+
+/**
+ * Action that triggers the restore official EV3 firmware saga.
+ */
+export const firmwareRestoreOfficialEV3 = createAction(
+    (version: EV3OfficialFirmwareVersion) => ({
+        type: 'firmware.action.restoreOfficialEV3',
+        version,
+    }),
+);
+
+/**
+ * Action that indicates {@link firmwareRestoreOfficialEV3} succeeded.
+ */
+export const firmwareDidRestoreOfficialEV3 = createAction(() => ({
+    type: 'firmware.action.didRestoreOfficialEV3',
+}));
+
+/**
+ * Action that indicates {@link firmwareRestoreOfficialEV3} failed.
+ */
+export const firmwareDidFailToRestoreOfficialEV3 = createAction(() => ({
+    type: 'firmware.action.didFailToRestoreOfficialEV3',
 }));

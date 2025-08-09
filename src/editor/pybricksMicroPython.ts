@@ -309,7 +309,9 @@ export const language = <monaco.languages.IMonarchLanguage>{
  */
 function createTemplate(hubClassName: string, deviceClassNames: string[]): string {
     return `from pybricks.hubs import ${hubClassName}
-from pybricks.pupdevices import ${deviceClassNames.join(', ')}
+from pybricks.${
+        hubClassName === 'EV3Brick' ? 'ev3devices' : 'pupdevices'
+    } import ${deviceClassNames.join(', ')}
 from pybricks.parameters import Button, Color, Direction, Port, Side, Stop
 from pybricks.robotics import DriveBase
 from pybricks.tools import wait, StopWatch
@@ -325,7 +327,8 @@ type HubLabel =
     | 'technichub'
     | 'inventorhub'
     | 'primehub'
-    | 'essentialhub';
+    | 'essentialhub'
+    | 'ev3';
 
 const templateSnippets: Array<
     Required<
@@ -373,6 +376,18 @@ const templateSnippets: Array<
             'Motor',
             'ColorSensor',
             'ColorLightMatrix',
+        ]),
+    },
+    {
+        label: 'ev3',
+        documentation: 'Template for MINDSTORMS EV3 program.',
+        insertText: createTemplate('EV3Brick', [
+            'Motor',
+            'ColorSensor',
+            'GyroSensor',
+            'InfraredSensor',
+            'TouchSensor',
+            'UltrasonicSensor',
         ]),
     },
 ];

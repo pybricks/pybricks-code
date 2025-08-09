@@ -11,7 +11,8 @@
     },
     "button": {
         "bluetooth": "Bluetooth button",
-        "power": "button"
+        "power": "button",
+        "right": "right button"
     },
     "light": {
         "bluetooth": "Bluetooth light",
@@ -37,10 +38,13 @@
             "waitForLight": "Wait for the {light} to start blinking {lightPattern}.",
             "waitAppConnect": "The app will automatically connect and start restoring the firmware.",
             "releaseButton": "Release the {button}.",
-            "keepHolding": "Keep holding the {button} in the next steps. We'll tell you when to let go."
+            "keepHolding": "Keep holding the {button} in the next steps. We'll tell you when to let go.",
+            "pressPowerButtonEV3": "Press the center button to turn on the EV3.",
+            "releaseButtonsEV3": "When the screen says \"Updating...\", release both buttons."
         },
         "connect": {
             "title": "Install:",
+            "selectEV3FirmwareType": "Select the version of firmware to restore below.",
             "clickConnectAndFlash": "Click the {flashButton} button below.",
             "selectDevice": "In the pop-up dialog, select {deviceName} and click {connectButton}.",
             "connectButton": "Connect"

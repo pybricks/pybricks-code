@@ -14,8 +14,7 @@
                         "sponsor": "sponsor"
                     },
                     "rcx": "RCX: Might work in streaming mode.",
-                    "nxt": "NXT: We have tested this. It could work!",
-                    "ev3": "EV3: Supported using Visual Studio Code."
+                    "nxt": "NXT: We have tested this. It could work!"
                 },
                 "poweredUp": {
                     "title": "Other hubs",
