@@ -170,6 +170,11 @@ const UnsupportedHubs: React.FunctionComponent = () => {
                         'selectHubPanel.notOnListButton.info.poweredUp.mario',
                     )}
                 </li>
+                <li>
+                    {i18n.translate(
+                        'selectHubPanel.notOnListButton.info.poweredUp.technicMove',
+                    )}
+                </li>
             </ul>
         </div>
     );
