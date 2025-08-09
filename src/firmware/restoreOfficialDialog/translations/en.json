@@ -22,6 +22,11 @@
             "updateApp": "Once the recovery is complete, use the {app} app to get the latest official firmware.",
             "updateAppVersion": "You can use version 2 (legacy) or version 3 to do so."
         },
-        "flashButton": "Restore"
+        "flashButton": "Restore",
+        "ev3FirmwareType": {
+            "home": "Home edition (v1.09H)",
+            "education": "Education edition (v1.09E)",
+            "makecode": "Microsoft MakeCode (v1.10E)"
+        }
     }
 }

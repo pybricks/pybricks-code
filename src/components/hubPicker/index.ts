@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2025 The Pybricks Authors
 
 /** Supported hub types. */
 export enum Hub {
@@ -15,6 +15,8 @@ export enum Hub {
     Prime = 'primehub',
     /** SPIKE Essential hub */
     Essential = 'essentialhub',
+    /** MINDSTORMS EV3 hub */
+    EV3 = 'ev3',
 }
 
 /**
@@ -25,6 +27,7 @@ export function hubHasUSB(hub: Hub): boolean {
         case Hub.Prime:
         case Hub.Essential:
         case Hub.Inventor:
+        case Hub.EV3:
             return true;
         default:
             return false;
@@ -52,6 +55,7 @@ export function hubHasExternalFlash(hub: Hub): boolean {
         case Hub.Prime:
         case Hub.Essential:
         case Hub.Inventor:
+        case Hub.EV3:
             return true;
         default:
             return false;
@@ -69,5 +73,7 @@ export function hubBootloaderType(hub: Hub) {
         case Hub.City:
         case Hub.Technic:
             return 'ble-lwp3-bootloader';
+        case Hub.EV3:
+            return 'usb-ev3';
     }
 }

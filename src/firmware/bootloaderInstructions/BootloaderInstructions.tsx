@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022-2023 The Pybricks Authors
+// Copyright (c) 2022-2025 The Pybricks Authors
 
 import './bootloaderInstructions.scss';
 import { Callout, Intent } from '@blueprintjs/core';
@@ -117,7 +117,11 @@ const BootloaderInstructions: React.FunctionComponent<BootloaderInstructionsProp
     const { button, light, lightPattern } = useMemo(() => {
         return {
             button: i18n.translate(
-                hubHasBluetoothButton(hubType) ? 'button.bluetooth' : 'button.power',
+                hubType === Hub.EV3
+                    ? 'button.right'
+                    : hubHasBluetoothButton(hubType)
+                      ? 'button.bluetooth'
+                      : 'button.power',
             ),
             light: i18n.translate(
                 hubHasBluetoothButton(hubType) ? 'light.bluetooth' : 'light.status',
@@ -163,13 +167,16 @@ const BootloaderInstructions: React.FunctionComponent<BootloaderInstructionsProp
     const prepareSteps = useMemo(
         () => (
             <>
-                <li>
-                    {i18n.translate(
-                        hubHasUSB(hubType)
-                            ? 'instructionGroup.prepare.usb'
-                            : 'instructionGroup.prepare.batteries',
-                    )}
-                </li>
+                {hubType !== Hub.EV3 && (
+                    <li>
+                        {i18n.translate(
+                            hubHasUSB(hubType)
+                                ? 'instructionGroup.prepare.usb'
+                                : 'instructionGroup.prepare.batteries',
+                        )}
+                    </li>
+                )}
+
                 <li>{i18n.translate('instructionGroup.prepare.turnOff')}</li>
                 {/* For non-usb recovery, show step about official app */}
                 {recovery && !hubHasUSB(hubType) && (
@@ -177,6 +184,12 @@ const BootloaderInstructions: React.FunctionComponent<BootloaderInstructionsProp
                         {i18n.translate('instructionGroup.prepare.app', {
                             lego: legoRegisteredTrademark,
                         })}
+                    </li>
+                )}
+
+                {hubType === Hub.EV3 && (
+                    <li>
+                        {i18n.translate('instructionGroup.bootloaderMode.connectUsb')}
                     </li>
                 )}
             </>
@@ -210,7 +223,37 @@ const BootloaderInstructions: React.FunctionComponent<BootloaderInstructionsProp
 
                 {/* not strictly necessary, but order is swapped in the video,
                     so we match it here. */}
-                {hubType !== Hub.Essential && hubHasUSB(hubType) && (
+                {(hubType === Hub.Prime || hubType === Hub.Inventor) &&
+                    hubHasUSB(hubType) && (
+                        <li
+                            className={classNames(
+                                activeStep === 'connect-usb' && 'pb-active-step',
+                            )}
+                        >
+                            {i18n.translate(
+                                'instructionGroup.bootloaderMode.connectUsb',
+                            )}
+                        </li>
+                    )}
+
+                {hubType !== Hub.EV3 && (
+                    <li
+                        className={classNames(
+                            activeStep === 'wait-for-light' && 'pb-active-step',
+                        )}
+                    >
+                        {i18n.translate(
+                            'instructionGroup.bootloaderMode.waitForLight',
+                            {
+                                button,
+                                light,
+                                lightPattern,
+                            },
+                        )}
+                    </li>
+                )}
+
+                {hubType === Hub.Essential && hubHasUSB(hubType) && (
                     <li
                         className={classNames(
                             activeStep === 'connect-usb' && 'pb-active-step',
@@ -220,25 +263,15 @@ const BootloaderInstructions: React.FunctionComponent<BootloaderInstructionsProp
                     </li>
                 )}
 
-                <li
-                    className={classNames(
-                        activeStep === 'wait-for-light' && 'pb-active-step',
-                    )}
-                >
-                    {i18n.translate('instructionGroup.bootloaderMode.waitForLight', {
-                        button,
-                        light,
-                        lightPattern,
-                    })}
-                </li>
-
-                {hubType === Hub.Essential && hubHasUSB(hubType) && (
+                {hubType === Hub.EV3 && (
                     <li
                         className={classNames(
-                            activeStep === 'connect-usb' && 'pb-active-step',
+                            activeStep === 'press-power-button' && 'pb-active-step',
                         )}
                     >
-                        {i18n.translate('instructionGroup.bootloaderMode.connectUsb')}
+                        {i18n.translate(
+                            'instructionGroup.bootloaderMode.pressPowerButtonEV3',
+                        )}
                     </li>
                 )}
 
@@ -262,7 +295,9 @@ const BootloaderInstructions: React.FunctionComponent<BootloaderInstructionsProp
                         )}
                     >
                         {i18n.translate(
-                            'instructionGroup.bootloaderMode.releaseButton',
+                            hubType === Hub.EV3
+                                ? 'instructionGroup.bootloaderMode.releaseButtonsEV3'
+                                : 'instructionGroup.bootloaderMode.releaseButton',
                             {
                                 button,
                             },
@@ -342,6 +377,13 @@ const BootloaderInstructions: React.FunctionComponent<BootloaderInstructionsProp
                             1
                         }
                     >
+                        {hubType === Hub.EV3 && (
+                            <li>
+                                {i18n.translate(
+                                    'instructionGroup.connect.selectEV3FirmwareType',
+                                )}
+                            </li>
+                        )}
                         <li>
                             {i18n.translate(
                                 'instructionGroup.connect.clickConnectAndFlash',
@@ -389,7 +431,7 @@ const BootloaderInstructions: React.FunctionComponent<BootloaderInstructionsProp
                 </Callout>
             )}
 
-            {hubHasUSB(hubType) && isWindows() && (
+            {hubHasUSB(hubType) && hubType !== Hub.EV3 && isWindows() && (
                 <Callout intent={Intent.WARNING} icon={<WarningSign />}>
                     {i18n.translate('warning.windows.message', {
                         instructions: (

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022-2023 The Pybricks Authors
+// Copyright (c) 2022-2025 The Pybricks Authors
 
 import './installPybricksDialog.scss';
 import {
@@ -140,11 +140,6 @@ const UnsupportedHubs: React.FunctionComponent = () => {
                 <li>
                     {i18n.translate(
                         'selectHubPanel.notOnListButton.info.mindstorms.nxt',
-                    )}
-                </li>
-                <li>
-                    {i18n.translate(
-                        'selectHubPanel.notOnListButton.info.mindstorms.ev3',
                     )}
                 </li>
             </ul>

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022-2023 The Pybricks Authors
+// Copyright (c) 2022-2025 The Pybricks Authors
 
 import {
     Button,
@@ -7,10 +7,13 @@ import {
     DialogStep,
     Intent,
     MultistepDialog,
+    Radio,
+    RadioGroup,
 } from '@blueprintjs/core';
 import classNames from 'classnames';
 import React, { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
+import { useLocalStorage } from 'usehooks-ts';
 import {
     legoEducationSpikeRegisteredTrademark,
     legoMindstormsRegisteredTrademark,
@@ -20,7 +23,11 @@ import { Hub, hubHasUSB } from '../../components/hubPicker';
 import { HubPicker } from '../../components/hubPicker/HubPicker';
 import { useHubPickerSelectedHub } from '../../components/hubPicker/hooks';
 import { useSelector } from '../../reducers';
-import { firmwareRestoreOfficialDfu } from '../actions';
+import {
+    EV3OfficialFirmwareVersion,
+    firmwareRestoreOfficialDfu,
+    firmwareRestoreOfficialEV3,
+} from '../actions';
 import BootloaderInstructions from '../bootloaderInstructions/BootloaderInstructions';
 import { firmwareRestoreOfficialDialogHide } from './actions';
 import { useI18n } from './i18n';
@@ -51,10 +58,19 @@ const RestoreFirmwarePanel: React.FunctionComponent = () => {
             s.firmware.isFirmwareFlashUsbDfuInProgress ||
             s.firmware.isFirmwareRestoreOfficialDfuInProgress,
     );
+    const [ev3OfficialFirmwareVersion, setEv3OfficialFirmwareVersion] =
+        useLocalStorage<EV3OfficialFirmwareVersion>(
+            'ev3OfficialFirmwareVersion',
+            EV3OfficialFirmwareVersion.home,
+        );
 
-    const handleRestoreButtonClick = useCallback(() => {
+    const handleRestoreDfuButtonClick = useCallback(() => {
         dispatch(firmwareRestoreOfficialDfu(hubType));
     }, [dispatch, hubType]);
+
+    const handleRestoreEV3ButtonClick = useCallback(() => {
+        dispatch(firmwareRestoreOfficialEV3(ev3OfficialFirmwareVersion));
+    }, [dispatch, ev3OfficialFirmwareVersion]);
 
     return (
         <div className={classNames(Classes.DIALOG_BODY, Classes.RUNNING_TEXT)}>
@@ -63,32 +79,103 @@ const RestoreFirmwarePanel: React.FunctionComponent = () => {
                 recovery
                 flashButtonText={i18n.translate('restoreFirmwarePanel.flashButton')}
             />
-            {hubHasUSB(hubType) ? (
-                <>
-                    <p>
-                        {i18n.translate('restoreFirmwarePanel.instruction2.updateApp', {
-                            app:
-                                hubType === Hub.Inventor
-                                    ? legoMindstormsRegisteredTrademark
-                                    : legoEducationSpikeRegisteredTrademark,
-                        })}{' '}
-                        {hubType !== Hub.Inventor
-                            ? i18n.translate(
-                                  'restoreFirmwarePanel.instruction2.updateAppVersion',
-                              )
-                            : ''}
-                    </p>
-                    <div className="pb-spacer" />
+            {hubType === Hub.EV3 ? (
+                <div
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'space-evenly',
+                        height: '100%',
+                    }}
+                >
                     <Button
                         intent={Intent.PRIMARY}
                         disabled={inProgress}
-                        onClick={handleRestoreButtonClick}
+                        onClick={handleRestoreEV3ButtonClick}
                     >
                         {i18n.translate('restoreFirmwarePanel.flashButton')}
                     </Button>
-                </>
+                    <RadioGroup
+                        selectedValue={ev3OfficialFirmwareVersion}
+                        onChange={(event) =>
+                            setEv3OfficialFirmwareVersion(
+                                event.currentTarget.value as EV3OfficialFirmwareVersion,
+                            )
+                        }
+                    >
+                        <Radio
+                            value={EV3OfficialFirmwareVersion.home}
+                            checked={
+                                ev3OfficialFirmwareVersion ===
+                                EV3OfficialFirmwareVersion.home
+                            }
+                        >
+                            {i18n.translate(
+                                'restoreFirmwarePanel.ev3FirmwareType.home',
+                            )}
+                        </Radio>
+                        <Radio
+                            value={EV3OfficialFirmwareVersion.education}
+                            checked={
+                                ev3OfficialFirmwareVersion ===
+                                EV3OfficialFirmwareVersion.education
+                            }
+                        >
+                            {i18n.translate(
+                                'restoreFirmwarePanel.ev3FirmwareType.education',
+                            )}
+                        </Radio>
+                        <Radio
+                            value={EV3OfficialFirmwareVersion.makecode}
+                            checked={
+                                ev3OfficialFirmwareVersion ===
+                                EV3OfficialFirmwareVersion.makecode
+                            }
+                        >
+                            {i18n.translate(
+                                'restoreFirmwarePanel.ev3FirmwareType.makecode',
+                            )}
+                        </Radio>
+                    </RadioGroup>
+                </div>
             ) : (
-                <p>{i18n.translate('restoreFirmwarePanel.instruction2.ble.message')}</p>
+                <>
+                    {hubHasUSB(hubType) ? (
+                        <>
+                            <p>
+                                {i18n.translate(
+                                    'restoreFirmwarePanel.instruction2.updateApp',
+                                    {
+                                        app:
+                                            hubType === Hub.Inventor
+                                                ? legoMindstormsRegisteredTrademark
+                                                : legoEducationSpikeRegisteredTrademark,
+                                    },
+                                )}{' '}
+                                {hubType !== Hub.Inventor
+                                    ? i18n.translate(
+                                          'restoreFirmwarePanel.instruction2.updateAppVersion',
+                                      )
+                                    : ''}
+                            </p>
+                            <div className="pb-spacer" />
+                            <Button
+                                intent={Intent.PRIMARY}
+                                disabled={inProgress}
+                                onClick={handleRestoreDfuButtonClick}
+                            >
+                                {i18n.translate('restoreFirmwarePanel.flashButton')}
+                            </Button>
+                        </>
+                    ) : (
+                        <p>
+                            {i18n.translate(
+                                'restoreFirmwarePanel.instruction2.ble.message',
+                            )}
+                        </p>
+                    )}
+                </>
             )}
         </div>
     );

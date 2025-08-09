@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022-2023 The Pybricks Authors
+// Copyright (c) 2022-2025 The Pybricks Authors
 
 import './hubPicker.scss';
 import { Radio, RadioGroup } from '@blueprintjs/core';
@@ -64,6 +64,12 @@ export const HubPicker: React.FunctionComponent<HubPickerProps> = ({ disabled })
                 <HubIcon
                     url={new URL('@pybricks/images/hub-inventor.png', import.meta.url)}
                     label="MINDSTORMS Robot Inventor Hub"
+                />
+            </Radio>
+            <Radio value={Hub.EV3}>
+                <HubIcon
+                    url={new URL('@pybricks/images/hub-ev3.png', import.meta.url)}
+                    label="MINDSTORMS EV3"
                 />
             </Radio>
         </RadioGroup>
