@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2022 The Pybricks Authors
+// Copyright (c) 2020-2025 The Pybricks Authors
 
 import { TypedUseSelectorHook, useSelector as useReduxSelector } from 'react-redux';
 import { Reducer, combineReducers } from 'redux';
@@ -13,6 +13,7 @@ import hub from './hub/reducers';
 import bootloader from './lwp3-bootloader/reducers';
 import sponsor from './sponsor/reducers';
 import tour from './tour/reducers';
+import usb from './usb/reducers';
 
 /**
  * Root reducer for redux store.
@@ -28,6 +29,7 @@ export const rootReducer = combineReducers({
     hub,
     tour,
     sponsor,
+    usb,
 });
 
 /**

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2025 The Pybricks Authors
 
 // https://github.com/pybricks/technical-info/blob/master/assigned-numbers.md#usb
 
@@ -30,4 +30,54 @@ export enum LegoUsbProductId {
     MindstormsRobotInventor = 0x0010,
     /** MINDSTORMS Robot inventor hub in DFU (bootloader) mode. */
     MindstormsRobotInventorBootloader = 0x0011,
+}
+
+/** USB bDeviceClass for Pybricks hubs */
+export const pybricksUsbClass = 0xff;
+/** USB bDeviceSubClass for Pybricks hubs */
+export const pybricksUsbSubclass = 0xc5;
+/** USB bDeviceProtocol for Pybricks hubs */
+export const pybricksUsbProtocol = 0xf5;
+
+/** Maximum data length for {@link PybricksUsbInterfaceRequest}s */
+export const pybricksUsbRequestMaxLength = 20;
+
+/**
+ * bRequest values for Pybricks USB interface control requests.
+ */
+export enum PybricksUsbInterfaceRequest {
+    /** Analogous to standard BLE GATT attributes. */
+    Gatt = 0x01,
+    /** Analogous to Pybricks BLE characteristics. */
+    Pybricks = 0x02,
+}
+
+/**
+ * Extracts a 16-bit UUID from a 128-bit UUID string.
+ * @param uuid A 128-bit UUID string in the format "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx".
+ * @returns The extracted 16-bit UUID as a number.
+ */
+export function uuid16(uuid: string): number {
+    // Convert a 128-bit UUID string to a 16-bit UUID number.
+    const hex = uuid.slice(4, 8);
+    return parseInt(hex, 16);
+}
+
+/** Hub to host messages via the Pybricks interface IN endpoint. */
+export enum PybricksUsbInEndpointMessageType {
+    /**
+     * Analog of BLE status response. Emitted in response to every OUT message
+     * received.
+     */
+    Response = 1,
+    /**Analog to BLE notification. Only emitted if subscribed. */
+    Event = 2,
+}
+
+/** Host to hub messages via the Pybricks USB interface OUT endpoint. */
+export enum PybricksUsbOutEndpointMessageType {
+    /** Analog of BLE Client Characteristic Configuration Descriptor (CCCD). */
+    Subscribe = 1,
+    /** Analog of BLE Client Characteristic Write with response. */
+    Command = 2,
 }

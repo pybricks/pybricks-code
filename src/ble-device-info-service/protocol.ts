@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021-2022 The Pybricks Authors
+// Copyright (c) 2021-2025 The Pybricks Authors
 //
 // Pybricks uses the standard Device Info service.
 // Refer to Device Information Service (DIS) at https://www.bluetooth.com/specifications/specs/
@@ -14,6 +14,14 @@ import {
 
 /** Device Information service UUID. */
 export const deviceInformationServiceUUID = 0x180a;
+
+/**
+ * Device Name characteristic UUID.
+ *
+ * NB: Some OSes block this, so we just get the device name from the BLE
+ * advertisement data instead. But we need this UUID for USB support.
+ */
+export const deviceNameUUID = 0x2a00;
 
 /** Firmware Revision String characteristic UUID. */
 export const firmwareRevisionStringUUID = 0x2a26;

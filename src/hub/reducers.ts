@@ -26,6 +26,13 @@ import {
     Status,
     statusToFlag,
 } from '../ble-pybricks-service/protocol';
+import {
+    usbDidConnectPybricks,
+    usbDidDisconnectPybricks,
+    usbDidReceiveDeviceName,
+    usbDidReceiveFirmwareRevision,
+    usbDisconnectPybricks,
+} from '../usb/actions';
 import { pythonVersionToSemver } from '../utils/version';
 import {
     didFailToFinishDownload,
@@ -68,21 +75,31 @@ const runtime: Reducer<HubRuntimeState> = (
     // can't possibly be in any other state until we get a connect event.
     if (
         state === HubRuntimeState.Disconnected &&
-        !bleDidConnectPybricks.matches(action)
+        !bleDidConnectPybricks.matches(action) &&
+        !usbDidConnectPybricks.matches(action)
     ) {
         return state;
     }
 
-    if (bleDidConnectPybricks.matches(action)) {
+    if (
+        bleDidConnectPybricks.matches(action) ||
+        usbDidConnectPybricks.matches(action)
+    ) {
         return HubRuntimeState.Unknown;
     }
 
-    if (bleDisconnectPybricks.matches(action)) {
+    if (
+        bleDisconnectPybricks.matches(action) ||
+        usbDisconnectPybricks.matches(action)
+    ) {
         // disconnecting
         return HubRuntimeState.Unknown;
     }
 
-    if (bleDidDisconnectPybricks.matches(action)) {
+    if (
+        bleDidDisconnectPybricks.matches(action) ||
+        usbDidDisconnectPybricks.matches(action)
+    ) {
         return HubRuntimeState.Disconnected;
     }
 
@@ -149,7 +166,10 @@ const runtime: Reducer<HubRuntimeState> = (
 };
 
 const deviceName: Reducer<string> = (state = '', action) => {
-    if (bleDidDisconnectPybricks.matches(action)) {
+    if (
+        bleDidDisconnectPybricks.matches(action) ||
+        usbDidDisconnectPybricks.matches(action)
+    ) {
         return '';
     }
 
@@ -157,11 +177,18 @@ const deviceName: Reducer<string> = (state = '', action) => {
         return action.name;
     }
 
+    if (usbDidReceiveDeviceName.matches(action)) {
+        return action.deviceName;
+    }
+
     return state;
 };
 
 const deviceType: Reducer<string> = (state = '', action) => {
-    if (bleDidDisconnectPybricks.matches(action)) {
+    if (
+        bleDidDisconnectPybricks.matches(action) ||
+        usbDidDisconnectPybricks.matches(action)
+    ) {
         return '';
     }
 
@@ -169,11 +196,18 @@ const deviceType: Reducer<string> = (state = '', action) => {
         return getHubTypeName(action.pnpId);
     }
 
+    if (usbDidConnectPybricks.matches(action)) {
+        return getHubTypeName(action.pnpId);
+    }
+
     return state;
 };
 
 const deviceFirmwareVersion: Reducer<string> = (state = '', action) => {
-    if (bleDidDisconnectPybricks.matches(action)) {
+    if (
+        bleDidDisconnectPybricks.matches(action) ||
+        usbDidDisconnectPybricks.matches(action)
+    ) {
         return '';
     }
 
@@ -181,11 +215,18 @@ const deviceFirmwareVersion: Reducer<string> = (state = '', action) => {
         return action.version;
     }
 
+    if (usbDidReceiveFirmwareRevision.matches(action)) {
+        return action.version;
+    }
+
     return state;
 };
 
 const deviceLowBatteryWarning: Reducer<boolean> = (state = false, action) => {
-    if (bleDidDisconnectPybricks.matches(action)) {
+    if (
+        bleDidDisconnectPybricks.matches(action) ||
+        usbDidDisconnectPybricks.matches(action)
+    ) {
         return false;
     }
 

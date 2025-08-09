@@ -1,30 +1,30 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2025 The Pybricks Authors
+// Copyright (c) 2025 The Pybricks Authors
 
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { toggleBluetooth } from '../../../ble/actions';
 import { BleConnectionState } from '../../../ble/reducers';
 import { BootloaderConnectionState } from '../../../lwp3-bootloader/reducers';
 import { useSelector } from '../../../reducers';
+import { usbToggle } from '../../../usb/actions';
 import { UsbConnectionState } from '../../../usb/reducers';
 import ActionButton, { ActionButtonProps } from '../../ActionButton';
 import connectedIcon from './connected.svg';
 import disconnectedIcon from './disconnected.svg';
 import { useI18n } from './i18n';
 
-type BluetoothButtonProps = Pick<ActionButtonProps, 'id'>;
+type UsbButtonProps = Pick<ActionButtonProps, 'id'>;
 
-const BluetoothButton: React.FunctionComponent<BluetoothButtonProps> = ({ id }) => {
+const UsbButton: React.FunctionComponent<UsbButtonProps> = ({ id }) => {
     const bootloaderConnection = useSelector((s) => s.bootloader.connection);
     const bleConnection = useSelector((s) => s.ble.connection);
     const usbConnection = useSelector((s) => s.usb.connection);
 
-    const isBluetoothDisconnected =
+    const isUsbDisconnected = usbConnection === UsbConnectionState.Disconnected;
+    const isEverythingDisconnected =
+        isUsbDisconnected &&
         bootloaderConnection === BootloaderConnectionState.Disconnected &&
         bleConnection === BleConnectionState.Disconnected;
-    const isEverythingDisconnected =
-        isBluetoothDisconnected && usbConnection === UsbConnectionState.Disconnected;
 
     const i18n = useI18n();
     const dispatch = useDispatch();
@@ -34,24 +34,24 @@ const BluetoothButton: React.FunctionComponent<BluetoothButtonProps> = ({ id }) 
             id={id}
             label={i18n.translate('label')}
             tooltip={i18n.translate(
-                usbConnection !== UsbConnectionState.Disconnected
-                    ? 'tooltip.usbConnected'
-                    : isBluetoothDisconnected
+                bleConnection !== BleConnectionState.Disconnected
+                    ? 'tooltip.bluetoothConnected'
+                    : isUsbDisconnected
                       ? 'tooltip.connect'
                       : 'tooltip.disconnect',
             )}
-            icon={isBluetoothDisconnected ? disconnectedIcon : connectedIcon}
+            icon={isUsbDisconnected ? disconnectedIcon : connectedIcon}
             enabled={
                 isEverythingDisconnected ||
-                bleConnection === BleConnectionState.Connected
+                usbConnection === UsbConnectionState.Connected
             }
             showProgress={
-                bleConnection === BleConnectionState.Connecting ||
-                bleConnection === BleConnectionState.Disconnecting
+                usbConnection === UsbConnectionState.Connecting ||
+                usbConnection === UsbConnectionState.Disconnecting
             }
-            onAction={() => dispatch(toggleBluetooth())}
+            onAction={() => dispatch(usbToggle())}
         />
     );
 };
 
-export default BluetoothButton;
+export default UsbButton;
