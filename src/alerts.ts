@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2025 The Pybricks Authors
 
 import { ToastProps } from '@blueprintjs/core';
 import alerts from './alerts/alerts';
@@ -11,6 +11,7 @@ import hub from './hub/alerts';
 import mpy from './mpy/alerts';
 import sponsor from './sponsor/alerts';
 import type { CreateToast } from './toasterTypes';
+import usb from './usb/alerts';
 
 /** This collects alerts from all of the subsystems of the app */
 const alertDomains = {
@@ -22,6 +23,7 @@ const alertDomains = {
     hub,
     mpy,
     sponsor,
+    usb,
 };
 
 /** Gets the type of available alert domains. */

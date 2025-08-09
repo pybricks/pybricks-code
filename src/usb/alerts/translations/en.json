@@ -1,0 +1,18 @@
+{
+    "noWebUsb": {
+        "message": "This browser does not support Web USB or it is not enabled.",
+        "suggestion": "Use a supported browser such as Google Chrome or Microsoft Edge.",
+        "action": "More Info"
+    },
+    "oldFirmware": {
+        "message": "A new firmware version is available for this hub. Please install the latest version to use all new features.",
+        "flashFirmware": {
+            "label": "Update Pybricks firmware"
+        }
+    },
+    "newPybricksProfile": {
+        "message": "The connected hub uses a newer Pybricks communication profile version. Some features may not work correctly.",
+        "versions": "The hub has {hubVersion} while {app} supports {appVersion}.",
+        "suggestion": "Downgrade the hub firmware or upgrade {app} to avoid problems."
+    }
+}

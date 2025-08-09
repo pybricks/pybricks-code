@@ -1,0 +1,8 @@
+{
+    "label": "USB",
+    "tooltip": {
+        "connect": "Connect using USB",
+        "disconnect": "Disconnect USB",
+        "bluetoothConnected": "Bluetooth is connected, disconnect to use USB"
+    }
+}

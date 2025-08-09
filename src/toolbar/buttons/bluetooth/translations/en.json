@@ -2,6 +2,7 @@
     "label": "Bluetooth",
     "tooltip": {
         "connect": "Connect using Bluetooth",
-        "disconnect": "Disconnect Bluetooth"
+        "disconnect": "Disconnect Bluetooth",
+        "usbConnected": "USB is connected, disconnect to use Bluetooth"
     }
 }

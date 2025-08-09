@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2022 The Pybricks Authors
+// Copyright (c) 2020-2025 The Pybricks Authors
 
 import { eventChannel } from 'redux-saga';
 import { all, spawn, take } from 'typed-redux-saga/macro';
@@ -17,6 +17,7 @@ import lwp3BootloaderBle from './lwp3-bootloader/sagas-ble';
 import mpy from './mpy/sagas';
 import notifications from './notifications/sagas';
 import type { TerminalSagaContext } from './terminal/sagas';
+import usb from './usb/sagas';
 
 /**
  * Listens to the 'pb-lazy-saga' event to spawn sagas from a React.lazy() initializer.
@@ -53,6 +54,7 @@ export default function* (): Generator {
         hub(),
         mpy(),
         notifications(),
+        usb(),
         lazySagas(),
     ]);
 }
