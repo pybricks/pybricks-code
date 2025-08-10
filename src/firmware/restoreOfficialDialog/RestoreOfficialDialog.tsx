@@ -56,7 +56,8 @@ const RestoreFirmwarePanel: React.FunctionComponent = () => {
     const inProgress = useSelector(
         (s) =>
             s.firmware.isFirmwareFlashUsbDfuInProgress ||
-            s.firmware.isFirmwareRestoreOfficialDfuInProgress,
+            s.firmware.isFirmwareRestoreOfficialDfuInProgress ||
+            s.firmware.isFirmwareFlashEV3InProgress,
     );
     const [ev3OfficialFirmwareVersion, setEv3OfficialFirmwareVersion] =
         useLocalStorage<EV3OfficialFirmwareVersion>(

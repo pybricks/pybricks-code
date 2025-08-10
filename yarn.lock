@@ -2998,6 +2998,7 @@ __metadata:
     "@types/react-transition-group": ^4.4.10
     "@types/redux-logger": ^3.0.12
     "@types/semver": ^7.5.6
+    "@types/w3c-web-hid": ^1.0.6
     "@types/w3c-web-usb": ^1.0.10
     "@types/web-bluetooth": ^0.0.20
     "@types/web-locks-api": ^0.0.5
@@ -5461,6 +5462,13 @@ __metadata:
   version: 0.0.3
   resolution: "@types/use-sync-external-store@npm:0.0.3"
   checksum: 161ddb8eec5dbe7279ac971531217e9af6b99f7783213566d2b502e2e2378ea19cf5e5ea4595039d730aa79d3d35c6567d48599f69773a02ffcff1776ec2a44e
+  languageName: node
+  linkType: hard
+
+"@types/w3c-web-hid@npm:^1.0.6":
+  version: 1.0.6
+  resolution: "@types/w3c-web-hid@npm:1.0.6"
+  checksum: 14773befa9c458b3459cdb530a8269937e623e6b72c6bd2d7f88b42f8d47c02d8a64ddc98f79c81c930b6eadf1dc1c94917b553ead72acc13c8406f65310c85d
   languageName: node
   linkType: hard
 

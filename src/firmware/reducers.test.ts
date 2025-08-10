@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021-2023 The Pybricks Authors
+// Copyright (c) 2021-2025 The Pybricks Authors
 
 import { AnyAction } from 'redux';
 import {
@@ -23,6 +23,7 @@ test('initial state', () => {
           "installPybricksDialog": {
             "isOpen": false,
           },
+          "isFirmwareFlashEV3InProgress": false,
           "isFirmwareFlashUsbDfuInProgress": false,
           "isFirmwareRestoreOfficialDfuInProgress": false,
           "progress": null,

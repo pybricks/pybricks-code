@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2023 The Pybricks Authors
+// Copyright (c) 2023-2025 The Pybricks Authors
 
 import type { SerializableStateInvariantMiddlewareOptions } from '@reduxjs/toolkit';
 
@@ -13,6 +13,7 @@ export const serializableCheck: SerializableStateInvariantMiddlewareOptions = {
         // contain ArrayBuffer, Blob or DataView
         'data',
         'file',
+        'firmware',
         'firmwareZip',
         'payload',
         'value',

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021-2023 The Pybricks Authors
+// Copyright (c) 2021-2025 The Pybricks Authors
 
 import { Reducer, combineReducers } from 'redux';
 import {
@@ -9,10 +9,13 @@ import {
     didStart,
     firmwareDidFailToFlashUsbDfu,
     firmwareDidFailToRestoreOfficialDfu,
+    firmwareDidFailToRestoreOfficialEV3,
     firmwareDidFlashUsbDfu,
     firmwareDidRestoreOfficialDfu,
+    firmwareDidRestoreOfficialEV3,
     firmwareFlashUsbDfu,
     firmwareRestoreOfficialDfu,
+    firmwareRestoreOfficialEV3,
 } from './actions';
 import dfuWindowsDriverInstallDialog from './dfuWindowsDriverInstallDialog/reducers';
 import installPybricksDialog from './installPybricksDialog/reducers';
@@ -77,6 +80,21 @@ const isFirmwareRestoreOfficialDfuInProgress: Reducer<boolean> = (
     return state;
 };
 
+const isFirmwareFlashEV3InProgress: Reducer<boolean> = (state = false, action) => {
+    if (firmwareRestoreOfficialEV3.matches(action)) {
+        return true;
+    }
+
+    if (firmwareDidRestoreOfficialEV3.matches(action)) {
+        return false;
+    }
+
+    if (firmwareDidFailToRestoreOfficialEV3.matches(action)) {
+        return false;
+    }
+    return state;
+};
+
 export default combineReducers({
     dfuWindowsDriverInstallDialog,
     installPybricksDialog,
@@ -85,4 +103,5 @@ export default combineReducers({
     progress,
     isFirmwareFlashUsbDfuInProgress,
     isFirmwareRestoreOfficialDfuInProgress,
+    isFirmwareFlashEV3InProgress,
 });
