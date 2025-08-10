@@ -465,3 +465,45 @@ export const firmwareDidRestoreOfficialEV3 = createAction(() => ({
 export const firmwareDidFailToRestoreOfficialEV3 = createAction(() => ({
     type: 'firmware.action.didFailToRestoreOfficialEV3',
 }));
+
+/**
+ * Low-level action to flash firmware to an EV3 hub.
+ * @param firmware The firmware binary blob.
+ */
+export const firmwareFlashEV3 = createAction((firmware: ArrayBuffer) => ({
+    type: 'firmware.action.flashEV3',
+    firmware,
+}));
+
+/**
+ * Low-level action that indicates {@link firmwareFlashEV3} succeeded.
+ */
+export const firmwareDidFlashEV3 = createAction(() => ({
+    type: 'firmware.action.didFlashEV3',
+}));
+
+/**
+ * Low-level action that indicates {@link firmwareFlashEV3} failed.
+ */
+export const firmwareDidFailToFlashEV3 = createAction(() => ({
+    type: 'firmware.action.didFailToFlashEV3',
+}));
+
+export const firmwareDidReceiveEV3Reply = createAction(
+    (
+        length: number,
+        replyNumber: number,
+        messageType: number,
+        replyCommand: number,
+        status: number,
+        payload: ArrayBufferLike,
+    ) => ({
+        type: 'firmware.action.didReceiveEV3Reply',
+        length,
+        replyNumber,
+        messageType,
+        replyCommand,
+        status,
+        payload,
+    }),
+);

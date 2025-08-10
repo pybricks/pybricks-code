@@ -8,6 +8,10 @@
         "message": "This browser does not support WebUSB or WebUSB is not enabled.",
         "suggestion": "Use a supported browser such as Google Chrome or Microsoft Edge."
     },
+    "noWebHid": {
+        "message": "This browser does not support WebHID or WebHID is not enabled.",
+        "suggestion": "Use a supported browser such as Google Chrome or Microsoft Edge."
+    },
     "noDfuHub": {
         "message": "Could not find your hub?",
         "suggestion1": {

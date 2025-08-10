@@ -453,7 +453,8 @@ export const InstallPybricksDialog: React.FunctionComponent = () => {
     const inProgress = useSelector(
         (s) =>
             s.firmware.isFirmwareFlashUsbDfuInProgress ||
-            s.firmware.isFirmwareRestoreOfficialDfuInProgress,
+            s.firmware.isFirmwareRestoreOfficialDfuInProgress ||
+            s.firmware.isFirmwareFlashEV3InProgress,
     );
     const dispatch = useDispatch();
     const [hubName, setHubName] = useState('');
