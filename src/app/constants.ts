@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021-2023 The Pybricks Authors
+// Copyright (c) 2021-2024 The Pybricks Authors
 import docsPackage from '@pybricks/ide-docs/package.json';
 
 // Definitions for compile-time UI settings.
@@ -87,3 +87,6 @@ export const zipFileExtension = '.zip';
 
 /** The ZIP file MIME type ('application/zip') */
 export const zipFileMimeType = 'application/zip';
+
+/** maximum number of recent file displayed */
+export const recentFileCount = 3;
