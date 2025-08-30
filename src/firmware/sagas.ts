@@ -1251,7 +1251,7 @@ function* handleFlashEV3(action: ReturnType<typeof firmwareFlashEV3>): Generator
                 }),
             );
             // FIXME: should have a better error reason
-            yield* put(didFailToFinish(FailToFinishReasonType.Unknown));
+            yield* put(didFailToFinish(FailToFinishReasonType.Unknown, eraseError));
             yield* put(firmwareDidFailToFlashEV3());
             yield* cleanup();
             return;
@@ -1268,7 +1268,7 @@ function* handleFlashEV3(action: ReturnType<typeof firmwareFlashEV3>): Generator
                     }),
                 );
                 // FIXME: should have a better error reason
-                yield* put(didFailToFinish(FailToFinishReasonType.Unknown));
+                yield* put(didFailToFinish(FailToFinishReasonType.Unknown, sendError));
                 yield* put(firmwareDidFailToFlashEV3());
                 yield* cleanup();
                 return;
@@ -1309,7 +1309,7 @@ function* handleFlashEV3(action: ReturnType<typeof firmwareFlashEV3>): Generator
     const [, rebootError] = yield* sendCommand(0xf4); // start app
     if (rebootError) {
         // FIXME: should have a better error reason
-        yield* put(didFailToFinish(FailToFinishReasonType.Unknown));
+        yield* put(didFailToFinish(FailToFinishReasonType.Unknown, rebootError));
         yield* put(firmwareDidFailToFlashEV3());
         yield* cleanup();
         return;
