@@ -8,6 +8,8 @@ import {
     encodeHubName,
     metadataIsV100,
     metadataIsV110,
+    metadataIsV200,
+    metadataIsV210,
 } from '@pybricks/firmware';
 import cityHubZip from '@pybricks/firmware/build/cityhub.zip';
 import moveHubZip from '@pybricks/firmware/build/movehub.zip';
@@ -342,6 +344,11 @@ function* loadFirmware(
         return { firmware, deviceId: metadata['device-id'] };
     }
 
+    assert(
+        metadataIsV200(metadata) || metadataIsV210(metadata),
+        'Expected metadata to be v2.x',
+    );
+
     const firmware = new Uint8Array(firmwareBase.length + 4);
     const firmwareView = new DataView(firmware.buffer);
 
@@ -360,6 +367,8 @@ function* loadFirmware(
                 );
             case 'crc32':
                 return crc32(firmwareIterator(firmwareView, metadata['checksum-size']));
+            case 'none':
+                return null;
             default:
                 return undefined;
         }
@@ -380,7 +389,9 @@ function* loadFirmware(
         throw new Error('unreachable');
     }
 
-    firmwareView.setUint32(firmwareBase.length, checksum, true);
+    if (checksum !== null) {
+        firmwareView.setUint32(firmwareBase.length, checksum, true);
+    }
 
     return { firmware, deviceId: metadata['device-id'] };
 }
