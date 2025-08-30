@@ -66,6 +66,7 @@ import { compile, didCompile, didFailToCompile } from '../mpy/actions';
 import { RootState } from '../reducers';
 import { LegoUsbProductId, legoUsbVendorId } from '../usb';
 import { assert, defined, ensureError, hex, maybe } from '../utils';
+import { createCountFunc } from '../utils/iter';
 import { crc32, fmod, sumComplement32 } from '../utils/math';
 import {
     EV3OfficialFirmwareVersion,
@@ -1013,6 +1014,8 @@ function* handleRestoreOfficialDfu(
     }
 }
 
+const getNextEV3MessageId = createCountFunc();
+
 function* handleFlashEV3(action: ReturnType<typeof firmwareFlashEV3>): Generator {
     if (navigator.hid === undefined) {
         yield* put(alertsShowAlert('firmware', 'noWebHid'));
@@ -1125,8 +1128,10 @@ function* handleFlashEV3(action: ReturnType<typeof firmwareFlashEV3>): Generator
         const dataBuffer = new Uint8Array((payload?.byteLength ?? 0) + 6);
         const data = new DataView(dataBuffer.buffer);
 
+        const messageId = getNextEV3MessageId() & 0xffff;
+
         data.setInt16(0, (payload?.byteLength ?? 0) + 4, true);
-        data.setInt16(2, 0, true); // TODO: reply number
+        data.setInt16(2, messageId, true);
         data.setUint8(4, 0x01); // system command w/ reply
         data.setUint8(5, command);
         if (payload) {
@@ -1151,6 +1156,15 @@ function* handleFlashEV3(action: ReturnType<typeof firmwareFlashEV3>): Generator
         }
 
         defined(reply);
+
+        if (reply.replyNumber !== messageId) {
+            return [
+                undefined,
+                new Error(
+                    `EV3 reply message ID mismatch: expected ${messageId}, got ${reply.replyNumber}`,
+                ),
+            ];
+        }
 
         if (reply.replyCommand !== command) {
             return [
