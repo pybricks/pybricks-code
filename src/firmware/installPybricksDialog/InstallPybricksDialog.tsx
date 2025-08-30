@@ -72,6 +72,8 @@ function getHubTypeFromMetadata(
             return Hub.Prime;
         case HubType.EssentialHub:
             return Hub.Essential;
+        case HubType.EV3:
+            return Hub.EV3;
         default:
             return fallback;
     }
@@ -89,6 +91,8 @@ function getHubTypeNameFromMetadata(metadata: FirmwareMetadata | undefined): str
             return 'SPIKE Prime/MINDSTORMS Robot Inventor hub';
         case HubType.EssentialHub:
             return 'SPIKE Essential hub';
+        case HubType.EV3:
+            return 'MINDSTORMS EV3 hub';
         default:
             return '?';
     }
