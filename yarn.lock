@@ -5472,10 +5472,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/w3c-web-usb@npm:^1.0.10":
+"@types/w3c-web-usb@npm:1.0.10":
   version: 1.0.10
   resolution: "@types/w3c-web-usb@npm:1.0.10"
   checksum: 6ac6786a0788f0846a48b103ab06ca5fde5eb95674217b522420a2f6157bee3e181a961c1b7011940f497c55f4f5cc46129657d881fdd8112b48764089679ad6
+  languageName: node
+  linkType: hard
+
+"@types/w3c-web-usb@patch:@types/w3c-web-usb@npm%3A1.0.10#./.yarn/patches/@types-w3c-web-usb-npm-1.0.10-82b33e05cb.patch::locator=%40pybricks%2Fpybricks-code%40workspace%3A.":
+  version: 1.0.10
+  resolution: "@types/w3c-web-usb@patch:@types/w3c-web-usb@npm%3A1.0.10#./.yarn/patches/@types-w3c-web-usb-npm-1.0.10-82b33e05cb.patch::version=1.0.10&hash=171f12&locator=%40pybricks%2Fpybricks-code%40workspace%3A."
+  checksum: 9528b1c501a5a21f05e36998b58501f8e2a4790af82c41b88e86bed8a618dc3135d486ffd55771532837a4e4112c1093ada293986451fe665f937081c9f2b7d7
   languageName: node
   linkType: hard
 
