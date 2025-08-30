@@ -935,8 +935,25 @@ function* handleInstallPybricks(): Generator {
             }
             break;
         case 'usb-ev3':
-            // TODO: implement flashing via EV3 USB
-            console.error('Flashing via EV3 USB is not implemented yet');
+            try {
+                const { firmware } = yield* loadFirmware(
+                    accepted.firmwareZip,
+                    accepted.hubName,
+                );
+
+                yield* put(firmwareFlashEV3(firmware.buffer as ArrayBuffer));
+            } catch (err) {
+                // istanbul ignore if
+                if (process.env.NODE_ENV !== 'test') {
+                    console.error(err);
+                }
+
+                yield* put(
+                    alertsShowAlert('alerts', 'unexpectedError', {
+                        error: ensureError(err),
+                    }),
+                );
+            }
             break;
     }
 }

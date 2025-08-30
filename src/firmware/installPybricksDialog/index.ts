@@ -37,6 +37,7 @@ const supportHubs: readonly HubType[] = [
     HubType.TechnicHub,
     HubType.PrimeHub,
     HubType.EssentialHub,
+    HubType.EV3,
 ];
 
 export function validateMetadata(metadata: FirmwareMetadata) {
