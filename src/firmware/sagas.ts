@@ -20,6 +20,7 @@ import { eventChannel } from 'redux-saga';
 import { ActionPattern } from 'redux-saga/effects';
 import {
     SagaGenerator,
+    actionChannel,
     all,
     call,
     cancel,
@@ -1116,8 +1117,11 @@ function* handleFlashEV3(action: ReturnType<typeof firmwareFlashEV3>): Generator
         command: number,
         payload?: Uint8Array,
     ): SagaGenerator<[DataView | undefined, Error | undefined]> {
-        console.debug(`EV3 send: command=${command}, payload=${payload}`);
+        // We need to start listing for reply before sending command in order
+        // to avoid race conditions.
+        const replyChannel = yield* actionChannel(firmwareDidReceiveEV3Reply);
 
+        // Send the command
         const dataBuffer = new Uint8Array((payload?.byteLength ?? 0) + 6);
         const data = new DataView(dataBuffer.buffer);
 
@@ -1130,15 +1134,18 @@ function* handleFlashEV3(action: ReturnType<typeof firmwareFlashEV3>): Generator
         }
 
         const [, sendError] = yield* call(() => maybe(hidDevice.sendReport(0, data)));
-
         if (sendError) {
+            replyChannel.close();
             return [undefined, sendError];
         }
 
         const { reply, timeout } = yield* race({
-            reply: take(firmwareDidReceiveEV3Reply),
+            reply: take(replyChannel),
             timeout: delay(5000),
         });
+
+        replyChannel.close();
+
         if (timeout) {
             return [undefined, new Error('Timeout waiting for EV3 reply')];
         }
