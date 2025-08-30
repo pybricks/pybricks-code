@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022-2023 The Pybricks Authors
+// Copyright (c) 2022-2025 The Pybricks Authors
 // based on https://usehooks-ts.com/react-hook/use-fetch
 
 import { FirmwareMetadata, FirmwareReader } from '@pybricks/firmware';
@@ -78,8 +78,10 @@ export function useFirmware(hubType: Hub): State {
     const [state, dispatch] = useReducer(fetchReducer, initialState);
 
     useEffect(() => {
-        // Do nothing if the url is not given
+        // Raise error if the url is not given, to show that something is wrong
+        // instead of a misleading intermediate state.
         if (!url) {
+            dispatch({ type: 'error', payload: new Error('No URL for this hub type') });
             return;
         }
 
