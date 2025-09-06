@@ -1,0 +1,16 @@
+{
+    "title": "Open-Source-Software-Lizenzen",
+    "description": "{name} basiert auf Open-Source-Software. Durch die Nutzung von {name} stimmen Sie den Bedingungen aller enthaltenen Software-Lizenzen zu.",
+    "packageList": {
+        "label": "Pakete"
+    },
+    "packageLabel": "Paket:",
+    "authorLabel": "Autor:",
+    "licenseLabel": "Lizenz:",
+    "error": {
+        "fetchFailed": "Lizenzdaten konnten nicht geladen werden."
+    },
+    "help": {
+        "selectPackage": "Wählen Sie ein Paket aus, um die Lizenz anzuzeigen."
+    }
+}

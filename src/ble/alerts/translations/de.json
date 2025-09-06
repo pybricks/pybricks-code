@@ -1,0 +1,35 @@
+{
+    "noWebBluetooth": {
+        "message": "Dieser Browser unterstützt Web Bluetooth nicht oder es ist nicht aktiviert.",
+        "suggestion": "Verwenden Sie einen unterstützten Browser wie Google Chrome oder Microsoft Edge.",
+        "linux": "Web Bluetooth ist unter Linux experimentell und muss manuell aktiviert werden. Kopieren Sie den untenstehenden Link und fügen Sie ihn in die Adressleiste ein.",
+        "action": "Weitere Informationen"
+    },
+    "bluetoothNotAvailable": {
+        "message": "Es wurde kein Bluetooth-Adapter gefunden oder die Berechtigung zur Nutzung wurde nicht erteilt.",
+        "suggestion": "Bitte verbinden oder aktivieren Sie einen Bluetooth Low Energy Adapter, stellen Sie sicher, dass Ihr Browser die Berechtigung zur Nutzung hat und starten Sie den Browser neu.",
+        "browserSupport": "Einige Browser wie Brave und Opera unterstützen Web Bluetooth nicht. Verwenden Sie einen unterstützten Browser wie Chrome, Edge oder auf iOS WebBLE."
+    },
+    "noGatt": {
+        "message": "Der Webbrowser hat keine Berechtigung zur Nutzung von Bluetooth Low Energy erteilt."
+    },
+    "missingService": {
+        "message": "Mit Hub verbunden, aber {serviceName}-Dienst konnte nicht gefunden werden.",
+        "suggestion1": "Stellen Sie sicher, dass Sie die neueste Firmware verwenden.",
+        "suggestion2": "Wenn das Problem weiterhin besteht, versuchen Sie das Gerät \"{hubName}\" in Ihren OS-Bluetooth-Einstellungen zu entfernen und dann erneut zu verbinden."
+    },
+    "noHub": {
+        "message": "Kein Hub erkannt.",
+        "suggestion": "Haben Sie die Pybricks-Firmware bereits installiert?",
+        "flashFirmwareButton": "Pybricks-Firmware installieren",
+        "troubleshootButton": "Fehlerbehebung"
+    },
+    "newPybricksProfile": {
+        "message": "Der verbundene Hub verwendet eine neuere Version des Pybricks-Kommunikationsprofils. Einige Funktionen funktionieren möglicherweise nicht korrekt.",
+        "versions": "Der Hub hat {hubVersion}, während {app} {appVersion} unterstützt.",
+        "suggestion": "Downgraden Sie die Hub-Firmware oder aktualisieren Sie {app}, um Probleme zu vermeiden."
+    },
+    "disconnected": {
+        "message": "Der Hub ist nicht mehr verbunden. Bitte verbinden Sie ihn erneut und versuchen Sie es noch einmal."
+    }
+}

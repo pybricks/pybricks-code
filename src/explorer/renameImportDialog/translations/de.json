@@ -1,0 +1,8 @@
+{
+    "title": "Importierte Datei umbenennen",
+    "message": "Der Name der importierten Datei '{fileName}' ist in {appName} nicht erlaubt. Bitte ändern Sie den Namen unten.",
+    "action": {
+        "skip": "Import dieser Datei überspringen",
+        "rename": "Umbenennen"
+    }
+}
