@@ -1,0 +1,32 @@
+{
+    "title": "Przywróć oficjalny firmware {lego}",
+    "backButton": {
+        "label": "Wstecz"
+    },
+    "nextButton": {
+        "label": "Dalej"
+    },
+    "doneButton": {
+        "label": "Gotowe"
+    },
+    "selectHubPanel": {
+        "title": "Wybierz hub",
+        "message": "Wybierz hub, na którym przywrócić oficjalny firmware {lego}, a następnie kliknij {next}."
+    },
+    "restoreFirmwarePanel": {
+        "title": "Przywróć firmware",
+        "instruction2": {
+            "ble": {
+                "message": "Gdy pasek postępu zostanie zakończony, hub uruchomi się ponownie, a aplikacja się połączy. Oficjalny firmware został przywrócony."
+            },
+            "updateApp": "Po zakończeniu odzyskiwania użyj aplikacji {app}, aby uzyskać najnowszy oficjalny firmware.",
+            "updateAppVersion": "Możesz użyć wersji 2 (legacy) lub wersji 3, aby to zrobić."
+        },
+        "flashButton": "Przywróć",
+        "ev3FirmwareType": {
+            "home": "Edycja domowa (v1.09H)",
+            "education": "Edycja edukacyjna (v1.09E)",
+            "makecode": "Microsoft MakeCode (v1.10E)"
+        }
+    }
+}

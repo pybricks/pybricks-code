@@ -1,0 +1,22 @@
+{
+    "completionEngineStatus": {
+        "label": "Wskaźnik stanu mechanizmu podpowiedzi kodu",
+        "message": {
+            "loading": "Mechanizm podpowiedzi kodu uruchamia się i wkrótce będzie gotowy.",
+            "ready": "Mechanizm podpowiedzi kodu jest gotowy do użycia.",
+            "failed": "Mechanizm podpowiedzi kodu przestał działać.",
+            "unknown": "Mechanizm podpowiedzi kodu nie został jeszcze uruchomiony."
+        }
+    },
+    "hubInfo": {
+        "title": "Podłączony hub",
+        "connectedTo": "Połączono z:",
+        "hubType": "Typ huba:",
+        "firmware": "Oprogramowanie układowe:"
+    },
+    "battery": {
+        "title": "Bateria",
+        "low": "Niski poziom baterii. Hub wkrótce się wyłączy.",
+        "ok": "Poziom baterii jest OK."
+    }
+}

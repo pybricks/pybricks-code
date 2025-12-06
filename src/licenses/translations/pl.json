@@ -1,0 +1,16 @@
+{
+    "title": "Licencje oprogramowania open source",
+    "description": "{name} jest zbudowany na oprogramowaniu open source. Używając {name} zgadzasz się na warunki i postanowienia wszystkich zawartych licencji oprogramowania.",
+    "packageList": {
+        "label": "Pakiety"
+    },
+    "packageLabel": "Pakiet:",
+    "authorLabel": "Autor:",
+    "licenseLabel": "Licencja:",
+    "error": {
+        "fetchFailed": "Nie udało się załadować danych licencji."
+    },
+    "help": {
+        "selectPackage": "Wybierz pakiet, aby zobaczyć licencję."
+    }
+}

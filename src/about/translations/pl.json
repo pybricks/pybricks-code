@@ -1,0 +1,7 @@
+{
+    "title": "O {appName}",
+    "description": "MicroPython dla inteligentnych hubów {lego} Powered Up.",
+    "licenseButton": { "label": "Licencje oprogramowania" },
+    "changelogButton": { "label": "Lista zmian" },
+    "websiteButton": { "label": "Strona Pybricks" }
+}

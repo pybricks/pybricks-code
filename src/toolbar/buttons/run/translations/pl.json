@@ -1,0 +1,7 @@
+{
+  "label": "Uruchom",
+  "tooltip": {
+    "action": "Uruchom ten program ({key})",
+    "progress": "Pobieranie… {percent}"
+  }
+}

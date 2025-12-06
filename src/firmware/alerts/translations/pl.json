@@ -1,0 +1,35 @@
+{
+    "dfuError": {
+        "message": "Wystąpił błąd USB podczas instalacji firmware.",
+        "suggestion": "Upewnij się, że kabel USB nie jest uszkodzony i jest solidnie podłączony do huba i komputera.",
+        "tryAgainButton": "Spróbuj ponownie"
+    },
+    "noWebUsb": {
+        "message": "Ta przeglądarka nie obsługuje WebUSB lub WebUSB nie jest włączony.",
+        "suggestion": "Użyj obsługiwanej przeglądarki takiej jak Google Chrome lub Microsoft Edge."
+    },
+    "noWebHid": {
+        "message": "Ta przeglądarka nie obsługuje WebHID lub WebHID nie jest włączony.",
+        "suggestion": "Użyj obsługiwanej przeglądarki takiej jak Google Chrome lub Microsoft Edge."
+    },
+    "noDfuHub": {
+        "message": "Nie można znaleźć Twojego huba?",
+        "suggestion1": {
+            "windows": "Może być konieczne ręczne zainstalowanie sterownika USB przed połączeniem z hubem.",
+            "linux": "Może być konieczne dodanie reguł udev przed połączeniem z hubem."
+        },
+        "troubleshootButton": "Wskazówki dotyczące rozwiązywania problemów",
+        "installUsbDriverButton": "Zainstaluj sterownik USB",
+        "configureUdevRulesButton": "Skonfiguruj reguły udev"
+    },
+    "noDfuInterface": {
+        "message": "To bardzo niezwykłe. Urządzenie USB nie zawierało oczekiwanego interfejsu."
+    },
+    "flashProgress": {
+        "erasing": "Usuwanie starego firmware: {percent}",
+        "flashing": "Instalowanie nowego firmware: {percent}"
+    },
+    "releaseButton": {
+        "message": "Teraz możesz zwolnić przycisk zasilania na hubie."
+    }
+}

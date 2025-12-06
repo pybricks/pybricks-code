@@ -1,0 +1,13 @@
+{
+    "label": "Nazwa pliku",
+    "helpText": {
+        "isOk": "OK!",
+        "isEmpty": "Nazwa pliku nie może być pusta.",
+        "hasSpaces": "Nazwa pliku nie może zawierać spacji.",
+        "hasFileExtension": "Rozszerzenie pliku zostanie dodane automatycznie.",
+        "hasInvalidFirstCharacter": "Nazwa pliku musi zaczynać się od litery ({letters}) lub podkreślenia ({underscore}).",
+        "hasInvalidCharacters": "Nazwa pliku może zawierać tylko litery ({letters}), cyfry ({numbers}) i podkreślenia ({underscore}).",
+        "alreadyExists": "Plik o tej nazwie już istnieje. Spróbuj innej nazwy.",
+        "fixIt": "Napraw to dla mnie."
+    }
+}

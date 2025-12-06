@@ -1,0 +1,16 @@
+{
+    "title": "Utwórz nowy plik",
+    "template": {
+        "label": "Szablon"
+    },
+    "useTemplate": {
+        "label": "Użyj szablonu",
+        "description": {
+            "checked": "Utwórz nowy plik dla wybranego huba.",
+            "unchecked": "Utwórz nowy pusty plik."
+        }
+    },
+    "action": {
+        "create": "Utwórz"
+    }
+}

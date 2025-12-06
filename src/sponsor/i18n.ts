@@ -4,6 +4,7 @@
 import { useI18n as useShopifyI18n } from '@shopify/react-i18n';
 import type { TypedI18n } from '../i18n';
 import type translations from './translations/en.json';
+import './translations/pl.json';
 
 export function useI18n(): TypedI18n<typeof translations> {
     // istanbul ignore next: babel-loader rewrites this line

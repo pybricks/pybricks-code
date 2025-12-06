@@ -1,0 +1,53 @@
+{
+    "warning": {
+        "linux": {
+            "message": "Jeśli nigdy nie używałeś Pybricks z USB na Linuksie, będziesz musiał skonfigurować reguły udev przed instalacją firmware. {learnMore}",
+            "learnMore": "Dowiedz się więcej."
+        },
+        "windows": {
+            "message": "Czy używasz Pybricks na tym komputerze po raz pierwszy? Może być konieczne ręczne zainstalowanie sterownika USB dla tego typu huba. {instructions}",
+            "instructions": "Kliknij, aby zobaczyć instrukcje."
+        }
+    },
+    "button": {
+        "bluetooth": "Przycisk Bluetooth",
+        "power": "przycisk",
+        "right": "prawy przycisk"
+    },
+    "light": {
+        "bluetooth": "Światło Bluetooth",
+        "status": "światło huba"
+    },
+    "lightPattern": {
+        "bluetooth": "różowo-zielono-niebiesko-wyłączone",
+        "status": "jasno fioletowy"
+    },
+    "instructionGroup": {
+        "prepare": {
+            "title": "Przygotowanie:",
+            "batteries": "Upewnij się, że hub ma nowe lub w pełni naładowane baterie.",
+            "turnOff": "Upewnij się, że hub jest wyłączony.",
+            "usb": "Odłącz kabel USB.",
+            "app": "Otwórz aplikację {lego} PoweredUp w trybie 'Tworzenie' i rozpocznij nowy projekt."
+        },
+        "bootloaderMode": {
+            "title": "Wejdź w tryb aktualizacji (zobacz wideo):",
+            "disconnectIo": "Odłącz jakiekolwiek urządzenie od portu A na hubie.",
+            "holdButton": "Naciśnij i przytrzymaj {button} na hubie.",
+            "connectUsb": "Podłącz kabel USB.",
+            "waitForLight": "Poczekaj, aż {light} zacznie migać {lightPattern}.",
+            "waitAppConnect": "Aplikacja automatycznie się połączy i rozpocznie przywracanie firmware.",
+            "releaseButton": "Zwolnij {button}.",
+            "keepHolding": "Trzymaj {button} w następnych krokach. Powiemy Ci, kiedy go puścić.",
+            "pressPowerButtonEV3": "Naciśnij środkowy przycisk, aby włączyć EV3.",
+            "releaseButtonsEV3": "Gdy ekran pokaże \"Updating...\", zwolnij oba przyciski."
+        },
+        "connect": {
+            "title": "Instalacja:",
+            "selectEV3FirmwareType": "Wybierz poniżej wersję firmware do przywrócenia.",
+            "clickConnectAndFlash": "Kliknij poniższy przycisk {flashButton}.",
+            "selectDevice": "W oknie dialogowym wybierz {deviceName} i kliknij {connectButton}.",
+            "connectButton": "Połącz"
+        }
+    }
+}

@@ -1,0 +1,41 @@
+{
+    "noWebBluetooth": {
+        "message": "Ta przeglądarka nie obsługuje Web Bluetooth lub nie jest włączony.",
+        "suggestion": "Użyj obsługiwanej przeglądarki takiej jak Google Chrome lub Microsoft Edge.",
+        "linux": "Web Bluetooth jest eksperymentalny na Linuksie i musi być ręcznie włączony. Skopiuj poniższy link i wklej go w pasku adresu.",
+        "action": "Więcej informacji"
+    },
+    "bluetoothNotAvailable": {
+        "message": "Nie znaleziono adaptera Bluetooth lub nie udzielono zgody na jego użycie.",
+        "suggestion": "Podłącz lub włącz adapter Bluetooth Low Energy, upewnij się, że Twoja przeglądarka ma uprawnienia do jego użycia i zrestartuj przeglądarkę.",
+        "browserSupport": "Niektóre przeglądarki takie jak Brave i Opera nie obsługują Web Bluetooth. Upewnij się, że używasz obsługiwanej przeglądarki takiej jak Chrome, Edge lub na iOS WebBLE."
+    },
+    "noGatt": {
+        "message": "Przeglądarka internetowa nie udzieliła pozwolenia na użycie Bluetooth Low Energy."
+    },
+    "missingService": {
+        "message": "Połączono z hubem, ale nie udało się uzyskać usługi {serviceName}.",
+        "suggestion1": "Upewnij się, że używasz najnowszego firmware.",
+        "suggestion2": "Jeśli problem nadal występuje, spróbuj usunąć urządzenie \"{hubName}\" w ustawieniach Bluetooth systemu operacyjnego, a następnie spróbuj połączyć się ponownie."
+    },
+    "noHub": {
+        "message": "Nie wykryto huba.",
+        "suggestion": "Czy zainstalowałeś już firmware Pybricks?",
+        "flashFirmwareButton": "Zainstaluj firmware Pybricks",
+        "troubleshootButton": "Rozwiąż problemy z połączeniem"
+    },
+    "oldFirmware": {
+        "message": "Nowa wersja firmware jest dostępna dla tego huba. Zainstaluj najnowszą wersję, aby używać wszystkich nowych funkcji.",
+        "flashFirmware": {
+            "label": "Zaktualizuj firmware Pybricks"
+        }
+    },
+    "newPybricksProfile": {
+        "message": "Połączony hub używa nowszej wersji profilu komunikacji Pybricks. Niektóre funkcje mogą nie działać poprawnie.",
+        "versions": "Hub ma wersję {hubVersion}, podczas gdy {app} obsługuje {appVersion}.",
+        "suggestion": "Zdegraduj firmware huba lub zaktualizuj {app}, aby uniknąć problemów."
+    },
+    "disconnected": {
+        "message": "Hub nie jest już połączony. Połącz się ponownie i spróbuj jeszcze raz."
+    }
+}

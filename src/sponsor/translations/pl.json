@@ -1,0 +1,27 @@
+{
+    "title": "Wesprzyj {pybricks}",
+    "whoAreWe": {
+        "heading": "Kim jesteśmy?",
+        "team": {
+            "about": "Pybricks jest prowadzony przez mały {team}, wspierany przez społeczność entuzjastów otwartego oprogramowania z całego świata.",
+            "team": "zespół"
+        },
+        "mission": "Naszą misją jest uczynić robotykę zabawną i dostępną oraz nauczyć milion osób programowania. Możesz w tym pomóc!"
+    },
+    "whyDonate": {
+        "heading": "Dlaczego warto wpłacić?",
+        "body": "Darowizny pomagają nam:"
+    },
+    "donateReason": {
+        "keepPybricksFree": "Utrzymać Pybricks darmowym dla wszystkich.",
+        "supportNewHubs": "Wspierać Pybricks na nowych hubach, silnikach i czujnikach.",
+        "writeDocs": "Tworzyć dokumentację i poradniki.",
+        "exploreFeatures": "Badać duże nowe funkcje, takie jak wielozadaniowość czy programowanie blokowe.",
+        "supportOthers": "Wspierać projekty, na których opiera się Pybricks, takie jak MicroPython."
+    },
+    "donateOptions": {
+        "heading": "Jak przekazać darowiznę",
+        "options": "Możesz użyć poniższych linków do jednorazowej lub miesięcznej darowizny.",
+        "thanks": "Dziękujemy, bardzo to doceniamy!"
+    }
+}

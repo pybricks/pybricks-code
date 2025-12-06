@@ -1,0 +1,6 @@
+{
+    "userProgramSize": {
+        "message": "Ten program jest zbyt duży. Skompilowany rozmiar to {actual} bajtów, ale hub może pomieścić tylko {max} bajtów.",
+        "suggestion": "Spróbuj usunąć nieużywany kod lub zmniejszyć nazwy i ciągi znaków."
+    }
+}

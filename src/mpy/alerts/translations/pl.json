@@ -1,0 +1,6 @@
+{
+    "compilerError": {
+        "message": "Nie udało się skompilować pliku MicroPython.",
+        "gotoErrorButton": "Przejdź do błędu"
+    }
+}

@@ -1,0 +1,12 @@
+{
+    "helpButton": {
+        "label": "Pomoc",
+        "description": "Kliknij, aby wyświetlić pomoc dla pola wyboru {helpForLabel}."
+    },
+    "helpDialog": {
+        "title": "Pomoc",
+        "closeButton": {
+            "label": "Zamknij"
+        }
+    }
+}

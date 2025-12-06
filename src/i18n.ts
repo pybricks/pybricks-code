@@ -12,7 +12,7 @@ import type {
 
 /** The global i18n manager. */
 export const i18nManager = new I18nManager({
-    locale: 'en',
+    locale: 'pl',
     onError: (err): void => console.error(err),
 });
 

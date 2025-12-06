@@ -1,0 +1,61 @@
+{
+    "title": "Instrukcje instalacji sterownika USB DFU dla Windows",
+    "backButton": {
+        "label": "Wstecz"
+    },
+    "nextButton": {
+        "label": "Dalej"
+    },
+    "doneButton": {
+        "label": "Gotowe"
+    },
+    "step": {
+        "1": {
+            "message": "Kliknij prawym przyciskiem myszy {startMenu} Windows, a następnie kliknij {deviceManager}.",
+            "startMenu": "Menu Start",
+            "deviceManager": "Menedżer urządzeń"
+        },
+        "2": {
+            "message": "Poszukaj {dfuUsbHubName} w sekcji {otherDevices}.",
+            "otherDevices": "Inne urządzenia",
+            "properties": "Właściwości",
+            "listedWithWarning": "Jeśli jest wyświetlony ze znakiem ostrzeżenia, kliknij go prawym przyciskiem myszy i wybierz {properties}.",
+            "listedWithoutWarning": "Jeśli jest wyświetlony gdzie indziej bez znaku ostrzeżenia, sterownik jest już zainstalowany. Możesz zamknąć to okno.",
+            "notListed": "Jeśli go wcale nie widzisz, upewnij się, że hub jest w trybie aktualizacji DFU i spróbuj ponownie. Zamknij to okno, aby obejrzeć instrukcje wideo."
+        },
+        "3": {
+            "message": "W oknie dialogowym {properties} kliknij przycisk {updateDriver}.",
+            "properties": "Właściwości {dfuUsbHubName}",
+            "updateDriver": "Aktualizuj sterownik..."
+        },
+        "4": {
+            "message": "W oknie dialogowym {updateDrivers} kliknij przycisk {browse}.",
+            "updateDrivers": "Aktualizuj sterowniki",
+            "browse": "Przeglądaj mój komputer w poszukiwaniu sterowników"
+        },
+        "5": {
+            "message": "Następnie kliknij przycisk {letMePick}.",
+            "letMePick": "Pozwól mi wybrać z listy dostępnych sterowników na moim komputerze"
+        },
+        "6": {
+            "message": "Na liście typów urządzeń wybierz {usbDevices}, a następnie kliknij przycisk {next}.",
+            "usbDevices": "Urządzenia Universal Serial Bus",
+            "next": "Dalej"
+        },
+        "7": {
+            "message": "Na liście {manufacturer} wybierz {winUsbDevice}. Następnie na liście {model} również wybierz {winUsbDevice}. Następnie kliknij przycisk {next}.",
+            "manufacturer": "Producent",
+            "winUsbDevice": "Urządzenie WinUsb",
+            "model": "Model",
+            "next": "Dalej"
+        },
+        "8": {
+            "message": "Okno dialogowe ostrzegawcze informuje, że sterownik nie jest zalecany. Kliknij {yes}, aby kontynuować mimo to. Sterownik jest kompatybilny.",
+            "yes": "Tak"
+        },
+        "9": {
+            "message": "Instalacja sterownika jest zakończona. Kliknij przycisk {close}.",
+            "close": "Zamknij"
+        }
+    }
+}

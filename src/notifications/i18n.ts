@@ -4,6 +4,7 @@
 // Notification translation keys.
 
 import { I18n, useI18n as useShopifyI18n } from '@shopify/react-i18n';
+import './translations/pl.json';
 
 export function useI18n(): I18n {
     // istanbul ignore next: babel-loader rewrites this line

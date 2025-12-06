@@ -1,0 +1,72 @@
+{
+    "title": "Zainstaluj firmware Pybricks",
+    "selectHubPanel": {
+        "title": "Wybierz typ huba",
+        "message": "Wybierz swój hub.",
+        "notOnListButton": {
+            "label": "Co z innymi hubami?",
+            "info": {
+                "mindstorms": {
+                    "title": "Cegły {legoMindstormsRegisteredTrademark}",
+                    "intro": "{appName} obecnie nie obsługuje poprzednich generacji {legoMindstormsRegisteredTrademark}.",
+                    "help": {
+                        "message": "Ale z Twoją pomocą może! Kliknij przycisk {sponsor} w prawym górnym rogu, aby zobaczyć, jak możesz nas wesprzeć.",
+                        "sponsor": "sponsor"
+                    },
+                    "rcx": "RCX: Może działać w trybie strumieniowym.",
+                    "nxt": "NXT: Przetestowaliśmy to. Może działać!"
+                },
+                "poweredUp": {
+                    "title": "Inne huby",
+                    "intro": "Wsparcie dla tych hubów obecnie nie jest planowane.",
+                    "wedo2": "Smart hub WeDo 2.0",
+                    "duploTrain": "Hub pociągu Duplo.",
+                    "mario": "Mario/Luigi/Peach.",
+                    "technicMove": "Hub Technic Move."
+                }
+            }
+        },
+        "advanced": {
+            "label": "Zaawansowane",
+            "customFirmwareDropzone": {
+                "label": "Przeciągnij tutaj niestandardowy plik firmware .zip lub kliknij, aby przeglądać."
+            }
+        },
+        "customFirmware": {
+            "message": "Wybrano niestandardowy firmware.",
+            "hubType": "Typ huba: {hubTypeName}",
+            "firmwareVersion": "Wersja firmware: {version}",
+            "clearButton": "Wyczyść"
+        }
+    },
+    "licensePanel": {
+        "title": "Zaakceptuj licencje",
+        "licenseText": {
+            "error": "Wystąpił problem podczas pobierania pliku firmware."
+        },
+        "acceptCheckbox": {
+            "label": "Przeczytałem i zgadzam się z warunkami licencji."
+        }
+    },
+    "optionsPanel": {
+        "title": "Skonfiguruj opcje",
+        "hubName": {
+            "label": "Nazwa huba",
+            "labelInfo": "(opcjonalne)",
+            "help": "Wybierz nazwę Bluetooth dla swojego huba. Jeśli masz więcej niż jeden hub, ułatwi to odróżnienie ich podczas połączenia.",
+            "error": "Nazwa jest zbyt długa."
+        }
+    },
+    "bootloaderPanel": {
+        "title": "Zainstaluj"
+    },
+    "backButton": {
+        "label": "Wstecz"
+    },
+    "nextButton": {
+        "label": "Dalej"
+    },
+    "flashFirmwareButton": {
+        "label": "Zainstaluj"
+    }
+}

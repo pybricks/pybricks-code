@@ -1,0 +1,33 @@
+{
+    "header": {
+        "toolbar": {
+            "title": "Operacje na plikach",
+            "exportAll": "Utwórz kopię zapasową wszystkich plików",
+            "import": "Importuj plik",
+            "addNew": "Utwórz nowy plik"
+        }
+    },
+    "tree": {
+        "label": "Pliki",
+        "liveDescriptor": {
+            "intro": {
+                "accessibilityGuide": "Przewodnik dostępności dla drzewa {treeLabel}.",
+                "navigation": "Nawiguj po drzewie klawiszami strzałek. Zacznij wpisywać nazwę pliku, aby go wyszukać. Dostępne są dodatkowe skróty:",
+                "keybindings": {
+                    "primaryAction": "{key}, aby otworzyć plik w edytorze kodu",
+                    "rename": "{key}, aby rozpocząć zmianę nazwy zaznaczonego pliku",
+                    "duplicate": "{key}, aby zduplikować zaznaczony plik",
+                    "export": "{key}, aby wyeksportować zaznaczony plik",
+                    "delete": "{key}, aby usunąć zaznaczony plik"
+                }
+            },
+            "searching": "Wyszukiwanie."
+        }
+    },
+    "treeItem": {
+        "renameTooltip": "Zmień nazwę {fileName}",
+        "duplicateTooltip": "Duplikuj {fileName}",
+        "exportTooltip": "Eksportuj {fileName}",
+        "deleteTooltip": "Usuń {fileName}"
+    }
+}

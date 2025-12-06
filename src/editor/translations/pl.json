@@ -1,0 +1,20 @@
+{
+    "tablist": {
+        "label": "Edytor"
+    },
+    "welcome": "Witaj",
+    "placeholder": "Napisz tutaj swój program...",
+    "check": "Sprawdź składnię",
+    "toggleDocs": "Pokaż/ukryj dokumentację",
+    "copy": "Kopiuj",
+    "paste": "Wklej",
+    "selectAll": "Zaznacz wszystko",
+    "undo": "Cofnij",
+    "redo": "Ponów",
+    "closeFile": { "tooltip": "Zamknij {fileName}" },
+    "contextMenu": { "label": "Menu kontekstowe edytora" },
+    "docs": {
+        "show": "Pokaż dokumentację",
+        "hide": "Ukryj dokumentację"
+    }
+}

@@ -1,0 +1,8 @@
+{
+    "label": "Bluetooth",
+    "tooltip": {
+        "connect": "Połącz przez Bluetooth",
+        "disconnect": "Rozłącz Bluetooth",
+        "usbConnected": "USB jest podłączony, rozłącz aby użyć Bluetooth"
+    }
+}

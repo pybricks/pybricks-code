@@ -1,0 +1,56 @@
+{
+    "title": "Ustawienia i pomoc",
+    "appearance": {
+        "title": "Wygląd",
+        "darkMode": {
+            "label": "Tryb ciemny",
+            "help": "Włącz, aby wybrać tryb ciemny. Wyłącz, aby wybrać tryb jasny."
+        },
+        "zoom": {
+            "help": "Użyj {in} i {out}, aby zmienić powiększenie."
+        }
+    },
+    "firmware": {
+        "title": "Oprogramowanie układowe",
+        "flashPybricksButton": {
+            "label": "Zainstaluj oprogramowanie układowe Pybricks"
+        },
+        "flashLegoButton": {
+            "label": "Przywróć oficjalne oprogramowanie {lego}"
+        }
+    },
+    "help": {
+        "title": "Pomoc",
+        "projects": {
+            "label": "Przykładowe projekty"
+        },
+        "support": {
+            "label": "Wsparcie"
+        },
+        "chat": {
+            "label": "Czat"
+        },
+        "bugs": {
+            "label": "Zgłaszanie błędów"
+        }
+    },
+    "app": {
+        "title": "Aplikacja",
+        "offlineUseHelp": "Gotowe do użycia offline.",
+        "install": {
+            "label": "Zainstaluj jako aplikację"
+        },
+        "checkForUpdate": {
+            "label": "Sprawdź aktualizację"
+        },
+        "restart": {
+            "label": "Uruchom ponownie, aby zainstalować aktualizację"
+        },
+        "about": {
+            "label": "Informacje"
+        },
+        "tour": {
+            "label": "Przewodnik powitalny"
+        }
+    }
+}

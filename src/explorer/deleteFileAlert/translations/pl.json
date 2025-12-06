@@ -1,0 +1,7 @@
+{
+    "message": "Plik '{fileName}' zostanie trwale usunięty. Tej operacji nie można cofnąć.",
+    "action": {
+        "accept": "Usuń",
+        "cancel": "Zachowaj"
+    }
+}

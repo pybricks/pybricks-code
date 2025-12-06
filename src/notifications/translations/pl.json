@@ -1,0 +1,47 @@
+{
+    "app": {
+        "noUpdateFound": "{appName} jest już aktualny."
+    },
+    "ble": {
+        "gattServiceNotFound": "Połączono z hubem, ale nie udało się uzyskać usługi {serviceName}.\nUpewnij się, że używasz najnowszego oprogramowania układowego.\nJeśli problem będzie się powtarzał, spróbuj usunąć urządzenie \"{hubName}\" w ustawieniach Bluetooth systemu, a następnie spróbuj połączyć się ponownie.",
+        "unexpectedError": "Nieoczekiwany błąd podczas próby połączenia: {errorMessage}"
+    },
+    "editor": {
+        "failedToOpenFile": "Nie udało się otworzyć pliku.",
+        "failedToSaveFile": "Nie udało się zapisać programu."
+    },
+    "explorer": {
+        "failedToImportFiles": "Nie udało się zaimportować pliku(ów).",
+        "failedToCreate": "Nie udało się utworzyć pliku.",
+        "failedToDuplicate": "Nie udało się zduplikować pliku.",
+        "failedToExport": "Nie udało się wyeksportować pliku.",
+        "failedToDelete": "Nie udało się usunąć pliku.",
+        "failedToArchive": "Nie udało się zarchiwizować plików.'"
+    },
+    "fileStorage": {
+        "failedToInitialize": "Nie udało się zainicjować pamięci plików. Zmiany nie będą zapisywane automatycznie."
+    },
+    "flashFirmware": {
+        "timedOut": "Hub zbyt długo nie odpowiadał. Uruchom go ponownie i spróbuj ponownie.",
+        "bleError": "Wystąpił problem z Bluetooth.",
+        "disconnected": "Połączenie z hubem zostało przerwane przed zakończeniem instalacji. Uruchom hub ponownie i spróbuj ponownie.",
+        "hubError": "Hub zgłosił błąd.",
+        "unsupportedDevice": "Podłączony hub nie jest obsługiwany.",
+        "deviceMismatch": "Oprogramowanie układowe jest dla innego rodzaju huba niż podłączony.",
+        "failToFetch": "Nie udało się pobrać oprogramowania układowego z serwera: {status}",
+        "badZipFile": "Plik firmware.zip nie zawiera wymaganych plików lub jest nieprawidłowy.",
+        "badMetadata": "Plik firmware.metadata.json zawiera brakujące lub nieprawidłowe wpisy. Popraw go i spróbuj ponownie.",
+        "compileError": "Dołączony plik main.py nie mógł zostać skompilowany. Popraw go i spróbuj ponownie.",
+        "sizeTooBig": "Połączony firmware i main.py są zbyt duże, aby zmieścić się w pamięci flash.",
+        "unexpectedError": "Nieoczekiwany błąd podczas próby instalacji oprogramowania układowego: {errorMessage}"
+    },
+    "mpy": {
+        "error": "{errorMessage}"
+    },
+    "serviceWorker": {
+        "update": {
+            "message": "Dostępna jest nowa wersja {appName}. Kliknij {action}, aby zacząć używać nowej wersji.",
+            "action": "Uruchom ponownie"
+        }
+    }
+}

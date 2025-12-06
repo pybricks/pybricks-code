@@ -1,0 +1,12 @@
+{
+    "title": "Zastąpić istniejący plik?",
+    "message": "Plik o tej samej nazwie co importowany plik '{fileName}' już istnieje.",
+    "option": {
+        "remember": "Zapamiętaj tę odpowiedź przy rozwiązywaniu dodatkowych konfliktów."
+    },
+    "action": {
+        "skip": "Zachowaj istniejący plik i pomiń importowanie tego pliku",
+        "replace": "Zastąp istniejący plik importowanym plikiem",
+        "rename": "Zachowaj istniejący plik i zmień nazwę importowanego pliku"
+    }
+}

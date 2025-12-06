@@ -1,0 +1,11 @@
+{
+    "fileInUse": {
+        "message": "Plik '{fileName}' nie mógł zostać otwarty. Jest już otwarty w innym oknie."
+    },
+    "noFilesToBackup": {
+        "message": "Nie ma plików do backupu. Najpierw utwórz nowy plik klikając ikonę {icon}."
+    },
+    "noPyFiles": {
+        "message": "Nie było plików {py} w pliku {zip}."
+    }
+}
