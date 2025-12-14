@@ -17,6 +17,9 @@
     // Use 'postCreateCommand' to run commands after the container is created.
     "postCreateCommand": "yarn",
 
+    // Use 'runArgs' to specify Docker run options.
+    "runArgs": ["--name", "pybricks-code"],
+
     // Configure tool-specific properties.
     "customizations": {
         "vscode": {
