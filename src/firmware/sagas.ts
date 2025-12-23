@@ -351,32 +351,20 @@ function* loadFirmware(
         'Expected metadata to be v2.x',
     );
 
-    const firmware = new Uint8Array(firmwareBase.length + 4);
-    const firmwareView = new DataView(firmware.buffer);
-
-    firmware.set(firmwareBase);
-
-    // empty string means use default name (don't write over firmware)
-    if (hubName) {
-        firmware.set(encodeHubName(hubName, metadata), metadata['hub-name-offset']);
-    }
-
-    const checksum = (function () {
+    const [checksumFunc, checksumExtraLength] = (() => {
         switch (metadata['checksum-type']) {
             case 'sum':
-                return sumComplement32(
-                    firmwareIterator(firmwareView, metadata['checksum-size']),
-                );
+                return [sumComplement32, 4];
             case 'crc32':
-                return crc32(firmwareIterator(firmwareView, metadata['checksum-size']));
+                return [crc32, 4];
             case 'none':
-                return null;
+                return [null, 0];
             default:
-                return undefined;
+                return [undefined, 0];
         }
     })();
 
-    if (checksum === undefined) {
+    if (checksumFunc === undefined) {
         // FIXME: we should return error/throw instead
         yield* put(
             didFailToFinish(
@@ -391,8 +379,22 @@ function* loadFirmware(
         throw new Error('unreachable');
     }
 
-    if (checksum !== null) {
-        firmwareView.setUint32(firmwareBase.length, checksum, true);
+    const firmware = new Uint8Array(firmwareBase.length + checksumExtraLength);
+    const firmwareView = new DataView(firmware.buffer);
+
+    firmware.set(firmwareBase);
+
+    // empty string means use default name (don't write over firmware)
+    if (hubName) {
+        firmware.set(encodeHubName(hubName, metadata), metadata['hub-name-offset']);
+    }
+
+    if (checksumFunc !== null) {
+        firmwareView.setUint32(
+            firmwareBase.length,
+            checksumFunc(firmwareIterator(firmwareView, metadata['checksum-size'])),
+            true,
+        );
     }
 
     return { firmware, deviceId: metadata['device-id'] };
