@@ -33,6 +33,7 @@
         "badMetadata": "The firmware.metadata.json file contains missing or invalid entries. Fix it then try again.",
         "compileError": "The included main.py file could not be compiled. Fix it then try again.",
         "sizeTooBig": "The combined firmware and main.py are too big to fit in the flash memory.",
+        "alignment": "The firmware's start or end is not aligned to the sector boundary.",
         "unexpectedError": "Unexpected error while trying to install firmware: {errorMessage}"
     },
     "mpy": {

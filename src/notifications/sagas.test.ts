@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021-2023 The Pybricks Authors
+// Copyright (c) 2021-2025 The Pybricks Authors
 
 import type { ToastOptions, Toaster } from '@blueprintjs/core';
 import { FirmwareReaderError, FirmwareReaderErrorCode } from '@pybricks/firmware';
@@ -95,6 +95,7 @@ test.each([
     ),
     didFailToFinish(FailToFinishReasonType.FailedToCompile),
     didFailToFinish(FailToFinishReasonType.FirmwareSize),
+    didFailToFinish(FailToFinishReasonType.FirmwareAlignment),
     didFailToFinish(FailToFinishReasonType.Unknown, new Error('test error')),
     appDidCheckForUpdate(false),
     fileStorageDidFailToInitialize(new Error('test error')),

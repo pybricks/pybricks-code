@@ -1212,6 +1212,20 @@ function* handleFlashEV3(action: ReturnType<typeof firmwareFlashEV3>): Generator
     // FIXME: should be called much earlier.
     yield* put(didStart());
 
+    console.debug(`Firmware size: ${action.firmware.byteLength} bytes`);
+
+    // Apparently, erasing a span of the flash creates some sort of record in
+    // the EV3, and we can only write within a given erase span. Writes that
+    // cross the boundary will hang. To avoid this, we erase the whole firmware
+    // range at once.
+    const sectorSize = 64 * 1024; // flash memory sector size
+    if (action.firmware.byteLength % sectorSize !== 0) {
+        yield* put(didFailToFinish(FailToFinishReasonType.FirmwareAlignment));
+        yield* put(firmwareDidFailToFlashEV3());
+        yield* cleanup();
+        return;
+    }
+
     const maxPayloadSize = 1018; // maximum payload size for EV3 commands
 
     const erasePayload = new DataView(new ArrayBuffer(8));
