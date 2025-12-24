@@ -1138,6 +1138,7 @@ function* handleFlashEV3(action: ReturnType<typeof firmwareFlashEV3>): Generator
     function* sendCommand(
         command: number,
         payload?: Uint8Array,
+        options?: { timeoutms?: number },
     ): SagaGenerator<[DataView | undefined, Error | undefined]> {
         // We need to start listing for reply before sending command in order
         // to avoid race conditions.
@@ -1163,9 +1164,11 @@ function* handleFlashEV3(action: ReturnType<typeof firmwareFlashEV3>): Generator
             return [undefined, sendError];
         }
 
+        const timeoutms = options?.timeoutms ?? 5000;
+
         const { reply, timeout } = yield* race({
             reply: take(replyChannel),
-            timeout: delay(5000),
+            timeout: delay(timeoutms),
         });
 
         replyChannel.close();
@@ -1209,55 +1212,81 @@ function* handleFlashEV3(action: ReturnType<typeof firmwareFlashEV3>): Generator
     // FIXME: should be called much earlier.
     yield* put(didStart());
 
-    const sectorSize = 64 * 1024; // flash memory sector size
     const maxPayloadSize = 1018; // maximum payload size for EV3 commands
 
-    for (let i = 0; i < action.firmware.byteLength; i += sectorSize) {
-        const sectorData = action.firmware.slice(i, i + sectorSize);
-        assert(sectorData.byteLength <= sectorSize, 'sector data too large');
+    const erasePayload = new DataView(new ArrayBuffer(8));
+    erasePayload.setUint32(0, 0, true); // start address
+    erasePayload.setUint32(4, action.firmware.byteLength, true); // size
+    console.debug(`Erasing bytes [0x0, ${hex(action.firmware.byteLength, 0)})`);
 
-        const erasePayload = new DataView(new ArrayBuffer(8));
-        erasePayload.setUint32(0, i, true);
-        erasePayload.setUint32(4, sectorData.byteLength, true);
-        const [, eraseError] = yield* sendCommand(
-            0xf0,
-            new Uint8Array(erasePayload.buffer),
+    yield* put(
+        alertsShowAlert(
+            'firmware',
+            'flashProgress',
+            {
+                action: 'erase',
+                progress: undefined,
+            },
+            firmwareBleProgressToastId,
+            true,
+        ),
+    );
+
+    // Measured erase rate is approximately .25 kB/ms. This was on a powerful
+    // computer so it may be that flashing from something like a raspberry pi
+    // would take longer. We'll set a timeout three times as long as would have
+    // taken at the measured rate.
+    const eraseTimeoutMs = (action.firmware.byteLength / 256) * 1000 * 3;
+    const startTime = Date.now();
+    const [, eraseError] = yield* sendCommand(
+        0xf0,
+        new Uint8Array(erasePayload.buffer),
+        { timeoutms: eraseTimeoutMs },
+    );
+    console.debug(
+        `EV3 erase took ${Date.now() - startTime} ms for ${
+            action.firmware.byteLength
+        } bytes, timeout was ${eraseTimeoutMs} ms`,
+    );
+
+    if (eraseError) {
+        yield* put(
+            alertsShowAlert('alerts', 'unexpectedError', {
+                error: eraseError,
+            }),
+        );
+        // FIXME: should have a better error reason
+        yield* put(didFailToFinish(FailToFinishReasonType.Unknown, eraseError));
+        yield* put(firmwareDidFailToFlashEV3());
+        yield* cleanup();
+        return;
+    }
+
+    // If we don't write an exact multiple of the sector size, the flash process
+    // will hang on the last write we send.
+    const firmware = action.firmware;
+    for (let i = 0; i < firmware.byteLength; i += maxPayloadSize) {
+        const payload = firmware.slice(i, i + maxPayloadSize);
+        console.debug(
+            `Programming bytes [${hex(i, 0)}, ${hex(i + maxPayloadSize, 0)})`,
         );
 
-        if (eraseError) {
+        const [, sendError] = yield* sendCommand(0xf2, new Uint8Array(payload));
+        if (sendError) {
             yield* put(
                 alertsShowAlert('alerts', 'unexpectedError', {
-                    error: eraseError,
+                    error: sendError,
                 }),
             );
             // FIXME: should have a better error reason
-            yield* put(didFailToFinish(FailToFinishReasonType.Unknown, eraseError));
+            yield* put(didFailToFinish(FailToFinishReasonType.Unknown, sendError));
             yield* put(firmwareDidFailToFlashEV3());
             yield* cleanup();
             return;
         }
 
-        for (let j = 0; j < sectorData.byteLength; j += maxPayloadSize) {
-            const payload = sectorData.slice(j, j + maxPayloadSize);
-
-            const [, sendError] = yield* sendCommand(0xf2, new Uint8Array(payload));
-            if (sendError) {
-                yield* put(
-                    alertsShowAlert('alerts', 'unexpectedError', {
-                        error: sendError,
-                    }),
-                );
-                // FIXME: should have a better error reason
-                yield* put(didFailToFinish(FailToFinishReasonType.Unknown, sendError));
-                yield* put(firmwareDidFailToFlashEV3());
-                yield* cleanup();
-                return;
-            }
-        }
-
-        yield* put(
-            didProgress((i + sectorData.byteLength) / action.firmware.byteLength),
-        );
+        const progress = (i + payload.byteLength) / firmware.byteLength;
+        yield* put(didProgress(progress));
 
         yield* put(
             alertsShowAlert(
@@ -1265,7 +1294,7 @@ function* handleFlashEV3(action: ReturnType<typeof firmwareFlashEV3>): Generator
                 'flashProgress',
                 {
                     action: 'flash',
-                    progress: (i + sectorData.byteLength) / action.firmware.byteLength,
+                    progress: progress,
                 },
                 firmwareBleProgressToastId,
                 true,
