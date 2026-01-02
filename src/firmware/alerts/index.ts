@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022-2025 The Pybricks Authors
+// Copyright (c) 2022-2026 The Pybricks Authors
 
 import { dfuError } from './DfuError';
 import { flashProgress } from './FlashProgress';
@@ -8,6 +8,7 @@ import { noDfuInterface } from './NoDfuInterface';
 import { noWebHid } from './NoWebHid';
 import { noWebUsb } from './NoWebUsb';
 import { releaseButton } from './ReleaseButton';
+import { unsupportedDfuHub } from './UnsupportedDfuHub';
 
 export default {
     dfuError,
@@ -17,4 +18,5 @@ export default {
     noWebHid,
     noWebUsb,
     releaseButton,
+    unsupportedDfuHub,
 };

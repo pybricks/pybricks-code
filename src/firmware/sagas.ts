@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2025 The Pybricks Authors
+// Copyright (c) 2020-2026 The Pybricks Authors
 
 import {
     FirmwareReader,
@@ -751,6 +751,15 @@ function* handleFlashUsbDfu(action: ReturnType<typeof firmwareFlashUsbDfu>): Gen
                 yield* put(firmwareDfuWindowsDriverInstallDialogDialogShow());
             }
 
+            return;
+        }
+
+        if (
+            device.productId === LegoUsbProductId.SpikePrimeBootloader &&
+            device.deviceVersionMajor !== 1
+        ) {
+            yield* put(alertsShowAlert('firmware', 'unsupportedDfuHub'));
+            yield* put(firmwareDidFailToFlashUsbDfu());
             return;
         }
 

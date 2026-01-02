@@ -22,6 +22,9 @@
         "installUsbDriverButton": "Install USB Driver",
         "configureUdevRulesButton": "Configure udev rules"
     },
+    "unsupportedDfuHub": {
+        "message": "This hub has different internal electronics and requires a different firmware. Pybricks does not support this yet. We are working on it!"
+    },
     "noDfuInterface": {
         "message": "This is very unusual. The USB device did not contain the expected interface."
     },
