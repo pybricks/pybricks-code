@@ -3,9 +3,6 @@
 
 import { Reducer, combineReducers } from 'redux';
 import {
-    didFailToFinish,
-    didFinish,
-    didStart,
     firmwareDidFailToFlashUsbDfu,
     firmwareDidFailToRestoreOfficialDfu,
     firmwareDidFailToRestoreOfficialEV3,
@@ -19,18 +16,6 @@ import {
 import dfuWindowsDriverInstallDialog from './dfuWindowsDriverInstallDialog/reducers';
 import installPybricksDialog from './installPybricksDialog/reducers';
 import restoreOfficialDialog from './restoreOfficialDialog/reducers';
-
-const flashing: Reducer<boolean> = (state = false, action) => {
-    if (didStart.matches(action)) {
-        return true;
-    }
-
-    if (didFinish.matches(action) || didFailToFinish.matches(action)) {
-        return false;
-    }
-
-    return state;
-};
 
 const isFirmwareFlashUsbDfuInProgress: Reducer<boolean> = (state = false, action) => {
     if (firmwareFlashUsbDfu.matches(action)) {
@@ -86,7 +71,6 @@ export default combineReducers({
     dfuWindowsDriverInstallDialog,
     installPybricksDialog,
     restoreOfficialDialog,
-    flashing,
     isFirmwareFlashUsbDfuInProgress,
     isFirmwareRestoreOfficialDfuInProgress,
     isFirmwareFlashEV3InProgress,
