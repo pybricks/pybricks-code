@@ -1211,28 +1211,6 @@ function* handleFlashEV3(action: ReturnType<typeof firmwareFlashEV3>): Generator
         return [new DataView(reply.payload), undefined];
     }
 
-    const [version, versionError] = yield* sendCommand(0xf6); // get version
-
-    if (versionError) {
-        yield* put(
-            alertsShowAlert('alerts', 'unexpectedError', {
-                error: ensureError(versionError),
-            }),
-        );
-        yield* put(firmwareDidFailToFlashEV3());
-        yield* cleanup();
-        return;
-    }
-
-    defined(version);
-
-    console.debug(
-        `EV3 bootloader version: ${version.getUint32(
-            0,
-            true,
-        )}, HW version: ${version.getUint32(4, true)}`,
-    );
-
     // FIXME: should be called much earlier.
     yield* put(didStart());
 
