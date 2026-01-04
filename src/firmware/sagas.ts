@@ -1254,6 +1254,22 @@ function* handleFlashEV3(action: ReturnType<typeof firmwareFlashEV3>): Generator
             return;
         }
 
+        // Erasing takes about the same time as writing, so this will make the
+        // progress bar smoother.
+        yield* put(
+            alertsShowAlert(
+                'firmware',
+                'flashProgress',
+                {
+                    action: 'flash',
+                    progress:
+                        (i + sectorData.byteLength / 2) / action.firmware.byteLength,
+                },
+                firmwareEv3ProgressToastId,
+                true,
+            ),
+        );
+
         for (let j = 0; j < sectorData.byteLength; j += maxPayloadSize) {
             const payload = sectorData.slice(j, j + maxPayloadSize);
 
