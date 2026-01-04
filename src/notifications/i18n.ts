@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2022 The Pybricks Authors
+// Copyright (c) 2020-2025 The Pybricks Authors
 //
 // Notification translation keys.
 
@@ -35,6 +35,7 @@ export enum I18nId {
     FlashFirmwareBadMetadata = 'flashFirmware.badMetadata',
     FlashFirmwareCompileError = 'flashFirmware.compileError',
     FlashFirmwareSizeTooBig = 'flashFirmware.sizeTooBig',
+    FlashFirmwareAlignment = 'flashFirmware.alignment',
     FlashFirmwareUnexpectedError = 'flashFirmware.unexpectedError',
     ServiceWorkerUpdateMessage = 'serviceWorker.update.message',
     ServiceWorkerUpdateAction = 'serviceWorker.update.action',

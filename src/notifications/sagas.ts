@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2023 The Pybricks Authors
+// Copyright (c) 2020-2026 The Pybricks Authors
 
 // Saga for managing notifications (toasts)
 
@@ -227,6 +227,9 @@ function* showFlashFirmwareError(
             break;
         case FailToFinishReasonType.FirmwareSize:
             yield* showSingleton(Level.Error, I18nId.FlashFirmwareSizeTooBig);
+            break;
+        case FailToFinishReasonType.FirmwareAlignment:
+            yield* showSingleton(Level.Error, I18nId.FlashFirmwareAlignment);
             break;
         case FailToFinishReasonType.Unknown:
             yield* showUnexpectedError(

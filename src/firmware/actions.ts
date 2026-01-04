@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2025 The Pybricks Authors
+// Copyright (c) 2020-2026 The Pybricks Authors
 
 import { FirmwareReaderError, HubType } from '@pybricks/firmware';
 import { createAction } from '../actions';
@@ -47,6 +47,8 @@ export enum FailToFinishReasonType {
     FailedToCompile = 'flashFirmware.failToFinish.reason.failedToCompile',
     /** The combined firmware-base.bin and main.mpy are too big. */
     FirmwareSize = 'flashFirmware.failToFinish.reason.firmwareSize',
+    /** The firmware's start or end is not aligned to the sector boundary. */
+    FirmwareAlignment = 'flashFirmware.failToFinish.reason.firmwareAlignment',
     /** An unexpected error occurred. */
     Unknown = 'flashFirmware.failToFinish.reason.unknown',
 }
@@ -94,6 +96,9 @@ export type FailToFinishReasonBadMetadata =
 export type FailToFinishReasonFirmwareSize =
     Reason<FailToFinishReasonType.FirmwareSize>;
 
+export type FailToFinishReasonFirmwareAlignment =
+    Reason<FailToFinishReasonType.FirmwareAlignment>;
+
 export type FailToFinishReasonFailedToCompile =
     Reason<FailToFinishReasonType.FailedToCompile>;
 
@@ -113,6 +118,7 @@ export type FailToFinishReason =
     | FailToFinishReasonZipError
     | FailToFinishReasonBadMetadata
     | FailToFinishReasonFirmwareSize
+    | FailToFinishReasonFirmwareAlignment
     | FailToFinishReasonFailedToCompile
     | FailToFinishReasonUnknown;
 
