@@ -4,6 +4,7 @@
 import { FirmwareReaderError, HubType } from '@pybricks/firmware';
 import { createAction } from '../actions';
 import { Hub } from '../components/hubPicker';
+import { isError } from '../utils';
 
 export enum MetadataProblem {
     Missing = 'metadata.missing',
@@ -143,16 +144,6 @@ export const didStart = createAction(() => ({
 export const didFinish = createAction(() => ({
     type: 'flashFirmware.action.didFinish',
 }));
-
-function isError(err: unknown): err is Error {
-    const maybeError = err as Error;
-
-    return (
-        maybeError !== undefined &&
-        typeof maybeError.name === 'string' &&
-        typeof maybeError.message === 'string'
-    );
-}
 
 // FIXME: get rid of this monstrosity
 
