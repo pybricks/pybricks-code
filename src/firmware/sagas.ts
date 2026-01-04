@@ -1230,11 +1230,6 @@ function* handleFlashEV3(action: ReturnType<typeof firmwareFlashEV3>): Generator
         );
 
         if (eraseError) {
-            yield* put(
-                alertsShowAlert('alerts', 'unexpectedError', {
-                    error: eraseError,
-                }),
-            );
             yield* put(alertsHideAlert(firmwareEv3ProgressToastId));
             // FIXME: should have a better error reason
             yield* put(didFailToFinish(FailToFinishReasonType.Unknown, eraseError));
@@ -1248,11 +1243,6 @@ function* handleFlashEV3(action: ReturnType<typeof firmwareFlashEV3>): Generator
 
             const [, sendError] = yield* sendCommand(0xf2, new Uint8Array(payload));
             if (sendError) {
-                yield* put(
-                    alertsShowAlert('alerts', 'unexpectedError', {
-                        error: sendError,
-                    }),
-                );
                 yield* put(alertsHideAlert(firmwareEv3ProgressToastId));
                 // FIXME: should have a better error reason
                 yield* put(didFailToFinish(FailToFinishReasonType.Unknown, sendError));
