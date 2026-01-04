@@ -199,6 +199,25 @@ function* firmwareIterator(data: DataView, maxSize: number): Generator<number> {
     }
 }
 
+function computeEv3ExtraLength(firmwareLength: number): number {
+    // HACK: If the EV3 firmware size is not a multiple of 2 * 64KiB, then we
+    // need to add some padding to avoid possibly triggering a bug where small
+    // download payloads can cause bad replies. This is done by ensuring that
+    // the last chunk is 1018 bytes.
+
+    const maxChunkSize = 1018;
+    const eraseSize = 2 * 64 * 1024;
+    const remainder = firmwareLength % eraseSize;
+
+    if (remainder === 0) {
+        // Adding padding would cause an entire extra erase to be needed. Don't
+        // do that and rely on a a different workaround (always erasing two sectors).
+        return 0;
+    }
+
+    return maxChunkSize - (remainder % maxChunkSize);
+}
+
 /**
  * Loads Pybricks firmware from a .zip file.
  *
@@ -376,7 +395,14 @@ function* loadFirmware(
         throw new Error('unreachable');
     }
 
-    const firmware = new Uint8Array(firmwareBase.length + checksumExtraLength);
+    const ev3ExtraLength =
+        metadata['device-id'] === HubType.EV3
+            ? computeEv3ExtraLength(firmwareBase.length)
+            : 0;
+
+    const firmware = new Uint8Array(
+        firmwareBase.length + checksumExtraLength + ev3ExtraLength,
+    );
     const firmwareView = new DataView(firmware.buffer);
 
     firmware.set(firmwareBase);
@@ -1107,16 +1133,33 @@ function* handleFlashEV3(action: ReturnType<typeof firmwareFlashEV3>): Generator
                 continue; // ignore empty reports
             }
 
-            const length = event.data.getInt16(0, true);
+            let length = event.data.getInt16(0, true);
             const replyNumber = event.data.getInt16(2, true);
-            const messageType = event.data.getUint8(4);
+            let messageType = event.data.getUint8(4);
             const replyCommand = event.data.getUint8(5);
-            const status = event.data.getUint8(6);
-            const payload = event.data.buffer.slice(7, 7 + length + 2);
+            let status = event.data.getUint8(6);
+            let payload = event.data.buffer.slice(7, 7 + length + 2);
 
-            console.debug(
-                `EV3 reply: length=${length}, replyNumber=${replyNumber}, messageType=${messageType}, replyCommand=${replyCommand}, status=${status}, payload=${payload}`,
-            );
+            if (messageType === 0x01) {
+                // HACK: This works around a strange bug that can be triggered
+                // e.g. by USB 3.0 on Windows. Sometimes the EV3 bootloader will
+                // send the request back instead of the reply. In this case,
+                // fake the reply to avoid protocol errors. This seems to work
+                // as long as we aren't sending commands that have a reply
+                // with a payload (like reading version or checksum)
+
+                console.warn(
+                    `Bad EV3 reply: length=${length}, replyNumber=${replyNumber}, messageType=${messageType}, replyCommand=${replyCommand}, status=${status}`,
+                );
+                length = 5;
+                messageType = 0x03;
+                status = 0x00;
+                payload = new ArrayBuffer(0);
+
+                console.info(
+                    `Fixed EV3 reply: length=${length}, replyNumber=${replyNumber}, messageType=${messageType}, replyCommand=${replyCommand}, status=${status}`,
+                );
+            }
 
             yield* put(
                 firmwareDidReceiveEV3Reply(
@@ -1208,9 +1251,17 @@ function* handleFlashEV3(action: ReturnType<typeof firmwareFlashEV3>): Generator
     const sectorSize = 64 * 1024; // flash memory sector size
     const maxPayloadSize = 1018; // maximum payload size for EV3 commands
 
-    for (let i = 0; i < action.firmware.byteLength; i += sectorSize) {
-        const sectorData = action.firmware.slice(i, i + sectorSize);
-        assert(sectorData.byteLength <= sectorSize, 'sector data too large');
+    // HACK: Ideally, we would erase one sector at a time to minimize required
+    // alignment and make the progress indicator smoother. However, there is a
+    // bug triggered, e.g. by USB 3.0 on Windows, that causes bad replies from
+    // certain commands. This bug happens sometimes when the payload size is
+    // 384 bytes (triggered by 65536 % 1018 = 384). To work around this, we
+    // always erase two sectors to make the last chunk be twice as big
+    // (131072 % 1018 = 768).
+    const eraseSize = sectorSize * 2; // flash memory sector size
+
+    for (let i = 0; i < action.firmware.byteLength; i += eraseSize) {
+        const sectorData = action.firmware.slice(i, i + eraseSize);
 
         const erasePayload = new DataView(new ArrayBuffer(8));
         erasePayload.setUint32(0, i, true);
@@ -1228,6 +1279,22 @@ function* handleFlashEV3(action: ReturnType<typeof firmwareFlashEV3>): Generator
             yield* cleanup();
             return;
         }
+
+        // Erasing takes about the same time as writing, so this will make the
+        // progress bar smoother.
+        yield* put(
+            alertsShowAlert(
+                'firmware',
+                'flashProgress',
+                {
+                    action: 'flash',
+                    progress:
+                        (i + sectorData.byteLength / 2) / action.firmware.byteLength,
+                },
+                firmwareEv3ProgressToastId,
+                true,
+            ),
+        );
 
         for (let j = 0; j < sectorData.byteLength; j += maxPayloadSize) {
             const payload = sectorData.slice(j, j + maxPayloadSize);
