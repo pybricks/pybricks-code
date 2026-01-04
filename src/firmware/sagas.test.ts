@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021-2024 The Pybricks Authors
+// Copyright (c) 2021-2026 The Pybricks Authors
 
 import {
     FirmwareMetadata,
@@ -43,7 +43,6 @@ import {
     MetadataProblem,
     didFailToFinish,
     didFinish,
-    didProgress,
     didStart,
     flashFirmware as flashFirmwareAction,
 } from './actions';
@@ -176,9 +175,6 @@ describe('flashFirmware', () => {
                 saga.put(didRequest(id));
 
                 action = await saga.take();
-                expect(action).toEqual(didProgress(offset / totalFirmwareSize));
-
-                action = await saga.take();
                 expect(action).toEqual(
                     alertsShowAlert(
                         'firmware',
@@ -212,9 +208,6 @@ describe('flashFirmware', () => {
             // hub indicates success
 
             saga.put(programResponse(0x33, totalFirmwareSize));
-
-            action = await saga.take();
-            expect(action).toEqual(didProgress(1));
 
             action = await saga.take();
             expect(action).toEqual(
@@ -342,9 +335,6 @@ describe('flashFirmware', () => {
                 saga.put(didRequest(id));
 
                 action = await saga.take();
-                expect(action).toEqual(didProgress(offset / totalFirmwareSize));
-
-                action = await saga.take();
                 expect(action).toEqual(
                     alertsShowAlert(
                         'firmware',
@@ -378,9 +368,6 @@ describe('flashFirmware', () => {
             // hub indicates success
 
             saga.put(programResponse(0xe0, totalFirmwareSize));
-
-            action = await saga.take();
-            expect(action).toEqual(didProgress(1));
 
             action = await saga.take();
             expect(action).toEqual(
@@ -1307,9 +1294,6 @@ describe('flashFirmware', () => {
                 saga.put(didRequest(id));
 
                 action = await saga.take();
-                expect(action).toEqual(didProgress(offset / totalFirmwareSize));
-
-                action = await saga.take();
                 expect(action).toEqual(
                     alertsShowAlert(
                         'firmware',
@@ -1481,9 +1465,6 @@ describe('flashFirmware', () => {
                 ).toBe(Math.min(14, totalFirmwareSize - offset));
 
                 saga.put(didRequest(id));
-
-                action = await saga.take();
-                expect(action).toEqual(didProgress(offset / totalFirmwareSize));
 
                 action = await saga.take();
                 expect(action).toEqual(
@@ -1665,9 +1646,6 @@ describe('flashFirmware', () => {
                 saga.put(didRequest(id));
 
                 action = await saga.take();
-                expect(action).toEqual(didProgress(offset / totalFirmwareSize));
-
-                action = await saga.take();
                 expect(action).toEqual(
                     alertsShowAlert(
                         'firmware',
@@ -1701,9 +1679,6 @@ describe('flashFirmware', () => {
             // hub indicates success
 
             saga.put(programResponse(0xf3, totalFirmwareSize));
-
-            action = await saga.take();
-            expect(action).toEqual(didProgress(1));
 
             action = await saga.take();
             expect(action).toEqual(
@@ -2231,9 +2206,6 @@ describe('flashFirmware', () => {
             saga.put(didRequest(id));
 
             action = await saga.take();
-            expect(action).toEqual(didProgress(offset / totalFirmwareSize));
-
-            action = await saga.take();
             expect(action).toEqual(
                 alertsShowAlert(
                     'firmware',
@@ -2266,9 +2238,6 @@ describe('flashFirmware', () => {
         // hub indicates success
 
         saga.put(programResponse(0x27, totalFirmwareSize));
-
-        action = await saga.take();
-        expect(action).toEqual(didProgress(1));
 
         action = await saga.take();
         expect(action).toEqual(

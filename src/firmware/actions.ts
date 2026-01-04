@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2025 The Pybricks Authors
+// Copyright (c) 2020-2026 The Pybricks Authors
 
 import { FirmwareReaderError, HubType } from '@pybricks/firmware';
 import { createAction } from '../actions';
@@ -138,15 +138,6 @@ export const flashFirmware = createAction(
 export const didStart = createAction(() => ({
     type: 'flashFirmware.action.didStart',
 }));
-
-/**
- * Action that indicates current firmware flashing progress.
- * @param value The current progress (0 to 1).
- */
-export const didProgress = createAction((value: number) => {
-    // assert(value >= 0 && value <= 1, 'value out of range');
-    return { type: 'flashFirmware.action.didProgress', value };
-});
 
 /** Action that indicates that flashing firmware completed successfully. */
 export const didFinish = createAction(() => ({

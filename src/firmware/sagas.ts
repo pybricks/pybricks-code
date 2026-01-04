@@ -75,7 +75,6 @@ import {
     MetadataProblem,
     didFailToFinish,
     didFinish,
-    didProgress,
     didStart,
     firmwareDidFailToFlashEV3,
     firmwareDidFailToFlashUsbDfu,
@@ -531,8 +530,6 @@ function* handleFlashFirmware(action: ReturnType<typeof flashFirmware>): Generat
             );
             yield* waitForDidRequest(programAction.id);
 
-            yield* put(didProgress(offset / firmware.length));
-
             yield* put(
                 alertsShowAlert(
                     'firmware',
@@ -616,8 +613,6 @@ function* handleFlashFirmware(action: ReturnType<typeof flashFirmware>): Generat
             );
             yield* disconnectAndCancel();
         }
-
-        yield* put(didProgress(1));
 
         yield* put(
             alertsShowAlert(
@@ -1285,10 +1280,6 @@ function* handleFlashEV3(action: ReturnType<typeof firmwareFlashEV3>): Generator
                 return;
             }
         }
-
-        yield* put(
-            didProgress((i + sectorData.byteLength) / action.firmware.byteLength),
-        );
 
         yield* put(
             alertsShowAlert(
