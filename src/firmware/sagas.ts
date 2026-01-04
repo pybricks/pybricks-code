@@ -1037,6 +1037,7 @@ function* handleRestoreOfficialDfu(
     }
 }
 
+const firmwareEv3ProgressToastId = 'firmware.ev3.progress';
 const getNextEV3MessageId = createCountFunc();
 
 function* handleFlashEV3(action: ReturnType<typeof firmwareFlashEV3>): Generator {
@@ -1256,6 +1257,7 @@ function* handleFlashEV3(action: ReturnType<typeof firmwareFlashEV3>): Generator
                     error: eraseError,
                 }),
             );
+            yield* put(alertsHideAlert(firmwareEv3ProgressToastId));
             // FIXME: should have a better error reason
             yield* put(didFailToFinish(FailToFinishReasonType.Unknown, eraseError));
             yield* put(firmwareDidFailToFlashEV3());
@@ -1273,6 +1275,7 @@ function* handleFlashEV3(action: ReturnType<typeof firmwareFlashEV3>): Generator
                         error: sendError,
                     }),
                 );
+                yield* put(alertsHideAlert(firmwareEv3ProgressToastId));
                 // FIXME: should have a better error reason
                 yield* put(didFailToFinish(FailToFinishReasonType.Unknown, sendError));
                 yield* put(firmwareDidFailToFlashEV3());
@@ -1289,7 +1292,7 @@ function* handleFlashEV3(action: ReturnType<typeof firmwareFlashEV3>): Generator
                     action: 'flash',
                     progress: (i + sectorData.byteLength) / action.firmware.byteLength,
                 },
-                firmwareBleProgressToastId,
+                firmwareEv3ProgressToastId,
                 true,
             ),
         );
@@ -1303,7 +1306,7 @@ function* handleFlashEV3(action: ReturnType<typeof firmwareFlashEV3>): Generator
                 action: 'flash',
                 progress: 1,
             },
-            firmwareBleProgressToastId,
+            firmwareEv3ProgressToastId,
             true,
         ),
     );
