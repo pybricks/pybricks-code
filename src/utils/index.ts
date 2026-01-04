@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2022 The Pybricks Authors
+// Copyright (c) 2020-2026 The Pybricks Authors
 
 /**
  * Asserts that an assumption is true. This is used to detect programmer errors
@@ -43,7 +43,7 @@ export function hex(n: number, pad: number): string {
     return `0x${n.toString(16).padStart(pad, '0')}`;
 }
 
-function isError(err: unknown): err is Error {
+export function isError(err: unknown): err is Error {
     const maybeError = err as Error;
 
     return (
