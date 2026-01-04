@@ -42,8 +42,6 @@ import {
     HubError,
     MetadataProblem,
     didFailToFinish,
-    didFinish,
-    didStart,
     flashFirmware as flashFirmwareAction,
 } from './actions';
 import flashFirmware from './sagas';
@@ -123,12 +121,6 @@ describe('flashFirmware', () => {
             const mpySize = 40 - 8;
             const mpyBinaryData = new Uint8Array(mpySize);
             saga.put(didCompile(mpyBinaryData));
-
-            // then start flashing the firmware
-
-            // should get didStart action just before starting to erase
-            action = await saga.take();
-            expect(action).toEqual(didStart());
 
             // erase first
 
@@ -232,9 +224,6 @@ describe('flashFirmware', () => {
 
             // then we are done
 
-            action = await saga.take();
-            expect(action).toEqual(didFinish());
-
             await saga.end();
         });
 
@@ -283,12 +272,6 @@ describe('flashFirmware', () => {
 
             saga.put(didRequest(0));
             saga.put(infoResponse(0x01000000, 0x08005000, 0x081f800, HubType.MoveHub));
-
-            // then start flashing the firmware
-
-            // should get didStart action just before starting to erase
-            action = await saga.take();
-            expect(action).toEqual(didStart());
 
             // erase first
 
@@ -391,9 +374,6 @@ describe('flashFirmware', () => {
             saga.put(didRequest(id));
 
             // then we are done
-
-            action = await saga.take();
-            expect(action).toEqual(didFinish());
 
             await saga.end();
         });
@@ -1008,12 +988,6 @@ describe('flashFirmware', () => {
             const mpyBinaryData = new Uint8Array(mpySize);
             saga.put(didCompile(mpyBinaryData));
 
-            // then start flashing the firmware
-
-            // should get didStart action just before starting to erase
-            action = await saga.take();
-            expect(action).toEqual(didStart());
-
             // erase first
 
             action = await saga.take();
@@ -1120,12 +1094,6 @@ describe('flashFirmware', () => {
             const mpySize = 20;
             const mpyBinaryData = new Uint8Array(mpySize);
             saga.put(didCompile(mpyBinaryData));
-
-            // then start flashing the firmware
-
-            // should get didStart action just before starting to erase
-            action = await saga.take();
-            expect(action).toEqual(didStart());
 
             // erase first
 
@@ -1242,12 +1210,6 @@ describe('flashFirmware', () => {
             const mpySize = 20;
             const mpyBinaryData = new Uint8Array(mpySize);
             saga.put(didCompile(mpyBinaryData));
-
-            // then start flashing the firmware
-
-            // should get didStart action just before starting to erase
-            action = await saga.take();
-            expect(action).toEqual(didStart());
 
             // erase first
 
@@ -1415,12 +1377,6 @@ describe('flashFirmware', () => {
             const mpySize = 20;
             const mpyBinaryData = new Uint8Array(mpySize);
             saga.put(didCompile(mpyBinaryData));
-
-            // then start flashing the firmware
-
-            // should get didStart action just before starting to erase
-            action = await saga.take();
-            expect(action).toEqual(didStart());
 
             // erase first
 
@@ -1594,12 +1550,6 @@ describe('flashFirmware', () => {
             saga.put(didRequest(0));
             saga.put(infoResponse(0x01000000, 0x08005000, 0x081f800, HubType.MoveHub));
 
-            // then start flashing the firmware
-
-            // should get didStart action just before starting to erase
-            action = await saga.take();
-            expect(action).toEqual(didStart());
-
             // erase first
 
             action = await saga.take();
@@ -1702,9 +1652,6 @@ describe('flashFirmware', () => {
             saga.put(didRequest(id));
 
             // then we are done
-
-            action = await saga.take();
-            expect(action).toEqual(didFinish());
 
             await saga.end();
         });
@@ -2156,12 +2103,6 @@ describe('flashFirmware', () => {
         const mpyBinaryData = new Uint8Array(mpySize);
         saga.put(didCompile(mpyBinaryData));
 
-        // then start flashing the firmware
-
-        // should get didStart action just before starting to erase
-        action = await saga.take();
-        expect(action).toEqual(didStart());
-
         // erase first
 
         action = await saga.take();
@@ -2261,9 +2202,6 @@ describe('flashFirmware', () => {
         saga.put(didRequest(id));
 
         // then we are done
-
-        action = await saga.take();
-        expect(action).toEqual(didFinish());
 
         await saga.end();
     });

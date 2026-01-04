@@ -74,8 +74,6 @@ import {
     HubError,
     MetadataProblem,
     didFailToFinish,
-    didFinish,
-    didStart,
     firmwareDidFailToFlashEV3,
     firmwareDidFailToFlashUsbDfu,
     firmwareDidFailToRestoreOfficialDfu,
@@ -465,8 +463,6 @@ function* handleFlashFirmware(action: ReturnType<typeof flashFirmware>): Generat
             }
         }
 
-        yield* put(didStart());
-
         yield* put(
             alertsShowAlert(
                 'firmware',
@@ -630,8 +626,6 @@ function* handleFlashFirmware(action: ReturnType<typeof flashFirmware>): Generat
         // this will cause the remote device to disconnect and reboot
         const rebootAction = yield* put(rebootRequest(nextMessageId()));
         yield* waitForDidRequest(rebootAction.id);
-
-        yield* put(didFinish());
     } catch (err) {
         yield* put(didFailToFinish(FailToFinishReasonType.Unknown, ensureError(err)));
         yield* disconnectAndCancel();
@@ -1211,9 +1205,6 @@ function* handleFlashEV3(action: ReturnType<typeof firmwareFlashEV3>): Generator
         return [new DataView(reply.payload), undefined];
     }
 
-    // FIXME: should be called much earlier.
-    yield* put(didStart());
-
     const sectorSize = 64 * 1024; // flash memory sector size
     const maxPayloadSize = 1018; // maximum payload size for EV3 commands
 
@@ -1287,8 +1278,6 @@ function* handleFlashEV3(action: ReturnType<typeof firmwareFlashEV3>): Generator
         yield* cleanup();
         return;
     }
-
-    yield* put(didFinish());
 
     yield* cleanup();
 
