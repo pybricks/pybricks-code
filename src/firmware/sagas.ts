@@ -75,7 +75,6 @@ import {
     MetadataProblem,
     didFailToFinish,
     didFinish,
-    didProgress,
     didStart,
     firmwareDidFailToFlashEV3,
     firmwareDidFailToFlashUsbDfu,
@@ -531,8 +530,6 @@ function* handleFlashFirmware(action: ReturnType<typeof flashFirmware>): Generat
             );
             yield* waitForDidRequest(programAction.id);
 
-            yield* put(didProgress(offset / firmware.length));
-
             yield* put(
                 alertsShowAlert(
                     'firmware',
@@ -616,8 +613,6 @@ function* handleFlashFirmware(action: ReturnType<typeof flashFirmware>): Generat
             );
             yield* disconnectAndCancel();
         }
-
-        yield* put(didProgress(1));
 
         yield* put(
             alertsShowAlert(
@@ -751,6 +746,15 @@ function* handleFlashUsbDfu(action: ReturnType<typeof firmwareFlashUsbDfu>): Gen
                 yield* put(firmwareDfuWindowsDriverInstallDialogDialogShow());
             }
 
+            return;
+        }
+
+        if (
+            device.productId === LegoUsbProductId.SpikePrimeBootloader &&
+            device.deviceVersionMajor !== 1
+        ) {
+            yield* put(alertsShowAlert('firmware', 'unsupportedDfuHub'));
+            yield* put(firmwareDidFailToFlashUsbDfu());
             return;
         }
 
@@ -1033,6 +1037,7 @@ function* handleRestoreOfficialDfu(
     }
 }
 
+const firmwareEv3ProgressToastId = 'firmware.ev3.progress';
 const getNextEV3MessageId = createCountFunc();
 
 function* handleFlashEV3(action: ReturnType<typeof firmwareFlashEV3>): Generator {
@@ -1230,6 +1235,7 @@ function* handleFlashEV3(action: ReturnType<typeof firmwareFlashEV3>): Generator
                     error: eraseError,
                 }),
             );
+            yield* put(alertsHideAlert(firmwareEv3ProgressToastId));
             // FIXME: should have a better error reason
             yield* put(didFailToFinish(FailToFinishReasonType.Unknown, eraseError));
             yield* put(firmwareDidFailToFlashEV3());
@@ -1247,6 +1253,7 @@ function* handleFlashEV3(action: ReturnType<typeof firmwareFlashEV3>): Generator
                         error: sendError,
                     }),
                 );
+                yield* put(alertsHideAlert(firmwareEv3ProgressToastId));
                 // FIXME: should have a better error reason
                 yield* put(didFailToFinish(FailToFinishReasonType.Unknown, sendError));
                 yield* put(firmwareDidFailToFlashEV3());
@@ -1256,10 +1263,6 @@ function* handleFlashEV3(action: ReturnType<typeof firmwareFlashEV3>): Generator
         }
 
         yield* put(
-            didProgress((i + sectorData.byteLength) / action.firmware.byteLength),
-        );
-
-        yield* put(
             alertsShowAlert(
                 'firmware',
                 'flashProgress',
@@ -1267,7 +1270,7 @@ function* handleFlashEV3(action: ReturnType<typeof firmwareFlashEV3>): Generator
                     action: 'flash',
                     progress: (i + sectorData.byteLength) / action.firmware.byteLength,
                 },
-                firmwareBleProgressToastId,
+                firmwareEv3ProgressToastId,
                 true,
             ),
         );
@@ -1281,7 +1284,7 @@ function* handleFlashEV3(action: ReturnType<typeof firmwareFlashEV3>): Generator
                 action: 'flash',
                 progress: 1,
             },
-            firmwareBleProgressToastId,
+            firmwareEv3ProgressToastId,
             true,
         ),
     );

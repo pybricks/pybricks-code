@@ -1,11 +1,10 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021-2025 The Pybricks Authors
+// Copyright (c) 2021-2026 The Pybricks Authors
 
 import { Reducer, combineReducers } from 'redux';
 import {
     didFailToFinish,
     didFinish,
-    didProgress,
     didStart,
     firmwareDidFailToFlashUsbDfu,
     firmwareDidFailToRestoreOfficialDfu,
@@ -28,18 +27,6 @@ const flashing: Reducer<boolean> = (state = false, action) => {
 
     if (didFinish.matches(action) || didFailToFinish.matches(action)) {
         return false;
-    }
-
-    return state;
-};
-
-const progress: Reducer<number | null> = (state = null, action) => {
-    if (didStart.matches(action)) {
-        return null;
-    }
-
-    if (didProgress.matches(action)) {
-        return action.value;
     }
 
     return state;
@@ -100,7 +87,6 @@ export default combineReducers({
     installPybricksDialog,
     restoreOfficialDialog,
     flashing,
-    progress,
     isFirmwareFlashUsbDfuInProgress,
     isFirmwareRestoreOfficialDfuInProgress,
     isFirmwareFlashEV3InProgress,

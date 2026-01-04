@@ -1,12 +1,11 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021-2025 The Pybricks Authors
+// Copyright (c) 2021-2026 The Pybricks Authors
 
 import { AnyAction } from 'redux';
 import {
     FailToFinishReasonType,
     didFailToFinish,
     didFinish,
-    didProgress,
     didStart,
 } from './actions';
 import reducers from './reducers';
@@ -26,7 +25,6 @@ test('initial state', () => {
           "isFirmwareFlashEV3InProgress": false,
           "isFirmwareFlashUsbDfuInProgress": false,
           "isFirmwareRestoreOfficialDfuInProgress": false,
-          "progress": null,
           "restoreOfficialDialog": {
             "isOpen": false,
           },
@@ -43,9 +41,4 @@ test('flashing', () => {
             didFailToFinish(FailToFinishReasonType.TimedOut),
         ).flashing,
     ).toBe(false);
-});
-
-test('progress', () => {
-    expect(reducers({ progress: 1 } as State, didStart()).progress).toBe(null);
-    expect(reducers({ progress: null } as State, didProgress(1)).progress).toBe(1);
 });
