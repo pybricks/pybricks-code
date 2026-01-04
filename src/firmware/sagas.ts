@@ -199,6 +199,25 @@ function* firmwareIterator(data: DataView, maxSize: number): Generator<number> {
     }
 }
 
+function computeEv3ExtraLength(firmwareLength: number): number {
+    // HACK: If the EV3 firmware size is not a multiple of 2 * 64KiB, then we
+    // need to add some padding to avoid possibly triggering a bug where small
+    // download payloads can cause bad replies. This is done by ensuring that
+    // the last chunk is 1018 bytes.
+
+    const maxChunkSize = 1018;
+    const eraseSize = 2 * 64 * 1024;
+    const remainder = firmwareLength % eraseSize;
+
+    if (remainder === 0) {
+        // Adding padding would cause an entire extra erase to be needed. Don't
+        // do that and rely on a a different workaround (always erasing two sectors).
+        return 0;
+    }
+
+    return maxChunkSize - (remainder % maxChunkSize);
+}
+
 /**
  * Loads Pybricks firmware from a .zip file.
  *
@@ -376,7 +395,14 @@ function* loadFirmware(
         throw new Error('unreachable');
     }
 
-    const firmware = new Uint8Array(firmwareBase.length + checksumExtraLength);
+    const ev3ExtraLength =
+        metadata['device-id'] === HubType.EV3
+            ? computeEv3ExtraLength(firmwareBase.length)
+            : 0;
+
+    const firmware = new Uint8Array(
+        firmwareBase.length + checksumExtraLength + ev3ExtraLength,
+    );
     const firmwareView = new DataView(firmware.buffer);
 
     firmware.set(firmwareBase);
