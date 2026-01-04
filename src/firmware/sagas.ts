@@ -1225,9 +1225,17 @@ function* handleFlashEV3(action: ReturnType<typeof firmwareFlashEV3>): Generator
     const sectorSize = 64 * 1024; // flash memory sector size
     const maxPayloadSize = 1018; // maximum payload size for EV3 commands
 
-    for (let i = 0; i < action.firmware.byteLength; i += sectorSize) {
-        const sectorData = action.firmware.slice(i, i + sectorSize);
-        assert(sectorData.byteLength <= sectorSize, 'sector data too large');
+    // HACK: Ideally, we would erase one sector at a time to minimize required
+    // alignment and make the progress indicator smoother. However, there is a
+    // bug triggered, e.g. by USB 3.0 on Windows, that causes bad replies from
+    // certain commands. This bug happens sometimes when the payload size is
+    // 384 bytes (triggered by 65536 % 1018 = 384). To work around this, we
+    // always erase two sectors to make the last chunk be twice as big
+    // (131072 % 1018 = 768).
+    const eraseSize = sectorSize * 2; // flash memory sector size
+
+    for (let i = 0; i < action.firmware.byteLength; i += eraseSize) {
+        const sectorData = action.firmware.slice(i, i + eraseSize);
 
         const erasePayload = new DataView(new ArrayBuffer(8));
         erasePayload.setUint32(0, i, true);
