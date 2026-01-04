@@ -132,19 +132,6 @@ export const flashFirmware = createAction(
     }),
 );
 
-/**
- * Action that indicates flashing firmware started.
- * @param total The total number of bytes to be flashed.
- */
-export const didStart = createAction(() => ({
-    type: 'flashFirmware.action.didStart',
-}));
-
-/** Action that indicates that flashing firmware completed successfully. */
-export const didFinish = createAction(() => ({
-    type: 'flashFirmware.action.didFinish',
-}));
-
 // FIXME: get rid of this monstrosity
 
 const didFailToFinishType = 'flashFirmware.action.didFailToFinish';
