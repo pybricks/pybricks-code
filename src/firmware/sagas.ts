@@ -1107,16 +1107,33 @@ function* handleFlashEV3(action: ReturnType<typeof firmwareFlashEV3>): Generator
                 continue; // ignore empty reports
             }
 
-            const length = event.data.getInt16(0, true);
+            let length = event.data.getInt16(0, true);
             const replyNumber = event.data.getInt16(2, true);
-            const messageType = event.data.getUint8(4);
+            let messageType = event.data.getUint8(4);
             const replyCommand = event.data.getUint8(5);
-            const status = event.data.getUint8(6);
-            const payload = event.data.buffer.slice(7, 7 + length + 2);
+            let status = event.data.getUint8(6);
+            let payload = event.data.buffer.slice(7, 7 + length + 2);
 
-            console.debug(
-                `EV3 reply: length=${length}, replyNumber=${replyNumber}, messageType=${messageType}, replyCommand=${replyCommand}, status=${status}, payload=${payload}`,
-            );
+            if (messageType === 0x01) {
+                // HACK: This works around a strange bug that can be triggered
+                // e.g. by USB 3.0 on Windows. Sometimes the EV3 bootloader will
+                // send the request back instead of the reply. In this case,
+                // fake the reply to avoid protocol errors. This seems to work
+                // as long as we aren't sending commands that have a reply
+                // with a payload (like reading version or checksum)
+
+                console.warn(
+                    `Bad EV3 reply: length=${length}, replyNumber=${replyNumber}, messageType=${messageType}, replyCommand=${replyCommand}, status=${status}`,
+                );
+                length = 5;
+                messageType = 0x03;
+                status = 0x00;
+                payload = new ArrayBuffer(0);
+
+                console.info(
+                    `Fixed EV3 reply: length=${length}, replyNumber=${replyNumber}, messageType=${messageType}, replyCommand=${replyCommand}, status=${status}`,
+                );
+            }
 
             yield* put(
                 firmwareDidReceiveEV3Reply(
