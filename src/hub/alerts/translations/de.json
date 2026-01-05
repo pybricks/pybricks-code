@@ -1,0 +1,6 @@
+{
+    "userProgramSize": {
+        "message": "Dieses Programm ist zu groß. Die kompilierte Größe beträgt {actual} Bytes, aber der Hub kann nur {max} Bytes aufnehmen.",
+        "suggestion": "Versuchen Sie, ungenutzten Code zu entfernen oder Namen und Zeichenketten zu verkürzen."
+    }
+}

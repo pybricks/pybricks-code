@@ -1,0 +1,12 @@
+{
+    "title": "Bestehende Datei ersetzen?",
+    "message": "Es existiert bereits eine Datei mit dem gleichen Namen wie die importierte Datei '{fileName}'.",
+    "option": {
+        "remember": "Diese Antwort für weitere Konflikte merken."
+    },
+    "action": {
+        "skip": "Bestehende Datei behalten und Import dieser Datei überspringen",
+        "replace": "Bestehende Datei durch die importierte Datei ersetzen",
+        "rename": "Bestehende Datei behalten und importierte Datei umbenennen"
+    }
+}

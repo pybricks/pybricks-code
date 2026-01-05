@@ -1,0 +1,34 @@
+{
+    "back": "Zurück",
+    "close": "Schließen",
+    "last": "Letzte",
+    "next": "Weiter",
+    "open": "Dialog öffnen",
+    "skip": "Überspringen",
+    "steps": {
+        "welcome": {
+            "message": "Willkommen bei {appName}.",
+            "action": "Klicken Sie auf {next}, um die wichtigsten Funktionen zu entdecken."
+        },
+        "newFile": {
+            "message": "Klicken Sie auf die {icon} Schaltfläche, um ein neues Programm zu erstellen."
+        },
+        "backupFiles": {
+            "message": "Verlieren Sie Ihre Arbeit nicht.",
+            "action": "Klicken Sie auf {icon}, um Ihre Programme zu sichern."
+        },
+        "flashPybricksFirmware": {
+            "message": "Um {appName} zu nutzen, müssen Sie die Pybricks-Firmware installieren."
+        },
+        "restoreOfficialFirmware": {
+            "message": "Sie können die offizielle {lego} Firmware jederzeit wiederherstellen."
+        },
+        "connectToHub": {
+            "message": "Klicken Sie auf die Bluetooth-Schaltfläche, um eine Verbindung herzustellen."
+        },
+        "downloadAndRun": {
+            "message": "Sobald verbunden, klicken Sie auf die {icon} Schaltfläche, um Ihr Programm auszuführen.",
+            "runAgain": "Das Programm ist jetzt auf dem Hub gespeichert. Drücken Sie die Taste am Hub, um es erneut auszuführen."
+        }
+    }
+}

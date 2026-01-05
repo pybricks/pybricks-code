@@ -1,0 +1,72 @@
+{
+    "title": "Pybricks-Firmware installieren",
+    "selectHubPanel": {
+        "title": "Hub-Typ auswählen",
+        "message": "Wählen Sie Ihren Hub aus.",
+        "notOnListButton": {
+            "label": "Was ist mit anderen Hubs?",
+            "info": {
+                "mindstorms": {
+                    "title": "{legoMindstormsRegisteredTrademark} Steine",
+                    "intro": "{appName} unterstützt derzeit keine früheren Generationen von {legoMindstormsRegisteredTrademark}.",
+                    "help": {
+                        "message": "Aber mit Ihrer Hilfe ist das möglich! Klicken Sie auf die {sponsor} Schaltfläche oben rechts, um zu sehen, wie Sie uns unterstützen können.",
+                        "sponsor": "Sponsor"
+                    },
+                    "rcx": "RCX: Könnte im Streaming-Modus funktionieren.",
+                    "nxt": "NXT: Wir haben das getestet. Es könnte funktionieren!",
+                    "ev3": "EV3: Unterstützt mit Visual Studio Code."
+                },
+                "poweredUp": {
+                    "title": "Andere Hubs",
+                    "intro": "Unterstützung für diese Hubs ist derzeit nicht geplant.",
+                    "wedo2": "WeDo 2.0 Smart Hub.",
+                    "duploTrain": "Duplo Train Hub.",
+                    "mario": "Mario/Luigi/Peach."
+                }
+            }
+        },
+        "advanced": {
+            "label": "Erweitert",
+            "customFirmwareDropzone": {
+                "label": "Benutzerdefinierte Firmware .zip-Datei hier ablegen oder zum Durchsuchen klicken."
+            }
+        },
+        "customFirmware": {
+            "message": "Benutzerdefinierte Firmware ausgewählt.",
+            "hubType": "Hub-Typ: {hubTypeName}",
+            "firmwareVersion": "Firmware-Version: {version}",
+            "clearButton": "Löschen"
+        }
+    },
+    "licensePanel": {
+        "title": "Lizenzen akzeptieren",
+        "licenseText": {
+            "error": "Beim Abrufen der Firmware-Datei ist ein Problem aufgetreten."
+        },
+        "acceptCheckbox": {
+            "label": "Ich habe die Lizenzbedingungen gelesen und stimme ihnen zu."
+        }
+    },
+    "optionsPanel": {
+        "title": "Optionen konfigurieren",
+        "hubName": {
+            "label": "Hub-Name",
+            "labelInfo": "(optional)",
+            "help": "Wählen Sie einen Bluetooth-Namen für Ihren Hub. Wenn Sie mehrere Hubs haben, können Sie sie beim Verbinden leichter unterscheiden.",
+            "error": "Der Name ist zu lang."
+        }
+    },
+    "bootloaderPanel": {
+        "title": "Installieren"
+    },
+    "backButton": {
+        "label": "Zurück"
+    },
+    "nextButton": {
+        "label": "Weiter"
+    },
+    "flashFirmwareButton": {
+        "label": "Installieren"
+    }
+}
