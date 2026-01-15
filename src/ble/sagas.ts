@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2025 The Pybricks Authors
+// Copyright (c) 2020-2026 The Pybricks Authors
 //
 // Manages connection to a Bluetooth Low Energy device running Pybricks firmware.
 
@@ -400,59 +400,65 @@ function* handleBleConnectPybricks(): Generator {
             );
         }
 
-        const uartService = yield* call(() =>
-            server.getPrimaryService(nordicUartServiceUUID).catch((err) => {
-                if (err instanceof DOMException && err.name === 'NotFoundError') {
-                    return undefined;
-                }
+        // Nordic UART service is removed starting with Pybricks Profile v1.5.0
+        if (!semver.satisfies(softwareRevision, '^1.5.0')) {
+            const uartService = yield* call(() =>
+                server.getPrimaryService(nordicUartServiceUUID).catch((err) => {
+                    if (err instanceof DOMException && err.name === 'NotFoundError') {
+                        return undefined;
+                    }
 
-                throw err;
-            }),
-        );
-
-        if (!uartService) {
-            yield* put(
-                alertsShowAlert('ble', 'missingService', {
-                    serviceName: 'Nordic UART',
-                    hubName: device.name || 'Pybricks Hub',
+                    throw err;
                 }),
             );
-            yield* put(bleDidFailToConnectPybricks());
-            return;
+
+            if (!uartService) {
+                yield* put(
+                    alertsShowAlert('ble', 'missingService', {
+                        serviceName: 'Nordic UART',
+                        hubName: device.name || 'Pybricks Hub',
+                    }),
+                );
+                yield* put(bleDidFailToConnectPybricks());
+                return;
+            }
+
+            const uartRxChar = yield* call(() =>
+                uartService.getCharacteristic(nordicUartRxCharUUID),
+            );
+
+            const uartTxChar = yield* call(() =>
+                uartService.getCharacteristic(nordicUartTxCharUUID),
+            );
+
+            const uartTxChannel = eventChannel<DataView>((emitter) => {
+                const listener = (): void => {
+                    if (!uartTxChar.value) {
+                        return;
+                    }
+                    emitter(uartTxChar.value);
+                };
+                uartTxChar.addEventListener('characteristicvaluechanged', listener);
+                return (): void =>
+                    uartTxChar.removeEventListener(
+                        'characteristicvaluechanged',
+                        listener,
+                    );
+            });
+
+            defer.push(() => uartTxChannel.close());
+            tasks.push(yield* takeEvery(uartTxChannel, handleUartValueChanged));
+
+            // REVISIT: possible Pybricks firmware bug (or chromium bug on Linux)
+            // where 'characteristicvaluechanged' is not called after disconnecting
+            // and reconnecting unless we stop notifications before we start them
+            // again. Wireshark shows that no enable notification descriptor write
+            // is performed but notifications are received.
+            yield* call(() => uartTxChar.stopNotifications());
+            yield* call(() => uartTxChar.startNotifications());
+
+            tasks.push(yield* takeEvery(writeUart, handleWriteUart, uartRxChar));
         }
-
-        const uartRxChar = yield* call(() =>
-            uartService.getCharacteristic(nordicUartRxCharUUID),
-        );
-
-        const uartTxChar = yield* call(() =>
-            uartService.getCharacteristic(nordicUartTxCharUUID),
-        );
-
-        const uartTxChannel = eventChannel<DataView>((emitter) => {
-            const listener = (): void => {
-                if (!uartTxChar.value) {
-                    return;
-                }
-                emitter(uartTxChar.value);
-            };
-            uartTxChar.addEventListener('characteristicvaluechanged', listener);
-            return (): void =>
-                uartTxChar.removeEventListener('characteristicvaluechanged', listener);
-        });
-
-        defer.push(() => uartTxChannel.close());
-        tasks.push(yield* takeEvery(uartTxChannel, handleUartValueChanged));
-
-        // REVISIT: possible Pybricks firmware bug (or chromium bug on Linux)
-        // where 'characteristicvaluechanged' is not called after disconnecting
-        // and reconnecting unless we stop notifications before we start them
-        // again. Wireshark shows that no enable notification descriptor write
-        // is performed but notifications are received.
-        yield* call(() => uartTxChar.stopNotifications());
-        yield* call(() => uartTxChar.startNotifications());
-
-        tasks.push(yield* takeEvery(writeUart, handleWriteUart, uartRxChar));
 
         yield* put(bleDidConnectPybricks(device.id, device.name || ''));
 
