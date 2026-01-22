@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022-2025 The Pybricks Authors
+// Copyright (c) 2022-2026 The Pybricks Authors
 // based on https://usehooks-ts.com/react-hook/use-fetch
 
 import { FirmwareMetadata, FirmwareReader } from '@pybricks/firmware';
 import cityHubZip from '@pybricks/firmware/build/cityhub.zip';
 import essentialHubZip from '@pybricks/firmware/build/essentialhub.zip';
+import ev3Zip from '@pybricks/firmware/build/ev3.zip';
 import moveHubZip from '@pybricks/firmware/build/movehub.zip';
 import primeHubZip from '@pybricks/firmware/build/primehub.zip';
 import technicHubZip from '@pybricks/firmware/build/technichub.zip';
@@ -44,6 +45,7 @@ const firmwareZipMap = new Map<Hub, string>([
     [Hub.Prime, primeHubZip],
     [Hub.Essential, essentialHubZip],
     [Hub.Inventor, primeHubZip],
+    [Hub.EV3, ev3Zip],
 ]);
 
 /**
