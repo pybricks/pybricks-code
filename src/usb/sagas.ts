@@ -151,16 +151,6 @@ function* handleUsbConnectPybricks(hotPlugDevice?: USBDevice): Generator {
 
     exitStack.push(() => usbDevice.close().catch(console.debug));
 
-    // Always reset the USB device to ensure it is in a known state.
-    const [, resetErr] = yield* call(() => maybe(usbDevice.reset()));
-    if (resetErr) {
-        // TODO: show error message to user here
-        console.error('Failed to reset USB device:', resetErr);
-        yield* put(usbDidFailToConnectPybricks());
-        yield* cleanup();
-        return;
-    }
-
     const [, selectErr] = yield* call(() => maybe(usbDevice.selectConfiguration(1)));
     if (selectErr) {
         // TODO: show error message to user here
