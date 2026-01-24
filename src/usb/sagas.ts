@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2025 The Pybricks Authors
+// Copyright (c) 2025-2026 The Pybricks Authors
 
 import { firmwareVersion } from '@pybricks/firmware';
 import { AnyAction } from 'redux';
@@ -128,6 +128,7 @@ function* handleUsbConnectPybricks(hotPlugDevice?: USBDevice): Generator {
                 return;
             }
 
+            // TODO: show unexpected error message to user here
             console.error('Failed to request USB device:', reqDeviceErr);
             yield* put(usbDidFailToConnectPybricks());
             yield* cleanup();
@@ -140,13 +141,27 @@ function* handleUsbConnectPybricks(hotPlugDevice?: USBDevice): Generator {
         usbDevice = hotPlugDevice;
     }
 
-    const [, openErr] = yield* call(() => maybe(usbDevice.open()));
-    if (openErr) {
-        // TODO: show error message to user here
-        console.error('Failed to open USB device:', openErr);
-        yield* put(usbDidFailToConnectPybricks());
-        yield* cleanup();
-        return;
+    for (let retry = 1; ; retry++) {
+        const [, openErr] = yield* call(() => maybe(usbDevice.open()));
+        if (openErr) {
+            // On Linux/Android, the udev rules could still be processing, try
+            // a few times before giving up.
+            if (openErr.name === 'SecurityError' && retry <= 5) {
+                console.debug(
+                    `Retrying USB device open (${retry}/5) after SecurityError on Linux`,
+                );
+                yield* delay(100);
+                continue;
+            }
+
+            // TODO: show error message to user here
+            console.error('Failed to open USB device:', openErr);
+            yield* put(usbDidFailToConnectPybricks());
+            yield* cleanup();
+            return;
+        }
+
+        break;
     }
 
     exitStack.push(() => usbDevice.close().catch(console.debug));
