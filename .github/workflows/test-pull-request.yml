@@ -29,4 +29,13 @@ jobs:
     - uses: codecov/codecov-action@v3
       with:
         directory: coverage
+    - name: Set env to labs
+      run: |
+        echo "REACT_APP_NAME=Pybricks Labs" >> $GITHUB_ENV
+        echo "REACT_APP_SUFFIX=-labs" >> $GITHUB_ENV
+        echo "REACT_APP_VERSION=$GITHUB_SHA" >> $GITHUB_ENV
     - run: yarn build
+    - uses: actions/upload-artifact@v6
+      with:
+        name: pybricks-labs
+        path: build
