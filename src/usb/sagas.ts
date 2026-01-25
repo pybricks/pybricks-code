@@ -154,7 +154,25 @@ function* handleUsbConnectPybricks(hotPlugDevice?: USBDevice): Generator {
                 continue;
             }
 
-            // TODO: show error message to user here
+            // Only show error to the user if they initiated the connection.
+            if (hotPlugDevice === undefined) {
+                if (openErr.name === 'SecurityError') {
+                    // Known causes:
+                    // - Linux without proper udev rules to allow access to USB devices
+                    // - Trying to access a device on a host machine when the USB
+                    //   device is shared with a VM guest OS.
+                    // Other suspected causes:
+                    // - Issues with permissions in containerized apps (e.g. Snaps on Ubuntu)
+                    yield* put(alertsShowAlert('usb', 'accessDenied'));
+                } else {
+                    yield* put(
+                        alertsShowAlert('alerts', 'unexpectedError', {
+                            error: openErr,
+                        }),
+                    );
+                }
+            }
+
             console.error('Failed to open USB device:', openErr);
             yield* put(usbDidFailToConnectPybricks());
             yield* cleanup();
