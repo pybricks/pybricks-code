@@ -4,6 +4,9 @@
         "suggestion": "Use a supported browser such as Google Chrome or Microsoft Edge.",
         "action": "More Info"
     },
+    "alreadyInUse": {
+        "message": "This hub is already in use by another application."
+    },
     "oldFirmware": {
         "message": "A new firmware version is available for this hub. Please install the latest version to use all new features.",
         "flashFirmware": {

@@ -205,7 +205,17 @@ function* handleUsbConnectPybricks(hotPlugDevice?: USBDevice): Generator {
         maybe(usbDevice.claimInterface(iface.interfaceNumber)),
     );
     if (claimErr) {
-        // TODO: show error message to user here
+        // Only show error to the user if they initiated the connection.
+        if (hotPlugDevice === undefined) {
+            if (claimErr.name === 'NetworkError') {
+                yield* put(alertsShowAlert('usb', 'alreadyInUse'));
+            } else {
+                yield* put(
+                    alertsShowAlert('alerts', 'unexpectedError', { error: claimErr }),
+                );
+            }
+        }
+
         console.error('Failed to claim USB interface:', claimErr);
         yield* put(usbDidFailToConnectPybricks());
         yield* cleanup();
