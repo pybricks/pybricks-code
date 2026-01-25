@@ -454,6 +454,12 @@ function* handleUsbConnectPybricks(hotPlugDevice?: USBDevice): Generator {
                 writeCommand.matches(a),
         );
 
+        // Response may come before request returns, so we need to buffer them
+        // in a channel to avoid missing responses.
+        const responseChannel = yield* actionChannel(
+            usbDidReceivePybricksMessageResponse,
+        );
+
         for (;;) {
             const action = yield* take(chan);
 
@@ -525,7 +531,7 @@ function* handleUsbConnectPybricks(hotPlugDevice?: USBDevice): Generator {
                 }
 
                 const { response, timeout } = yield* race({
-                    response: take(usbDidReceivePybricksMessageResponse),
+                    response: take(responseChannel),
                     timeout: delay(1000),
                 });
 
