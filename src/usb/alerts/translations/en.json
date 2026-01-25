@@ -4,6 +4,10 @@
         "suggestion": "Use a supported browser such as Google Chrome or Microsoft Edge.",
         "action": "More Info"
     },
+    "accessDenied": {
+        "message": "Access to the USB device was denied.",
+        "linuxSuggestion": "On Linux, ensure that you have the correct udev rules installed."
+    },
     "alreadyInUse": {
         "message": "This hub is already in use by another application."
     },
