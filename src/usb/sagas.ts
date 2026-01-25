@@ -128,7 +128,9 @@ function* handleUsbConnectPybricks(hotPlugDevice?: USBDevice): Generator {
                 return;
             }
 
-            // TODO: show unexpected error message to user here
+            yield* put(
+                alertsShowAlert('alerts', 'unexpectedError', { error: reqDeviceErr }),
+            );
             console.error('Failed to request USB device:', reqDeviceErr);
             yield* put(usbDidFailToConnectPybricks());
             yield* cleanup();
@@ -186,7 +188,7 @@ function* handleUsbConnectPybricks(hotPlugDevice?: USBDevice): Generator {
 
     const [, selectErr] = yield* call(() => maybe(usbDevice.selectConfiguration(1)));
     if (selectErr) {
-        // TODO: show error message to user here
+        yield* put(alertsShowAlert('alerts', 'unexpectedError', { error: selectErr }));
         console.error('Failed to select USB device configuration:', selectErr);
         yield* put(usbDidFailToConnectPybricks());
         yield* cleanup();
@@ -257,7 +259,11 @@ function* handleUsbConnectPybricks(hotPlugDevice?: USBDevice): Generator {
         ),
     );
     if (fwVerError || fwVerResult?.status !== 'ok') {
-        // TODO: show error message to user here
+        yield* put(
+            alertsShowAlert('alerts', 'unexpectedError', {
+                error: fwVerError || ensureError(fwVerResult?.status),
+            }),
+        );
         console.error('Failed to get firmware version:', fwVerError);
         yield* put(usbDidFailToConnectPybricks());
         yield* cleanup();
@@ -313,7 +319,11 @@ function* handleUsbConnectPybricks(hotPlugDevice?: USBDevice): Generator {
         ),
     );
     if (nameError || nameResult?.status !== 'ok') {
-        // TODO: show error message to user here
+        yield* put(
+            alertsShowAlert('alerts', 'unexpectedError', {
+                error: nameError || ensureError(nameResult?.status),
+            }),
+        );
         console.error('Failed to get device name:', nameError);
         yield* put(usbDidFailToConnectPybricks());
         yield* cleanup();
@@ -340,7 +350,11 @@ function* handleUsbConnectPybricks(hotPlugDevice?: USBDevice): Generator {
         ),
     );
     if (swVerError || swVerResult?.status !== 'ok') {
-        // TODO: show error message to user here
+        yield* put(
+            alertsShowAlert('alerts', 'unexpectedError', {
+                error: swVerError || ensureError(swVerResult?.status),
+            }),
+        );
         console.error('Failed to get software version:', swVerError);
         yield* put(usbDidFailToConnectPybricks());
         yield* cleanup();
@@ -382,7 +396,11 @@ function* handleUsbConnectPybricks(hotPlugDevice?: USBDevice): Generator {
         ),
     );
     if (hubCapErr || hubCapResult?.status !== 'ok') {
-        // TODO: show error message to user here
+        yield* put(
+            alertsShowAlert('alerts', 'unexpectedError', {
+                error: hubCapErr || ensureError(hubCapResult?.status),
+            }),
+        );
         console.error('Failed to get hub capabilities:', hubCapErr);
         yield* put(usbDidFailToConnectPybricks());
         yield* cleanup();
