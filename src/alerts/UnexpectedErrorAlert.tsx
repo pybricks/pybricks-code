@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022-2023 The Pybricks Authors
+// Copyright (c) 2022-2026 The Pybricks Authors
 
 import './UnexpectedErrorAlert.scss';
 import {
@@ -29,7 +29,11 @@ const UnexpectedErrorAlert: React.FunctionComponent<UnexpectedErrorAlertProps> =
 
     return (
         <>
-            <p>{i18n.translate('message')}</p>
+            <p>
+                {i18n.translate('message', {
+                    copyErrorMessage: i18n.translate('copyErrorMessage'),
+                })}
+            </p>
             <p>{error.message}</p>
             {error.stack && (
                 <>
