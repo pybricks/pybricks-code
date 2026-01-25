@@ -1,5 +1,5 @@
 {
-    "message": "An unexpected error occurred. Please consider reporting this so we can make a better error message.",
+    "message": "An unexpected error occurred. Please consider reporting this so we can make a better error message. Click the {copyErrorMessage} button below to copy the technical details and paste it in the bug report. Also include the operating system you are using, the web browser you are using and the actions you performed that led to this error.",
     "technicalInfo": "Expand for detailed technical information",
     "copyErrorMessage": "Copy Error Message",
     "reportBug": "Report Bug"
