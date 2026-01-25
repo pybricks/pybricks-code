@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2021-2023 The Pybricks Authors
+// Copyright (c) 2021-2026 The Pybricks Authors
 import docsPackage from '@pybricks/ide-docs/package.json';
 
 // Definitions for compile-time UI settings.
@@ -49,7 +49,7 @@ export const pybricksUsbLinuxUdevRulesUrl =
     'https://pybricks.com/projects/tutorials/dev/tools/linux/';
 
 /** Pybricks copyright statement. */
-export const pybricksCopyright = 'Copyright (c) 2020-2023 The Pybricks Authors';
+export const pybricksCopyright = 'Copyright (c) 2020-2026 The Pybricks Authors';
 
 /** The LEGO name with registered trademark symbol. */
 export const legoRegisteredTrademark = 'LEGO®';
