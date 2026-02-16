@@ -39,6 +39,12 @@ You will need [Git][git] to get the source code from GitHub. (Say that 3 times f
 
 [git]: https://git-scm.com/
 
+### Install node-canvas and its dependencies 
+
+https://github.com/Automattic/node-canvas
+
+On a Mac this will require installing homebrew (https://brew.sh)
+
 ## Getting The Code
 
 After the tools above have been installed, open a command prompt in the directory
