@@ -1,0 +1,56 @@
+{
+    "title": "Einstellungen & Hilfe",
+    "appearance": {
+        "title": "Erscheinungsbild",
+        "darkMode": {
+            "label": "Dunkelmodus",
+            "help": "Aktivieren Sie den Dunkelmodus. Deaktivieren Sie ihn für den hellen Modus."
+        },
+        "zoom": {
+            "help": "Verwenden Sie {in} und {out} zum Zoomen."
+        }
+    },
+    "firmware": {
+        "title": "Firmware",
+        "flashPybricksButton": {
+            "label": "Pybricks-Firmware installieren"
+        },
+        "flashLegoButton": {
+            "label": "Offizielle {lego}-Firmware wiederherstellen"
+        }
+    },
+    "help": {
+        "title": "Hilfe",
+        "projects": {
+            "label": "Beispielprojekte"
+        },
+        "support": {
+            "label": "Support"
+        },
+        "chat": {
+            "label": "Chat"
+        },
+        "bugs": {
+            "label": "Fehlermeldungen"
+        }
+    },
+    "app": {
+        "title": "App",
+        "offlineUseHelp": "Bereit für Offline-Nutzung.",
+        "install": {
+            "label": "Als App installieren"
+        },
+        "checkForUpdate": {
+            "label": "Nach Updates suchen"
+        },
+        "restart": {
+            "label": "Neustart für Update-Installation"
+        },
+        "about": {
+            "label": "Über"
+        },
+        "tour": {
+            "label": "Einführungstour"
+        }
+    }
+}

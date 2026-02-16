@@ -1,0 +1,7 @@
+{
+    "label": "Bluetooth",
+    "tooltip": {
+        "connect": "Mit Bluetooth verbinden",
+        "disconnect": "Bluetooth-Verbindung trennen"
+    }
+}

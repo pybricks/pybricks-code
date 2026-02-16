@@ -1,0 +1,31 @@
+{
+    "dfuError": {
+        "message": "Beim Installieren der Firmware ist ein USB-Fehler aufgetreten.",
+        "suggestion": "Stellen Sie sicher, dass das USB-Kabel nicht beschädigt und fest mit dem Hub und dem Computer verbunden ist.",
+        "tryAgainButton": "Erneut versuchen"
+    },
+    "noWebUsb": {
+        "message": "Dieser Browser unterstützt Web USB nicht oder Web USB ist nicht aktiviert.",
+        "suggestion": "Verwenden Sie einen unterstützten Browser wie Google Chrome oder Microsoft Edge."
+    },
+    "noDfuHub": {
+        "message": "Ihr Hub wurde nicht gefunden?",
+        "suggestion1": {
+            "windows": "Möglicherweise müssen Sie einen USB-Treiber manuell installieren, bevor Sie eine Verbindung zu Ihrem Hub herstellen können.",
+            "linux": "Möglicherweise müssen Sie udev-Regeln hinzufügen, bevor Sie eine Verbindung zu Ihrem Hub herstellen können."
+        },
+        "troubleshootButton": "Fehlerbehebungstipps",
+        "installUsbDriverButton": "USB-Treiber installieren",
+        "configureUdevRulesButton": "udev-Regeln konfigurieren"
+    },
+    "noDfuInterface": {
+        "message": "Das ist sehr ungewöhnlich. Das USB-Gerät enthielt nicht die erwartete Schnittstelle."
+    },
+    "flashProgress": {
+        "erasing": "Alte Firmware wird gelöscht: {percent}",
+        "flashing": "Neue Firmware wird installiert: {percent}"
+    },
+    "releaseButton": {
+        "message": "Sie können jetzt den Ein/Aus-Schalter am Hub loslassen."
+    }
+}
