@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022-2025 The Pybricks Authors
+// Copyright (c) 2022-2026 The Pybricks Authors
 
 import './bootloaderInstructions.scss';
 import { Callout, Intent } from '@blueprintjs/core';
@@ -19,6 +19,8 @@ import cityHubMp4 from './assets/bootloader-cityhub-540.mp4';
 import cityHubVtt from './assets/bootloader-cityhub-metadata.vtt';
 import essentialHubMp4 from './assets/bootloader-essentialhub-540.mp4';
 import essentialHubVtt from './assets/bootloader-essentialhub-metadata.vtt';
+import ev3BrickMp4 from './assets/bootloader-ev3brick-540.mp4';
+import ev3BrickVtt from './assets/bootloader-ev3brick-metadata.vtt';
 import inventorHubMp4 from './assets/bootloader-inventorhub-540.mp4';
 import inventorHubVtt from './assets/bootloader-inventorhub-metadata.vtt';
 import moveHubMp4 from './assets/bootloader-movehub-540.mp4';
@@ -54,6 +56,7 @@ type BootloaderInstructionsProps = {
 const bootloaderDeviceNameMap: ReadonlyMap<Hub, string> = new Map([
     [Hub.City, 'LEGO Bootloader'],
     [Hub.Essential, 'LEGO Technic Small Hub in DFU Mode'],
+    [Hub.EV3, 'LEGO EV3 Firmware Update'],
     [Hub.Inventor, 'LEGO Technic Large Hub in DFU Mode'],
     [Hub.Move, 'LEGO Bootloader'],
     [Hub.Prime, 'LEGO Technic Large Hub in DFU Mode'],
@@ -63,6 +66,7 @@ const bootloaderDeviceNameMap: ReadonlyMap<Hub, string> = new Map([
 const videoFileMap: ReadonlyMap<Hub, string> = new Map([
     [Hub.City, cityHubMp4],
     [Hub.Essential, essentialHubMp4],
+    [Hub.EV3, ev3BrickMp4],
     [Hub.Inventor, inventorHubMp4],
     [Hub.Move, moveHubMp4],
     [Hub.Prime, primeHubMp4],
@@ -72,6 +76,7 @@ const videoFileMap: ReadonlyMap<Hub, string> = new Map([
 const metadataFileMap: ReadonlyMap<Hub, string> = new Map([
     [Hub.City, cityHubVtt],
     [Hub.Essential, essentialHubVtt],
+    [Hub.EV3, ev3BrickVtt],
     [Hub.Inventor, inventorHubVtt],
     [Hub.Move, moveHubVtt],
     [Hub.Prime, primeHubVtt],
@@ -81,6 +86,7 @@ const metadataFileMap: ReadonlyMap<Hub, string> = new Map([
 const recoveryVideoFileMap: ReadonlyMap<Hub, string> = new Map([
     [Hub.City, cityHubRecoveryMp4],
     [Hub.Essential, essentialHubMp4],
+    [Hub.EV3, ev3BrickMp4],
     [Hub.Inventor, inventorHubMp4],
     [Hub.Move, moveHubRecoveryMp4],
     [Hub.Prime, primeHubMp4],
@@ -90,6 +96,7 @@ const recoveryVideoFileMap: ReadonlyMap<Hub, string> = new Map([
 const recoveryMetadataFileMap: ReadonlyMap<Hub, string> = new Map([
     [Hub.City, cityHubRecoveryVtt],
     [Hub.Essential, essentialHubVtt],
+    [Hub.EV3, ev3BrickVtt],
     [Hub.Inventor, inventorHubVtt],
     [Hub.Move, moveHubRecoveryVtt],
     [Hub.Prime, primeHubVtt],
@@ -184,12 +191,6 @@ const BootloaderInstructions: React.FunctionComponent<BootloaderInstructionsProp
                         {i18n.translate('instructionGroup.prepare.app', {
                             lego: legoRegisteredTrademark,
                         })}
-                    </li>
-                )}
-
-                {hubType === Hub.EV3 && (
-                    <li>
-                        {i18n.translate('instructionGroup.bootloaderMode.connectUsb')}
                     </li>
                 )}
             </>
@@ -314,6 +315,16 @@ const BootloaderInstructions: React.FunctionComponent<BootloaderInstructionsProp
                         })}
                     </li>
                 )}
+
+                {hubType === Hub.EV3 && hubHasUSB(hubType) && (
+                    <li
+                        className={classNames(
+                            activeStep === 'connect-usb' && 'pb-active-step',
+                        )}
+                    >
+                        {i18n.translate('instructionGroup.bootloaderMode.connectUsb')}
+                    </li>
+                )}
             </>
         ),
         [recovery, activeStep, i18n, button, hubType, light, lightPattern],
@@ -377,7 +388,7 @@ const BootloaderInstructions: React.FunctionComponent<BootloaderInstructionsProp
                             1
                         }
                     >
-                        {hubType === Hub.EV3 && (
+                        {hubType === Hub.EV3 && recovery && (
                             <li>
                                 {i18n.translate(
                                     'instructionGroup.connect.selectEV3FirmwareType',

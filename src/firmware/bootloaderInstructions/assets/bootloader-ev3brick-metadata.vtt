@@ -1,0 +1,15 @@
+WEBVTT
+
+hold-button
+00:00.100 --> 00:02.200
+
+press-power-button
+00:02.200 --> 00:05.210
+
+release-button
+00:05.210 --> 00:08.010
+
+connect-usb
+00:08.010 --> 00:11.200
+
+
