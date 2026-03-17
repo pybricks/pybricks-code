@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2023 The Pybricks Authors
+// Copyright (c) 2020-2026 The Pybricks Authors
 
 import { compile as mpyCrossCompileV5 } from '@pybricks/mpy-cross-v5';
 import { compile as mpyCrossCompileV6 } from '@pybricks/mpy-cross-v6';
@@ -129,12 +129,14 @@ function* handleCompileMulti6(): Generator {
     }
 
     const mainPy = yield* editorGetValue();
+    const mainPyPath = metadata.path ?? '__main__.py';
+    const mainPyName = mainPyPath.replace(/\.[^.]+$/, '');
 
     const pyFiles = new Map<string, FileContents>([
-        ['__main__', { path: metadata.path ?? '__main__.py', contents: mainPy }],
+        [mainPyName, { path: mainPyPath, contents: mainPy }],
     ]);
 
-    const checkedModules = new Set<string>(['__main__']);
+    const checkedModules = new Set<string>([mainPyName]);
     const uncheckedScripts = new Array<string>(mainPy);
 
     for (;;) {
