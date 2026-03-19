@@ -381,6 +381,18 @@ const useLegacyStartUserProgram: Reducer<boolean> = (state = false, action) => {
     return state;
 };
 
+/**
+ * When true, use the legacy `__main__` module name instead of the actual file name.
+ */
+const useLegacyMainModule: Reducer<boolean> = (state = false, action) => {
+    if (bleDIServiceDidReceiveSoftwareRevision.matches(action)) {
+        // Behavior changed starting with Pybricks Profile v1.5.0.
+        return !semver.satisfies(action.version, '^1.5.0');
+    }
+
+    return state;
+};
+
 /*
  * Returns number of available slots or 0 for slots not supported.
  */
@@ -418,6 +430,7 @@ export default combineReducers({
     useLegacyDownload,
     useLegacyStdio,
     useLegacyStartUserProgram,
+    useLegacyMainModule,
     numOfSlots,
     selectedSlot,
 });

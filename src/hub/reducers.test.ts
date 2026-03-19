@@ -58,6 +58,7 @@ test('initial state', () => {
           "runtime": "hub.runtime.disconnected",
           "selectedSlot": 0,
           "useLegacyDownload": false,
+          "useLegacyMainModule": false,
           "useLegacyStartUserProgram": false,
           "useLegacyStdio": false,
         }
@@ -541,6 +542,26 @@ describe('useLegacyStartUserProgram', () => {
                 { useLegacyStartUserProgram: true } as State,
                 bleDIServiceDidReceiveSoftwareRevision('1.4.0'),
             ).useLegacyStartUserProgram,
+        ).toBeFalsy();
+    });
+});
+
+describe('useLegacyMainModule', () => {
+    test('Pybricks Profile < v1.5.0', () => {
+        expect(
+            reducers(
+                { useLegacyMainModule: false } as State,
+                bleDIServiceDidReceiveSoftwareRevision('1.4.0'),
+            ).useLegacyMainModule,
+        ).toBeTruthy();
+    });
+
+    test('Pybricks Profile >= v1.5.0', () => {
+        expect(
+            reducers(
+                { useLegacyMainModule: true } as State,
+                bleDIServiceDidReceiveSoftwareRevision('1.5.0'),
+            ).useLegacyMainModule,
         ).toBeFalsy();
     });
 });

@@ -104,8 +104,8 @@ function* handleCompile(action: ReturnType<typeof compile>): Generator {
 /**
  * Compiles code into the Pybricks multi-mpy6 file format.
  *
- * This includes a __main__ module which is the file currently open in the
- * editor and any imported modules that can be found in the user file system.
+ * This includes the file currently open in the editor and any imported modules
+ * that can be found in the user file system.
  */
 function* handleCompileMulti6(): Generator {
     // REVISIT: should we be getting the active file here or have it as an
@@ -128,16 +128,22 @@ function* handleCompileMulti6(): Generator {
         return;
     }
 
-    const mainPy = yield* editorGetValue();
+    const useLegacyMainModule = yield* select(
+        (s: RootState) => s.hub.useLegacyMainModule,
+    );
+
+    const mainPyContents = yield* editorGetValue();
     const mainPyPath = metadata.path ?? '__main__.py';
-    const mainPyName = mainPyPath.replace(/\.[^.]+$/, '');
+    const mainPyName = useLegacyMainModule
+        ? '__main__'
+        : mainPyPath.replace(/\.[^.]+$/, '');
 
     const pyFiles = new Map<string, FileContents>([
-        [mainPyName, { path: mainPyPath, contents: mainPy }],
+        [mainPyName, { path: mainPyPath, contents: mainPyContents }],
     ]);
 
     const checkedModules = new Set<string>([mainPyName]);
-    const uncheckedScripts = new Array<string>(mainPy);
+    const uncheckedScripts = new Array<string>(mainPyContents);
 
     for (;;) {
         // parse all unchecked scripts to find imported modules that haven't
