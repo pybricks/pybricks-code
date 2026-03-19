@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2025 The Pybricks Authors
+// Copyright (c) 2020-2026 The Pybricks Authors
 
 import { Reducer, combineReducers } from 'redux';
 import * as semver from 'semver';
@@ -31,6 +31,7 @@ import {
     usbDidDisconnectPybricks,
     usbDidReceiveDeviceName,
     usbDidReceiveFirmwareRevision,
+    usbDidReceiveSoftwareRevision,
     usbDisconnectPybricks,
 } from '../usb/actions';
 import { pythonVersionToSemver } from '../utils/version';
@@ -361,7 +362,10 @@ const useLegacyDownload: Reducer<boolean> = (state = false, action) => {
  * When true, use NUS for stdio instead of Pybricks control characteristic.
  */
 const useLegacyStdio: Reducer<boolean> = (state = false, action) => {
-    if (bleDIServiceDidReceiveSoftwareRevision.matches(action)) {
+    if (
+        bleDIServiceDidReceiveSoftwareRevision.matches(action) ||
+        usbDidReceiveSoftwareRevision.matches(action)
+    ) {
         // Behavior changed starting with Pybricks Profile v1.3.0.
         return !semver.satisfies(action.version, '^1.3.0');
     }
@@ -373,7 +377,10 @@ const useLegacyStdio: Reducer<boolean> = (state = false, action) => {
  * When true, use Legacy StartUserProgram.
  */
 const useLegacyStartUserProgram: Reducer<boolean> = (state = false, action) => {
-    if (bleDIServiceDidReceiveSoftwareRevision.matches(action)) {
+    if (
+        bleDIServiceDidReceiveSoftwareRevision.matches(action) ||
+        usbDidReceiveSoftwareRevision.matches(action)
+    ) {
         // Behavior changed starting with Pybricks Profile v1.4.0.
         return !semver.satisfies(action.version, '^1.4.0');
     }
@@ -385,7 +392,10 @@ const useLegacyStartUserProgram: Reducer<boolean> = (state = false, action) => {
  * When true, use the legacy `__main__` module name instead of the actual file name.
  */
 const useLegacyMainModule: Reducer<boolean> = (state = false, action) => {
-    if (bleDIServiceDidReceiveSoftwareRevision.matches(action)) {
+    if (
+        bleDIServiceDidReceiveSoftwareRevision.matches(action) ||
+        usbDidReceiveSoftwareRevision.matches(action)
+    ) {
         // Behavior changed starting with Pybricks Profile v1.5.0.
         return !semver.satisfies(action.version, '^1.5.0');
     }
