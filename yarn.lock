@@ -2923,12 +2923,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pybricks/firmware@npm:7.27.0":
-  version: 7.27.0
-  resolution: "@pybricks/firmware@npm:7.27.0"
+"@pybricks/firmware@npm:7.31.0":
+  version: 7.31.0
+  resolution: "@pybricks/firmware@npm:7.31.0"
   dependencies:
-    jszip: ^3.7.1
-  checksum: bd58b29376e2a21ac12551ed8c3977a165faed04e46661e826ed207f3467f4354c62e798b75efd53b0f5aadd7c51b1fd60229c6e2a59099062099118ffbcc903
+    jszip: ^3.10.1
+  checksum: 4d020b565177adc0348f719dda733cd9c93bcdabffce9ce8a2172335252b0e9eed8cde59d29bde0ebda15e0fa5c8d43d65353c780148df8df96e9155530914cf
   languageName: node
   linkType: hard
 
@@ -2974,7 +2974,7 @@ __metadata:
     "@babel/core": ^7.23.9
     "@blueprintjs/core": ^5.8.2
     "@pmmmwh/react-refresh-webpack-plugin": ^0.5.11
-    "@pybricks/firmware": 7.27.0
+    "@pybricks/firmware": 7.31.0
     "@pybricks/ide-docs": 2.20.0
     "@pybricks/images": ^1.4.0
     "@pybricks/jedi": 1.17.0
@@ -11975,7 +11975,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jszip@npm:^3.10.1, jszip@npm:^3.7.1":
+"jszip@npm:^3.10.1":
   version: 3.10.1
   resolution: "jszip@npm:3.10.1"
   dependencies:
