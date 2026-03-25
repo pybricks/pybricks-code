@@ -17,7 +17,7 @@ import StatusBar from '../status-bar/StatusBar';
 import Toolbar from '../toolbar/Toolbar';
 import Tour from '../tour/Tour';
 import { isMacOS } from '../utils/os';
-import { useAppLastDocsPageSetting } from './hooks';
+import { docsDefaultPage } from './constants';
 import { useI18n } from './i18n';
 
 const Editor = React.lazy(async () => {
@@ -48,7 +48,6 @@ const Terminal = React.lazy(async () => {
 
 const Docs: React.FunctionComponent = () => {
     const { setIsSettingShowDocsEnabled } = useSettingIsShowDocsEnabled();
-    const { initialDocsPage, setLastDocsPage } = useAppLastDocsPageSetting();
 
     return (
         <iframe
@@ -80,10 +79,8 @@ const Docs: React.FunctionComponent = () => {
                 if (document.body.classList.contains(Classes.DARK)) {
                     contentWindow.document.documentElement.classList.add(Classes.DARK);
                 }
-
-                setLastDocsPage(contentWindow.location.href);
             }}
-            src={initialDocsPage}
+            src={docsDefaultPage}
             allowFullScreen={true}
             width="100%"
             height="100%"
