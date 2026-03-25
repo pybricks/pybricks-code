@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2022 The Pybricks Authors
+// Copyright (c) 2020-2026 The Pybricks Authors
 
 // Custom styling for the App control.
 
@@ -184,7 +184,14 @@ $dark-splitter-color-hover: color.adjust(
 }
 
 // hide the docs and resize separator
-
+// Use visibility rather than display:none so the iframe keeps its layout and
+// scroll position when the docs panel is toggled.
+// Collapse the secondary pane and splitter to zero width so they don't
+// consume space, while keeping the iframe in the DOM.
 div.pb-hide-docs > :not(.layout-pane-primary) {
-    display: none;
+    visibility: hidden;
+    pointer-events: none;
+    flex-basis: 0 !important;
+    width: 0 !important;
+    min-width: 0 !important;
 }
