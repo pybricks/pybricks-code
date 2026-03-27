@@ -461,8 +461,6 @@ function* handleUsbConnectPybricks(hotPlugDevice?: USBDevice): Generator {
                 continue;
             }
 
-            console.debug('Received USB message:', result.data);
-
             switch (result.data.getInt8(0)) {
                 case PybricksUsbInEndpointMessageType.Response:
                     yield* put(
@@ -508,8 +506,6 @@ function* handleUsbConnectPybricks(hotPlugDevice?: USBDevice): Generator {
 
         for (;;) {
             const action = yield* take(chan);
-
-            console.debug('Processing USB action:', action);
 
             if (usbPybricksSubscribe.matches(action)) {
                 const message = new DataView(new ArrayBuffer(2));
