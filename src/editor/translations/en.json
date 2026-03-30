@@ -5,16 +5,11 @@
     "welcome": "Welcome",
     "placeholder": "Write your program here...",
     "check": "Check syntax",
-    "toggleDocs": "Toggle documentation",
     "copy": "Copy",
     "paste": "Paste",
     "selectAll": "Select all",
     "undo": "Undo",
     "redo": "Redo",
     "closeFile": { "tooltip": "Close {fileName}" },
-    "contextMenu": { "label": "Editor context menu" },
-    "docs": {
-        "show": "Show documentation",
-        "hide": "Hide documentation"
-    }
+    "contextMenu": { "label": "Editor context menu" }
 }

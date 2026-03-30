@@ -93,13 +93,6 @@
             color: bp.$pt-dark-text-color-muted;
         }
     }
-
-    &-doc-button {
-        position: absolute;
-        bottom: bp.$pt-grid-size;
-        right: bp.$pt-grid-size;
-        z-index: bp.$pt-z-index-overlay;
-    }
 }
 
 .monaco-editor {

@@ -4,5 +4,9 @@
         "editor": "Editor",
         "terminal": "Terminal",
         "documentation": "Documentation"
+    },
+    "docs": {
+        "show": "Show documentation",
+        "hide": "Hide documentation"
     }
 }

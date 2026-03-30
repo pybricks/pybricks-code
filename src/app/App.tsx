@@ -3,7 +3,8 @@
 
 import 'react-splitter-layout/lib/index.css';
 import './app.scss';
-import { Classes, Spinner } from '@blueprintjs/core';
+import { Button, Classes, Spinner } from '@blueprintjs/core';
+import { Manual } from '@blueprintjs/icons';
 import React, { useEffect, useState } from 'react';
 import SplitterLayout from 'react-splitter-layout';
 import { useLocalStorage, useTernaryDarkMode } from 'usehooks-ts';
@@ -71,7 +72,8 @@ const Docs: React.FunctionComponent = () => {
 const App: React.FunctionComponent = () => {
     const i18n = useI18n();
     const { isDarkMode } = useTernaryDarkMode();
-    const { isSettingShowDocsEnabled } = useSettingIsShowDocsEnabled();
+    const { isSettingShowDocsEnabled, toggleIsSettingShowDocsEnabled } =
+        useSettingIsShowDocsEnabled();
     const [isDragging, setIsDragging] = useState(false);
 
     const [docsSplit, setDocsSplit] = useLocalStorage('app-docs-split', 30);
@@ -140,6 +142,18 @@ const App: React.FunctionComponent = () => {
                                 >
                                     <Editor />
                                 </React.Suspense>
+                                <Button
+                                    className="pb-app-doc-button"
+                                    minimal
+                                    large
+                                    icon={<Manual />}
+                                    title={
+                                        isSettingShowDocsEnabled
+                                            ? i18n.translate('docs.hide')
+                                            : i18n.translate('docs.show')
+                                    }
+                                    onClick={toggleIsSettingShowDocsEnabled}
+                                />
                             </main>
                             <aside
                                 className="pb-app-terminal"

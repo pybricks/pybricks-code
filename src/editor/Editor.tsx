@@ -16,15 +16,7 @@ import {
     Tabs,
     Text,
 } from '@blueprintjs/core';
-import {
-    Blank,
-    Clipboard,
-    Cross,
-    Duplicate,
-    Manual,
-    Redo,
-    Undo,
-} from '@blueprintjs/icons';
+import { Blank, Clipboard, Cross, Duplicate, Redo, Undo } from '@blueprintjs/icons';
 import classNames from 'classnames';
 import * as monaco from 'monaco-editor';
 import tomorrowNightEightiesTheme from 'monaco-themes/themes/Tomorrow-Night-Eighties.json';
@@ -37,7 +29,6 @@ import { UUID } from '../fileStorage';
 import { useFileStoragePath } from '../fileStorage/hooks';
 import { compile } from '../mpy/actions';
 import { useSelector } from '../reducers';
-import { useSettingIsShowDocsEnabled } from '../settings/hooks';
 import { isMacOS } from '../utils/os';
 import Welcome from './Welcome';
 import { editorActivateFile, editorCloseFile } from './actions';
@@ -387,8 +378,6 @@ const Editor: React.FunctionComponent = () => {
     const dispatch = useDispatch();
 
     const [editor, setEditor] = useState<monaco.editor.IStandaloneCodeEditor>();
-    const { isSettingShowDocsEnabled, toggleIsSettingShowDocsEnabled } =
-        useSettingIsShowDocsEnabled();
     const { isDarkMode } = useTernaryDarkMode();
 
     const i18n = useI18n();
@@ -510,18 +499,6 @@ const Editor: React.FunctionComponent = () => {
                     <div className="pb-editor-monaco" ref={editorRef} />
                 </ContextMenu>
             </ResizeSensor>
-            <Button
-                className="pb-editor-doc-button"
-                minimal
-                large
-                icon={<Manual />}
-                title={
-                    isSettingShowDocsEnabled
-                        ? i18n.translate('docs.hide')
-                        : i18n.translate('docs.show')
-                }
-                onClick={toggleIsSettingShowDocsEnabled}
-            />
         </div>
     );
 };
