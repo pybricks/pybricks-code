@@ -6,13 +6,14 @@ import './app.scss';
 import { Button, Classes, Spinner } from '@blueprintjs/core';
 import { Manual } from '@blueprintjs/icons';
 import React, { useEffect, useState } from 'react';
+
+type SideView = 'off' | 'docs';
 import SplitterLayout from 'react-splitter-layout';
 import { useLocalStorage, useTernaryDarkMode } from 'usehooks-ts';
 import Activities from '../activities/Activities';
 import DfuWindowsDriverInstallDialog from '../firmware/dfuWindowsDriverInstallDialog/DfuWindowsDriverInstallDialog';
 import { InstallPybricksDialog } from '../firmware/installPybricksDialog/InstallPybricksDialog';
 import RestoreOfficialDialog from '../firmware/restoreOfficialDialog/RestoreOfficialDialog';
-import { useSettingIsShowDocsEnabled } from '../settings/hooks';
 import SponsorDialog from '../sponsor/SponsorDialog';
 import StatusBar from '../status-bar/StatusBar';
 import Toolbar from '../toolbar/Toolbar';
@@ -72,8 +73,7 @@ const Docs: React.FunctionComponent = () => {
 const App: React.FunctionComponent = () => {
     const i18n = useI18n();
     const { isDarkMode } = useTernaryDarkMode();
-    const { isSettingShowDocsEnabled, toggleIsSettingShowDocsEnabled } =
-        useSettingIsShowDocsEnabled();
+    const [sideView, setSideView] = useState<SideView>('off');
     const [isDragging, setIsDragging] = useState(false);
 
     const [docsSplit, setDocsSplit] = useLocalStorage('app-docs-split', 30);
@@ -118,7 +118,7 @@ const App: React.FunctionComponent = () => {
                 <div className="pb-app-main" style={{ position: 'relative' }}>
                     <SplitterLayout
                         customClassName={
-                            isSettingShowDocsEnabled ? 'pb-show-docs' : 'pb-hide-docs'
+                            sideView === 'docs' ? 'pb-show-docs' : 'pb-hide-docs'
                         }
                         onDragStart={(): void => setIsDragging(true)}
                         onDragEnd={(): void => setIsDragging(false)}
@@ -148,11 +148,15 @@ const App: React.FunctionComponent = () => {
                                     large
                                     icon={<Manual />}
                                     title={
-                                        isSettingShowDocsEnabled
+                                        sideView === 'docs'
                                             ? i18n.translate('docs.hide')
                                             : i18n.translate('docs.show')
                                     }
-                                    onClick={toggleIsSettingShowDocsEnabled}
+                                    onClick={() =>
+                                        setSideView(
+                                            sideView === 'docs' ? 'off' : 'docs',
+                                        )
+                                    }
                                 />
                             </main>
                             <aside
