@@ -211,3 +211,14 @@ div.pb-hide-docs > :not(.layout-pane-primary) {
     width: 0 !important;
     min-width: 0 !important;
 }
+
+// hide the terminal and resize separator
+// Same approach as docs: keep the terminal in the DOM to preserve its content,
+// but collapse the secondary pane to zero height.
+div.pb-hide-terminal > :not(.layout-pane-primary) {
+    visibility: hidden;
+    pointer-events: none;
+    flex-basis: 0 !important;
+    height: 0 !important;
+    min-height: 0 !important;
+}

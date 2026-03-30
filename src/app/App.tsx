@@ -4,7 +4,7 @@
 import 'react-splitter-layout/lib/index.css';
 import './app.scss';
 import { Button, Classes, Spinner } from '@blueprintjs/core';
-import { Manual } from '@blueprintjs/icons';
+import { Console, Manual } from '@blueprintjs/icons';
 import React, { useEffect, useState } from 'react';
 
 type SideView = 'off' | 'docs';
@@ -107,21 +107,44 @@ const App: React.FunctionComponent = () => {
         defaultDocsSplit,
     );
 
+    const resetDocsSplit = () => {
+        setDocsSplit(defaultDocsSplit);
+        resetSplitterSize(
+            '.splitter-layout.pb-show-docs, .splitter-layout.pb-hide-docs',
+            defaultDocsSplit,
+        );
+    };
+
     const docsOnClick = () => {
         if (sideView === 'docs' && docsSplit < 10) {
-            // Treat manually dragged closed like closed, so clicking will
-            // visually open it at default size.
-            setDocsSplit(defaultDocsSplit);
-            resetSplitterSize(
-                '.splitter-layout.pb-show-docs, .splitter-layout.pb-hide-docs',
-                defaultDocsSplit,
-            );
+            resetDocsSplit();
         } else {
             setSideView(sideView === 'docs' ? 'off' : 'docs');
         }
     };
 
-    const [terminalSplit, setTerminalSplit] = useLocalStorage('app-terminal-split', 30);
+    const defaultTerminalSplit = 30;
+    const [terminalSplit, setTerminalSplit] = useLocalStorage(
+        'app-terminal-split',
+        defaultTerminalSplit,
+    );
+    const [terminalVisible, setTerminalVisible] = useState(true);
+
+    const resetTerminalSplit = () => {
+        setTerminalSplit(defaultTerminalSplit);
+        resetSplitterSize(
+            '.splitter-layout.pb-show-terminal, .splitter-layout.pb-hide-terminal',
+            defaultTerminalSplit,
+        );
+    };
+
+    const terminalOnClick = () => {
+        if (terminalVisible && terminalSplit < 10) {
+            resetTerminalSplit();
+        } else {
+            setTerminalVisible(!terminalVisible);
+        }
+    };
 
     // Classes.DARK has to be applied to body element, otherwise it won't
     // affect portals
@@ -172,6 +195,11 @@ const App: React.FunctionComponent = () => {
                     >
                         <SplitterLayout
                             vertical={true}
+                            customClassName={
+                                terminalVisible
+                                    ? 'pb-show-terminal'
+                                    : 'pb-hide-terminal'
+                            }
                             percentage={true}
                             secondaryInitialSize={terminalSplit}
                             onSecondaryPaneSizeChange={setTerminalSplit}
@@ -187,6 +215,17 @@ const App: React.FunctionComponent = () => {
                                     <Editor />
                                 </React.Suspense>
                                 <div className="pb-app-side-view-buttons">
+                                    <Button
+                                        large
+                                        intent="primary"
+                                        icon={<Console />}
+                                        title={
+                                            terminalVisible
+                                                ? i18n.translate('terminal.hide')
+                                                : i18n.translate('terminal.show')
+                                        }
+                                        onClick={terminalOnClick}
+                                    />
                                     <Button
                                         large
                                         intent="primary"
