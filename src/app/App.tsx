@@ -70,13 +70,57 @@ const Docs: React.FunctionComponent = () => {
     );
 };
 
+/**
+ * HACK: react-splitter-layout is an uncontrolled component, so there is no
+ * clean way to reset its size programmatically.
+ */
+function resetSplitterSize(className: string, defaultSize: number): void {
+    const container = document.querySelector<HTMLElement>(className);
+
+    if (!container) {
+        return;
+    }
+
+    const fiberKey = Object.keys(container).find((k) => k.startsWith('__reactFiber'));
+    if (!fiberKey) {
+        return;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let fiber: any = (container as any)[fiberKey];
+    while (fiber && !fiber.stateNode?.handleMouseMove) {
+        fiber = fiber.return;
+    }
+
+    fiber?.stateNode?.setState({ secondaryPaneSize: defaultSize });
+}
+
 const App: React.FunctionComponent = () => {
     const i18n = useI18n();
     const { isDarkMode } = useTernaryDarkMode();
     const [sideView, setSideView] = useState<SideView>('off');
     const [isDragging, setIsDragging] = useState(false);
 
-    const [docsSplit, setDocsSplit] = useLocalStorage('app-docs-split', 30);
+    const defaultDocsSplit = 30;
+    const [docsSplit, setDocsSplit] = useLocalStorage(
+        'app-docs-split',
+        defaultDocsSplit,
+    );
+
+    const docsOnClick = () => {
+        if (sideView === 'docs' && docsSplit < 10) {
+            // Treat manually dragged closed like closed, so clicking will
+            // visually open it at default size.
+            setDocsSplit(defaultDocsSplit);
+            resetSplitterSize(
+                '.splitter-layout.pb-show-docs, .splitter-layout.pb-hide-docs',
+                defaultDocsSplit,
+            );
+        } else {
+            setSideView(sideView === 'docs' ? 'off' : 'docs');
+        }
+    };
+
     const [terminalSplit, setTerminalSplit] = useLocalStorage('app-terminal-split', 30);
 
     // Classes.DARK has to be applied to body element, otherwise it won't
@@ -152,11 +196,7 @@ const App: React.FunctionComponent = () => {
                                                 ? i18n.translate('docs.hide')
                                                 : i18n.translate('docs.show')
                                         }
-                                        onClick={() =>
-                                            setSideView(
-                                                sideView === 'docs' ? 'off' : 'docs',
-                                            )
-                                        }
+                                        onClick={docsOnClick}
                                     />
                                 </div>
                             </main>
