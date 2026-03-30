@@ -16,7 +16,6 @@ import SponsorDialog from '../sponsor/SponsorDialog';
 import StatusBar from '../status-bar/StatusBar';
 import Toolbar from '../toolbar/Toolbar';
 import Tour from '../tour/Tour';
-import { isMacOS } from '../utils/os';
 import { docsDefaultPage } from './constants';
 import { useI18n } from './i18n';
 
@@ -47,8 +46,6 @@ const Terminal = React.lazy(async () => {
 });
 
 const Docs: React.FunctionComponent = () => {
-    const { setIsSettingShowDocsEnabled } = useSettingIsShowDocsEnabled();
-
     return (
         <iframe
             onLoad={(e) => {
@@ -58,23 +55,6 @@ const Docs: React.FunctionComponent = () => {
                     console.error('could not get iframe content window');
                     return;
                 }
-
-                // Override browser default key bindings in iframe.
-                contentWindow.document.addEventListener('keydown', (e) => {
-                    // use Ctrl-D/Cmd-D to toggle docs
-                    if (
-                        (isMacOS()
-                            ? e.metaKey && !e.ctrlKey
-                            : e.ctrlKey && !e.metaKey) &&
-                        !e.altKey &&
-                        e.key === 'd'
-                    ) {
-                        e.preventDefault();
-                        // since the iframe is only visible when docs are shown
-                        // the only action is to hide the docs
-                        setIsSettingShowDocsEnabled(false);
-                    }
-                });
 
                 if (document.body.classList.contains(Classes.DARK)) {
                     contentWindow.document.documentElement.classList.add(Classes.DARK);

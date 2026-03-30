@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2023 The Pybricks Authors
+// Copyright (c) 2020-2026 The Pybricks Authors
 
 import './editor.scss';
 import {
@@ -407,17 +407,6 @@ const Editor: React.FunctionComponent = () => {
             return () => contrib.dispose();
         },
         [i18n],
-    );
-
-    useEditorAction(
-        editor,
-        () => ({
-            id: 'pybricks.action.toggleDocs',
-            label: i18n.translate('toggleDocs'),
-            run: () => toggleIsSettingShowDocsEnabled(),
-            keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyD],
-        }),
-        [i18n, toggleIsSettingShowDocsEnabled],
     );
 
     useEditorAction(
