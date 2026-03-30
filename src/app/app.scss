@@ -79,11 +79,19 @@
     }
 }
 
-.pb-app-doc-button {
+.pb-app-side-view-buttons {
     position: absolute;
     bottom: bp.$pt-grid-size;
     right: bp.$pt-grid-size;
     z-index: bp.$pt-z-index-overlay;
+    display: flex;
+    flex-direction: row;
+    gap: bp.$pt-grid-size * 0.5;
+
+    // match toolbar button appearance: no box-shadow border or active-state shadow
+    & * {
+        box-shadow: unset !important;
+    }
 }
 
 $splitter-background-color: bp.$light-gray2;

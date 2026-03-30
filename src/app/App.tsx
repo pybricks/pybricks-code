@@ -142,22 +142,23 @@ const App: React.FunctionComponent = () => {
                                 >
                                     <Editor />
                                 </React.Suspense>
-                                <Button
-                                    className="pb-app-doc-button"
-                                    minimal
-                                    large
-                                    icon={<Manual />}
-                                    title={
-                                        sideView === 'docs'
-                                            ? i18n.translate('docs.hide')
-                                            : i18n.translate('docs.show')
-                                    }
-                                    onClick={() =>
-                                        setSideView(
-                                            sideView === 'docs' ? 'off' : 'docs',
-                                        )
-                                    }
-                                />
+                                <div className="pb-app-side-view-buttons">
+                                    <Button
+                                        large
+                                        intent="primary"
+                                        icon={<Manual />}
+                                        title={
+                                            sideView === 'docs'
+                                                ? i18n.translate('docs.hide')
+                                                : i18n.translate('docs.show')
+                                        }
+                                        onClick={() =>
+                                            setSideView(
+                                                sideView === 'docs' ? 'off' : 'docs',
+                                            )
+                                        }
+                                    />
+                                </div>
                             </main>
                             <aside
                                 className="pb-app-terminal"
