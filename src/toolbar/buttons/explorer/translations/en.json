@@ -1,0 +1,7 @@
+{
+    "label": "File Explorer",
+    "tooltip": {
+        "show": "Show file explorer",
+        "hide": "Hide file explorer"
+    }
+}

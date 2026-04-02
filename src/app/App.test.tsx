@@ -42,9 +42,10 @@ it.each([false, true])('should render', (darkMode) => {
 });
 
 describe('documentation pane', () => {
-    it('should hide by default', () => {
+    it('should be collapsed by default', () => {
         testRender(<App />);
-        expect(document.querySelector('.pb-show-docs')).toBeNull();
-        expect(document.querySelector('.pb-hide-docs')).not.toBeNull();
+        // The docs panel starts collapsed (collapsedSize="0%")
+        const docsPanel = document.querySelector('[data-panel][id="docs"]');
+        expect(docsPanel).not.toBeNull();
     });
 });

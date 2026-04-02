@@ -1,15 +1,16 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2020-2026 The Pybricks Authors
 
-import 'react-splitter-layout/lib/index.css';
 import './app.scss';
 import { Button, Classes, Spinner } from '@blueprintjs/core';
-import { Manual } from '@blueprintjs/icons';
-import React, { useEffect, useState } from 'react';
-
-type SideView = 'off' | 'docs';
-import SplitterLayout from 'react-splitter-layout';
-import { useLocalStorage, useTernaryDarkMode } from 'usehooks-ts';
+import { Console, Manual } from '@blueprintjs/icons';
+import React, { useEffect } from 'react';
+import {
+    Panel,
+    Group as PanelGroup,
+    Separator as PanelResizeHandle,
+} from 'react-resizable-panels';
+import { useTernaryDarkMode } from 'usehooks-ts';
 import Activities from '../activities/Activities';
 import DfuWindowsDriverInstallDialog from '../firmware/dfuWindowsDriverInstallDialog/DfuWindowsDriverInstallDialog';
 import { InstallPybricksDialog } from '../firmware/installPybricksDialog/InstallPybricksDialog';
@@ -19,6 +20,7 @@ import StatusBar from '../status-bar/StatusBar';
 import Toolbar from '../toolbar/Toolbar';
 import Tour from '../tour/Tour';
 import { docsDefaultPage } from './constants';
+import { useCollapsiblePanel } from './hooks';
 import { useI18n } from './i18n';
 
 const Editor = React.lazy(async () => {
@@ -73,11 +75,9 @@ const Docs: React.FunctionComponent = () => {
 const App: React.FunctionComponent = () => {
     const i18n = useI18n();
     const { isDarkMode } = useTernaryDarkMode();
-    const [sideView, setSideView] = useState<SideView>('off');
-    const [isDragging, setIsDragging] = useState(false);
 
-    const [docsSplit, setDocsSplit] = useLocalStorage('app-docs-split', 30);
-    const [terminalSplit, setTerminalSplit] = useLocalStorage('app-terminal-split', 30);
+    const docs = useCollapsiblePanel(false, 30);
+    const terminal = useCollapsiblePanel(true, 20);
 
     // Classes.DARK has to be applied to body element, otherwise it won't
     // affect portals
@@ -105,80 +105,134 @@ const App: React.FunctionComponent = () => {
         return () => removeEventListener('keydown', listener);
     }, []);
 
+    const sideViewButtons = (
+        <div className="pb-app-side-view-buttons">
+            <Button
+                large
+                intent="primary"
+                icon={<Console />}
+                title={
+                    terminal.visible
+                        ? i18n.translate('terminal.hide')
+                        : i18n.translate('terminal.show')
+                }
+                onClick={() => terminal.setVisible(!terminal.visible)}
+            />
+            <Button
+                large
+                intent="primary"
+                icon={<Manual />}
+                title={
+                    docs.visible
+                        ? i18n.translate('docs.hide')
+                        : i18n.translate('docs.show')
+                }
+                onClick={() => docs.setVisible(!docs.visible)}
+            />
+        </div>
+    );
+
     return (
         <div className="pb-app" onContextMenu={(e) => e.preventDefault()}>
             <div className="pb-app-body">
-                <aside
-                    className="pb-app-activities"
-                    aria-label={i18n.translate('landmark.activities')}
+                <PanelGroup
+                    orientation="horizontal"
+                    resizeTargetMinimumSize={{ coarse: 37, fine: 26 }}
                 >
-                    <Activities />
-                </aside>
-                {/* need a container with position: relative; for SplitterLayout since it uses position: absolute; */}
-                <div className="pb-app-main" style={{ position: 'relative' }}>
-                    <SplitterLayout
-                        customClassName={
-                            sideView === 'docs' ? 'pb-show-docs' : 'pb-hide-docs'
+                    <Panel id="main-app">
+                        <div className="pb-app-main">
+                            <Toolbar />
+                            <div className="pb-app-body-inner">
+                                <aside
+                                    className="pb-app-activities"
+                                    aria-label={i18n.translate('landmark.activities')}
+                                >
+                                    <Activities />
+                                </aside>
+                                <PanelGroup
+                                    orientation="vertical"
+                                    resizeTargetMinimumSize={{ coarse: 37, fine: 26 }}
+                                >
+                                    <Panel>
+                                        <div className="pb-app-editor-area">
+                                            <PanelGroup orientation="horizontal">
+                                                <Panel>
+                                                    <main
+                                                        className="pb-app-editor"
+                                                        aria-label={i18n.translate(
+                                                            'landmark.editor',
+                                                        )}
+                                                    >
+                                                        <React.Suspense
+                                                            fallback={
+                                                                <Spinner className="pb-editor" />
+                                                            }
+                                                        >
+                                                            <Editor />
+                                                        </React.Suspense>
+                                                    </main>
+                                                </Panel>
+                                            </PanelGroup>
+                                            {sideViewButtons}
+                                        </div>
+                                    </Panel>
+                                    <PanelResizeHandle
+                                        disabled={!terminal.visible}
+                                        className={
+                                            terminal.visible
+                                                ? 'pb-splitter pb-splitter--horizontal'
+                                                : undefined
+                                        }
+                                    />
+                                    <Panel
+                                        id="terminal"
+                                        collapsible
+                                        collapsedSize="0%"
+                                        minSize="10%"
+                                        panelRef={terminal.panelRef}
+                                        onResize={terminal.onResize}
+                                    >
+                                        <aside
+                                            className="pb-app-terminal"
+                                            aria-label={i18n.translate(
+                                                'landmark.terminal',
+                                            )}
+                                        >
+                                            <React.Suspense
+                                                fallback={<Spinner className="h-100" />}
+                                            >
+                                                <Terminal />
+                                            </React.Suspense>
+                                        </aside>
+                                    </Panel>
+                                </PanelGroup>
+                            </div>
+                        </div>
+                    </Panel>
+                    <PanelResizeHandle
+                        disabled={!docs.visible}
+                        className={
+                            docs.visible
+                                ? 'pb-splitter pb-splitter--vertical'
+                                : undefined
                         }
-                        onDragStart={(): void => setIsDragging(true)}
-                        onDragEnd={(): void => setIsDragging(false)}
-                        percentage={true}
-                        secondaryInitialSize={docsSplit}
-                        onSecondaryPaneSizeChange={setDocsSplit}
+                    />
+                    <Panel
+                        id="docs"
+                        collapsible
+                        collapsedSize="0%"
+                        minSize="10%"
+                        panelRef={docs.panelRef}
+                        onResize={docs.onResize}
                     >
-                        <SplitterLayout
-                            vertical={true}
-                            percentage={true}
-                            secondaryInitialSize={terminalSplit}
-                            onSecondaryPaneSizeChange={setTerminalSplit}
-                        >
-                            <main
-                                className="pb-app-editor"
-                                aria-label={i18n.translate('landmark.editor')}
-                            >
-                                <Toolbar />
-                                <React.Suspense
-                                    fallback={<Spinner className="pb-editor" />}
-                                >
-                                    <Editor />
-                                </React.Suspense>
-                                <Button
-                                    className="pb-app-doc-button"
-                                    minimal
-                                    large
-                                    icon={<Manual />}
-                                    title={
-                                        sideView === 'docs'
-                                            ? i18n.translate('docs.hide')
-                                            : i18n.translate('docs.show')
-                                    }
-                                    onClick={() =>
-                                        setSideView(
-                                            sideView === 'docs' ? 'off' : 'docs',
-                                        )
-                                    }
-                                />
-                            </main>
-                            <aside
-                                className="pb-app-terminal"
-                                aria-label={i18n.translate('landmark.terminal')}
-                            >
-                                <React.Suspense
-                                    fallback={<Spinner className="h-100" />}
-                                >
-                                    <Terminal />
-                                </React.Suspense>
-                            </aside>
-                        </SplitterLayout>
                         <aside
-                            className="pb-app-docs"
+                            className="pb-app-side-panel"
                             aria-label={i18n.translate('landmark.documentation')}
                         >
-                            {isDragging && <div className="pb-app-docs-drag-helper" />}
                             <Docs />
                         </aside>
-                    </SplitterLayout>
-                </div>
+                    </Panel>
+                </PanelGroup>
             </div>
             <StatusBar />
             <Tour />

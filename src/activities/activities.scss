@@ -1,45 +1,22 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2022 The Pybricks Authors
+// Copyright (c) 2022-2026 The Pybricks Authors
 
 @use '@blueprintjs/core/lib/scss/variables' as bp;
 @use '../variables' as pb;
 
-// override bluetprintjs styles
-.#{bp.$ns}-tabs.#{bp.$ns}-vertical > {
-    & .#{bp.$ns}-tab-list .pb-activities-tablist-tab {
-        margin: bp.$pt-grid-size * 0.6;
-        padding: unset;
-        width: unset;
-        line-height: unset;
-    }
+.pb-activities-tabview {
+    display: flex;
+    flex-direction: column;
+    width: bp.$pt-grid-size * 25;
+    padding: bp.$pt-grid-size;
+    @include pb.background-contrast(0%);
+    overflow-y: auto;
+    height: 100%;
 
-    & .pb-activities-tabview {
-        padding: bp.$pt-grid-size * 0.5;
-    }
-}
-
-.pb-activities {
-    // TODO: submit upstream patch to allow setting tablist class
-    &-tablist,
-    & .#{bp.$ns}-tab-list {
-        @include pb.background-contrast(6%);
-    }
-
-    &-tabview {
-        display: flex;
-        flex-direction: column;
-        width: bp.$pt-grid-size * 25;
-        padding: bp.$pt-grid-size;
-        @include pb.background-contrast(0%);
-
-        // on small screens, make the activity view an overlay instead of inline
-        @media screen and (max-width: pb.$narrow-screen-limit) {
-            position: absolute;
-            top: 0px;
-            // FIXME: this should be a variable
-            left: 47px;
-            height: calc(100% - pb.$status-bar-height);
-            z-index: bp.$pt-z-index-overlay;
-        }
+    // on small screens, make the activity view an overlay instead of inline
+    @media screen and (max-width: pb.$narrow-screen-limit) {
+        position: absolute;
+        height: calc(100% - pb.$status-bar-height);
+        z-index: bp.$pt-z-index-overlay;
     }
 }

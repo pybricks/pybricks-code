@@ -38,6 +38,43 @@ if (!Element.prototype.scrollTo) {
     Element.prototype.scrollTo = jest.fn();
 }
 
+// ResizeObserver is not implemented in jsdom but is required by react-resizable-panels
+global.ResizeObserver = class ResizeObserver {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+};
+
+// DOMRect is not implemented in jsdom but is required by react-resizable-panels
+if (typeof global.DOMRect === 'undefined') {
+    global.DOMRect = class DOMRect {
+        x: number;
+        y: number;
+        width: number;
+        height: number;
+        top: number;
+        right: number;
+        bottom: number;
+        left: number;
+        constructor(x = 0, y = 0, width = 0, height = 0) {
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height = height;
+            this.top = y;
+            this.right = x + width;
+            this.bottom = y + height;
+            this.left = x;
+        }
+        toJSON() {
+            return JSON.stringify(this);
+        }
+        static fromRect(rect?: DOMRectInit): DOMRect {
+            return new DOMRect(rect?.x, rect?.y, rect?.width, rect?.height);
+        }
+    } as unknown as typeof DOMRect;
+}
+
 Object.defineProperty(global.self, 'crypto', {
     value: crypto.webcrypto,
 });
