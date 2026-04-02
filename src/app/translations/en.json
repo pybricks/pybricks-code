@@ -8,5 +8,9 @@
     "docs": {
         "show": "Show documentation",
         "hide": "Hide documentation"
+    },
+    "terminal": {
+        "show": "Show terminal",
+        "hide": "Hide terminal"
     }
 }

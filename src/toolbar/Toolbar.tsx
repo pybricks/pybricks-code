@@ -1,13 +1,15 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2020-2025 The Pybricks Authors
+// Copyright (c) 2020-2026 The Pybricks Authors
 
 import { ButtonGroup } from '@blueprintjs/core';
 import React from 'react';
 import { useId } from 'react-aria';
 import { Toolbar as UtilsToolbar } from '../components/toolbar/Toolbar';
 import BluetoothButton from './buttons/bluetooth/BluetoothButton';
+import ExplorerButton from './buttons/explorer/ExplorerButton';
 import ReplButton from './buttons/repl/ReplButton';
 import RunButton from './buttons/run/RunButton';
+import SettingsButton from './buttons/settings/SettingsButton';
 import SponsorButton from './buttons/sponsor/SponsorButton';
 import StopButton from './buttons/stop/StopButton';
 import UsbButton from './buttons/usb/UsbButton';
@@ -32,6 +34,10 @@ const Toolbar: React.FunctionComponent = () => {
             className="pb-toolbar"
             firstFocusableItemId={bluetoothButtonId}
         >
+            <ButtonGroup className="pb-toolbar-group pb-align-left">
+                <ExplorerButton id="pb-toolbar-explorer-button" />
+                <SettingsButton id="pb-toolbar-settings-button" />
+            </ButtonGroup>
             <ButtonGroup className="pb-toolbar-group pb-align-left">
                 <UsbButton id={usbButtonId} />
                 <BluetoothButton id={bluetoothButtonId} />

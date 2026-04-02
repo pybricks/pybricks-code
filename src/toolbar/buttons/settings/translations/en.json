@@ -1,0 +1,7 @@
+{
+    "label": "Settings",
+    "tooltip": {
+        "show": "Show settings and help",
+        "hide": "Hide settings and help"
+    }
+}

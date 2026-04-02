@@ -12,40 +12,17 @@
 
 @import '@blueprintjs/icons/lib/css/blueprint-icons.css';
 
+// Root app container: fills the viewport, stacks toolbar/body/statusbar vertically.
 .pb-app {
     width: 100%;
     height: 100%;
-    background-color: bp.$pt-app-background-color;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
+    background-color: bp.$pt-app-background-color;
 
     .#{bp.$ns}-dark & {
         background-color: bp.$pt-dark-app-background-color;
-    }
-
-    &-activities {
-        display: flex;
-    }
-
-    &-terminal {
-        height: 100%;
-        padding-top: 8px;
-        padding-left: 8px;
-        background-color: white;
-
-        .#{bp.$ns}-dark & {
-            background-color: black;
-        }
-    }
-
-    &-docs {
-        height: 100%;
-
-        &-drag-helper {
-            height: 100%;
-            width: 100%;
-            position: absolute;
-        }
     }
 
     & iframe {
@@ -53,153 +30,206 @@
     }
 }
 
+// Row containing the activities sidebar and the main content area.
 .pb-app-body {
+    flex: 1 1 0;
     min-height: 0;
-    flex: 1 1 auto;
-
     display: flex;
     flex-direction: row;
-
-    .pb-app-main {
-        min-width: 0;
-        flex: 1 1 auto;
-        @include pb.background-contrast(4%);
-    }
+    overflow: hidden;
 }
 
-.pb-app-editor {
+// Thin activities sidebar on the left, shown when an activity is selected.
+.pb-app-activities {
+    flex: none;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    @include pb.background-contrast(0%);
+}
+
+// Row containing the activities panel and the resizable editor/terminal panels.
+.pb-app-body-inner {
+    flex: 1 1 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
+}
+
+// Main content: toolbar on top, resizable panels below. Fills its Panel.
+.pb-app-main {
+    position: relative;
+    width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
-    position: relative;
+    overflow: hidden;
+    @include pb.background-contrast(4%);
+}
 
-    & .pb-editor {
-        min-height: 0;
-        flex: 1 1 auto;
+// Wraps the horizontal editor+camera PanelGroup. position: relative anchors
+// the absolutely-positioned side-view buttons to this container instead of
+// the editor panel, so they stay visible even when the camera is expanded.
+.pb-app-editor-area {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+// The editor <main> element lives inside a resizable Panel - fill it entirely.
+.pb-app-editor {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+// Terminal panel fills its resizable panel.
+.pb-app-terminal {
+    width: 100%;
+    height: 100%;
+    padding-top: 8px;
+    padding-left: 8px;
+    box-sizing: border-box;
+    overflow: hidden;
+    background-color: white;
+
+    .#{bp.$ns}-dark & {
+        background-color: black;
     }
 }
 
-.pb-app-doc-button {
+// Side panel fills its resizable panel.
+.pb-app-side-panel {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.pb-app-side-view-buttons {
     position: absolute;
     bottom: bp.$pt-grid-size;
     right: bp.$pt-grid-size;
-    z-index: bp.$pt-z-index-overlay;
+    z-index: bp.$pt-z-index-content;
+    display: flex;
+    flex-direction: row;
+    gap: bp.$pt-grid-size * 0.5;
+
+    // match toolbar button appearance: no box-shadow border or active-state shadow
+    & * {
+        box-shadow: unset !important;
+    }
 }
 
+// Splitter color variables
 $splitter-background-color: bp.$light-gray2;
 $splitter-background-color-hover: bp.$gray4;
 $dark-splitter-background-color: bp.$dark-gray5;
 $dark-splitter-background-color-hover: bp.$gray2;
 
-$splitter-constrast: -15%;
-$dark-splitter-constrast: 20%;
+$splitter-contrast: -15%;
+$dark-splitter-contrast: 20%;
 
 $splitter-color: color.adjust(
     $splitter-background-color,
-    $lightness: $splitter-constrast
+    $lightness: $splitter-contrast
 );
 $splitter-color-hover: color.adjust(
     $splitter-background-color-hover,
-    $lightness: $splitter-constrast
+    $lightness: $splitter-contrast
 );
 $dark-splitter-color: color.adjust(
     $dark-splitter-background-color,
-    $lightness: $dark-splitter-constrast
+    $lightness: $dark-splitter-contrast
 );
 $dark-splitter-color-hover: color.adjust(
     $dark-splitter-background-color-hover,
-    $lightness: $dark-splitter-constrast
+    $lightness: $dark-splitter-contrast
 );
 
-.layout-splitter:before {
-    $width: 1.5;
-    $height: 2.7;
-    $radius: 0.4;
-
-    content: map.get(bpi.$blueprint-icon-codepoints, 'drag-handle-vertical') / '';
-    height: bp.$pt-grid-size * $height;
-    width: bp.$pt-grid-size * $width;
-    top: calc(50% - bp.$pt-grid-size * $height * 0.5);
-    left: bp.$pt-grid-size * $width * -0.5 + 2px;
-
-    .splitter-layout-vertical & {
-        $width: 2.7;
-        $height: 1.4;
-
-        content: map.get(bpi.$blueprint-icon-codepoints, 'drag-handle-horizontal') / '';
-        height: bp.$pt-grid-size * $height;
-        width: bp.$pt-grid-size * $width;
-        top: bp.$pt-grid-size * $height * -0.5 + 2px;
-        left: calc(50% - bp.$pt-grid-size * $width * 0.5);
-    }
-
-    font-family: bpi.$blueprint-icons-16-font;
-    font-size: large;
+// Panel resize handles (splitters).
+.pb-splitter {
     display: flex;
-    position: relative;
-    border-radius: bp.$pt-grid-size * $radius;
-    padding: bp.$pt-grid-size * 0.5;
     align-items: center;
     justify-content: center;
-    z-index: bp.$pt-z-index-content;
-
-    color: $splitter-color;
     background-color: $splitter-background-color;
 
-    .#{bp.$ns}-dark & {
-        color: $dark-splitter-color;
-        background-color: $dark-splitter-background-color;
-    }
-}
-
-// make layout splitter match app color scheme
-.splitter-layout > .layout-splitter {
-    color: $splitter-color;
-    background-color: $splitter-background-color;
-
-    &:hover,
-    &:hover:before {
-        color: $splitter-color-hover;
+    &:hover {
         background-color: $splitter-background-color-hover;
     }
 
     .#{bp.$ns}-dark & {
-        color: $dark-splitter-color;
         background-color: $dark-splitter-background-color;
 
-        &:hover,
-        &:hover:before {
+        &:hover {
+            background-color: $dark-splitter-background-color-hover;
+        }
+    }
+
+    // Drag-handle icon via ::before pseudo-element.
+    &::before {
+        $radius: 0.4;
+
+        font-family: bpi.$blueprint-icons-16-font;
+        font-size: large;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: bp.$pt-grid-size * $radius;
+        padding: bp.$pt-grid-size * 0.5;
+        z-index: bp.$pt-z-index-content;
+
+        color: $splitter-color;
+        background-color: $splitter-background-color;
+
+        .#{bp.$ns}-dark & {
+            color: $dark-splitter-color;
+            background-color: $dark-splitter-background-color;
+        }
+    }
+
+    &:hover::before {
+        color: $splitter-color-hover;
+        background-color: $splitter-background-color-hover;
+
+        .#{bp.$ns}-dark & {
             color: $dark-splitter-color-hover;
             background-color: $dark-splitter-background-color-hover;
         }
     }
-}
 
-// we want overflow visible for editor overlays but it breaks resizing
-// so we can only apply this when not resizing
-.splitter-layout:not(.layout-changing) > .layout-pane:has(.pb-app-editor) {
-    overflow: visible;
-}
+    // Vertical splitter (between left/right panels): thin column, vertical drag icon.
+    &--vertical {
+        width: 4px;
+        cursor: col-resize;
 
-.splitter-layout .layout-pane {
-    // fix double scroll bars in terminal when resizing
-    overflow: hidden;
+        &::before {
+            $width: 1.5;
+            $height: 2.7;
 
-    &.layout-pane-primary {
-        // fix resizing window vertically
-        min-height: 0;
+            content: map.get(bpi.$blueprint-icon-codepoints, 'drag-handle-vertical') /
+                '';
+            width: bp.$pt-grid-size * $width;
+            height: bp.$pt-grid-size * $height;
+        }
     }
-}
 
-// hide the docs and resize separator
-// Use visibility rather than display:none so the iframe keeps its layout and
-// scroll position when the docs panel is toggled.
-// Collapse the secondary pane and splitter to zero width so they don't
-// consume space, while keeping the iframe in the DOM.
-div.pb-hide-docs > :not(.layout-pane-primary) {
-    visibility: hidden;
-    pointer-events: none;
-    flex-basis: 0 !important;
-    width: 0 !important;
-    min-width: 0 !important;
+    // Horizontal splitter (between top/bottom panels): thin row, horizontal drag icon.
+    &--horizontal {
+        height: 4px;
+        cursor: row-resize;
+
+        &::before {
+            $width: 2.7;
+            $height: 1.4;
+
+            content: map.get(bpi.$blueprint-icon-codepoints, 'drag-handle-horizontal') /
+                '';
+            width: bp.$pt-grid-size * $width;
+            height: bp.$pt-grid-size * $height;
+        }
+    }
 }

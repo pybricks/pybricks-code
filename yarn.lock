@@ -2994,7 +2994,6 @@ __metadata:
     "@types/node": ^18.19.14
     "@types/react": ^18.2.47
     "@types/react-dom": ^18.2.18
-    "@types/react-splitter-layout": ^3.0.5
     "@types/react-transition-group": ^4.4.10
     "@types/redux-logger": ^3.0.12
     "@types/semver": ^7.5.6
@@ -3075,7 +3074,7 @@ __metadata:
     react-popper: ^2.3.0
     react-redux: ^8.1.3
     react-refresh: ^0.14.0
-    react-splitter-layout: ^4.0.0
+    react-resizable-panels: ^4.8.0
     redux: ^4.2.1
     redux-logger: ^3.0.6
     redux-saga: ^1.3.0
@@ -5338,15 +5337,6 @@ __metadata:
   dependencies:
     "@types/react": "*"
   checksum: 8e3da404c980e2b2a76da3852f812ea6d8b9d0e7f5923fbaf3bfbbbfa1d59116ff91c129de8f68e9b7668a67ae34484fe9df74d5a7518cf8591ec07a0c4dad57
-  languageName: node
-  linkType: hard
-
-"@types/react-splitter-layout@npm:^3.0.5":
-  version: 3.0.5
-  resolution: "@types/react-splitter-layout@npm:3.0.5"
-  dependencies:
-    "@types/react": "*"
-  checksum: 9c8e9cc7ac568a3f5c7a1237725ce084d4c0747f91f7da359b9d5bf2439b33c99f3b90223443854d9602af84a1fad1ffe159ac0a2b77d4a42588e17044c136ec
   languageName: node
   linkType: hard
 
@@ -14778,13 +14768,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-splitter-layout@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "react-splitter-layout@npm:4.0.0"
+"react-resizable-panels@npm:^4.8.0":
+  version: 4.8.0
+  resolution: "react-resizable-panels@npm:4.8.0"
   peerDependencies:
-    prop-types: ^15.5.0
-    react: ^15.5.0 || ^16.0.0
-  checksum: 52fa6ec01f18df0938687089d85cfdf1950f04c7b611d973edc6fc6b553d1844b414c6d92e21e7de8043a29b21faca9a31b87457328bca7c424493db2c866700
+    react: ^18.0.0 || ^19.0.0
+    react-dom: ^18.0.0 || ^19.0.0
+  checksum: 387f54de46e0727539912878279046816374438f08f0ca2c31ded71a40a65bc68cbab592ba7410469737f3ae120a7c973caebebd19d9dc65ae29019e94c8b93c
   languageName: node
   linkType: hard
 
