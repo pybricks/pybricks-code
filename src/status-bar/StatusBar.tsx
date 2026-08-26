@@ -74,6 +74,7 @@ const HubInfoButton: React.FunctionComponent = () => {
     const i18n = useI18n();
     const deviceName = useSelector((s) => s.hub.deviceName);
     const deviceType = useSelector((s) => s.hub.deviceType);
+    const batteryLevel = useSelector((s) => s.hub.deviceBatteryVoltage);
     const deviceFirmwareVersion = useSelector((s) => s.hub.deviceFirmwareVersion);
 
     return (
@@ -93,6 +94,12 @@ const HubInfoButton: React.FunctionComponent = () => {
                                 <strong>{i18n.translate('hubInfo.hubType')}</strong>
                             </td>
                             <td>{deviceType}</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>{i18n.translate('hubInfo.batteryVoltage')}</strong>
+                            </td>
+                            <td>{batteryLevel}</td>
                         </tr>
                         <tr>
                             <td>
