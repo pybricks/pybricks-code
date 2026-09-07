@@ -6,7 +6,7 @@ import { compile as mpyCrossCompileV6 } from '@pybricks/mpy-cross-v6';
 import { call, getContext, put, select, takeEvery } from 'typed-redux-saga/macro';
 import { editorGetValue } from '../editor/sagaLib';
 import { FileContents, FileStorageDb } from '../fileStorage';
-import { findImportedModules, resolveModule } from '../pybricksMicropython/lib';
+import { resolveModule } from '../pybricksMicropython/lib';
 import { RootState } from '../reducers';
 import {
     compile,
@@ -16,6 +16,7 @@ import {
     mpyDidCompileMulti6,
     mpyDidFailToCompileMulti6,
 } from './actions';
+import { MpyFormatError, findImportedModules } from './mpyImports';
 
 const encoder = new TextEncoder();
 
@@ -138,65 +139,36 @@ function* handleCompileMulti6(): Generator {
         ? '__main__'
         : mainPyPath.replace(/\.[^.]+$/, '');
 
-    const pyFiles = new Map<string, FileContents>([
-        [mainPyName, { path: mainPyPath, contents: mainPyContents }],
+    // NB: the URL has to be created outside of the loop or webpack won't be able to
+    // resolve it as an asset.
+    const wasmUrl = new URL(
+        '@pybricks/mpy-cross-v6/build/mpy-cross-v6.wasm',
+        import.meta.url,
+    ).toString();
+
+    // Compile the main module, then read the modules it imports back out of the
+    // compiled bytecode and do the same for each of those, until nothing new is found.
+    // Each module is compiled exactly once and the order is preserved so that the main
+    // module comes first in the downloaded program.
+
+    const compiled = new Map<string, Uint8Array>();
+    const checkedModules = new Set<string>([mainPyName]);
+    const uncompiled = new Array<[string, FileContents]>([
+        mainPyName,
+        { path: mainPyPath, contents: mainPyContents },
     ]);
 
-    const checkedModules = new Set<string>([mainPyName]);
-    const uncheckedScripts = new Array<string>(mainPyContents);
-
     for (;;) {
-        // parse all unchecked scripts to find imported modules that haven't
-        // been checked yet
+        const next = uncompiled.shift();
 
-        const uncheckedModules = new Set<string>();
-
-        for (const uncheckedScript of uncheckedScripts) {
-            const importedModules = findImportedModules(uncheckedScript);
-
-            for (const m of importedModules) {
-                if (!checkedModules.has(m)) {
-                    uncheckedModules.add(m);
-                }
-            }
-        }
-
-        // all of the scripts have been checked now, so clear the unchecked list
-        uncheckedScripts.length = 0;
-
-        // when no more new modules are found, we are done
-        if (uncheckedModules.size === 0) {
+        if (!next) {
             break;
         }
 
-        // try to resolve unchecked modules in the file system
-        for (const m of uncheckedModules) {
-            const file = yield* call(() => resolveModule(db, m));
+        const [module, py] = next;
 
-            // if found, queue the module to be compiled and to be parsed
-            // for additional imports
-            if (file) {
-                pyFiles.set(m, file);
-                uncheckedScripts.push(file.contents);
-            }
-
-            checkedModules.add(m);
-        }
-    }
-
-    const blobParts: BlobPart[] = [];
-
-    for (const [m, py] of pyFiles) {
         const result = yield* call(() =>
-            mpyCrossCompileV6(
-                py.path,
-                py.contents,
-                undefined,
-                new URL(
-                    '@pybricks/mpy-cross-v6/build/mpy-cross-v6.wasm',
-                    import.meta.url,
-                ).toString(),
-            ),
+            mpyCrossCompileV6(py.path, py.contents, undefined, wasmUrl),
         );
 
         if (result.status !== 0 || !result.mpy) {
@@ -204,10 +176,51 @@ function* handleCompileMulti6(): Generator {
             return;
         }
 
+        compiled.set(module, result.mpy);
+
+        let importedModules: ReadonlySet<string>;
+
+        try {
+            importedModules = findImportedModules(result.mpy);
+        } catch (err) {
+            // This means mpy-cross is producing a file format we don't know how to
+            // read, which would only happen if the mpy-cross dependency changed. Fail
+            // loudly rather than silently downloading a program with missing modules.
+            // TODO: error needs to be translated
+            yield* put(
+                mpyDidFailToCompileMulti6([
+                    err instanceof MpyFormatError
+                        ? `failed to read imports of '${py.path}': ${err.message}`
+                        : String(err),
+                ]),
+            );
+            return;
+        }
+
+        // try to resolve newly found modules in the file system
+        for (const m of importedModules) {
+            if (checkedModules.has(m)) {
+                continue;
+            }
+
+            checkedModules.add(m);
+
+            const file = yield* call(() => resolveModule(db, m));
+
+            // if not found, the module is assumed to be built in to the firmware
+            if (file) {
+                uncompiled.push([m, file]);
+            }
+        }
+    }
+
+    const blobParts: BlobPart[] = [];
+
+    for (const [module, mpy] of compiled) {
         // each file is encoded as the size, module name, and mpy binary
-        blobParts.push(encodeUInt32LE(result.mpy.length));
-        blobParts.push(cString(m));
-        blobParts.push(result.mpy);
+        blobParts.push(encodeUInt32LE(mpy.length));
+        blobParts.push(cString(module));
+        blobParts.push(mpy);
     }
 
     yield* put(mpyDidCompileMulti6(new Blob(blobParts)));

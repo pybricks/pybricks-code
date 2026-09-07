@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2022 The Pybricks Authors
 
-import { parse, walk } from '@pybricks/python-program-analysis';
 import type { FileContents, FileStorageDb } from '../fileStorage';
 
 /** The Python file extension ('.py') */
@@ -69,44 +68,6 @@ export function validateFileName(
     }
 
     return FileNameValidationResult.IsOk;
-}
-
-/**
- * Finds modules imported by a Python script.
- *
- * Returns an empty list if there are syntax errors.
- *
- * @param py A Python Script.
- * @returns A list of the names of modules imported by this file.
- */
-export function findImportedModules(py: string): ReadonlySet<string> {
-    const modules = new Set<string>();
-
-    try {
-        const tree = parse(py);
-
-        // find all import statements in the syntax tree and collect imported modules
-        walk(tree, {
-            onEnterNode(node, _ancestors) {
-                if (node.type === 'import') {
-                    for (const name of node.names) {
-                        modules.add(name.path);
-                    }
-                } else if (node.type === 'from') {
-                    modules.add(node.base);
-                }
-            },
-        });
-    } catch (err) {
-        // istanbul ignore if
-        if (process.env.NODE_ENV === 'test') {
-            console.error(err);
-        }
-
-        // files with syntax errors are ignored
-    }
-
-    return modules;
 }
 
 export async function resolveModule(

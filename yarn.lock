@@ -2980,7 +2980,6 @@ __metadata:
     "@pybricks/jedi": 1.17.0
     "@pybricks/mpy-cross-v5": ^2.0.0
     "@pybricks/mpy-cross-v6": ^2.0.0
-    "@pybricks/python-program-analysis": ^2.0.0
     "@pyodide/webpack-plugin": ^1.3.2
     "@reduxjs/toolkit": ^1.9.7
     "@shopify/react-i18n": ^7.13.1
@@ -3105,15 +3104,6 @@ __metadata:
     zen-push: ^0.3.1
   languageName: unknown
   linkType: soft
-
-"@pybricks/python-program-analysis@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@pybricks/python-program-analysis@npm:2.0.0"
-  dependencies:
-    lodash: ^4.17.15
-  checksum: 2c3b96889b9710e58c46704957d1f935ac56d4a0af081cdf65761fed5bb087292b564cb99ca676df324d61c6306acacceacca0d5605f7e35f0a0f151b6b5b4d0
-  languageName: node
-  linkType: hard
 
 "@pyodide/webpack-plugin@npm:^1.3.2":
   version: 1.3.2
